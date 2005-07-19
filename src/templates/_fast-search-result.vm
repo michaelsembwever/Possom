@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+ 
+<body bgcolor="#eeeeff">
+
+<content tag="fast-results">
+#if($result.getSpellingSuggestions())
+
+	Did you mean 
+	#foreach($suggestion in $result.getSpellingSuggestions()) 
+		<a href="?q=$suggestion">$suggestion</a>
+	#end
+#end
+
+Search took: $result.getFetchTime() millisec. Returning $result.getDocumentsReturned() of $result.getTotalDocumentsAvailable() total documents available
+
+#foreach( $item in $result.getResults() )
+	<p>
+	<b>$item.title</b>
+	<br/>
+	$item.summary
+	<br/>
+	<a class="url" href="$item.url">$item.clickUrl</a>
+	</p>
+#end
+
+#if($result.getTotalDocumentsAvailable() > $result.getConsequtiveSearchStartsAt())
+	Next -> 
+	
+	#foreach($step in $result.previousSet()) 
+		$step 	
+	#end
+	
+	$result.getCurrentPostionInSet() 
+	
+	#foreach($step in $result.getNextSet())	
+		<a href="c=d&?q=$result.getQuery()&set=$step">$step</a>
+	#end
+	
+#end
+
+
+Webcrawl: $result.getWebCrawlDocumentsInIndex()
+
+Wiki: $result.getWikiDocumentsInIndex()
+
+Meida: $result.getMediaDocumentsInIndex()
+
+</content>
+</body>
+</html>

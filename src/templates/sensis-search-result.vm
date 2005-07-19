@@ -1,0 +1,72 @@
+#if($result)
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+
+
+<body>
+
+<content tag="sensis-results">
+#if ($result.getTotalDocumentsAvailable() > 0)
+	 ($result.getTotalDocumentsAvailable())
+#end
+</content>
+
+<content tag="sensis-enriched">
+  <div class="beriketVerden">
+  	<a href="?s=g&q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a><br/>
+    <div class="beriketInnrykk">
+
+#foreach( $item in $result.getResults() )
+
+  #if ($velocityCount <= 3)
+	 <a href="$item.url">$item.title</a><br/>
+	#end
+#end
+   </div>
+  </div>
+
+</content>
+
+<content tag="global-results">	
+<p/>
+
+<div class="sokeresultat">
+
+<div class="boksTittel">
+ $result.getTotalDocumentsAvailable() TREFF I NORGE
+</div>
+
+#foreach( $item in $result.getResults() )
+
+	<a href="$item.url"><strong>$item.title</strong></a><br/>
+	$item.summary
+	<br/>
+	<a class="litenUrl" href="$item.url">$item.clickUrl</a>
+	<p/>
+#end
+
+<p class="kilde">Nerdscore: $result.getFetchTime() ms</p> 
+
+#if($result.getTotalDocumentsAvailable() > $result.getConsequtiveSearchStartsAt())
+	Next -> 
+	#set( $steps = $result.getTotalDocumentsAvailable()/10)
+	
+	#if($steps > 10)
+		#set( $steps = 10)
+	#end
+
+	#foreach( $step in [0..$steps] )
+		#set($offset = $result.getConsequtiveSearchStartsAt() + 10 * $step)
+		#set($count = $step + 1)
+		<a href="?c=d&q=$result.getQuery()&offset=$offset">$count</a>&nbsp;
+	#end
+	
+	</div>
+#end
+
+</content>
+</body>
+</html>
+#end

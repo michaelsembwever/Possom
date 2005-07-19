@@ -1,0 +1,56 @@
+body{
+	font-size: 10pt;
+	font-family: verdana, sans-serif;
+}
+.fast{
+	#position:absolute;
+	#top: 110px;
+	#left:20px;
+	#padding: 10px;
+	#z-index: 1;
+	#width: 440px;
+	#border: red 1px dashed;
+	#background: #FFFFEE;
+}
+.overture {
+	#position:absolute;
+	#top: 110px;
+	#left:495px;
+	#padding: 10px;
+	#z-index: 1;
+	#width: 440px;
+	#border: red 1px dashed;
+	#background: #FFFFEE;
+}
+.yahoo{
+	#position:absolute;
+	#top: 110px;
+	#left:20px;
+	#padding: 10px;
+	#z-index: 1;
+        #width: 440px;
+	#border: red 1px dashed;
+	#background: #EEFFFF;
+}
+.google{
+	#position:absolute;
+	#top: 110px;
+	#left:995px;
+	#padding: 10px;
+	#z-index: 1;
+        #width: 440px;
+	#border: red 1px dashed;
+	#background: #FFFFEE;
+}
+.header{
+        font-size: 8pt;
+        text-align: center
+}
+.searchheader{
+	#position:absolute;
+	#top: 10px;
+	#left:20px;
+        #width: 935px;
+	#border: grey 1px dashed;
+	#background: #FFFFFF;
+}

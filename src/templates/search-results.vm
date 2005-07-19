@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+ 
+<body bgcolor="#eeeeff">
+
+<content tag="search-result-timer">
+Search took: $result.getFetchTime() millisec. Returning $result.getAllResults().size() documents
+</content>
+
+
+<content tag="search-results">
+#foreach( $item in $result.getAllResults() )
+	<p>
+	<b>$item.title</b>
+	<br/>
+	$item.summary
+	<br/>
+	<a class="url" href="$item.url">$item.clickUrl</a>
+	</p>
+#end
+</content>
+
+</body>
+</html>

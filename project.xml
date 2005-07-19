@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!-- $Id$ -->
+<project>
+
+    <pomVersion>3</pomVersion>
+    <name>Schibsted Sok Search-front</name>
+    <groupId>schibstedsok</groupId>
+    <artifactId>search-front-html</artifactId>
+    <currentVersion>0.1-b1-SNAPSHOT</currentVersion>
+    <organization>
+        <name>Schibsted Søk AS</name>
+        <url>http://www.schibstedsok.no/</url>
+    </organization>
+    <inceptionYear>2005</inceptionYear>
+    <package>no.schibstedsok.front</package>
+
+    <shortDescription>Search-front application for Schibsted Søk.</shortDescription>
+
+    <description>This is the project for Schibsted Søk's search-front application.</description>
+
+    <url>https://dev.schibstedsok.no/maven/sites/admin/front/search-front</url>
+
+    <issueTrackingUrl>https://dev.schibstedsok.no/jira/secure/BrowseProject.jspa?id=10000</issueTrackingUrl>
+
+    <siteAddress>login.osl.basefarm.net</siteAddress>
+
+    <siteDirectory>/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/admin/front/search-front-html</siteDirectory>
+
+    <repository>
+        <connection>scm:cvs:ext:${maven.user}@${schsok.cvshost}:/www/schibstedsok/versys/cvs:admin/front/search-front-html</connection>
+    </repository>
+
+
+    <developers>
+        <developer>
+            <name>Lars Johansson</name>
+            <id>larsjo</id>
+            <email>lars.johansson@conduct.no</email>
+            <organization>Conduct AS</organization>
+            <role>Front end Developer</role>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+
+    <dependencies>
+
+        <!-- Maven plugins -->
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven-scm-plugin</artifactId>
+            <version>1.5-beta-3</version>
+            <type>plugin</type>
+            <url>https://maven.apache.org/reference/plugins/scm/</url>
+            <properties>
+                <eclipse.dependency>false</eclipse.dependency>
+            </properties>
+        </dependency>
+
+
+        <!-- Logging -->
+        <dependency>
+            <id>log4j</id>
+            <version>1.2.8</version>
+            <type>jar</type>
+            <url>http://logging.apache.org/log4j/</url>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <id>commons-logging</id>
+            <version>1.0.4</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <id>commons-lang</id>
+            <version>2.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <id>commons-httpclient</id>
+            <version>2.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>velocity</groupId>
+            <artifactId>velocity-dep</artifactId>
+            <version>1.4</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+
+        <!-- Web -->
+        <dependency>
+            <id>sitemesh</id>
+            <version>2.2.1</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>5.0.18</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+
+        <!-- Indexes APIs -->
+        <dependency>
+            <groupId>fastdsapi</groupId>
+            <artifactId>fastdsapi</artifactId>
+            <version>4.1</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>googleapi</groupId>
+            <artifactId>googleapi</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>yahoo_search</groupId>
+            <artifactId>yahoo_search</artifactId>
+            <version>1.1.0</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+
+        <!-- Schibsted Sok components -->
+        
+        <!-- build only, is deployed separate -->
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>persistence-dal</artifactId>
+            <version>0.1-b1-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+        
+        <!-- build only, should be deployed as Hibernate SAR -->
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>TV-feed-application</artifactId>
+            <version>0.1-b1-SNAPSHOT</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+        <!-- Testing -->
+        <dependency>
+            <groupId>conduct-testfw</groupId>
+            <artifactId>conduct-testfw</artifactId>
+            <version>1.0.1</version>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <id>hibernate</id>
+            <version>3.0.5</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>false</war.bundle>
+            </properties>
+        </dependency>
+
+
+    </dependencies>
+
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+
+        <resources>
+            <resource>
+                <directory>src/conf</directory>
+                <includes>
+                    <include>*.xml</include>
+                    <include>*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/templates</directory>
+                <includes>
+                    <include>*.vm</include>
+                    <include>*.html</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+
+        </resources>
+
+        <unitTest>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+        </unitTest>
+
+    </build>
+</project>

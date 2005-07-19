@@ -1,0 +1,83 @@
+#if($result)
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+<body bgcolor="#eeeeff">
+<content tag="global-counter">
+	$result.getTotalDocumentsAvailable()
+</content>
+
+
+## this is a hack due to wrong template being used!
+
+<content tag="sensis-results">
+#if ($result.getTotalDocumentsAvailable() > 0)
+	 ($result.getTotalDocumentsAvailable())
+#end
+</content>
+
+
+
+
+## only show if we are running the default index search
+
+#if($result.getResults().size() > 0)
+
+<content tag="sensis-enriched">
+  
+  <div class="beriketVerden">
+  	<a href="?c=g&q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a><br/>
+    <div class="beriketInnrykk">
+
+
+  #foreach( $item in $result.getResults()  )
+
+  #if ($velocityCount <= 3)
+	 <a href="$item.url">$item.title</a><br/>
+	#end
+  #end
+   </div>
+  </div>
+
+</content>
+
+<content tag="global-results">
+	
+	#foreach( $item in $result.getResults() )
+		<p>
+		<b>$item.title</b>
+		<br/>
+		$item.summary
+		<br/>
+		<a class="url" href="$item.url">$item.clickUrl</a>
+		</p>
+	#end
+
+
+<p class="kilde">Nerdscore: $result.getFetchTime() ms</p> 
+
+#if($result.getTotalDocumentsAvailable() > $result.getConsequtiveSearchStartsAt())
+	Next -> 
+	#set( $steps = $result.getTotalDocumentsAvailable()/10)
+	
+	#if($steps > 10)
+		#set( $steps = 10)
+	#end
+
+	#foreach( $step in [0..$steps] )
+		#set($offset = $result.getConsequtiveSearchStartsAt() + 10 * $step)
+		#set($count = $step + 1)
+		<a href="?c=g&q=$result.getQuery()&offset=$offset">$count</a>&nbsp;
+	#end
+	
+	</div>
+#end
+
+</content>
+
+#end
+
+</body>
+</html>
+#end

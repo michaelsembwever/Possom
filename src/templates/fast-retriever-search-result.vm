@@ -1,0 +1,91 @@
+#if($result)
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+
+
+<body>
+<content tag="retriever-results">
+
+  <div class="beriketNyheter">
+  	<a href="" class="beriketTittel">TREFF I NYHETER</a><br/>
+    <div class="beriketInnrykk">
+		#foreach( $item in $result.getRetrieverResults())
+			#if ($velocityCount <= 3)
+
+  		<a href="$item.url">$item.title</a> $item.getNewsSource() 
+  		<span class="tidspunkt">
+			  #if ($item.getDocumentAgeDays() == 1)
+				  $item.getDocumentAgeDays() dag
+			  #end
+			  #if ($item.getDocumentAgeDays() > 1)
+				  $item.getDocumentAgeDays() dager
+			  #end
+			  #if ($item.getDocumentAgeHours() == 1)
+				  $item.getDocumentAgeHours() time
+			  #end
+			  #if ($item.getDocumentAgeHours() > 1)
+				  $item.getDocumentAgeHours() timer
+			  #end
+			  #if ($item.getDocumentAgeHours() == 0)
+				  #if ($item.getDocumentAgeDays() == 0)
+					  #if ($item.getDocumentAgeMinutes == 1)
+					    $item.getDocumentAgeMinutes() minutt
+					  #end
+					  #if ($item.getDocumentAgeMinutes > 1)
+					    $item.getDocumentAgeMinutes() minutter
+					  #end
+				  #end
+			  #end
+        gammel  		
+  		</span>
+  		<br/>
+  		#end
+  	#end
+  	</div>
+  </div>
+</content>
+
+<content tag="media-collection-results">
+
+<div class="sokeresultat">
+
+	#foreach( $item in $result.getRetrieverResults())
+	<a href="$item.url">$item.title</a> $!item.getNewsSource() 
+	<span class="tidspunkt">
+		  #if ($item.getDocumentAgeDays() == 1)
+			  $item.getDocumentAgeDays() dag
+		  #end
+		  #if ($item.getDocumentAgeDays() > 1)
+			  $item.getDocumentAgeDays() dager
+		  #end
+		  #if ($item.getDocumentAgeHours() == 1)
+			  $item.getDocumentAgeHours() time
+		  #end
+		  #if ($item.getDocumentAgeHours() > 1)
+			  $item.getDocumentAgeHours() timer
+		  #end
+		  #if ($item.getDocumentAgeHours() == 0)
+			  #if ($item.getDocumentAgeDays() == 0)
+				  #if ($item.getDocumentAgeMinutes == 1)
+				    $item.getDocumentAgeMinutes() minutt
+				  #end
+				  #if ($item.getDocumentAgeMinutes > 1)
+				    $item.getDocumentAgeMinutes() minutter
+				  #end
+			  #end
+		  #end
+	gammel  		
+	</span>
+	<br/>
+	$item.summary
+	<br/>
+	<a class="litenUrl" href="$item.url">$item.clickUrl</a>
+	<p/>	
+  	#end
+  </div>
+</content>
+</body>
+</html>
+#end

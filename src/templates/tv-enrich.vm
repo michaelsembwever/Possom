@@ -1,0 +1,29 @@
+#if($result.getResults() > 0)
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+<body bgcolor="#eeeeff">
+
+
+<content tag="tv-results">
+
+  <div class="beriketNyheter">
+  	<a href="" class="beriketTittel">TREFF I TV</a><br/>
+    <div class="beriketInnrykk">
+		#foreach( $item in $result.getResults())
+			#if ($velocityCount <= 3)
+
+  		<a href="$item.url">$item.title</a> $item.getName()<br/>
+  			 $item.getStartTime()<br/>
+  			 $item.getChannel().getName()<br/>
+  		<br/>
+  		#end
+  	#end
+  	</div>
+  </div>
+</content>
+
+</body>
+</html>
+#end

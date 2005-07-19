@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+<body>
+
+<content tag="local-counter-media">
+	$result.getMediaDocumentsInIndex()
+</content>
+
+<content tag="local-counter-wiki">
+	$result.getWikiDocumentsInIndex()
+</content>
+
+<content tag="local-counter-web">
+	$result.getWebCrawlDocumentsInIndex()
+</content>
+
+
+</body>
+</html>

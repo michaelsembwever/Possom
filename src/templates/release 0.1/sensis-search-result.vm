@@ -1,0 +1,76 @@
+#if($result)
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+
+
+<body>
+
+<content tag="sensis-results">
+#if ($result.getTotalDocumentsAvailable() > 0)
+	 ($result.getTotalDocumentsAvailable())
+#end
+</content>
+
+<content tag="sensis-enriched">
+  <div class="beriketVerden">
+  	<a href="?s=g&q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a><br/>
+    <div class="beriketInnrykk">
+
+#foreach( $item in $result.getResults() )
+
+  #if ($velocityCount <= 3)
+	 <a href="$item.url">$item.title</a><br/>
+	#end
+#end
+   </div>
+  </div>
+
+</content>
+
+<content tag="global-results">
+	
+	<table border="1">
+	<tr>
+	<td>
+	GLOBAL SEARCH:	
+	Found <a href="?s=g&q=$result.getQuery()" onClick="alert('Search scoped for Global index only is not implemented yet\nWe do the search but have not decided on how to present it yet... be patient please :)');return false;">$result.getTotalDocumentsAvailable() documents in global search</a>. Search took: $result.getFetchTime() millisec.
+	
+
+	#foreach( $item in $result.getResults() )
+		<p>
+		<b>$item.title</b>
+		<br/>
+		$item.summary
+		<br/>
+		<a class="url" href="$item.url">$item.clickUrl</a>
+		</p>
+	#end
+	</td>
+	</tr>
+	</table>
+
+<p class="kilde">Nerdscore: $result.getFetchTime() ms</p> 
+
+#if($result.getTotalDocumentsAvailable() > $result.getConsequtiveSearchStartsAt())
+	Next -> 
+	#set( $steps = $result.getTotalDocumentsAvailable()/10)
+	
+	#if($steps > 10)
+		#set( $steps = 10)
+	#end
+
+	#foreach( $step in [0..$steps] )
+		#set($offset = $result.getConsequtiveSearchStartsAt() + 10 * $step)
+		#set($count = $step + 1)
+		<a href="?c=d&q=$result.getQuery()&offset=$offset">$count</a>&nbsp;
+	#end
+	
+	</div>
+#end
+
+</content>
+</body>
+</html>
+#end

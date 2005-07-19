@@ -1,0 +1,19 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+
+<body bgcolor="#eeeeff">
+<content tag="wiki-results">
+#foreach( $item in $result)
+  #if ($velocityCount == 1)
+    <div class="boksTittel">FRA LEKSIKONET</div>
+    <div class="boksInnhold">
+	  <a href="$item.url"><strong>$item.title</strong></a>
+	  <br/>
+	  $item.summary.replaceAll("</{0,1}[bB]>", "")
+    </div>
+  #end
+#end
+</content>
+</body>

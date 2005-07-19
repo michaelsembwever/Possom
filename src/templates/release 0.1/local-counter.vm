@@ -1,0 +1,44 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+<body bgcolor="#eeeeff">
+
+<content tag="local-counter-media">
+	$result.getMediaDocumentsInIndex()
+</content>
+
+<content tag="local-counter-wiki">
+	$result.getWikiDocumentsInIndex()
+</content>
+
+<content tag="local-counter-web">
+	$result.getWebCrawlDocumentsInIndex()
+</content>
+
+
+
+
+##original version of counter.
+## ##########################
+
+<content tag="number-of-results-local">
+#if ($result.getWebCrawlDocumentsInIndex() > 0)
+($result.getWebCrawlDocumentsInIndex())
+#end
+</content>
+
+<content tag="number-of-results-news">
+#if ($result.getMediaDocumentsInIndex() > 0)
+($result.getMediaDocumentsInIndex())
+#end
+</content>
+
+<content tag="number-of-results-wiki">
+#if ($result.getWikiDocumentsInIndex() > 0)
+($result.getWikiDocumentsInIndex())
+#end
+</content>
+
+</body>
+</html>
