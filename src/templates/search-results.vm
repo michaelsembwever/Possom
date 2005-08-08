@@ -6,9 +6,8 @@
 <body bgcolor="#eeeeff">
 
 <content tag="search-result-timer">
-Search took: $result.getFetchTime() millisec. Returning $result.getAllResults().size() documents
+	Search took: $result.getFetchTime() millisec. Returning $result.getAllResults().size() documents
 </content>
-
 
 <content tag="search-results">
 #foreach( $item in $result.getAllResults() )

@@ -17,6 +17,8 @@ public class SearchResponseImpl implements CommandResponse {
 
     private long fetchTime; // how long the query took
 
+	private String searchErrorMesg; // if any error occured
+
     private int documentsReturned; // number of results 
 
     private int totalDocumentsAvailable;
@@ -204,6 +206,18 @@ public class SearchResponseImpl implements CommandResponse {
 	public void setPreviousSet(int[] previousSet) {
 		this.previousSet = previousSet;
 	}
+
+
+	public String getSearchErrorMesg() {
+		return searchErrorMesg;
+	}
+	
+
+
+	public void setSearchErrorMesg(String searchErrorMesg) {
+		this.searchErrorMesg = searchErrorMesg;
+	}
+	
 	
 
 }
