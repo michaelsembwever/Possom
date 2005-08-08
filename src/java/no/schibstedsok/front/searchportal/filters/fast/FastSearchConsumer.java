@@ -9,6 +9,7 @@ import java.util.Collection;
 
 import javax.servlet.ServletResponse;
 
+import no.fast.ds.search.SearchEngineException;
 import no.schibstedsok.front.searchportal.command.FastConnectorCommand;
 import no.schibstedsok.front.searchportal.configuration.FastSearchConfiguration;
 import no.schibstedsok.front.searchportal.connectors.FastConnector;
@@ -126,7 +127,6 @@ public class FastSearchConsumer extends SearchConsumer {
 				print(searchResponse, configuration.getTemplate());
 
 			} finally {
-
 				// clean up all references
 				fastCommand = null;
 				myResponseRef = null;
@@ -224,9 +224,9 @@ public class FastSearchConsumer extends SearchConsumer {
 				
 				VelocityContext context = new VelocityContext();
 				context.put("result", results);
-				
 				template.merge(context, myWriterRef);
-				
+				log.debug("Merged template: " + templateName);
+
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
