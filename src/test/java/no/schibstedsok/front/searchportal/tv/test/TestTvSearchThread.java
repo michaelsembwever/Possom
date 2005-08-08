@@ -5,13 +5,13 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import junit.framework.TestCase;
+import no.schibstedsok.common.persistence.dal.service.GlobalSessionFactory;
+import no.schibstedsok.common.persistence.dal.service.ThreadSessionHolder;
 import no.schibstedsok.front.searchportal.configuration.BaseSearchConfiguration;
 import no.schibstedsok.front.searchportal.filters.SearchConsumer;
 import no.schibstedsok.front.searchportal.filters.tv.TvSearchConsumer;
 import no.schibstedsok.front.searchportal.util.SearchConfiguration;
 import no.schibstedsok.front.searchportal.util.VelocityTemplates;
-import no.schibstedsok.persistence.service.GlobalSessionFactory;
-import no.schibstedsok.persistence.service.ThreadSessionHolder;
 
 import org.hibernate.cfg.Configuration;
 
