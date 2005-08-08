@@ -94,13 +94,17 @@ public class FastConnectorCommand implements ConnectorCommand {
 		    ISearchParameters params = new SearchParameters();
 		
 			setUpSearchParameters(params);
+			response.setQuery(getQueryString());
 
             Query query = new Query(params);
             
 			IQueryResult queryResult = doSearch(query);
 
+			//abort search on error 
+			if(queryResult == null)
+				return;
+			
             ArrayList results = new ArrayList();
-			response.setQuery(getQueryString());
 
 			//check if there was less documents than our maximum to return
             if (queryResult.getDocCount() <= getMaxResultsToReturn() + configuration.getOffSet()) {
@@ -133,9 +137,6 @@ public class FastConnectorCommand implements ConnectorCommand {
 //			if(log.isDebugEnabled())
 //				log.debug("Fast execute() command took: " + (System.currentTimeMillis() - timer) + "msec.");
 
-
-        } catch (SearchEngineException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -144,11 +145,19 @@ public class FastConnectorCommand implements ConnectorCommand {
 
     }
 
-	private IQueryResult doSearch(Query query) throws IOException, SearchEngineException {
+	private IQueryResult doSearch(Query query) throws IOException {
 		long searchTimer = System.currentTimeMillis();
-		IQueryResult queryResult = engine.search(query);
+		IQueryResult queryResult = null;
+		try {
+			queryResult = engine.search(query);
+		} catch (SearchEngineException e) {
+			log.fatal("Fast error when doing search: \"" + configuration.getQuery() + "\". " + e.getMessage());
+			response.setSearchErrorMesg("Unable to connect to search index: " + e.getMessage());
+		} 
+		
 		if(log.isDebugEnabled())
 			log.debug("Fast " + configuration.getCollection() +  " offset: " + configuration.getOffSet() + " search() took: " + (System.currentTimeMillis() - searchTimer) + "msec.");
+		
 		return queryResult;
 	}
 

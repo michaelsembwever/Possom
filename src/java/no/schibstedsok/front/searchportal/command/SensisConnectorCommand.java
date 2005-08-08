@@ -88,50 +88,55 @@ public class SensisConnectorCommand extends FastConnectorCommand implements Conn
             
 			long searchTimer = System.currentTimeMillis();
 			
-            IQueryResult queryResult = engine.search(query);
-			
-			if(log.isDebugEnabled())
-				log.debug("Sensis " + config.getCollection() + " offset: " + config.getOffSet() + " search() took: " + (System.currentTimeMillis() - searchTimer) + "msec.");
+            IQueryResult queryResult = null;
+			try {
+				queryResult = engine.search(query);
+				if(log.isDebugEnabled())
+					log.debug("Sensis " + config.getCollection() + " offset: " + config.getOffSet() + " search() took: " + (System.currentTimeMillis() - searchTimer) + "msec.");
 
-            ArrayList results = new ArrayList();
-            response = new FastSearchResponseImpl();
-			response.setQuery(getQueryString());
+	            ArrayList results = new ArrayList();
+	            response = new FastSearchResponseImpl();
+				response.setQuery(getQueryString());
 
-            if (queryResult.getDocCount() <= getMaxResultsToReturn() + config.getOffSet()) {
-                setMaxResultsToReturn(queryResult.getDocCount());
-            }
-			
-			//doc counter
-			int i = 1;
-            
-			i = handleResult(queryResult, results, i);
+	            if (queryResult.getDocCount() <= getMaxResultsToReturn() + config.getOffSet()) {
+	                setMaxResultsToReturn(queryResult.getDocCount());
+	            }
+				
+				//doc counter
+				int i = 1;
+	            
+				i = handleResult(queryResult, results, i);
 
-			setConsequtiveSearch(queryResult, i);
-			setSpellingSuggestion(queryResult); 
-			
-			if(log.isDebugEnabled()){
-				Iterator navigators = queryResult.navigators();
-				while (navigators.hasNext()) {
-					INavigator navigator = (INavigator) navigators.next();
-					log.debug("Navigators found :" + navigator.getDisplayName());
+				setConsequtiveSearch(queryResult, i);
+				setSpellingSuggestion(queryResult); 
+				
+				if(log.isDebugEnabled()){
+					Iterator navigators = queryResult.navigators();
+					while (navigators.hasNext()) {
+						INavigator navigator = (INavigator) navigators.next();
+						log.debug("Navigators found :" + navigator.getDisplayName());
+					}
 				}
+
+	            response.setFetchTime(System.currentTimeMillis() - timer);
+	            response.setDocumentsReturned(response.getResults().size());
+	            response.setTotalDocumentsAvailable(queryResult.getDocCount());
+
+				if(log.isDebugEnabled())
+					log.debug("Sensis execute() command took: " + (System.currentTimeMillis() - timer) + "msec.");
+
+			} catch (SearchEngineException e) {
+				log.fatal("Fast error when doing search: " + config.getQuery() + " " + e.getMessage());
+				response.setSearchErrorMesg("Unable to connect to search index: " + e.getMessage());
 			}
-
-            response.setFetchTime(System.currentTimeMillis() - timer);
-            response.setDocumentsReturned(response.getResults().size());
-            response.setTotalDocumentsAvailable(queryResult.getDocCount());
-
-			if(log.isDebugEnabled())
-				log.debug("Sensis execute() command took: " + (System.currentTimeMillis() - timer) + "msec.");
-
-        } catch (SearchEngineException e) {
-            e.printStackTrace();
+		
         } catch (IOException e) {
             e.printStackTrace();
         }
 
     }
 
+	
 	/**
 	 * 
 	 *  Parse the queryResult and handle different type of collection
