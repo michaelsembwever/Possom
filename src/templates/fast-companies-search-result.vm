@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+
+
+<body>
+<b>Companies Results</b>
+
+<content tag="companies-results">
+
+    #foreach ($item in $result.getCompaniesResults())
+    <ul>
+        <li>Company Name: $item.companyName</li>
+        <li>Visiting address: $item.visitingAddress $item.visitingZip $item.visitingCity</li>
+        <li>Phone Number: $!{item.phoneNumber}</li>
+     </ul>
+    #end
+
+</content>
+</body>
+</html>

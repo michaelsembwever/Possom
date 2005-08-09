@@ -16,6 +16,7 @@ import no.schibstedsok.front.searchportal.analyzer.AnalyzerEngine;
 import no.schibstedsok.front.searchportal.filters.fast.FastFilter;
 import no.schibstedsok.front.searchportal.filters.fast.MediaFilter;
 import no.schibstedsok.front.searchportal.filters.fast.WikiFilter;
+import no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter;
 import no.schibstedsok.front.searchportal.filters.sensis.SensisFilter;
 import no.schibstedsok.front.searchportal.util.ProcessList;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
@@ -162,7 +163,9 @@ public final class EntryFilter extends BaseFilter {
 			return WikiFilter.class.getName();
 		if(string.equals(SearchConstants.REQUEST_PARAM_GLOBAL_INDEX))
 			return SensisFilter.class.getName();
-		else return null;
+        if (string.equals(SearchConstants.REQUEST_PARAM_COMPANIES_INDEX))
+            return CompaniesFilter.class.getName();
+        else return null;
 	}
 
 	/**

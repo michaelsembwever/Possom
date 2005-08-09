@@ -33,6 +33,9 @@ public final class SearchConstants {
 	public static final String 	MEDIA_COLLECTION_NAVIGATOR = "Norske nyheter";
 	public static final String 	WIKI_COLLECTION = "wikipedia";
 	public static final String 	WIKI_COLLECTION_NAVIGATOR = "Wikipedia";
+    public static final String  REQUEST_PARAM_COMPANIES_INDEX = "y";
+    public static final String  COMPANIES_COLLECTION = "yellow";
+    public static final String  COMPANIES_COLLECTION_NAVIGATOR = "Gule sider";
 	
 	public static final String 	DEFAULT_LANGUAGE = "no";
 	public static final String 	LANGUAGE_ENGLISH = "en";

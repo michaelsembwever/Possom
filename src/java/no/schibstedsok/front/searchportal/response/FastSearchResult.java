@@ -81,66 +81,67 @@ public class FastSearchResult extends SearchResultElement {
 	private Logger log = Logger.getLogger(this.getClass());
 
 	public FastSearchResult(IDocumentSummary summary) {
+        populateFields(summary);
+    }
 
-		// populate standard fields
-		setSummary(summary.getSummaryField("body").getSummary());
-		if (summary.getSummaryField("title").getSummary() != null)
-			setTitle(summary.getSummaryField("title").getSummary());
-		else {
-			int length = summary.getSummaryField("url").getSummary().length();
-			if (length > 50)
-				setTitle(summary.getSummaryField("url").getSummary().substring(0, 50) + "...");
-			else
-				setTitle(summary.getSummaryField("url").getSummary());
-		}
-		setUrl(summary.getSummaryField("url").getSummary());
-		setClickUrl(summary.getSummaryField("contentid").getSummary());
-		
-		
-		//for media results
-		if(summary.getSummaryField("newssource") != null)
-			setNewsSource(summary.getSummaryField("newssource").getSummary());
-		if(summary.getSummaryField("docdatetime") != null)
-			setDocDateTime(summary.getSummaryField("docdatetime").getSummary());
-		/**
-		 * populate al corresponing fields by introspection
-		 * 
-		 */
+    protected void populateFields(IDocumentSummary summary) {
+        // populate standard fields
+        setSummary(summary.getSummaryField("body").getSummary());
+        if (summary.getSummaryField("title").getSummary() != null)
+            setTitle(summary.getSummaryField("title").getSummary());
+        else {
+            int length = summary.getSummaryField("url").getSummary().length();
+            if (length > 50)
+                setTitle(summary.getSummaryField("url").getSummary().substring(0, 50) + "...");
+            else
+                setTitle(summary.getSummaryField("url").getSummary());
+        }
+        setUrl(summary.getSummaryField("url").getSummary());
+        setClickUrl(summary.getSummaryField("contentid").getSummary());
 
-		/*
-		 * NOT IN USE // Populate all fields using reflection for (Iterator iter =
-		 * summary.summaryFields(); iter.hasNext();) { IDocumentSummaryField
-		 * element = (IDocumentSummaryField) iter.next(); set(element.getName(),
-		 * element); }
-		 */
+        //for media results
+        if(summary.getSummaryField("newssource") != null)
+            setNewsSource(summary.getSummaryField("newssource").getSummary());
+        if(summary.getSummaryField("docdatetime") != null)
+            setDocDateTime(summary.getSummaryField("docdatetime").getSummary());
+        /**
+         * populate al corresponing fields by introspection
+         *
+         */
 
-	}
+        /*
+        * NOT IN USE // Populate all fields using reflection for (Iterator iter =
+        * summary.summaryFields(); iter.hasNext();) { IDocumentSummaryField
+        * element = (IDocumentSummaryField) iter.next(); set(element.getName(),
+        * element); }
+        */
+    }
 
-	private void set(String name, IDocumentSummaryField summary) {
-		char c = Character.toUpperCase(name.charAt(0));
-		Class[] params = { String.class };
-		try {
-			Method setMethod = getClass().getMethod(
-					"set" + c + name.substring(1), params);
-			Object[] args = new Object[] { summary.getSummary() };
-			setMethod.invoke(this, args);
+    private void set(String name, IDocumentSummaryField summary) {
+        char c = Character.toUpperCase(name.charAt(0));
+        Class[] params = { String.class };
+        try {
+            Method setMethod = getClass().getMethod(
+                    "set" + c + name.substring(1), params);
+            Object[] args = new Object[] { summary.getSummary() };
+            setMethod.invoke(this, args);
 
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+        } catch (SecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            // e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
 	/**
 	 * @see java.lang.Object#toString()

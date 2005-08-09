@@ -22,6 +22,6 @@ public final class VelocityTemplates {
 	public static final String GLOBAL_COUNT = "global-counter.vm";
 	public static final String LOCAL_COUNT = "local-counter.vm";
 	public static final String TV_SEARCH = "tv-enrich.vm";
-	
 
+    public static final String COMPANIES_COLLECTION_SEARCH = "fast-companies-search-result.vm";
 }

@@ -178,12 +178,13 @@ a:hover { color: #EA6A24; }
 						<td background="../images/fane_topp1px.png"><img src="../images/fane_topp1px.png" width="1" height="4"></td>
 						<td width="6"><img src="../images/fane_ToppH.png" width="6" height="4"></td>
 					</tr>
-					<tr>
+
+                    <tr>
 						<td width="6" align="left" background="../images/fane_margV1px.png"><img src="../images/fane_margV1px.png"></td>
 <%if(collection.equals("bedrifter")){%>
 	<td bgcolor="#98ad3b"><span class="faneMarkert">Bedrifter</span>
 <%} else {%>
-	<td><nobr><a href="?c=d&q=<%=q%>" class="fanetxt">Bedrifter</a><span class="navigator_resultat"><decorator:getProperty property="page.number-of-results-companies" /></span></nobr>
+	<td><nobr><a href="?c=y&q=<%=q%>" class="fanetxt">Bedrifter</a><span class="navigator_resultat"><decorator:getProperty property="page.local-counter-companies" /></span></nobr>
 <%}%>
 					</td>
 					<td width="6" align="right" background="../images/fane_margH1px.png"><img src="../images/fane_margH1px.png" width="6" height="1"></td>
@@ -366,6 +367,11 @@ a:hover { color: #EA6A24; }
    <%if(collection.equals("g")){%>
    <decorator:getProperty property="page.global-results" />
    <%}%>
+
+   <!-- Companies -->
+       <%if(collection.equals("y")){%>
+       <decorator:getProperty property="page.companies-results"/>
+       <%}%>
 
    <!-- Media index -->
    <decorator:getProperty property="page.media-collection-results" />

@@ -17,5 +17,9 @@
 </content>
 
 
+<content tag="local-counter-companies">
+    $result.getCompaniesDocumentsInIndex()
+</content>
+
 </body>
 </html>

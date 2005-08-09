@@ -95,7 +95,7 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 	 * 
 	 * Create a +meta.collection filter based on which collection we are looking at.
 	 * 
-	 * @param targetCollection 
+	 * @param 
 	 * @return
 	 */
 	public String constructCollectionFilter() {
@@ -107,7 +107,9 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 			filterString = "+meta.collection:" + SearchConstants.MEDIA_COLLECTION;
 		else if(SearchConstants.WIKI_COLLECTION.equals(collection))
 			filterString = "+meta.collection:" + SearchConstants.WIKI_COLLECTION;
-		else if(SearchConstants.DEFAULTCOLLECTION.equals(collection))
+        else if (SearchConstants.COMPANIES_COLLECTION.equals(collection))
+            filterString = "+meta.collection:" + SearchConstants.COMPANIES_COLLECTION;
+        else if(SearchConstants.DEFAULTCOLLECTION.equals(collection))
 			filterString = "";	//forces a collection wide search
 
 //		if(log.isDebugEnabled())
