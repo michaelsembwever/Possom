@@ -14,7 +14,7 @@ import javax.servlet.ServletResponse;
 import no.schibstedsok.front.searchportal.analyzer.Analyzer;
 import no.schibstedsok.front.searchportal.analyzer.AnalyzerEngine;
 import no.schibstedsok.front.searchportal.filters.fast.FastFilter;
-import no.schibstedsok.front.searchportal.filters.fast.MediaFilter;
+import no.schibstedsok.front.searchportal.filters.fast.MediaCollectionFilter;
 import no.schibstedsok.front.searchportal.filters.fast.WikiFilter;
 import no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter;
 import no.schibstedsok.front.searchportal.filters.sensis.SensisFilter;
@@ -158,7 +158,7 @@ public final class EntryFilter extends BaseFilter {
 		if(string.equals(SearchConstants.REQUEST_PARAM_DEFAULT_COLLECTIONS))
 			return FastFilter.class.getName();
 		if(string.equals(SearchConstants.REQUEST_PARAM_MEDIA_COLLECTIONS))
-			return MediaFilter.class.getName();
+			return MediaCollectionFilter.class.getName();
 		if(string.equals(SearchConstants.REQUEST_PARAM_WIKICOLLECTION))
 			return WikiFilter.class.getName();
 		if(string.equals(SearchConstants.REQUEST_PARAM_GLOBAL_INDEX))
