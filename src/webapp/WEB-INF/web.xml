@@ -116,7 +116,7 @@
        
 <filter>
  <filter-name>Media collection</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.MediaFilter</filter-class>
+ <filter-class>no.schibstedsok.front.searchportal.filters.fast.MediaCollectionFilter</filter-class>
   <init-param>
 	<param-name>max-wait-time</param-name>
 	<param-value>0</param-value>
@@ -220,12 +220,6 @@
   <dispatcher>REQUEST</dispatcher>
 </filter-mapping>
 -->
-
-<filter-mapping>
-  <filter-name>All collections</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
 
 <filter-mapping>
   <filter-name>Global Index</filter-name>
