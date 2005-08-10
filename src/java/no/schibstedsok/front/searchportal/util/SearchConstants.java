@@ -24,6 +24,7 @@ public final class SearchConstants {
 	public static final String 	_SPELLCHECK = "spellcheck";							//property file key
 	public static final String 	_LANGUAGE = "default-language";						//property file key
 	public static final String 	_WEBCRAWL_TEMPLATE = "webcrawl-template";
+	public static final String  PIPELINE = "processList";
 	public static final String 	DEFAULTCOLLECTION = "search_all_collections";
 	public static final String 	COUNTERNAVIGATOR = "get_doc_counts_only";
 	public static final String 	COUNTERNAVIGATORSTRING = "contentsourcenavigator";
@@ -36,6 +37,7 @@ public final class SearchConstants {
     public static final String  REQUEST_PARAM_COMPANIES_INDEX = "y";
     public static final String  COMPANIES_COLLECTION = "yellow";
     public static final String  COMPANIES_COLLECTION_NAVIGATOR = "Gule sider";
+	public static final String 	BASE_PIPELINE = "standardPipeline";
 	
 	public static final String 	DEFAULT_LANGUAGE = "no";
 	public static final String 	LANGUAGE_ENGLISH = "en";
@@ -50,5 +52,7 @@ public final class SearchConstants {
 	public static final String 	REQUEST_PARAM_MEDIA_COLLECTIONS = "m";
 	public static final String 	REQUEST_PARAM_GLOBAL_INDEX = "g";
 	public static final Object 	REQUEST_PARAM_WIKICOLLECTION = "wiki";
+	
+	public static final String 	STD_CONTENT_TYPE = "text/html";
 
 }
