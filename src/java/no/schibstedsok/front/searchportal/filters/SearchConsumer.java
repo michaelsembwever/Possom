@@ -10,7 +10,6 @@ import javax.servlet.ServletResponse;
 import no.schibstedsok.front.searchportal.util.SearchConfiguration;
 
 import org.apache.log4j.Logger;
-import org.apache.velocity.app.Velocity;
 
 /**
  * 
@@ -66,22 +65,5 @@ public abstract class SearchConsumer implements Runnable {
         return url;
 
     }
-	
-	/**
-	 *  Init Velocit Singleton.
-	 * 
-	 * @param templateName
-	 */
-	public void _initVelocity(String templateName) {
-		if(!Velocity.resourceExists(templateName)){
-            try {
-                Velocity.setProperty(Velocity.RESOURCE_LOADER, "class");
-                Velocity.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-				Velocity.init();
-			} catch (Exception e) {
-				log.error("Error", e);
-			}				
-		}
-	}
 	
  }
