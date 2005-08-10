@@ -77,11 +77,7 @@ public class FastConnectorCommand implements ConnectorCommand {
 
 		try {
             engine = connector.factory.createSearchEngine(configuration.getQRServerURL());
-			if(log.isDebugEnabled()){
-				log.debug("Created Fast search-engine for: " + configuration.getQRServerURL());
-			}
         } catch (MalformedURLException e1) {
-            e1.printStackTrace();
 			log.fatal("Unable to connect to FAST index");
 			throw new RuntimeException("Unable to connect to FAST index." + e1);
         }
@@ -175,16 +171,15 @@ public class FastConnectorCommand implements ConnectorCommand {
 			params.setParameter(new SearchParameter(BaseParameter.NAVIGATORS, configuration.getNavigatorString()));
 		}
 
-		if (log.isDebugEnabled()) {
-			try {
-				log.debug("Filter applied: "	+ params.getParameter(BaseParameter.FILTER));
-				log.debug("Asking for navigators: "	+ params.getParameter(BaseParameter.NAVIGATORS));
-			} catch (NoSuchParameterException e) {
-				// silent, only debug purpose not all params is mandatory.
-			}
-		}
+//		if (log.isDebugEnabled()) {
+//			try {
+//				log.debug("Filter applied: "	+ params.getParameter(BaseParameter.FILTER));
+//				log.debug("Asking for navigators: "	+ params.getParameter(BaseParameter.NAVIGATORS));
+//			} catch (NoSuchParameterException e) {
+//				// silent, only debug purpose not all params is mandatory.
+//			}
+//		}
 
-//		System.out.println(params);
 	}
 
 	private void extractDocumentsInCollections(FastConnector connector, IQueryResult queryResult) {
