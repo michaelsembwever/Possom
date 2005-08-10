@@ -11,10 +11,8 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-/**
- * @author Lars Johansson
- *
- */
+import no.schibstedsok.front.searchportal.util.SearchConstants;
+
 /**
  * A AsynchronusBaseFilter.
  * 
@@ -40,13 +38,12 @@ public abstract class AsynchronusBaseFilter extends BaseFilter {
     public void doExecute(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
                 
         //forward to the implementation of the filter
-		List processList = (List)request.getAttribute("processList");
+		List processList = (List)request.getAttribute(SearchConstants.PIPELINE);
 		
 		String name = getClass().getName().substring(getClass().getName().lastIndexOf(".") + 1);
 		
 		//should this filter be executed?
 		if(processList.contains(getClass().getName())) {
-			filterConfig.getServletContext().log("Searching " + name);
 	        doExecuteAsynch(request, response, chain);
 		} else {
 			filterConfig.getServletContext().log("Skipped " + name);

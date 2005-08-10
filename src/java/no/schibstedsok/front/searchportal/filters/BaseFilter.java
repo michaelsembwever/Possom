@@ -53,7 +53,7 @@ public abstract class BaseFilter implements Filter {
 		 * Check if the filter should be part of standard pipeline
 		 * that is allways axecuted.
 		 */
-		String partOfStdPipe = filterConfig.getInitParameter("standardPipeline");
+		String partOfStdPipe = filterConfig.getInitParameter(SearchConstants.BASE_PIPELINE);
 		if(partOfStdPipe != null && (new Boolean(partOfStdPipe)).booleanValue()){
 			ProcessList.getInstance().getProcessList().add(getClass().getName());
 			filterConfig.getServletContext().log("Added " + getClass().getName() + " to standardPipeline");
