@@ -1,0 +1,130 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#greenMain { color: #5A6623; }
+#blueBoxTitle { color: #007AC8; }
+#c3 { color: #FF0000; }
+
+body {
+	font-family: arial, sans-serif;
+	font-size: 76%;
+	background-color: #fff;
+}
+
+h1 {
+    font-size: 1.4em;
+}
+
+img {
+    border: none;
+}
+
+#logo {
+    margin: 10px 0 15px 40px;
+}
+
+.menu_img {
+    padding-right: 15px;
+}
+
+#search_form {
+    padding: 10px 0 10px 0;
+}
+
+#table_menu {
+    width: 780px;
+    font-size: 12px;
+}
+
+.first_cell {
+    padding-left: 40px;
+}
+
+#header {
+    padding-top: 10px;
+}
+
+.search_button {
+	background-color: #F6B331;
+	padding: 0.2em 0.5em;
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+
+
+
+
+
+.all_type_standard_size{
+	font-size: 0.9em;
+}
+a:hover { color: #EA6A24; }
+
+
+.beriketInnrykk{
+	margin-left:3em;
+}
+.beriketInnrykkTidspunkt{
+	font-size:      0.7em;
+	margin-left:	3em;
+	color: 			5A6623;
+}
+.beriketTittel{
+  	font-size:      0.9em;
+}
+.beriketUrl{
+  	font-size:      0.8em;
+}
+
+.boksTittel {
+     font-size: 0.7em;
+	 color: #007AC8;
+     padding-bottom: 5px;
+	 margin-bottom: 2em;
+   	 border-bottom: solid 1px #007AC8;
+   	 margin-bottom: 10px;
+}
+
+.boksInnhold{
+  	font-size:      0.8em;
+}
+.boksSummary{
+  	font-size:      0.8em;
+	margin-top: 	1.2em;
+}
+.fanetxt {
+	font-size: 0.9em;
+	color: 5A6623;
+	margin-left: 0.3em;
+	margin-right: 0.3em;
+}
+.faneMarkert {
+	font-size: 1.0em;
+	color: #FFFFFF;
+	margin-left: 0.3em;
+	margin-right: 0.3em;
+	font-weight: bold;
+
+}
+.Hjelp_stavelse{
+	color: #FF6633;
+}
+.marger_resultat {
+	margin-right: 0.9em;
+}
+
+.navigator_resultat {
+	font-size: 0.6em;
+	color: #5A6623;
+	margin-right: 0.4em;
+}
+
+
+.litenUrl {
+	font-size: 0.8em;
+	color: #5A6623;
+	margin-top: 0.7em;
+}
