@@ -17,16 +17,20 @@ h1 {
     font-size: 1.4em;
 }
 
+li {
+    list-style: none;
+}
+
 img {
     border: none;
 }
 
 #logo {
-    margin: 10px 0 15px 40px;
+    margin: 10px 0 15px 20px;
 }
 
 .menu_img {
-    padding-right: 15px;
+    margin-right: 15px;
 }
 
 #search_form {
@@ -39,7 +43,7 @@ img {
 }
 
 .first_cell {
-    padding-left: 40px;
+    padding-left: 20px;
 }
 
 #header {
@@ -53,7 +57,39 @@ img {
 	font-weight: bold;
 }
 
+#table_footer {
+    width: 780px;
+    margin-top: 40px;
+}
 
+#footer {
+    background-image: url(../images/menu/footer_line.gif);
+    background-repeat: repeat-x;
+}
+
+#footer_link {
+    text-align: center;
+    color: #406AA0;
+    font-size: 0.7em;
+}
+
+/* ------------------------------------------------------------------ */
+/* =COMPANY TEMPLATE */
+
+#company_result {
+    color: #003880;
+    background-color: #F1ECDC;
+    width: 390px;
+    margin-left: 20px;
+    font-size: 11px;
+    border: solid 1px #AEABAB;
+}
+
+
+#company_result .company_result_borderline {
+    border-bottom: solid 1px #DAD9D9;
+    font-size: 2px;
+}
 
 
 
