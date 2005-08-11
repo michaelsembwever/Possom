@@ -14,7 +14,7 @@
         #if ($page == $result.getPager().getCurrentPage())
             $page
         #else
-            <a href="$baseURL&&offset=$result.getPager().getOffsetOfPage($page)">$page</a>
+            <a href="$baseURL&offset=$result.getPager().getOffsetOfPage($page)">$page</a>
         #end
 
         ## Last iteration.
