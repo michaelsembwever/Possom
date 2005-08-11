@@ -1,0 +1,33 @@
+#set ($baseURL = "?c=${tab}&q=$result.getQuery()")
+
+#if ($result.getTotalDocumentsAvailable() > 0)
+
+#foreach ($page in [$result.getPager().getFirstVisiblePage()..$result.getPager().getLastVisiblePage()])
+
+## First Itereation.
+#if ($velocityCount == 1)
+#if ($result.getPager().isFirstPage())
+&lt;&lt;Previous
+#else
+<a href="$baseURL&offset=$result.getPager().getOffsetOfPreviousPage()">&lt;&lt;Previous</a>
+#end
+#end
+
+#if ($page == $result.getPager().getCurrentPage())
+$page
+#else
+<a href="$baseURL&&offset=$result.getPager().getOffsetOfPage($page)">$page</a>
+#end
+
+## Last iteration.
+#if ($page == ${result.getPager().getLastVisiblePage()})
+#if ($result.getPager().isLastPage())
+Next&gt;&gt;
+#else
+<a href="$baseURL&offset=$result.getPager().getOffsetOfNextPage()">Next&gt;&gt</a>
+#end
+#end
+
+#end
+
+#end

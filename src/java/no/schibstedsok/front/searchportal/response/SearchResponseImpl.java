@@ -3,6 +3,8 @@
  */
 package no.schibstedsok.front.searchportal.response;
 
+import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,7 +31,9 @@ public class SearchResponseImpl implements CommandResponse {
 	
 	private String query;
 
-	//for back/forward operations in resultset
+    private PagingDisplayHelper pager;
+
+    //for back/forward operations in resultset
 	private int[] previousSet;
 	private int[] nextSet;
 	private int currentPostionInSet;
@@ -176,12 +180,19 @@ public class SearchResponseImpl implements CommandResponse {
 	public int getCurrentPostionInSet() {
 		return currentPostionInSet;
 	}
-	
+
+    public PagingDisplayHelper getPager() {
+        return pager;
+    }
+
+    public void setPager(PagingDisplayHelper pager) {
+        this.pager = pager;
+    }
 
 
-	public void setCurrentPostionInSet(int currentPostionInSet) {
-		this.currentPostionInSet = currentPostionInSet;
-	}
+    public void setCurrentPostionInSet(int currentPostionInSet) {
+        this.currentPostionInSet = currentPostionInSet;
+    }
 	
 
 
@@ -217,7 +228,5 @@ public class SearchResponseImpl implements CommandResponse {
 	public void setSearchErrorMesg(String searchErrorMesg) {
 		this.searchErrorMesg = searchErrorMesg;
 	}
-	
-	
 
 }

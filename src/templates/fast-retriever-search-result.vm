@@ -85,6 +85,9 @@
 	<p/>	
   	#end
   </div>
+    ## Nasty shortcut. The collection we've searched should be available from the $result
+    #set ($tab = "m")
+    #parse("verbosePager.vm")
 </content>
 </body>
 </html>

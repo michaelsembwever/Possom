@@ -3,6 +3,8 @@
  */
 package no.schibstedsok.front.searchportal.response;
 
+import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
+
 import java.util.Collection;
 
 /**
@@ -36,7 +38,7 @@ public interface CommandResponse {
 	public int[] getPreviousSet();
 	public int[] getNextSet();
 	public int getCurrentPostionInSet();
-		
 
-	
+    public PagingDisplayHelper getPager();
+    public void setPager(PagingDisplayHelper pager);
 }
