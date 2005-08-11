@@ -22,6 +22,7 @@ import no.schibstedsok.front.searchportal.connectors.FastConnector;
 import no.schibstedsok.front.searchportal.response.FastSearchResponseImpl;
 import no.schibstedsok.front.searchportal.response.FastSearchResult;
 import no.schibstedsok.front.searchportal.response.SearchResultElement;
+import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 
 import org.apache.log4j.Logger;
 
@@ -121,6 +122,10 @@ public class SensisConnectorCommand extends FastConnectorCommand implements Conn
 	            response.setFetchTime(System.currentTimeMillis() - timer);
 	            response.setDocumentsReturned(response.getResults().size());
 	            response.setTotalDocumentsAvailable(queryResult.getDocCount());
+
+                PagingDisplayHelper pager = new PagingDisplayHelper(queryResult.getDocCount());
+                pager.setCurrentOffset(config.getOffSet());
+                response.setPager(pager);
 
 				if(log.isDebugEnabled())
 					log.debug("Sensis execute() command took: " + (System.currentTimeMillis() - timer) + "msec.");

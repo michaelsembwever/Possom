@@ -49,22 +49,9 @@
 
 <p class="kilde">Nerdscore: $result.getFetchTime() ms</p> 
 
-#if($result.getTotalDocumentsAvailable() > $result.getConsequtiveSearchStartsAt())
-	Next -> 
-	#set( $steps = $result.getTotalDocumentsAvailable()/10)
-	
-	#if($steps > 10)
-		#set( $steps = 10)
-	#end
+    #set ($tab = "g")
+    #parse("verbosePager.vm")
 
-	#foreach( $step in [0..$steps] )
-		#set($offset = $result.getConsequtiveSearchStartsAt() + 10 * $step)
-		#set($count = $step + 1)
-		<a href="?c=d&q=$result.getQuery()&offset=$offset">$count</a>&nbsp;
-	#end
-	
-	</div>
-#end
 
 </content>
 </body>
