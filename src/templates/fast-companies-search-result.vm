@@ -5,18 +5,30 @@
 
 
 <body>
-<b>Companies Results</b>
+    <b>Companies Results</b>
 
-<content tag="companies-results">
+    <content tag="companies-results">
 
-    #foreach ($item in $result.getCompaniesResults())
-    <ul>
-        <li>Company Name: $item.companyName</li>
-        <li>Visiting address: $item.visitingAddress $item.visitingZip $item.visitingCity</li>
-        <li>Phone Number: $!{item.phoneNumber}</li>
-     </ul>
-    #end
+        <table id="company_result" cellspacing="2">
+            #foreach ($item in $result.getCompaniesResults())
+                <tr>
+                    <td colspan="2"><b>$item.companyName</b></td>
+                </tr>
+                <tr>
+                    <td>$item.visitingAddress , $item.visitingZip $item.visitingCity</td>
+                    <td>$!{item.phoneNumber}</td>
+                </tr>
+                <tr><td colspan="2" class="company_result_borderline">&nbsp;</td></tr>
+            #end
+        </table>
 
-</content>
+    </content>
+
+    <content tag="more-results">           
+        #set ($tab = "y")
+        #parse("verbosePager.vm")
+    </content>
+
+
 </body>
 </html>
