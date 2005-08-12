@@ -82,4 +82,14 @@ public class PagingDisplayHelper {
     public int getMaxPages() {
         return maxPages;
     }
+
+    public int getFirstHitOnPage() {
+        return (getCurrentPage() -1) * pageSize + 1;
+    }
+
+    public int getLastHitOnPage() {
+        return getFirstHitOnPage() + pageSize - 1;
+    }
+
+
 }
