@@ -8,23 +8,23 @@
     <b>Companies Results</b>
 
     <content tag="companies-results">
-
-        <table id="company_result" cellspacing="2">
+        
+        <div id="company_result">
             #foreach ($item in $result.getCompaniesResults())
-                <tr>
-                    <td colspan="2"><b>$item.companyName</b></td>
-                </tr>
-                <tr>
-                    <td>$item.visitingAddress , $item.visitingZip $item.visitingCity</td>
-                    <td>$!{item.phoneNumber}</td>
-                </tr>
-                <tr><td colspan="2" class="company_result_borderline">&nbsp;</td></tr>
+                <li class="name">
+                    <span class="company_name">$item.companyName</span>
+                </li>
+                <li class="adr">
+                    <span class="company_address">$item.visitingAddress, $item.visitingZip $item.visitingCity</span>
+                    <span class="company_phone">$!{item.phoneNumber}</span>
+                </li>
+                <li class="company_result_borderline">&nbsp;</li>
             #end
-        </table>
+        </div>
 
     </content>
 
-    <content tag="more-results">           
+    <content tag="more-results">
         #set ($tab = "y")
         #parse("verbosePager.vm")
     </content>
