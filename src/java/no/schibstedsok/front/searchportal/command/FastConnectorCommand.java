@@ -236,7 +236,7 @@ public class FastConnectorCommand implements ConnectorCommand {
 
     private int resultsFromMediaCollection(IQueryResult queryResult, int i, long timer) {
         for (; i <= getMaxResultsToReturn(); i++) {
-            SearchResultElement result = new FastSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
+            SearchResultElement result = new FastRetrieverSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
             response.addRetreiverResult(result);
         }
         return i;

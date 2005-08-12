@@ -101,11 +101,4 @@ public class FastCompaniesSearchResult extends FastSearchResult {
         this.phoneNumber = phoneNumber;
     }
 
-    private String getSummaryField(IDocumentSummary summary, String field) {
-        if (summary.getSummaryField(field) != null) {
-            return summary.getSummaryField(field).getSummary();
-        } else {
-            return null;
-        }
-    }
 }

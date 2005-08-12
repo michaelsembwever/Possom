@@ -157,9 +157,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -172,9 +172,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -187,9 +187,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -202,9 +202,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -217,9 +217,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -232,9 +232,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -247,9 +247,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -262,9 +262,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -277,9 +277,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -292,9 +292,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -307,9 +307,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -322,9 +322,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -337,9 +337,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -352,9 +352,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -367,9 +367,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -382,9 +382,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -397,9 +397,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -412,9 +412,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -427,9 +427,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -442,9 +442,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -457,9 +457,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -472,9 +472,9 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * Not in use for now
-	 * 
+	 *
 	 * @deprecated Not implemented until needed
 	 * @return the coresponding field from FAST response
 	 */
@@ -487,12 +487,12 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * Use the getSpellingSuggestions() in the
 	 * <code>FastSearchResponseImpl</code> to retrieve a list over available
 	 * spelling-suggestions.
-	 * 
+	 *
 	 * @deprecated Use getSpellingSuggestions() in
 	 *             <code>FastSearchResponseImpl</code>
 	 * @return the coresponding field from FAST response
@@ -506,39 +506,39 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
 	/**
-	 * 
+	 *
 	 * From what source the content (Media) is originating from.
-	 * 
+	 *
 	 * @return String source
 	 */
 	public String getNewsSource() {
 		return newsSource;
 	}
-	
+
 
 	public void setNewsSource(String newsSource) {
 		this.newsSource = newsSource;
 	}
 
 	/**
-	 * 
+	 *
 	 *  Return the complete docDateTime String
-	 * 
+	 *
 	 * @return docDatetime
 	 */
 	public String getDocDateTime() {
 		return docDateTime;
 	}
-	
+
 
 	public void setDocDateTime(String docDateTime) {
 		this.docDateTime = docDateTime;
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * Return the specific age for field "days","hours" or "minutes"
-	 * 
+	 *
 	 * @param field
 	 * @return age as int
 	 */
@@ -557,28 +557,28 @@ public class FastSearchResult extends SearchResultElement {
 		return 0;
 	}
 
-	
-	/** 
+
+	/**
 	 * Return the document age in number of days
-	 * 
+	 *
 	 * @return int days
 	 */
 	public int getDocumentAgeDays() {
 		return getDocumentAge("days");
 	}
 
-	/** 
+	/**
 	 * Return the document age in number of hours
-	 * 
+	 *
 	 * @return int hours
 	 */
 	public int getDocumentAgeHours() {
 		return getDocumentAge("hours");
 	}
 
-	/** 
+	/**
 	 * Return the document age in number of minutes
-	 * 
+	 *
 	 * @return int minutes
 	 */
 	public int getDocumentAgeMinutes() {
@@ -586,31 +586,31 @@ public class FastSearchResult extends SearchResultElement {
 	}
 
     /**
-     * 
+     *
      * Does a long to hour, minute or day conversion.
-     * 
+     *
      * @param time
      * @return
      */
     private int calculateAge(long millisec, String field) {
-        
+
         if (millisec == 0)
             return 0;
-        
+
         if(field.equals("days"))
 			return (int)((millisec/3600000)/24);
 		if(field.equals("hours"))
         	return (int)((millisec/3600000) % 24);
         if(field.equals("minutes"))
 			return (int)((millisec/60000) % 60);
-		
+
 		return 0;
      }
 
 	/**
-	 * 
+	 *
 	 * Compare results by docDate time (used for sorting retriever results)
-	 * 
+	 *
 	 */
 	public int compareTo(Object o) {
 		FastSearchResult anotherResult = null;
@@ -619,10 +619,18 @@ public class FastSearchResult extends SearchResultElement {
 		} catch (Exception e) {
 			log.error("Trying illegal compare " + o);
 		}
-		
+
 		if(this.docDateTime != null && anotherResult.getDocDateTime() != null)
 			return anotherResult.getDocDateTime().compareTo(this.docDateTime);
-		
+
 		return 0;
 	}
+
+    protected String getSummaryField(IDocumentSummary summary, String field) {
+        if (summary.getSummaryField(field) != null) {
+            return summary.getSummaryField(field).getSummary();
+        } else {
+            return null;
+        }
+    }
 }
