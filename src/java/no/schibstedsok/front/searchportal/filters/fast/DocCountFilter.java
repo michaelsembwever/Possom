@@ -41,7 +41,7 @@ public final class DocCountFilter extends AsynchronusBaseFilter {
 		configuration.setDocsToReturn(1);
 
 		// start this search in separate thread
-        doSearch(response, configuration);
+        doSearch(response, configuration, request);
 
 		// go to next filter in chain
         chain.doFilter(request, response);
@@ -52,18 +52,15 @@ public final class DocCountFilter extends AsynchronusBaseFilter {
      * 
      * Does the actual search in a separate thread.
      * 
-     * @param query
      * @param response
-     * @param configuration 
-     * @param targetCollection 
+     * @param configuration
+     * @param request
      *
      */
-    private void doSearch(ServletResponse response, SearchConfiguration configuration) {
+    private void doSearch(ServletResponse response, SearchConfiguration configuration, ServletRequest request) {
         
         final SearchConsumer w = new FastSearchConsumer(response, configuration);
-        Thread searchThread = new Thread(w);
-        searchThread.start();
-        
+        startThread(w, request);
     }
 	
 	public void init(FilterConfig filterConfig) {

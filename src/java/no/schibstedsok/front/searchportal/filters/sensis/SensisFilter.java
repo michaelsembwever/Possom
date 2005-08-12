@@ -42,7 +42,7 @@ public final class SensisFilter extends AsynchronusBaseFilter {
 		configuration.setCollection(SearchConstants.DEFAULTCOLLECTION);
 		configuration.setTemplate(VelocityTemplates.GLOBAL_SEARCH);
 
-		doSearch(response, configuration);			
+        doSearch(response, configuration, request);
         
         chain.doFilter(request, response);
 
@@ -50,17 +50,17 @@ public final class SensisFilter extends AsynchronusBaseFilter {
 	}
 
 
-	/** 
-	 * 
+	/**
+	 *
 	 * @param response
-	 * @param configuration
-	 */
-	private void doSearch(ServletResponse response, SearchConfiguration configuration) {
+     * @param configuration
+     * @param request
+     */
+	private void doSearch(ServletResponse response, SearchConfiguration configuration, ServletRequest request) {
 
 		final SearchConsumer w = new SensisSearchConsumer(response, configuration);
-		Thread searchThread = new Thread(w);
-		searchThread.start();
-		
+        startThread(w, request);
+
 	}
 
 	public void init(FilterConfig filterConfig) {

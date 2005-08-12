@@ -37,7 +37,7 @@ public final class WikiFilter extends AsynchronusBaseFilter {
 		configuration.setTemplate(VelocityTemplates.WIKI_COLLECTION_SEARCH);
 		
 		// start this search in separate thread
-        doSearch(response, configuration);			
+        doSearch(response, configuration, request);
 
         
 		// go to next filter in chain
@@ -48,12 +48,12 @@ public final class WikiFilter extends AsynchronusBaseFilter {
     /** 
 	 * 
 	 * @param response
-	 * @param configuration
-	 */
-	private void doSearch(ServletResponse response, SearchConfiguration configuration) {
+     * @param configuration
+     * @param request
+     */
+	private void doSearch(ServletResponse response, SearchConfiguration configuration, ServletRequest request) {
 		final SearchConsumer w = new FastSearchConsumer(response,configuration);
-        Thread searchThread = new Thread(w);
-        searchThread.start();		
+        startThread(w, request);
 	}
 
 	public void init(FilterConfig filterConfig) {

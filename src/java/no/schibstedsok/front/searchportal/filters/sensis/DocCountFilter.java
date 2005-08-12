@@ -40,26 +40,26 @@ public final class DocCountFilter extends AsynchronusBaseFilter {
 		configuration.setTemplate(VelocityTemplates.GLOBAL_COUNT);
 		
 		// start this search in separate thread
-        doSearch(response, configuration);
+        doSearch(response, configuration, request);
 
         chain.doFilter(request, response);
 
     }
 
 //	private SearchConfiguration setUpSearchConfiguration(ServletRequest request) {
-//		
+//
 //		int offset = 0;
 //		String query = "";
 //		String language = "no";		//default
 //		int maxResults = 1;			//for navigators, ask for one document only.
-//		
+//
 //		if (request.getParameter("q") != null)
 //	        query = request.getParameter("q");
 //		if (request.getParameter("lan") != null)
 //	        language  = request.getParameter("lan");
 //		if(request.getParameter("o") != null) {
 //			try {
-//				offset = Integer.parseInt(request.getParameter("docs"));				
+//				offset = Integer.parseInt(request.getParameter("docs"));
 //			} catch (Exception e) {
 //				filterConfig.getServletContext().log("Wrong format for offset. Using default 0");
 //			}
@@ -72,28 +72,25 @@ public final class DocCountFilter extends AsynchronusBaseFilter {
 //		configuration.setDocsToReturn(maxResults);
 //		configuration.setMaxTime(100000);
 //		configuration.setQuery(query);
-//		
+//
 //		return configuration;
 //	}
 
     /**
-     * 
+     *
      * Does the actual search in a separate thread.
-     * 
-     * @param query
+     *
      * @param response
-     * @param configuration 
-     * @param targetCollection 
+     * @param configuration
+     * @param request
      *
      */
-    private void doSearch(ServletResponse response, SearchConfiguration configuration) {
-        
+    private void doSearch(ServletResponse response, SearchConfiguration configuration, ServletRequest request) {
+
         final SearchConsumer w = new SensisSearchConsumer(response, configuration);
-        Thread searchThread = new Thread(w);
-        searchThread.start();
-        
+        startThread(w, request);        
     }
-	
+
 	public void init(FilterConfig filterConfig) {
 		super.init(filterConfig);
 		this.filterConfig = filterConfig;

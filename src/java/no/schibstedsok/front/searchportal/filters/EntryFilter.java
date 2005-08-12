@@ -78,39 +78,43 @@ public final class EntryFilter extends BaseFilter {
 
     /** shared Sitemesh header template across instances */
 	private static String headerTemplate = null;
-    
+
 	public void doExecute(ServletRequest request, ServletResponse response,
             FilterChain chain) throws IOException, ServletException {
 
-		/** timer */
+        ThreadGroup threadGroup = new ThreadGroup("search_group" + Thread.currentThread().getName());
+
+        request.setAttribute("threadGroup", threadGroup);
+
+        /** timer */
 		long start = System.currentTimeMillis();
-		
+
 		/** Get default pipeline that allwasy execute */
 		List requestPipeLine = new ArrayList(ProcessList.getInstance().getProcessList());
-		
+
 		/** Textual analyzis looks at query parameters and add filters to pipeline*/
 		doTextanalyzis(request, requestPipeLine);
-		
-		/** 
-		 * Navigational analyzis is responsible for targeted search in collections/indexes. 
+
+		/**
+		 * Navigational analyzis is responsible for targeted search in collections/indexes.
 		 * Adds suitable filter to pipeline.
 		 **/
 		doNavigationAnalyzis(request, requestPipeLine);
-		
+
 		filterConfig.getServletContext().log("Executing pipeline: " + requestPipeLine);
 		request.setAttribute("processList", requestPipeLine);
 
-		/** prepare the reponse and Sitemesh headers */ 
+		/** prepare the reponse and Sitemesh headers */
 		response.setContentType("text/html");
         response.getWriter().write(getHeaderTemplate());
-		
+
         chain.doFilter(request, response);
 
-		// TODO: this part should be interuptable when all filter is finished...
-		waitForCompletion(start);	
-        
+		waitForCompletion(threadGroup);
+
 		response.getWriter().write("(c) 2005 </body></html>");
         response.flushBuffer();
+        threadGroup.destroy();
     }
 
 	private void doTextanalyzis(ServletRequest request, List pipeLine) {
@@ -121,35 +125,35 @@ public final class EntryFilter extends BaseFilter {
 	}
 
 	/**
-	 * 
+	 *
 	 * Basic implementation of navigation in collections.
 	 * Look at the request parameter to decide which filter to invoke.
-	 * 
+	 *
 	 * @param request
 	 * @param pipeLine
 	 */
 	private void doNavigationAnalyzis(ServletRequest request, List pipeLine) {
-		
+
 		/** see if there is a collection param */
 		if(request.getParameter(SearchConstants.REQUEST_KEYPARAM_COLLECTION) != null){
-		
-			/** Handle multiple collections a'la c=d&c=m etc. 	 */ 
+
+			/** Handle multiple collections a'la c=d&c=m etc. 	 */
 			String[] collections = request.getParameterValues(SearchConstants.REQUEST_KEYPARAM_COLLECTION);
 			if(collections.length == 0) {
 				return;
 			}
-			
+
 			for (int i = 0; i < collections.length; i++) {
 				pipeLine.add(filterMatch(collections[i]));
-			}			
+			}
 		}
 	}
 
-	/** 
+	/**
 	 * Check if the collection is valid/defined.
-	 * 
+	 *
 	 * TODO: refactor into a map or something.
-	 * 
+	 *
 	 * @param string
 	 * @return
 	 */
@@ -169,26 +173,24 @@ public final class EntryFilter extends BaseFilter {
 	}
 
 	/**
-	 * 
-	 *  This forces the filter to wait (synchronous filter) 
-	 *  for the threads a minimum amount of time based on 
-	 *  the servlet filter init-param 'max-wait-time'.
-	 * 
-	 * @param start
+	 *
 	 */
-	private void waitForCompletion(long start) {
-		
-	     final Object lock = new Object();
-         synchronized (lock) {
-             try {
-				 while((System.currentTimeMillis() - start) < maxTime){
-					 lock.wait(20);
-				 }
-             } catch (InterruptedException e) {
-                 e.printStackTrace();
-             }
-         }
-	}
+	private void waitForCompletion(ThreadGroup group) {
+
+        Thread threads[] = new Thread[group.activeCount()];
+
+        group.enumerate(threads);
+
+        for (int i = 0; i < threads.length; i++) {
+            Thread thread = threads[i];
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+
+    }
 
     private void setupHeaderTemplate() {
        getHeaderTemplate();

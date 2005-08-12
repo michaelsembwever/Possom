@@ -45,28 +45,26 @@ public final class YahooFilter extends AsynchronusBaseFilter {
 
         filterConfig.getServletContext().log("- Yahoo - Searching");
         //start this search in separate thread
-        doSearch(query, response);
-        
+        doSearch(query, response, request);
+
         filterConfig.getServletContext().log("- Yahoo - Moving on in chain");
         //go to next filter in chain
         chain.doFilter(request, response);
-                    
+
     }
 
     /**
-     * 
+     *
      * Execute the search in separate thread.
-     * 
+     *
      * @param query
      * @param response
      *
      */
-    private void doSearch(String query, ServletResponse response) {
-        
+    private void doSearch(String query, ServletResponse response, ServletRequest request) {
+
         final SearchConsumer w = new YahooSearchConsumer(query, maxTime, response, maxResults, offset);
-        Thread searchThread = new Thread(w);
-        searchThread.start();
-        
+        startThread(w, request);
     }
 
 }

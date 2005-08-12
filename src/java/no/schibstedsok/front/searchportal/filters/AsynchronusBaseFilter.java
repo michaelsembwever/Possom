@@ -26,7 +26,7 @@ import no.schibstedsok.front.searchportal.util.SearchConstants;
 public abstract class AsynchronusBaseFilter extends BaseFilter {
 
     /**
-     * 
+     *
      */
     public AsynchronusBaseFilter() {
         super();
@@ -36,12 +36,12 @@ public abstract class AsynchronusBaseFilter extends BaseFilter {
      * @see com.schibstedsok.portal.search.filters.BaseFilter#doExecute(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
     public void doExecute(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-                
+
         //forward to the implementation of the filter
 		List processList = (List)request.getAttribute(SearchConstants.PIPELINE);
-		
+
 		String name = getClass().getName().substring(getClass().getName().lastIndexOf(".") + 1);
-		
+
 		//should this filter be executed?
 		if(processList.contains(getClass().getName())) {
 	        doExecuteAsynch(request, response, chain);
@@ -49,10 +49,16 @@ public abstract class AsynchronusBaseFilter extends BaseFilter {
 			filterConfig.getServletContext().log("Skipped " + name);
 	        chain.doFilter(request, response);
 		}
-			
+
 
     }
 
     public abstract void doExecuteAsynch(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException;
-    
+
+
+    protected void startThread(SearchConsumer w, ServletRequest req) {
+        ThreadGroup group = (ThreadGroup) req.getAttribute("threadGroup");
+        Thread searchThread = new Thread(group, w);
+        searchThread.start();
+    }
 }
