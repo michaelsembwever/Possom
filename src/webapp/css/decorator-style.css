@@ -85,13 +85,39 @@ img {
     border: solid 1px #AEABAB;
 }
 
-
 #company_result .company_result_borderline {
     border-bottom: solid 1px #DAD9D9;
-    font-size: 2px;
+    font-size: 10px;
+    clear:both;
 }
 
+.adr {
+	width: 390px;
+}
 
+.name {
+    padding-top: 7px;
+}
+
+.company_name {
+    padding-left:10px;
+    font-weight:bold;
+}
+
+.new {
+    clear:both;
+}
+
+.company_address {
+	width: 78%;
+	float: left;
+    padding-left:10px;
+}
+
+.company_phone {
+	width: 18%;
+	float: right;
+}
 
 
 .all_type_standard_size{
