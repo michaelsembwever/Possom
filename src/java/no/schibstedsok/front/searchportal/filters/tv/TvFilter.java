@@ -37,14 +37,16 @@ public final class TvFilter extends AsynchronusBaseFilter {
 		
 		Analyzer analyzer = AnalyzerEngine.getAnalyzer();
 		String query = request.getParameter(SearchConstants.REQUEST_KEYPARAM_QUERY);
-		/** trim away the trigger words */
+		
+		/** trim away the trigger words when doing the search in the TV-index */
 		query = analyzer.replace(query);
 		configuration.setQuery(query);
 		
-		// start this search in separate thread
+		/** start this search in separate thread */
         doSearch(response, configuration);
 			
-        chain.doFilter(request, response);
+        /** continue in chain */
+		chain.doFilter(request, response);
 
     }
 

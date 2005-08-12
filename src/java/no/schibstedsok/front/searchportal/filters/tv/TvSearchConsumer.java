@@ -124,7 +124,7 @@ public class TvSearchConsumer extends SearchConsumer {
 				myWriterRef = null;
 
 				//signal completion to thread waiting
-				available = true;
+//				available = true;
 			}
         }
 
@@ -175,8 +175,6 @@ public class TvSearchConsumer extends SearchConsumer {
 
 		private void printVelocityToWriter(Object results, Writer myWriterRef, String templateName) {
 
-//			initVelocity(templateName);
-
 			try {
                 Template template = Velocity.getTemplate(templateName);
 				VelocityContext context = new VelocityContext();
@@ -196,6 +194,7 @@ public class TvSearchConsumer extends SearchConsumer {
 
 			printVelocityToWriter(results, responseRef.getWriter(), template);
 	        responseRef.getWriter().flush();
+
 		}
 
     }
