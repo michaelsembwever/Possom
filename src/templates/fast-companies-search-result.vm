@@ -37,13 +37,15 @@
             #end
         </div>
 
-        <div id="company_result_footer">
-                <li class="adr">
-                    <span class="company_address"></span>
-                    <span class="company_phone"><a href="$baseURL&offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
-                </li>
-                <li class="cheat">&nbsp;</li>
-        </div>
+        #if ($result.getPager().getNumberOfPages() > 1)
+            <div id="company_result_footer">
+                    <li class="adr">
+                        <span class="company_address"></span>
+                        <span class="company_phone"><a href="$baseURL&offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
+                    </li>
+                    <li class="cheat">&nbsp;</li>
+            </div>
+        #end
 
     </content>
 
