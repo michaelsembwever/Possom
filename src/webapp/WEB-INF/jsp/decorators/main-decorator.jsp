@@ -64,6 +64,7 @@
                         <input name="c" value="<%=collection%>" type="hidden"/>
                         <input name="q" type="text" value="<%= q %>" size="50">
                         <input type="submit" class="search_button" value="<%=search_button_text%>" style="background-color:<%=search_button_bgcolor%>" />
+                        <a href="#"><span class="link_style">Innstillinger</span></a>
                     </form>
                 </td>
             </tr>
@@ -106,7 +107,7 @@
 
         <table id="table_footer">
 
-            <decorator:getProperty property="page.more-results"/>   
+            <decorator:getProperty property="page.more-results"/>
 
             <tr>
                 <td id="footer" colspan="3">&nbsp;</td>
