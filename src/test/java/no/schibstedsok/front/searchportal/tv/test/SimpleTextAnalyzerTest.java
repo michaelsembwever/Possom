@@ -6,6 +6,7 @@ package no.schibstedsok.front.searchportal.tv.test;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.analyzer.Analyzer;
 import no.schibstedsok.front.searchportal.analyzer.AnalyzerEngine;
+import no.schibstedsok.tv.service.TvFeedImpl;
 
 /**
  * A SimpleTextAnalyzerTest.
@@ -24,10 +25,13 @@ public class SimpleTextAnalyzerTest extends TestCase {
 		Analyzer analyzer = AnalyzerEngine.getAnalyzer();
 		assertEquals("Sommer", analyzer.replace(test));
 		
-		
-		
 	}
 
+	public void testSeriesTrim() {
+		String test = "Hotel Cæsar (19)";
+		assertEquals(TvFeedImpl.trim(test), "Hotel Cæsar");
+	}
+	
 	public void testPatternMatching() {
 
 		Analyzer analyzer = AnalyzerEngine.getAnalyzer();

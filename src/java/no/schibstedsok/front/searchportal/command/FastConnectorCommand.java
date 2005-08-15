@@ -92,6 +92,8 @@ public class FastConnectorCommand implements ConnectorCommand {
             Query query = new Query(params);
 
             IQueryResult queryResult = doSearch(query);
+			
+//			System.out.println(query);
 
             //abort search on error
             if(queryResult == null)
@@ -222,7 +224,7 @@ public class FastConnectorCommand implements ConnectorCommand {
         //TODO: refactor this to be more generic!
 
         long timer = System.currentTimeMillis(); // timer
-        if(configuration.getCollection().equals(SearchConstants.DEFAULTCOLLECTION))
+		if(configuration.getCollection().equals(SearchConstants.WEBCRAWL_COLLECTION))
             i =  resultsFromAllCollections(queryResult, i, timer);
         else if(configuration.getCollection().equals(SearchConstants.MEDIA_COLLECTION))
             i =  resultsFromMediaCollection(queryResult, i, timer);
@@ -256,7 +258,7 @@ public class FastConnectorCommand implements ConnectorCommand {
         }
         return i;
     }
-
+  
     private int resultsFromAllCollections(IQueryResult queryResult, int i, long timer) {
 
         int wiki = 0;

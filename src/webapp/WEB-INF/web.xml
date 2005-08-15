@@ -16,8 +16,9 @@
   </filter>
   <!-- SITMESH END -->
   
+ <!-- ACTIVE FILTERS -->
   
-<filter>
+ <filter>
  <filter-name>Entry Filter</filter-name>
  <filter-class>no.schibstedsok.front.searchportal.filters.EntryFilter</filter-class>
   <init-param>
@@ -29,6 +30,169 @@
 	<param-value>true</param-value>
   </init-param>
 </filter>
+
+<filter>
+ <filter-name>Global Index</filter-name>
+ <filter-class>no.schibstedsok.front.searchportal.filters.sensis.SensisFilter</filter-class>
+  <init-param>
+	<param-name>standardPipeline</param-name>
+	<param-value>false</param-value>
+  </init-param>
+</filter>
+
+<filter>
+ <filter-name>Global Collection document overview</filter-name>
+ <filter-class>no.schibstedsok.front.searchportal.filters.sensis.DocCountFilter</filter-class>
+  <init-param>
+	<param-name>standardPipeline</param-name>
+	<param-value>true</param-value>
+  </init-param>
+</filter>
+
+<filter>
+ <filter-name>Norwegian Collection document overview</filter-name>
+ <filter-class>no.schibstedsok.front.searchportal.filters.fast.DocCountFilter</filter-class>
+  <init-param>
+	<param-name>standardPipeline</param-name>
+	<param-value>true</param-value>
+  </init-param>
+</filter>
+
+<filter>
+ <filter-name>Norwegian Webcrawl collection</filter-name>
+ <filter-class>no.schibstedsok.front.searchportal.filters.fast.WebCrawlFilter</filter-class>
+  <init-param>
+	<param-name>standardPipeline</param-name>
+	<param-value>true</param-value>
+  </init-param>
+</filter>
+       
+<filter>
+ <filter-name>Media collection</filter-name>
+ <filter-class>no.schibstedsok.front.searchportal.filters.fast.MediaCollectionFilter</filter-class>
+   <init-param>
+	<param-name>standardPipeline</param-name>
+	<param-value>false</param-value>
+  </init-param>
+   <init-param>
+	<param-name>Filters to exclude</param-name>
+	<param-value>no.schibstedsok.front.searchportal.filters.tv.TvFilter</param-value>
+  </init-param>
+</filter>
+              
+<filter>
+ <filter-name>Wiki collection</filter-name>
+ <filter-class>no.schibstedsok.front.searchportal.filters.fast.WikiFilter</filter-class>
+  <init-param>
+	<param-name>standardPipeline</param-name>
+	<param-value>true</param-value>
+  </init-param>
+</filter>
+              
+<filter>
+ <filter-name>TV</filter-name>
+ <filter-class>no.schibstedsok.front.searchportal.filters.tv.TvFilter</filter-class>
+  <init-param>
+	<param-name>standardPipeline</param-name>
+	<param-value>false</param-value>
+  </init-param>
+</filter>
+	
+<filter>
+    <filter-name>Companies</filter-name>
+    <filter-class>no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter</filter-class>
+    <init-param>
+        <param-name>max-wait-time</param-name>
+        <param-value>0</param-value>
+    </init-param>
+    <init-param>
+        <param-name>standardPipeline</param-name>
+        <param-value>false</param-value>
+    </init-param>
+</filter>
+
+<!-- Set up the filter chain, the filters are applied in the listed order -->
+<filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <url-pattern>/search/*</url-pattern>
+</filter-mapping>
+  
+<filter-mapping>
+  <filter-name>Entry Filter</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>Global Collection document overview</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>Norwegian Collection document overview</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>Global Index</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>Norwegian Webcrawl collection</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>Media collection</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>Wiki collection</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>TV</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<!--
+<filter-mapping>
+  <filter-name>Overture</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+-->
+
+<filter-mapping>
+    <filter-name>Companies</filter-name>
+    <url-pattern>/search/*</url-pattern>
+    <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+    <!-- UNUSED FILTER MAPPINGS -->
+<!--
+<filter-mapping>
+  <filter-name>Google</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+
+<filter-mapping>
+  <filter-name>Yahoo</filter-name>
+  <url-pattern>/search/*</url-pattern>
+  <dispatcher>REQUEST</dispatcher>
+</filter-mapping>
+-->
 
 
 <!-- UNUSED FILTERS -->
@@ -59,195 +223,6 @@
 </filter>
 
 -->
-
-<!-- ACTIVE FILTERS -->
-
-<filter>
- <filter-name>Global Index</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.sensis.SensisFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>0</param-value>
-  </init-param>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>false</param-value>
-  </init-param>
-</filter>
-
-<filter>
- <filter-name>Global Document count</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.sensis.DocCountFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>0</param-value>
-  </init-param>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-</filter>
-
-<filter>
- <filter-name>Local Document count</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.DocCountFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>0</param-value>
-  </init-param>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-</filter>
-
-<filter>
- <filter-name>All collections</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.FastFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>0</param-value>
-  </init-param>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>false</param-value>
-  </init-param>
-</filter>
-       
-<filter>
- <filter-name>Media collection</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.MediaCollectionFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>0</param-value>
-  </init-param>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>false</param-value>
-  </init-param>
-</filter>
-       
-<filter>
- <filter-name>Wiki collection</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.WikiFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>0</param-value>
-  </init-param>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>false</param-value>
-  </init-param>
-</filter>
-              
-<filter>
- <filter-name>TV</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.tv.TvFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>0</param-value>
-  </init-param>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>false</param-value>
-  </init-param>
-</filter>
-
-    <filter>
-        <filter-name>Companies</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter</filter-class>
-        <init-param>
-            <param-name>max-wait-time</param-name>
-            <param-value>0</param-value>
-        </init-param>
-        <init-param>
-            <param-name>standardPipeline</param-name>
-            <param-value>false</param-value>
-        </init-param>
-    </filter>
-
-<!-- Set up the filter chain, the filters are applied in the listed order -->
-  <filter-mapping>
-    <filter-name>sitemesh</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-    <filter-mapping>
-  <filter-name>Entry Filter</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>TV</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>All collections</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Media collection</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Wiki collection</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Global Document count</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Local Document count</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<!--
-<filter-mapping>
-  <filter-name>Overture</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
--->
-
-<filter-mapping>
-  <filter-name>Global Index</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-    <filter-mapping>
-        <filter-name>Companies</filter-name>
-        <url-pattern>/search/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
-
-    <!-- UNUSED FILTER MAPPINGS -->
-<!--
-<filter-mapping>
-  <filter-name>Google</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Yahoo</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
--->
-
   <servlet>
     <servlet-name>Nada BaseServlet</servlet-name>
     <servlet-class>no.schibstedsok.front.searchportal.servlet.BaseServlet</servlet-class>

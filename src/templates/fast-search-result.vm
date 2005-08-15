@@ -5,6 +5,7 @@
  
 <body bgcolor="#eeeeff">
 
+
 <content tag="search-error-fast">
 #if($result.getSearchErrorMesg())
 	$result.getSearchErrorMesg()
@@ -20,10 +21,6 @@
 	#end
 #end
 
-</content>
-
-<content tag="search-error-fast">
-	!$result.getSearchErrorMesg()
 </content>
 
 

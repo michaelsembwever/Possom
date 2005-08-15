@@ -109,6 +109,7 @@ public abstract class BaseFilter implements Filter {
 			return config;
 		}
 		
+	
 		return configuration;
 	}
 

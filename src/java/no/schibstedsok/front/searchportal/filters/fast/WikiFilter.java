@@ -35,6 +35,7 @@ public final class WikiFilter extends AsynchronusBaseFilter {
 		configuration = (FastSearchConfiguration) setUpSearchConfiguration(request, configuration);
 		configuration.setCollection(SearchConstants.WIKI_COLLECTION);
 		configuration.setTemplate(VelocityTemplates.WIKI_COLLECTION_SEARCH);
+		configuration.setDocsToReturn(1);
 		
 		// start this search in separate thread
         doSearch(response, configuration, request);

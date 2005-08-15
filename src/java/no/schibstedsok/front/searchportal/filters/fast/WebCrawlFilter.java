@@ -36,7 +36,7 @@ public final class WebCrawlFilter extends AsynchronusBaseFilter {
 			
 		FastSearchConfiguration configuration = new FastSearchConfigurationImpl(); 
 		configuration = (FastSearchConfiguration) setUpSearchConfiguration(request, configuration);
-		configuration.setCollection(SearchConstants.WEBCRAWL_COLLECTION);
+		configuration.setCollection(SearchConstants.WEBCRAWL_COLLECTION);    
 		configuration.setTemplate(VelocityTemplates.WEBCRAWL_COLLECTION_SEARCH);
 		
 		// start this search in separate thread

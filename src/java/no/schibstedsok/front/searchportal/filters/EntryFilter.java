@@ -13,7 +13,7 @@ import javax.servlet.ServletResponse;
 
 import no.schibstedsok.front.searchportal.analyzer.Analyzer;
 import no.schibstedsok.front.searchportal.analyzer.AnalyzerEngine;
-import no.schibstedsok.front.searchportal.filters.fast.FastFilter;
+import no.schibstedsok.front.searchportal.filters.fast.WebCrawlFilter;
 import no.schibstedsok.front.searchportal.filters.fast.MediaCollectionFilter;
 import no.schibstedsok.front.searchportal.filters.fast.WikiFilter;
 import no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter;
@@ -160,7 +160,7 @@ public final class EntryFilter extends BaseFilter {
 	private String filterMatch(String string) {
 
 		if(string.equals(SearchConstants.REQUEST_PARAM_DEFAULT_COLLECTIONS))
-			return FastFilter.class.getName();
+			return WebCrawlFilter.class.getName();
 		if(string.equals(SearchConstants.REQUEST_PARAM_MEDIA_COLLECTIONS))
 			return MediaCollectionFilter.class.getName();
 		if(string.equals(SearchConstants.REQUEST_PARAM_WIKICOLLECTION))
