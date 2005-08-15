@@ -184,7 +184,9 @@ public final class EntryFilter extends BaseFilter {
         for (int i = 0; i < threads.length; i++) {
             Thread thread = threads[i];
             try {
-                thread.join();
+                if (thread != null) {
+                    thread.join();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
