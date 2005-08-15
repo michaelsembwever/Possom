@@ -110,6 +110,7 @@
 <%--               <td width="180" valign="top"><decorator:getProperty property="page.wiki-results" /></td>--%>
                 </td>
             </tr>
+        </table>
 
         <table id="table_footer">
 
@@ -119,7 +120,7 @@
                 <td id="footer" colspan="3">&nbsp;</td>
             </tr>
             <tr>
-                <td id="footer_link">
+                <td class="text_align_center">
                     <a href="#">Om oss</a> |
                     <a href="#">Bli annonsør</a> |
                     <a href="#">Hjelp</a>
