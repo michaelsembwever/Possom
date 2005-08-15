@@ -97,7 +97,6 @@ a {
 #company_result_search_string {
     color: #000;
     background-color: #fff;
-    width: 390px;
     margin: 10px 0 10px 20px;
 }
 
@@ -115,22 +114,20 @@ a {
     clear:both;
 }
 
+/* li class */
+.result_line1 {
+    padding-top: 9px;
+}
 
-.adr {
+/* li class */
+.result_line2 {
 	width: 390px;
 }
 
-.name {
-    padding-top: 9px;
-}
 
 .company_name {
     padding-left:10px;
     font-weight:bold;
-}
-
-.new {
-    clear:both;
 }
 
 .company_address {

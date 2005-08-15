@@ -10,15 +10,11 @@
     <content tag="companies-results">
         #set ($baseURL = "?c=y&q=$result.getQuery()")
         <div id="company_result_search_string">
-                <li class="adr">
-                    <span class="company_address">Du har søkt på $result.getQuery()</span>
-                    <span class="company_phone"></span>
-                </li>
-                <li class="cheat">&nbsp;</li>
+            Du har søkt på $result.getQuery()
         </div>
 
         <div id="company_result_heading">
-                <li class="adr">
+                <li class="result_line2">
                     <span class="company_address">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
                     <span class="company_phone"><a href="$baseURL&offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                 </li>
@@ -27,10 +23,10 @@
 
         <div id="company_result">
             #foreach ($item in $result.getCompaniesResults())
-                <li class="name">
+                <li class="result_line1">
                     <span class="company_name">$item.companyName</span>
                 </li>
-                <li class="adr">
+                <li class="result_line2">
                     <span class="company_address">$item.visitingAddress, $item.visitingZip $item.visitingCity</span>
                     <span class="company_phone">$!{item.phoneNumber}</span>
                 </li>
@@ -40,7 +36,7 @@
 
         #if ($result.getPager().getNumberOfPages() > 1)
             <div id="company_result_footer">
-                    <li class="adr">
+                    <li class="result_line2">
                         <span class="company_address"></span>
                         <span class="company_phone"><a href="$baseURL&offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                     </li>
