@@ -229,7 +229,7 @@ public class FastConnectorCommand implements ConnectorCommand {
         else if(configuration.getCollection().equals(SearchConstants.MEDIA_COLLECTION))
             i =  resultsFromMediaCollection(queryResult, i, timer);
         else if(configuration.getCollection().equals(SearchConstants.WIKI_COLLECTION))
-            i =  resultsFromAllCollections(queryResult, i, timer);
+            i =  resultsFromWikiCollection(queryResult, i, timer);
         else if(configuration.getCollection().equals(SearchConstants.COMPANIES_COLLECTION))
             i =  resultsFromCompaniesCollection(queryResult, i);
         return i;
@@ -240,6 +240,14 @@ public class FastConnectorCommand implements ConnectorCommand {
         for (; i <= getMaxResultsToReturn(); i++) {
             SearchResultElement result = new FastRetrieverSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
             response.addRetreiverResult(result);
+        }
+        return i;
+    }
+
+    private int resultsFromWikiCollection(IQueryResult queryResult, int i, long timer) {
+        for (; i <= getMaxResultsToReturn(); i++) {
+            SearchResultElement result = new FastWikiSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
+            response.addWikiResult(result);
         }
         return i;
     }
