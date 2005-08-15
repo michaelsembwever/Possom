@@ -73,20 +73,20 @@
                 <td>
                     <decorator:getProperty property="page.spelling-suggestions" />
 
-                    <decorator:getProperty property="page.tv-results" />
-
                     <!-- Senis Beriket -->
                     <%if(collection.equals("d")){%>
                         <decorator:getProperty property="page.sensis-enriched" />
-                    <%}%>
 
-                    <!-- Nyheter Beriket -->
-                    <%if(collection.equals("d")){%>
-                        <decorator:getProperty property="page.retriever-results" />
-                    <%}%>
+                        <!-- Nyheter Beriket -->
+                        <decorator:getProperty property="page.media-enriched" />
 
-                    <!-- Webinnhold -->
-                    <decorator:getProperty property="page.fast-results" />
+                        <!-- TV Beriket -->
+                        <decorator:getProperty property="page.tv-results" />
+
+                        <!-- Webinnhold -->
+                        <decorator:getProperty property="page.fast-results" />
+
+                    <%}%>
 
                     <!-- Webinnhold Global index -->
                     <%if(collection.equals("g")){%>
@@ -99,7 +99,9 @@
                     <%}%>
 
                     <!-- Media index -->
-                    <decorator:getProperty property="page.media-collection-results" />
+                    <%if(collection.equals("m")){%>
+	                    <decorator:getProperty property="page.media-collection-results" />
+                    <%}%>
 
 <%--               <td width="180" valign="top"><decorator:getProperty property="page.wiki-results" /></td>--%>
                 </td>
@@ -161,3 +163,4 @@
 <%--        </table>--%>
     </body>
 </html>
+
