@@ -81,7 +81,7 @@
                         <!-- Nyheter Beriket -->
                         <decorator:getProperty property="page.media-enriched" />
 
-                        <!-- Nyheter Beriket -->
+                        <!-- Wiki Beriket -->
                         <decorator:getProperty property="page.wiki-enriched" />
 
                         <!-- TV Beriket -->
