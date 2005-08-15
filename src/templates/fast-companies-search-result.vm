@@ -19,7 +19,7 @@
 
         <div id="company_result_heading">
                 <li class="adr">
-                    <span class="company_address">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() > 11) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
+                    <span class="company_address">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
                     <span class="company_phone"><a href="$baseURL&offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                 </li>
                 <li class="cheat">&nbsp;</li>
