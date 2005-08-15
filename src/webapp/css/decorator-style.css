@@ -17,7 +17,7 @@ img { border: none; }
 
 a {
     color: #446DA2;
-    font-size: 11px;
+    font-size: 1.1em;
 }
 
 .link_style {
@@ -26,9 +26,12 @@ a {
 }
 
 
+/* ------------------------------------------------------------------ */
+/* =MAIN-DECORATOR */
 
 #logo { margin: 10px 0 15px 20px; }
 
+/* padding between tabs */
 .menu_img { margin-right: 15px; }
 
 #search_form { padding: 10px 0 10px 0; }
@@ -66,19 +69,18 @@ a {
 }
 
 /* ------------------------------------------------------------------ */
-/* =COMPANY TEMPLATE */
+/* =FAST-COMPANIES-SEARCH-RESULT */
 
 #company_result {
     color: #003880;
     background-color: #F1ECDC;
     width: 390px;
     margin-left: 20px;
-    font-size: 11px;
     border: solid 1px #AEABAB;
 }
 
 #company_result .cheat {
-    font-size: 1px;
+    font-size: 0.1em;
     clear:both;
 }
 
@@ -88,7 +90,6 @@ a {
     width: 390px;
     margin-left: 20px;
     margin-bottom: 10px;
-    font-size: 11px;
     border: solid 1px #AEABAB;
     padding: 5px 0
 }
@@ -98,7 +99,6 @@ a {
     background-color: #fff;
     width: 390px;
     margin: 10px 0 10px 20px;
-    font-size: 12px;
 }
 
 #company_result_footer {
@@ -107,7 +107,6 @@ a {
     width: 390px;
     margin-left: 20px;
     margin-top: 10px;
-    font-size: 11px;
 }
 
 #company_result .company_result_borderline {
