@@ -1,4 +1,4 @@
-#if($result)
+#if ($result.getRetrieverResults().size() > 0) 
 <html>
 	<head>
 		<meta name="decorator" content="maindecorator">
@@ -6,6 +6,7 @@
 
 
 <body>
+
 <content tag="media-enriched">
   <div class="beriketNyheter">
   	<a href="" class="beriketTittel">TREFF I NYHETER</a><br/>
@@ -44,6 +45,9 @@
   	#end
   	</div>
   </div>
+    ## Nasty shortcut. The collection we've searched should be available from the $result
+    #set ($tab = "m")
+    #parse("verbosePager.vm")
 </content>
 
 <content tag="media-collection-results">
@@ -89,4 +93,4 @@
 </content>
 </body>
 </html>
-#end
+#end 
