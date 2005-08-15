@@ -56,6 +56,7 @@ a {
     width: 780px;
     margin-top: 40px;
     font-size: 1.1em;
+    color: #003880;
 }
 
 #footer {
@@ -63,9 +64,8 @@ a {
     background-repeat: repeat-x;
 }
 
-#footer_link {
+.text_align_center {
     text-align: center;
-    color: #406AA0;
 }
 
 /* ------------------------------------------------------------------ */
@@ -85,7 +85,6 @@ a {
 }
 
 #company_result_heading {
-    color: #003880;
     background-color: #DEDACE;
     width: 390px;
     margin-left: 20px;
@@ -101,7 +100,6 @@ a {
 }
 
 #company_result_footer {
-    color: #003880;
     background-color: #fff;
     width: 390px;
     margin-left: 20px;

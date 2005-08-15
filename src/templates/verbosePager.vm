@@ -1,7 +1,7 @@
 #set ($baseURL = "?c=${tab}&q=$result.getQuery()")
 
 #if ($result.getPager().getNumberOfPages() > 1)
-    <tr><td id="footer_link">Vis flere treff på $result.getQuery()
+    <tr><td class="text_align_center">Vis flere treff på $result.getQuery()
     #foreach ($page in [$result.getPager().getFirstVisiblePage()..$result.getPager().getLastVisiblePage()])
 
         ## First Itereation.
