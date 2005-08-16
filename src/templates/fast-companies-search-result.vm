@@ -46,7 +46,7 @@
 
     </content>
 
-    <content tag="more-results">
+    <content tag="more-results-y">
         #set ($tab = "y")
         #parse("verbosePager.vm")
     </content>
