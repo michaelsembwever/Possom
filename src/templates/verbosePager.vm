@@ -22,7 +22,7 @@
             #if ($result.getPager().isLastPage())
                 Neste&gt;&gt;
             #else
-                <a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>Neste&gt;&gt</b></a>
+                <a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>Neste&gt;&gt;</b></a>
             #end
         #end
 
