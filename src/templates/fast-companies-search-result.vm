@@ -7,9 +7,7 @@
 
         <content tag="companies-results">
             #set ($baseURL = "?c=y&amp;q=$result.getQuery()")
-            <div id="company_result_search_string">
-                Du har søkt på $result.getQuery()
-            </div>
+            <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
             <div id="company_result_heading">
                 <ul>
                     <li class="result_line2">
