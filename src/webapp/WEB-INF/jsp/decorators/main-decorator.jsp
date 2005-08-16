@@ -113,8 +113,15 @@
         </table>
 
         <table id="table_footer">
-
-            <decorator:getProperty property="page.more-results"/>
+            <%if(collection.equals("d")){%>
+                <decorator:getProperty property="page.more-results-d"/>
+            <%}else if(collection.equals("g")){%>
+                <decorator:getProperty property="page.more-results-g"/>
+            <%}else if(collection.equals("y")){%>
+                <decorator:getProperty property="page.more-results-y"/>
+            <%}else if(collection.equals("m")){%>
+                <decorator:getProperty property="page.more-results-m"/>
+            <%}%>
 
             <tr>
                 <td id="footer" colspan="3">&nbsp;</td>
@@ -129,43 +136,6 @@
         </table>
 
 
-<%--        <table width="100%" class="all_type_standard_size">--%>
-<%--            <tr>--%>
-<%--                <td>--%>
-<%----%>
-<%--                    <decorator:getProperty property="page.spelling-suggestions" />--%>
-<%----%>
-<%--                    <decorator:getProperty property="page.tv-results" />--%>
-<%----%>
-<%--                    <!-- Senis Beriket -->--%>
-<%--                    <%if(collection.equals("d")){%>--%>
-<%--                        <decorator:getProperty property="page.sensis-enriched" />--%>
-<%--                    <%}%>--%>
-<%----%>
-<%--                    <!-- Nyheter Beriket -->--%>
-<%--                    <%if(collection.equals("d")){%>--%>
-<%--                        <decorator:getProperty property="page.retriever-results" />--%>
-<%--                    <%}%>--%>
-<%----%>
-<%--                    <!-- Webinnhold -->--%>
-<%--                    <decorator:getProperty property="page.fast-results" />--%>
-<%----%>
-<%--                    <!-- Webinnhold Global index -->--%>
-<%--                    <%if(collection.equals("g")){%>--%>
-<%--                        <decorator:getProperty property="page.global-results" />--%>
-<%--                    <%}%>--%>
-<%----%>
-<%--                    <!-- Companies -->--%>
-<%--                    <%if(collection.equals("y")){%>--%>
-<%--                       <decorator:getProperty property="page.companies-results"/>--%>
-<%--                    <%}%>--%>
-<%----%>
-<%--                    <!-- Media index -->--%>
-<%--                    <decorator:getProperty property="page.media-collection-results" />--%>
-<%----%>
-<%--               <td width="180" valign="top"><decorator:getProperty property="page.wiki-results" /></td>--%>
-<%--            </tr>--%>
-<%--        </table>--%>
     </body>
 </html>
 
