@@ -2,55 +2,49 @@
 	<head>
 		<meta name="decorator" content="maindecorator">
 	</head>
- 
-<body bgcolor="#eeeeff">
 
+    <body bgcolor="#eeeeff">
 
-<content tag="search-error-fast">
-#if($result.getSearchErrorMesg())
-	$result.getSearchErrorMesg()
-#end
-</content>
+        <content tag="search-error-fast">
+            #if($result.getSearchErrorMesg())
+                $result.getSearchErrorMesg()
+            #end
+        </content>
 
-<content tag="spelling-suggestions">
+        <content tag="spelling-suggestions">
+            #if($result.getSpellingSuggestions())
+                <span class="stavekontroll">Mente du:</span>
+                #foreach($suggestion in $result.getSpellingSuggestions())
+                  <em><a href="?q=$suggestion">$suggestion</a>?</em><br/>
+                #end
+            #end
+        </content>
 
-#if($result.getSpellingSuggestions())
-  <span class="stavekontroll">Mente du:</span>
-	#foreach($suggestion in $result.getSpellingSuggestions()) 
-	  <em><a href="?q=$suggestion">$suggestion</a>?</em><br/>
-	#end
-#end
+        <content tag="fast-results">
+            <p/>
 
-</content>
+            <div class="sokeresultat">
 
+            <div class="boksTittel">
+             $result.getWebCrawlDocumentsInIndex() TREFF I NORGE
+            </div>
 
-<content tag="fast-results">
+            #foreach( $item in $result.getResults() )
 
-<p/>
+                <a href="$item.url"><strong>$item.title</strong></a><br/>
+                $item.summary
+                <br/>
+                <a class="litenUrl" href="$item.url">$item.clickUrl</a>
+                <p/>
+            #end
 
-<div class="sokeresultat">
+            <p class="kilde">Nerdscore: $result.getFetchTime() ms</p>
+            </div>
+        </content>
 
-<div class="boksTittel">
- $result.getWebCrawlDocumentsInIndex() TREFF I NORGE
-</div>
-
-#foreach( $item in $result.getResults() )
-
-	<a href="$item.url"><strong>$item.title</strong></a><br/>
-	$item.summary
-	<br/>
-	<a class="litenUrl" href="$item.url">$item.clickUrl</a>
-	<p/>
-#end
-
-<p class="kilde">Nerdscore: $result.getFetchTime() ms</p> 
-
-
-    #set ($tab = "d")
-    #parse ("verbosePager.vm")
-
-
-</div>
-</content>
-</body>
+        <content tag="more-results-d">
+            #set ($tab = "d")
+            #parse("verbosePager.vm")
+        </content>
+    </body>
 </html>
