@@ -71,6 +71,12 @@ a {
 /* ------------------------------------------------------------------ */
 /* =FAST-COMPANIES-SEARCH-RESULT */
 
+#form_header {
+    font-size: 1.4em;
+    color: #F6B331;
+    font-weight: bold;
+}
+
 #company_result {
     color: #003880;
     background-color: #F1ECDC;
@@ -93,7 +99,9 @@ a {
     padding: 5px 0
 }
 
-#company_result_search_string {
+.search_query_h1 {
+    font-size: 1em;
+    font-weight: normal;
     color: #000;
     background-color: #fff;
     margin: 10px 0 10px 20px;
