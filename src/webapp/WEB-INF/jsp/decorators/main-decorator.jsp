@@ -50,7 +50,7 @@
 
             <% if (collection.equals("y")) { %>
                 <tr>
-                    <td class="first_cell" id="header"><h1 style="color: #F6B331;">Søk etter hva og hvor</h1></td>
+                    <td class="first_cell" id="header"><span id="form_header">Søk etter hva og hvor</span></td>
                 </tr>
 
                 <tr>
