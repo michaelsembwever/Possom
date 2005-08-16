@@ -34,15 +34,15 @@
     <head>
         <title><%=q%></title>
         <link href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
-        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
     </head>
 
-    <body onLoad="document.forms[0].q.focus();">
+    <body onload="document.forms[0].q.focus();">
 
-        <img src="../images/menu/logo.gif" id="logo" />
+        <img src="../images/menu/logo.gif" id="logo" alt="logo" />
 
         <table cellpadding="0" cellspacing="0" border="0" id="table_menu">
-            <tr><td class="first_cell"><nobr><a href="?c=d&q=<%=q%>"><img src="../images/menu/magic.gif" class="menu_img" /></a><nobr><a href="?c=m&q=<%=q%>"><img src="../images/menu/news.gif" class="menu_img" /></a><nobr><a href="?c=y&q=<%=q%>"><img src="../images/menu/yp.gif" class="menu_img" /></a><img src="../images/menu/wp.gif" class="menu_img" /><nobr><a href="?c=g&q=<%=q%>"><img src="../images/menu/sensis.gif" class="menu_img_last" /></a></td></tr>
+            <tr><td class="first_cell"><a href="?c=d&amp;q=<%=q%>"><img src="../images/menu/magic.gif" class="menu_img" alt="Link til magisk søk" /></a><a href="?c=m&amp;q=<%=q%>"><img src="../images/menu/news.gif" class="menu_img" alt="link til nyheter" /></a><a href="?c=y&amp;q=<%=q%>"><img src="../images/menu/yp.gif" class="menu_img" alt="link til gule data" /></a><img src="../images/menu/wp.gif" class="menu_img" alt="link til hvite sider" /><a href="?c=g&amp;q=<%=q%>"><img src="../images/menu/sensis.gif" class="menu_img_last" alt="link til verden søk" /></a></td></tr>
 
             <tr>
                 <td style="background-image: url(<%=menu_line%>); background-repeat: repeat-x;">&nbsp;</td>
@@ -61,9 +61,9 @@
             <tr>
                 <td class="first_cell">
                     <form name="sf" action="" id="search_form">
-                        <input name="lang" value="en" type="hidden">
-                        <input name="c" value="<%=collection%>" type="hidden"/>
-                        <input name="q" type="text" value="<%= q %>" size="50">
+                        <input name="lang" value="en" type="hidden" />
+                        <input name="c" value="<%=collection%>" type="hidden" />
+                        <input name="q" type="text" value="<%= q %>" size="50" />
                         <input type="submit" class="search_button" value="<%=search_button_text%>" style="background-color:<%=search_button_bgcolor%>" />
                         <a href="#"><span class="link_style">Innstillinger</span></a>
                     </form>
