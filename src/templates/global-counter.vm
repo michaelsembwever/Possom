@@ -3,77 +3,63 @@
 	<head>
 		<meta name="decorator" content="maindecorator">
 	</head>
-<body bgcolor="#eeeeff">
-<content tag="global-counter">
-	$result.getTotalDocumentsAvailable()
-</content>
+    <body bgcolor="#eeeeff">
 
+        <content tag="global-counter">
+            $result.getTotalDocumentsAvailable()
+        </content>
 
-## this is a hack due to wrong template being used!
+        ## this is a hack due to wrong template being used!
+        ## only show if we are running the default index search
+        #if($result.getResults().size() > 0)
 
-## only show if we are running the default index search
+            <content tag="sensis-enriched">
+                <table width="100%" border="0" cellspacing="2" cellpadding="0">
+                    <tr>
+                        <td colspan="2" valign="top"><a href="?c=g&q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a></td>
+                    </tr>
+                    <tr>
+                        <td align="center" valign="top" rowspan="3"><img src="../images/ikon_berikelse_verden.png" width="30" height="30"></td>
+                        #foreach( $item in $result.getResults() )
+                            #if ($velocityCount <= 3)
+                                <td><a href="$item.url" class="beriketUrl">$item.title</a><span class="litenUrl"> $item.url<span></td>
+                                </tr>
+                            #end
+                        #end
+                </table>
+            </content>
 
-#if($result.getResults().size() > 0)
+            <content tag="global-results">
+                <p/>
+                <div class="sokeresultat">
+                    <div class="boksTittel">
+                        $result.getTotalDocumentsAvailable() TREFF I VERDEN
+                    </div>
+                    #foreach( $item in $result.getResults() )
+                        <a href="$item.url"><strong>$item.title</strong></a><br/>
+                        $item.summary
+                        <br/>
+                        <a class="litenUrl" href="$item.url">$item.clickUrl</a>
+                        <p/>
+                    #end
+                    <p class="kilde">Nerdscore: $result.getFetchTime() ms</p>
+                    #if($result.getTotalDocumentsAvailable() > $result.getConsequtiveSearchStartsAt())
+                        Next ->
+                        #set( $steps = $result.getTotalDocumentsAvailable()/10)
+                        #if($steps > 10)
+                            #set( $steps = 10)
+                        #end
+                        #foreach( $step in [0..$steps] )
+                            #set($offset = $result.getConsequtiveSearchStartsAt() + 10 * $step)
+                            #set($count = $step + 1)
+                            <a href="?c=g&q=$result.getQuery()&offset=$offset">$count</a>&nbsp;
+                        #end
+                </div>
+                    #end
+            </content>
 
-<content tag="sensis-enriched">
-  <table width="100%" border="0" cellspacing="2" cellpadding="0">
-  	<tr><td colspan="2" valign="top"><a href="?c=g&q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a></td></tr>
-  	
-    
-<tr><td align="center" valign="top" rowspan="3"><img src="../images/ikon_berikelse_verden.png" width="30" height="30"></td>
-#foreach( $item in $result.getResults() )
+        #end
 
-  #if ($velocityCount <= 3)
-	 <td><a href="$item.url" class="beriketUrl">$item.title</a><span class="litenUrl"> $item.url<span></td></tr>
-	#end
-#end
-  
- </table>
-
-</content>
-
-<content tag="global-results">	
-<p/>
-
-<div class="sokeresultat">
-
-<div class="boksTittel">
- $result.getTotalDocumentsAvailable() TREFF I VERDEN
-</div>
-
-#foreach( $item in $result.getResults() )
-
-	<a href="$item.url"><strong>$item.title</strong></a><br/>
-	$item.summary
-	<br/>
-	<a class="litenUrl" href="$item.url">$item.clickUrl</a>
-	<p/>
-#end
-
-
-<p class="kilde">Nerdscore: $result.getFetchTime() ms</p> 
-
-#if($result.getTotalDocumentsAvailable() > $result.getConsequtiveSearchStartsAt())
-	Next -> 
-	#set( $steps = $result.getTotalDocumentsAvailable()/10)
-	
-	#if($steps > 10)
-		#set( $steps = 10)
-	#end
-
-	#foreach( $step in [0..$steps] )
-		#set($offset = $result.getConsequtiveSearchStartsAt() + 10 * $step)
-		#set($count = $step + 1)
-		<a href="?c=g&q=$result.getQuery()&offset=$offset">$count</a>&nbsp;
-	#end
-	
-	</div>
-#end
-
-</content>
-
-#end
-
-</body>
+    </body>
 </html>
 #end
