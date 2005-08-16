@@ -1,4 +1,4 @@
-#set ($baseURL = "?c=${tab}&q=$result.getQuery()")
+#set ($baseURL = "?c=${tab}&amp;q=$result.getQuery()")
 
 #if ($result.getPager().getNumberOfPages() > 1)
     <tr><td class="text_align_center">Vis flere treff på $result.getQuery()
@@ -14,7 +14,7 @@
         #if ($page == $result.getPager().getCurrentPage())
             $page
         #else
-            <a href="$baseURL&offset=$result.getPager().getOffsetOfPage($page)">$page</a>
+            <a href="$baseURL&amp;offset=$result.getPager().getOffsetOfPage($page)">$page</a>
         #end
 
         ## Last iteration.
@@ -22,7 +22,7 @@
             #if ($result.getPager().isLastPage())
                 Neste&gt;&gt;
             #else
-                <a href="$baseURL&offset=$result.getPager().getOffsetOfNextPage()"><b>Neste&gt;&gt</b></a>
+                <a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>Neste&gt;&gt</b></a>
             #end
         #end
 
