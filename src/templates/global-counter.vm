@@ -19,10 +19,10 @@
                         <td colspan="2" valign="top"><a href="?c=g&q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a></td>
                     </tr>
                     <tr>
-                        <td align="center" valign="top" rowspan="3"><img src="../images/ikon_berikelse_verden.png" width="30" height="30"></td>
+                        <td align="center" valign="top" rowspan="3"><img src="../images/ikon_berikelse_verden.png" width="30" height="30" /></td>
                         #foreach( $item in $result.getResults() )
                             #if ($velocityCount <= 3)
-                                <td><a href="$item.url" class="beriketUrl">$item.title</a><span class="litenUrl"> $item.url<span></td>
+                                <td><a href="$item.url" class="beriketUrl">$item.title</a><span class="litenUrl"> $item.url</span></td>
                                 </tr>
                             #end
                         #end
