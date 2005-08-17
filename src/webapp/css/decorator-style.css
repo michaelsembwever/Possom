@@ -136,6 +136,10 @@ a {
     font-weight:bold;
 }
 
+.float_clear {
+    clear: both;
+}
+
 .col_1 {
 	width: 74%;
 	float: left;
