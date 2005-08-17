@@ -163,6 +163,7 @@ public class FastConnectorCommand implements ConnectorCommand {
     private void setUpSearchParameters(ISearchParameters params) {
 
         params.setParameter(new SearchParameter(BaseParameter.QUERY, getQueryString()));
+        params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
         params.setParameter(new SearchParameter(BaseParameter.FILTER, configuration.constructCollectionFilter()));
         params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, configuration.getLanguage()));
         params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
