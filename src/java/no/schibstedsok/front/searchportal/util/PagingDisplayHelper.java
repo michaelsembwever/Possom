@@ -14,55 +14,44 @@ public class PagingDisplayHelper {
     private int maxPages = 10;
 
     private int numberOfResults;
-    private int currentPage;
+
+    private int currentOffset = 0;
 
     public PagingDisplayHelper(int numberOfResults) {
         this.numberOfResults = numberOfResults;
     }
 
-    public PagingDisplayHelper(int currentPage, int numberOfResults) {
-        this.currentPage = currentPage;
-        this.numberOfResults = numberOfResults;
-    }
-
-    public PagingDisplayHelper(int pageSize, int maxPages, int currentPage, int numberOfResults) {
+    public PagingDisplayHelper(int pageSize, int maxPages) {
         this.pageSize = pageSize;
-        this.numberOfResults = numberOfResults;
         this.maxPages = maxPages;
-        this.currentPage = currentPage;
     }
-
 
     public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
+        return currentOffset / pageSize + 1;
     }
 
     public int getNumberOfPages() {
-        return numberOfResults / pageSize + 1;
+        return (numberOfResults + pageSize - 1) / pageSize;
     }
 
     public boolean isFirstPage() {
-        return currentPage == 1;
+        return getCurrentPage() == 1;
     }
 
     public boolean isLastPage() {
-        return currentPage == getNumberOfPages();
+        return getCurrentPage() == getNumberOfPages();
     }
 
     public void setCurrentOffset(int offset) {
-        currentPage = offset / (pageSize + 1) + 1;
+        currentOffset = offset;
     }
 
     public int getOffsetOfNextPage() {
-        return currentPage * (pageSize + 1);
+        return getFirstHitOnPage() + pageSize - 1;
     }
 
     public int getOffsetOfPreviousPage() {
-        return (currentPage - 2) * pageSize;
+        return (getCurrentPage() - 2) * pageSize;
     }
 
     public int getOffsetOfPage(int page) {
@@ -84,12 +73,14 @@ public class PagingDisplayHelper {
     }
 
     public int getFirstHitOnPage() {
-        return (getCurrentPage() -1) * pageSize + 1;
+        return (getCurrentPage() - 1) * pageSize + currentOffset % pageSize + 1;
     }
 
     public int getLastHitOnPage() {
         return getFirstHitOnPage() + pageSize - 1;
     }
 
-
+    public void setNumberOfResults(int numberOfResults) {
+        this.numberOfResults = numberOfResults;
+    }
 }
