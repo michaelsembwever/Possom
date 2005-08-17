@@ -136,13 +136,13 @@ a {
     font-weight:bold;
 }
 
-.company_address {
+.col_1 {
 	width: 74%;
 	float: left;
     padding-left:10px;
 }
 
-.company_phone {
+.col_2 {
 	width: 22%;
 	float: right;
 }

@@ -11,8 +11,8 @@
             <div id="company_result_heading">
                 <ul>
                     <li class="result_line2">
-                        <span class="company_address">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
-                        <span class="company_phone"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
+                        <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
+                        <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                     </li>
                     <li class="cheat">&nbsp;</li>
                 </ul>
@@ -24,8 +24,8 @@
                             <span class="company_name">$item.companyName</span>
                         </li>
                         <li class="result_line2">
-                            <span class="company_address">$item.visitingAddress, $item.visitingZip $item.visitingCity</span>
-                            <span class="company_phone">$!{item.phoneNumber}</span>
+                            <span class="col_1">$item.visitingAddress, $item.visitingZip $item.visitingCity</span>
+                            <span class="col_2">$!{item.phoneNumber}</span>
                         </li>
                         <li class="company_result_borderline">&nbsp;</li>
                     #end
@@ -35,8 +35,8 @@
                 <div id="company_result_footer">
                     <ul>
                         <li class="result_line2">
-                            <span class="company_address"></span>
-                            <span class="company_phone"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
+                            <span class="col_1"></span>
+                            <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                         </li>
                         <li class="cheat">&nbsp;</li>
                     </ul>
