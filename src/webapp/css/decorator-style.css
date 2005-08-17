@@ -85,18 +85,13 @@ a {
     border: solid 1px #AEABAB;
 }
 
-#company_result .cheat {
-    font-size: 0.1em;
-    clear:both;
-}
-
 #company_result_heading {
     background-color: #DEDACE;
     width: 390px;
     margin-left: 20px;
     margin-bottom: 10px;
     border: solid 1px #AEABAB;
-    padding: 5px 0
+    padding: 4px 0
 }
 
 .search_query_h1 {
@@ -122,7 +117,7 @@ a {
 
 /* li class */
 .result_line1 {
-    padding-top: 9px;
+    padding-top: 6px;
 }
 
 /* li class */
@@ -138,6 +133,12 @@ a {
 
 .float_clear {
     clear: both;
+}
+
+.float_clear_border {
+    clear: both;
+    padding-top: 4px;
+    border-bottom: solid 1px #DAD9D9;
 }
 
 .col_1 {

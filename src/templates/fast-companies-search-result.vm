@@ -27,7 +27,7 @@
                             <span class="col_1">$item.visitingAddress, $item.visitingZip $item.visitingCity</span>
                             <span class="col_2">$!{item.phoneNumber}</span>
                         </li>
-                        <li class="company_result_borderline">&nbsp;</li>
+                        <div class="float_clear_border"></div>
                     #end
                 </ul>
             </div>
