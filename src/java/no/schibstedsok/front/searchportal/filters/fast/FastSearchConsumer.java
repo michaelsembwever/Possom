@@ -3,8 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.filters.fast;
 
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.Collection;
 
 import javax.servlet.ServletResponse;
@@ -221,14 +220,20 @@ public class FastSearchConsumer extends SearchConsumer {
 
 			try {
 
-				Template template = Velocity.getTemplate(templateName);
+                Writer w = new StringWriter();
+
+                Template template = Velocity.getTemplate(templateName);
 				
 				VelocityContext context = new VelocityContext();
 				context.put("result", results);
-				template.merge(context, myWriterRef);
+				template.merge(context, w);
 				log.debug("Merged template: " + templateName);
 
-			} catch (Exception e1) {
+                w.close();
+
+                myWriterRef.write(w.toString());
+
+            } catch (Exception e1) {
 				e1.printStackTrace();
 			}
 			
@@ -253,7 +258,6 @@ public class FastSearchConsumer extends SearchConsumer {
 		}
 
 		private void printToServletResponse(Object results, ServletResponse responseRef, String template) throws IOException {
-
 			printVelocityToWriter(results, responseRef.getWriter(), template);
 	        responseRef.getWriter().flush();
 

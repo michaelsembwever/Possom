@@ -5,6 +5,7 @@ package no.schibstedsok.front.searchportal.filters.sensis;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.io.StringWriter;
 import java.util.Collection;
 
 import javax.servlet.ServletResponse;
@@ -169,14 +170,18 @@ public class SensisSearchConsumer extends SearchConsumer {
 			
 			try {
 
-				Template template = Velocity.getTemplate(templateName);
+                Writer w = new StringWriter();
+
+                Template template = Velocity.getTemplate(templateName);
 				VelocityContext context = new VelocityContext();
 				context.put("result", results);
-				template.merge(context, myWriterRef);
+				template.merge(context, w);
 				if(log.isDebugEnabled())
 						log.debug("Merged Velocity-template: " + templateName);
-				
-			} catch (Exception e1) {
+                w.close();
+                myWriterRef.write(w.toString());
+
+            } catch (Exception e1) {
 				// TODO: handle this exception
 				e1.printStackTrace();
 			}
