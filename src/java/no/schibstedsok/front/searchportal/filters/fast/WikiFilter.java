@@ -36,6 +36,12 @@ public final class WikiFilter extends AsynchronusBaseFilter {
 		configuration.setCollection(SearchConstants.WIKI_COLLECTION);
 		configuration.setTemplate(VelocityTemplates.WIKI_COLLECTION_SEARCH);
 		configuration.setDocsToReturn(1);
+        
+        //Do a wikititle exact match
+        StringBuffer buf = new StringBuffer("wikititle:^");
+        buf.append(configuration.getQuery());
+        buf.append("$");
+        configuration.setQuery(buf.toString());
 		
 		// start this search in separate thread
         doSearch(response, configuration, request);
