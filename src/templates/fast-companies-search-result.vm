@@ -14,7 +14,7 @@
                         <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
                         <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                     </li>
-                    <li class="cheat">&nbsp;</li>
+                    <div class="float_clear"></div>
                 </ul>
             </div>
             <div id="company_result">
@@ -38,7 +38,7 @@
                             <span class="col_1"></span>
                             <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                         </li>
-                        <li class="cheat">&nbsp;</li>
+                        <div class="float_clear"></div>
                     </ul>
                 </div>
             #end
