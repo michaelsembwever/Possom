@@ -26,9 +26,6 @@ public interface CommandResponse {
     public Collection getResults();
     public void setResults(Collection values);
 
-    public void setConsequtiveSearchStartsAt(int endIndex);     //where to start next search
-    public int getConsequtiveSearchStartsAt();
-	
 	/**
 	 * 
 	 * Keep track of where in the searchReults

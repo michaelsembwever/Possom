@@ -127,7 +127,6 @@ public class FastConnectorCommand implements ConnectorCommand {
             response.setFetchTime(System.currentTimeMillis() - timer);
             response.setDocumentsReturned(response.getResults().size());
             response.setTotalDocumentsAvailable(queryResult.getDocCount());
-            response.setConsequtiveSearchStartsAt(i + configuration.getOffSet());
 
             PagingDisplayHelper pager = new PagingDisplayHelper(queryResult.getDocCount());
             pager.setCurrentOffset(configuration.getOffSet());
@@ -306,14 +305,6 @@ public class FastConnectorCommand implements ConnectorCommand {
 //			log.debug("HandleResult() took: " + (System.currentTimeMillis() - timer) + "msec.");
 //		}
         return i - wiki - media;	//concurrent search should not take wiki or media into account in resultset..
-    }
-
-
-    private void setConsequtiveSearch(IQueryResult queryResult, int i) {
-        // Set a pointer to the next document
-        if(queryResult.getDocCount() > getMaxResultsToReturn() ) {
-            response.setConsequtiveSearchStartsAt(i);
-        }
     }
 
     private void setSpellingSuggestion(IQueryResult queryResult) {

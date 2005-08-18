@@ -27,8 +27,6 @@ public class SearchResponseImpl implements CommandResponse {
 
     private Collection results = new ArrayList();
 
-    private int consequtiveSearchStartsAt;
-	
 	private String query;
 
     private PagingDisplayHelper pager;
@@ -127,25 +125,6 @@ public class SearchResponseImpl implements CommandResponse {
      */
 	public void setTotalDocumentsAvailable(int totalDocumentsAvailable) {
         this.totalDocumentsAvailable = totalDocumentsAvailable;
-    }
-
-    /**
-     * 
-     * Get a pointer to where in resultset we are currently.
-     * Use for next search to inidicate offset in index.
-     * 
-     * @return the offset in index we are at.
-     *  
-     */
-	public int getConsequtiveSearchStartsAt() {
-        return consequtiveSearchStartsAt;
-    }
-
-    /**
-     * Set offset in index.
-     */
-	public void setConsequtiveSearchStartsAt(int consequtiveSearchStartsAt) {
-        this.consequtiveSearchStartsAt = consequtiveSearchStartsAt;
     }
 
 	/** 

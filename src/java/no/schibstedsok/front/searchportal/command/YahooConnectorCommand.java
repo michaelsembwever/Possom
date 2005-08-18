@@ -94,7 +94,6 @@ public class YahooConnectorCommand implements ConnectorCommand {
                 response.setFetchTime(System.currentTimeMillis() - timer);
                 response.setDocumentsReturned(i);
                 response.setTotalDocumentsAvailable(results.getTotalResultsAvailable().intValue());
-                response.setConsequtiveSearchStartsAt(i + 1);
                 response.setResults(list);
 
             } else if (getDirective().equalsIgnoreCase("cached")) {

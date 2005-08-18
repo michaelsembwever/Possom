@@ -43,19 +43,7 @@
                         <p/>
                     #end
                     <p class="kilde">Nerdscore: $result.getFetchTime() ms</p>
-                    #if($result.getTotalDocumentsAvailable() > $result.getConsequtiveSearchStartsAt())
-                        Next ->
-                        #set( $steps = $result.getTotalDocumentsAvailable()/10)
-                        #if($steps > 10)
-                            #set( $steps = 10)
-                        #end
-                        #foreach( $step in [0..$steps] )
-                            #set($offset = $result.getConsequtiveSearchStartsAt() + 10 * $step)
-                            #set($count = $step + 1)
-                            <a href="?c=g&q=$result.getQuery()&offset=$offset">$count</a>&nbsp;
-                        #end
                 </div>
-                    #end
             </content>
 
         #end

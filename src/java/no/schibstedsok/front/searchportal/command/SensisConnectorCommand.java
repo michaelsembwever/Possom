@@ -108,8 +108,7 @@ public class SensisConnectorCommand extends FastConnectorCommand implements Conn
 	            
 				i = handleResult(queryResult, results, i);
 
-				setConsequtiveSearch(queryResult, i);
-				setSpellingSuggestion(queryResult); 
+				setSpellingSuggestion(queryResult);
 				
 				if(log.isDebugEnabled()){
 					Iterator navigators = queryResult.navigators();
@@ -172,13 +171,6 @@ public class SensisConnectorCommand extends FastConnectorCommand implements Conn
 //			log.debug("Sensis handleResult() took: " + (System.currentTimeMillis() - timer) + "msec.");
 		
 		return i;
-	}
-
-	private void setConsequtiveSearch(IQueryResult queryResult, int i) {
-		// Set a pointer to the next document
-		if(queryResult.getDocCount() > getMaxResultsToReturn() ) {
-		    response.setConsequtiveSearchStartsAt(i);				
-		}
 	}
 
 	private void setSpellingSuggestion(IQueryResult queryResult) {

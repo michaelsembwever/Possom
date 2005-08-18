@@ -166,8 +166,6 @@ public class OvertureConnectorCommand implements ConnectorCommand {
             response.setDocumentsReturned(results.size());
             //TODO: get the total documents from xml as well
             // response.setTotalDocumentsAvailable();
-            //TODO: get the starting positon for new search
-            //response.setConsequtiveSearchStartsAt(postions)
             response.setResults(results);
             
             

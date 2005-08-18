@@ -123,7 +123,6 @@ public class FastSearchConsumer extends SearchConsumer {
 				connector.execute(fastCommand, configuration);
 
 				FastSearchResponseImpl searchResponse = (FastSearchResponseImpl) fastCommand.getResponse();
-//				System.out.println(searchResponse.getConsequtiveSearchStartsAt());
 				print(searchResponse, configuration.getTemplate());
 
 			} finally {

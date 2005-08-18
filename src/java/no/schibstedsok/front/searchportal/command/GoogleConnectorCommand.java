@@ -86,7 +86,6 @@ public class GoogleConnectorCommand implements ConnectorCommand {
                 response = new SearchResponseImpl();
                 response.setFetchTime(System.currentTimeMillis() - timer);
                 response.setDocumentsReturned(list.size());
-                response.setConsequtiveSearchStartsAt(r.getEndIndex());
                 response.setTotalDocumentsAvailable(r.getEstimatedTotalResultsCount());
                 response.setResults(list);
 

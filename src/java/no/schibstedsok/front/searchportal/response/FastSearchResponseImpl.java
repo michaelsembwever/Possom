@@ -94,9 +94,7 @@ public class FastSearchResponseImpl extends SearchResponseImpl {
                 this.spellingSuggestions).append("documentsReturned",
                 this.getDocumentsReturned()).append("fetchTime",
                 this.getFetchTime()).append("result", this.getResults()).append(
-                "totalDocumentsAvailable", this.getTotalDocumentsAvailable())
-                .append("consequtiveSearchStartsAt",
-                        this.getConsequtiveSearchStartsAt()).toString();
+                "totalDocumentsAvailable", this.getTotalDocumentsAvailable()).toString();
     }
 
     /**

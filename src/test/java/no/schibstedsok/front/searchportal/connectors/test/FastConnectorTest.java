@@ -74,53 +74,6 @@ public class FastConnectorTest extends TestCase {
 //		System.out.println(command.getResponse());
 	}
 
-	public void testOffestStart() {
-
-		ConnectorCommand command = new FastConnectorCommand();
-
-		//	make sure this query returns more than 200 docs or so for the tests!
-		configuration.setQuery("Elvis Presley");	
-        configuration.setDocsToReturn(10);
-		configuration.setOffSet(0);
-//		
-//        FastConnector.getInstance().execute(command, configuration);
-//		assertEquals(11, command.getResponse().getConsequtiveSearchStartsAt());
-//		assertEquals(10, command.getResponse().getDocumentsReturned());
-//		
-//		configuration.setDocsToReturn(100);
-//		configuration.setOffSet(0);
-//
-//        FastConnector.getInstance().execute(command, configuration);
-//		assertEquals(101, command.getResponse().getConsequtiveSearchStartsAt());
-//		assertEquals(100, command.getResponse().getDocumentsReturned());
-//		
-		
-		configuration.setDocsToReturn(10);
-		configuration.setOffSet(10);
-
-        FastConnector.getInstance().execute(command, configuration);
-		assertEquals(21, command.getResponse().getConsequtiveSearchStartsAt());
-		assertEquals(10, command.getResponse().getDocumentsReturned());
-		
-		configuration.setDocsToReturn(10);
-		configuration.setOffSet(34);
-
-        FastConnector.getInstance().execute(command, configuration);
-		assertEquals(45, command.getResponse().getConsequtiveSearchStartsAt());
-		
-		configuration.setDocsToReturn(10);
-		configuration.setOffSet(151);
-
-        FastConnector.getInstance().execute(command, configuration);
-		assertEquals(162, command.getResponse().getConsequtiveSearchStartsAt());
-		
-//		configuration.setDocsToReturn(10);
-//		configuration.setOffSet((1890);
-//
-//        FastConnector.getInstance().execute(command, configuration);
-//		assertEquals(1901, command.getResponse().getConsequtiveSearchStartsAt());
-		
-	}
 	
 	public void testDoQuery() {
 
