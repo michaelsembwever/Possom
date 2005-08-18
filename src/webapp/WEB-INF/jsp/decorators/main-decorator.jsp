@@ -1,3 +1,4 @@
+<%@ page import="no.schibstedsok.front.searchportal.util.SearchConstants"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%
@@ -99,8 +100,15 @@
 
                     <!-- Companies -->
                     <%if(collection.equals("y")){%>
-                       <decorator:getProperty property="page.companies-results"/>
+
+                    <%if(request.getParameter("companyId") != null) {%>
+                    <decorator:getProperty property="page.infopage"/>
+                    <%} else {%>
+                    <decorator:getProperty property="page.companies-results"/>
                     <%}%>
+                    <%}%>
+
+
 
                     <!-- Media index -->
                     <%if(collection.equals("m")){%>

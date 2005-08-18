@@ -1,0 +1,17 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+
+<body bgcolor="#eeeeff">
+
+<h1>Infopage</h1>
+
+#set ($company = $result.getCompaniesResults().get(0))
+
+<content tag="infopage">
+$company.getCompanyName()
+</content>
+
+</body>
+</html>

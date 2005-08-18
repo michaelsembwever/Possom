@@ -28,5 +28,6 @@ public final class VelocityTemplates {
 	public static final String TV_SEARCH = "tv-enrich.vm";
 
     public static final String COMPANIES_COLLECTION_SEARCH = "fast-companies-search-result.vm";
-	
+
+    public static final String INFOPAGE = "infopage.vm";
 }

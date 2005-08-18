@@ -55,4 +55,5 @@ public final class SearchConstants {
 	
 	public static final String 	STD_CONTENT_TYPE = "text/html";
 
+    public static final String FAST_COMPANY_ID_FIELD = "ypnavn";
 }

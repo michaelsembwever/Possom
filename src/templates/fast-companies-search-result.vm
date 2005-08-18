@@ -21,7 +21,9 @@
                 <ul>
                     #foreach ($item in $result.getCompaniesResults())
                         <li class="result_line1">
-                            <span class="company_name">$item.companyName</span>
+
+
+                            <span class="company_name"><a href="$baseUrl&amp;companyid=$item.companyName">$item.companyName</a></span>
                         </li>
                         <li class="result_line2">
                             <span class="col_1">$item.visitingAddress, $item.visitingZip $item.visitingCity</span>
