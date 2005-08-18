@@ -34,6 +34,12 @@ public class CompaniesFilter extends AsynchronusBaseFilter {
         configuration.setCollection(SearchConstants.COMPANIES_COLLECTION);
         configuration.setTemplate(VelocityTemplates.COMPANIES_COLLECTION_SEARCH);
 
+        if (request.getParameter("companyId") != null) {
+            filterConfig.getServletContext().log("Trying to find specific company");
+            configuration.setQuery(SearchConstants.FAST_COMPANY_ID_FIELD + ":" + request.getParameter("companyId"));
+            configuration.setTemplate(VelocityTemplates.INFOPAGE);
+        }
+
         // start this search in separate thread
         doSearch(response, configuration, request);
 
