@@ -49,44 +49,42 @@
         </content>
 
         <content tag="media-collection-results">
-            <div class="sokeresultat">
-
+            <div id="search_result">
                 #foreach( $item in $result.getRetrieverResults())
-                <a href="$item.url">$item.title</a> $!item.getNewsSource()
-                <span class="tidspunkt">
-                      #if ($item.getDocumentAgeDays() == 1)
-                          $item.getDocumentAgeDays() dag
-                      #end
-                      #if ($item.getDocumentAgeDays() > 1)
-                          $item.getDocumentAgeDays() dager
-                      #end
-                      #if ($item.getDocumentAgeHours() == 1)
-                          $item.getDocumentAgeHours() time
-                      #end
-                      #if ($item.getDocumentAgeHours() > 1)
-                          $item.getDocumentAgeHours() timer
-                      #end
-                      #if ($item.getDocumentAgeHours() == 0)
-                          #if ($item.getDocumentAgeDays() == 0)
-                              #if ($item.getDocumentAgeMinutes == 1)
-                                $item.getDocumentAgeMinutes() minutt
-                              #end
-                              #if ($item.getDocumentAgeMinutes > 1)
-                                $item.getDocumentAgeMinutes() minutter
-                              #end
-                          #end
-                      #end
-                gammel
-                </span>
-                <br/>
-                $item.summary
-                <br/>
-                <a class="litenUrl" href="$item.url">$item.clickUrl</a>
-                <p/>
+                    <p>
+                        <a href="$item.url" class="bigUrl">$item.title</a> $!item.getNewsSource()
+                        <span class="tidspunkt">
+                            #if ($item.getDocumentAgeDays() == 1)
+                                $item.getDocumentAgeDays() dag
+                            #end
+                            #if ($item.getDocumentAgeDays() > 1)
+                                $item.getDocumentAgeDays() dager
+                            #end
+                            #if ($item.getDocumentAgeHours() == 1)
+                                $item.getDocumentAgeHours() time
+                            #end
+                            #if ($item.getDocumentAgeHours() > 1)
+                                $item.getDocumentAgeHours() timer
+                            #end
+                            #if ($item.getDocumentAgeHours() == 0)
+                                #if ($item.getDocumentAgeDays() == 0)
+                                    #if ($item.getDocumentAgeMinutes == 1)
+                                        $item.getDocumentAgeMinutes() minutt
+                                    #end
+                                    #if ($item.getDocumentAgeMinutes > 1)
+                                        $item.getDocumentAgeMinutes() minutter
+                                    #end
+                                #end
+                            #end
+                            gammel
+                        </span>
+                        <div class="search_result_summary">$item.summary</div>
+                        <a class="smallUrl" href="$item.url">$item.clickUrl</a>
+                    </p>
                 #end
-              </div>
-
+            </div>
         </content>
+
         ## Nasty shortcut. The collection we've searched should be available from the $result
         <content tag="more-results-m">
             #set ($tab = "m")
