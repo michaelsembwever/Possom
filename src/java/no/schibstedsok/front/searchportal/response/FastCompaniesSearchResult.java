@@ -33,10 +33,10 @@ public class FastCompaniesSearchResult extends FastSearchResult {
         companyName =  getSummaryField(summary, "ypnavn");
         address = getSummaryField(summary, "ypadresse");
         address2 = getSummaryField(summary, "ypadresse2");
-        postalCode = getSummaryField(summary, "yppostnr");
+        postalCode = getSummaryField(summary, "ywpostnr");
         postalCode2 = getSummaryField(summary, "yppostnr2");
-        city = getSummaryField(summary, "yppoststed");
-        city2 = getSummaryField(summary, "yppoststed");
+        city = getSummaryField(summary, "ywpoststed");
+        city2 = getSummaryField(summary, "ywpoststed");
         phoneNumber = getSummaryField(summary, "yptelefon");
     }
 
