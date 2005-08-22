@@ -58,6 +58,16 @@
             </properties>
         </dependency>
 
+        <dependency>
+            <groupId>maven-plugins</groupId>
+            <artifactId>maven-axis-plugin</artifactId>
+            <version>0.7</version>
+            <type>plugin</type>
+            <properties>
+                <eclipse.dependency>false</eclipse.dependency>
+            </properties>
+        </dependency>
+
 
         <!-- Logging -->
         <dependency>
@@ -107,6 +117,52 @@
             </properties>
         </dependency>
 
+        <!-- Apache Axis -->
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.2.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-discovery</groupId>
+            <artifactId>commons-discovery</artifactId>
+            <version>0.2</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-saaj</artifactId>
+            <version>1.2.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-wsdl4j</artifactId>
+            <version>1.2.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
+            <version>1.2.1</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
 
         <!-- Web -->
         <dependency>
@@ -200,6 +256,7 @@
                 <war.bundle>false</war.bundle>
             </properties>
         </dependency>
+
 
 
     </dependencies>
