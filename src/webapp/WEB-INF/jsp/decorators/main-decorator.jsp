@@ -43,7 +43,7 @@
         <img src="../images/menu/logo.gif" id="logo" alt="logo" />
 
         <table cellpadding="0" cellspacing="0" border="0" id="table_menu">
-            <tr><td class="first_cell"><a href="?c=d&amp;q=<%=q%>"><img src="../images/menu/magic.gif" class="menu_img" alt="Link til magisk søk" /></a><a href="?c=m&amp;q=<%=q%>"><img src="../images/menu/news.gif" class="menu_img" alt="link til nyheter" /></a><a href="?c=y&amp;q=<%=q%>"><img src="../images/menu/yp.gif" class="menu_img" alt="link til gule data" /></a><img src="../images/menu/wp.gif" class="menu_img" alt="link til hvite sider" /><a href="?c=g&amp;q=<%=q%>"><img src="../images/menu/sensis.gif" class="menu_img_last" alt="link til verden søk" /></a></td></tr>
+            <tr><td class="first_cell"><a href="?c=d&amp;q=<%=q%>"><img src="../images/menu/magic.gif" class="menu_img" alt="Link til magisk søk" /></a><a href="?c=m&amp;q=<%=q%>"><img src="../images/menu/news.gif" class="menu_img" alt="link til nyheter" /></a><a href="?c=y&amp;q=<%=q%>"><img src="../images/menu/yp.gif" class="menu_img" alt="link til gule data" /></a><img src="../images/menu/wp.gif" class="menu_img" alt="link til hvite sider" /><a href="?c=g&amp;q=<%=q%>"><img src="../images/menu/sensis.gif" class="menu_img" alt="link til verden søk" /></a><a href="#"><img src="../images/menu/picture.gif" class="menu_img_last" alt="Link til bilde søk" /></a></td></tr>
 
             <tr>
                 <td style="background-image: url(<%=menu_line%>); background-repeat: repeat-x;">&nbsp;</td>
