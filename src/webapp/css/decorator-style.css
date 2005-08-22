@@ -17,7 +17,6 @@ img { border: none; }
 
 a {
     color: #446DA2;
-    font-size: 1.1em;
 }
 
 .link_style {
@@ -55,7 +54,7 @@ a {
 #table_footer {
     width: 780px;
     margin-top: 40px;
-    font-size: 1.1em;
+    font-size: 1.2em;
     color: #003880;
 }
 
@@ -153,6 +152,36 @@ a {
 }
 
 
+/* ------------------------------------------------------------------ */
+/* =SEARCH-RESULT */
+
+#search_result {
+    margin-left: 20px;
+}
+
+#search_result p {
+    margin-top: 13px;
+}
+
+.search_hits {
+    color: #007AC8;
+    padding-bottom: 5px;
+    border-bottom: solid 1px #007AC8;
+    margin-bottom: 10px;
+}
+
+.search_result_summary {
+    margin-top: 3px;
+}
+
+.bigUrl {
+    font-size: 1.3em;
+}
+
+.smallUrl {
+    font-size: 0.9em;
+    color: #5A6623;
+}
 
 
 
