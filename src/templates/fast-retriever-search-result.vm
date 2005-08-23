@@ -7,45 +7,43 @@
     <body>
 
         <content tag="media-enriched">
-            <div class="beriketNyheter">
-                <a href="" class="beriketTittel">TREFF I NYHETER</a><br/>
-                <div class="beriketInnrykk">
+            <div class="enriched_title">
+                <a href="" class="beriketTittel">TREFF I NYHETER</a>
+                <ul>
                     #foreach( $item in $result.getRetrieverResults())
                         #if ($velocityCount <= 3)
-                            <a href="$item.url">$item.title</a> $item.getNewsSource()
-                            <span class="tidspunkt">
-                                #if ($item.getDocumentAgeDays() == 1)
-                                    $item.getDocumentAgeDays() dag
-                                #end
-                                #if ($item.getDocumentAgeDays() > 1)
-                                    $item.getDocumentAgeDays() dager
-                                #end
-                                #if ($item.getDocumentAgeHours() == 1)
-                                    $item.getDocumentAgeHours() time
-                                #end
-                                #if ($item.getDocumentAgeHours() > 1)
-                                    $item.getDocumentAgeHours() timer
-                                #end
-                                #if ($item.getDocumentAgeHours() == 0)
-                                    #if ($item.getDocumentAgeDays() == 0)
-                                        #if ($item.getDocumentAgeMinutes == 1)
-                                            $item.getDocumentAgeMinutes() minutt
-                                        #end
-                                        #if ($item.getDocumentAgeMinutes > 1)
-                                            $item.getDocumentAgeMinutes() minutter
+                            <li>
+                                <a href="$item.url">$item.title</a> $item.getNewsSource()
+                                <span class="tidspunkt">
+                                    #if ($item.getDocumentAgeDays() == 1)
+                                        $item.getDocumentAgeDays() dag
+                                    #end
+                                    #if ($item.getDocumentAgeDays() > 1)
+                                        $item.getDocumentAgeDays() dager
+                                    #end
+                                    #if ($item.getDocumentAgeHours() == 1)
+                                        $item.getDocumentAgeHours() time
+                                    #end
+                                    #if ($item.getDocumentAgeHours() > 1)
+                                        $item.getDocumentAgeHours() timer
+                                    #end
+                                    #if ($item.getDocumentAgeHours() == 0)
+                                        #if ($item.getDocumentAgeDays() == 0)
+                                            #if ($item.getDocumentAgeMinutes == 1)
+                                                $item.getDocumentAgeMinutes() minutt
+                                            #end
+                                            #if ($item.getDocumentAgeMinutes > 1)
+                                                $item.getDocumentAgeMinutes() minutter
+                                            #end
                                         #end
                                     #end
-                                #end
-                                gammel
-                            </span>
-                            <br/>
+                                    gammel
+                                </span>
+                            </li>
                         #end
                     #end
-                </div>
-              </div>
-                ## Nasty shortcut. The collection we've searched should be available from the $result
-                ##set ($tab = "m")
-                ##parse("verbosePager.vm")
+                </ul>
+            </div>
         </content>
 
         <content tag="media-collection-results">
