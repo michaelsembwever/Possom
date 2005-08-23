@@ -2,23 +2,30 @@
 	<head>
 		<meta name="decorator" content="maindecorator">
 	</head>
-<body bgcolor="#eeeeff">
+    <body bgcolor="#eeeeff">
 
-#if ($result.getResults().size() > 0)
-<content tag="tv-results">
-  <div class="beriketTv">
-  	<a href="" class="beriketTittel">TREFF I TV</a><br/>
-    <div class="beriketInnrykk">
-	#foreach( $item in $result.getResults())
-		#if ($velocityCount <= 3)
-			<a href="http://interaktiv.vg.no/tv/tv.php?type=html&max=24&kanal=$item.getCode()&starttime=$item.getStartTime()">$item.getName()</a> #if ($item.isReprise()) (reprise) #end<br/>
-			 $item.getChannel() KL: $item.getFormattedStartTime() $!item.getDescription()<br/>
-		#end
-	#end
-  	</div>
-  </div>
-</content>
-#end
+        #if ($result.getResults().size() > 0)
+            <content tag="tv-results">
+                <div class="enriched_title">
+                    <a href="" class="beriketTittel">TREFF I TV</a>
+                    <ul>
+                        #foreach( $item in $result.getResults())
+                            #if ($velocityCount <= 3)
+                                <li>
+                                    <a href="http://interaktiv.vg.no/tv/tv.php?type=html&max=24&kanal=$item.getCode()&starttime=$item.getStartTime()">
+                                        $item.getName()
+                                    </a>
+                                    #if ($item.isReprise())
+                                        (reprise)
+                                    #end
+                                </li>
+                                <li>$item.getChannel() KL: $item.getFormattedStartTime() $!item.getDescription()</li>
+                            #end
+                        #end
+                    </ul>
+                </div>
+            </content>
+        #end
 
-</body>
+    </body>
 </html>
