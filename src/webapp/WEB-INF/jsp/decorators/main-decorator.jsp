@@ -77,6 +77,10 @@
 
                     <!-- Senis Beriket -->
                     <%if(collection.equals("d")){%>
+
+                        <!-- TV Beriket -->
+                        <decorator:getProperty property="page.tv-results" />
+
                         <decorator:getProperty property="page.sensis-enriched" />
 
                         <!-- Nyheter Beriket -->
@@ -84,9 +88,6 @@
 
                         <!-- Wiki Beriket -->
                         <decorator:getProperty property="page.wiki-enriched" />
-
-                        <!-- TV Beriket -->
-                        <decorator:getProperty property="page.tv-results" />
 
                         <!-- Webinnhold -->
                         <decorator:getProperty property="page.fast-results" />
