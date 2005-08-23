@@ -13,10 +13,11 @@
 
         <content tag="spelling-suggestions">
             #if($result.getSpellingSuggestions())
-                <span class="stavekontroll">Mente du:</span>
-                #foreach($suggestion in $result.getSpellingSuggestions())
-                  <em><a href="?q=$suggestion">$suggestion</a>?</em><br/>
-                #end
+                <div class="spelling_suggestion">Mente du:
+                    #foreach($suggestion in $result.getSpellingSuggestions())
+                      <em><a href="?q=$suggestion">$suggestion</a>?</em>
+                    #end
+                </div>
             #end
         </content>
 
@@ -27,14 +28,29 @@
                 </div>
                 #foreach( $item in $result.getResults() )
                     <p>
-                        <a href="$item.url" class="bigUrl"><strong>$item.title</strong></a>
-                        <div class="search_result_summary">$item.summary</div>
+                        <a href="$item.url" class="bigUrl"><strong>$item.title</strong></a><br />
+                        $item.summary<br />
                         <a class="smallUrl" href="$item.url">$item.clickUrl</a>
                     </p>
                 #end
                 <p class="kilde">Nerdscore: $result.getFetchTime() ms</p>
             </div>
         </content>
+
+        #if($result.getResults().size() > 0)
+            <content tag="sensis-enriched">
+                <div class="enriched_title">
+                    <a href="?c=g&amp;q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a>
+                    <ul>
+                        #foreach( $item in $result.getResults() )
+                            #if ($velocityCount <= 3)
+                                <li><a href="$item.url" class="beriketUrl">$item.title</a><span class="litenUrl"> $item.url</span></li>
+                            #end
+                        #end
+                    </ul>
+                </div>
+            </content>
+        #end
 
         <content tag="more-results-d">
             #set ($tab = "d")
