@@ -3,15 +3,16 @@
 		<meta name="decorator" content="maindecorator">
 	</head>
 
-<body bgcolor="#eeeeff">
-<content tag="wiki-enriched">
-#foreach( $item in $result.getWikiResult())
-    <div class="boksTittel">FRA LEKSIKONET</div>
-    <div class="boksInnhold">
-	  <a href="$item.url"><strong>$item.getTitle()</strong></a>
-	  <br/>
-	  $item.getSummary().replaceAll("</{0,1}[bB]>", "")
-    </div>
-#end
-</content>
-</body>
+    <body bgcolor="#eeeeff">
+        <content tag="wiki-enriched">
+            #foreach( $item in $result.getWikiResult())
+                <div class="enriched_title">
+                    FRA LEKSIKONET<br />
+                    <a href="$item.url"><strong>$item.getTitle()</strong></a>
+                    <br />
+                    $item.getSummary().replaceAll("</{0,1}[bB]>", "")
+                </div>
+            #end
+        </content>
+    </body>
+</html>
