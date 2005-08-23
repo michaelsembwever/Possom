@@ -109,6 +109,8 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 			filterString = "+meta.collection:" + SearchConstants.WIKI_COLLECTION;
         else if (SearchConstants.COMPANIES_COLLECTION.equals(collection))
             filterString = "+meta.collection:" + SearchConstants.COMPANIES_COLLECTION;
+        else if (SearchConstants.PERSONS_COLLECTION.equals(collection))
+            filterString = "+meta.collection:" + SearchConstants.PERSONS_COLLECTION;
         else if(SearchConstants.DEFAULTCOLLECTION.equals(collection))
 			filterString = "";	//forces a collection wide search
 

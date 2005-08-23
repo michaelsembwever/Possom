@@ -41,6 +41,7 @@ public class FastSearchResponseImpl extends SearchResponseImpl {
 
     /** The company results */
     private List companiesResults = new ArrayList();
+    private List personsResults = new ArrayList();
 
     public int getCompaniesDocumentsInIndex() {
         return companiesDocumentsInIndex;
@@ -225,5 +226,13 @@ public class FastSearchResponseImpl extends SearchResponseImpl {
 
     public void setCompaniesDocumentsInIndex(int companiesDocumentsInIndex) {
         this.companiesDocumentsInIndex = companiesDocumentsInIndex;
+    }
+
+    public void addPersonsResult(SearchResultElement result) {
+        personsResults.add(result);
+    }
+
+    public List getPersonsResults() {
+        return personsResults;
     }
 }

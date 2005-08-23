@@ -232,6 +232,8 @@ public class FastConnectorCommand implements ConnectorCommand {
             i =  resultsFromWikiCollection(queryResult, i, timer);
         else if(configuration.getCollection().equals(SearchConstants.COMPANIES_COLLECTION))
             i =  resultsFromCompaniesCollection(queryResult, i);
+        else if(configuration.getCollection().equals(SearchConstants.PERSONS_COLLECTION))
+            i =  resultsFromPersonsCollection(queryResult, i);
         return i;
     }
 
@@ -248,6 +250,21 @@ public class FastConnectorCommand implements ConnectorCommand {
         for (; i <= getMaxResultsToReturn(); i++) {
             SearchResultElement result = new FastWikiSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
             response.addWikiResult(result);
+        }
+        return i;
+    }
+
+    private int resultsFromPersonsCollection(IQueryResult queryResult, int i) {
+
+        for (; i <= getMaxResultsToReturn(); i++) {
+            SearchResultElement result = null;
+            try {
+                result = new FastPersonsSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
+                response.addPersonsResult(result);
+            } catch (IndexOutOfBoundsException e) {
+                log.debug("Result set exhausted.");
+                return i;
+            }
         }
         return i;
     }

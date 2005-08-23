@@ -96,7 +96,12 @@
 
                     <!-- Webinnhold Global index -->
                     <%if(collection.equals("g")){%>
-                        <decorator:getProperty property="page.global-results" />
+                    <decorator:getProperty property="page.global-results" />
+                    <%}%>
+
+                    <!-- Persons -->
+                    <%if(collection.equals("w")){%>
+                    <decorator:getProperty property="page.persons-results" />
                     <%}%>
 
                     <!-- Companies -->
@@ -128,8 +133,10 @@
                 <decorator:getProperty property="page.more-results-g"/>
             <%}else if(collection.equals("y")){%>
                 <decorator:getProperty property="page.more-results-y"/>
+            <%}else if(collection.equals("w")){%>
+            <decorator:getProperty property="page.more-results-w"/>
             <%}else if(collection.equals("m")){%>
-                <decorator:getProperty property="page.more-results-m"/>
+            <decorator:getProperty property="page.more-results-m"/>
             <%}%>
 
             <tr>

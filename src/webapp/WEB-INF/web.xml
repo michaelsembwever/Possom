@@ -97,19 +97,32 @@
 	<param-value>false</param-value>
   </init-param>
 </filter>
-	
-<filter>
-    <filter-name>Companies</filter-name>
-    <filter-class>no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter</filter-class>
-    <init-param>
-        <param-name>max-wait-time</param-name>
-        <param-value>0</param-value>
-    </init-param>
-    <init-param>
-        <param-name>standardPipeline</param-name>
-        <param-value>false</param-value>
-    </init-param>
-</filter>
+
+    <filter>
+        <filter-name>Companies</filter-name>
+        <filter-class>no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter</filter-class>
+        <init-param>
+            <param-name>max-wait-time</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>standardPipeline</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
+
+    <filter>
+        <filter-name>Persons</filter-name>
+        <filter-class>no.schibstedsok.front.searchportal.filters.fast.FastPersonsFilter</filter-class>
+        <init-param>
+            <param-name>max-wait-time</param-name>
+            <param-value>0</param-value>
+        </init-param>
+        <init-param>
+            <param-name>standardPipeline</param-name>
+            <param-value>false</param-value>
+        </init-param>
+    </filter>
 
 <!-- Set up the filter chain, the filters are applied in the listed order -->
 <filter-mapping>
@@ -173,11 +186,17 @@
 </filter-mapping>
 -->
 
-<filter-mapping>
-    <filter-name>Companies</filter-name>
-    <url-pattern>/search/*</url-pattern>
-    <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
+    <filter-mapping>
+        <filter-name>Companies</filter-name>
+        <url-pattern>/search/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>Persons</filter-name>
+        <url-pattern>/search/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
 
     <!-- UNUSED FILTER MAPPINGS -->
 <!--

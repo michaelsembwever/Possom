@@ -89,7 +89,7 @@ public class FastSearchResult extends SearchResultElement {
         setSummary(summary.getSummaryField("body").getSummary());
         if (summary.getSummaryField("title").getSummary() != null)
             setTitle(summary.getSummaryField("title").getSummary());
-        else {
+        else if (summary.getSummaryField("url").getSummary() != null) {
             int length = summary.getSummaryField("url").getSummary().length();
             if (length > 50)
                 setTitle(summary.getSummaryField("url").getSummary().substring(0, 50) + "...");

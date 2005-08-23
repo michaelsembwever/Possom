@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+
+    <body>
+
+        <content tag="persons-results">
+            #set ($baseURL = "?c=w&amp;q=$result.getQuery()")
+            <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
+            <div id="company_result_heading">
+                <ul>
+                    <li class="result_line2">
+                        <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
+                        <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
+                    </li>
+                    <li class="float_clear"></li>
+                </ul>
+            </div>
+            <div id="company_result">
+                <ul>
+                    #foreach ($item in $result.getPersonsResults())
+                        <li class="result_line1">
+                            <span class="company_name">$item.name</span>
+                        </li>
+                        <li class="result_line2">
+                            <span class="col_1">$!{item.address}, $!{item.zip} $!{item.city}</span>
+                            <span class="col_2">$!{item.phoneNumber}</span>
+                        </li>
+                        <li class="float_clear_border"></li>
+                    #end
+                </ul>
+            </div>
+            #if ($result.getPager().getNumberOfPages() > 1)
+                <div id="company_result_footer">
+                    <ul>
+                        <li class="result_line2">
+                            <span class="col_1"></span>
+                            <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
+                        </li>
+                        <li class="float_clear"></li>
+                    </ul>
+                </div>
+            #end
+        </content>
+
+        <content tag="more-results-w">
+            #set ($tab = "w")
+            #parse("verbosePager.vm")
+        </content>
+
+    </body>
+</html>

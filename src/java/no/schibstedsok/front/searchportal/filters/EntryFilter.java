@@ -13,10 +13,7 @@ import javax.servlet.ServletResponse;
 
 import no.schibstedsok.front.searchportal.analyzer.Analyzer;
 import no.schibstedsok.front.searchportal.analyzer.AnalyzerEngine;
-import no.schibstedsok.front.searchportal.filters.fast.WebCrawlFilter;
-import no.schibstedsok.front.searchportal.filters.fast.MediaCollectionFilter;
-import no.schibstedsok.front.searchportal.filters.fast.WikiFilter;
-import no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter;
+import no.schibstedsok.front.searchportal.filters.fast.*;
 import no.schibstedsok.front.searchportal.filters.sensis.SensisFilter;
 import no.schibstedsok.front.searchportal.util.ProcessList;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
@@ -169,6 +166,8 @@ public final class EntryFilter extends BaseFilter {
 			return SensisFilter.class.getName();
         if (string.equals(SearchConstants.REQUEST_PARAM_COMPANIES_INDEX))
             return CompaniesFilter.class.getName();
+        if (string.equals(SearchConstants.REQUEST_PARAM_PERSONS_INDEX))
+            return FastPersonsFilter.class.getName();
         else return null;
 	}
 

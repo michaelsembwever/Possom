@@ -56,4 +56,7 @@ public final class SearchConstants {
 	public static final String 	STD_CONTENT_TYPE = "text/html";
 
     public static final String FAST_COMPANY_ID_FIELD = "ypnavn";
+    public static final String PERSONS_COLLECTION = "white";
+
+    public static final Object REQUEST_PARAM_PERSONS_INDEX = "w";
 }

@@ -38,9 +38,9 @@ public final class WikiFilter extends AsynchronusBaseFilter {
 		configuration.setDocsToReturn(1);
         
         //Do a wikititle exact match
-        StringBuffer buf = new StringBuffer("wikititle:^");
+        StringBuffer buf = new StringBuffer("wikititle:");
         buf.append(configuration.getQuery());
-        buf.append("$");
+//        buf.append("$");
         configuration.setQuery(buf.toString());
 		
 		// start this search in separate thread
