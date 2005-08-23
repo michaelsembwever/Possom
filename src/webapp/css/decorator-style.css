@@ -33,7 +33,7 @@ a {
 /* padding between tabs */
 .menu_img { margin-right: 10px; }
 
-#search_form { padding: 10px 0 10px 0; }
+#search_form { padding: 10px 0 0 0; }
 
 #table_menu {
     width: 780px;
@@ -156,7 +156,7 @@ a {
 /* =SEARCH-RESULT */
 
 #search_result {
-    margin-left: 20px;
+    margin: 10px 0 0 20px;
 }
 
 #search_result p {
@@ -181,6 +181,17 @@ a {
 .smallUrl {
     font-size: 0.9em;
     color: #5A6623;
+}
+
+/* ------------------------------------------------------------------ */
+/* =ENRICHMENT */
+
+.enriched_title, .spelling_suggestion {
+    margin: 10px 0 0 20px;
+}
+
+.enriched_title ul {
+    margin-left: 40px;
 }
 
 
