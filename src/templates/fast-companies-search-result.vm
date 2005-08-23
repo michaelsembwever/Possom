@@ -14,7 +14,7 @@
                         <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
                         <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                     </li>
-                    <div class="float_clear"></div>
+                    <li class="float_clear"></li>
                 </ul>
             </div>
             <div id="company_result">
@@ -26,10 +26,10 @@
                             <span class="company_name"><a href="$baseURL&amp;companyId=$item.companyName">$item.companyName</a></span>
                         </li>
                         <li class="result_line2">
-                            <span class="col_1">$item.visitingAddress, $item.visitingZip $item.visitingCity</span>
+                            <span class="col_1">$!{item.visitingAddress}, $!{item.visitingZip} $!{item.visitingCity}</span>
                             <span class="col_2">$!{item.phoneNumber}</span>
                         </li>
-                        <div class="float_clear_border"></div>
+                        <li class="float_clear_border"></li>
                     #end
                 </ul>
             </div>
@@ -40,7 +40,7 @@
                             <span class="col_1"></span>
                             <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
                         </li>
-                        <div class="float_clear"></div>
+                        <li class="float_clear"></li>
                     </ul>
                 </div>
             #end
