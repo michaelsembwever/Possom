@@ -89,14 +89,6 @@ public class FastConnectorCommand implements ConnectorCommand {
             setUpSearchParameters(params);
             response.setQuery(getQueryString());
 
-            if ("yellow".equals(configuration.getCollection())) {
-                params.setParameter(new SearchParameter("query", getCompositePhoneticQuery("yellowphon", getQueryString())));
-            }
-            if ("white".equals(configuration.getCollection())) {
-                params.setParameter(new SearchParameter("query", getCompositePhoneticQuery("whitephon", getQueryString())));
-            }
-
-
             Query query = new Query(params);
 
             IQueryResult queryResult = doSearch(query);
@@ -169,13 +161,12 @@ public class FastConnectorCommand implements ConnectorCommand {
 
     private void setUpSearchParameters(ISearchParameters params) {
 
-        params.setParameter(new SearchParameter(BaseParameter.QUERY, getQueryString()));
         params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
         params.setParameter(new SearchParameter(BaseParameter.FILTER, configuration.constructCollectionFilter()));
         params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, configuration.getLanguage()));
         params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
         params.setParameter(new SearchParameter(BaseParameter.NAVIGATION_HITS, configuration.getDocsToReturn()));
-        params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, true));
+//        params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, true));
         params.setParameter(new SearchParameter(BaseParameter.NAVIGATION, true));
         params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, true));
         if(configuration.isSpellcheck())
@@ -184,6 +175,16 @@ public class FastConnectorCommand implements ConnectorCommand {
         if(configuration.getNavigatorString() != null &! "".equals(configuration.getNavigatorString())) {
             params.setParameter(new SearchParameter(BaseParameter.NAVIGATORS, configuration.getNavigatorString()));
         }
+
+        if ("yellow".equals(configuration.getCollection())) {
+            params.setParameter(new SearchParameter(BaseParameter.QUERY, getCompositePhoneticQuery("yellowphon", getQueryString())));
+        } else if ("white".equals(configuration.getCollection())) {
+            params.setParameter(new SearchParameter(BaseParameter.QUERY, getCompositePhoneticQuery("whitephon", getQueryString())));
+            params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, false));
+        } else {
+            params.setParameter(new SearchParameter(BaseParameter.QUERY, getQueryString()));
+        }
+
 
 //		if (log.isDebugEnabled()) {
 //			try {
@@ -403,7 +404,7 @@ public class FastConnectorCommand implements ConnectorCommand {
         StringBuffer newQuery = new StringBuffer();
 
         for (int i = 0; i < tokens.length; i++) {
-            if (! tokens[i].contains(":")) {
+            if (tokens[i].indexOf(":") == -1) {
                 newQuery.append(prefix).append(":");
             }
 
