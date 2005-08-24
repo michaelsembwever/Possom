@@ -161,6 +161,7 @@ public class FastConnectorCommand implements ConnectorCommand {
 
     private void setUpSearchParameters(ISearchParameters params) {
 
+
         params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
         params.setParameter(new SearchParameter(BaseParameter.FILTER, configuration.constructCollectionFilter()));
         params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, configuration.getLanguage()));
@@ -169,18 +170,26 @@ public class FastConnectorCommand implements ConnectorCommand {
 //        params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, true));
         params.setParameter(new SearchParameter(BaseParameter.NAVIGATION, true));
         params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, true));
-        if(configuration.isSpellcheck())
+        if(configuration.isSpellcheck()) {
            params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));
+        }
+
+
 
         if(configuration.getNavigatorString() != null &! "".equals(configuration.getNavigatorString())) {
             params.setParameter(new SearchParameter(BaseParameter.NAVIGATORS, configuration.getNavigatorString()));
         }
 
+        if ("wikipedia".equals(configuration.getCollection())) {
+            params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, false));
+        }
         if ("yellow".equals(configuration.getCollection())) {
             params.setParameter(new SearchParameter(BaseParameter.QUERY, getCompositePhoneticQuery("yellowphon", getQueryString())));
+            params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "yellowpages"));
         } else if ("white".equals(configuration.getCollection())) {
             params.setParameter(new SearchParameter(BaseParameter.QUERY, getCompositePhoneticQuery("whitephon", getQueryString())));
             params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, false));
+            params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "whitepages"));
         } else {
             params.setParameter(new SearchParameter(BaseParameter.QUERY, getQueryString()));
         }

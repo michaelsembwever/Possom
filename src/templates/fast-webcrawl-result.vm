@@ -37,21 +37,6 @@
             </div>
         </content>
 
-        #if($result.getResults().size() > 0)
-            <content tag="sensis-enriched">
-                <div class="enriched_title">
-                    <a href="?c=g&amp;q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a>
-                    <ul>
-                        #foreach( $item in $result.getResults() )
-                            #if ($velocityCount <= 3)
-                                <li><a href="$item.url" class="beriketUrl">$item.title</a><span class="litenUrl"> $item.url</span></li>
-                            #end
-                        #end
-                    </ul>
-                </div>
-            </content>
-        #end
-
         <content tag="more-results-d">
             #set ($tab = "d")
             #parse("verbosePager.vm")

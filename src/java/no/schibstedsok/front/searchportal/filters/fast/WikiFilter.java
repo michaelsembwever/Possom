@@ -42,8 +42,8 @@ public final class WikiFilter extends AsynchronusBaseFilter {
         buf.append(configuration.getQuery());
 //        buf.append("$");
         configuration.setQuery(buf.toString());
-		
-		// start this search in separate thread
+
+        // start this search in separate thread
         doSearch(response, configuration, request);
 
         

@@ -50,6 +50,15 @@ public class PagingDisplayHelperTest extends TestCase {
 
         assertEquals(11, pager.getFirstVisiblePage());
         assertEquals(20, pager.getLastVisiblePage());
+
+        pager.setNumberOfResults(93);
+        pager.setCurrentOffset(0);
+
+        assertEquals(10, pager.getOffsetOfNextPage());
+        assertEquals(10, pager.getOffsetOfPage(2));
+
+        assertEquals(10, pager.getNumberOfPages());
+        assertEquals(10, pager.getLastVisiblePage());
     }
 
     public void testPaging() {

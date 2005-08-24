@@ -55,7 +55,7 @@ public class PagingDisplayHelper {
     }
 
     public int getOffsetOfPage(int page) {
-        return (page - 1) * (pageSize + 1);
+        return (page - 1) * (pageSize);
     }
 
     public int getFirstVisiblePage() {

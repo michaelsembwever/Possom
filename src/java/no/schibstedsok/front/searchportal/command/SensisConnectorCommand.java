@@ -75,10 +75,10 @@ public class SensisConnectorCommand extends FastConnectorCommand implements Conn
 
             ISearchParameters params = new SearchParameters(
                     new SearchParameter(BaseParameter.QUERY, getQueryString()));
-			params.setParameter(new SearchParameter(BaseParameter.FILTER, config.constructCollectionFilter()));
+            params.setParameter(new SearchParameter(BaseParameter.FILTER, config.constructCollectionFilter()));
             params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, config.getLanguage()));
             params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
-			params.setParameter(new SearchParameter(BaseParameter.NAVIGATION_HITS, config.getDocsToReturn()));
+            params.setParameter(new SearchParameter(BaseParameter.NAVIGATION_HITS, config.getDocsToReturn()));
             params.setParameter(new SearchParameter(BaseParameter.NAVIGATORS, config.getNavigatorString()));
             if(config.isSpellcheck())
                params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));

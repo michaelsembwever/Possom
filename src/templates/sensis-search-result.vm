@@ -13,7 +13,7 @@
         </content>
 
         <content tag="sensis-enriched">
-            <div class="beriketVerden">
+            <div class="enriched_title">
                 <a href="?s=g&q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a><br/>
                 <div class="beriketInnrykk">
                     #foreach( $item in $result.getResults() )
