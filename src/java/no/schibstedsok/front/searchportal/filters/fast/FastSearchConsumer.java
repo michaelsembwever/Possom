@@ -152,7 +152,7 @@ public class FastSearchConsumer extends SearchConsumer {
 //					log.debug(element.getTitle());
 //				}
 //			}
-			
+
 		}
 
 //		private void printAll(FastSearchResponseImpl searchResponse) throws IOException {
@@ -174,6 +174,7 @@ public class FastSearchConsumer extends SearchConsumer {
 //		private void printWiki(FastSearchResponseImpl searchResponse) throws IOException {
 //			if (searchResponse.getWikiResult() != null && searchResponse.getWikiResult().size() > 0) {
 //				printResults(searchResponse.getWikiResult(), SearchConstants.WIKI_TEMPLATE_FILE);
+
 //			}
 //		}
 

@@ -24,7 +24,7 @@
                             <span class="company_name">$item.name</span>
                         </li>
                         <li class="result_line2">
-                            <span class="col_1">$!{item.address}, $!{item.zip} $!{item.city}</span>
+                            <span class="col_1">$!{item.address}#if ($item.address && ($item.zip || $item.city)),#end $!{item.zip} $!{item.city}</span>
                             <span class="col_2">$!{item.phoneNumber}</span>
                         </li>
                         <li class="float_clear_border"></li>

@@ -6,6 +6,8 @@ package no.schibstedsok.front.searchportal.response;
 
 import no.fast.ds.search.IDocumentSummary;
 
+import java.util.StringTokenizer;
+
 /**
  *
  * This class holds a search result element for the "yellow" collection.
@@ -18,11 +20,8 @@ public class FastCompaniesSearchResult extends FastSearchResult {
     private String companyName;
 
     private String address;
-    private String address2;
     private String postalCode;
-    private String postalCode2;
     private String city;
-    private String city2;
     private String phoneNumber;
 
     public FastCompaniesSearchResult(IDocumentSummary summary) {
@@ -32,11 +31,8 @@ public class FastCompaniesSearchResult extends FastSearchResult {
     protected void populateFields(IDocumentSummary summary) {
         companyName =  getSummaryField(summary, "ypnavn");
         address = getSummaryField(summary, "ypadresse");
-        address2 = getSummaryField(summary, "ypadresse2");
         postalCode = getSummaryField(summary, "ywpostnr");
-        postalCode2 = getSummaryField(summary, "yppostnr2");
         city = getSummaryField(summary, "ywpoststed");
-        city2 = getSummaryField(summary, "ywpoststed");
         phoneNumber = getSummaryField(summary, "yptelefon");
     }
 
@@ -47,7 +43,7 @@ public class FastCompaniesSearchResult extends FastSearchResult {
      * @return The visiting address.
      */
     public String getVisitingAddress() {
-        return address2 != null ? address2 : address;
+        return address;
     }
 
     /**
@@ -57,7 +53,7 @@ public class FastCompaniesSearchResult extends FastSearchResult {
      * @return The zip code.
      */
     public String getVisitingZip() {
-        return postalCode2 != null ? postalCode2 : postalCode;
+        return postalCode;
     }
 
     /**
@@ -67,7 +63,7 @@ public class FastCompaniesSearchResult extends FastSearchResult {
      * @return The city name.
      */
     public String getVisitingCity() {
-        return city2 != null ? city2 : city;
+        return city;
     }
 
     /**

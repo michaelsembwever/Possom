@@ -26,7 +26,7 @@
                             <span class="company_name"><a href="$baseURL&amp;companyId=$item.companyName">$item.companyName</a></span>
                         </li>
                         <li class="result_line2">
-                            <span class="col_1">$!{item.visitingAddress}, $!{item.visitingZip} $!{item.visitingCity}</span>
+                            <span class="col_1">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</span>
                             <span class="col_2">$!{item.phoneNumber}</span>
                         </li>
                         <li class="float_clear_border"></li>

@@ -89,6 +89,14 @@ public class FastConnectorCommand implements ConnectorCommand {
             setUpSearchParameters(params);
             response.setQuery(getQueryString());
 
+            if ("yellow".equals(configuration.getCollection())) {
+                params.setParameter(new SearchParameter("query", getCompositePhoneticQuery("yellowphon", getQueryString())));
+            }
+            if ("white".equals(configuration.getCollection())) {
+                params.setParameter(new SearchParameter("query", getCompositePhoneticQuery("whitephon", getQueryString())));
+            }
+
+
             Query query = new Query(params);
 
             IQueryResult queryResult = doSearch(query);
@@ -387,4 +395,25 @@ public class FastConnectorCommand implements ConnectorCommand {
         return (FastSearchConfiguration)this.configuration;
     }
 
+
+    public String getCompositePhoneticQuery(String prefix, String query) {
+
+        String[] tokens = query.split("\\s");
+
+        StringBuffer newQuery = new StringBuffer();
+
+        for (int i = 0; i < tokens.length; i++) {
+            if (! tokens[i].contains(":")) {
+                newQuery.append(prefix).append(":");
+            }
+
+            newQuery.append(tokens[i]);
+
+            if (i < tokens.length - 1) {
+                newQuery.append(" ");
+            }
+        }
+
+        return newQuery.toString();
+    }
 }
