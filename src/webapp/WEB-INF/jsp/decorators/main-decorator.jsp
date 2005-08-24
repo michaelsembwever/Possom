@@ -24,6 +24,10 @@
         search_button_text = "BEDRIFTSØK";
         search_button_bgcolor = "#F6B331";
         menu_line = "../images/menu/menu_line_yp.gif";
+    } else if (collection.equals("w")) {
+        search_button_text = "PERSONSØK";
+        search_button_bgcolor = "#ACCB49";
+        menu_line = "../images/menu/menu_line_wp.gif";
     } else if (collection.equals("m")) {
         search_button_text = "NYHETSSØK";
         search_button_bgcolor = "#ED486B";
