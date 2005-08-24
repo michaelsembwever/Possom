@@ -28,7 +28,7 @@
         <content tag="global-results">
             <div id="search_result">
                 <div class="search_hits">
-                    $result.getTotalDocumentsAvailable() TREFF I NORGE
+                    $result.getTotalDocumentsAvailable() TREFF I VERDEN
                 </div>
                 #foreach( $item in $result.getResults() )
                     <p>
