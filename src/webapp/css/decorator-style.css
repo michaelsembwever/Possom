@@ -78,34 +78,83 @@ a {
 
 #company_result {
     color: #003880;
-    background-color: #F1ECDC;
-    width: 390px;
-    margin-left: 20px;
-    border: solid 1px #AEABAB;
+    background-color: #FFF;
 }
 
 #company_result_heading {
     background-color: #DEDACE;
     width: 390px;
-    margin-left: 20px;
+    margin-left: 10px;
     margin-bottom: 10px;
     border: solid 1px #AEABAB;
     padding: 4px 0
 }
 
-.search_query_h1 {
-    font-size: 1em;
-    font-weight: normal;
-    color: #000;
-    background-color: #fff;
-    margin: 10px 0 10px 20px;
+/* -- navigation table in yp page-- */
+#company_navbar {
+    margin: 10px 0 0 20px;
 }
 
-#company_result_footer {
-    background-color: #fff;
-    width: 390px;
-    margin-left: 20px;
+#company_navbar li {
+
+}
+
+#company_navbar ul {
+    background-color: #F2F2F4;
+    color: #003980;
+    border: 1px solid #DFDFDF;
+}
+
+#geo_col {
+    padding-top: 2px;
+}
+
+#nav_branch_ul div {
+    padding: 2px 5px;
+
+}
+
+#nav_branch_ul li {
+    border-bottom: 1px solid #DFDFDF;
+}
+
+.nav_geo_adr {
+    float: left;
+    width: 74%;
+    margin-left: 5px;
+}
+
+.nav_geo_hits {
+    float:right;
+    width: 18%;
+    margin-right: 5px;
+}
+
+.nav_branch_header {
+    background-color: #ECEDEF;
+    border: solid 1px #DFDFDF;
+    padding: 3px 5px;
+}
+
+
+.nav_geo_header {
+    background-color: #ECEDEF;
+    border: solid 1px #DFDFDF;
     margin-top: 10px;
+}
+
+
+.search_query_h1 {
+    font-size: 1em;
+    font-weight: bold;
+    color: #000;
+    background-color: #fff;
+}
+
+/* -- navigation table in yp page-- */
+
+#company_result_table {
+    margin: 10px 0 0 10px;
 }
 
 #company_result .company_result_borderline {
@@ -121,7 +170,9 @@ a {
 
 /* li class */
 .result_line2 {
-	width: 390px;
+	width: 100%;
+    background-repeat: repeat-x;
+    background-position: bottom
 }
 
 
@@ -149,6 +200,10 @@ a {
 .col_2 {
 	width: 22%;
 	float: right;
+}
+
+#map {
+    margin: 10px 0 0 10px;
 }
 
 
