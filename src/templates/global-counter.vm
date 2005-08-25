@@ -9,29 +9,6 @@
             $result.getTotalDocumentsAvailable()
         </content>
 
-        ## this is a hack due to wrong template being used!
-        ## only show if we are running the default index search
-        #if($result.getResults().size() > 0)
-
-            <content tag="global-results">
-                <p/>
-                <div class="sokeresultat">
-                    <div class="boksTittel">
-                        $result.getTotalDocumentsAvailable() TREFF I VERDEN
-                    </div>
-                    #foreach( $item in $result.getResults() )
-                        <a href="$item.url"><strong>$item.title</strong></a><br/>
-                        $item.summary
-                        <br/>
-                        <a class="litenUrl" href="$item.url">$item.clickUrl</a>
-                        <p/>
-                    #end
-                    <p class="kilde">Nerdscore: $result.getFetchTime() ms</p>
-                </div>
-            </content>
-
-        #end
-
     </body>
 </html>
 #end
