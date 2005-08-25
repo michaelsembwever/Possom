@@ -13,6 +13,7 @@ import no.schibstedsok.front.searchportal.filters.SearchConsumer;
 import no.schibstedsok.front.searchportal.filters.AsynchronusBaseFilter;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -55,6 +56,8 @@ public class CompaniesFilter extends AsynchronusBaseFilter {
      */
     private void doSearch(ServletResponse response, SearchConfiguration configuration, ServletRequest request) {
         final SearchConsumer w = new FastSearchConsumer(response,configuration);
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        w.setContextPath(httpServletRequest.getContextPath());
         startThread(w, request);
     }
 

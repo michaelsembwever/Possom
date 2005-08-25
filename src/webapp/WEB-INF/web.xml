@@ -242,16 +242,27 @@
 </filter>
 
 -->
-  <servlet>
-    <servlet-name>Nada BaseServlet</servlet-name>
-    <servlet-class>no.schibstedsok.front.searchportal.servlet.BaseServlet</servlet-class>
-    <load-on-startup>1</load-on-startup>
-  </servlet>
+    <servlet>
+      <servlet-name>Nada BaseServlet</servlet-name>
+      <servlet-class>no.schibstedsok.front.searchportal.servlet.BaseServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+    </servlet>
 
-  <servlet-mapping>
-    <servlet-name>Nada BaseServlet</servlet-name>
-    <url-pattern>/search/*</url-pattern>
-  </servlet-mapping>
+    <servlet-mapping>
+      <servlet-name>Nada BaseServlet</servlet-name>
+      <url-pattern>/search/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+      <servlet-name>MapServlet</servlet-name>
+      <servlet-class>no.schibstedsok.front.searchportal.servlet.MapServlet</servlet-class>
+      <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+      <servlet-name>MapServlet</servlet-name>
+      <url-pattern>/map/*</url-pattern>
+    </servlet-mapping>
 
 
   <welcome-file-list>

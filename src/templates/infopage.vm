@@ -10,7 +10,8 @@
 #set ($company = $result.getCompaniesResults().get(0))
 
 <content tag="infopage">
-$company.getCompanyName()
+    $company.getCompanyName()
+    <iframe src="$contextPath/map/?coords=$company.x,$company.y&amp;action=viewone" width="370" height="520"/>
 </content>
 
 </body>

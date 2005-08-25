@@ -24,6 +24,8 @@ public class FastCompaniesSearchResult extends FastSearchResult {
     private String city;
     private String phoneNumber;
     private String companyId;
+    private String x;
+    private String y;
 
 
     public FastCompaniesSearchResult(IDocumentSummary summary) {
@@ -37,6 +39,8 @@ public class FastCompaniesSearchResult extends FastSearchResult {
         city = getSummaryField(summary, "ywpoststed");
         phoneNumber = getSummaryField(summary, "yptelefon");
         companyId = getSummaryField(summary, "recordid");
+        x = getSummaryField(summary, "xcoord");
+        y = getSummaryField(summary, "ycoord");
     }
 
     /**
@@ -106,5 +110,13 @@ public class FastCompaniesSearchResult extends FastSearchResult {
 
     public void setCompanyId(String companyId) {
         this.companyId = companyId;
+    }
+
+    public String getX() {
+        return x;
+    }
+
+    public String getY() {
+        return y;
     }
 }
