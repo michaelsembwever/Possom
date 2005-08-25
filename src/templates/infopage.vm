@@ -11,7 +11,7 @@
 
 <content tag="infopage">
     $company.getCompanyName()
-    <iframe src="$contextPath/map/?coords=$company.x,$company.y&amp;action=viewone" width="370" height="520"/>
+    <img src="$contextPath/map/?coords=$company.x,$company.y&amp;action=viewone" width="350" height="500"/>
 </content>
 
 </body>

@@ -101,7 +101,6 @@ public class MapServlet extends HttpServlet {
         String token = new String();
         boolean retriveMapError = false;
         String sCoords = request.getParameter("coords");
-        System.out.println("Innsendte koordinater = "+sCoords);
         Vector vMapPoints = coordHelper.parseCoordString(sCoords);
         //Sjekk om det finnes noen koordinater, hvis ikke kan resten glemmes.
         if(!vMapPoints.isEmpty()){
@@ -128,12 +127,12 @@ public class MapServlet extends HttpServlet {
             else if(action.compareToIgnoreCase("viewmany") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
                 me = coordHelper.makeEnvelope(vMapPoints, imgWidth, imgHeigth, envFactor);
             }
+
             try {
                 token = authenticate();
                 sUrl = getUrl(token, me);
             }
             catch (ServiceException serviceExcep) {
-
             }
             catch (RemoteException remoteExcep){
 
@@ -147,20 +146,10 @@ public class MapServlet extends HttpServlet {
              * - kall webservice
               */
         }//if(!vMapPoints.isEmpty()){
-        out.println("<html>");
-        out.println("<body>");
-
-        //Lister opp UTM koordinater
-        MapPoint mp = new MapPoint();
-        for (int i = 0; i < vMapPoints.size(); i++){
-            mp = (MapPoint) vMapPoints.get(i);
-        }
 
         if (!retriveMapError){
-            out.println("<img width=\"350\" height=\"500\" src='" + sUrl + "'>");
+            response.sendRedirect(sUrl);
         }
-        else
-        out.close();
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
