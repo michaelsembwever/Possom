@@ -42,7 +42,7 @@ public class FastSearchConsumer extends SearchConsumer {
 	 * @param configuration
 	 */
 	public FastSearchConsumer(ServletResponse response, SearchConfiguration configuration) {
-		super(response, configuration);
+			super(response, configuration);
 	}
 
     /**
@@ -226,7 +226,8 @@ public class FastSearchConsumer extends SearchConsumer {
 				
 				VelocityContext context = new VelocityContext();
 				context.put("result", results);
-				template.merge(context, w);
+                context.put("contextPath", getContextPath());
+                template.merge(context, w);
 				log.debug("Merged template: " + templateName);
 
                 w.close();

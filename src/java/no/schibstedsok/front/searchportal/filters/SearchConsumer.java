@@ -27,7 +27,9 @@ public abstract class SearchConsumer implements Runnable {
     protected Writer myWriterRef = null;				// basic Writer instead of ServletResponse
     protected SearchConfiguration configuration = null;
 
-	Logger log = Logger.getLogger(this.getClass());
+    private String contextPath;
+
+    Logger log = Logger.getLogger(this.getClass());
 
 	/**
 	 * 
@@ -65,5 +67,12 @@ public abstract class SearchConsumer implements Runnable {
         return url;
 
     }
-	
- }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
+    }
+}
