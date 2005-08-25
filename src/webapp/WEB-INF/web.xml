@@ -36,7 +36,7 @@
  <filter-class>no.schibstedsok.front.searchportal.filters.sensis.SensisFilter</filter-class>
   <init-param>
 	<param-name>standardPipeline</param-name>
-	<param-value>false</param-value>
+	<param-value>true</param-value>
   </init-param>
 </filter>
 
@@ -66,7 +66,7 @@
 	<param-value>true</param-value>
   </init-param>
 </filter>
-       
+
 <filter>
  <filter-name>Media collection</filter-name>
  <filter-class>no.schibstedsok.front.searchportal.filters.fast.MediaCollectionFilter</filter-class>
@@ -79,7 +79,7 @@
 	<param-value>no.schibstedsok.front.searchportal.filters.tv.TvFilter</param-value>
   </init-param>
 </filter>
-              
+
 <filter>
  <filter-name>Wiki collection</filter-name>
  <filter-class>no.schibstedsok.front.searchportal.filters.fast.WikiFilter</filter-class>
@@ -88,7 +88,7 @@
 	<param-value>true</param-value>
   </init-param>
 </filter>
-              
+
 <filter>
  <filter-name>TV</filter-name>
  <filter-class>no.schibstedsok.front.searchportal.filters.tv.TvFilter</filter-class>
@@ -129,7 +129,7 @@
     <filter-name>sitemesh</filter-name>
     <url-pattern>/search/*</url-pattern>
 </filter-mapping>
-  
+
 <filter-mapping>
   <filter-name>Entry Filter</filter-name>
   <url-pattern>/search/*</url-pattern>
