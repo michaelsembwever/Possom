@@ -60,7 +60,7 @@
                 </tr>
 
                 <tr>
-                    <td class="first_cell">Fx frisør Pettersen Bogstadveien Oslo</td>
+                    <td class="first_cell">Eksempel frisør Pettersen Bogstadveien Oslo</td>
                 </tr>
             <%}%>
 
@@ -71,7 +71,7 @@
                         <input name="c" value="<%=collection%>" type="hidden" />
                         <input name="q" type="text" value="<%= q %>" size="50" />
                         <input type="submit" class="search_button" value="<%=search_button_text%>" style="background-color:<%=search_button_bgcolor%>" />
-                        <a href="#"><span class="link_style">Innstillinger</span></a>
+<%--                        <a href="#"><span class="link_style">Innstillinger</span></a>--%>
                     </form>
                 </td>
             </tr>
