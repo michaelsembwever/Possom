@@ -7,43 +7,97 @@
 
         <content tag="companies-results">
             #set ($baseURL = "?c=y&amp;q=$result.getQuery()")
-            <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
-            <div id="company_result_heading">
-                <ul>
-                    <li class="result_line2">
-                        <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
-                        <span class="col_2">#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</span>
-                    </li>
-                    <li class="float_clear"></li>
-                </ul>
-            </div>
-            <div id="company_result">
-                <ul>
-                    #foreach ($item in $result.getCompaniesResults())
-                        <li class="result_line1">
+            <table>
+                <tr>
+                    <td valign="top">
+                        <table id="company_navbar" width="200px">
+                            <tr>
+                                <td><h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1></td>
+                            </tr>
+                            <tr>
+                                <td><div class="nav_branch_header">Bransje/søkeordnavigator</div></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul id="nav_branch_ul">
+                                        <li><div>Nøkkelord 1</div></li>
+                                        <li><div>Nøkkelord 1</div></li>
+                                        <li><div>Nøkkelord 1</div></li>
+                                        <li><div>Nøkkelord 1</div></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><div class="nav_geo_header">Geografinavigator</div></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <ul id="geo_col">
+                                        <li>
+                                            <div>
+                                                <span class="nav_geo_adr">Alna</span>
+                                                <span class="nav_geo_hits">452</span>
+                                            </div>
+                                        </li>
+                                        <li class="float_clear_border"></li>
+                                        <li><div><span class="nav_geo_adr">Østensjø</span><span class="nav_geo_hits">333</span></div></li>
+                                        <li class="float_clear_border"></li>
+                                        <li><div><span class="nav_geo_adr">Nordstrand</span><span class="nav_geo_hits">245</span></div></li>
+                                        <li class="float_clear_border"></li>
+                                        <li><div><span class="nav_geo_adr">Nordre Aker</span><span class="nav_geo_hits">199</span></div></li>
+                                        <li class="float_clear_border"></li>
+                                        <li><div><span class="nav_geo_adr">Frogner</span><span class="nav_geo_hits">45</span></div></li>
+                                        <li class="float_clear_border"></li>
+                                    </ul>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+
+                    <td>
+                        <table id="company_result_table" width="500px">
+                            <tr><td><h1 class="search_query_h1">&nbsp;</h1></td></tr>
+                            <tr>
+                                <td>
+                                    ##<div id="company_result_heading">
+                                    <div class="nav_branch_header">
+                                        <ul>
+                                            <li class="result_line2">
+                                                <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
+                                                <span class="col_2">#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</span>
+                                            </li>
+                                            <li class="float_clear"></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div id="company_result">
+                                        <ul>
+                                            #foreach ($item in $result.getCompaniesResults())
+                                                <li class="result_line1">
 
 
-                            <span class="company_name"><a href="$baseURL&amp;companyId=$item.companyId">$item.companyName</a></span>
-                        </li>
-                        <li class="result_line2">
-                            <span class="col_1">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</span>
-                            <span class="col_2">$!{item.phoneNumber}</span>
-                        </li>
-                        <li class="float_clear_border"></li>
-                    #end
-                </ul>
-            </div>
-            #if ($result.getPager().getNumberOfPages() > 1)
-                <div id="company_result_footer">
-                    <ul>
-                        <li class="result_line2">
-                            <span class="col_1"></span>
-                            <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
-                        </li>
-                        <li class="float_clear"></li>
-                    </ul>
-                </div>
-            #end
+                                                    <span class="company_name"><a href="$baseURL&amp;companyId=$item.companyId">$item.companyName</a></span>
+                                                </li>
+                                                <li class="result_line2">
+                                                    <span class="col_1">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</span>
+                                                    <span class="col_2">$!{item.phoneNumber}</span>
+                                                </li>
+                                                <li class="float_clear_border"></li>
+                                            #end
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td>
+                        <img src="../images/kart.jpg" alt="kart" id="map" />
+                    </td>
+                </tr>
+            </table>
         </content>
 
         <content tag="more-results-y">
