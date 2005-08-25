@@ -25,7 +25,7 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 
 	//variables that you may override when doing a search using a SearchConfiguration.
 	private String qRServerURL = "http://localhost:15100"; 		//default overriden by QR_SERVER_PROPERTIES file
-	private static String template;								// Velocity Template
+	private String template;								// Velocity Template
 	private String language = "en"; 							//default, may be overriden by QR_SERVER_PROPERTIES file
 	private String collection;
 	private String collectionFilterString = "";					//"+meta.collection:";   //default, may be overriden by QR_SERVER_PROPERTIES file
@@ -36,17 +36,17 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 	long maxTime = 0L;
 	int docsToReturn;
 	int offSet;
-	
+
 	private static Properties properties;
-	
+
 	/**
 	 * Create a new SearchConfiguration.
-	 * 
+	 *
 	 * @param index
 	 */
 	public SensisFastSearchConfiguration() {
 
-		//		set up the search engine from property file QR_SERVER_PROPERTIES 
+		//		set up the search engine from property file QR_SERVER_PROPERTIES
 		//TODO: refactor to singleton pattern
         if(properties == null){
 	        try {
@@ -55,12 +55,12 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 				properties = new Properties();
 				properties.load(this.getClass().getResourceAsStream("/" + SearchConstants.SENSIS_PROPERTYFILE));
 				log.debug("loaded Sensis property file");
-				
+
 			} catch (IOException e) {
 	            e.printStackTrace();
 	            throw new RuntimeException("Unable to load configuration properties file: " + SearchConstants.FAST_PROPERTYFILE);
 			}
-			
+
         }
 
 		//set up defaults for qrserver, language etc.
@@ -76,26 +76,26 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 	public String getLanguage() {
 		return language;
 	}
-	
+
 	public void setLanguage(String language) {
 		this.language = language;
 	}
-		
+
 
 	public boolean isSpellcheck() {
 		return spellcheck;
 	}
-	
+
 
 	public void setSpellcheck(boolean spellcheck) {
 		this.spellcheck = spellcheck;
 	}
-	
-	/** 
-	 * 
+
+	/**
+	 *
 	 * Create a +meta.collection filter based on which collection we are looking at.
-	 * 
-	 * @param targetCollection 
+	 *
+	 * @param targetCollection
 	 * @return
 	 */
 	public String constructCollectionFilter() {
@@ -105,7 +105,7 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 	public String getQRServerURL() {
 		return qRServerURL;
 	}
-	
+
 
 	public void setQRServerURL(String serverURL) {
 		qRServerURL = serverURL;
@@ -114,7 +114,7 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 	public String getCollection() {
 		return collection;
 	}
-	
+
 
 	public void setCollection(String collection) {
 		this.collection = collection;
@@ -123,7 +123,7 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 	public String getNavigatorString() {
 		return navigatorString;
 	}
-	
+
 
 	public void setNavigatorString(String navigatorString) {
 		this.navigatorString = navigatorString;
@@ -132,37 +132,37 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 	public int getDocsToReturn() {
 		return docsToReturn;
 	}
-	
+
 
 	public void setDocsToReturn(int docsToReturn) {
 		this.docsToReturn = docsToReturn;
 	}
-	
+
 
 	public long getMaxTime() {
 		return maxTime;
 	}
-	
+
 
 	public void setMaxTime(long maxTime) {
 		this.maxTime = maxTime;
 	}
-	
+
 
 	public int getOffSet() {
 		return offSet;
 	}
-	
+
 
 	public void setOffSet(int offSet) {
 		this.offSet = offSet;
 	}
-	
+
 
 	public String getQuery() {
 		return query;
 	}
-	
+
 
 	public void setQuery(String query) {
 		this.query = query;
@@ -171,10 +171,10 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 	public String getTemplate() {
 		return template;
 	}
-	
+
 
 	public void setTemplate(String template) {
-		SensisFastSearchConfiguration.template = template;
+		this.template = template;
 	}
 
 	/**
@@ -189,10 +189,4 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 				this.getQRServerURL()).append("language", this.language)
 				.append("collection", this.collection).toString();
 	}
-
-	
-	
-	
-	
-
 }
