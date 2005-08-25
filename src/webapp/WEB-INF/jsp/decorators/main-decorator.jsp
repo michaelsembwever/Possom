@@ -101,41 +101,38 @@
             </tr>
         </table>
 
-        <table cellpadding="0" cellspacing="0" border="0" id="table_result">
-            <tr>
-                <td>
-                    <!-- Magic -->
-                    <%if(collection.equals("d")){%>
-                        <decorator:getProperty property="page.fast-results" />
-                    <%}%>
+        <div id="table_result">
 
-                     <!-- Media -->
-                    <%if(collection.equals("m")){%>
-	                    <decorator:getProperty property="page.media-collection-results" />
-                    <%}%>
+            <!-- Magic -->
+            <%if(collection.equals("d")){%>
+                <decorator:getProperty property="page.fast-results" />
+            <%}%>
 
-                    <!-- Companies -->
-                    <%if(collection.equals("y")){%>
-                        <%if(request.getParameter("companyId") != null) {%>
-                            <decorator:getProperty property="page.infopage"/>
-                        <%} else {%>
-                            <decorator:getProperty property="page.companies-results"/>
-                        <%}%>
-                    <%}%>
+             <!-- Media -->
+            <%if(collection.equals("m")){%>
+                <decorator:getProperty property="page.media-collection-results" />
+            <%}%>
 
-                    <!-- Persons -->
-                    <%if(collection.equals("w")){%>
-                        <decorator:getProperty property="page.persons-results" />
-                    <%}%>
+            <!-- Companies -->
+            <%if(collection.equals("y")){%>
+                <%if(request.getParameter("companyId") != null) {%>
+                    <decorator:getProperty property="page.infopage"/>
+                <%} else {%>
+                    <decorator:getProperty property="page.companies-results"/>
+                <%}%>
+            <%}%>
 
-                    <!-- Global -->
-                    <%if(collection.equals("g")){%>
-                        <decorator:getProperty property="page.global-results" />
-                    <%}%>
+            <!-- Persons -->
+            <%if(collection.equals("w")){%>
+                <decorator:getProperty property="page.persons-results" />
+            <%}%>
 
-                </td>
-            </tr>
-        </table>
+            <!-- Global -->
+            <%if(collection.equals("g")){%>
+                <decorator:getProperty property="page.global-results" />
+            <%}%>
+
+        </div>
 
         <table id="table_footer" cellspacing="0" cellpadding="0" width="100%">
             <%if(collection.equals("d")){%>
