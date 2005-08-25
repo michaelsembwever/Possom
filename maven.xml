@@ -1,0 +1,5 @@
+
+<preGoal name="java:compile">
+  <attainGoal name="axis:compile" />
+</preGoal>
+
