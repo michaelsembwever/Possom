@@ -53,29 +53,42 @@
         <div style="width: 100%; background-image: url(<%=menu_line%>); background-repeat: repeat-x;">&nbsp;</div>
 
         <table cellpadding="0" cellspacing="0" border="0" id="table_searchbox" class="page_margin_left">
-            <% if ( collection.equals("y") || collection.equals("w") ) { %>
-                <tr>
-                    <td id="header"><span id="form_header" style="color: <%=search_button_bgcolor%>">Søk etter hva og hvor</span></td>
-                </tr>
-
-                <tr>
-                    <% if ( collection.equals("y")) { %>
-                        <td>Eksempel: frisør Pettersen Bogstadveien Oslo</td>
-                    <% } else { %>
-                        <td>Eksempel: Per Pettersen Bogstadveien Oslo</td>
-                    <%}%>
-                </tr>
-            <%}%>
-
             <tr>
                 <td>
-                    <form name="sf" action="" id="search_form">
-                        <input name="lang" value="en" type="hidden" />
-                        <input name="c" value="<%=collection%>" type="hidden" />
-                        <input name="q" type="text" value="<%= q %>" size="50" />
-                        <input type="submit" class="search_button" value="<%=search_button_text%>" style="background-color:<%=search_button_bgcolor%>" />
-<%--                        <a href="#"><span class="link_style">Innstillinger</span></a>--%>
-                    </form>
+                    <ul id="content_searchform">
+                        <% if ( collection.equals("y") || collection.equals("w") ) { %>
+
+                            <li><div id="content_searchform_header" style="color: <%=search_button_bgcolor%>">Søk etter hva og hvor</div></li>
+
+                            <% if ( collection.equals("y")) { %>
+                                <li>Eksempel: frisør Pettersen Bogstadveien Oslo</li>
+                            <% } else { %>
+                                <li>Eksempel: Per Pettersen Bogstadveien Oslo</li>
+                            <%}%>
+
+                        <%} else if ( collection.equals("m")) {%>
+                            <li><div id="content_searchform_header" style="color: <%=search_button_bgcolor%>">Søk i Nyheter</div></li>
+                            <li>Velg hva du vil søke i:</li>
+                            <li>
+                                <input id="no" value="" checked="checked" type="radio" />
+                                <label for="no">Norske nyheter</label>
+                                <input id="nordic" value="" type="radio" class="radio_button" />
+                                <label for="nordic">Nordiske nyheter</label>
+                                <input id="int" value="" type="radio" class="radio_button" />
+                                <label for="int">Internasjonale nyheter</label>
+                            </li>
+                        <%}%>
+
+                        <li>
+                            <form name="sf" action="">
+                                <input name="lang" value="en" type="hidden" />
+                                <input name="c" value="<%=collection%>" type="hidden" />
+                                <input name="q" type="text" value="<%= q %>" size="50" />
+                                <input type="submit" class="search_button" value="<%=search_button_text%>" style="background-color:<%=search_button_bgcolor%>" />
+        <%--                        <a href="#"><span class="link_style">Innstillinger</span></a>--%>
+                            </form>
+                        </li>
+                    </ul>
                 </td>
             </tr>
         </table>
