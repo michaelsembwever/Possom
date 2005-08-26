@@ -5,79 +5,81 @@
 
     <body>
 
-        <content tag="companies-results">
-            #set ($baseURL = "?c=y&amp;q=$result.getQuery()")
-            <table id="company_result">
-                <tr>
-                    <td valign="top">
-                        <div id="navbar" class="page_margin_left">
-                            <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
-                            <div id="branch_header">Bransje/søkeordnavigator</div>
-                            <ul id="branch_list">
-                                <li><div>Nøkkelord 1</div></li>
-                                <li><div>Nøkkelord 1</div></li>
-                                <li><div>Nøkkelord 1</div></li>
-                                <li><div>Nøkkelord 1</div></li>
-                            </ul>
-                            <div id="geo_header">Geografinavigator</div>
-                            <dl>
-                                <dt>Alna</dt>
-                                <dd>452</dd>
-                                <dt>Østensjø</dt>
-                                <dd>333</dd>
-                                <dt>Nordstrand</dt>
-                                <dd>310</dd>
-                                <dt>Nordre Aker</dt>
-                                <dd>298</dd>
-                                <dt>Frogner</dt>
-                                <dd>50</dd>
-                            </dl>
-                        </div>
-                    </td>
+        #if ($result.getTotalDocumentsAvailable() > 0)
+            <content tag="companies-results">
+                #set ($baseURL = "?c=y&amp;q=$result.getQuery()")
+                <table id="company_result">
+                    <tr>
+                        <td valign="top">
+                            <div id="navbar" class="page_margin_left">
+                                <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
+                                <div id="branch_header">Bransje/søkeordnavigator</div>
+                                <ul id="branch_list">
+                                    <li><div>Nøkkelord 1</div></li>
+                                    <li><div>Nøkkelord 1</div></li>
+                                    <li><div>Nøkkelord 1</div></li>
+                                    <li><div>Nøkkelord 1</div></li>
+                                </ul>
+                                <div id="geo_header">Geografinavigator</div>
+                                <dl>
+                                    <dt>Alna</dt>
+                                    <dd>452</dd>
+                                    <dt>Østensjø</dt>
+                                    <dd>333</dd>
+                                    <dt>Nordstrand</dt>
+                                    <dd>310</dd>
+                                    <dt>Nordre Aker</dt>
+                                    <dd>298</dd>
+                                    <dt>Frogner</dt>
+                                    <dd>50</dd>
+                                </dl>
+                            </div>
+                        </td>
 
-                    <td>
-                        <table id="result_table" width="500px">
-                            <tr><td><h1 class="search_query_h1">&nbsp;</h1></td></tr>
-                            <tr>
-                                <td>
-                                    ##<div id="company_result_heading">
-                                    <div class="nav_branch_header">
-                                        <ul>
-                                            <li class="result_line2">
-                                                <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
-                                                <span class="col_2">#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</span>
-                                            </li>
-                                            <li class="float_clear"></li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div>
-                                        <ul>
-                                            #foreach ($item in $result.getCompaniesResults())
-                                                <li class="result_line1">
-                                                    <span class="company_name"><a href="$baseURL&amp;companyId=$item.companyId">$item.companyName</a></span>
-                                                </li>
+                        <td>
+                            <table id="result_table" width="500px">
+                                <tr><td><h1 class="search_query_h1">&nbsp;</h1></td></tr>
+                                <tr>
+                                    <td>
+                                        ##<div id="company_result_heading">
+                                        <div class="nav_branch_header">
+                                            <ul>
                                                 <li class="result_line2">
-                                                    <span class="col_1">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</span>
-                                                    <span class="col_2">$!{item.phoneNumber}</span>
+                                                    <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
+                                                    <span class="col_2">#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</span>
                                                 </li>
-                                                <li class="float_clear_border"></li>
-                                            #end
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td valign="top">
-                        <img src="../images/kart.jpg" alt="kart" id="map" />
-                    </td>
-                </tr>
-            </table>
-        </content>
+                                                <li class="float_clear"></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div>
+                                            <ul>
+                                                #foreach ($item in $result.getCompaniesResults())
+                                                    <li class="result_line1">
+                                                        <span class="company_name"><a href="$baseURL&amp;companyId=$item.companyId">$item.companyName</a></span>
+                                                    </li>
+                                                    <li class="result_line2">
+                                                        <span class="col_1">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</span>
+                                                        <span class="col_2">$!{item.phoneNumber}</span>
+                                                    </li>
+                                                    <li class="float_clear_border"></li>
+                                                #end
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td valign="top">
+                            <img src="../images/kart.jpg" alt="kart" id="map" />
+                        </td>
+                    </tr>
+                </table>
+            </content>
+        #end
 
         <content tag="more-results-y">
             #set ($tab = "y")
