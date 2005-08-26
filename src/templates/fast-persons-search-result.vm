@@ -7,41 +7,74 @@
 
         <content tag="persons-results">
             #set ($baseURL = "?c=w&amp;q=$result.getQuery()")
-            <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
-            <div id="company_result_heading">
-                <ul>
-                    <li class="result_line2">
-                        <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
-                        <span class="col_2">#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</span>
-                    </li>
-                    <li class="float_clear"></li>
-                </ul>
-            </div>
-            <div id="company_result">
-                <ul>
-                    #foreach ($item in $result.getPersonsResults())
-                        <li class="result_line1">
-                            <span class="company_name">$item.name</span>
-                        </li>
-                        <li class="result_line2">
-                            <span class="col_1">$!{item.address}#if ($item.address && ($item.zip || $item.city)),#end $!{item.zip} $!{item.city}</span>
-                            <span class="col_2">$!{item.phoneNumber}</span>
-                        </li>
-                        <li class="float_clear_border"></li>
-                    #end
-                </ul>
-            </div>
-            #if ($result.getPager().getNumberOfPages() > 1)
-                <div id="company_result_footer">
-                    <ul>
-                        <li class="result_line2">
-                            <span class="col_1"></span>
-                            <span class="col_2"><a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a></span>
-                        </li>
-                        <li class="float_clear"></li>
-                    </ul>
-                </div>
-            #end
+            <table id="person_result">
+                <tr>
+                    <td valign="top">
+                        <div id="navbar" class="page_margin_left">
+                            <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
+                            <div id="branch_header">Bransje/søkeordnavigator</div>
+                            <ul id="branch_list">
+                                <li><div>Nøkkelord 1</div></li>
+                                <li><div>Nøkkelord 1</div></li>
+                                <li><div>Nøkkelord 1</div></li>
+                                <li><div>Nøkkelord 1</div></li>
+                            </ul>
+                            <div id="geo_header">Geografinavigator</div>
+                            <dl>
+                                <dt>Alna</dt>
+                                <dd>452</dd>
+                                <dt>Østensjø</dt>
+                                <dd>333</dd>
+                                <dt>Nordstrand</dt>
+                                <dd>310</dd>
+                                <dt>Nordre Aker</dt>
+                                <dd>298</dd>
+                                <dt>Frogner</dt>
+                                <dd>50</dd>
+                            </dl>
+                        </div>
+                    </td>
+
+                     <td>
+                        <table id="result_table" width="500px">
+                            <tr><td><h1 class="search_query_h1">&nbsp;</h1></td></tr>
+                            <tr>
+                                <td>
+                                    ##<div id="company_result_heading">
+                                    <div class="nav_branch_header">
+                                        <ul>
+                                            <li class="result_line2">
+                                                <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
+                                                <span class="col_2">#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</span>
+                                            </li>
+                                            <li class="float_clear"></li>
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div>
+                                        <ul>
+                                            #foreach ($item in $result.getPersonsResults())
+                                                <li class="result_line1">
+                                                    <span class="company_name">$item.name</span>
+                                                </li>
+                                                <li class="result_line2">
+                                                    <span class="col_1">$!{item.address}#if ($item.address && ($item.zip || $item.city)),#end $!{item.zip} $!{item.city}</span>
+                                                    <span class="col_2">$!{item.phoneNumber}</span>
+                                                </li>
+                                                <li class="float_clear_border"></li>
+                                            #end
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
         </content>
 
         <content tag="more-results-w">
