@@ -15,6 +15,7 @@ import no.schibstedsok.front.searchportal.connectors.FastConnector;
 import no.schibstedsok.front.searchportal.filters.SearchConsumer;
 import no.schibstedsok.front.searchportal.response.FastSearchResponseImpl;
 import no.schibstedsok.front.searchportal.util.SearchConfiguration;
+import no.geodata.maputil.CoordHelper;
 
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -23,7 +24,7 @@ import org.apache.velocity.app.Velocity;
 
 /**
  * A FastSearchConsumer.
- * 
+ *
  * @author <a href="lars.johansson@conduct.no">Lars Johansson</a>
  * @version $Revision$
  */
@@ -31,13 +32,13 @@ public class FastSearchConsumer extends SearchConsumer {
 
 
 	Logger log = Logger.getLogger(this.getClass());
-	
+
 	//thread notification
 	private boolean available;
-	
+
     /**
 	 * Create a new FastSearchConsumer.
-	 * 
+	 *
 	 * @param response
 	 * @param configuration
 	 */
@@ -47,7 +48,7 @@ public class FastSearchConsumer extends SearchConsumer {
 
     /**
 	 * Create a new FastSearchConsumer.
-	 * 
+	 *
 	 * @param response
 	 * @param configuration
 	 */
@@ -63,14 +64,14 @@ public class FastSearchConsumer extends SearchConsumer {
 			SearchThread w = null;
 			if(myResponseRef != null) {
 				w = new SearchThread(myResponseRef, configuration);
-			} else {				
+			} else {
 				w = new SearchThread(myWriterRef, configuration);
 			}
-			
+
             final Thread thread = new Thread(w);
 
             thread.start();
-			
+
             /** TODO: Not sure if we need to wait for completion? */
             try {
                 while(!available){
@@ -79,26 +80,26 @@ public class FastSearchConsumer extends SearchConsumer {
             } catch (InterruptedException e) {
                 e.printStackTrace();
 				log.info("SearchThread interrupted");
-            } 
+            }
         }
     }
 
     /**
-     * 
+     *
      * Inner class implementing the Fast search
-     * 
-     * 
+     *
+     *
      * @author Lars Johansson
      *
      */
     public class SearchThread implements Runnable {
 
 		Logger log = Logger.getLogger(this.getClass());
-		
+
         FastConnectorCommand fastCommand = new FastConnectorCommand();
 
         ServletResponse myResponseRef = null;
-		
+
 		private int maxResults;
 
 		private String collection = null;
@@ -136,8 +137,8 @@ public class FastSearchConsumer extends SearchConsumer {
 			}
         }
 
-		/** 
-		 * 
+		/**
+		 *
 		 * @param searchResponse
 		 * @param template
 		 */
@@ -178,13 +179,13 @@ public class FastSearchConsumer extends SearchConsumer {
 //			}
 //		}
 
-		/** 
-		 * 
+		/**
+		 *
 		 * Prints a standard FAST result including timing info and documents returned.
-		 * 
+		 *
 		 * @param searchResponse
 		 * @param string
-		 * @throws IOException 
+		 * @throws IOException
 		 */
 		private void printResults(FastSearchResponseImpl searchResponse, String template) {
 
@@ -197,11 +198,11 @@ public class FastSearchConsumer extends SearchConsumer {
 			} else {
 				printVelocityToWriter(searchResponse, myWriterRef, template);
 			}
-			
+
 		}
 
 		private void printResults(Collection results, String template) {
-			
+
 			if (myResponseRef != null) {
 				try {
 					printToServletResponse(results, myResponseRef, template);
@@ -223,9 +224,10 @@ public class FastSearchConsumer extends SearchConsumer {
                 Writer w = new StringWriter();
 
                 Template template = Velocity.getTemplate(templateName);
-				
+
 				VelocityContext context = new VelocityContext();
-				context.put("result", results);
+                context.put("coordHelper", new CoordHelper());
+                context.put("result", results);
                 context.put("contextPath", getContextPath());
                 template.merge(context, w);
 				log.debug("Merged template: " + templateName);
