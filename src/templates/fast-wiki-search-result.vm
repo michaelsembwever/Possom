@@ -7,10 +7,10 @@
         <content tag="wiki-enriched">
             #foreach( $item in $result.getWikiResult())
                 <div class="enriched_title">
-                    FRA LEKSIKONET<br />
-                    <a href="$item.url"><strong>$item.getTitle()</strong></a>
-                    <br />
-                    $item.getSummary().replaceAll("</{0,1}[bB]>", "")
+                    <a href="$item.url">TREFF PÅ <b>$item.getTitle()</b> I LEKSIKONET (WIKIPEDIA)</a>
+                    <ul>
+                        <li>$item.getSummary().replaceAll("</{0,1}[bB]>", "")</li>
+                    </ul>
                 </div>
             #end
         </content>
