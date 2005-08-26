@@ -9,40 +9,57 @@ body {
 	background-color: #fff;
 }
 
-h1 { font-size: 1.4em; }
+h1 {
+    font-size: 1.4em;
+}
 
-li { list-style: none; }
+li {
+    list-style: none;
+}
 
-img { border: none; }
+img {
+    border: none;
+}
 
 a {
     color: #446DA2;
 }
 
-.link_style {
-	margin-left: 0.3em;
-	margin-right: 0.3em;
+/* used in main-decorator footer and verbose.vm */
+.text_align_center {
+    text-align: center;
+}
+
+/* the left margin on the page (replace 'first_cell') */
+.page_margin_left {
+    margin-left: 20px;
 }
 
 
 /* ------------------------------------------------------------------ */
 /* =MAIN-DECORATOR */
 
-#logo { margin: 10px 0 15px 20px; }
+#logo {
+    margin: 10px 0 15px 20px;
+}
 
 /* padding between tabs */
-.menu_img { margin-right: 10px; }
+.menu_img {
+    margin-right: 10px;
+}
 
-#search_form { padding: 10px 0 0 0; }
+#search_form {
+    padding: 10px 0 0 0;
+}
 
-#table_menu, #table_searchbox, #table_content, #table_enrichment, #table_result {
+#table_searchbox, #table_content, #table_enrichment, #table_result {
     width: 780px;
     font-size: 1.2em;
 }
 
-.first_cell {padding-left: 20px; }
-
-#header { padding-top: 10px; }
+#header {
+    padding-top: 10px;
+}
 
 .search_button {
 	background-color: #F6B331;
@@ -63,84 +80,107 @@ a {
     background-repeat: repeat-x;
 }
 
-.text_align_center {
-    text-align: center;
-}
 
 /* ------------------------------------------------------------------ */
 /* =FAST-COMPANIES-SEARCH-RESULT */
 
+/* -- the form header in the main-decorator page-- */
 #form_header {
     font-size: 1.4em;
     color: #F6B331;
     font-weight: bold;
 }
 
+/* -- the table which containg the 3 parts -- */
 #company_result {
     color: #003880;
     background-color: #FFF;
 }
 
-#company_result_heading {
-    background-color: #DEDACE;
-    width: 390px;
-    margin-left: 10px;
-    margin-bottom: 10px;
-    border: solid 1px #AEABAB;
-    padding: 4px 0
+/* -- the global navbar contender -- */
+#navbar {
+    width: 198px;
+    margin-top: 10px;
 }
 
-/* -- navigation table in yp page-- */
-#company_navbar {
-    margin: 10px 0 0 20px;
+#branch_header {
+    background-color: #ECEDEF;
+    border: solid 1px #DFDFDF;
+    padding: 3px 5px;
+    margin-top: 3px;
 }
 
-#company_navbar li {
-
-}
-
-#company_navbar ul {
+/* -- the keyword navbar (ul) --*/
+#branch_list {
     background-color: #F2F2F4;
     color: #003980;
     border: 1px solid #DFDFDF;
+    margin-top: 3px;
 }
 
-#geo_col {
-    padding-top: 2px;
-}
-
-#nav_branch_ul div {
-    padding: 2px 5px;
-
-}
-
-#nav_branch_ul li {
+/* -- the list elements -- */
+#branch_list li {
     border-bottom: 1px solid #DFDFDF;
 }
 
-.nav_geo_adr {
-    float: left;
-    width: 74%;
-    margin-left: 5px;
+#branch_list div {
+    padding: 3px 5px;
 }
 
-.nav_geo_hits {
-    float:right;
-    width: 18%;
-    margin-right: 5px;
+
+#geo_header {
+    background-color: #ECEDEF;
+    border: solid 1px #DFDFDF;
+    margin-top: 10px;
+    padding: 3px 5px;
 }
+
+/* -- the geo navbar (ul) --*/
+#branch_list {
+    background-color: #F2F2F4;
+    color: #003980;
+    border: 1px solid #DFDFDF;
+    margin-top: 3px;
+}
+
+/* -- the geo data table -- */
+dl {
+    width: 99%;
+    margin-top: 3px;
+    float: left;
+    border-left: 1px solid #DFDFDF;
+    border-right: 1px solid #DFDFDF;
+    border-bottom: 1px solid #DFDFDF;
+}
+
+dt {
+    width: 72%;
+    float: left;
+    clear: left;
+    background-color: #F2F2F4;
+    border-top: 1px solid #DFDFDF;
+    padding: 3px 5px;
+}
+
+dd {
+    width: 17.8%;
+    float: left;
+    background-color: #F2F2F4;
+    border-top: 1px solid #DFDFDF;
+    padding: 3px 5px;
+    text-align: right;
+}
+
+
+
+
+
+
 
 .nav_branch_header {
     background-color: #ECEDEF;
     border: solid 1px #DFDFDF;
     padding: 3px 5px;
-}
-
-
-.nav_geo_header {
-    background-color: #ECEDEF;
-    border: solid 1px #DFDFDF;
-    margin-top: 10px;
 }
 
 
@@ -151,17 +191,10 @@ a {
     background-color: #fff;
 }
 
-/* -- navigation table in yp page-- */
-
-#company_result_table {
+#result_table {
     margin: 10px 0 0 10px;
 }
 
-#company_result .company_result_borderline {
-    border-bottom: solid 1px #DAD9D9;
-    font-size: 7px;
-    clear:both;
-}
 
 /* li class */
 .result_line1 {
@@ -203,7 +236,7 @@ a {
 }
 
 #map {
-    margin: 10px 0 0 10px;
+    margin: 26px 0 0 10px;
 }
 
 
