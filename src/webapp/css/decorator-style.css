@@ -48,17 +48,9 @@ a {
     margin-right: 10px;
 }
 
-#search_form {
-    padding: 10px 0 0 0;
-}
-
 #table_searchbox, #table_content, #table_enrichment, #table_result {
     width: 780px;
     font-size: 1.2em;
-}
-
-#header {
-    padding-top: 10px;
 }
 
 .search_button {
@@ -68,10 +60,25 @@ a {
 	font-weight: bold;
 }
 
-/* -- the form header in the main-decorator page-- */
-#form_header {
+#content_searchform {
+    margin-top: 10px;
+}
+
+#content_searchform_header {
     font-size: 1.4em;
     font-weight: bold;
+}
+
+#content_searchform li {
+    margin-top: 10px;
+}
+
+#table_searchbox label {
+    margin-left: 5px;
+}
+
+.radio_button {
+    margin-left: 15px;
 }
 
 #table_footer {
