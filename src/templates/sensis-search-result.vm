@@ -14,14 +14,14 @@
 
         <content tag="sensis-enriched">
             <div class="enriched_title">
-                <a href="?s=g&q=$result.getQuery()" class="beriketTittel">TREFF I VERDEN</a><br/>
-                <div class="beriketInnrykk">
+                <a href="?s=g&q=$result.getQuery()" class="beriketTittel">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.getQuery()</b> I VERDEN</a>
+                <ul>
                     #foreach( $item in $result.getResults() )
                         #if ($velocityCount <= 3)
-                            <a href="$item.url">$item.title</a><br/>
+                            <li><a href="$item.url">$item.title</a></li>
                         #end
                     #end
-                </div>
+                </ul>
             </div>
         </content>
 
