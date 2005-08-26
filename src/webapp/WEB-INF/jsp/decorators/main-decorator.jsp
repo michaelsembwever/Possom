@@ -46,26 +46,25 @@
 
         <img src="../images/menu/logo.gif" id="logo" alt="logo" />
 
-        <table cellpadding="0" cellspacing="0" border="0" id="table_menu">
-            <tr><td class="first_cell"><a href="?c=d&amp;q=<%=q%>"><img src="../images/menu/magic.gif" class="menu_img" alt="Link til magisk søk" /></a><a href="?c=m&amp;q=<%=q%>"><img src="../images/menu/news.gif" class="menu_img" alt="link til nyheter" /></a><a href="?c=y&amp;q=<%=q%>"><img src="../images/menu/yp.gif" class="menu_img" alt="link til gule data" /></a><a href="?c=w&amp;q=<%=q%>"><img src="../images/menu/wp.gif" class="menu_img" alt="link til hvite sider" /></a><a href="?c=g&amp;q=<%=q%>"><img src="../images/menu/sensis.gif" class="menu_img" alt="link til verden søk" /></a><a href="#"><img src="../images/menu/picture.gif" class="menu_img_last" alt="Link til bilde søk" /></a></td></tr>
-        </table>
-        <table cellspacing="0" cellpadding="0" width="100%">
-            <tr><td style="background-image: url(<%=menu_line%>); background-repeat: repeat-x;">&nbsp;</td></tr>
+        <table cellpadding="0" cellspacing="0" border="0" class="page_margin_left">
+            <tr><td><a href="?c=d&amp;q=<%=q%>"><img src="../images/menu/magic.gif" class="menu_img" alt="Link til magisk søk" /></a><a href="?c=m&amp;q=<%=q%>"><img src="../images/menu/news.gif" class="menu_img" alt="link til nyheter" /></a><a href="?c=y&amp;q=<%=q%>"><img src="../images/menu/yp.gif" class="menu_img" alt="link til gule data" /></a><a href="?c=w&amp;q=<%=q%>"><img src="../images/menu/wp.gif" class="menu_img" alt="link til hvite sider" /></a><a href="?c=g&amp;q=<%=q%>"><img src="../images/menu/sensis.gif" class="menu_img" alt="link til verden søk" /></a><a href="#"><img src="../images/menu/picture.gif" class="menu_img_last" alt="Link til bilde søk" /></a></td></tr>
         </table>
 
-        <table cellpadding="0" cellspacing="0" border="0" id="table_searchbox">
+        <div style="width: 100%; background-image: url(<%=menu_line%>); background-repeat: repeat-x;">&nbsp;</div>
+
+        <table cellpadding="0" cellspacing="0" border="0" id="table_searchbox" class="page_margin_left">
             <% if (collection.equals("y")) { %>
                 <tr>
-                    <td class="first_cell" id="header"><span id="form_header">Søk etter hva og hvor</span></td>
+                    <td id="header"><span id="form_header">Søk etter hva og hvor</span></td>
                 </tr>
 
                 <tr>
-                    <td class="first_cell">Eksempel frisør Pettersen Bogstadveien Oslo</td>
+                    <td>Eksempel: frisør Pettersen Bogstadveien Oslo</td>
                 </tr>
             <%}%>
 
             <tr>
-                <td class="first_cell">
+                <td>
                     <form name="sf" action="" id="search_form">
                         <input name="lang" value="en" type="hidden" />
                         <input name="c" value="<%=collection%>" type="hidden" />
