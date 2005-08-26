@@ -91,7 +91,8 @@ a {
 /* =FAST-COMPANIES-SEARCH-RESULT */
 
 /* -- the table which containg the 3 parts -- */
-#company_result {
+#company_result, #person_result  {
+    margin-top: 10px;
     color: #003880;
     background-color: #FFF;
 }
@@ -235,7 +236,7 @@ dd {
 }
 
 #map {
-    margin: 26px 0 0 10px;
+    margin: 10px 0 0 10px;
 }
 
 
