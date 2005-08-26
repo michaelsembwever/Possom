@@ -8,11 +8,15 @@
         #if ($result.getTotalDocumentsAvailable() > 0)
             <content tag="companies-results">
                 #set ($baseURL = "?c=y&amp;q=$result.getQuery()")
-                <table id="company_result">
+                <table id="company_result" class="page_margin_left">
+                    <tr>
+                        <td colspan="3">
+                            <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
+                        </td>
+                    </tr>
                     <tr>
                         <td valign="top">
-                            <div id="navbar" class="page_margin_left">
-                                <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
+                            <div id="navbar">
                                 <div id="branch_header">Bransje/søkeordnavigator</div>
                                 <ul id="branch_list">
                                     <li><div>Nøkkelord 1</div></li>
@@ -36,9 +40,8 @@
                             </div>
                         </td>
 
-                        <td>
+                        <td valign="top">
                             <table id="result_table" width="500px">
-                                <tr><td><h1 class="search_query_h1">&nbsp;</h1></td></tr>
                                 <tr>
                                     <td>
                                         ##<div id="company_result_heading">
