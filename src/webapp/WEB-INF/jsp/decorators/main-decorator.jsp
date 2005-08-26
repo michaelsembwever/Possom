@@ -53,13 +53,17 @@
         <div style="width: 100%; background-image: url(<%=menu_line%>); background-repeat: repeat-x;">&nbsp;</div>
 
         <table cellpadding="0" cellspacing="0" border="0" id="table_searchbox" class="page_margin_left">
-            <% if (collection.equals("y")) { %>
+            <% if ( collection.equals("y") || collection.equals("w") ) { %>
                 <tr>
-                    <td id="header"><span id="form_header">Søk etter hva og hvor</span></td>
+                    <td id="header"><span id="form_header" style="color: <%=search_button_bgcolor%>">Søk etter hva og hvor</span></td>
                 </tr>
 
                 <tr>
-                    <td>Eksempel: frisør Pettersen Bogstadveien Oslo</td>
+                    <% if ( collection.equals("y")) { %>
+                        <td>Eksempel: frisør Pettersen Bogstadveien Oslo</td>
+                    <% } else { %>
+                        <td>Eksempel: Per Pettersen Bogstadveien Oslo</td>
+                    <%}%>
                 </tr>
             <%}%>
 
