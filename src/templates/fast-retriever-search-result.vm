@@ -8,7 +8,7 @@
 
         <content tag="media-enriched">
             <div class="enriched_title">
-                <a href="" class="beriketTittel">$result.getRetrieverResults().size() TREFF PÅ <b>$result.getQuery()</b> I NYHETER</a>
+                <a href="" class="beriketTittel">$result.getMediaDocumentsInIndex() TREFF PÅ <b>$result.getQuery()</b> I NYHETER</a>
                 <ul>
                     #foreach( $item in $result.getRetrieverResults())
                         #if ($velocityCount <= 3)
@@ -48,6 +48,9 @@
 
         <content tag="media-collection-results">
             <div id="search_result">
+                <div class="search_hits">
+                     $result.getMediaDocumentsInIndex() TREFF I NORSKE NYHETER
+                </div>
                 #foreach( $item in $result.getRetrieverResults())
                     <p>
                         <a href="$item.url" class="bigUrl">$item.title</a> $!item.getNewsSource()
