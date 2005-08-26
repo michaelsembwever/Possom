@@ -68,6 +68,12 @@ a {
 	font-weight: bold;
 }
 
+/* -- the form header in the main-decorator page-- */
+#form_header {
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
 #table_footer {
     /*width: 780px;*/
     margin-top: 40px;
@@ -83,13 +89,6 @@ a {
 
 /* ------------------------------------------------------------------ */
 /* =FAST-COMPANIES-SEARCH-RESULT */
-
-/* -- the form header in the main-decorator page-- */
-#form_header {
-    font-size: 1.4em;
-    color: #F6B331;
-    font-weight: bold;
-}
 
 /* -- the table which containg the 3 parts -- */
 #company_result {
