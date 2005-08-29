@@ -8,17 +8,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import no.fast.ds.search.BaseParameter;
-import no.fast.ds.search.IFastSearchEngine;
-import no.fast.ds.search.IModifier;
-import no.fast.ds.search.INavigator;
-import no.fast.ds.search.IQueryResult;
-import no.fast.ds.search.IQueryTransformation;
-import no.fast.ds.search.ISearchParameters;
-import no.fast.ds.search.Query;
-import no.fast.ds.search.SearchEngineException;
-import no.fast.ds.search.SearchParameter;
-import no.fast.ds.search.SearchParameters;
+import no.fast.ds.search.*;
 import no.schibstedsok.front.searchportal.configuration.FastSearchConfiguration;
 import no.schibstedsok.front.searchportal.connectors.FastConnector;
 import no.schibstedsok.front.searchportal.response.*;
@@ -88,11 +78,44 @@ public class FastConnectorCommand implements ConnectorCommand {
 
             setUpSearchParameters(params);
             response.setQuery(getQueryString());
+            response.setModifier(configuration.getCategoryModifer());
 
             Query query = new Query(params);
 
             IQueryResult queryResult = doSearch(query);
-			
+
+            if (configuration.getCollection().equals("yellow")) {
+
+                if (configuration.getCategoryModifer() != null) {
+
+                    log.debug("Drilling down");
+
+                    INavigation navigation = new Navigation();
+                    INavigator navigator = queryResult.getNavigator("ypbransjenavigator");
+
+                    IAdjustmentGroup adjGroup = navigation.add(navigator);
+                    IAdjustment adjustment = adjGroup.add(navigator.getModifier(configuration.getCategoryModifer()));
+
+                    IQuery newQuery = navigation.createNavigatedQuery(query);
+
+                     queryResult = doSearch(newQuery);
+
+                    
+
+                }
+
+                INavigator navigator = queryResult.getNavigator("ypbransjenavigator");
+
+                if (navigator != null) {
+
+                Iterator modifiers = navigator.modifiers();
+                while (modifiers.hasNext()) {
+                    IModifier modifier = (IModifier) modifiers.next();
+                    response.addCategoryModifier(modifier);
+                }
+                }
+            }
+
 //			System.out.println(query);
 
             //abort search on error
@@ -116,12 +139,10 @@ public class FastConnectorCommand implements ConnectorCommand {
             //populate results from search
             i = handleResult(queryResult, results, i);
 
-            //do the back, current and next set population if there was documents returned
-            if(getMaxResultsToReturn() > 0)
-//                handleNavigationInSets(queryResult, i);
-
             //set spelling suggestion if available
-            setSpellingSuggestion(queryResult);
+            if (configuration.isSpellcheck()) {
+                setSpellingSuggestion(queryResult);
+            }
 
             //set META data
             response.setFetchTime(System.currentTimeMillis() - timer);
@@ -143,7 +164,7 @@ public class FastConnectorCommand implements ConnectorCommand {
 
     }
 
-    private IQueryResult doSearch(Query query) throws IOException {
+    private IQueryResult doSearch(IQuery query) throws IOException {
         long searchTimer = System.currentTimeMillis();
         IQueryResult queryResult = null;
         try {
@@ -172,6 +193,8 @@ public class FastConnectorCommand implements ConnectorCommand {
         params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, true));
         if(configuration.isSpellcheck()) {
            params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));
+        } else {
+            params.setParameter(new SearchParameter(BaseParameter.SPELL, "off"));
         }
 
 
@@ -258,16 +281,24 @@ public class FastConnectorCommand implements ConnectorCommand {
 
     private int resultsFromMediaCollection(IQueryResult queryResult, int i, long timer) {
         for (; i <= getMaxResultsToReturn(); i++) {
-            SearchResultElement result = new FastRetrieverSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
-            response.addRetreiverResult(result);
+            try {
+                SearchResultElement result = new FastRetrieverSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
+                response.addRetreiverResult(result);
+            } catch (IndexOutOfBoundsException e) {
+                log.debug("Result set exhausted");
+            }
         }
         return i;
     }
 
     private int resultsFromWikiCollection(IQueryResult queryResult, int i, long timer) {
         for (; i <= getMaxResultsToReturn(); i++) {
-            SearchResultElement result = new FastWikiSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
-            response.addWikiResult(result);
+            try {
+                SearchResultElement result = new FastWikiSearchResult(queryResult.getDocument(i + configuration.getOffSet()));
+                response.addWikiResult(result);
+            } catch (IndexOutOfBoundsException e) {
+                log.debug("Result set exhausted");
+            }
         }
         return i;
     }
@@ -395,11 +426,6 @@ public class FastConnectorCommand implements ConnectorCommand {
         this.configuration = (FastSearchConfiguration)config;
     }
 
-    /**
-     * Used from Sensis subclass
-     *
-     * @return
-     */
     public FastSearchConfiguration getConfiguration() {
 //		System.out.println(this.configuration);
         return (FastSearchConfiguration)this.configuration;

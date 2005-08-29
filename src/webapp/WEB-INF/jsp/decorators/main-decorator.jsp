@@ -96,9 +96,9 @@
         <table cellpadding="0" cellspacing="0" border="0" id="table_enrichment">
             <tr>
                 <td>
-                    <decorator:getProperty property="page.spelling-suggestions" />
 
                     <%if(collection.equals("d")){%>
+                    <decorator:getProperty property="page.spelling-suggestions" />
 
                         <!-- TV enriched -->
                         <decorator:getProperty property="page.tv-results" />

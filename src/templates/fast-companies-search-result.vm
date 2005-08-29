@@ -7,7 +7,12 @@
 
         #if ($result.getTotalDocumentsAvailable() > 0)
             <content tag="companies-results">
+
+                #if ($result.getModifier())
+                #set ($baseURL = "?c=y&amp;q=$result.getQuery()&amp;mod=$result.getModifier()")
+                #else
                 #set ($baseURL = "?c=y&amp;q=$result.getQuery()")
+                #end
                 <table id="company_result" class="page_margin_left">
                     <tr>
                         <td colspan="3">
@@ -19,10 +24,11 @@
                             <div id="navbar">
                                 <div id="branch_header">Bransje/søkeordnavigator</div>
                                 <ul id="branch_list">
-                                    <li><div>Nøkkelord 1</div></li>
-                                    <li><div>Nøkkelord 1</div></li>
-                                    <li><div>Nøkkelord 1</div></li>
-                                    <li><div>Nøkkelord 1</div></li>
+                                    #foreach ($category in $result.getCategoryModifiers())
+                                    #if ($velocityCount <= 6)
+                                    <li><div><a href="$baseURL&amp;mod=$category.name">$category.name</a> $category.count</div></li>
+                                    #end
+                                    #end
                                 </ul>
                                 <div id="geo_header">Geografinavigator</div>
                                 <dl>
@@ -86,6 +92,9 @@
 
         <content tag="more-results-y">
             #set ($tab = "y")
+            #if ($result.getModifier())
+            #set ($extra = "&amp;mod=$result.getModifier()")
+            #end
             #parse("verbosePager.vm")
         </content>
 

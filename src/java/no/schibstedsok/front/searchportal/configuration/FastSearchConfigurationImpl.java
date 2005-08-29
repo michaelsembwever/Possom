@@ -28,7 +28,7 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 	private String collection;
 	private String collectionFilterString = "";					//"+meta.collection:";   //default, may be overriden by QR_SERVER_PROPERTIES file
 	private String navigatorString = "";
-    private boolean spellcheck = true; 							//default, may be overriden by QR_SERVER_PROPERTIES file
+    private boolean spellcheck = false; 							//default, may be overriden by QR_SERVER_PROPERTIES file
 
 	//property file loaded on instanciation only
 	private static Properties properties; 
@@ -37,11 +37,12 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 	long maxTime = 0L;
 	int docsToReturn;
 	int offSet;
+    private String categoryModifier;
 
-	
+
 	/**
 	 * Create a new SearchConfiguration.
-	 * 
+	 *
 	 * @param index
 	 */
 	public FastSearchConfigurationImpl() {
@@ -50,20 +51,20 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 		if(properties == null) {
 
 			log.debug("Loading Fast property file");
-			
-			// set up the search engine from property file QR_SERVER_PROPERTIES 
+
+			// set up the search engine from property file QR_SERVER_PROPERTIES
 			//TODO: refactor to singleton pattern
 	        try {
 
 				properties = new Properties();
 				properties.load(this.getClass().getResourceAsStream("/" + SearchConstants.FAST_PROPERTYFILE));
-				
+
 			} catch (IOException e) {
 	            e.printStackTrace();
 	            throw new RuntimeException("Unable to load configuration properties file: " + SearchConstants.FAST_PROPERTYFILE);
 			}
-		} 				
-		
+		}
+
 		//set up defaults for qrserver, language etc.
 		if(!"".equals(properties.getProperty(SearchConstants.PROPERTY_KEY___QR_SERVER)))
             qRServerURL = properties.getProperty(SearchConstants.PROPERTY_KEY___QR_SERVER);
@@ -90,16 +91,24 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 	public void setSpellcheck(boolean spellcheck) {
 		this.spellcheck = spellcheck;
 	}
-	
-	/** 
-	 * 
+
+    public void setCategoryModifer(String modifierName) {
+        this.categoryModifier = modifierName;
+    }
+
+    public String getCategoryModifer() {
+        return categoryModifier;
+    }
+
+	/**
+	 *
 	 * Create a +meta.collection filter based on which collection we are looking at.
-	 * 
-	 * @param 
+	 *
+	 * @param
 	 * @return
 	 */
 	public String constructCollectionFilter() {
-		
+
 		String filterString = "";
 		if(SearchConstants.WEBCRAWL_COLLECTION.equals(collection))
 			filterString = "+meta.collection:" + SearchConstants.WEBCRAWL_COLLECTION;
@@ -116,13 +125,13 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 
 //		if(log.isDebugEnabled())
 //			log.debug("FILTER: " + filterString);
-//		
+//
 //		try {
 //			filterString = URLEncoder.encode(filterString, "UTF-8");
 //		} catch (UnsupportedEncodingException e) {
 //			log.error("Error: Unable to encode filterString " + filterString + " ", e);
 //		}
-		
+
 		return filterString;
 
 	}

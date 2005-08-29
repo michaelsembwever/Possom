@@ -41,6 +41,10 @@ public class CompaniesFilter extends AsynchronusBaseFilter {
             configuration.setTemplate(VelocityTemplates.INFOPAGE);
         }
 
+        if (request.getParameter("mod") != null) {
+            configuration.setCategoryModifer(request.getParameter("mod"));
+        }
+        
         // start this search in separate thread
         doSearch(response, configuration, request);
 

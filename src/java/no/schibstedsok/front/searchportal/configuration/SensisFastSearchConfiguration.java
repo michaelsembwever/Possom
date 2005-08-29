@@ -91,16 +91,24 @@ public class SensisFastSearchConfiguration implements FastSearchConfiguration{
 		this.spellcheck = spellcheck;
 	}
 
-	/**
-	 *
-	 * Create a +meta.collection filter based on which collection we are looking at.
-	 *
-	 * @param targetCollection
-	 * @return
-	 */
-	public String constructCollectionFilter() {
-		return "";
-	}
+    public void setCategoryModifer(String modifierName) {
+
+    }
+
+    public String getCategoryModifer() {
+       return null;
+    }
+
+    /**
+     *
+     * Create a +meta.collection filter based on which collection we are looking at.
+     *
+     * @param targetCollection
+     * @return
+     */
+    public String constructCollectionFilter() {
+        return "";
+    }
 
 	public String getQRServerURL() {
 		return qRServerURL;

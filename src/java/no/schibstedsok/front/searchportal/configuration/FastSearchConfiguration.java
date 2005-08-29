@@ -50,5 +50,7 @@ public interface FastSearchConfiguration extends SearchConfiguration {
 	public boolean isSpellcheck();
 	public void setSpellcheck(boolean spellcheck);
 
+    void setCategoryModifer(String modifierName);
+    String getCategoryModifer();
 
 }

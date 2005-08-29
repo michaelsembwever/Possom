@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import no.fast.ds.search.IModifier;
 
 /**
  *
@@ -42,6 +43,9 @@ public class FastSearchResponseImpl extends SearchResponseImpl {
     /** The company results */
     private List companiesResults = new ArrayList();
     private List personsResults = new ArrayList();
+
+    private List categoryModifiers = new ArrayList();
+    private String modifier;
 
     public int getCompaniesDocumentsInIndex() {
         return companiesDocumentsInIndex;
@@ -235,4 +239,26 @@ public class FastSearchResponseImpl extends SearchResponseImpl {
     public List getPersonsResults() {
         return personsResults;
     }
+
+    public void addCategoryModifier(IModifier modifier) {
+        categoryModifiers.add(modifier);
+    }
+
+    public List getCategoryModifiers() {
+        return categoryModifiers;
+    }
+
+    public void setCategoryModifiers(List categoryModifiers) {
+        this.categoryModifiers = categoryModifiers;
+    }
+
+    public String getModifier() {
+        return modifier;
+    }
+
+    public void setModifier(String modifier) {
+        this.modifier = modifier;
+    }
+
+
 }

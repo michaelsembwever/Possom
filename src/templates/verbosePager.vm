@@ -1,4 +1,4 @@
-#set ($baseURL = "?c=${tab}&amp;q=$result.getQuery()")
+#set ($baseURL = "?c=${tab}&amp;q=$result.getQuery()$!{extra}")
 
 #if ($result.getPager().getNumberOfPages() > 1)
     <tr><td class="text_align_center">Vis flere treff på $result.getQuery()
