@@ -3,16 +3,45 @@
 		<meta name="decorator" content="maindecorator">
 	</head>
 
-<body bgcolor="#eeeeff">
+    <body bgcolor="#eeeeff">
 
-<h1>Infopage</h1>
+        <h1>Infopage</h1>
 
-#set ($company = $result.getCompaniesResults().get(0))
+        #set ($company = $result.getCompaniesResults().get(0))
 
-<content tag="infopage">
-    $company.getCompanyName()
-    <img src="$contextPath/map/?coords=$company.x,$company.y&amp;action=viewone" width="350" height="500"/>
-</content>
+        <content tag="infopage">
+            <table id="company_infopage" class="page_margin_left">
+                <tr>
+                    <td valign="top">
+                        <div id="branch_header" style="width: 500px"><h1>$company.getCompanyName()</h1></div>
+                        <div id="company_data">
+                            <ul id="tabs">
+                                <li><a href="">Skriv ut</a></li>
+                                <li><a href="">Send som SMS</a></li>
+                                <li><a href="">Send som epost</a></li>
+                                <li><a href="" class="last">Legg til i Outlook</a></li>
+                            </ul>
+                            <p class="visitingAddress">
+                                Besøksadresse:<br />
+                                $!{company.visitingAddress}#if ($company.visitingAddress && ($company.visitingZip || $company.visitingCity)),#end $!{company.visitingZip} $!{company.visitingCity}
+                            </p>
+                            #if ($company.phoneNumber)
+                                <p class="visitingAddress">
+                                    Telefon: $company.phoneNumber
+                                </p>
+                            #end
+                            <p class="updateInfo">
+                                <a href="#">Kontakt oss for å oppdatere informasjon</a>
+                            </p>
+                        </div>
+                    </td>
 
-</body>
+                    <td valign="top">
+                        <img src="$contextPath/map/?coords=$company.x,$company.y&amp;action=viewone" style="margin-left: 10px;" width="350" height="500"/>
+                   </td>
+               </tr>
+            </table>
+        </content>
+
+    </body>
 </html>
