@@ -215,6 +215,10 @@ dd {
     background-position: bottom
 }
 
+.result_line1 a {
+    margin-left: 10px;
+    font-weight: normal;
+}
 
 .company_name {
     padding-left:10px;
