@@ -9,9 +9,9 @@
             <content tag="companies-results">
 
                 #if ($result.getModifier())
-                #set ($baseURL = "?c=y&amp;q=$result.getQuery()&amp;mod=$result.getModifier()")
+                    #set ($baseURL = "?c=y&amp;q=$result.getQuery()&amp;mod=$result.getModifier()")
                 #else
-                #set ($baseURL = "?c=y&amp;q=$result.getQuery()")
+                    #set ($baseURL = "?c=y&amp;q=$result.getQuery()")
                 #end
                 <table id="company_result" class="page_margin_left">
                     <tr>
@@ -31,7 +31,7 @@
                                     #end
                                 </ul>
                                 <div id="geo_header">Geografinavigator</div>
-                                <dl>
+                                <dl class="geo_list">
                                     <dt>Alna</dt>
                                     <dd>452</dd>
                                     <dt>Østensjø</dt>
@@ -50,33 +50,35 @@
                             <table id="result_table" width="500px">
                                 <tr>
                                     <td>
-                                        ##<div id="company_result_heading">
-                                        <div class="nav_branch_header">
-                                            <ul>
-                                                <li class="result_line2">
-                                                    <span class="col_1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</span>
-                                                    <span class="col_2">#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</span>
-                                                </li>
-                                                <li class="float_clear"></li>
-                                            </ul>
-                                        </div>
+                                        <dl class="result_list_header">
+                                            <dt>Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</dt>
+                                            <dd>#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</dd>
+                                        </dl>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         <div>
-                                            <ul>
+                                            <dl class="result_list">
                                                 #foreach ($item in $result.getCompaniesResults())
+                                                    <dt><b>$item.companyName</b><a href="$baseURL&amp;companyId=$item.companyId">Infoside</a></dt>
+                                                    <dd>&nbsp;</dd>
+                                                    <dt class="underline">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</dt>
+                                                    <dd class="underline">#if ($item.phoneNumber) $item.phoneNumber #else &nbsp; #end</dd>
+
+
+                                                    #*
                                                     <li class="result_line1">
                                                         <span class="company_name">$item.companyName<a href="$baseURL&amp;companyId=$item.companyId">Infoside</a></span>
                                                     </li>
                                                     <li class="result_line2">
                                                         <span class="col_1">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</span>
-                                                        <span class="col_2">$!{item.phoneNumber}</span>
+                                                        <span class="col_2">#if ($item.phoneNumber) x $item.phoneNumber #else xx &nbsp; #end</span>
                                                     </li>
                                                     <li class="float_clear_border"></li>
+                                                    *#
                                                 #end
-                                            </ul>
+                                            </dl>
                                         </div>
                                     </td>
                                 </tr>
