@@ -97,7 +97,7 @@ a {
 /* ------------------------------------------------------------------ */
 /* =FAST-COMPANIES-SEARCH-RESULT */
 
-/* -- the table which containg the 3 parts -- */
+/* -- the table which containg the 3 (2) parts -- */
 #company_result, #person_result  {
     margin-top: 10px;
     color: #003880;
@@ -244,6 +244,63 @@ dd {
 
 #map {
     margin: 10px 0 0 10px;
+}
+
+/* ------------------------------------------------------------------ */
+/* =INFOPAGE */
+
+/* -- the table which contains 2 parts -- */
+#company_infopage  {
+    margin-top: 10px;
+    color: #003880;
+    background-color: #FFF;
+}
+
+#company_infopage h1 {
+    font-size: 1em;
+}
+
+#company_data {
+    margin-top: 3px;
+    background-color: #FFFCF2;
+    border: solid 1px #E5DBC3;
+}
+
+.visitingAddress {
+    padding: 40px 0 0 20px;
+}
+
+.updateInfo {
+    padding: 40px 0 40px 20px;
+}
+
+/* -- the link tabs on the infopage -- */
+#tabs li {
+    display: inline;
+}
+
+#tabs .last {
+    border-right: none;
+}
+
+#tabs a {
+    border-right: solid 1px #E5DBC3;
+    border-bottom: solid 1px #E5DBC3;
+    padding-top: 3px;
+    float: left;
+    width: 24.85%;
+    height:1.5em;
+    text-align: center;
+    vertical-alig:center;
+    background-image: url(../images/tab_bg.gif);
+    background-repeat: repeat-x;
+    text-decoration: none;
+}
+
+#tabs a.active, #tabs a:hover {
+    background-image: url(../images/mOver.gif);
+    background-repeat: repeat-x;
+    color: #446DA2;
 }
 
 
