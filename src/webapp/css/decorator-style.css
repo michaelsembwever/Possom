@@ -151,7 +151,7 @@ a {
 }
 
 /* -- the geo data table -- */
-dl {
+.geo_list {
     width: 99%;
     margin-top: 3px;
     float: left;
@@ -160,7 +160,7 @@ dl {
     border-bottom: 1px solid #DFDFDF;
 }
 
-dt {
+.geo_list dt {
     width: 72%;
     float: left;
     clear: left;
@@ -169,7 +169,7 @@ dt {
     padding: 3px 5px;
 }
 
-dd {
+.geo_list dd {
     width: 17.8%;
     float: left;
     background-color: #F2F2F4;
@@ -178,9 +178,59 @@ dd {
     text-align: right;
 }
 
+/* -- the result header table -- */
+.result_list_header {
+    width: 99%;
+    float: left;
+    border: 1px solid #DFDFDF;
+}
 
+.result_list_header dt {
+    width: 79%;
+    float: left;
+    clear: left;
+    background-color: #F2F2F4;
+    padding: 3px 0 3px 5px;;
 
+}
 
+.result_list_header dd {
+    width: 18.9%;
+    float: left;
+    background-color: #F2F2F4;
+    padding: 3px 5px 3px 0;
+    text-align: right;
+}
+
+/* -- the result data -- */
+.result_list {
+    width: 99%;
+    float: left;
+    margin-top:5px;
+}
+
+.result_list dt {
+    width: 79%;
+    float: left;
+    clear: left;
+    padding-left: 5px;
+}
+
+.result_list dd {
+    width: 18.9%;
+    float: left;
+    text-align: right;
+}
+
+.underline {
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #DFDFDF;
+}
+
+.result_list a {
+    margin-left: 10px;
+}
 
 
 
@@ -213,11 +263,6 @@ dd {
 	width: 100%;
     background-repeat: repeat-x;
     background-position: bottom
-}
-
-.result_line1 a {
-    margin-left: 10px;
-    font-weight: normal;
 }
 
 .company_name {
