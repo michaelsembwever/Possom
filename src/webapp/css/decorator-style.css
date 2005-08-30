@@ -185,13 +185,13 @@ a:hover { color: #EA6A24; }
     width: 99%;
     float: left;
     border: 1px solid #DFDFDF;
+    background-color: #F2F2F4;
 }
 
 .result_list_header dt {
     width: 79%;
     float: left;
     clear: left;
-    background-color: #F2F2F4;
     padding: 3px 0 3px 5px;;
 
 }
@@ -199,7 +199,6 @@ a:hover { color: #EA6A24; }
 .result_list_header dd {
     width: 18.9%;
     float: left;
-    background-color: #F2F2F4;
     padding: 3px 5px 3px 0;
     text-align: right;
 }
