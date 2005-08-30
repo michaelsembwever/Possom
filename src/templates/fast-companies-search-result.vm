@@ -90,11 +90,29 @@
 
 
         <content tag="more-results-y">
+            #*
+            <tr>
+                <td class="text_align_center">Søk også på $result.getQuery():</td>
+            </tr>
+            <tr>
+                <td class="text_align_center">
+                    <ul id="test">
+                        <li class="d"><a href="?c=d&amp;q=$result.getQuery()">Magisøk</a></li>
+                        <li class="m"><a href="?c=m&amp;q=$result.getQuery()">Nyhetsøk</a></li>
+                        <li class="w"><a href="?c=w&amp;q=$result.getQuery()">Personsøk</a></li>
+                        <li class="g"><a href="?c=g&amp;q=$result.getQuery()">Nettsøk verden</a></li>
+                    </ul>
+                </td>
+            </tr>
+            *#
+
             #set ($tab = "y")
             #if ($result.getModifier())
                 #set ($extra = "&amp;mod=$result.getModifier()")
             #end
             #parse("verbosePager.vm")
+
+
         </content>
 
     </body>
