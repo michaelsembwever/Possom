@@ -8,7 +8,7 @@
         #if ($result.getRetrieverResults().size() > 0)
             <content tag="media-enriched">
                 <div class="enrichment">
-                    <a href="?c=m&amp;q=$result.getQuery()">$result.getMediaDocumentsInIndex() TREFF PÅ <b>$result.getQuery()</b> I NYHETER</a>
+                    <a href="?c=m&amp;q=$result.getQuery()">$result.getMediaDocumentsInIndex() Treff på <b>$result.getQuery()</b> i nyheter</a>
                     <ul>
                         #foreach( $item in $result.getRetrieverResults())
                             #if ($velocityCount <= 3)
