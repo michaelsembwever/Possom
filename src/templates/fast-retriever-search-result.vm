@@ -14,8 +14,8 @@
                             #if ($velocityCount <= 3)
                                 <li>
                                     <a href="$item.url">$item.title</a>
-                                    <span class="news_source">$item.getNewsSource(),</span>
-                                    <span class="tidspunkt">
+                                    <span class="timestamp">
+                                        $item.getNewsSource(),
                                         #if ($item.getDocumentAgeDays() == 1)
                                             $item.getDocumentAgeDays() dag
                                         #end
@@ -52,7 +52,7 @@
             #if ($result.getRetrieverResults().size() > 0)
                 <div id="search_result">
                     <div class="search_hits">
-                         $result.getMediaDocumentsInIndex() TREFF I NORSKE NYHETER
+                         $result.getMediaDocumentsInIndex() Treff i norske nyheter
                     </div>
                     #foreach( $item in $result.getRetrieverResults())
                         <p>
