@@ -13,8 +13,8 @@
         </content>
 
         <content tag="sensis-enriched">
-            <div class="enriched_title">
-                <a href="?s=g&q=$result.getQuery()" class="beriketTittel">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.getQuery()</b> I VERDEN</a>
+            <div class="enrichment">
+                <a href="?s=g&q=$result.getQuery()">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.getQuery()</b> I VERDEN</a>
                 <ul>
                     #foreach( $item in $result.getResults() )
                         #if ($velocityCount <= 3)
@@ -37,7 +37,7 @@
                         <a class="smallUrl" href="$item.url">$item.clickUrl</a>
                     </p>
                 #end
-                <p class="kilde">Nerdscore: $result.getFetchTime() ms</p>
+                <p>Nerdscore: $result.getFetchTime() ms</p>
             </div>
         </content>
 
