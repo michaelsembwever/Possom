@@ -136,6 +136,7 @@ a {
 
 
 #geo_header {
+    clear: both;
     background-color: #ECEDEF;
     border: solid 1px #DFDFDF;
     margin-top: 10px;
@@ -153,18 +154,18 @@ a {
 /* -- the geo data table -- */
 .geo_list {
     width: 99%;
-    margin-top: 3px;
+    margin: 3px 0 10px 0;
     float: left;
     border-left: 1px solid #DFDFDF;
     border-right: 1px solid #DFDFDF;
     border-bottom: 1px solid #DFDFDF;
+    background-color: #F2F2F4;
 }
 
 .geo_list dt {
     width: 72%;
     float: left;
     clear: left;
-    background-color: #F2F2F4;
     border-top: 1px solid #DFDFDF;
     padding: 3px 5px;
 }
@@ -172,7 +173,6 @@ a {
 .geo_list dd {
     width: 17.8%;
     float: left;
-    background-color: #F2F2F4;
     border-top: 1px solid #DFDFDF;
     padding: 3px 5px;
     text-align: right;
@@ -252,44 +252,6 @@ a {
     margin: 10px 0 0 10px;
 }
 
-
-/* li class */
-.result_line1 {
-    padding-top: 6px;
-}
-
-/* li class */
-.result_line2 {
-	width: 100%;
-    background-repeat: repeat-x;
-    background-position: bottom
-}
-
-.company_name {
-    padding-left:10px;
-    font-weight:bold;
-}
-
-.float_clear {
-    clear: both;
-}
-
-.float_clear_border {
-    clear: both;
-    padding-top: 4px;
-    border-bottom: solid 1px #DAD9D9;
-}
-
-.col_1 {
-	width: 74%;
-	float: left;
-    padding-left:10px;
-}
-
-.col_2 {
-	width: 22%;
-	float: right;
-}
 
 #map {
     margin: 10px 0 0 10px;
@@ -398,9 +360,7 @@ a {
 
 
 
-.all_type_standard_size{
-	font-size: 0.9em;
-}
+
 a:hover { color: #EA6A24; }
 
 
@@ -430,41 +390,4 @@ a:hover { color: #EA6A24; }
 
 .boksInnhold{
   	font-size:      0.8em;
-}
-.boksSummary{
-  	font-size:      0.8em;
-	margin-top: 	1.2em;
-}
-.fanetxt {
-	font-size: 0.9em;
-	color: 5A6623;
-	margin-left: 0.3em;
-	margin-right: 0.3em;
-}
-.faneMarkert {
-	font-size: 1.0em;
-	color: #FFFFFF;
-	margin-left: 0.3em;
-	margin-right: 0.3em;
-	font-weight: bold;
-
-}
-.Hjelp_stavelse{
-	color: #FF6633;
-}
-.marger_resultat {
-	margin-right: 0.9em;
-}
-
-.navigator_resultat {
-	font-size: 0.6em;
-	color: #5A6623;
-	margin-right: 0.4em;
-}
-
-
-.litenUrl {
-	font-size: 0.8em;
-	color: #5A6623;
-	margin-top: 0.7em;
 }
