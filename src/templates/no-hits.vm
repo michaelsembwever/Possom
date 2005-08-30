@@ -1,0 +1,9 @@
+<p>
+    Søket ditt "<b>$result.getQuery()</b>" ga 0 treff.
+</p>
+<p>
+    Mulige årsaker:<br />
+    - Se etter at alle ord er stavet riktig<br />
+    - Prøv mer generelle søkeord<br />
+    - Prøv færre søkeord<br />
+</p>
