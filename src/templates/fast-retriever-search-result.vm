@@ -1,4 +1,3 @@
-#if ($result.getRetrieverResults().size() > 0)
 <html>
 	<head>
 		<meta name="decorator" content="maindecorator">
@@ -6,85 +5,93 @@
 
     <body>
 
-        <content tag="media-enriched">
-            <div class="enrichment">
-                <a href="#">$result.getMediaDocumentsInIndex() TREFF PÅ <b>$result.getQuery()</b> I NYHETER</a>
-                <ul>
-                    #foreach( $item in $result.getRetrieverResults())
-                        #if ($velocityCount <= 3)
-                            <li>
-                                <a href="$item.url">$item.title</a>
-                                <span class="news_source">$item.getNewsSource(),</span>
-                                <span class="tidspunkt">
-                                    #if ($item.getDocumentAgeDays() == 1)
-                                        $item.getDocumentAgeDays() dag
-                                    #end
-                                    #if ($item.getDocumentAgeDays() > 1)
-                                        $item.getDocumentAgeDays() dager
-                                    #end
-                                    #if ($item.getDocumentAgeHours() == 1)
-                                        $item.getDocumentAgeHours() time
-                                    #end
-                                    #if ($item.getDocumentAgeHours() > 1)
-                                        $item.getDocumentAgeHours() timer
-                                    #end
-                                    #if ($item.getDocumentAgeHours() == 0)
-                                        #if ($item.getDocumentAgeDays() == 0)
-                                            #if ($item.getDocumentAgeMinutes == 1)
-                                                $item.getDocumentAgeMinutes() minutt
-                                            #end
-                                            #if ($item.getDocumentAgeMinutes > 1)
-                                                $item.getDocumentAgeMinutes() minutter
+        #if ($result.getRetrieverResults().size() > 0)
+            <content tag="media-enriched">
+                <div class="enrichment">
+                    <a href="#">$result.getMediaDocumentsInIndex() TREFF PÅ <b>$result.getQuery()</b> I NYHETER</a>
+                    <ul>
+                        #foreach( $item in $result.getRetrieverResults())
+                            #if ($velocityCount <= 3)
+                                <li>
+                                    <a href="$item.url">$item.title</a>
+                                    <span class="news_source">$item.getNewsSource(),</span>
+                                    <span class="tidspunkt">
+                                        #if ($item.getDocumentAgeDays() == 1)
+                                            $item.getDocumentAgeDays() dag
+                                        #end
+                                        #if ($item.getDocumentAgeDays() > 1)
+                                            $item.getDocumentAgeDays() dager
+                                        #end
+                                        #if ($item.getDocumentAgeHours() == 1)
+                                            $item.getDocumentAgeHours() time
+                                        #end
+                                        #if ($item.getDocumentAgeHours() > 1)
+                                            $item.getDocumentAgeHours() timer
+                                        #end
+                                        #if ($item.getDocumentAgeHours() == 0)
+                                            #if ($item.getDocumentAgeDays() == 0)
+                                                #if ($item.getDocumentAgeMinutes == 1)
+                                                    $item.getDocumentAgeMinutes() minutt
+                                                #end
+                                                #if ($item.getDocumentAgeMinutes > 1)
+                                                    $item.getDocumentAgeMinutes() minutter
+                                                #end
                                             #end
                                         #end
-                                    #end
-                                    gammel
-                                </span>
-                            </li>
+                                        gammel
+                                    </span>
+                                </li>
+                            #end
                         #end
-                    #end
-                </ul>
-            </div>
-        </content>
+                    </ul>
+                </div>
+            </content>
+        #end
 
         <content tag="media-collection-results">
-            <div id="search_result">
-                <div class="search_hits">
-                     $result.getMediaDocumentsInIndex() TREFF I NORSKE NYHETER
-                </div>
-                #foreach( $item in $result.getRetrieverResults())
-                    <p>
-                        <a href="$item.url" class="bigUrl">$item.title</a> $!item.getNewsSource()
-                        <span class="tidspunkt">
-                            #if ($item.getDocumentAgeDays() == 1)
-                                $item.getDocumentAgeDays() dag
-                            #end
-                            #if ($item.getDocumentAgeDays() > 1)
-                                $item.getDocumentAgeDays() dager
-                            #end
-                            #if ($item.getDocumentAgeHours() == 1)
-                                $item.getDocumentAgeHours() time
-                            #end
-                            #if ($item.getDocumentAgeHours() > 1)
-                                $item.getDocumentAgeHours() timer
-                            #end
-                            #if ($item.getDocumentAgeHours() == 0)
-                                #if ($item.getDocumentAgeDays() == 0)
-                                    #if ($item.getDocumentAgeMinutes == 1)
-                                        $item.getDocumentAgeMinutes() minutt
-                                    #end
-                                    #if ($item.getDocumentAgeMinutes > 1)
-                                        $item.getDocumentAgeMinutes() minutter
+            #if ($result.getRetrieverResults().size() > 0)
+                <div id="search_result">
+                    <div class="search_hits">
+                         $result.getMediaDocumentsInIndex() TREFF I NORSKE NYHETER
+                    </div>
+                    #foreach( $item in $result.getRetrieverResults())
+                        <p>
+                            <a href="$item.url" class="bigUrl">$item.title</a> $!item.getNewsSource()
+                            <span class="tidspunkt">
+                                #if ($item.getDocumentAgeDays() == 1)
+                                    $item.getDocumentAgeDays() dag
+                                #end
+                                #if ($item.getDocumentAgeDays() > 1)
+                                    $item.getDocumentAgeDays() dager
+                                #end
+                                #if ($item.getDocumentAgeHours() == 1)
+                                    $item.getDocumentAgeHours() time
+                                #end
+                                #if ($item.getDocumentAgeHours() > 1)
+                                    $item.getDocumentAgeHours() timer
+                                #end
+                                #if ($item.getDocumentAgeHours() == 0)
+                                    #if ($item.getDocumentAgeDays() == 0)
+                                        #if ($item.getDocumentAgeMinutes == 1)
+                                            $item.getDocumentAgeMinutes() minutt
+                                        #end
+                                        #if ($item.getDocumentAgeMinutes > 1)
+                                            $item.getDocumentAgeMinutes() minutter
+                                        #end
                                     #end
                                 #end
-                            #end
-                            gammel
-                        </span>
-                        <div class="search_result_summary">$item.summary</div>
-                        <a class="smallUrl" href="$item.url">$item.clickUrl</a>
-                    </p>
-                #end
-            </div>
+                                gammel
+                            </span>
+                            <div class="search_result_summary">$item.summary</div>
+                            <a class="smallUrl" href="$item.url">$item.clickUrl</a>
+                        </p>
+                    #end
+                </div>
+            #else
+                <div id="no_hits">
+                    #parse("no-hits.vm")
+                </div>
+            #end
         </content>
 
         ## Nasty shortcut. The collection we've searched should be available from the $result
@@ -94,4 +101,4 @@
         </content>
     </body>
 </html>
-#end
+
