@@ -6,13 +6,13 @@
     <body bgcolor="#eeeeff">
         <content tag="fast-nordic-enriched">
             <div class="enrichment">
-                $result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.query</b> I NORDISKE NYHETER
+                <a href="#">$result.getTotalDocumentsAvailable() Treff på <b>$result.query</b> i nordiske nyheter</a>
                 <ul>
                     #foreach( $item in $result.getNordicNewsResults())
                     #if ($velocityCount <= 3)
                     <li><a href="$item.url">$item.title</a>
-                        <span class="news_source">$item.getNewsSource(),</span>
-                        <span class="tidspunkt">
+                        <span class="timestamp">
+                            $item.getNewsSource(),
                             #if ($item.getDocumentAgeDays() == 1)
                                 $item.getDocumentAgeDays() dag
                             #end
