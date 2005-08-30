@@ -14,7 +14,7 @@
         #if ($result.getTotalDocumentsAvailable() > 0)
             <content tag="sensis-enriched">
                 <div class="enrichment">
-                    <a href="?s=g&q=$result.getQuery()">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.getQuery()</b> I VERDEN</a>
+                    <a href="?c=g&amp;q=$result.getQuery()">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.getQuery()</b> I VERDEN</a>
                     <ul>
                         #foreach( $item in $result.getResults() )
                             #if ($velocityCount <= 3)
