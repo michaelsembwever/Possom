@@ -93,6 +93,7 @@ a:hover { color: #EA6A24; }
 #footer {
     background-image: url(../images/menu/footer_line.gif);
     background-repeat: repeat-x;
+    margin-top: 5px;
 }
 
 
@@ -361,4 +362,15 @@ a:hover { color: #EA6A24; }
 /* -- margin for media enrichment source -- */
 .news_source {
     margin-left: 10px;
+}
+
+/* ------------------------------------------------------------------ */
+/* =NO HITS  */
+
+#no_hits {
+    margin: 20px 0 0 20px;
+}
+
+#no_hits p {
+    margin-top: 10px;
 }
