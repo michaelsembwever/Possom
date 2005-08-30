@@ -6,7 +6,7 @@
     <body bgcolor="#eeeeff">
         <content tag="moreover-enriched">
             <div class="enrichment">
-                $result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.query</b> I INTERNATIONALE NYHETER
+                <a href="#">$result.getTotalDocumentsAvailable() Treff på <b>$result.query</b> i internasjonale nyheter</a>
                 <ul>
                     #foreach( $item in $result.getMoreoverResults())
                     #if ($velocityCount <= 3)
