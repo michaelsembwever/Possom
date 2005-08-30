@@ -5,6 +5,18 @@
 
     <body>
 
+    <content tag="fast-enriched">
+        <div class="enrichment">
+            <a href="?q=$result.getQuery()&amp;c=d">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.query</b> I NORGE</a>
+            <ul>
+                #foreach( $item in $result.getResults())
+                #if ($velocityCount <= 3)
+                <li><a href="$item.url">$item.title</a></li>
+                #end
+                #end
+            </ul>
+        </div>
+    </content>
         <content tag="search-error-fast">
             #if($result.getSearchErrorMesg())
                 $result.getSearchErrorMesg()

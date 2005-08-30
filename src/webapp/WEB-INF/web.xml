@@ -99,6 +99,24 @@
 </filter>
 
     <filter>
+        <filter-name>Moreover</filter-name>
+        <filter-class>no.schibstedsok.front.searchportal.filters.fast.MoreoverFilter</filter-class>
+        <init-param>
+            <param-name>standardPipeline</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter>
+        <filter-name>Nordic News</filter-name>
+        <filter-class>no.schibstedsok.front.searchportal.filters.fast.NordicNewsFilter</filter-class>
+        <init-param>
+            <param-name>standardPipeline</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+
+    <filter>
         <filter-name>Companies</filter-name>
         <filter-class>no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter</filter-class>
         <init-param>
@@ -194,6 +212,18 @@
 
     <filter-mapping>
         <filter-name>Persons</filter-name>
+        <url-pattern>/search/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>Moreover</filter-name>
+        <url-pattern>/search/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>Nordic News</filter-name>
         <url-pattern>/search/*</url-pattern>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>

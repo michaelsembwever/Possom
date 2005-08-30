@@ -20,6 +20,9 @@ public class FastPersonsSearchResult extends FastSearchResult {
     private String postalCode;
     private String city;
     private String cellPhone;
+    private String personId;
+    private String x;
+    private String y;
 
     public FastPersonsSearchResult(IDocumentSummary summary) {
         super(summary);
@@ -34,6 +37,9 @@ public class FastPersonsSearchResult extends FastSearchResult {
         this.postalCode = getSummaryField(summary, "ywpostnr");
         this.city = getSummaryField(summary, "ywpoststed");
         this.cellPhone = getSummaryField(summary, "wpmobiltelefon");
+        this.personId = getSummaryField(summary, "recordid");
+        this.x = getSummaryField(summary, "xcoord");
+        this.y = getSummaryField(summary, "xcoord");
 
         super.populateFields(summary);    //To change body of overridden methods use File | Settings | File Templates.
     }
@@ -69,5 +75,29 @@ public class FastPersonsSearchResult extends FastSearchResult {
 
     public String getPhoneNumber() {
         return phoneNumber != null ? phoneNumber : cellPhone;
+    }
+
+    public String getY() {
+        return y;
+    }
+
+    public void setY(String y) {
+        this.y = y;
+    }
+
+    public String getX() {
+        return x;
+    }
+
+    public void setX(String x) {
+        this.x = x;
+    }
+
+    public String getPersonId() {
+        return personId;
+    }
+
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
 }

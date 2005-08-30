@@ -47,6 +47,9 @@ public class FastSearchResponseImpl extends SearchResponseImpl {
     private List categoryModifiers = new ArrayList();
     private String modifier;
 
+    private List moreoverResults = new ArrayList();
+    private List nordicNewsResults = new ArrayList();
+
     public int getCompaniesDocumentsInIndex() {
         return companiesDocumentsInIndex;
     }
@@ -261,4 +264,23 @@ public class FastSearchResponseImpl extends SearchResponseImpl {
     }
 
 
+    public void addMoreoverResult(SearchResultElement result) {
+        moreoverResults.add(result);
+    }
+
+    public List getMoreoverResults() {
+        return moreoverResults;
+    }
+
+    public void setMoreoverResults(List moreoverResults) {
+        this.moreoverResults = moreoverResults;
+    }
+
+    public void addNordicNewsResult(SearchResultElement result) {
+        nordicNewsResults.add(result);
+    }
+
+    public List getNordicNewsResults() {
+        return nordicNewsResults;
+    }
 }

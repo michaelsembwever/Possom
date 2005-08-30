@@ -16,7 +16,7 @@
 
 #if($result.getSpellingSuggestions())
   <span class="stavekontroll">Mente du:</span>
-	#foreach($suggestion in $result.getSpellingSuggestions()) 
+	#foreach($suggestion in $result.getSpellingSuggestions())
 	  <em><a href="?q=$suggestion">$suggestion</a>?</em><br/>
 	#end
 #end

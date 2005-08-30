@@ -99,9 +99,6 @@ public class FastConnectorCommand implements ConnectorCommand {
                     IQuery newQuery = navigation.createNavigatedQuery(query);
 
                      queryResult = doSearch(newQuery);
-
-                    
-
                 }
 
                 INavigator navigator = queryResult.getNavigator("ypbransjenavigator");
@@ -216,17 +213,6 @@ public class FastConnectorCommand implements ConnectorCommand {
         } else {
             params.setParameter(new SearchParameter(BaseParameter.QUERY, getQueryString()));
         }
-
-
-//		if (log.isDebugEnabled()) {
-//			try {
-//				log.debug("Filter applied: "	+ params.getParameter(BaseParameter.FILTER));
-//				log.debug("Asking for navigators: "	+ params.getParameter(BaseParameter.NAVIGATORS));
-//			} catch (NoSuchParameterException e) {
-//				// silent, only debug purpose not all params is mandatory.
-//			}
-//		}
-
     }
 
     private void extractDocumentsInCollections(FastConnector connector, IQueryResult queryResult) {
@@ -275,6 +261,35 @@ public class FastConnectorCommand implements ConnectorCommand {
             i =  resultsFromCompaniesCollection(queryResult, i);
         else if(configuration.getCollection().equals(SearchConstants.PERSONS_COLLECTION))
             i =  resultsFromPersonsCollection(queryResult, i);
+        else if(configuration.getCollection().equals(SearchConstants.MOREOVER_COLLECTION))
+            i =  resultsFromMoreoverCollection(queryResult, i);
+        else if(configuration.getCollection().equals(SearchConstants.NORDIC_NEWS_COLLECTION))
+            i =  resultsFromNordicNews(queryResult, i);
+        return i;
+    }
+
+    private int resultsFromNordicNews(IQueryResult queryResult, int i) {
+        for (; i <= getMaxResultsToReturn(); i++) {
+            try {
+                SearchResultElement result = new FastRetrieverSearchResult(queryResult.getDocument(i));
+                response.addNordicNewsResult(result);
+            } catch (IndexOutOfBoundsException e) {
+                log.debug("Result set exhausted");
+            }
+        }
+        return i;
+    }
+
+
+    private int resultsFromMoreoverCollection(IQueryResult queryResult, int i) {
+        for (; i <= getMaxResultsToReturn(); i++) {
+            try {
+                SearchResultElement result = new FastRetrieverSearchResult(queryResult.getDocument(i));
+                response.addMoreoverResult(result);
+            } catch (IndexOutOfBoundsException e) {
+                log.debug("Result set exhausted");
+            }
+        }
         return i;
     }
 

@@ -1,3 +1,4 @@
+
 <%@ page import="no.schibstedsok.front.searchportal.util.SearchConstants"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
@@ -126,7 +127,10 @@
 
              <!-- Media -->
             <%if(collection.equals("m")){%>
-                <decorator:getProperty property="page.media-collection-results" />
+            <!-- Moreover -->
+            <decorator:getProperty property="page.fast-nordic-enriched" />
+            <decorator:getProperty property="page.moreover-enriched" />
+            <decorator:getProperty property="page.media-collection-results" />
             <%}%>
 
             <!-- Companies -->
@@ -145,7 +149,11 @@
 
             <!-- Global -->
             <%if(collection.equals("g")){%>
-                <decorator:getProperty property="page.global-results" />
+            <decorator:getProperty property="page.fast-enriched" />
+            <!-- Moreover -->
+            <decorator:getProperty property="page.moreover-enriched" />
+            <!-- /Moreover -->
+            <decorator:getProperty property="page.global-results" />
             <%}%>
 
         </div>

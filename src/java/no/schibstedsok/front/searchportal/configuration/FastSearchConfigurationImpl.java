@@ -108,32 +108,7 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 	 * @return
 	 */
 	public String constructCollectionFilter() {
-
-		String filterString = "";
-		if(SearchConstants.WEBCRAWL_COLLECTION.equals(collection))
-			filterString = "+meta.collection:" + SearchConstants.WEBCRAWL_COLLECTION;
-		else if(SearchConstants.MEDIA_COLLECTION.equals(collection))
-			filterString = "+meta.collection:" + SearchConstants.MEDIA_COLLECTION;
-		else if(SearchConstants.WIKI_COLLECTION.equals(collection))
-			filterString = "+meta.collection:" + SearchConstants.WIKI_COLLECTION;
-        else if (SearchConstants.COMPANIES_COLLECTION.equals(collection))
-            filterString = "+meta.collection:" + SearchConstants.COMPANIES_COLLECTION;
-        else if (SearchConstants.PERSONS_COLLECTION.equals(collection))
-            filterString = "+meta.collection:" + SearchConstants.PERSONS_COLLECTION;
-        else if(SearchConstants.DEFAULTCOLLECTION.equals(collection))
-			filterString = "";	//forces a collection wide search
-
-//		if(log.isDebugEnabled())
-//			log.debug("FILTER: " + filterString);
-//
-//		try {
-//			filterString = URLEncoder.encode(filterString, "UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			log.error("Error: Unable to encode filterString " + filterString + " ", e);
-//		}
-
-		return filterString;
-
+        return "+meta.collection:" + collection;
 	}
 
 	public String getQRServerURL() {

@@ -30,7 +30,7 @@ public final class SearchConstants {
 	public static final String 	COUNTERNAVIGATORSTRING = "contentsourcenavigator";
 	public static final String 	WEBCRAWL_COLLECTION = "webcrawl";
 	public static final String 	WEBCRAWL_COLLECTION_NAVIGATOR = "Norske nettsider";
-	public static final String 	MEDIA_COLLECTION = "retriever";
+    public static final String 	MEDIA_COLLECTION = "retriever";
 	public static final String 	MEDIA_COLLECTION_NAVIGATOR = "Norske nyheter";
 	public static final String 	WIKI_COLLECTION = "wikipedia";
 	public static final String 	WIKI_COLLECTION_NAVIGATOR = "Wikipedia";
@@ -59,4 +59,7 @@ public final class SearchConstants {
     public static final String PERSONS_COLLECTION = "white";
 
     public static final Object REQUEST_PARAM_PERSONS_INDEX = "w";
+    public static final String MOREOVER_COLLECTION = "moreover";
+    public static final String PERSON_ID_FIELD = "personId";
+    public static final String NORDIC_NEWS_COLLECTION = "retrievernordic";
 }

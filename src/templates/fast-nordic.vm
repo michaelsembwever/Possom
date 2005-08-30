@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<meta name="decorator" content="maindecorator">
+	</head>
+
+    <body bgcolor="#eeeeff">
+        <content tag="fast-nordic-enriched">
+            <div class="enrichment">
+                $result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.query</b> I NORDISKE NYHETER
+                <ul>
+                    #foreach( $item in $result.getNordicNewsResults())
+                    #if ($velocityCount <= 3)
+                    <li><a href="$item.url">$item.title</a></li>
+                    #end
+                    #end
+                </ul>
+            </div>
+        </content>
+    </body>
+</html>
