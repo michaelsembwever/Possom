@@ -339,6 +339,12 @@ a:hover { color: #EA6A24; }
     margin-top: 3px;
 }
 
+/* -- how old media document is -- */
+.timestamp {
+    color: gray;
+    margin-left: 10px;
+}
+
 .bigUrl {
     font-size: 1.3em;
 }
