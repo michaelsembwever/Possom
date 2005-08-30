@@ -23,13 +23,14 @@
                         <td valign="top">
                             <div id="navbar">
                                 <div id="branch_header">Bransje/søkeordnavigator</div>
-                                <ul id="branch_list">
+                                <dl class="geo_list">
                                     #foreach ($category in $result.getCategoryModifiers())
-                                    #if ($velocityCount <= 6)
-                                    <li><div><a href="$baseURL&amp;mod=$category.name">$category.name</a> $category.count</div></li>
+                                        #if ($velocityCount <= 6)
+                                            <dt><a href="$baseURL&amp;mod=$category.name">$category.name</a></dt>
+                                            <dd>$category.count</dd>
+                                        #end
                                     #end
-                                    #end
-                                </ul>
+                                </dl>
                                 <div id="geo_header">Geografinavigator</div>
                                 <dl class="geo_list">
                                     <dt>Alna</dt>
@@ -58,28 +59,14 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <div>
-                                            <dl class="result_list">
-                                                #foreach ($item in $result.getCompaniesResults())
-                                                    <dt><b>$item.companyName</b><a href="$baseURL&amp;companyId=$item.companyId">Infoside</a></dt>
-                                                    <dd>&nbsp;</dd>
-                                                    <dt class="underline">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</dt>
-                                                    <dd class="underline">#if ($item.phoneNumber) $item.phoneNumber #else &nbsp; #end</dd>
-
-
-                                                    #*
-                                                    <li class="result_line1">
-                                                        <span class="company_name">$item.companyName<a href="$baseURL&amp;companyId=$item.companyId">Infoside</a></span>
-                                                    </li>
-                                                    <li class="result_line2">
-                                                        <span class="col_1">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</span>
-                                                        <span class="col_2">#if ($item.phoneNumber) x $item.phoneNumber #else xx &nbsp; #end</span>
-                                                    </li>
-                                                    <li class="float_clear_border"></li>
-                                                    *#
-                                                #end
-                                            </dl>
-                                        </div>
+                                        <dl class="result_list">
+                                            #foreach ($item in $result.getCompaniesResults())
+                                                <dt><b>$item.companyName</b><a href="$baseURL&amp;companyId=$item.companyId">Infoside</a></dt>
+                                                <dd>&nbsp;</dd>
+                                                <dt class="underline">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</dt>
+                                                <dd class="underline">#if ($item.phoneNumber) $item.phoneNumber #else &nbsp; #end</dd>
+                                            #end
+                                        </dl>
                                     </td>
                                 </tr>
                             </table>
@@ -95,7 +82,7 @@
         <content tag="more-results-y">
             #set ($tab = "y")
             #if ($result.getModifier())
-            #set ($extra = "&amp;mod=$result.getModifier()")
+                #set ($extra = "&amp;mod=$result.getModifier()")
             #end
             #parse("verbosePager.vm")
         </content>
