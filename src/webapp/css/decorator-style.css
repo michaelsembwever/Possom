@@ -219,8 +219,6 @@ a:hover { color: #EA6A24; }
     margin-left: 10px;
 }
 
-
-
 .nav_branch_header {
     background-color: #ECEDEF;
     border: solid 1px #DFDFDF;
@@ -239,10 +237,19 @@ a:hover { color: #EA6A24; }
     margin: 10px 0 0 10px;
 }
 
-
 #map {
     margin: 10px 0 0 10px;
 }
+
+
+#test li {
+    display: inline;
+}
+
+#test .d { background-color: #705CB3 }
+#test .m { background-color: # }
+#test .w { background-color: # }
+#test .g { background-color: # }
 
 /* ------------------------------------------------------------------ */
 /* =INFOPAGE */
