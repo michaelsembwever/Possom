@@ -123,11 +123,12 @@ public class FastSearchResponseImpl extends SearchResponseImpl {
      * @param spellingSuggestion
      */
     public void addSpellingSuggestion(String spellingSuggestion) {
+        if (! spellingSuggestion.equals(getQuery())) {
+            if(this.spellingSuggestions == null)
+                this.spellingSuggestions = new ArrayList();
 
-        if(this.spellingSuggestions == null)
-            this.spellingSuggestions = new ArrayList();
-
-        this.spellingSuggestions.add(spellingSuggestion);
+            this.spellingSuggestions.add(spellingSuggestion);
+        }
     }
 
 
