@@ -7,7 +7,7 @@
 
     <content tag="fast-enriched">
         <div class="enrichment">
-            <a href="?q=$result.getQuery()&amp;c=d">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.query</b> I NORGE</a>
+            <a href="?q=$result.getQuery()&amp;c=d">$result.getTotalDocumentsAvailable() Treff <b>$result.query</b> i Norge</a>
             <ul>
                 #foreach( $item in $result.getResults())
                 #if ($velocityCount <= 3)
@@ -37,7 +37,7 @@
             #if ($result.getTotalDocumentsAvailable() > 0)
                 <div id="search_result">
                     <div class="search_hits">
-                         $result.getWebCrawlDocumentsInIndex() TREFF I NORGE
+                         $result.getWebCrawlDocumentsInIndex() Treff på <b>$result.query</b> i Norge
                     </div>
                     #foreach( $item in $result.getResults() )
                         <p>
