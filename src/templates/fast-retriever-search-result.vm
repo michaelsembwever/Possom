@@ -52,7 +52,7 @@
             #if ($result.getRetrieverResults().size() > 0)
                 <div id="search_result">
                     <div class="search_hits">
-                         $result.getMediaDocumentsInIndex() Treff i norske nyheter
+                         $result.getMediaDocumentsInIndex() Treff på <b>$result.getQuery()</b> i norske nyheter
                     </div>
                     #foreach( $item in $result.getRetrieverResults())
                         <p>
