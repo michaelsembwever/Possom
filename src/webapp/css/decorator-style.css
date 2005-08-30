@@ -34,7 +34,7 @@ a:hover { color: #EA6A24; }
 
 /* the left margin on the page (replace 'first_cell') */
 .page_margin_left {
-    margin-left: 20px;
+    margin-left: 15px;
 }
 
 
@@ -42,7 +42,7 @@ a:hover { color: #EA6A24; }
 /* =MAIN-DECORATOR */
 
 #logo {
-    margin: 10px 0 15px 20px;
+    margin: 10px 0 15px 15px;
 }
 
 /* padding between tabs */
@@ -109,41 +109,26 @@ a:hover { color: #EA6A24; }
 
 /* -- the global navbar contender -- */
 #navbar {
-    width: 198px;
+    width: 145px;
     margin-top: 10px;
+    font-size: 0.9em;
 }
+
+
 
 #branch_header {
     background-color: #ECEDEF;
     border: solid 1px #DFDFDF;
-    padding: 3px 5px;
+    padding: 3px 3px;
     margin-top: 3px;
 }
-
-/* -- the keyword navbar (ul) --*/
-#branch_list {
-    background-color: #F2F2F4;
-    color: #003980;
-    border: 1px solid #DFDFDF;
-    margin-top: 3px;
-}
-
-/* -- the list elements -- */
-#branch_list li {
-    border-bottom: 1px solid #DFDFDF;
-}
-
-#branch_list div {
-    padding: 3px 5px;
-}
-
 
 #geo_header {
     clear: both;
     background-color: #ECEDEF;
     border: solid 1px #DFDFDF;
     margin-top: 10px;
-    padding: 3px 5px;
+    padding: 3px 3px;
 }
 
 /* -- the geo navbar (ul) --*/
@@ -170,14 +155,14 @@ a:hover { color: #EA6A24; }
     float: left;
     clear: left;
     border-top: 1px solid #DFDFDF;
-    padding: 3px 5px;
+    padding: 3px 3px;
 }
 
 .geo_list dd {
     width: 17.8%;
     float: left;
     border-top: 1px solid #DFDFDF;
-    padding: 3px 5px;
+    padding: 3px 3px;
     text-align: right;
 }
 
@@ -190,7 +175,7 @@ a:hover { color: #EA6A24; }
 }
 
 .result_list_header dt {
-    width: 79%;
+    width: 78%;
     float: left;
     clear: left;
     padding: 3px 0 3px 5px;;
@@ -321,7 +306,7 @@ a:hover { color: #EA6A24; }
 /* =SEARCH-RESULT */
 
 #search_result {
-    margin: 10px 0 0 20px;
+    margin: 10px 0 0 15px;
 }
 
 #search_result p {
@@ -358,7 +343,7 @@ a:hover { color: #EA6A24; }
 /* =ENRICHMENT */
 
 .enrichment, .spelling_suggestion {
-    margin: 10px 0 0 20px;
+    margin: 10px 0 0 15px;
 }
 
 .enrichment ul {
@@ -374,7 +359,7 @@ a:hover { color: #EA6A24; }
 /* =NO HITS  */
 
 #no_hits {
-    margin: 20px 0 0 20px;
+    margin: 20px 0 0 15px;
 }
 
 #no_hits p {
