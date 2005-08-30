@@ -1,4 +1,3 @@
-#if($result)
 <html>
 	<head>
 		<meta name="decorator" content="maindecorator">
@@ -12,33 +11,41 @@
             #end
         </content>
 
-        <content tag="sensis-enriched">
-            <div class="enrichment">
-                <a href="?s=g&q=$result.getQuery()">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.getQuery()</b> I VERDEN</a>
-                <ul>
-                    #foreach( $item in $result.getResults() )
-                        #if ($velocityCount <= 3)
-                            <li><a href="$item.url">$item.title</a></li>
+        #if ($result.getTotalDocumentsAvailable() > 0)
+            <content tag="sensis-enriched">
+                <div class="enrichment">
+                    <a href="?s=g&q=$result.getQuery()">$result.getTotalDocumentsAvailable() TREFF PÅ <b>$result.getQuery()</b> I VERDEN</a>
+                    <ul>
+                        #foreach( $item in $result.getResults() )
+                            #if ($velocityCount <= 3)
+                                <li><a href="$item.url">$item.title</a></li>
+                            #end
                         #end
-                    #end
-                </ul>
-            </div>
-        </content>
+                    </ul>
+                </div>
+            </content>
+        #end
 
         <content tag="global-results">
-            <div id="search_result">
-                <div class="search_hits">
-                    $result.getTotalDocumentsAvailable() TREFF I VERDEN
+            #if ($result.getTotalDocumentsAvailable() > 0)
+                <div id="search_result">
+                    <div class="search_hits">
+                        $result.getTotalDocumentsAvailable() TREFF I VERDEN
+                    </div>
+                    #foreach( $item in $result.getResults() )
+                        <p>
+                            <a href="$item.url" class="bigUrl">$item.title</a>
+                            <div class="search_result_summary">$item.summary</div>
+                            <a class="smallUrl" href="$item.url">$item.clickUrl</a>
+                        </p>
+                    #end
+                    <p>Nerdscore: $result.getFetchTime() ms</p>
                 </div>
-                #foreach( $item in $result.getResults() )
-                    <p>
-                        <a href="$item.url" class="bigUrl">$item.title</a>
-                        <div class="search_result_summary">$item.summary</div>
-                        <a class="smallUrl" href="$item.url">$item.clickUrl</a>
-                    </p>
-                #end
-                <p>Nerdscore: $result.getFetchTime() ms</p>
-            </div>
+            #else
+                <div id="no_hits">
+                    #parse("no-hits.vm")
+                </div>
+            #end
         </content>
 
         ## Nasty shortcut. The collection we've searched should be available from the $result
@@ -48,4 +55,3 @@
         </content>
     </body>
 </html>
-#end
