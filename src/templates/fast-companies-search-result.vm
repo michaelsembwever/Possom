@@ -5,8 +5,9 @@
 
     <body>
 
-        #if ($result.getTotalDocumentsAvailable() > 0)
-            <content tag="companies-results">
+
+        <content tag="companies-results">
+            #if ($result.getTotalDocumentsAvailable() > 0)
 
                 #if ($result.getModifier())
                     #set ($baseURL = "?c=y&amp;q=$result.getQuery()&amp;mod=$result.getModifier()")
@@ -76,8 +77,17 @@
                         </td>
                     </tr>
                 </table>
-            </content>
-        #end
+            #else
+                <div id="no_hits">
+                    #parse("no-hits.vm")
+                    <p>
+                        Er du usikker på bransjebetegnelser? <a href="#">Velg bransje her</a><br />
+                        <a href="#">Se eksempel på søkeord</a>
+                    </p>
+                </div>
+            #end
+        </content>
+
 
         <content tag="more-results-y">
             #set ($tab = "y")
