@@ -25,6 +25,8 @@ a {
     color: #446DA2;
 }
 
+a:hover { color: #EA6A24; }
+
 /* used in main-decorator footer and verbose.vm */
 .text_align_center {
     text-align: center;
@@ -349,45 +351,15 @@ a {
 /* ------------------------------------------------------------------ */
 /* =ENRICHMENT */
 
-.enriched_title, .spelling_suggestion {
+.enrichment, .spelling_suggestion {
     margin: 10px 0 0 20px;
 }
 
-.enriched_title ul {
+.enrichment ul {
     margin-left: 40px;
 }
 
-
-
-
-
-a:hover { color: #EA6A24; }
-
-
-.beriketInnrykk{
-	margin-left:3em;
-}
-.beriketInnrykkTidspunkt{
-	font-size:      0.7em;
-	margin-left:	3em;
-	color: 			5A6623;
-}
-.beriketTittel{
-  	font-size:      0.9em;
-}
-.beriketUrl{
-  	font-size:      0.8em;
-}
-
-.boksTittel {
-     font-size: 0.7em;
-	 color: #007AC8;
-     padding-bottom: 5px;
-	 margin-bottom: 2em;
-   	 border-bottom: solid 1px #007AC8;
-   	 margin-bottom: 10px;
-}
-
-.boksInnhold{
-  	font-size:      0.8em;
+/* -- margin for media enrichment source -- */
+.news_source {
+    margin-left: 10px;
 }
