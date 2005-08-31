@@ -26,6 +26,8 @@ public class FastCompaniesSearchResult extends FastSearchResult {
     private String companyId;
     private String x;
     private String y;
+    private String otherNumbers;
+    private String mobileNumber;
 
 
     public FastCompaniesSearchResult(IDocumentSummary summary) {
@@ -38,10 +40,32 @@ public class FastCompaniesSearchResult extends FastSearchResult {
         postalCode = getSummaryField(summary, "ywpostnr");
         city = getSummaryField(summary, "ywpoststed");
         phoneNumber = getSummaryField(summary, "yptelefon");
+        otherNumbers = getSummaryField(summary, "ypandretelefoner");
         companyId = getSummaryField(summary, "recordid");
+        mobileNumber = getSummaryField(summary, "ypmobiltelefon");
         x = getSummaryField(summary, "xcoord");
         y = getSummaryField(summary, "ycoord");
     }
+
+
+    public String getAnyPhoneNumber() {
+        if (phoneNumber != null) {
+            return phoneNumber;
+        } else {
+            if (otherNumbers != null) {
+                String[] numbers = otherNumbers.split(";");
+
+                if (numbers.length > 0) {
+                    return numbers[0];
+                }
+            } else {
+                return mobileNumber;
+            }
+        }
+        
+        return null;
+    }
+
 
     /**
      *
@@ -118,5 +142,21 @@ public class FastCompaniesSearchResult extends FastSearchResult {
 
     public String getY() {
         return y;
+    }
+
+    public String getOtherNumbers() {
+        return otherNumbers;
+    }
+
+    public void setOtherNumbers(String otherNumbers) {
+        this.otherNumbers = otherNumbers;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
 }
