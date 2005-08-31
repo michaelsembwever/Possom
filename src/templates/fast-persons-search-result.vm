@@ -17,14 +17,6 @@
                     <tr>
                         <td valign="top">
                             <div id="navbar">
-
-                                <div id="branch_header">Bransje/søkeordnavigator</div>
-                                <ul id="branch_list">
-                                    <li><div>Nøkkelord 1</div></li>
-                                    <li><div>Nøkkelord 1</div></li>
-                                    <li><div>Nøkkelord 1</div></li>
-                                    <li><div>Nøkkelord 1</div></li>
-                                </ul>
                                 <div id="geo_header">Geografinavigator</div>
                                 <dl class="geo_list">
                                     <dt>Alna</dt>
