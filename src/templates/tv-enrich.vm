@@ -7,14 +7,14 @@
         #if ($result.getResults().size() > 0)
             <content tag="tv-results">
                 <div class="enrichment">
-                    <a href="http://fredag.dagbladet.no/tv/" class="enrichment_link">Treff på i dagens tv-programmer</a>
+                    Treff i <a href="http://www.dagbladet.no/#tv" class="enrichment_link">dagens tv-programmer</a>
                     <ul>
                         #foreach( $item in $result.getResults())
                             #if ($velocityCount <= 3)
                                 <li>
-                                    <a href="http://interaktiv.vg.no/tv/tv.php?type=html&max=24&kanal=$item.getCode()&starttime=$item.getStartTime()">
+                                    ##<a href="http://interaktiv.vg.no/tv/tv.php?type=html&max=24&kanal=$item.getCode()&starttime=$item.getStartTime()">
                                         KL: $item.getFormattedStartTime() $item.getName() #if ($item.isReprise()) (reprise) #end $item.getChannel()
-                                    </a>
+                                    ##</a>
                                 </li>
                             #end
                         #end
