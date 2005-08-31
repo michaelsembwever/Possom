@@ -52,9 +52,9 @@
                                 Besøksadresse:<br />
                                 $!{company.visitingAddress}#if ($company.visitingAddress && ($company.visitingZip || $company.visitingCity)),#end $!{company.visitingZip} $!{company.visitingCity}
                             </p>
-                            #if ($company.phoneNumber)
+                            #if ($company.anyPhoneNumber)
                                 <p class="visitingAddress">
-                                    Telefon: $company.phoneNumber
+                                    Telefon: $company.anyPhoneNumber
                                 </p>
                             #end
                             <p class="updateInfo">

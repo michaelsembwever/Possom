@@ -65,7 +65,7 @@
                                                 <dt><b>$item.companyName</b><a href="$baseURL&amp;companyId=$item.companyId">Infoside</a></dt>
                                                 <dd>&nbsp;</dd>
                                                 <dt class="underline">$!{item.visitingAddress}#if ($item.visitingAddress && ($item.visitingZip || $item.visitingCity)),#end $!{item.visitingZip} $!{item.visitingCity}</dt>
-                                                <dd class="underline">#if ($item.phoneNumber) $item.phoneNumber #else &nbsp; #end</dd>
+                                                <dd class="underline">#if ($item.anyPhoneNumber) $item.anyPhoneNumber #else &nbsp; #end</dd>
                                             #end
                                         </dl>
                                     </td>
