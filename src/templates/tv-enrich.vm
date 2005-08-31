@@ -7,7 +7,7 @@
         #if ($result.getResults().size() > 0)
             <content tag="tv-results">
                 <div class="enrichment">
-                    <a href="http://fredag.dagbladet.no/tv/">Treff på i dagens tv-programmer</a>
+                    <a href="http://fredag.dagbladet.no/tv/" class="enrichment_link">Treff på i dagens tv-programmer</a>
                     <ul>
                         #foreach( $item in $result.getResults())
                             #if ($velocityCount <= 3)

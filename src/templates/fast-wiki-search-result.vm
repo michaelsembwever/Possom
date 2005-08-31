@@ -7,7 +7,7 @@
         <content tag="wiki-enriched">
             #foreach( $item in $result.getWikiResult())
                 <div class="enrichment">
-                    <a href="$item.url">Treff på <b>$item.getTitle()</b> i leksikonet (Wikipedia)</a>
+                    <a href="$item.url" class="enrichment_link">Treff på <b>$item.getTitle()</b> i leksikonet (Wikipedia)</a>
                     <ul>
                         <li>$item.getSummary().replaceAll("</{0,1}[bB]>", "")</li>
                     </ul>

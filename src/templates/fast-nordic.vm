@@ -8,7 +8,7 @@
         #if ($result.getTotalDocumentsAvailable() > 0)
             <content tag="fast-nordic-enriched">
                 <div class="enrichment">
-                    <a href="#">$result.getTotalDocumentsAvailable() Treff på <b>$result.query</b> i nordiske nyheter</a>
+                    <a href="#" class="enrichment_link">$result.getTotalDocumentsAvailable() Treff på <b>$result.query</b> i nordiske nyheter</a>
                     <ul>
                         #foreach( $item in $result.getNordicNewsResults())
                         #if ($velocityCount <= 3)

@@ -7,7 +7,7 @@
 
     <content tag="fast-enriched">
         <div class="enrichment">
-            <a href="?q=$result.getQuery()&amp;c=d">$result.getTotalDocumentsAvailable() Treff <b>$result.query</b> i Norge</a>
+            <a href="?q=$result.getQuery()&amp;c=d" class="enrichment_link">$result.getTotalDocumentsAvailable() Treff <b>$result.query</b> i Norge</a>
             <ul>
                 #foreach( $item in $result.getResults())
                 #if ($velocityCount <= 3)
