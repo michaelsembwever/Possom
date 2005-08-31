@@ -23,7 +23,7 @@
                     <tr>
                         <td valign="top">
                             <div id="navbar">
-                                <div id="branch_header">Bransje/søkeordnavigator</div>
+                                <div id="branch_header">Treff i bransjer</div>
                                 <dl class="geo_list">
                                     #foreach ($category in $result.getCategoryModifiers())
                                         #if ($velocityCount <= 6)
@@ -32,7 +32,7 @@
                                         #end
                                     #end
                                 </dl>
-                                <div id="geo_header">Geografinavigator</div>
+                                <div id="geo_header">Velg område</div>
                                 <dl class="geo_list">
                                     <dt>Alna</dt>
                                     <dd>452</dd>
