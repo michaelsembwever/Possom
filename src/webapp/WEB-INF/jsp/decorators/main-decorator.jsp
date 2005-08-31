@@ -1,4 +1,3 @@
-
 <%@ page import="no.schibstedsok.front.searchportal.util.SearchConstants"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
@@ -59,16 +58,16 @@
                     <ul id="content_searchform">
                         <% if ( collection.equals("y") || collection.equals("w") ) { %>
 
-                            <li><div id="content_searchform_header" style="color: <%=search_button_bgcolor%>">Søk etter hva og hvor</div></li>
-
                             <% if ( collection.equals("y")) { %>
-                                <li>Eksempel: frisør Pettersen Bogstadveien Oslo</li>
+                                <li><div id="content_searchform_header" style="color: <%=search_button_bgcolor%>">Søk etter hva og hvor</div></li>
+                                <li>Eksempel: frisør Oslo</li>
                             <% } else { %>
-                                <li>Eksempel: Per Pettersen Bogstadveien Oslo</li>
+                                <li><div id="content_searchform_header" style="color: <%=search_button_bgcolor%>">Hvem søker du?</div></li>
+                                <li>Du kan søke på fornavn, etternavn, telefonnummer, adresse, sted, postnummer osv</li>
                             <%}%>
 
                         <%} else if ( collection.equals("m")) {%>
-                            <li><div id="content_searchform_header" style="color: <%=search_button_bgcolor%>">Søk i Nyheter</div></li>
+                            <li><div id="content_searchform_header" style="color: <%=search_button_bgcolor%>">Søk i nyheter</div></li>
                             <li>Velg hva du vil søke i:</li>
                             <li>
                                 <input id="no" value="" checked="checked" type="radio" />
@@ -85,7 +84,7 @@
                                 <input name="lang" value="en" type="hidden" />
                                 <input name="c" value="<%=collection%>" type="hidden" />
                                 <input name="q" type="text" value="<%= q %>" size="50" />
-                                <input type="submit" class="search_button" value="<%=search_button_text%>" style="background-color:<%=search_button_bgcolor%>" />
+                                <input type="submit" class="search_button" value="Søk" style="background-color:<%=search_button_bgcolor%>" />
         <%--                        <a href="#"><span class="link_style">Innstillinger</span></a>--%>
                             </form>
                         </li>
@@ -172,7 +171,7 @@
             <%}%>
 
             <tr>
-                <td id="footer" colspan="3">&nbsp;</td>
+                <td colspan="3"><div id="footer">&nbsp;</div></td>
             </tr>
             <tr>
                 <td class="text_align_center">
