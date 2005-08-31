@@ -13,7 +13,7 @@
             <table id="company_infopage" class="page_margin_left">
                 <tr>
                     <td valign="top">
-                        <div id="branch_header" style="width: 500px"><h1>$company.getCompanyName()</h1></div>
+                        <div id="branch_header" style="width: 420px"><h1>$company.getCompanyName()</h1></div>
                         <div id="company_data">
                             <ul id="tabs">
                                 <li><a href="">Skriv ut</a></li>
