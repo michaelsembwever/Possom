@@ -10,6 +10,33 @@
         #set ($company = $result.getCompaniesResults().get(0))
 
         <content tag="infopage">
+
+            <script type="text/javascript" language="JavaScript">
+               
+                //icon i kartet
+                var imageNormal = new Object();
+                imageNormal["info"] = new Image(10, 10);
+                imageNormal["info"].src = "../images/mapicon/info_1.jpg";
+
+                var imageHighlite = new Object();
+                imageHighlite["info"] = new Image(17, 17);
+                imageHighlite["info"].src = "../images/mapicon/info_2.jpg";
+
+                function setImage(iconName, type, imgId){
+                        if (document.images) {
+                                if(type == "highlite"){
+                                        document.images[imgId].src = imageHighlite[iconName].src;
+                                        return true;
+                                }
+                                else if(type == "normal"){
+                                        document.images[imgId].src = imageNormal[iconName].src;
+                                        return true;
+                                }
+                        }
+                        return false;
+                }
+            </script>
+
             <table id="company_infopage" class="page_margin_left">
                 <tr>
                     <td valign="top">
@@ -38,6 +65,9 @@
 
                     <td valign="top">
                         <img src="$contextPath/map/?coords=$company.x,$company.y&amp;action=viewone" style="margin-left: 10px;" width="350" height="500"/>
+                        <div id="map" style="POSITION: absolute;TOP: 187px;LEFT: 528px;Z-INDEX: 1;">
+                                <img src="../images/mapicon/info_1.jpg" border=0 name="elem_1" style="POSITION: absolute;TOP: 250px;LEFT: 175px;Z-INDEX: 1000; CURSOR: pointer;" onmouseover="setImage('info', 'highlite', this.name);" onmouseout="setImage('info', 'normal', this.name);" alt="$company.getCompanyName()" onclick="location.href='http://www.aftenposten.no'">
+                        </div>
                    </td>
                </tr>
             </table>
