@@ -293,7 +293,7 @@ a:hover { color: #EA6A24; }
     border-bottom: solid 1px #E5DBC3;
     padding-top: 3px;
     float: left;
-    width: 24.85%;
+    width: 24.77%;
     height:1.5em;
     text-align: center;
     vertical-alig:center;
@@ -321,6 +321,7 @@ a:hover { color: #EA6A24; }
 }
 
 .search_hits {
+    font-size: 1.3em;
     color: #007AC8;
     padding-bottom: 5px;
     border-bottom: solid 1px #007AC8;
@@ -357,10 +358,15 @@ a:hover { color: #EA6A24; }
     margin-left: 40px;
 }
 
+.enrichment_link {
+    font-size: 1.3em;
+}
+
 /* -- margin for media enrichment source -- */
 .news_source {
     margin-left: 10px;
 }
+
 
 /* ------------------------------------------------------------------ */
 /* =NO HITS  */
