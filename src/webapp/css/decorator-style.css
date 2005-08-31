@@ -141,7 +141,7 @@ a:hover { color: #EA6A24; }
 
 /* -- the geo data table -- */
 .geo_list {
-    width: 99%;
+    width: 98.5%;
     margin: 3px 0 10px 0;
     float: left;
     border-left: 1px solid #DFDFDF;
@@ -151,7 +151,7 @@ a:hover { color: #EA6A24; }
 }
 
 .geo_list dt {
-    width: 72%;
+    width: 74%;
     float: left;
     clear: left;
     border-top: 1px solid #DFDFDF;
@@ -159,10 +159,10 @@ a:hover { color: #EA6A24; }
 }
 
 .geo_list dd {
-    width: 17.8%;
+    width: 19.8%;
     float: left;
     border-top: 1px solid #DFDFDF;
-    padding: 3px 3px;
+    padding: 3px 2px 3px 0;
     text-align: right;
 }
 
