@@ -32,6 +32,10 @@
         search_button_text = "NYHETSSØK";
         search_button_bgcolor = "#ED486B";
         menu_line = "../images/menu/menu_line_news.gif";
+    } else if (collection.equals("p")) {
+        search_button_text = "BILDESØK";
+        search_button_bgcolor = "#9B703E";
+        menu_line = "../images/menu/menu_line_pic.gif";
     }
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -47,7 +51,7 @@
         <img src="../images/menu/logo.gif" id="logo" alt="logo" />
 
         <table cellpadding="0" cellspacing="0" border="0" class="page_margin_left">
-            <tr><td><a href="?c=d&amp;q=<%=q%>"><img src="../images/menu/magic.gif" class="menu_img" alt="Link til magisk søk" /></a><a href="?c=m&amp;q=<%=q%>"><img src="../images/menu/news.gif" class="menu_img" alt="link til nyheter" /></a><a href="?c=y&amp;q=<%=q%>"><img src="../images/menu/yp.gif" class="menu_img" alt="link til gule data" /></a><a href="?c=w&amp;q=<%=q%>"><img src="../images/menu/wp.gif" class="menu_img" alt="link til hvite sider" /></a><a href="?c=g&amp;q=<%=q%>"><img src="../images/menu/sensis.gif" class="menu_img" alt="link til verden søk" /></a><a href="#"><img src="../images/menu/picture.gif" class="menu_img_last" alt="Link til bilde søk" /></a></td></tr>
+            <tr><td><a href="?c=d&amp;q=<%=q%>"><img src="../images/menu/magic.gif" class="menu_img" alt="Link til magisk søk" /></a><a href="?c=m&amp;q=<%=q%>"><img src="../images/menu/news.gif" class="menu_img" alt="link til nyheter" /></a><a href="?c=y&amp;q=<%=q%>"><img src="../images/menu/yp.gif" class="menu_img" alt="link til gule data" /></a><a href="?c=w&amp;q=<%=q%>"><img src="../images/menu/wp.gif" class="menu_img" alt="link til hvite sider" /></a><a href="?c=g&amp;q=<%=q%>"><img src="../images/menu/sensis.gif" class="menu_img" alt="link til verden søk" /></a><a href="?c=p&amp;q=<%=q%>"><img src="../images/menu/picture.gif" class="menu_img_last" alt="Link til bilde søk" /></a></td></tr>
         </table>
 
         <div style="width: 100%; background-image: url(<%=menu_line%>); background-repeat: repeat-x;">&nbsp;</div>
