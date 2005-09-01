@@ -351,6 +351,25 @@ a:hover { color: #EA6A24; }
     color: #5A6623;
 }
 
+
+/* ------------------------------------------------------------------ */
+/* =PIC-SEARCH */
+
+.pic_frame {
+    width: 200px;
+    height: 250px;
+    background-color: #F2F2F4;
+    text-align: center;
+}
+
+.pic_holder {
+    width: 150px;
+    height: 180px;
+}
+
+
+
+
 /* ------------------------------------------------------------------ */
 /* =ENRICHMENT */
 
