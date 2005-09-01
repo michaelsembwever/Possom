@@ -144,7 +144,7 @@ public abstract class SearchResultElement implements Comparable {
     public String getUrl() {
         return url;
     }
-    
+
 
     public void setUrl(String url) {
         this.url = url;
@@ -157,6 +157,14 @@ public abstract class SearchResultElement implements Comparable {
      * @return
      */
     public String getClickUrl() {
+        if (clickUrl == null) {
+            return null;
+        }
+
+        if (clickUrl.length() > 80) {
+            return clickUrl.substring(0, 79) + " ...";
+        }
+
         return clickUrl;
     }
     
