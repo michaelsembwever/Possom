@@ -328,6 +328,10 @@ a:hover { color: #EA6A24; }
     margin-bottom: 10px;
 }
 
+#search_hits_g { color: #52A5DA }
+#search_hits_d { color: #705CB3 }
+#search_hits_m { color: #ED486B }
+
 .search_result_summary {
     margin-top: 3px;
 }
