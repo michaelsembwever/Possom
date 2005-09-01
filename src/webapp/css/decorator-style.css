@@ -355,9 +355,15 @@ a:hover { color: #EA6A24; }
 /* ------------------------------------------------------------------ */
 /* =PIC-SEARCH */
 
+#pic_result {
+    margin-top: 10px;
+    /* 5 because cellspacing is 10 */
+    margin-left: 5px;
+}
+
 .pic_frame {
-    width: 200px;
-    height: 250px;
+    width: 180px;
+    height: 180px;
     background-color: #F2F2F4;
     text-align: center;
 }
@@ -367,7 +373,28 @@ a:hover { color: #EA6A24; }
     height: 180px;
 }
 
+/* -- the result picture header table -- */
+.result_pic_header {
+    width: 100%;
+    float: left;
+    border: 1px solid #DFDFDF;
+    background-color: #F2F2F4;
+}
 
+.result_pic_header dt {
+    width: 78%;
+    float: left;
+    clear: left;
+    padding: 3px 0 3px 5px;;
+
+}
+
+.result_pic_header dd {
+    width: 18.9%;
+    float: left;
+    padding: 3px 5px 3px 0;
+    text-align: right;
+}
 
 
 /* ------------------------------------------------------------------ */
