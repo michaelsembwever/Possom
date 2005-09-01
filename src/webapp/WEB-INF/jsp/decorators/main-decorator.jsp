@@ -181,8 +181,8 @@
             </tr>
             <tr>
                 <td class="text_align_center">
-                    <a href="#">Om oss</a> |
-                    <a href="#">Bli annonsør</a> |
+                    <a href="#">Om oss</a> &#8226;
+                    <a href="#">Bli annonsør</a> &#8226;
                     <a href="#">Hjelp</a>
                 </td>
             </tr>
