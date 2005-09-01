@@ -314,41 +314,66 @@ a:hover { color: #EA6A24; }
 
 #search_result {
     margin: 10px 0 0 15px;
+    width: 800px;
 }
 
 #search_result p {
     margin-top: 13px;
 }
 
-.search_hits {
-    font-size: 1.3em;
-    color: #007AC8;
-    padding-bottom: 5px;
-    border-bottom: solid 1px #007AC8;
-    margin-bottom: 10px;
+/* -- the result picture header table -- */
+.search_hit_header {
+    font-family: verdana;
+    width: 100%;
+    margin: 10px 0 20px 0;
+    float: left;
+    border: 1px solid #DFDFDF;
+    background-color: #F2F2F4;
 }
 
-#search_hits_g { color: #52A5DA }
-#search_hits_d { color: #705CB3 }
-#search_hits_m { color: #ED486B }
+.search_hit_header dt {
+    width: 78%;
+    float: left;
+    clear: left;
+    padding: 3px 0 3px 5px;;
+
+}
+
+.search_hit_header dd {
+    width: 18.9%;
+    float: left;
+    padding: 3px 5px 3px 0;
+    text-align: right;
+}
+
 
 .search_result_summary {
     margin-top: 3px;
 }
 
-/* -- how old media document is -- */
+.search_summary {
+    margin: 6px 0;
+}
+
+.search_big_url {
+    font-size: 1.3em;
+    color: #3C00CC;
+}
+
+.search_small_url {
+    color: #666666;
+    text-decoration: none;
+}
+
+.search_next_click {
+    color: #000;
+}
+
+
+/* -- how old media document is (media) -- */
 .timestamp {
     color: gray;
     margin-left: 10px;
-}
-
-.bigUrl {
-    font-size: 1.3em;
-}
-
-.smallUrl {
-    font-size: 0.9em;
-    color: #5A6623;
 }
 
 
@@ -402,6 +427,7 @@ a:hover { color: #EA6A24; }
 
 .enrichment, .spelling_suggestion {
     margin: 10px 0 0 15px;
+    line-height: 1.6em
 }
 
 .enrichment ul {
