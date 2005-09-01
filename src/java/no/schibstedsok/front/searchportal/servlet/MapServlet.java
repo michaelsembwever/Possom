@@ -51,7 +51,7 @@ public class MapServlet extends HttpServlet {
     final static long zoomLevel5 = 500000;
     final static double envFactor = 1.2; //faktor for å lage rom rundt envelope
     final static int imgWidth = 350;//bildestørrelse i pixler, bredde
-    final static int imgHeigth = 500;//bildestørrelse i pixler, høyde
+    final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
     final static String datasource = "GEODATA.N50";
     final static String imgFormat = "png8";
 
