@@ -7,6 +7,7 @@
         <h1>Pictures</h1>
 
         <content tag="picture-results">
+            #set ($baseURL = "?c=p&amp;q=$result.getQuery()")
 
             #if ($result.getTotalDocumentsAvailable() > 0)
                 ##$result.totalDocumentsAvailable hits
@@ -21,7 +22,7 @@
                         <td colspan="4">
                             <dl class="result_pic_header">
                                 <dt>Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</dt>
-                                <dd>#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</dd>
+                                <dd>#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>12 neste treff</b></a>#end</dd>
                             </dl>
                         </td>
                     </tr>
