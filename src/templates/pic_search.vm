@@ -11,25 +11,53 @@
             #if ($result.getTotalDocumentsAvailable() > 0)
                 ##$result.totalDocumentsAvailable hits
 
-                <table id="pic_result" class="page_margin_left">
+                <table id="pic_result" cellspacing="10px" cellpadding="0">
                     <tr>
                         <td colspan="3">
                             <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
                         </td>
                     </tr>
+                    <tr>
+                        <td colspan="4">
+                            <dl class="result_pic_header">
+                                <dt>Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</dt>
+                                <dd>#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</dd>
+                            </dl>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            Vis:&nbsp;&nbsp;
+                            <input id="no" value="" checked="checked" type="radio" />
+                            <label for="no">Bilder</label>
+                            <input id="nordic" value="" type="radio" class="radio_button" />
+                            <label for="nordic">Animasjoner</label>
+                            <input id="int" value="" type="radio" class="radio_button" />
+                            <label for="int">Video</label>
+                        </td>
+                        <td colspan="2" style="text-align: right">
+                            Vis:&nbsp;&nbsp;
+                            <input id="no" value="" type="radio" />
+                            <label for="no">Store</label>
+                            <input id="nordic" value="" type="radio" class="radio_button" />
+                            <label for="nordic">Mellomstore</label>
+                            <input id="int" value="" type="radio" checked="checked" class="radio_button" />
+                            <label for="int">Sm&aring;</label>
+                        </td>
+                    </tr>
                     #foreach ($item in $result.getResults())
-                        #if ($velocityCount == 1 || $velocityCount == 6)
+                        #if ($velocityCount == 1 || $velocityCount == 5 || $velocityCount == 9)
                             <tr>
                         #end
                         <td class="pic_frame">
-                            <div class="pic_holder">
+                            ##<div class="pic_holder">
                                 <a href="$item.pageUrl"><img width="$item.thumbWidth" height="$item.thumbHeight" src="$item.thumbUrl"/></a>
-                            </div>
-                            <div class="pic_info">
-                                $item.thumbWidth x $item.thumbHeight piksler
-                            </div>
+                                #*<span class="pic_info">
+                                    $item.thumbWidth x $item.thumbHeight piksler
+                                </span>*#
+                            ##</div>
                         </td>
-                         #if ($velocityCount == 5)
+                         #if ($velocityCount == 4 || $velocityCount == 8)
                             </tr>
                         #end
                     #end
