@@ -82,7 +82,8 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
         }
 
 
-        PagingDisplayHelper pager = new PagingDisplayHelper(response.getTotalDocumentsAvailable());
+        PagingDisplayHelper pager = new PagingDisplayHelper(response.getTotalDocumentsAvailable(), SearchConstants.PICTURES_PER_PAGE, 10);
+
         pager.setCurrentOffset(configuration.getOffSet());
         response.setPager(pager);
         response.setResults(searchResult);

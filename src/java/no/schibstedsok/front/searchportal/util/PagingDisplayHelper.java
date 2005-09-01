@@ -21,6 +21,12 @@ public class PagingDisplayHelper {
         this.numberOfResults = numberOfResults;
     }
 
+    public PagingDisplayHelper(int numberOfResults, int pageSize, int maxPages) {
+        this.numberOfResults = numberOfResults;
+        this.pageSize = pageSize;
+        this.maxPages = maxPages;
+    }
+
     public PagingDisplayHelper(int pageSize, int maxPages) {
         this.pageSize = pageSize;
         this.maxPages = maxPages;

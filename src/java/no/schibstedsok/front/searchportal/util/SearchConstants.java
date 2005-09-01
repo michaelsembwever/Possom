@@ -62,6 +62,7 @@ public final class SearchConstants {
     public static final String MOREOVER_COLLECTION = "moreover";
     public static final String PERSON_ID_FIELD = "personId";
     public static final String NORDIC_NEWS_COLLECTION = "retrievernordic";
-    public static final String PIC_SEARCH_BASE_URL = "http://license.picsearch.com/query?custid=558735&thumbs=10&version=2.6";
+    public static final int PICTURES_PER_PAGE = 12;
+    public static final String PIC_SEARCH_BASE_URL = "http://license.picsearch.com/query?custid=558735&thumbs=" + PICTURES_PER_PAGE + "&version=2.6";
     public static final Object REQUEST_PARAM_PICTURE_SEARCH = "p";
 }
