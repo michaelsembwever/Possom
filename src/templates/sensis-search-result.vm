@@ -30,7 +30,7 @@
             #if ($result.getTotalDocumentsAvailable() > 0)
                 <div id="search_result">
                     <div class="search_hits">
-                        $result.getTotalDocumentsAvailable() Treff på <b>$result.getQuery()</b> i verden
+                        <span id="search_hits_g">$result.getTotalDocumentsAvailable() Treff på <b>$result.getQuery()</b> i verden</span>
                     </div>
                     #foreach( $item in $result.getResults() )
                         <p>
