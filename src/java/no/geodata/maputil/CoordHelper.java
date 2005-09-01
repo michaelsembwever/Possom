@@ -24,8 +24,9 @@ public class CoordHelper {
     final static double envFactor = 1.2; //faktor for å lage rom rundt envelope
     final static int imgWidth = 350;//bildestørrelse i pixler, bredde
     final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
-    final static int mapCenterPxX = imgWidth/2;//kartets midtpunkt i pixler, bredde
-    final static int mapCenterPxY = imgHeigth/2;//kartets midtpunkt i pixler, høyde
+    final static int iconPxSize = 10;
+    final static int mapCenterPxX = imgWidth/2 - iconPxSize/2;//kartets midtpunkt i pixler, bredde
+    final static int mapCenterPxY = imgHeigth/2 - iconPxSize/2;//kartets midtpunkt i pixler - iconets størrelse/2, høyde
     
     public static final double METERS_PR_INCH = 0.0254;
     public static final int DPI = 96;

@@ -5,7 +5,6 @@
 
     <body bgcolor="#eeeeff">
 
-<<<<<<< infopage.vm
         <h1>Infopage</h1>
         
         <content tag="infopage">
@@ -32,30 +31,18 @@
                 var prevMinX;
                 var prevMaxY;
             	var prevMinY;
-=======
-        <h1>Infopage</h1>
->>>>>>> 1.7
 
-<<<<<<< infopage.vm
                 //kartets plassering
                 
                 //icon i kartet
                 var imageNormal = new Object();
                 imageNormal["info"] = new Image(10, 10);
                 imageNormal["info"].src = "../images/mapicon/info_1.jpg";
-=======
-        #set ($company = $result.getCompaniesResults().get(0))
->>>>>>> 1.7
 
-<<<<<<< infopage.vm
                 var imageHighlite = new Object();
                 imageHighlite["info"] = new Image(17, 17);
                 imageHighlite["info"].src = "../images/mapicon/info_2.jpg";
-=======
-        <content tag="infopage">
->>>>>>> 1.7
 
-<<<<<<< infopage.vm
                 function setImage(iconName, type, imgId){
                         if (document.images) {
                                 if(type == "highlite"){
@@ -140,69 +127,4 @@
         </content>
 
     </body>
-=======
-            <script type="text/javascript" language="JavaScript">
-               
-                //icon i kartet
-                var imageNormal = new Object();
-                imageNormal["info"] = new Image(10, 10);
-                imageNormal["info"].src = "../images/mapicon/info_1.jpg";
-
-                var imageHighlite = new Object();
-                imageHighlite["info"] = new Image(17, 17);
-                imageHighlite["info"].src = "../images/mapicon/info_2.jpg";
-
-                function setImage(iconName, type, imgId){
-                        if (document.images) {
-                                if(type == "highlite"){
-                                        document.images[imgId].src = imageHighlite[iconName].src;
-                                        return true;
-                                }
-                                else if(type == "normal"){
-                                        document.images[imgId].src = imageNormal[iconName].src;
-                                        return true;
-                                }
-                        }
-                        return false;
-                }
-            </script>
-
-            <table id="company_infopage" class="page_margin_left">
-                <tr>
-                    <td valign="top">
-                        <div id="branch_header" style="width: 420px"><h1>$company.getCompanyName()</h1></div>
-                        <div id="company_data">
-                            <ul id="tabs">
-                                <li><a href="">Skriv ut</a></li>
-                                <li><a href="">Send som SMS</a></li>
-                                <li><a href="">Send som epost</a></li>
-                                <li><a href="" class="last">Legg til i Outlook</a></li>
-                            </ul>
-                            <p class="visitingAddress">
-                                Besøksadresse:<br />
-                                $!{company.visitingAddress}#if ($company.visitingAddress && ($company.visitingZip || $company.visitingCity)),#end $!{company.visitingZip} $!{company.visitingCity}
-                            </p>
-                            #if ($company.anyPhoneNumber)
-                                <p class="visitingAddress">
-                                    Telefon: $company.anyPhoneNumber
-                                </p>
-                            #end
-                            <p class="updateInfo">
-                                <a href="#">Kontakt oss for å oppdatere informasjon</a>
-                            </p>
-                        </div>
-                    </td>
-
-                    <td valign="top">
-                        <img src="$contextPath/map/?coords=$company.x,$company.y&amp;action=viewone" style="margin-left: 10px;" width="350" height="500"/>
-                        <div id="map" style="POSITION: absolute;TOP: 187px;LEFT: 528px;Z-INDEX: 1;">
-                                <img src="../images/mapicon/info_1.jpg" border=0 name="elem_1" style="POSITION: absolute;TOP: 250px;LEFT: 175px;Z-INDEX: 1000; CURSOR: pointer;" onmouseover="setImage('info', 'highlite', this.name);" onmouseout="setImage('info', 'normal', this.name);" alt="$company.getCompanyName()" onclick="location.href='http://www.aftenposten.no'">
-                        </div>
-                   </td>
-               </tr>
-            </table>
-        </content>
-
-    </body>
->>>>>>> 1.7
 </html>
