@@ -43,10 +43,6 @@ public interface FastSearchConfiguration extends SearchConfiguration {
 
 	public void setMaxTime(long maxTime);
 
-	public int getOffSet();
-
-	public void setOffSet(int offSet);
-
 	public boolean isSpellcheck();
 	public void setSpellcheck(boolean spellcheck);
 

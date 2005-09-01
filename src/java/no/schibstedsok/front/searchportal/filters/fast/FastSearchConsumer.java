@@ -31,7 +31,7 @@ import org.apache.velocity.app.Velocity;
 public class FastSearchConsumer extends SearchConsumer {
 
 
-	Logger log = Logger.getLogger(this.getClass());
+    Logger log = Logger.getLogger(this.getClass());
 
 	//thread notification
 	private boolean available;
@@ -47,14 +47,14 @@ public class FastSearchConsumer extends SearchConsumer {
 	}
 
     /**
-	 * Create a new FastSearchConsumer.
-	 *
-	 * @param response
-	 * @param configuration
-	 */
-	public FastSearchConsumer(Writer response, SearchConfiguration configuration) {
-		super(response, (FastSearchConfiguration)configuration);
-	}
+        * Create a new FastSearchConsumer.
+        *
+        * @param response
+        * @param configuration
+        */
+       public FastSearchConsumer(Writer response, SearchConfiguration configuration) {
+           super(response, (FastSearchConfiguration)configuration);
+       }
 
 	/* (non-Javadoc)
      * @see com.schibstedsok.portal.search.filters.SearchConsumer#run()
@@ -215,50 +215,50 @@ public class FastSearchConsumer extends SearchConsumer {
 			}
 		}
 
-		private void printVelocityToWriter(Object results, Writer myWriterRef, String templateName) {
+        private void printVelocityToWriter(Object results, Writer myWriterRef, String templateName) {
 
-			initVelocity();
+            initVelocity();
 
-			try {
+            try {
 
                 Writer w = new StringWriter();
 
                 Template template = Velocity.getTemplate(templateName);
 
-				VelocityContext context = new VelocityContext();
+                VelocityContext context = new VelocityContext();
                 context.put("coordHelper", new CoordHelper());
                 context.put("result", results);
                 context.put("contextPath", getContextPath());
                 template.merge(context, w);
-				log.debug("Merged template: " + templateName);
+                log.debug("Merged template: " + templateName);
 
                 w.close();
 
                 myWriterRef.write(w.toString());
 
             } catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			
-		}
+                e1.printStackTrace();
+            }
+
+        }
 
 		/** 
 		 * make sure Velocity have been initialized.
 		 */
-		private void initVelocity() {
+        private void initVelocity() {
 
-			/** Ignored if already initialized (makes this method testable.) */
-			try {
-				Velocity.setProperty(Velocity.RESOURCE_LOADER, "class");
-				Velocity.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-				Velocity.init();
-			} catch (Exception e) {
-				// FIXME
-				log.error("Error", e);
-			}
+            /** Ignored if already initialized (makes this method testable.) */
+            try {
+                Velocity.setProperty(Velocity.RESOURCE_LOADER, "class");
+                Velocity.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+                Velocity.init();
+            } catch (Exception e) {
+                // FIXME
+                log.error("Error", e);
+            }
 
-			
-		}
+
+        }
 
 		private void printToServletResponse(Object results, ServletResponse responseRef, String template) throws IOException {
 			printVelocityToWriter(results, responseRef.getWriter(), template);

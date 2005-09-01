@@ -11,6 +11,9 @@ package no.schibstedsok.front.searchportal.util;
  */
 public interface SearchConfiguration {
 
+    public int getOffSet();
+    public void setOffSet(int offSet);
+
 	public String getLanguage();
 	public void setLanguage(String language);
 

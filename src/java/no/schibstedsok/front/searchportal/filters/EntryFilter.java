@@ -15,6 +15,7 @@ import no.schibstedsok.front.searchportal.analyzer.Analyzer;
 import no.schibstedsok.front.searchportal.analyzer.AnalyzerEngine;
 import no.schibstedsok.front.searchportal.filters.fast.*;
 import no.schibstedsok.front.searchportal.filters.sensis.SensisFilter;
+import no.schibstedsok.front.searchportal.filters.picsearch.PicSearchFilter;
 import no.schibstedsok.front.searchportal.util.ProcessList;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 
@@ -168,6 +169,8 @@ public final class EntryFilter extends BaseFilter {
             return CompaniesFilter.class.getName();
         if (string.equals(SearchConstants.REQUEST_PARAM_PERSONS_INDEX))
             return FastPersonsFilter.class.getName();
+        if (string.equals(SearchConstants.REQUEST_PARAM_PICTURE_SEARCH))
+            return PicSearchFilter.class.getName();
         else return null;
 	}
 

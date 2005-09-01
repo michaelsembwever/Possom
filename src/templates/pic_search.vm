@@ -1,0 +1,30 @@
+<html>
+<head>
+    <meta name="decorator" content="maindecorator">
+</head>
+
+<body>
+
+<content tag="picture-results">
+
+<h1>Pictures</h1>
+    #if ($result.getTotalDocumentsAvailable() > 0)
+
+    $result.totalDocumentsAvailable hits
+
+    #foreach ($item in $result.getResults())
+      <a href="$item.pageUrl"><img width="$item.thumbWidth" height="$item.thumbHeight" src="$item.thumbUrl"/></a>
+    #end
+    #end
+</content>
+
+<content tag="more-results-p">
+    #set ($tab = "p")
+    #if ($result.getModifier())
+    #set ($extra = "&amp;mod=$result.getModifier()")
+    #end
+    #parse("verbosePager.vm")
+</content>
+
+</body>
+</html>

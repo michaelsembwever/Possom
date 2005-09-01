@@ -34,4 +34,5 @@ public final class VelocityTemplates {
     public static final String MOREOVER_COLLECTION_SEARCH = "fast-moreover.vm";
     public static final String PERSON = "person.vm";
     public static final String NORDIC_NEWS_COLLECTION_SEARCH = "fast-nordic.vm";
+    public static final String PIC_SEARCH = "pic_search.vm";
 }

@@ -146,6 +146,10 @@
                 <decorator:getProperty property="page.persons-results" />
             <%}%>
 
+            <%if(collection.equals("p")) {%>
+            <decorator:getProperty property="page.picture-results" />
+            <%}%>
+
             <!-- Global -->
             <%if(collection.equals("g")){%>
             <decorator:getProperty property="page.fast-enriched" />
@@ -166,8 +170,10 @@
                 <decorator:getProperty property="page.more-results-y"/>
             <%}else if(collection.equals("w")){%>
                 <decorator:getProperty property="page.more-results-w"/>
+            <%}else if(collection.equals("p")){%>
+            <decorator:getProperty property="page.more-results-p"/>
             <%}else if(collection.equals("m")){%>
-                <decorator:getProperty property="page.more-results-m"/>
+            <decorator:getProperty property="page.more-results-m"/>
             <%}%>
 
             <tr>
