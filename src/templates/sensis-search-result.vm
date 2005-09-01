@@ -29,14 +29,15 @@
         <content tag="global-results">
             #if ($result.getTotalDocumentsAvailable() > 0)
                 <div id="search_result">
-                    <div class="search_hits">
-                        <span id="search_hits_g">$result.getTotalDocumentsAvailable() Treff på <b>$result.getQuery()</b> i verden</span>
-                    </div>
+                    <dl class="search_hit_header">
+                        <dt>Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på <b>$result.getQuery()</b></dt>
+                        <dd>#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()" class="search_next_click">10 neste treff</a>#end</dd>
+                    </dl>
                     #foreach( $item in $result.getResults() )
                         <p>
-                            <a href="$item.url" class="bigUrl">$item.title</a>
-                            <div class="search_result_summary">$item.summary</div>
-                            <a class="smallUrl" href="$item.url">$item.clickUrl</a>
+                            <a href="$item.url" class="search_big_url">$item.title</a>
+                            <div class="search_summary">$item.summary</div>
+                            <a class="search_small_url" href="$item.url">$item.clickUrl</a>
                         </p>
                     #end
                     <p>Nerdscore: $result.getFetchTime() ms</p>
