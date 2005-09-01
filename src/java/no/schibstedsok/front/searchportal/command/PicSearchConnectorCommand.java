@@ -74,8 +74,11 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
             String pageUrl = picture.getAttribute("page_url");
             String thumbWidth = picture.getAttribute("thumb_width");
             String thumbHeight = picture.getAttribute("thumb_height");
+            String height = picture.getAttribute("height");
+            String width = picture.getAttribute("width");
+            String size = picture.getAttribute("size");
 
-            PicSearchResult result = new PicSearchResult(thumbUrl, thumbWidth, thumbHeight, pageUrl);
+            PicSearchResult result = new PicSearchResult(thumbUrl, thumbWidth, thumbHeight, pageUrl, width, height, size);
 
             searchResult.add(result);
 

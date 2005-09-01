@@ -14,12 +14,18 @@ public class PicSearchResult {
     private String thumbWidth;
     private String thumbHeight;
     private String pageUrl;
+    private String width;
+    private String height;
+    private String size;
 
-    public PicSearchResult(String thumbUrl, String thumbWidth, String thumbHeight, String pageUrl) {
+    public PicSearchResult(String thumbUrl, String thumbWidth, String thumbHeight, String pageUrl, String width, String height, String size) {
         this.thumbUrl = thumbUrl;
         this.thumbWidth = thumbWidth;
         this.thumbHeight = thumbHeight;
         this.pageUrl = pageUrl;
+        this.width = width;
+        this.height = height;
+        this.size = size;
     }
 
     public String getThumbWidth() {
@@ -52,6 +58,30 @@ public class PicSearchResult {
 
     public void setThumbUrl(String thumbUrl) {
         this.thumbUrl = thumbUrl;
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
 }
