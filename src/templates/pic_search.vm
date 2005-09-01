@@ -1,30 +1,56 @@
 <html>
-<head>
-    <meta name="decorator" content="maindecorator">
-</head>
+    <head>
+        <meta name="decorator" content="maindecorator">
+    </head>
 
-<body>
+    <body>
+        <h1>Pictures</h1>
 
-<content tag="picture-results">
+        <content tag="picture-results">
 
-<h1>Pictures</h1>
-    #if ($result.getTotalDocumentsAvailable() > 0)
+            #if ($result.getTotalDocumentsAvailable() > 0)
+                ##$result.totalDocumentsAvailable hits
 
-    $result.totalDocumentsAvailable hits
+                <table id="pic_result" class="page_margin_left">
+                    <tr>
+                        <td colspan="3">
+                            <h1 class="search_query_h1">Du har søkt på $result.getQuery()</h1>
+                        </td>
+                    </tr>
+                    #foreach ($item in $result.getResults())
+                        #if ($velocityCount == 1 || $velocityCount == 6)
+                            <tr>
+                        #end
+                        <td class="pic_frame">
+                            <div class="pic_holder">
+                                <a href="$item.pageUrl"><img width="$item.thumbWidth" height="$item.thumbHeight" src="$item.thumbUrl"/></a>
+                            </div>
+                            <div class="pic_info">
+                                $item.thumbWidth x $item.thumbHeight piksler
+                            </div>
+                        </td>
+                         #if ($velocityCount == 5)
+                            </tr>
+                        #end
+                    #end
+                    </tr>
+                </table>
 
-    #foreach ($item in $result.getResults())
-      <a href="$item.pageUrl"><img width="$item.thumbWidth" height="$item.thumbHeight" src="$item.thumbUrl"/></a>
-    #end
-    #end
-</content>
+            #else
+                <div id="no_hits">
+                    #parse("no-hits.vm")
+                </div>
+            #end
 
-<content tag="more-results-p">
-    #set ($tab = "p")
-    #if ($result.getModifier())
-    #set ($extra = "&amp;mod=$result.getModifier()")
-    #end
-    #parse("verbosePager.vm")
-</content>
+        </content>
 
-</body>
+        <content tag="more-results-p">
+            #set ($tab = "p")
+            #if ($result.getModifier())
+                #set ($extra = "&amp;mod=$result.getModifier()")
+            #end
+            #parse("verbosePager.vm")
+        </content>
+
+    </body>
 </html>
