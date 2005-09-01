@@ -51,12 +51,13 @@
         <content tag="media-collection-results">
             #if ($result.getRetrieverResults().size() > 0)
                 <div id="search_result">
-                    <div class="search_hits">
-                         <span id="search_hits_m">$result.getMediaDocumentsInIndex() Treff på <b>$result.getQuery()</b> i norske nyheter</span>
-                    </div>
+                    <dl class="search_hit_header">
+                        <dt>Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på <b>$result.getQuery()</b></dt>
+                        <dd>#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</dd>
+                    </dl>
                     #foreach( $item in $result.getRetrieverResults())
                         <p>
-                            <a href="$item.url" class="bigUrl">$item.title</a>
+                            <a href="$item.url" class="search_big_url">$item.title</a>
                             <span class="timestamp">
                                 $!item.getNewsSource(),
                                 #if ($item.getDocumentAgeDays() == 1)
@@ -83,8 +84,8 @@
                                 #end
                                 gammel
                             </span>
-                            <div class="search_result_summary">$item.summary</div>
-                            <a class="smallUrl" href="$item.url">$item.clickUrl</a>
+                            <div class="search_summary">$item.summary</div>
+                            <a class="search_small_url" href="$item.url">$item.clickUrl</a>
                         </p>
                     #end
                 </div>
