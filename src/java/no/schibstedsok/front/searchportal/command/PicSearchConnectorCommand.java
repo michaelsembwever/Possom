@@ -1,6 +1,6 @@
 /*
  * Copyright (2005) Schibsted Søk AS
- * 
+ *
  */
 package no.schibstedsok.front.searchportal.command;
 
@@ -76,7 +76,7 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
             String thumbHeight = picture.getAttribute("thumb_height");
             String height = picture.getAttribute("height");
             String width = picture.getAttribute("width");
-            String size = picture.getAttribute("size");
+            String size = picture.getAttribute("filesize");
 
             PicSearchResult result = new PicSearchResult(thumbUrl, thumbWidth, thumbHeight, pageUrl, width, height, size);
 
