@@ -82,16 +82,16 @@
                                 <li><a href="">Send som epost</a></li>
                                 <li><a href="" class="last">Legg til i Outlook</a></li>
                             </ul>
-                            <p class="visitingAddress">
+                            <p>
                                 Besøksadresse:<br />
                                 $!{company.visitingAddress}#if ($company.visitingAddress && ($company.visitingZip || $company.visitingCity)),#end $!{company.visitingZip} $!{company.visitingCity}
                             </p>
                             #if ($company.anyPhoneNumber)
-                                <p class="visitingAddress">
+                                <p>
                                     Telefon: $company.anyPhoneNumber
                                 </p>
                             #end
-                            <p class="updateInfo">
+                            <p class="last">
                                 <a href="#">Kontakt oss for å oppdatere informasjon</a>
                             </p>
                         </div>
