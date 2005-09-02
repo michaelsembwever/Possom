@@ -53,12 +53,12 @@
                         <td class="pic_frame">
                             <table width="100%">
                                 <tr>
-                                    <td valign="top" class="pic_box" height="145">
+                                    <td valign="middle" class="pic_box" height="145">
                                         <a href="$item.pageUrl"><img width="$item.thumbWidth" height="$item.thumbHeight" src="$item.thumbUrl" alt=""/></a>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td valign="bottom" height="35" class="pic_text"><div class="pic_size">$item.width x $item.height - $item.size</div></td>
+                                    <td valign="bottom" height="35" class="pic_text"><div class="pic_size">$item.width x $item.height piksler - $item.size kb</div></td>
                                 </tr>
 
                             </table>
