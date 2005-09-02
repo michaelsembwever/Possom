@@ -38,12 +38,12 @@
                         </td>
                         <td colspan="2" style="text-align: right">
                             Vis:&nbsp;&nbsp;
-                            <input id="no" value="" type="radio" />
-                            <label for="no">Store</label>
-                            <input id="nordic" value="" type="radio" class="radio_button" />
-                            <label for="nordic">Mellomstore</label>
-                            <input id="int" value="" type="radio" checked="checked" class="radio_button" />
-                            <label for="int">Sm&aring;</label>
+                            <input id="large" value="" type="radio" />
+                            <label for="large">Store</label>
+                            <input id="medium" value="" type="radio" class="radio_button" />
+                            <label for="medium">Mellomstore</label>
+                            <input id="small" value="" type="radio" checked="checked" class="radio_button" />
+                            <label for="small">Sm&aring;</label>
                         </td>
                     </tr>
                     #foreach ($item in $result.getResults())
@@ -51,12 +51,17 @@
                             <tr>
                         #end
                         <td class="pic_frame">
-                            ##<div class="pic_holder">
-                                <a href="$item.pageUrl"><img width="$item.thumbWidth" height="$item.thumbHeight" src="$item.thumbUrl"/></a>
-                                #*<span class="pic_info">
-                                    $item.thumbWidth x $item.thumbHeight piksler
-                                </span>*#
-                            ##</div>
+                            <table width="100%">
+                                <tr>
+                                    <td valign="top" class="pic_box" height="145">
+                                        <a href="$item.pageUrl"><img width="$item.thumbWidth" height="$item.thumbHeight" src="$item.thumbUrl" alt=""/></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="bottom" height="35" class="pic_text"><div class="pic_size">$item.width x $item.height - $item.size</div></td>
+                                </tr>
+
+                            </table>
                         </td>
                          #if ($velocityCount == 4 || $velocityCount == 8)
                             </tr>

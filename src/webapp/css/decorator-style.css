@@ -381,21 +381,16 @@ a:hover { color: #EA6A24; }
 /* =PIC-SEARCH */
 
 #pic_result {
+    width: 730px;
     margin-top: 10px;
     /* 5 because cellspacing is 10 */
     margin-left: 5px;
 }
 
 .pic_frame {
-    width: 180px;
-    height: 180px;
+    width: 170px;
     background-color: #F2F2F4;
     text-align: center;
-}
-
-.pic_holder {
-    width: 150px;
-    height: 180px;
 }
 
 /* -- the result picture header table -- */
@@ -421,6 +416,17 @@ a:hover { color: #EA6A24; }
     text-align: right;
 }
 
+.pic_box, .pic_text {
+    text-align: center;
+}
+
+.pic_box img {
+    margin-top: 15px;
+}
+
+.pic_size {
+    margin-bottom: 10px;
+}
 
 /* ------------------------------------------------------------------ */
 /* =ENRICHMENT */
