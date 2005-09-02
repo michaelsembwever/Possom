@@ -12,9 +12,17 @@
         #end
 
         #if ($page == $result.getPager().getCurrentPage())
-            $page
+            #if ($velocityCount == 1)
+                $page
+            #else
+                &middot;&nbsp;$page
+            #end
         #else
-            &middot;&nbsp;<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfPage($page)">$page</a>
+            #if ($velocityCount == 1)
+                <a href="$baseURL&amp;offset=$result.getPager().getOffsetOfPage($page)">$page</a>
+            #else
+                &middot;&nbsp;<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfPage($page)">$page</a>
+            #end
         #end
 
         ## Last iteration.
