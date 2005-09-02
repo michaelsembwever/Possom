@@ -26,6 +26,7 @@
 
 <content tag="fast-results">
 <p/>
+    #set ($baseURL = "?c=p&amp;q=$result.getQuery()")
 
 <div class="sokeresultat">
 

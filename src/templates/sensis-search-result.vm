@@ -6,6 +6,8 @@
     <body>
 
         <content tag="sensis-results">
+            #set ($baseURL = "?c=g&amp;q=$result.getQuery()")
+
             #if ($result.getTotalDocumentsAvailable() > 0)
                  ($result.getTotalDocumentsAvailable())
             #end
