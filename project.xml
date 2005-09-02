@@ -76,7 +76,7 @@
             <type>jar</type>
             <url>http://logging.apache.org/log4j/</url>
             <properties>
-                <war.bundle>false</war.bundle>
+                <war.bundle>true</war.bundle>
             </properties>
         </dependency>
 
