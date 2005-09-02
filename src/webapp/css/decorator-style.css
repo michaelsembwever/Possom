@@ -271,12 +271,12 @@ a:hover { color: #EA6A24; }
     border: solid 1px #E5DBC3;
 }
 
-.visitingAddress {
-    padding: 40px 0 0 20px;
+#company_infopage p {
+    padding: 25px 0 0 20px;
 }
 
-.updateInfo {
-    padding: 40px 0 40px 20px;
+#company_infopage .last {
+    margin-bottom: 25px;
 }
 
 /* -- the link tabs on the infopage -- */
