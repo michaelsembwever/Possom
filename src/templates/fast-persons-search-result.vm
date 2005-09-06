@@ -16,45 +16,44 @@
                     </tr>
                     <tr>
                         <td valign="top">
-                            <div id="navbar">
-                                <div id="geo_header">Geografinavigator</div>
-                                <dl class="geo_list">
-                                    <dt>Alna</dt>
-                                    <dd>452</dd>
-                                    <dt>Østensjø</dt>
-                                    <dd>333</dd>
-                                    <dt>Nordstrand</dt>
-                                    <dd>310</dd>
-                                    <dt>Nordre Aker</dt>
-                                    <dd>298</dd>
-                                    <dt>Frogner</dt>
-                                    <dd>50</dd>
-                                </dl>
-                            </div>
+                            <table class="nav" cellspacing="0" cellpadding="0">
+                                <tr>
+                                     <td colspan="2"><div class="header">Geografinavigator</div></td>
+                                </tr>
+                                <tr>
+                                    <td class="col1">Alna</a></td>
+                                    <td class="col2">452</td>
+                                </tr>
+                                <tr>
+                                    <td class="col1">Østensjø</a></td>
+                                    <td class="col2">333</td>
+                                </tr>
+                                <tr>
+                                    <td class="col1">Nordstrand</a></td>
+                                    <td class="col2">252</td>
+                                </tr>
+                                <tr>
+                                    <td class="col1">Frogner</a></td>
+                                    <td class="col2">45</td>
+                                </tr>
+                            </table>
                         </td>
 
-                         <td valign="top">
-                            <table id="result_table" width="500px">
+                        <td valign="top">
+                            <table id="result_table" width="420px" cellspacing="0" cellpadding="0">
                                 <tr>
-                                    <td>
-                                        <dl class="result_list_header">
-                                            <dt>Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</dt>
-                                            <dd>#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</dd>
-                                        </dl>
-                                    </td>
+                                    <td><div class="result_header1">Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</div></td>
+                                    <td><div class="result_header2">#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>10 neste treff</b></a>#end</div></td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <dl class="result_list">
-                                            #foreach ($item in $result.getPersonsResults())
-                                                <dt><b>$item.name</b></dt>
-                                                <dd>&nbsp;</dd>
-                                                <dt class="underline">$!{item.address}#if ($item.address && ($item.zip || $item.city)),#end $!{item.zip} $!{item.city}</dt>
-                                                <dd class="underline">#if ($item.phoneNumber) $item.phoneNumber #else &nbsp; #end</dd>
-                                            #end
-                                        </dl>
-                                    </td>
-                                </tr>
+                                #foreach ($item in $result.getPersonsResults())
+                                    <tr>
+                                        <td class="line1_col1" colspan="2"><b>$item.name</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="line2_col1">$!{item.address}#if ($item.address && ($item.zip || $item.city)),#end $!{item.zip} $!{item.city}</td>
+                                        <td class="line2_col2">#if ($item.phoneNumber) $item.phoneNumber #else &nbsp; #end</td>
+                                    </tr>
+                                #end
                             </table>
                         </td>
                     </tr>
