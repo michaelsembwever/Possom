@@ -108,121 +108,103 @@ a:hover { color: #EA6A24; }
 }
 
 /* -- the global navbar contender -- */
-#navbar {
+.nav {
     width: 145px;
     margin-top: 10px;
     font-size: 0.9em;
+
 }
 
+/* -- override .nav for setting extra space -- */
+#geo_nav {
+    margin-top: 20px;
+}
 
-
-#branch_header {
+.nav .header {
     background-color: #ECEDEF;
-    border: solid 1px #DFDFDF;
+    margin-bottom: 3px;
     padding: 3px 3px;
-    margin-top: 3px;
+    border: solid 1px #DFDFDF;
 }
 
-#geo_header {
-    clear: both;
+.nav .first_col1 {
+    padding: 3px 3px;
+    border-top: solid 1px #DFDFDF;
+	border-left: solid 1px #DFDFDF;
+	border-bottom: solid 1px #DFDFDF;
+	vertical-align: top;
+    background-color: #F2F2F4;
+}
+
+.nav .first_col2 {
+    padding: 3px 3px;
+    border-top: solid 1px #DFDFDF;
+	border-right: solid 1px #DFDFDF;
+	border-bottom: solid 1px #DFDFDF;
+	vertical-align: top;
+    background-color: #F2F2F4;
+    text-align: right;
+}
+
+.nav .col1 {
+    padding: 3px 3px;
+	border-left: solid 1px #DFDFDF;
+	border-bottom: solid 1px #DFDFDF;
+	vertical-align: top;
+    background-color: #F2F2F4;
+}
+
+.nav .col2 {
+    padding: 3px 3px;
+	border-right: solid 1px #DFDFDF;
+	border-bottom: solid 1px #DFDFDF;
+	vertical-align: top;
+    background-color: #F2F2F4;
+    text-align: right;
+}
+
+
+/* -- the result table -- */
+
+#result_table .result_header1 {
     background-color: #ECEDEF;
-    border: solid 1px #DFDFDF;
-    margin-top: 10px;
+    margin-bottom: 3px;
     padding: 3px 3px;
+    border-top: solid 1px #DFDFDF;
+    border-left: solid 1px #DFDFDF;
+    border-bottom: solid 1px #DFDFDF;
 }
 
-/* -- the geo navbar (ul) --*/
-#branch_list {
-    background-color: #F2F2F4;
-    color: #003980;
-    border: 1px solid #DFDFDF;
-    margin-top: 3px;
-}
-
-/* -- the geo data table -- */
-.geo_list {
-    width: 98.5%;
-    margin: 3px 0 10px 0;
-    float: left;
-    border-left: 1px solid #DFDFDF;
-    border-right: 1px solid #DFDFDF;
-    border-bottom: 1px solid #DFDFDF;
-    background-color: #F2F2F4;
-}
-
-.geo_list dt {
-    width: 74%;
-    float: left;
-    clear: left;
-    border-top: 1px solid #DFDFDF;
+#result_table .result_header2 {
+    background-color: #ECEDEF;
+    margin-bottom: 3px;
     padding: 3px 3px;
-}
-
-.geo_list dd {
-    width: 19.8%;
-    float: left;
-    border-top: 1px solid #DFDFDF;
-    padding: 3px 2px 3px 0;
+    border-top: solid 1px #DFDFDF;
+    border-right: solid 1px #DFDFDF;
+    border-bottom: solid 1px #DFDFDF;
     text-align: right;
 }
 
-/* -- the result header table -- */
-.result_list_header {
-    width: 99%;
-    float: left;
-    border: 1px solid #DFDFDF;
-    background-color: #F2F2F4;
+#result_table .line1_col1 {
+    padding: 5px 3px 0 3px;
+	vertical-align: top;
 }
 
-.result_list_header dt {
-    width: 78%;
-    float: left;
-    clear: left;
-    padding: 3px 0 3px 5px;;
-
+#result_table .line2_col1 {
+    padding: 3px 3px 5px 3px;
+	border-bottom: solid 1px #DFDFDF;
+	vertical-align: top;
 }
 
-.result_list_header dd {
-    width: 18.9%;
-    float: left;
-    padding: 3px 5px 3px 0;
+#result_table .line2_col2 {
+    padding: 3px 3px 5px 3px;
+	border-bottom: solid 1px #DFDFDF;
+	vertical-align: top;
     text-align: right;
 }
 
-/* -- the result data -- */
-.result_list {
-    width: 99%;
-    float: left;
-    margin-top:5px;
-}
-
-.result_list dt {
-    width: 79%;
-    float: left;
-    clear: left;
-    padding-left: 5px;
-}
-
-.result_list dd {
-    width: 18.9%;
-    float: left;
-    text-align: right;
-}
-
-.underline {
-    padding-bottom: 5px;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #DFDFDF;
-}
-
-.result_list a {
+#result_table a {
     margin-left: 10px;
-}
-
-.nav_branch_header {
-    background-color: #ECEDEF;
-    border: solid 1px #DFDFDF;
-    padding: 3px 5px;
 }
 
 
@@ -241,15 +223,6 @@ a:hover { color: #EA6A24; }
     margin: 10px 0 0 10px;
 }
 
-
-#test li {
-    display: inline;
-}
-
-#test .d { background-color: #705CB3 }
-#test .m { background-color: # }
-#test .w { background-color: # }
-#test .g { background-color: # }
 
 /* ------------------------------------------------------------------ */
 /* =INFOPAGE */
