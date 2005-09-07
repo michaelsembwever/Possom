@@ -108,6 +108,10 @@ public class FastSearchConfigurationImpl implements FastSearchConfiguration {
 	 * @return
 	 */
 	public String constructCollectionFilter() {
+
+        if (collection.equals("webcrawl")) {
+            return "+(meta.collection:webcrawlno1 meta.collection:webcrawlno1deep1 meta.collection:webcrawlno2)";
+        }
         return "+meta.collection:" + collection;
 	}
 
