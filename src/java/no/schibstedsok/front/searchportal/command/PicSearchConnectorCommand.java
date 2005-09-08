@@ -62,7 +62,7 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
 
         Element resultElement = doc.getDocumentElement();
 
-        response.setTotalDocumentsAvailable(Integer.parseInt(resultElement.getAttribute("hits")));
+        response.setTotalDocumentsAvailable(Integer.parseInt(resultElement.getAttribute("hits") + 1));
 
         List searchResult = new ArrayList();
 
@@ -77,8 +77,10 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
             String height = picture.getAttribute("height");
             String width = picture.getAttribute("width");
             String size = picture.getAttribute("filesize");
+            String imageUrl = picture.getAttribute("image_url");
+            String imageTitle = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 
-            PicSearchResult result = new PicSearchResult(thumbUrl, thumbWidth, thumbHeight, pageUrl, width, height, size);
+            PicSearchResult result = new PicSearchResult(thumbUrl, thumbWidth, thumbHeight, pageUrl, width, height, size, imageTitle);
 
             searchResult.add(result);
 
