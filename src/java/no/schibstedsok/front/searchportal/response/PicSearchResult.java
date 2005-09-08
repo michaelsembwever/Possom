@@ -1,6 +1,6 @@
 /*
  * Copyright (2005) Schibsted Søk AS
- * 
+ *
  */
 package no.schibstedsok.front.searchportal.response;
 
@@ -17,8 +17,9 @@ public class PicSearchResult {
     private String width;
     private String height;
     private String size;
+    private String imageTitle;
 
-    public PicSearchResult(String thumbUrl, String thumbWidth, String thumbHeight, String pageUrl, String width, String height, String size) {
+    public PicSearchResult(String thumbUrl, String thumbWidth, String thumbHeight, String pageUrl, String width, String height, String size, String imageTitle) {
         this.thumbUrl = thumbUrl;
         this.thumbWidth = thumbWidth;
         this.thumbHeight = thumbHeight;
@@ -26,6 +27,7 @@ public class PicSearchResult {
         this.width = width;
         this.height = height;
         this.size = size;
+        this.imageTitle = imageTitle;
     }
 
     public String getThumbWidth() {
@@ -82,6 +84,14 @@ public class PicSearchResult {
 
     public void setSize(String size) {
         this.size = size;
+    }
+
+    public String getImageTitle() {
+        return imageTitle;
+    }
+
+    public void setImageTitle(String imageTitle) {
+        this.imageTitle = imageTitle;
     }
 
 }
