@@ -66,14 +66,14 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td valign="bottom" height="45" class="pic_text">
+                                    <td valign="bottom" height="55" class="pic_text">
                                         <div class="pic_size">
-                                            $item.width x $item.height piksler - $item.size kb<br />
+                                            $item.width x $item.height piksler<br />
+                                            $item.size kb<br />
                                             <a href="$item.pageUrl">kilde</a>
                                         </div>
                                     </td>
                                 </tr>
-
                             </table>
                         </td>
                          #if ($velocityCount == 4 || $velocityCount == 8)
@@ -86,7 +86,14 @@
                         <td colspan="4">
                             <dl class="result_pic_header">
                                 <dt>Viser $result.getPager().getFirstHitOnPage() - #if ($result.getTotalDocumentsAvailable() < $result.getPager().getLastHitOnPage()) $result.getTotalDocumentsAvailable() #else $result.getPager().getLastHitOnPage() #end av $result.getTotalDocumentsAvailable() på $result.getQuery()</dt>
-                                <dd>#if ($result.getPager().getNumberOfPages() > 1)<a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>12 neste treff</b></a>#end</dd>
+                                <dd>#if ($result.getPager().getNumberOfPages() > 1)
+                                        #if ( $result.getPager().getNumberOfPages() - $result.getPager().getCurrentPage() == 1 )
+                                            #set( $mod = $result.getTotalDocumentsAvailable() % 12 )
+                                            <a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>$mod neste treff</b></a>
+                                        #elseif (!$result.getPager().isLastPage())
+                                            <a href="$baseURL&amp;offset=$result.getPager().getOffsetOfNextPage()"><b>12 neste treff</b></a>
+                                        #end
+                                    #end</dd>
                             </dl>
                         </td>
                     </tr>
