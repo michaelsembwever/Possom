@@ -62,7 +62,7 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
 
         Element resultElement = doc.getDocumentElement();
 
-        response.setTotalDocumentsAvailable(Integer.parseInt(resultElement.getAttribute("hits") + 1));
+        response.setTotalDocumentsAvailable(Integer.parseInt(resultElement.getAttribute("hits"))  + 1);
 
         List searchResult = new ArrayList();
 
