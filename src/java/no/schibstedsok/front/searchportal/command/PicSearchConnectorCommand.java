@@ -53,7 +53,11 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
     public void execute() {
         response = new SearchResponseImpl();
 
-        String url = SearchConstants.PIC_SEARCH_BASE_URL + "&q=" + configuration.getQuery() + "&start=" + configuration.getOffSet();
+        int offSet = 0;
+        if (configuration.getOffSet() > 0)
+            offSet = configuration.getOffSet() + 1;
+
+        String url = SearchConstants.PIC_SEARCH_BASE_URL + "&q=" + configuration.getQuery() + "&start=" + offSet;
 
 
         System.out.println(url);
@@ -62,7 +66,7 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
 
         Element resultElement = doc.getDocumentElement();
 
-        response.setTotalDocumentsAvailable(Integer.parseInt(resultElement.getAttribute("hits"))  + 1);
+        response.setTotalDocumentsAvailable(Integer.parseInt(resultElement.getAttribute("hits")));
 
         List searchResult = new ArrayList();
 
