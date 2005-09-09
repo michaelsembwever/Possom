@@ -33,27 +33,6 @@
                             </dl>
                         </td>
                     </tr>
-#*                    <tr>
-                        <td colspan="2">
-                            Vis:&nbsp;&nbsp;
-                            <input id="no" value="" checked="checked" type="radio" />
-                            <label for="no">Bilder</label>
-                            <input id="nordic" value="" type="radio" class="radio_button" />
-                            <label for="nordic">Animasjoner</label>
-                            <input id="int" value="" type="radio" class="radio_button" />
-                            <label for="int">Video</label>
-                        </td>
-                        <td colspan="2" style="text-align: right">
-                            Vis:&nbsp;&nbsp;
-                            <input id="large" value="" type="radio" />
-                            <label for="large">Store</label>
-                            <input id="medium" value="" type="radio" class="radio_button" />
-                            <label for="medium">Mellomstore</label>
-                            <input id="small" value="" type="radio" checked="checked" class="radio_button" />
-                            <label for="small">Sm&aring;</label>
-                        </td>
-                    </tr>
-*#
                     #foreach ($item in $result.getResults())
                         #if ($velocityCount == 1 || $velocityCount == 5 || $velocityCount == 9)
                             <tr>
@@ -100,9 +79,89 @@
                 </table>
 
             #else
-                <div id="no_hits">
-                    #parse("no-hits.vm")
-                </div>
+                #if ($result.getQuery()=="")
+                    <table id="pic_result" cellspacing="10px" cellpadding="0">
+                        <tr>
+                            <td colspan="3">
+                                <h1 class="search_query_h1">De mest populære bildesøkene:</h1>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="pic_frame">
+                                <table width="100%">
+                                    <tr>
+                                        <td valign="middle" class="pic_box" height="145">
+                                            <a href="?c=p&amp;q=bali"><img width="128" height="93" src="../images/picture/ferie.jpg" alt="" /></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="bottom" height="45" class="pic_text">
+                                            <div class="pic_size">
+                                                Søk på feriesteder:<br />
+                                                <a href="?c=p&amp;q=bali">Bali</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="pic_frame">
+                                <table width="100%">
+                                    <tr>
+                                        <td valign="middle" class="pic_box" height="145">
+                                            <a href="?c=p&amp;q=angelina+jolie"><img width="94" height="128" src="../images/picture/personer.jpg" alt="" /></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="bottom" height="45" class="pic_text">
+                                            <div class="pic_size">
+                                                Søk på kjente personer:<br />
+                                                <a href="$?c=p&amp;q=angelina+jolie">Angelina Jolie</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="pic_frame">
+                                <table width="100%">
+                                    <tr>
+                                        <td valign="middle" class="pic_box" height="145">
+                                            <a href="?c=p&amp;q=psp"><img width="128" height="97" src="../images/picture/design.jpg" alt="" /></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="bottom" height="45" class="pic_text">
+                                            <div class="pic_size">
+                                                Søk på aktuell design:<br />
+                                                <a href="?c=p&amp;q=psp">PSP</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td class="pic_frame">
+                                <table width="100%">
+                                    <tr>
+                                        <td valign="middle" class="pic_box" height="145">
+                                            <a href="?c=p&amp;q=salvador+dali"><img width="90" height="128" src="../images/picture/kunst.jpg" alt="" /></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td valign="bottom" height="45" class="pic_text">
+                                            <div class="pic_size">
+                                                Søk på kunst:<br />
+                                                <a href="?c=p&amp;q=salvador+dali">Salvador Dali</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                #else
+                    <div id="no_hits">
+                        #parse("no-hits.vm")
+                    </div>
+                #end
             #end
 
         </content>
