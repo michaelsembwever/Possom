@@ -57,7 +57,8 @@ public class PicSearchConnectorCommand implements ConnectorCommand {
         if (configuration.getOffSet() > 0)
             offSet = configuration.getOffSet() + 1;
 
-        String url = SearchConstants.PIC_SEARCH_BASE_URL + "&q=" + configuration.getQuery() + "&start=" + offSet;
+        String q = configuration.getQuery().replaceAll(" ", "+");
+        String url = SearchConstants.PIC_SEARCH_BASE_URL + "&q=" + q + "&start=" + offSet;
 
 
         System.out.println(url);
