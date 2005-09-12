@@ -24,15 +24,15 @@ import org.apache.velocity.app.Velocity;
 /**
  * <p>
  * TODO: Describe this better
- * 
+ *
  * Filter that will intercept requests and....
- * 
+ *
  * <p>
  * Install the filter in your web.xml file as follows:
- * 
+ *
  * <pre>
- * 
- *  
+ *
+ *
  *  &lt;filter&gt;
  *    &lt;filter-name&gt;Entry Filter&lt;/filter-name&gt;
  *    &lt;filter-class&gt;com.schibstedsok.portal.search.filters.EntryFilter&lt;/filter-class&gt;
@@ -48,28 +48,28 @@ import org.apache.velocity.app.Velocity;
  *      &lt;param-name&gt;autostart&lt;/param-name&gt;
  *      &lt;param-value&gt;false&lt;/param-value&gt;
  *     &lt;/init-param&gt;
- * &lt;/filter&gt;  
- *  
+ * &lt;/filter&gt;
+ *
  * </pre>
- * 
+ *
  * <p>
  * With the above settings you can turn the filter on by accessing any URL with
  * the parameter <code>profilingfilter=on</code>.eg:
- * 
+ *
  * <pre>
- * 
+ *
  *      http://mywebsite.com/a.jsp?&lt;b&gt;&lt;i&gt;profilingfilter=on&lt;/i&gt;&lt;/b&gt;
- *  
+ *
  * </pre>
- * 
+ *
  * <p>
  * The above settings also sets the filter to not start automatically upon
  * startup. This may be useful for production, but you will most likely want to
  * set this true in development.
- * 
- * 
+ *
+ *
  * @author Lars Johansson
- * 
+ *
  */
 
 public final class EntryFilter extends BaseFilter {
@@ -201,7 +201,7 @@ public final class EntryFilter extends BaseFilter {
     }
 
     private String getHeaderTemplate(){
-        
+
         if(headerTemplate == null) {
             StringBuffer header = new StringBuffer();
             InputStream headerStream = getClass().getResourceAsStream("/searchheader.html");
@@ -220,43 +220,45 @@ public final class EntryFilter extends BaseFilter {
 				headerTemplate = "<html><head><meta name=\"decorator\" content=\"maindecorator\" /><link href=\"../css/style.css\" rel=\"stylesheet\" type=\"text/css\" /></head><body>";
 				filterConfig.getServletContext().log("Could not find headerTemplate using default!");
             }
-        } 
-        
+        }
+
         return headerTemplate;
-        
+
     }
-	
+
 	public void init(FilterConfig filterConfig) {
 		super.init(filterConfig);
-		
+
 		/** initialize Sitemesh header */
 		setupHeaderTemplate();
-		
+
 		/** initialize all text analyzers */
 		AnalyzerEngine.getAnalyzer().analyze("");
-		
+
 		/** initialize Velocity */
 		initVelocity();
-		
+
 	}
-	
+
 	/**
 	 *  Init the Velocity Singleton.
-	 * 
+	 *
 	 */
 	public void initVelocity() {
-		
+
 		try {
-			
-			Velocity.setProperty(Velocity.RESOURCE_LOADER, "class");
-			Velocity.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-			Velocity.init();
+
+            Velocity.setProperty(Velocity.RESOURCE_LOADER, "file, class");
+            Velocity.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+            Velocity.setProperty("file.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
+            Velocity.setProperty("file.resource.loader.path", "/tmp/velocity_templates");
+            Velocity.setProperty("file.resource.loader.cache", "false");
 
 			filterConfig.getServletContext().log("Initialized Velocity for application");
-			
+
 		} catch (Exception e) {
 			filterConfig.getServletContext().log("Velocity error ", e);
-		}				
+		}
 	}
 
 }
