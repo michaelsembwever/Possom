@@ -7,70 +7,70 @@
 
         <h1>Infopage</h1>
 
-        #set ($company = $result.getCompaniesResults().get(0))
 
         <content tag="infopage">
             #set ($company = $result.getCompaniesResults().get(0))
             #set ($env = $coordHelper.getEnvelope($company))
-            <script type="text/javascript" language="JavaScript">
+            #set ($zoomLevels = $coordHelper.getZoomLevels())
+            
+            <script type="text/javascript" language="JavaScript">                
+                //intierer array bestående av objekt inneholdende company informasjon. 
+                var arrCompany = new Array();      
+                var arrZoomLevels = new Array();
+                var countZoomLevels = $coordHelper.getZoomCount(); 
+                init();
 
-                //globale variable
-            	//variable som hentes fra noen konfigurasjon
-            	var zoomlevel_1 = $coordHelper.getZoomLevel_1();
-                var zoomlevel_2 = $coordHelper.getZoomLevel_2();
-                var zoomlevel_3 = $coordHelper.getZoomLevel_3();
-                var zoomlevel_4 = $coordHelper.getZoomLevel_4();
-                var zoomlevel_5 = $coordHelper.getZoomLevel_5();
+                //variable som hentes fra noen konfigurasjon   
                 var imgHeigth = $coordHelper.getImgHeigth();
                 var imgWidth = $coordHelper.getImgWidth();
                 var envFactor = $coordHelper.getEnvFactor();
+                var panfactor = $coordHelper.getPanFactor();
+                var zoomfactor = $coordHelper.getZoomFactor();
+                var imgMeterSize = $coordHelper.getImgMeterSize();//størrelse på kartbilde i meter                
 
-            	var maxX = $env.maxX;
-            	var minX = $env.minX;
-            	var maxY = $env.maxY;
-            	var minY = $env.minY;
-                var prevMaxX;
-                var prevMinX;
-                var prevMaxY;
-            	var prevMinY;
+                //current variable
+                var imgIconName = "icon_";//ikonene i kartet har dette navnet etterfulgt av id nummer, eks icon_1.
+                var currentZoomLevel = $coordHelper.getDefaultZoom();           
+                var prevZoomLevel = currentZoomLevel;//initielt
+                var currentZoomScale = arrZoomLevels[currentZoomLevel-1];                   
+                var maxX = $env.maxX;
+                var minX = $env.minX;
+                var maxY = $env.maxY;
+                var minY = $env.minY;
+                var centerCoordX = $company.x;
+                var centerCoordY = $company.y;
+                var centerPixY = imgHeigth/2;
+                var centerPixX = imgWidth/2;
+                var dX = maxX - minX;
+                var dY = maxY - minY; 
 
-                //kartets plassering
+                var prevMaxX = maxX;
+                var prevMinX = minX;
+                var prevMaxY = maxY;
+                var prevMinY = minY;
+                var contextPath = "$contextPath";
 
-                //icon i kartet
-                var imageNormal = new Object();
-                imageNormal["info"] = new Image(10, 10);
-                imageNormal["info"].src = "../images/mapicon/ballong.gif";
-
-                var imageHighlite = new Object();
-                imageHighlite["info"] = new Image(17, 17);
-                imageHighlite["info"].src = "../images/mapicon/ballong.gif";
-
-                function setImage(iconName, type, imgId){
-                        if (document.images) {
-                                if(type == "highlite"){
-                                        document.images[imgId].src = imageHighlite[iconName].src;
-                                        return true;
-                                }
-                                else if(type == "normal"){
-                                        document.images[imgId].src = imageNormal[iconName].src;
-                                        return true;
-                                }
-                        }
-                        return false;
+                function init(){
+                    var coordpair = coordObj();
+                    arrCompany[0] = coordpair;
+                    #foreach ($level in $zoomLevels)
+                    #set ($index = $velocityCount - 1)
+                    arrZoomLevels[$index] = $level;
+                    #end
                 }
-
-                function zoom(zoomlevel){
+                
+                function coordObj(){
+                    this.x = $company.x;
+                    this.y = $company.y;
+                    this.id = $company.companyId;
+                    return this;
                 }
-
-                function pan(direction){
-                }
-
-                //kaller på mapservlet for generering av nytt bilde
-                function getImage(url){
-                	document.images["mapservlet"].src = url;
-                }
-
+                
             </script>
+
+            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>";
+
+            
             <table id="company_infopage" class="page_margin_left">
                 <tr>
                     <td valign="top">
@@ -97,32 +97,61 @@
                         </div>
                     </td>
 
+                    <!-- kart del -->
                     <td valign="top" width="366" >
                     	<table bgcolor="#eff0f4" border="0" cellspacing="0" cellpadding="0" width="366">
                     		<tr>
-                    			<td width="8px" height="8px"><img src="../images/mapicon/panNW.jpg" width="8px" height="8px" alt="panorer"/></td>
-                    			<td align="center" height="8px" width="$coordHelper.getImgWidth()px"><img src="../images/mapicon/panN.jpg" height="8px" alt="panorer"/></td>
-                    			<td width="8px" height="8px"><img src="../images/mapicon/panNE.jpg" width="8px" height="8px" alt="panorer"/></td>
+                                    <td width="8px" height="8px"><a href="javascript:pan('nw');"><img src="../images/mapicon/panNW.jpg" width="8px" height="8px" alt="panorer"/></a></td>
+                                    <td align="center" height="8px" width="$coordHelper.getImgWidth()px"><a href="javascript:pan('n');"><img src="../images/mapicon/panN.jpg" height="8px" alt="panorer"/></a></td>
+                                    <td width="8px" height="8px"><a href="javascript:pan('ne');"><img src="../images/mapicon/panNE.jpg" width="8px" height="8px" alt="panorer"/></a></td>
                     		</tr>
                     		<tr>
-                    			<td width="8px"><img src="../images/mapicon/panW.jpg" width="8px" alt="panorer"/></td>
-                    			<td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
-                                            <div id="mapcontent" style="POSITION: absolute; ">
-                                                <img src="$contextPath/map/?coords=$company.x,$company.y&amp;action=viewone" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart"/>
-
-                                                    <img src="../images/mapicon/ballong.gif" border="0" name="elem_1" style="POSITION: absolute;TOP: $coordHelper.getMapCenterPxY()px;LEFT: $coordHelper.getMapCenterPxX()px;Z-INDEX: 1000; CURSOR: pointer;" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$company.getCompanyName()" onclick="location.href='http://www.aftenposten.no'"/>
-
-                                            </div>
-                                        </td>
-                                        <td width="8px"><img src="../images/mapicon/panE.jpg" width="8px" alt="panorer"/></td>
+                                    <td width="8px"><a href="javascript:pan('w');"><img src="../images/mapicon/panW.jpg" width="8px" alt="panorer"/></a></td>
+                                    <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
+                                        <div id="mapcontent" style="POSITION: absolute; ">
+                                            <img name="map" src="javascript: getUrl();" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart"/>
+                                                <img src="../images/mapicon/ballong.gif" border="0" name="icon_$company.companyId" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$company.getCompanyName()" onclick="location.href='http://www.aftenposten.no'" style="POSITION: absolute;TOP: $coordHelper.getMapCenterPxY()px;LEFT: $coordHelper.getMapCenterPxX()px;Z-INDEX: 1000; CURSOR: pointer;"/>                                                
+                                        </div>
+                                    </td>
+                                    <td width="8px"><a href="javascript:pan('e');"><img src="../images/mapicon/panE.jpg" width="8px" alt="panorer"/></a></td>
                                 </tr>
                                 <tr>
-                                        <td width="8px" height="8px"> <img src="../images/mapicon/panSW.jpg" width="8px" height="8px" alt="panorer"/></td>
-                                        <td align="center" height="8px" width="$coordHelper.getImgWidth()px"><img src="../images/mapicon/panS.jpg" height="8px" alt="panorer"/></td>
-                                        <td width="8px" height="8px"><img src="../images/mapicon/panSE.jpg" width="8px" height="8px" alt="panorer"/></td>
-                    		</tr>
+                                    <td width="8px" height="8px"><a href="javascript:pan('sw');"><img src="../images/mapicon/panSW.jpg" width="8px" height="8px" alt="panorer"/></a></td>
+                                    <td align="center" height="8px" width="$coordHelper.getImgWidth()px"><a href="javascript:pan('s');"><img src="../images/mapicon/panS.jpg" height="8px" alt="panorer"/></a></td>
+                                    <td width="8px" height="8px"><a href="javascript:pan('se');"><img src="../images/mapicon/panSE.jpg" width="8px" height="8px" alt="panorer"/></a></td>
+                    		</tr>                                
+                                <tr>
+                                    <td colspan="3" height="5">&nbsp</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" align="center" valign="center">
+                                        <a href="javascript:zoomin('uselevel');"><img src="../images/mapicon/zoomin_1.gif" height="25" width="25" alt="Zoom inn"/></a>
+                                        <img src="javascript:setInitZoomBarImg();" name="zoombar" height="40" width="141" alt="Zoom bar" usemap="#zoombar" border="0"/>
+                                            <map id="zoombar_1" name="zoombar">
+                                                <area shape="rect"# "Målestokkniv&aring; 1"
+                                                 coords="5,3,32,38" href="javascript:zoomlevel(1);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 2"
+                                                 coords="32,4,50,37" href="javascript:zoomlevel(2);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 3"
+                                                 coords="52,4,68,37" href="javascript: zoomlevel(3);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 4"
+                                                 coords="70,5,90,38" href="javascript: zoomlevel(4);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 5"
+                                                 coords="91,5,114,37" href="javascript:zoomlevel(5);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 6"
+                                                 coords="115,5,135,37" href="javascript:zoomlevel(6);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                            </map>                                                                              
+                                        <a href="javascript:zoomout('uselevel');"><img src="../images/mapicon/zoomout_1.gif" height="25" width="25" alt="Zoom ut"/></a>
+                                        <a href="javascript:previous();"><img src="../images/mapicon/previous_1.gif" height="25" width="25" alt="Forrige kartutsnitt"></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" height="5">&nbsp</td>
+                                </tr>
                          </table>
                      </td>
+                     <!-- slutt kart del -->
+
                </tr>
             </table>
         </content>
