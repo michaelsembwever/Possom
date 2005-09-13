@@ -1,11 +1,90 @@
 <html>
 	<head>
-		<meta name="decorator" content="maindecorator">
+                 <meta name="decorator" content="maindecorator">
 	</head>
 
     <body>
 
         <content tag="companies-results">
+            #set ($company = $result.getCompaniesResults())
+            #set ($env = $coordHelper.getEnvelope($company))
+            #set ($zoomLevels = $coordHelper.getZoomLevels())
+
+            <script type="text/javascript" language="JavaScript">                
+                    //intierer array bestående av objekt inneholdende company informasjon. 
+                    
+                    var arrCompany = new Array();      
+                    var arrZoomLevels = new Array();                    
+                    var countZoomLevels = $coordHelper.getZoomCount(); 
+                    
+                    //variable som hentes fra noen konfigurasjon   
+                    var imgHeigth = $coordHelper.getImgHeigth();
+                    var imgWidth = $coordHelper.getImgWidth();
+                    var envFactor = $coordHelper.getEnvFactor();
+                    var panfactor = $coordHelper.getPanFactor();
+                    var zoomfactor = $coordHelper.getZoomFactor();
+                    var imgMeterSize = $coordHelper.getImgMeterSize();//størrelse på kartbilde i meter                
+
+                    //current variable
+                    var imgIconName = "icon_";//ikonene i kartet har dette navnet etterfulgt av id nummer, eks icon_1.
+                    var currentZoomLevel = $coordHelper.getDefaultZoom();           
+                    var prevZoomLevel = currentZoomLevel;//initielt
+                    var currentZoomScale = arrZoomLevels[currentZoomLevel-1];                   
+                    var maxX = $env.maxX;
+                    var minX = $env.minX;
+                    var maxY = $env.maxY;
+                    var minY = $env.minY;
+                    var centerCoordX = $env.getCenterX();
+                    var centerCoordY = $env.getCenterY();
+                    var centerPixY = imgHeigth/2;
+                    var centerPixX = imgWidth/2;
+                    var dX = maxX - minX;
+                    var dY = maxY - minY; 
+
+                    var prevMaxX = maxX;
+                    var prevMinX = minX;
+                    var prevMaxY = maxY;
+                    var prevMinY = minY;
+                    var contextPath = "$contextPath";
+
+                    init();
+                    
+                    function init(){
+                        
+                        #foreach ($level in $zoomLevels)
+                            #set ($index = $velocityCount - 1)
+                            arrZoomLevels[$index] = $level;
+                        #end
+                        var tmpX;
+                        var x;
+                        var y;
+                        //var defCoord = coordHelper.getDefaultNoCoord();
+                        var tmpCompObj;
+                        #foreach ($item in $result.getCompaniesResults())
+                            #set ($index = $velocityCount - 1)
+                            x = $item.x; //her blir det problemer når company objektet ikke inneholder koordinater
+                            y = $item.y;
+                            if (x == "" || x == null){
+                                x = $coordHelper.getDefaultNoCoord();
+                                y = $coordHelper.getDefaultNoCoord();
+                            }      
+                            tmpCompObj = coordObj(x, y, $item.companyId);
+                            arrCompany[$index] = tmpCompObj;
+                        #end
+                        adjustIcons();
+                    }
+
+                    function coordObj(x, y, id){
+                        this.x = x;
+                        this.y = y;
+                        this.id = id;
+                        return this;
+                    }                   
+   
+            </script>
+
+            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>";
+
             #if ($result.getTotalDocumentsAvailable() > 0)
 
                 #if ($result.getModifier())
@@ -80,9 +159,63 @@
                                 #end
                             </table>
                         </td>
-                        <td valign="top" width="370px">
-                            <img src="../images/kart.jpg" alt="kart" id="map" />
+                        <!-- kart del -->
+                        <td valign="top" width="366" >
+                            <table bgcolor="#eff0f4" border="0" cellspacing="0" cellpadding="0" width="366">
+                    		<tr>
+                                    <td width="8px" height="8px"><a href="javascript:pan('nw');"><img src="../images/mapicon/panNW.jpg" width="8px" height="8px" alt="panorer"/></a></td>
+                                    <td align="center" height="8px" width="$coordHelper.getImgWidth()px"><a href="javascript:pan('n');"><img src="../images/mapicon/panN.jpg" height="8px" alt="panorer"/></a></td>
+                                    <td width="8px" height="8px"><a href="javascript:pan('ne');"><img src="../images/mapicon/panNE.jpg" width="8px" height="8px" alt="panorer"/></a></td>
+                    		</tr>
+                    		<tr>
+                                    <td width="8px"><a href="javascript:pan('w');"><img src="../images/mapicon/panW.jpg" width="8px" alt="panorer"/></a></td>
+                                    <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
+                                        <div id="mapcontent" style="POSITION: absolute; ">
+                                            <img name="map" src="javascript: getUrl();" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart"/>
+                                                #foreach ($item in $result.getCompaniesResults())
+                                                    #set ($index = $velocityCount - 1)
+                                                    <img src="../images/mapicon/ballong.gif" border="0" name="icon_$$item.companyId" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$item.getCompanyName()" onclick="location.href='http://www.aftenposten.no'" style="POSITION: absolute;TOP: $coordHelper.getMapCenterPxY()px;LEFT: $coordHelper.getMapCenterPxX()px;Z-INDEX: 1000; CURSOR: pointer;"/>                                                
+                                                #end
+                                        </div>
+                                    </td>
+                                    <td width="8px"><a href="javascript:pan('e');"><img src="../images/mapicon/panE.jpg" width="8px" alt="panorer"/></a></td>
+                                </tr>
+                                <tr>
+                                    <td width="8px" height="8px"><a href="javascript:pan('sw');"><img src="../images/mapicon/panSW.jpg" width="8px" height="8px" alt="panorer"/></a></td>
+                                    <td align="center" height="8px" width="$coordHelper.getImgWidth()px"><a href="javascript:pan('s');"><img src="../images/mapicon/panS.jpg" height="8px" alt="panorer"/></a></td>
+                                    <td width="8px" height="8px"><a href="javascript:pan('se');"><img src="../images/mapicon/panSE.jpg" width="8px" height="8px" alt="panorer"/></a></td>
+                    		</tr>                                
+                                <tr>
+                                    <td colspan="3" height="5">&nbsp</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" align="center" valign="center">
+                                        <a href="javascript:zoomin('uselevel');"><img src="../images/mapicon/zoomin_1.gif" height="25" width="25" alt="Zoom inn"/></a>
+                                        <img src="javascript:setInitZoomBarImg();" name="zoombar" height="40" width="141" alt="Zoom bar" usemap="#zoombar" border="0"/>
+                                            <map id="zoombar_1" name="zoombar">
+                                                <area shape="rect"# "Målestokkniv&aring; 1"
+                                                 coords="5,3,32,38" href="javascript:zoomlevel(1);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 2"
+                                                 coords="32,4,50,37" href="javascript:zoomlevel(2);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 3"
+                                                 coords="52,4,68,37" href="javascript: zoomlevel(3);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 4"
+                                                 coords="70,5,90,38" href="javascript: zoomlevel(4);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 5"
+                                                 coords="91,5,114,37" href="javascript:zoomlevel(5);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                                <area shape="rect"#"Målestokkniv&aring; 6"
+                                                 coords="115,5,135,37" href="javascript:zoomlevel(6);" title="&#34;Zoom til målestokkniv&aring; 1&#34;" />
+                                            </map>                                                                              
+                                        <a href="javascript:zoomout('uselevel');"><img src="../images/mapicon/zoomout_1.gif" height="25" width="25" alt="Zoom ut"/></a>
+                                        <a href="javascript:previous();"><img src="../images/mapicon/previous_1.gif" height="25" width="25" alt="Forrige kartutsnitt"></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" height="5">&nbsp</td>
+                                </tr>
+                            </table>
                         </td>
+                     <!-- slutt kart del -->
                     </tr>
                 </table>
             #else
