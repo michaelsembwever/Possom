@@ -14,6 +14,8 @@ public class MapEnvelope {
     double minX;
     double maxY;
     double minY;
+    double centerX;
+    double centerY;
     
     /** Creates a new instance of MapPoint. */
     public MapEnvelope() {
@@ -31,6 +33,8 @@ public class MapEnvelope {
         this.minX = minX;
         this.maxY = maxY;
         this.minY = minY;
+        this.centerX = minX + (maxX - minX)/2;
+        this.centerY = minY + (maxY - minY)/2;
     }
      /** Sets single value.
      * @param maxX double.
@@ -68,6 +72,31 @@ public class MapEnvelope {
     public double getMaxY(){
         return this.maxY;
     }
+    /** Sets single value.
+     * @param centerX double.
+     */   
+    public void setCenterX(double centerX){
+        this.centerX = centerX;
+    }
+     /** Gets a single value.
+     *  @return centerX double 
+     */
+    public double getCenterX(){
+        return this.centerX;
+    }
+     /** Sets single value.
+     * @param centerX double.
+     */   
+    public void setCenterY(double centerY){
+        this.centerY = centerY;
+    }
+     /** Gets a single value.
+     *  @return centerX double 
+     */
+    public double getCenterY(){
+        return this.centerY;
+    }
+    
      /** Sets single value.
      * @param minY double.
      */    
