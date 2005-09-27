@@ -16,28 +16,33 @@ import no.schibstedsok.front.searchportal.response.FastCompaniesSearchResult;
  */
 public class CoordHelper {
     
-    public final static long zoom_1 = 2000; //kartskala ved zoom til ett punkt
-    public final static long zoom_2 = 5000;
-    public final static long zoom_3 = 10000;
-    public final static long zoom_4 = 50000;
-    public final static long zoom_5 = 100000;
-    public final static long zoom_6 = 500000;
-    public final static int zoomCount = 6;
+    public final static long zoom_1 = 2000; 
+    public final static long zoom_2 = 7000;
+    public final static long zoom_3 = 25000;
+    public final static long zoom_4 = 70000;
+    public final static long zoom_5 = 300000;
+    public final static long zoom_6 = 800000;
+    public final static long zoom_7 = 3000000;
+    
+    public final static int zoomCount = 7;
     public final static int defaultZoom = 1;    
-    public final static double envFactor = 1.2; //faktor for å lage rom rundt envelope
-    public final static int imgWidth = 350;//bildestørrelse i pixler, bredde
-    public final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
-    public final static int iconPxSize = 10;
-    public final static int mapCenterPxX = imgWidth/2 - iconPxSize/2;//kartets midtpunkt i pixler, bredde
-    public final static int mapCenterPxY = imgHeigth/2 - iconPxSize/2;//kartets midtpunkt i pixler - iconets størrelse/2, høyde
-    public final static double panFactor = 0.25;//faktor som forteller hvor mye kartsentrum skal flyttet iforhold til kartets deltaX og y ved panning. 
+    public final static int imgWidth = 363;//bildestørrelse i pixler, bredde
+    public final static int imgHeigth = 363;//bildestørrelse i pixler, høyde    
+    public final static int envFactor = 30; //faktor for å lage rom rundt envelope. Angis i pixler
+    public final static int iconPxSizeHeigth = 34;
+    public final static int iconPxSizeWidth = 28;
+    public final static int iconOffsetHeigth = 0;//plassering av ikon, avvik fra top. Positiv verdi
+    public final static int iconOffsetWidth = 0;//plassering av ikon, avvik fra venstre. Positiv verdi 
+    public final static int mapCenterPxX = imgWidth/2;//kartets midtpunkt i pixler, bredde
+    public final static int mapCenterPxY = imgHeigth/2;//kartets midtpunkt i pixler - iconets størrelse/2, høyde
+    public final static double panFactor = 0.45;//faktor som forteller hvor mye kartsentrum skal flyttet iforhold til kartets deltaX og y ved panning. 
     public final static double zoomFactor = 2;//faktor som forteller hvor mye kartextentet skal minskes/utvides ved zoom inn/ut. zoom inn = 1/zoomFactor
     public final static double defaultNoCoord= -9999999;
     
-    public double maxX;
-    public double minX;
-    public double maxY;
-    public double minY;
+    public double maxX = 1100000;//initielle verdier. Envelope som dekker hele Norge.
+    public double minX = -83000;
+    public double maxY = 7950000;
+    public double minY = 6440000;
     public double mapCenterCoordX;
     public double mapCenterCoordY;
     
@@ -99,7 +104,7 @@ public class CoordHelper {
      * @return MapEnvelope, 
      */
     public MapEnvelope makeEnvelope(MapPoint mp, int zoom){     
-        long zoomscale = getZoom(zoom);
+        long zoomscale = getZoomScale(zoom);
         double metersPrPixel = zoomscale * pixelSize;        
         this.maxX = Math.round(mp.getX() + metersPrPixel * this.imgHeigth);
         this.minX = Math.round(mp.getX() - metersPrPixel * this.imgHeigth);
@@ -127,14 +132,32 @@ public class CoordHelper {
     }
    
     /**
-     * Returns MapEnvelope from given list of company objects.
+     * Returns MapEnvelope from given list of company objects and converts coords to pixCoords
      * @param companies
      * @return MapEnvelope
      */
     public MapEnvelope getEnvelope(List companies){
-        //må beregne kartenvelope
-        Vector mps = new Vector();
-        
+        Vector mps = extractMapPoints(companies);
+        return makeEnvelope(mps);
+    }
+    
+    /**
+     * Returns Arraylist of MapPoints including pix coordinates.
+     * @param companies
+     * @param companies
+     */
+    public ArrayList getMapPoints(List companies, MapEnvelope me){
+        Vector mps = extractMapPoints(companies);
+        //MapEnvelope me = makeEnvelope(mps);
+        return convertToPixelCoord(me, mps, true);
+    }
+    
+    /**
+     * Extracts coordinates from a list of Company objects. Returns av vector of MapPoints.
+     *
+     */
+    private Vector extractMapPoints(List companies){
+        Vector mps = new Vector();        
         FastCompaniesSearchResult company;
         boolean hasCoords;
         for (int i = 0; i < companies.size(); i++){
@@ -151,11 +174,12 @@ public class CoordHelper {
             }
             if (!hasCoords){
                 mp.x = defaultNoCoord;
-                mp.x = defaultNoCoord;                                
+                mp.x = defaultNoCoord;      
             }
+            System.out.println("extractMapPoints(): koordinater object: "+i+", x = "+mp.x+", y = "+mp.y );
             mps.add(mp);            
         }
-        return makeEnvelope(mps);
+        return mps;
     }
     
      /**
@@ -181,80 +205,101 @@ public class CoordHelper {
     public MapEnvelope makeEnvelope(Vector vMapPoints){        
         //loope igjennom vector for å finne max/ min verdier
         MapPoint mp = new MapPoint(); 
-        MapEnvelope mapEnvelope = new MapEnvelope();
-        
-        if(vMapPoints.size()>0){
+        MapEnvelope mapEnvelope = new MapEnvelope();        
+        if(vMapPoints.size()>1){
             mp = (MapPoint) vMapPoints.get(0);
             boolean initiert = false;
-            double maxX = mp.getX();
-            double minX = mp.getX();
-            double maxY = mp.getY();
-            double minY = mp.getY();
-            if(maxX != defaultNoCoord)
+            double tmpMaxX = mp.getX();
+            double tmpMinX = mp.getX();
+            double tmpMaxY = mp.getY();
+            double tmpMinY = mp.getY();
+            if(tmpMaxX != defaultNoCoord)
                 initiert = true;
             double tempX, tempY;
-            for (int i=1; i < vMapPoints.size(); i++ ){   
-                if(!initiert){ //dersom første mappoint var en dummy, må initielle verdier settes på nytt.                   
-                    maxX = mp.getX();
-                    minX = mp.getX();
-                    maxY = mp.getY();
-                    minY = mp.getY();
-                    if(maxX != defaultNoCoord)
-                        initiert = true;
-                }
+            int counter = 0;
+            for (int i=0; i < vMapPoints.size(); i++ ){   
                 mp = (MapPoint) vMapPoints.get(i);
+                if(!initiert){ //dersom mappoint er en dummy, må initielle verdier settes på nytt når første riktige koordinater kommer                  
+                    tmpMaxX = mp.getX();
+                    tmpMinX = mp.getX();
+                    tmpMaxY = mp.getY();
+                    tmpMinY = mp.getY();
+                    if(tmpMaxX != defaultNoCoord)
+                        initiert = true;
+                }                
                 tempX = mp.getX();
                 tempY = mp.getY();
                 if(tempX != defaultNoCoord){//må se bort fra punkt som er tilordnet en dummy kooordinat verdi
-                    if (tempX > maxX)
-                        maxX = tempX;
-                    else if (tempX < minX)
-                        minX = tempX;
-                    if (tempY > maxY)
-                        maxY = tempY;
-                    else if (tempY < minY)
-                        minY = tempY;
+                    counter++;//teller hvor mange i listen som har riktige koordinater
+                    if (tempX > tmpMaxX)
+                        tmpMaxX = tempX;
+                    else if (tempX < tmpMinX)
+                        tmpMinX = tempX;
+                    if (tempY > tmpMaxY)
+                        tmpMaxY = tempY;
+                    else if (tempY < tmpMinY)
+                        tmpMinY = tempY;
                 }
             }
-            //utvider envelop'en litt slik at ingen punkt blir liggende i kartkanten
-            double deltaX = maxX-minX;
-            double deltaY = maxY-minY;
-
-            //beregner delta x og y slik at de har et forhold som er lik imgHeight/imgWidth
-            double factorHW = this.imgHeigth/this.imgWidth;
-            double factor_dXdY = deltaY/deltaX;
-            if (factor_dXdY < factorHW ){//bredden er større enn høyde. Må utvide høyde for å få riktige proposisjoner
-                deltaY = (deltaY*factor_dXdY)/factorHW;
-                System.out.println("makeEnvelope(): deltaY = (deltaY "+ deltaY + "*factor_dXdY " + factor_dXdY + ")/factorHW "+factorHW);
+            if(!initiert){ //ingen punkter i lista inneholder riktige koordinater
+                System.out.println("Companylisten inneholder ingen objekter med koordinater");
+                mapEnvelope.maxX = this.maxX;
+                mapEnvelope.maxY = this.maxY;
+                mapEnvelope.minX = this.minX;
+                mapEnvelope.minY = this.minY;
             }
-            else if(factor_dXdY > factorHW){//høyde er større enn bredde. Må utvide bredde for å få riktige proposisjoner
-                deltaX = (deltaX*factor_dXdY)/factorHW;                
-                System.out.println("makeEnvelope(): deltaX = (deltaX "+ deltaX + "*factor_dXdY " + factor_dXdY + ")/factorHW "+factorHW);
-            }        
-            double middleX = minX + (deltaX)/2;
-            double middleY = minY + (deltaY)/2;
-            this.maxX = Math.round(middleX + (deltaX * this.envFactor)/2);
-            this.minX = Math.round(middleX - (deltaX * this.envFactor)/2);
-            this.maxY = Math.round(middleY + (deltaY * this.envFactor)/2);
-            this.minY = Math.round(middleY - (deltaY * this.envFactor)/2);        
-
-            mapEnvelope = new MapEnvelope(maxX,minX,maxY,minY);     
+            else if(counter == 1){ //kun ett punkt i lista inneholder riktige koordinater     
+                System.out.println("Companylisten inneholder kun ett objekt med koordinater");
+                mapEnvelope = makeEnvelope((MapPoint)vMapPoints.get(0), defaultZoom);
+            }
+            else {                
+                //utvider envelop'en litt slik at ingen punkt blir liggende i kartkanten
+                double deltaX = (tmpMaxX-tmpMinX);
+                double deltaY = (tmpMaxY-tmpMinY);
+                double centerX = tmpMinX + deltaX/2;
+                double centerY = tmpMinY + deltaY/2;
+                //beregner delta x og y slik at de har et forhold som er lik imgHeight/imgWidth
+                double factorHW = (double)this.imgWidth/ (double)this.imgHeigth;
+                double factor_dXdY = deltaX/deltaY;
+                if (factor_dXdY < factorHW ){//høyden er iforhold til bildehøyde/bredde mindre enn bredde. Må utvide bredde for å få riktige proposisjoner
+                    deltaX = deltaX * (factorHW/factor_dXdY);
+                    System.out.println("makeEnvelope(): deltaY = (deltaY "+ deltaY + "*factor_dXdY " + factor_dXdY + ")/factorHW "+factorHW);
+                }
+                else if(factor_dXdY > factorHW){//høyde er større enn bredde. Må utvide bredde for å få riktige proposisjoner
+                    deltaY = deltaY * (factor_dXdY/factorHW);                
+                    System.out.println("makeEnvelope(): deltaX = (deltaX "+ deltaX + "*factor_dXdY " + factor_dXdY + ")/factorHW "+factorHW);
+                }     
+                //utvider kartenvelop med hensyn til størrelsen på ikon og offset, slik at ikonene ikke kommer i kartkanten.            
+                double extFact = deltaX/imgWidth;
+                double extendRigth = (Math.abs(iconPxSizeHeigth-iconOffsetHeigth) + envFactor)*extFact;
+                double extendLeft = (iconOffsetHeigth + envFactor)*extFact;
+                double extendTop = (iconOffsetWidth + envFactor)*extFact;
+                double extendBottom = (Math.abs(iconPxSizeWidth-iconOffsetWidth) + envFactor)*extFact;
+                mapEnvelope.maxX = Math.round(centerX + (deltaX/2 + extendRigth));
+                mapEnvelope.minX = Math.round(centerX - (deltaX/2 + extendLeft));
+                mapEnvelope.maxY = Math.round(centerY + (deltaY/2 + extendTop));
+                mapEnvelope.minY = Math.round(centerY - (deltaY/2 + extendBottom));                 
+                //System.out.println("makeEnvelope(), utvidede max/min koordverdier: maxX = " + maxX + ", minX = " + minX +", maxY = " + maxY + ", minY = " + minY);
+            }
         }
+        System.out.println("makeEnvelope(), utvidede max/min koordverdier: maxX = " + mapEnvelope.maxX + ", minX = " + mapEnvelope.minX +", maxY = " + mapEnvelope.maxY + ", minY = " + mapEnvelope.minY);
+        mapEnvelope = new MapEnvelope(mapEnvelope.maxX, mapEnvelope.minX, mapEnvelope.maxY, mapEnvelope.minY);
         return mapEnvelope;
     }
     
     /**
      * Converts real world coordinates to imagepixel coordinates. Eliminates points outside given MapEnvelope.
      * @param vMapPoints Vector of real world map point coordinates
-     * @param imgHeigth image heigth
-     * @param imgWidth image width
+     * @param me
+     * @param init
      */
-    public Vector convertToPixelCoord(MapEnvelope me, Vector vMapPoints){
-        Vector vMapPointsNew = new Vector();
+    public ArrayList convertToPixelCoord(MapEnvelope me, Vector vMapPoints, boolean init){
+        ArrayList arrList = new ArrayList(vMapPoints.size());        
         double maxX = me.getMaxX();
         double minX = me.getMinX();
         double maxY = me.getMaxY();
         double minY = me.getMinY();
+        System.out.println("convertToPixelCoord(), max/min koordverdier: maxX = " + maxX + ", minX = " + minX +", maxY = " + maxY + ", minY = " + minY);
          //finne UTM koordinater for øvre høyre samt nedre venstre.
         double upperLeftX = me.getMinX();
         double upperLeftY = me.getMaxY();
@@ -263,23 +308,28 @@ public class CoordHelper {
         //må først sjekke hvilke punkt som ligger innenfor eksisterende MapEnvelope (kan ha kommet utenfor kartextentet etter navigering)
         double tempX, tempY;
         MapPoint mp = new MapPoint();
-        boolean inside;
-        for (int i = 0; i < vMapPoints.size(); i++){
-            inside = true;//
-            mp = (MapPoint) vMapPoints.get(i);
-            tempX = mp.getX();
-            tempY = mp.getY();
-            if (tempX > maxX)
-                inside = false;
-            else if (tempX < minX)
-                inside = false;
-            if (tempY > maxY)
-                inside = false;
-            else if (tempY < minY)
-                inside = false;            
-            if(inside)//dersom punktet ligger innenfor envelop'en tas det var på.
-                vMapPointsNew.add(mp);
-        }        
+        if (!init){//dersom det er navigering i kartet må det sjekkes om punktene faller utenfor nytt extent            
+            Vector vMapPointsNew = new Vector();
+            boolean inside;
+            for (int i = 0; i < vMapPoints.size(); i++){
+                inside = true;//
+                mp = (MapPoint) vMapPoints.get(i);
+                tempX = mp.getX();
+                tempY = mp.getY();
+                if (tempX > maxX)
+                    inside = false;
+                else if (tempX < minX)
+                    inside = false;
+                if (tempY > maxY)
+                    inside = false;
+                else if (tempY < minY)
+                    inside = false;            
+                if(inside)//dersom punktet ligger innenfor envelop'en tas det var på.
+                    vMapPointsNew.add(mp);
+                System.out.println("convertToPixelCoord(): pixelkoordinat object: "+i+", x = "+tempX+", y = "+tempY );
+            }     
+            vMapPoints = vMapPointsNew;
+        }
         //beregne bildepixel koordinater
         double deltaX = maxX-minX;
         double deltaY = maxY-minY;
@@ -287,18 +337,67 @@ public class CoordHelper {
         double xFactor = this.imgWidth/deltaX;//meter pr pixel
         //double deltaX0Xn, deltaY0yn;
         long pixValueHeight, pixValueWidth;        
-        for (int j = 0; j < vMapPointsNew.size(); j++){
-            mp = (MapPoint) vMapPointsNew.get(j);
+        for (int j = 0; j < vMapPoints.size(); j++){
+            mp = (MapPoint) vMapPoints.get(j);
             tempX = mp.getX();
             pixValueWidth = Math.round((tempX - upperLeftX)*xFactor);
             mp.setPxX(pixValueWidth);
             tempY = mp.getY();
             pixValueHeight = Math.round((upperLeftY-tempY)*yFactor);
             mp.setPxY(pixValueHeight);
+            arrList.add(j, mp);
+            System.out.println("convertToPixelCoord(): pixelkoordinat object: "+j+", x = "+pixValueHeight+", y = "+pixValueWidth );
         }       
-        return vMapPointsNew;
+        return arrList;
+    }    
+    
+    
+    /**
+     * Returns zoomscale for given zoomfactor
+     * @param me
+     * @return zoomscale
+     */
+    public long getZoomScale(MapEnvelope me){
+        long zoomscale = 0;
+        double deltaX = me.getMaxX()-me.getMinX();
+        //double deltaY = me.getMaxY()-me.getMinY();
+        zoomscale = Math.round(deltaX/imgMeterSize);
+        //finne delta x/y
+        return zoomscale;
     }
-    public long getZoom(int zoom){
+    
+     /**
+     * Returns zoomlevel for given zoomscale
+     * @param zoomscale
+     * @return zoomlevel
+     */
+    public int getZoomLevel(MapEnvelope me){
+        long zoomscale = getZoomScale(me);
+        int zoomlevel;
+        if (zoomscale <= this.zoom_1)
+            zoomlevel = 1;
+        else if (zoomscale <= this.zoom_2)
+            zoomlevel = 2;
+        else if (zoomscale <= this.zoom_3)
+            zoomlevel = 3;
+        else if (zoomscale <= this.zoom_4)
+            zoomlevel = 4;
+        else if (zoomscale <= this.zoom_5)
+            zoomlevel = 5;     
+        else if (zoomscale <= this.zoom_6)
+            zoomlevel = 6; 
+        else 
+            zoomlevel = 7;
+        System.out.println("getZoomLevel(): innverdi zoomscale = " + zoomscale + ", returnert verdi = " + zoomlevel);
+        return zoomlevel;
+    }
+    
+    /**
+     * Returns zoomscale for given zoomfactor
+     * @param zoom
+     * @return zoomscale
+     */
+    public long getZoomScale(int zoom){
         long zoomscale = 0;
         if (zoom == 1)
             zoomscale = this.zoom_1;
@@ -315,6 +414,11 @@ public class CoordHelper {
         return zoomscale;
     }
     
+    /**
+     * Returns ArrayList containing all defined zoomlevels
+     * @param zoom
+     * @return zoomscale
+     */    
     public ArrayList getZoomLevels(){ 
         ArrayList zoomLevels = new ArrayList(zoomCount);
         //long[] zoomLevels = new long[zoomCount];
@@ -323,12 +427,13 @@ public class CoordHelper {
         zoomLevels.add(Long.toString(zoom_3));
         zoomLevels.add(Long.toString(zoom_4));
         zoomLevels.add(Long.toString(zoom_5));
-        zoomLevels.add(Long.toString(zoom_6));        
+        zoomLevels.add(Long.toString(zoom_6));  
+        zoomLevels.add(Long.toString(zoom_7)); 
         return zoomLevels;     
     }
-    
-    public int getDefaultZoom(){
-        return this.defaultZoom;        
+      
+    public String getDefaultZoom(){
+        return Integer.toString(this.defaultZoom);        
     }   
     public int getImgWidth(){
         return this.imgWidth;
@@ -355,10 +460,10 @@ public class CoordHelper {
     
     
     public double getMapCenterPxX(){
-        return this.mapCenterPxX;
+        return this.mapCenterPxX - this.iconOffsetWidth;
     }
     public double getMapCenterPxY(){
-        return this.mapCenterPxY;
+        return this.mapCenterPxY - this.iconOffsetHeigth;
     }
     public double getMapCenterCoordX(){
         return this.mapCenterCoordX;
@@ -368,5 +473,24 @@ public class CoordHelper {
     }
     public double getDefaultNoCoord(){
         return this.defaultNoCoord;
+    }
+    public String getDefaultNoCoordString(){
+        String tmp = Double.toString(this.defaultNoCoord);
+        return tmp.substring(0,(tmp.length()-2));
+    }
+    public double getPixelsize(){
+        return this.pixelSize;
+    }
+    public double getIconPxSizeHeigth(){
+        return this.iconPxSizeHeigth;
+    }
+    public double getIconPxSizeWidth(){
+        return this.iconPxSizeWidth;
+    }
+    public double getIconOffsetHeigth(){
+        return this.iconOffsetHeigth;
+    }
+    public double getIconOffsetWidth(){
+        return this.iconOffsetWidth;
     }
  }
