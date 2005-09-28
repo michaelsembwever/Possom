@@ -44,17 +44,20 @@ public class MapServlet extends HttpServlet {
      */
 
     //globale konstanter. Hvor bør disse settes?? xml fil.
-    final static long zoomLevel1 = 10000; //kartskala ved zoom til ett punkt
+    /*final static long zoomLevel1 = 10000; //kartskala ved zoom til ett punkt
     final static long zoomLevel2 = 20000;
     final static long zoomLevel3 = 50000;
     final static long zoomLevel4 = 150000;
     final static long zoomLevel5 = 500000;
-    final static double envFactor = 1.2; //faktor for å lage rom rundt envelope
-    final static int imgWidth = 350;//bildestørrelse i pixler, bredde
-    final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
+     */
+    //final static double envFactor = 1.2; //faktor for å lage rom rundt envelope
+    //final static int imgWidth = 350;//bildestørrelse i pixler, bredde
+    //final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
     final static String datasource = "GEODATA.N50";
     final static String imgFormat = "png8";
-
+    
+    int zoomnivaa = 2;//default zoomnivaa, brukes når ikke annet er angitt
+    
     CoordHelper coordHelper = new CoordHelper();
 
     private String authenticate() throws RemoteException, ServiceException{
@@ -74,8 +77,8 @@ public class MapServlet extends HttpServlet {
          envelope.setMaxY(me.getMaxY());
 
          MapImageSize size = new MapImageSize();
-         size.setWidth(imgWidth);
-         size.setHeight(imgHeigth);
+         size.setWidth(coordHelper.getImgWidth());
+         size.setHeight(coordHelper.getImgHeigth());
 
          MapImageOptions mapOptions = new MapImageOptions();
          mapOptions.setDataSource(datasource);
@@ -89,64 +92,64 @@ public class MapServlet extends HttpServlet {
          return URL;
     }
 
+    /**
+     * Metoden parser requesten fra kartklienten. Den kan motta to ulike typer sett med parametrer for å generere kart. 
+     * Enten i form av fire hjørnekoordinater, eller iform av et punkt samt målestokk.
+     */   
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        /* TODO output your page here
-         *
-         * - hent coordinate streng
-         */
+        
         String sUrl = new String();
         String token = new String();
-        boolean retriveMapError = false;
-        String sCoords = request.getParameter("coords");
-        Vector vMapPoints = coordHelper.parseCoordString(sCoords);
-        //Sjekk om det finnes noen koordinater, hvis ikke kan resten glemmes.
-        if(!vMapPoints.isEmpty()){
-            /*
-             * - sjekke om requesten kommer fra søksiden eller navigering i kartet.
-             */
-            String action = request.getParameter("action");
-            System.out.println("Innsendte action = "+action);
-             /*
-             * - if action == zoomin||zoomout||goW||panSW||panS||panSE||panE||panNE||panN||panNW {
-              *     - hent gammelt env -> parameter == prevExtent (UTM koord)
-              *     - filtrer vekk koordinater som er utenfor opprinnelig extent
-              *     - hent gammel zoomlevel -> prevZoom.
-              * }
-              * else if (searchone||searchmany){
-             * - hent zoomlevel. Mest aktuelt ved navigering, men kan også være innsendt med ett søketreff.
-             * - sjekk om det er et eller flere punkt
-            */
-            MapEnvelope me = new MapEnvelope();
-            if(action.compareToIgnoreCase("viewone") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
-                MapPoint mp = (MapPoint) vMapPoints.get(0);
-                me = coordHelper.makeEnvelope(mp, zoomLevel1, imgWidth, imgHeigth);
-            }
-            else if(action.compareToIgnoreCase("viewmany") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
-                me = coordHelper.makeEnvelope(vMapPoints, imgWidth, imgHeigth, envFactor);
-            }
+        boolean retriveMapError = false;        
+        MapEnvelope me = new MapEnvelope();
+        boolean envelope = false;
+        String maxX = request.getParameter("maxX");
+        if (maxX != null){
+            //koordinater for envelope er sendt i requesten
+            me.setMaxX(Double.parseDouble(maxX));
+            String minX = request.getParameter("minX");
+            me.setMinX(Double.parseDouble(minX));
+            String maxY = request.getParameter("maxY");
+            me.setMaxY(Double.parseDouble(maxY));
+            String minY = request.getParameter("minY");
+            me.setMinY(Double.parseDouble(minY));
+        }
+        else{
+            //kun sendt koordinater inn i requesten. Envelope må beregnes.
+            String sCoords = request.getParameter("coords");
+            Vector vMapPoints = coordHelper.parseCoordString(sCoords);
+            //Sjekk om det finnes noen koordinater, hvis ikke kan resten glemmes.
+            if(!vMapPoints.isEmpty()){
 
-            try {
-                token = authenticate();
-                sUrl = getUrl(token, me);
-            }
-            catch (ServiceException serviceExcep) {
-            }
-            catch (RemoteException remoteExcep){
+                String action = request.getParameter("action");
+                System.out.println("Innsendte action = "+action);
 
+                String temp = request.getParameter("zoom");               
+                if (temp != null)
+                    zoomnivaa = Integer.parseInt(temp);
+                if(action.compareToIgnoreCase("viewone") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
+                    MapPoint mp = (MapPoint) vMapPoints.get(0);
+                    me = coordHelper.makeEnvelope(mp, zoomnivaa);
+                }
+                else if(action.compareToIgnoreCase("viewmany") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
+                    me = coordHelper.makeEnvelope(vMapPoints);
+                }
             }
+        }
+        try {
+            token = authenticate();
+            sUrl = getUrl(token, me);
+        }
+        catch (ServiceException serviceExcep) {
+        }
+        catch (RemoteException remoteExcep){
 
-            /*
-             * - lag envelope
-              *     - utifra ett punkt
-              *     - utifra flere pkt.
-             * - lag pixelarray
-             * - kall webservice
-              */
-        }//if(!vMapPoints.isEmpty()){
-
+        }       
+        
+        //redirecter resultat URL tilbake.
         if (!retriveMapError){
             response.sendRedirect(sUrl);
         }
