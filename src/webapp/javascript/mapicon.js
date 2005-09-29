@@ -18,11 +18,11 @@ function coordObj(x, y, id){
 function setImage(iconName, type, imgId){
     if (document.images) {
 	if(type == "highlite"){
-	    document.images[imgId].src = imageHighlite[iconName].src;
+	    document.getElementById(imgId).src = imageHighlite[iconName].src;
 	    return true;
 	}
 	else if(type == "normal"){
-	    document.images[imgId].src = imageNormal[iconName].src;
+	    document.getElementById(imgId).src = imageNormal[iconName].src;
 	    return true;
 	}
     }
@@ -66,9 +66,9 @@ function adjustIcons(isInitiated){
                 left = 0;
                 imgName = imgIconName + arrPixCoord[i].id;
                 //alert("adjustIcons(): imgName = " + imgName + ", arrPixCoord[i].y: " + arrPixCoord[i].y + ", arrPixCoord[i].x: " + arrPixCoord[i].x);
-                document.images[imgName].style.top = arrPixCoord[i].y+'px';
-                document.images[imgName].style.left = arrPixCoord[i].x+'px';
-                //document.images[imgName].style.clip = "rect("+ this.imgHeigth + "px, "+this.imgWidth+"px, 0px, 0px)";
+                document.getElementById(imgName).style.top = arrPixCoord[i].y+'px';
+                document.getElementById(imgName).style.left = arrPixCoord[i].x+'px';
+                //document.getElementById(imgName).style.clip = "rect("+ this.imgHeigth + "px, "+this.imgWidth+"px, 0px, 0px)";
                 /*
                 if((imgWidth-iconWidth)<arrPixCoord[i].x || (imgHeigth-iconHeigth)<arrPixCoord[i].y || arrPixCoord[i].x  < 0 || arrPixCoord[i].y < 0 ){                    
                     if((imgWidth-iconWidth)<arrPixCoord[i].x)
@@ -80,10 +80,10 @@ function adjustIcons(isInitiated){
                     if(arrPixCoord[i].y < 0)    
                         bottom =  iconHeigth - arrPixCoord[i].y;
                     //alert("rect("+ top +"px, " + right + "px, " + bottom + "px, " + left + "px)");
-                    document.images[imgName].style.clip = "rect("+ top +"px, " + right + "px, " + bottom + "px, " + left + "px)";
+                    document.getElementById(imgName).style.clip = "rect("+ top +"px, " + right + "px, " + bottom + "px, " + left + "px)";
                 }
                 else {
-                    document.images[imgName].style.clip = "rect("+ top +"px, " + right + "px, 0px, 0px)";
+                    document.getElementById(imgName).style.clip = "rect("+ top +"px, " + right + "px, 0px, 0px)";
                 }
                 */
             }
@@ -105,7 +105,7 @@ function isInsideExtent(compObj){
 	inside = false;
     if (!inside){
         //alert('compObj.id ' + compObj.id +', utenfor extent');
-	document.images[imgName].style.visibility = "hidden";
+	document.getElementById(imgName).style.visibility = "hidden";
 	return false;
     }
     else{
