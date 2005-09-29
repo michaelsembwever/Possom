@@ -75,7 +75,7 @@
                     
                     function init(){         
                         //adjustIcons("false");                        
-                        //initializeEvents();
+                        initializeEvents();
                         setImgMapOffset(document.getElementById("mapcontent"));
                         getUrl();
                         setZoomBarImg(currentZoomLevel)
@@ -175,9 +175,9 @@
                                                     #set ($index = $velocityCount - 1)
                                                     #set ($mappoint = $mappoints.get($index))  
                                                     #if($mappoint.x == $coordHelper.getDefaultNoCoord()) ## dersom det ikke finnes koordinater for bedriften vises ikke bilde                                                        
-                                                        <img src="../images/mapicon/ballong.gif" border="0" id="icon_$item.companyId" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$item.getCompanyName()" onclick="location.href='$baseURL&amp;companyId=$item.companyId'" style="POSITION: absolute;TOP: 0px;LEFT: 0px; Z-INDEX: 100; CURSOR: pointer; VISIBILITY: hidden"/>                                                
+                                                        <img src="../images/mapicon/ballong.gif" border="0" id="icon_$item.companyId" onmouseover="return setImage('info', 'highlite', this.id);" onmouseout="return setImage('info', 'normal', this.id);" alt="$item.getCompanyName()" onclick="location.href='$baseURL&amp;companyId=$item.companyId'" style="POSITION: absolute;TOP: 0px;LEFT: 0px; Z-INDEX: 100; CURSOR: pointer; VISIBILITY: hidden"/>                                                
                                                     #else
-                                                        <img src="../images/mapicon/ballong.gif" border="0" id="icon_$item.companyId" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$item.getCompanyName()" onclick="location.href='$baseURL&amp;companyId=$item.companyId'" style="POSITION: absolute; TOP: $mappoint.getPxY()px; LEFT: $mappoint.getPxX()px; Z-INDEX: 100; CURSOR: pointer; VISIBILITY: visible"/>                                                
+                                                        <img src="../images/mapicon/ballong.gif" border="0" id="icon_$item.companyId" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" onmouseover="return setImage('info', 'highlite', this.id);" onmouseout="return setImage('info', 'normal', this.id);" alt="$item.getCompanyName()" onclick="location.href='$baseURL&amp;companyId=$item.companyId'" style="POSITION: absolute; TOP: $mappoint.getPxY()px; LEFT: $mappoint.getPxX()px; Z-INDEX: 100; CURSOR: pointer; VISIBILITY: visible"/>                                                
                                                     #end
                                                 #end
                                         </div>

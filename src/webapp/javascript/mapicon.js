@@ -16,7 +16,7 @@ function coordObj(x, y, id){
     this.id = id;
 }
 function setImage(iconName, type, imgId){
-    if (document.images) {
+     if (document.images) {
 	if(type == "highlite"){
 	    document.getElementById(imgId).src = imageHighlite[iconName].src;
 	    return true;
