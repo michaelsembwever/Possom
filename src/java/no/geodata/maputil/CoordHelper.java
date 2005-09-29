@@ -36,7 +36,7 @@ public class CoordHelper {
     public final static int mapCenterPxX = imgWidth/2;//kartets midtpunkt i pixler, bredde
     public final static int mapCenterPxY = imgHeigth/2;//kartets midtpunkt i pixler - iconets størrelse/2, høyde
     public final static double panFactor = 0.45;//faktor som forteller hvor mye kartsentrum skal flyttet iforhold til kartets deltaX og y ved panning. 
-    public final static double zoomFactor = 2;//faktor som forteller hvor mye kartextentet skal minskes/utvides ved zoom inn/ut. zoom inn = 1/zoomFactor
+    public final static double zoomFactor = 2;//faktor som forteller hvor mye kartextentet skal minskes/utvides ved zoom inn/ut. zoom inn = 1/zoomFactor. Brukes ikke dersom fastezoomlevels benyttes.
     public final static double defaultNoCoord= -9999999;
     
     public double maxX = 1100000;//initielle verdier. Envelope som dekker hele Norge.
@@ -206,7 +206,7 @@ public class CoordHelper {
         //loope igjennom vector for å finne max/ min verdier
         MapPoint mp = new MapPoint(); 
         MapEnvelope mapEnvelope = new MapEnvelope();        
-        if(vMapPoints.size()>1){
+        if(vMapPoints.size()>0){
             mp = (MapPoint) vMapPoints.get(0);
             boolean initiert = false;
             double tmpMaxX = mp.getX();
@@ -353,7 +353,7 @@ public class CoordHelper {
     
     
     /**
-     * Returns zoomscale for given zoomfactor
+     * Returns zoomscale for given mapenvelope
      * @param me
      * @return zoomscale
      */
