@@ -13,8 +13,10 @@
             #set ($env = $coordHelper.getEnvelope($company))
             #set ($zoomLevels = $coordHelper.getZoomLevels())
 
-            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>";
-            
+            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>
+            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/mapicon.js'></SCRIPT>
+            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/layers.js'></SCRIPT>
+
             <script type="text/javascript" language="JavaScript">                
                 ##intierer array bestående av objekt inneholdende company informasjon. 
                 
@@ -61,12 +63,23 @@
                     var dX = maxX - minX;
                     var dY = maxY - minY; 
 
-                    var prevMaxX = maxX;
-                    var prevMinX = minX;
-                    var prevMaxY = maxY;
-                    var prevMinY = minY;
+                    ##var prevMaxX = maxX;
+                    ##var prevMinX = minX;
+                    ##var prevMaxY = maxY;
+                    ##var prevMinY = minY;
                     var contextPath = "$contextPath";   
                 #end
+                
+                //zoom box
+                content = '<img name="zoomImageTop" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                createLayer("zoomBoxTop",xMapOffset,yMapOffset,"100%","100%",false,content);
+                content = '<img name="zoomImageLeft" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                createLayer("zoomBoxLeft",xMapOffset,yMapOffset,"100%","100%",false,content);
+                content = '<img name="zoomImageRight" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                createLayer("zoomBoxRight",xMapOffset,yMapOffset,"100%","100%",false,content);
+                content = '<img name="zoomImageBottom" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                createLayer("zoomBoxBottom",xMapOffset,yMapOffset,"100%","100%",false,content);
+                
                 
                 function checkCoord(){
                     return hasCoords;
@@ -74,6 +87,9 @@
                 
                 function init(){     
                     if(hasCoords){
+                        //må finne kartets posisjon i kartet.
+                        //initializeEvents();
+                        setImgMapOffset(document.getElementById("mapcontent"));
                         getUrl();
                         setInitZoomBarImg()
                     }
@@ -117,12 +133,12 @@
                     		<tr>
                                     <td width="8px"><a href="javascript:if(checkCoord()){ pan('w');}"><img src="../images/mapicon/panW.jpg" width="8px" alt="panorer"/></a></td>
                                     <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
-                                        <div id="mapcontent" style="POSITION: absolute;">   
+                                        <div id="mapcontent" style="POSITION: absolute; OVERFLOW: hidden; WIDTH: $coordHelper.getImgWidth()px; HEIGTH: $coordHelper.getImgHeigth()px;">   
                                             #if ($company.x == $coordHelper.getDefaultNoCoordString())
                                                  <img name="map" src="../images/mapicon/nomap.jpg" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart"/>
                                             #else
                                                  <img name="map" src="../images/mapicon/loading.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart"/>
-                                                 <img src="../images/mapicon/ballong.gif" border="0" name="icon_$company.companyId" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$company.getCompanyName()" onclick="location.href='http://www.aftenposten.no'" style="POSITION: absolute;TOP: $coordHelper.getMapCenterPxY()px;LEFT: $coordHelper.getMapCenterPxX()px;Z-INDEX: 1000; CURSOR: pointer;"/>                                                                                            
+                                                 <img src="../images/mapicon/ballong.gif" border="0" id="icon_$company.companyId" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$company.getCompanyName()" onclick="location.href='http://www.aftenposten.no'" style="POSITION: absolute;TOP: $coordHelper.getMapCenterPxY()px;LEFT: $coordHelper.getMapCenterPxX()px;Z-INDEX: 100; CURSOR: pointer;"/>                                                                                            
                                             #end
                                             </div>
                                     </td>

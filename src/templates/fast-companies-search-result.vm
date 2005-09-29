@@ -13,7 +13,9 @@
             #set ($mappoints = $coordHelper.getMapPoints($company, $env))
             #set ($zoomLevels = $coordHelper.getZoomLevels())            
 
-            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>";
+            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>
+            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/mapicon.js'></SCRIPT>
+            <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/layers.js'></SCRIPT>
 
             <script type="text/javascript" language="JavaScript">      
                     var arrZoomLevels = new Array();
@@ -55,14 +57,26 @@
                     var centerPixX = imgWidth/2;
                     var dX = maxX - minX;
                     var dY = maxY - minY;  
-                    var prevMaxX = maxX;
-                    var prevMinX = minX;
-                    var prevMaxY = maxY;
-                    var prevMinY = minY;
+                    ##var prevMaxX = maxX;
+                    ##var prevMinX = minX;
+                    ##var prevMaxY = maxY;
+                    ##var prevMinY = minY;
                     var contextPath = "$contextPath";
                     
+                    //zoom box
+                    content = '<img name="zoomImageTop" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                    createLayer("zoomBoxTop",xMapOffset,yMapOffset,"100%","100%",false,content);
+                    content = '<img name="zoomImageLeft" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                    createLayer("zoomBoxLeft",xMapOffset,yMapOffset,"100%","100%",false,content);
+                    content = '<img name="zoomImageRight" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                    createLayer("zoomBoxRight",xMapOffset,yMapOffset,"100%","100%",false,content);
+                    content = '<img name="zoomImageBottom" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                    createLayer("zoomBoxBottom",xMapOffset,yMapOffset,"100%","100%",false,content);
+                    
                     function init(){         
-                        //adjustIcons("false");
+                        //adjustIcons("false");                        
+                        //initializeEvents();
+                        setImgMapOffset(document.getElementById("mapcontent"));
                         getUrl();
                         setZoomBarImg(currentZoomLevel)
                     }                 
@@ -154,18 +168,16 @@
                     		</tr>
                     		<tr>
                                     <td width="8px"><a href="javascript:pan('w');"><img src="../images/mapicon/panW.jpg" width="8px" alt="panorer"/></a></td>
-                                    <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
-                                        <!--div id="mapcontent" style="POSITION: absolute; clip: rect($coordHelper.getImgHeigth()px, $coordHelper.getImgWidth()px, 0px, 0px)"-->    
-                                        <div id="mapcontent" style="POSITION: absolute;"> 
-                                            <!--img name="map" src="" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart" style="POSITION: absolute; clip: rect($coordHelper.getImgHeigth()px, $coordHelper.getImgWidth()px, 200px, 100px)"/-->
-                                            <img name="map" src="../images/mapicon/loading.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart" style="POSITION: absolute; "/>
+                                    <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top"> 
+                                        <div id="mapcontent" style="POSITION: absolute; OVERFLOW: hidden; WIDTH: $coordHelper.getImgWidth()px; HEIGTH: $coordHelper.getImgHeigth()px;"> 
+                                             <img name="map" src="../images/mapicon/loading.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart" style="z-index: 1"/>
                                                 #foreach ($item in $result.getCompaniesResults())                                                    
                                                     #set ($index = $velocityCount - 1)
                                                     #set ($mappoint = $mappoints.get($index))  
                                                     #if($mappoint.x == $coordHelper.getDefaultNoCoord()) ## dersom det ikke finnes koordinater for bedriften vises ikke bilde                                                        
-                                                        <img src="../images/mapicon/ballong.gif" border="0" name="icon_$item.companyId" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$item.getCompanyName()" onclick="location.href='$baseURL&amp;companyId=$item.companyId'" style="POSITION: absolute;TOP: 0px;LEFT: 0px; Z-INDEX: 1000; CURSOR: pointer; VISIBILITY: hidden"/>                                                
+                                                        <img src="../images/mapicon/ballong.gif" border="0" id="icon_$item.companyId" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$item.getCompanyName()" onclick="location.href='$baseURL&amp;companyId=$item.companyId'" style="POSITION: absolute;TOP: 0px;LEFT: 0px; Z-INDEX: 100; CURSOR: pointer; VISIBILITY: hidden"/>                                                
                                                     #else
-                                                        <img src="../images/mapicon/ballong.gif" border="0" name="icon_$item.companyId" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$item.getCompanyName()" onclick="location.href='$baseURL&amp;companyId=$item.companyId'" style="POSITION: absolute;TOP: $mappoint.getPxY()px;LEFT: $mappoint.getPxX()px;Z-INDEX: 1000; CURSOR: pointer;"/>                                                
+                                                        <img src="../images/mapicon/ballong.gif" border="0" id="icon_$item.companyId" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" onmouseover="return setImage('info', 'highlite', this.name);" onmouseout="return setImage('info', 'normal', this.name);" alt="$item.getCompanyName()" onclick="location.href='$baseURL&amp;companyId=$item.companyId'" style="POSITION: absolute; TOP: $mappoint.getPxY()px; LEFT: $mappoint.getPxX()px; Z-INDEX: 100; CURSOR: pointer; VISIBILITY: visible"/>                                                
                                                     #end
                                                 #end
                                         </div>

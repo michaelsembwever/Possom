@@ -1,43 +1,202 @@
+var isNS = false;
+var isIE = false;
+var isOpera = false;
+if (navigator.appName.indexOf("Opera") >= 0) 
+	isOpera = true;
+if (navigator.appName.indexOf("Netscape") >= 0) 
+	isNS = true;
+if (navigator.appName.indexOf("Microsoft") >= 0) 
+	isIE = true;
+
 var url = "";
-var arrPixCoord = new Array();
-var imgIconName = "icon_";//ikonene i kartet har dette navnet etterfulgt av id nummer, eks icon_1.
+var zoomBoxColor = "#FF0000";	// color of zoombox
+var ovBoxSize = 1; 		// Zoombox line width;
+var xMapOffset = 0;
+var yMapOffset = 0; 
 
-//kartets plassering               
+// Global variables to save mouse position
+var mouseX=0;
+var mouseY=0;
+var x1=0;
+var y1=0;
+var x2=0;
+var y2=0;
+var zleft=0;
+var zright=0;
+var ztop=0;
+var zbottom=0;
+var navigating=false;//navigeringsmodus av/på
 
-//icon i kartet
-var imageNormal = new Object();
-imageNormal["info"] = new Image(10, 10);
-imageNormal["info"].src = "../images/mapicon/ballong.gif";
-
-var imageHighlite = new Object();
-imageHighlite["info"] = new Image(17, 17);
-imageHighlite["info"].src = "../images/mapicon/ballong_2.gif";
-
-function coordObj(x, y, id){
-    this.x = x;
-    this.y = y;
-    this.id = id;
+//setter kartets posisjon i dokumentet
+function setImgMapOffset(obj){
+    xMapOffset = findPosX(obj);
+    yMapOffset = findPosY(obj);
 }
-function setImage(iconName, type, imgId){
-    if (document.images) {
-	if(type == "highlite"){
-	    document.images[imgId].src = imageHighlite[iconName].src;
-	    return true;
-	}
-	else if(type == "normal"){
-	    document.images[imgId].src = imageNormal[iconName].src;
-	    return true;
-	}
+
+function findPosX(obj){
+    var curleft = 0;
+    if (obj.offsetParent)	{
+            while (obj.offsetParent)		{
+                    curleft += obj.offsetLeft
+                    obj = obj.offsetParent;
+            }
     }
+    else if (obj.x)
+            curleft += obj.x;
+    return curleft;
+}
+
+function findPosY(obj){
+    var curtop = 0;
+    if (obj.offsetParent)	{
+        while (obj.offsetParent)		{
+                curtop += obj.offsetTop
+                obj = obj.offsetParent;
+        }
+    }
+    else if (obj.y)
+        curtop += obj.y;
+    return curtop;
+}
+
+//Skrur på hendelser i documentet til gdMapFrame
+function initializeEvents() {
+    if (isNS) {
+            document.captureEvents(Event.MOUSEMOVE | Event.MOUSEDOWN | Event.MOUSEUP);
+    }
+    document.onmousemove = getMouse;
+    document.onmousedown = mapTool;
+    document.onmouseup = chkMouseUp;
+}
+
+//Skrur på hendelser i documentet til gdMapFrame
+function initializeEvents() {
+    if (isNS) {
+            document.captureEvents(Event.MOUSEMOVE | Event.MOUSEDOWN | Event.MOUSEUP);
+    }
+    document.onmousemove = getMouse;
+    document.onmousedown = mapTool;
+    document.onmouseup = chkMouseUp;
+}
+
+//Dersom hendelsen mousedown inntrer
+//Setter kun de globale variable for rektangel, x1, x2, y1, y2
+function mapTool (e) {
+    //Finner først ut om venstre eller høyre musetast er klikket    
+    var rightClick = true;
+    if (isNS) {
+        if (e.which == 1) {
+            rightClick = false;
+        }
+    }
+    else {
+        if (event.button == 1) {
+            rightClick = false;
+        }
+        if (event.button == 0) { //opera 8 og w3c standard
+            rightClick = false;
+        }        
+    }
+    if (!rightClick) { 
+        getImageXY(e);
+        if ((mouseX<imgWidth) && (mouseY<imgHeigth) && (mouseX>=0) && (mouseY>=0)) {
+            x1=mouseX;
+            y1=mouseY;
+            x2=x1+1;
+            y2=y1+1;      
+            navigating = true;
+        }
+    }     
     return false;
 }
-//slutt ikon i kartet         
 
+//get the coords at mouse position
+function getMouse(e) {
+    if(navigating){
+        getImageXY(e);
+        if ((mouseX>imgWidth) || (mouseY>imgHeigth) || (mouseX<=0) ||(mouseY<=0)) { 
+                chkMouseUp(e);
+        } else {
+                x2=mouseX;
+                y2=mouseY;
+                setClip();
+        }
+    }        
+    return false;
+}
+
+//Dersom hendelsen mouseup inntrer
+//sjekker om det skal zoomes eller panoreres.
+function chkMouseUp(e) {    
+    //sjekker om det er dratt et rektangel eller gitt et klikk i kartet
+    if(navigating){
+        if ((Math.abs(x1 - x2) <= 1) && (Math.abs(y1 - y2) <= 1)) {//klikk i kartet, skal panorere
+            //En viss forskyvelse når vi beveger oss mot høyre i kartet -  forskyvning på fire piksler
+            //x1 = Math.round(x1 - (x1 / imgWidth) * 4);
+            //y1 = Math.round(y1 - (y1 / imgHeigth) * 4);
+            centerCoordX = xPixToCoord(x1);//konverter bildepixler til koordinater
+            centerCoordY = yPixToCoord(y1);
+            makeEnvelopeFromPoint();  
+        }
+        else{// det er dratt ett rektangel     
+            if(x1<x2){
+                maxX = xPixToCoord(x2);
+                minX = xPixToCoord(x1);
+            }    
+            else{
+                maxX = xPixToCoord(x1);
+                minX = xPixToCoord(x2);
+            }
+            if(y1<y2){
+                maxY = yPixToCoord(y1);
+                minY = yPixToCoord(y2);
+            }    
+            else{
+                maxY = yPixToCoord(y2);
+                minY = yPixToCoord(y1);
+            }
+            makeEnvelope();
+            calcMapScale();
+            getZoomlevel();
+            setInitZoomBarImg();
+        }
+        getUrl();
+        adjustIcons("true");
+    }
+    navigating = false;//avslutter navigerings modus
+    return false;
+}
+
+//get cursor location
+function getImageXY(e) {
+    //trenger e for Netscape
+    if (isNS) {
+            mouseX=e.pageX;
+            mouseY=e.pageY;
+    } else {
+            mouseX=event.clientX + document.body.scrollLeft;
+            mouseY=event.clientY + document.body.scrollTop;
+    }
+    //subtract offsets from page left and top
+    mouseX = mouseX-xMapOffset;
+    mouseY = mouseY-yMapOffset;
+}
+
+function xPixToCoord(xpix){
+    var xtmp = Math.round(minX + (dX/imgWidth) * xpix);  
+    return xtmp;
+}
+
+function yPixToCoord(ypix){
+    var ytmp = Math.round(maxY - (dY/imgHeigth) * ypix);    
+    return ytmp;
+}
+
+//panorering i himmelretningene
 function pan(direction){
     var tmpY = dY * panfactor;
     var tmpX = dX * panfactor
-    //tar vare på forrige max/min koordinater
-    setPrevExtent();
+    //setPrevExtent();
     if(direction == 'n'){
 	maxY = maxY + tmpY;
 	minY = minY + tmpY;
@@ -114,34 +273,25 @@ function previous(){
 }
 
 function zoomlevel(level){
-    //alert("currentzoomlevel = "+ currentZoomLevel + ", newlevel = " +level)
     if(currentZoomLevel == level){
 	return;
     }
     var tmpScale = currentZoomScale;
     var zoomscale = getZoomScale(level);
-    //alert(zoomscale + ", " + tmpScale + ", " + dX + ", " + dY);
-    //beregn ny deltax, y
     currentZoomLevel = level;
     dX = dX * (zoomscale/tmpScale);
     dY = dY * (zoomscale/tmpScale);     
-    //alert(dX + ", " + dY);
-    //må beregne nye max/min koordinater utifra ny scale.                    
     zoom();                                      
     setZoomBarImg(currentZoomLevel);                    
 }
 
 //hjelpemetode for zoomin/zoomout ved bruk av en gitt zoomfactor. Nye max/min coord verdier settes utifra nye beregnede deltaX/deltaY'er
 function zoom(){                   
-    setPrevExtent();//tar var på forrige max/min verdier.
-    maxX = centerCoordX + (dX/2);
-    minX = centerCoordX - (dX/2);
-    maxY = centerCoordY + (dY/2);
-    minY = centerCoordY - (dY/2);                                     
+    //setPrevExtent();//tar var på forrige max/min verdier.
+    makeEnvelopeFromPoint();
     setNewDeltaXY();   
     //juster ikoner
     adjustIcons("true");
-    //alert("dx: " + dX + ", Dy: " + dY + ". maxX " + maxX + ". prevmaxX " + prevMaxX+ ". minX "  + minX + ". prevminX " + prevMinX +" maxY: " + maxY + ". prevmaxY " + prevMaxY +" minY :" + minY+ ". prevminY " + prevMinY);
     url = contextPath + "/map/?maxX=" + maxX + "&minX=" + minX + "&maxY=" + maxY + "&minY=" + minY; 
     getImage(url);
 }
@@ -175,12 +325,7 @@ function zoomout(typezoom){
 	}
     }
 }
-
-//dersom zoombar er benyttet                
-function calcMapScale(){                  
-
-}
-
+   
 function setZoomBarImg(zoomlevel){      
     document.images["zoombar"].src = "../images/mapicon/zoombar_" + zoomlevel + ".jpg";
 }               
@@ -202,111 +347,43 @@ function getZoomScale(zoomLevel){
     return zoomscale;
 }
 
-function makeEnvelope(){                                  
-   /*
-    long zoomscale = getZoomLevel(zoom);
-    double metersPrPixel = zoomscale * pixelSize;        
-    this.maxX = Math.round(mp.getX() + metersPrPixel * this.imgHeigth);
-    this.minX = Math.round(mp.getX() - metersPrPixel * this.imgHeigth);
-    this.maxY = Math.round(mp.getY() + metersPrPixel * this.imgWidth);
-    this.minY = Math.round(mp.getY() - metersPrPixel * this.imgWidth);        
-    MapEnvelope mapEnvelope = new MapEnvelope(this.maxX,this.minX,this.maxY,this.minY);           
-    return mapEnvelope;
-    */                
+function getZoomlevel(){
+    var zoomscale;
+    for (var i = 0; i < arrZoomLevels.length; i++){  
+        zoomscale = arrZoomLevels[i];
+        if(currentZoomScale <= zoomscale){
+            currentZoomLevel = i+1;
+            break;
+        }
+    }
 }
 
-//plassèr gif'ene ift kartextent               
-function adjustIcons(isInitiated){
-    //alert("adjustIcons(). coordArray length = " + arrCompany.length);
-    //looper igjennom koordinatobjektarrayen og fjerner de som ikke er innenfor det nye extentet   
-    var arrCompanyToShow = new Array();
-    if (isInitiated != "false"){
-        //alert('arrCompany.length ' + arrCompany.length);
-        var j = -1;
-        for (var i=0; i<arrCompany.length; i++) {
-            //alert("loop = " + i + ", arrCompany[i].id = " + arrCompany[i].id + "arrCompany[i].x " + arrCompany[i].x +", arrCompany[i].y: " +arrCompany[i].y);
-            if (isInsideExtent(arrCompany[i])){ 
-                j = j + 1;
-                arrCompanyToShow[j] = arrCompany[i];  
-                //alert("isInside: loop = " + i + ", arrCompany[i].id = " + arrCompany[i].id + "arrCompany[i].x " + arrCompany[i].x +", arrCompany[i].y: " +arrCompany[i].y);
-            }            
-        }
-    }
-    else 
-        arrCompanyToShow = arrCompany;   
-    //alert('arrCompanyToShow.length ' + arrCompanyToShow.length);
-    if(arrCompanyToShow.length > 0){//skal konvertere til bilde pixler og tegne opp de ikonene som er innenfor extentet.
-	arrPixCoord = coordToPix(arrCompanyToShow);//beregn nye pix verdier                            
-	if (isInitiated == "true"){
-            var imgName = "";
-            var right;
-            var top;
-            var bottom;
-            var left;
-            for (var i=0; i<arrPixCoord.length; i++) {
-                right = imgWidth;
-                top = imgHeigth;
-                bottom = 0;
-                left = 0;
-                imgName = imgIconName + arrPixCoord[i].id;
-                //alert("adjustIcons(): imgName = " + imgName + ", arrPixCoord[i].y: " + arrPixCoord[i].y + ", arrPixCoord[i].x: " + arrPixCoord[i].x);
-                document.images[imgName].style.top = arrPixCoord[i].y+'px';
-                document.images[imgName].style.left = arrPixCoord[i].x+'px';
-                //document.images[imgName].style.clip = "rect("+ this.imgHeigth + "px, "+this.imgWidth+"px, 0px, 0px)";
-                if((imgWidth-iconWidth)<arrPixCoord[i].x || (imgHeigth-iconHeigth)<arrPixCoord[i].y || arrPixCoord[i].x  < 0 || arrPixCoord[i].y < 0 ){                    
-                    if((imgWidth-iconWidth)<arrPixCoord[i].x)
-                        right = imgWidth - arrPixCoord[i].x;
-                    if((imgHeigth-iconHeigth)<arrPixCoord[i].y)
-                        top = imgHeigth - arrPixCoord[i].y; 
-                    if(arrPixCoord[i].x  < 0)    
-                        left =  iconWidth - arrPixCoord[i].x;
-                    if(arrPixCoord[i].y < 0)    
-                        bottom =  iconHeigth - arrPixCoord[i].y;
-                    //alert("rect("+ top +"px, " + right + "px, " + bottom + "px, " + left + "px)");
-                    document.images[imgName].style.clip = "rect("+ top +"px, " + right + "px, " + bottom + "px, " + left + "px)";
-                }
-                else {
-                    document.images[imgName].style.clip = "rect("+ top +"px, " + right + "px, 0px, 0px)";
-                }
-            }
-        }
-    }
-}    
+function calcMapScale(){                  
+    currentZoomScale = Math.round(dX/imgMeterSize);       
+}
 
-//sjekker om gitt punkt er innenfor map extent
-function isInsideExtent(compObj){
-    var inside = true;           
-    var imgName = imgIconName + compObj.id;
-    if (compObj.x >= maxX)
-	inside = false;
-    else if (compObj.x <= minX)
-	inside = false;
-    if (compObj.y >= maxY)
-	inside = false;
-    else if (compObj.y <= minY)
-	inside = false;
-    if (inside == false){
-	document.images[imgName].style.visibility = "hidden";
-	return false;
-    }
-    else{
-        document.images[imgName].style.visibility = "visible";
-	return true;
-    }                    
-}   
+//lager nytt mapenvelope utifra et punkt og eksisterende deltaX og deltaY
+function makeEnvelopeFromPoint(){  
+    maxX = Math.round(centerCoordX + dX/2);
+    minX = Math.round(centerCoordX - dX/2);
+    maxY = Math.round(centerCoordY + dY/2);
+    minY = Math.round(centerCoordY - dY/2);
+}
 
-//konverterer et array med real-world koordinater til et array med bildepixel koordinater
-function coordToPix(coordArray){  
-    var tmpPixArray = new Array(); 
-    var xFactor = imgWidth/dX;//meter pr pixel
-    var yFactor = imgHeigth/dY;//meter pr pixel 
-    for (var i=0; i<coordArray.length; i++) {
-        tmpPixArray[i] = new coordObj();
-        tmpPixArray[i].x = Math.round((coordArray[i].x - minX) * xFactor) - iconOffsetWidth;
-        tmpPixArray[i].y = Math.round((maxY-coordArray[i].y) * yFactor) - iconOffsetHeigth;
-        tmpPixArray[i].id = coordArray[i].id;
+//lager nytt mapenvelope utifra fire hjørnekoordinater
+function makeEnvelope(){
+    setNewDeltaXY();
+    setImageCenter();
+    //må beregne nytt mapenvelope
+    var factorHW = imgWidth/imgHeigth;
+    var factor_dXdY = dX/dY;     
+    if (factor_dXdY < factorHW ){//høyden er iforhold til bildehøyde/bredde mindre enn bredde. Må utvide bredde for å få riktige proposisjoner
+        dX = dX * (factorHW/factor_dXdY);
     }
-    return tmpPixArray;
+    else if(factor_dXdY > factorHW){//høyde er større enn bredde. Må utvide bredde for å få riktige proposisjoner
+        dY = dY * (factor_dXdY/factorHW);   
+    }     
+    makeEnvelopeFromPoint();    
 }
 
 //tar var på forrige extent
