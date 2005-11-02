@@ -65,6 +65,10 @@ public abstract class AbstractSearchCommand implements SearchCommand {
 
     public abstract SearchResult execute();
 
+    /**
+     * Called by thread executor
+     * @return
+     */
     public Object call() {
         if(log.isDebugEnabled()){
             log.debug("ENTR: call()");
@@ -78,26 +82,37 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         }
 
         transformedQuery = queryToUse;
-
         applyQueryTransformers(configuration.getQueryTransformers());
-
         StopWatch watch = null;
 
         if (log.isDebugEnabled()) {
             watch = new StopWatch();
             watch.start();
         }
-
         SearchResult result = null;
 
-        if (queryToUse != null && queryToUse.trim().equals("")) {
-            if (log.isDebugEnabled()) {
-                log.debug("Query is empty. Not doing search");
-            }
-            result = new BasicSearchResult(this);
-        } else {
-            result = execute();
+        //TODO: Hide this in QueryRule.execute(some parameters)
+        boolean executeQuery = false;
+
+        if(queryToUse.length() > 0){
+            executeQuery = true;
         }
+        if(parameters.get("contentsource") != null){
+            if(log.isDebugEnabled()){
+                log.debug("call: Got contentsource, executeQuery=true");
+            }
+            executeQuery = true;
+        }
+        /*
+        if(filter != null){
+            executeQuery = true;
+        }
+        */
+
+        if(log.isInfoEnabled()){
+            log.info("call(): ExecuteQuery?" + executeQuery);
+        }
+        result = executeQuery ? execute() : new BasicSearchResult(this);
 
         if (log.isDebugEnabled()) {
             watch.stop();
@@ -149,7 +164,12 @@ public abstract class AbstractSearchCommand implements SearchCommand {
                 QueryTransformer transformer = (QueryTransformer) iterator.next();
 
                 transformedQuery = transformer.getTransformedQuery(transformedQuery);
-                filter = transformer.getFilter();
+
+                if(filter == null){
+                    filter = transformer.getFilter();
+                } else if(transformer.getFilter() != null){
+                    filter += transformer.getFilter() + " ";
+                }
 
                 if(log.isDebugEnabled()){
                     log.debug("applyQueryTransformers: TransformedQuery=" + transformedQuery);
