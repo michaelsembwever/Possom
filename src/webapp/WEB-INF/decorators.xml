@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
 <decorators defaultdir="/WEB-INF/jsp/decorators">
-    <decorator name="maindecorator" page="main-decorator.jsp" />
+
+    <decorator name="printable" page="printDecorator.jsp" >
+    </decorator>
+
+    <decorator name="maindecorator" page="mainDecorator.jsp">
+	    <pattern>*</pattern>
+    </decorator>
+
 </decorators>

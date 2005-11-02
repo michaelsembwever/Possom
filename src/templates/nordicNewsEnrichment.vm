@@ -1,0 +1,26 @@
+<html>
+<head>
+    <meta name="decorator" content="maindecorator">
+</head>
+
+<body bgcolor="#eeeeff">
+
+#if ($result.hitCount > 0)
+<content tag="nordicNewsEnrichment">
+    <div class="enrichment">
+        <a href="?c=m&amp;q=$query">$text.getMessage($locale, "hitsOnNordisk", $result.hitCount, $query)</a>
+        <ul>
+            #foreach( $item in $result.results )
+            #if ($velocityCount <= 3)
+            <li><a href="$item.getField('url')">$item.getField('newstitle')</a>
+                <span class="timestamp">$item.getField('newssource'), $item.getField('age')</span>
+            </li>
+            #end
+            #end
+        </ul>
+    </div>
+</content>
+#end
+
+</body>
+</html>

@@ -1,0 +1,481 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+
+html{
+    font-size: 62.5%;
+}
+
+
+body {
+    font-family: arial, sans-serif;
+    font-size: 1.1em;
+    background-color: #fff;
+}
+
+
+h1 {
+    font-size: 2em;
+}
+
+li {
+    list-style: none;
+}
+
+img {
+    border: none;
+}
+
+a {
+    color: #206CCC;
+}
+
+
+
+/* ------------------------------------------------------------------ */
+/* =Special styles */
+
+.printhide{
+    display:none;
+}
+
+/* ------------------------------------------------------------------ */
+/* =MAIN-DECORATOR */
+
+
+
+#linkback{
+    display:none;
+}
+
+
+#body_table{
+    margin-left: 0px;
+}
+
+
+#body_table .cell_one{
+    display:none;
+}
+
+#body_table .cell_one_header{
+    display:none;
+}
+
+#body_table .cell_two{
+    display:none;
+}
+
+
+#body_table .cell_three{
+    width: 100%;
+}
+
+#body_table .cell_four{
+    display:none;
+}
+
+
+#search_table{
+    display:none;
+}
+
+
+#search_table_large{
+    display:none;
+}
+
+
+#search_table_bar{
+    display:none;
+}
+
+
+#search_table_bar_large{
+    display:none;
+}
+
+
+
+#greybar_main{
+    display:none;
+}
+
+
+
+#footer {
+    display:none;
+}
+
+.media_frame{
+    padding: 4px 8px 4px 8px;
+}
+
+
+.media_frame_null{
+}
+
+
+.media_frame_hide{
+    display:none;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* =FAST-COMPANIES-SEARCH-RESULT */
+
+/* -- the table which containg the 3 (2) parts -- */
+#company_result, #person_result  {
+    margin-top: 10px;
+    color: #003880;
+    background-color: #FFF;
+}
+
+
+
+/* -- the result header table -- */
+
+#result_container{
+    margin: 16px 0px 4px 0px;
+}
+
+.result_list_header {
+    width: 99%;
+    float: left;
+    border: 1px solid #DFDFDF;
+    background-color: #F2F2F4;
+}
+
+
+/* -- the result data -- */
+#result_list {
+    width: 100%;
+}
+
+#result_list .detail {
+    padding: 9px 0px 7px 0px;
+}
+
+#result_list .line {
+    background: #DFDFDF;
+    margin: 1px 0px 1px 0px;
+}
+
+.result_list a:hover {
+    color: #793686;
+    text-decoration: none;
+}
+
+
+#result_table {
+    margin: 10px 0 0 10px;
+}
+
+
+#yellow_table{
+    margin-top: 16px;
+    width: 758px;
+}
+
+
+#yellow_table .yellow_results {
+    font-size: 1.09em;
+    margin: 10px 0px 0px 0px;
+    width: 362px;
+}
+
+
+
+/* ------------------------------------------------------------------ */
+/* =INFOPAGE */
+
+/* -- the table which contains 2 parts -- */
+#info_submenu{
+    display:none;
+}
+
+
+
+#company_infopage  {
+    margin-top: 10px;
+    color: #003880;
+    background-color: #FFF;
+}
+
+#company_infopage h1 {
+    font-size: 1em;
+}
+
+#company_data {
+    margin-top: 3px;
+    width: 443px;
+    background-color: #FFFCF2;
+    border: solid 1px #E5DBC3;
+}
+
+#company_infopage p {
+    padding: 25px 0 0 20px;
+}
+
+#company_infopage .last {
+    margin-bottom: 25px;
+}
+
+#info_list {
+    width: 100%;
+    margin-top:5px;
+}
+
+
+#info_list td{
+    color: #666;
+    padding-top: 6px;
+}
+
+#info_list .cellright{
+    color: #000;
+    padding-left: 20px;
+}
+
+
+.info_list_ul {
+    border-bottom: 1px solid #DFDFDF;
+}
+
+
+/* -- the link tabs on the infopage -- */
+#yiptabs li {
+    display: inline;
+}
+
+#yiptabs .last {
+    border-right: none;
+}
+
+#yiptabs a {
+    border-right: solid 1px #E5DBC3;
+    border-bottom: solid 1px #E5DBC3;
+    padding: 3px 0px 3px 0px;
+    float: left;
+    width: 110px;
+    text-align: center;
+    vertical-align: middle;
+    background-image: url(../images/tab_bg.gif);
+    background-repeat: repeat-x;
+    text-decoration: none;
+}
+
+#yiptabs a.active, #yiptabs a:hover {
+    background-image: url(../images/mOver.gif);
+    background-repeat: repeat-x;
+    color: #446DA2;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* =SEARCH-RESULT */
+
+#search_result {
+    margin: 10px 0px 0px 0px;
+}
+
+#search_result p {
+    margin-top: 13px;
+}
+
+/* -- the result picture header table -- */
+.search_hit_header {
+    font-family: verdana;
+    width: 100%;
+    margin: 10px 0 20px 0;
+    float: left;
+    border: 1px solid #DFDFDF;
+    background-color: #F2F2F4;
+}
+
+
+.search_hit_header dd a{
+    color: #000;
+}
+
+
+.search_summary {
+    margin-top: 4px;
+    font-size: 1.09em;
+}
+
+.search_big_url {
+    font-size: 1.2em;
+}
+
+.search_small_url {
+    font-size: 1.09em;
+    color: gray;
+    text-decoration: none;
+}
+
+.search_next_click {
+    color: #000;
+}
+
+
+/* -- how old media document is (media) -- */
+.timestamp {
+    color: gray;
+    margin-left: 10px;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* =PIC-SEARCH */
+
+#pic_result {
+    margin-top: 10px;
+    background: #F2F2F2;
+}
+
+.pic_frame {
+    width: 180px;
+    height: 180px;
+    background-color: #FFF;
+    border: 1px solid #CCC;
+    text-align: center;
+}
+
+.pic_info {
+    font-size: 0.9em;
+    clear: both;
+    margin-top: 8px;
+}
+
+/* -- the result picture header table -- */
+.result_pic_header {
+    width: 100%;
+    float: left;
+    border: 1px solid #DFDFDF;
+    background-color: #F2F2F4;
+}
+
+.result_pic_header dt {
+    width: 78%;
+    float: left;
+    clear: left;
+    padding: 3px 0 3px 5px;;
+
+}
+
+.result_pic_header dd {
+    width: 18.9%;
+    float: left;
+    padding: 3px 5px 3px 0;
+    text-align: right;
+}
+
+
+/* ------------------------------------------------------------------ */
+/* =ENRICHMENT */
+
+.enrichment, .spelling_suggestion {
+    margin-top: 10px;
+    font-size: 1.09em;
+}
+
+.enrichment ul {
+    margin-left: 40px;
+}
+
+/* -- margin for media enrichment source -- */
+.news_source {
+    margin-left: 10px;
+}
+
+.enrichment .title{
+    font-size: 1.1em;
+}
+
+.enrichment .img {
+    width: 28px;
+    padding-top: 2px;
+}
+
+.enrich_space {
+    width: 8px;
+}
+
+.enrich_pics {
+    padding: 0px 12px 4px 0px;
+}
+
+.enrich_pics img{
+    margin-right: 20px;
+    border: 1px solid #BFBDBE;
+}
+/* ------------------------------------------------------------------ */
+/* =NO HITS  */
+
+#no_hits {
+    margin: 20px 0 0 10px;
+}
+
+#no_hits p {
+    margin-top: 10px;
+}
+
+.col_list{
+    margin-top: 6px;
+}
+
+/* ------------------------------------------------------------------ */
+
+/* =SEARCH TIPS */
+
+#search_tips {
+    margin: 5px 0 0 10px;
+    font-style: italic;
+}
+
+.search_tips_header {
+    color: grey;
+    font-style:italic;
+    font-weight: bold;
+}
+
+/* ------------------------------------------------------------------ */
+
+
+/* = Map  */
+
+.mapcell{
+    width: 379px;
+    padding-top: 12px;
+}
+
+
+#bubblegum {
+    position: absolute;
+    width: 156px;
+    height: 106px;
+    background: url(../images/mapicon/boble.gif);
+    background-repeat: no-repeat;
+    z-index: 999;
+    display: none;
+ }
+
+
+#bubbletext {
+    padding: 12px;
+    text-align: left;
+    line-height: 12px;
+}
+
+#kart {
+    z-index: 1;
+}
+
+.alphabet{
+    color: #206CCC;
+    font-weight: bold;
+    margin-right: 8px;
+}

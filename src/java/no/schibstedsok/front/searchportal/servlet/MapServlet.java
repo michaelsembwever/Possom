@@ -37,12 +37,6 @@ import no.geodata.prod.webservices.arcweb.MapImageSoap;
  *
  */
 public class MapServlet extends HttpServlet {
-
-    /** Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
-     * @param request servlet request
-     * @param response servlet response
-     */
-
     //globale konstanter. Hvor bør disse settes?? xml fil.
     /*final static long zoomLevel1 = 10000; //kartskala ved zoom til ett punkt
     final static long zoomLevel2 = 20000;
@@ -55,17 +49,31 @@ public class MapServlet extends HttpServlet {
     //final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
     final static String datasource = "GEODATA.N50";
     final static String imgFormat = "png8";
-    
+
     int zoomnivaa = 2;//default zoomnivaa, brukes når ikke annet er angitt
-    
+
     CoordHelper coordHelper = new CoordHelper();
+    String token;
+    long tokenTimeStamp = 0;
+    private static final long TOKEN_REFRESH_INTERVAL = 10 * 60 * 1000;
+
 
     private String authenticate() throws RemoteException, ServiceException{
-        //hvordan sjekke om vi allerede har en valid token? sende eksisterende token med i requesten? Kjør auth.validateToken(token);
-         AuthenticationLocator authLocator = new AuthenticationLocator();
-         AuthenticationSoap auth = authLocator.getAuthenticationSoap();
-         String token = auth.getToken("schi", "zofren");
-         return token;
+
+        long current = System.currentTimeMillis();
+
+        if (current - tokenTimeStamp > TOKEN_REFRESH_INTERVAL) {
+            synchronized(this) {
+                if (current - tokenTimeStamp > TOKEN_REFRESH_INTERVAL) {
+                    AuthenticationLocator authLocator = new AuthenticationLocator();
+                    AuthenticationSoap auth = authLocator.getAuthenticationSoap();
+                    token = auth.getToken("schi", "zofren");
+                    tokenTimeStamp = System.currentTimeMillis();
+                }
+            }
+        }
+
+        return token;
     }
 
     private String getUrl(String token, MapEnvelope me) throws RemoteException, ServiceException{
@@ -93,17 +101,17 @@ public class MapServlet extends HttpServlet {
     }
 
     /**
-     * Metoden parser requesten fra kartklienten. Den kan motta to ulike typer sett med parametrer for å generere kart. 
+     * Metoden parser requesten fra kartklienten. Den kan motta to ulike typer sett med parametrer for å generere kart.
      * Enten i form av fire hjørnekoordinater, eller iform av et punkt samt målestokk.
-     */   
+     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-        
+
         String sUrl = new String();
         String token = new String();
-        boolean retriveMapError = false;        
+        boolean retriveMapError = false;
         MapEnvelope me = new MapEnvelope();
         boolean envelope = false;
         String maxX = request.getParameter("maxX");
@@ -125,14 +133,13 @@ public class MapServlet extends HttpServlet {
             if(!vMapPoints.isEmpty()){
 
                 String action = request.getParameter("action");
-                System.out.println("Innsendte action = "+action);
 
-                String temp = request.getParameter("zoom");               
+                String temp = request.getParameter("zoom");
                 if (temp != null)
                     zoomnivaa = Integer.parseInt(temp);
                 if(action.compareToIgnoreCase("viewone") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
                     MapPoint mp = (MapPoint) vMapPoints.get(0);
-                    me = coordHelper.makeEnvelope(mp, zoomnivaa);
+                    me = coordHelper.makeEnvelope(mp.getX(), mp.getY(), zoomnivaa);
                 }
                 else if(action.compareToIgnoreCase("viewmany") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
                     me = coordHelper.makeEnvelope(vMapPoints);
@@ -147,8 +154,8 @@ public class MapServlet extends HttpServlet {
         }
         catch (RemoteException remoteExcep){
 
-        }       
-        
+        }
+
         //redirecter resultat URL tilbake.
         if (!retriveMapError){
             response.sendRedirect(sUrl);

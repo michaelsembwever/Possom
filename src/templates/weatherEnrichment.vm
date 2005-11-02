@@ -1,0 +1,54 @@
+
+<!--
+
+    Show weather enrichment. Show weather for given location with icons (snow, rain etc) and link to storm
+    Author: Ola Marius Sagli
+
+    Author: $Author$
+    The following parameters are available through getField:
+
+        location
+        latitude
+        longitude
+        condition
+        conditionText
+        temperature
+        windspeedText
+        winddirection
+        datetime
+        datePart
+        timePart
+        url
+        example: $item.getField('location');
+-->
+
+<html>
+	<head>
+	</head>
+    #set ($contentTag = "skipme")
+    #if ($result.hitCount > 0)
+        #set ($contentTag = "weatherEnrichment")
+    #end
+<body bgcolor="#eeeeff">
+    <content tag="$contentTag">
+
+    <table class="enrichment">
+          #foreach ( $item in $result.results )
+            <tr>
+                <td valign="top" class="img">
+                    <img src="../images/enrichment/weather/weathericon_${item.getField('condition')}.jpg"
+                         alt="V&aeling;ret i $item.getField('location')" />
+                </td>
+                <td valign="top" class="title">
+                    <a href="$item.getField('url')">V&aelig;ret $item.getField('location')</a>
+                    <span class="timestamp"><span class="small">${item.getField('datePart')}</span> varsel som gjelder til <span class="small">${item.getField('timePart')}</span></span><br />
+                    $item.getField('temperature') &#176;C
+                    $item.getField('conditionText').
+                    $item.getField('windspeedText') fra $item.getField('winddirection').
+                </td>
+            </tr>
+           #end
+        </table>
+    </content>
+</body>
+</html>

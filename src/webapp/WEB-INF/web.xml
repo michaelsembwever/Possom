@@ -1,328 +1,136 @@
 <?xml version="1.0" encoding="UTF-8"?>
-   
+
 <web-app
-    xmlns="http://java.sun.com/xml/ns/j2ee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-    version="2.4">
-   
-  <description>Filter chains</description>
-  <display-name>Schibsted Filter chains</display-name>
+        xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+        version="2.4">
 
-  <!-- SITEMESH configuration -->
-  <filter>
-    <filter-name>sitemesh</filter-name>
-    <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
-  </filter>
-  <!-- SITMESH END -->
-  
- <!-- ACTIVE FILTERS -->
-  
- <filter>
- <filter-name>Entry Filter</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.EntryFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>5000</param-value>
-  </init-param> 
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-</filter>
+    <description>Filter chains</description>
+    <display-name>Schibsted Filter chains</display-name>
 
-<filter>
- <filter-name>Global Index</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.sensis.SensisFilter</filter-class>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-</filter>
+    <!-- CLICKSTREAM -->
+    <!-- UNCOMMENT TO ACTIVATE
+    <filter>
+     	<filter-name>clickstream</filter-name>
+     	<filter-class>com.opensymphony.clickstream.ClickstreamFilter</filter-class>
+    </filter>
 
-<filter>
- <filter-name>Global Collection document overview</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.sensis.DocCountFilter</filter-class>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-</filter>
+    <filter-mapping>
+       <filter-name>clickstream</filter-name>
+       <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
 
-<filter>
- <filter-name>Norwegian Collection document overview</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.DocCountFilter</filter-class>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-</filter>
+    <filter-mapping>
+       <filter-name>clickstream</filter-name>
+       <url-pattern>*.html</url-pattern>
+    </filter-mapping>
 
-<filter>
- <filter-name>Norwegian Webcrawl collection</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.WebCrawlFilter</filter-class>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-</filter>
+    <filter-mapping>
+       <filter-name>clickstream</filter-name>
+       <url-pattern>/search/</url-pattern>
+    </filter-mapping>
+    -->
+    <!-- END CLICKSTREAM -->
 
-<filter>
- <filter-name>Media collection</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.MediaCollectionFilter</filter-class>
-   <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-   <init-param>
-	<param-name>Filters to exclude</param-name>
-	<param-value>no.schibstedsok.front.searchportal.filters.tv.TvFilter</param-value>
-  </init-param>
-</filter>
+ 
 
-<filter>
- <filter-name>Wiki collection</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.fast.WikiFilter</filter-class>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>true</param-value>
-  </init-param>
-</filter>
-
-<filter>
- <filter-name>TV</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.tv.TvFilter</filter-class>
-  <init-param>
-	<param-name>standardPipeline</param-name>
-	<param-value>false</param-value>
-  </init-param>
-</filter>
+    <listener>
+       <listener-class>com.opensymphony.clickstream.ClickstreamListener</listener-class>
+    </listener>
+    <!-- SITEMESH configuration -->
+    <filter>
+        <filter-name>sitemesh</filter-name>
+        <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
+    </filter>
 
     <filter>
-        <filter-name>Moreover</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.fast.MoreoverFilter</filter-class>
+        <filter-name>md5ProtectParameters</filter-name>
+        <filter-class>no.schibstedsok.front.searchportal.filters.MD5ProtectedParametersFilter</filter-class>
         <init-param>
-            <param-name>standardPipeline</param-name>
-            <param-value>true</param-value>
+            <param-name>secret</param-name>
+            <param-value>S3SAM rockz</param-value>
+        </init-param>
+        <init-param>
+            <param-name>protectedParameters</param-name>
+            <param-value>companyId,personId</param-value>
         </init-param>
     </filter>
 
     <filter>
-        <filter-name>Nordic News</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.fast.NordicNewsFilter</filter-class>
+        <filter-name>CacheFilter</filter-name>
+        <filter-class>no.schibstedsok.front.searchportal.filters.SesamCacheFilter</filter-class>
         <init-param>
-            <param-name>standardPipeline</param-name>
-            <param-value>true</param-value>
+            <param-name>time</param-name>
+            <param-value>600</param-value>
+        </init-param>
+        <init-param>
+            <param-name>scope</param-name>
+            <param-value>application</param-value>
         </init-param>
     </filter>
 
-    <filter>
-        <filter-name>Companies</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.fast.CompaniesFilter</filter-class>
-        <init-param>
-            <param-name>max-wait-time</param-name>
-            <param-value>0</param-value>
-        </init-param>
-        <init-param>
-            <param-name>standardPipeline</param-name>
-            <param-value>false</param-value>
-        </init-param>
-    </filter>
-
-    <filter>
-        <filter-name>Persons</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.fast.FastPersonsFilter</filter-class>
-        <init-param>
-            <param-name>max-wait-time</param-name>
-            <param-value>0</param-value>
-        </init-param>
-        <init-param>
-            <param-name>standardPipeline</param-name>
-            <param-value>false</param-value>
-        </init-param>
-    </filter>
-
-    <filter>
-        <filter-name>Picture Search</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.picsearch.PicSearchFilter</filter-class>
-        <init-param>
-            <param-name>max-wait-time</param-name>
-            <param-value>0</param-value>
-        </init-param>
-        <init-param>
-            <param-name>standardPipeline</param-name>
-            <param-value>false</param-value>
-        </init-param>
-    </filter>
-
-
-
-<!-- Set up the filter chain, the filters are applied in the listed order -->
-<filter-mapping>
-    <filter-name>sitemesh</filter-name>
-    <url-pattern>/search/*</url-pattern>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Entry Filter</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Global Collection document overview</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Norwegian Collection document overview</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Global Index</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Norwegian Webcrawl collection</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Media collection</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Wiki collection</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>TV</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
+    <filter-mapping>
+        <filter-name>md5ProtectParameters</filter-name>
+        <url-pattern>/search/*</url-pattern>
+    </filter-mapping>
 <!--
-<filter-mapping>
-  <filter-name>Overture</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
+    <filter-mapping>
+        <filter-name>CacheFilter</filter-name>
+        <url-pattern>/search/*</url-pattern>
+    </filter-mapping>
 -->
 
     <filter-mapping>
-        <filter-name>Companies</filter-name>
+        <filter-name>sitemesh</filter-name>
         <url-pattern>/search/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
 
-    <filter-mapping>
-        <filter-name>Persons</filter-name>
-        <url-pattern>/search/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>Moreover</filter-name>
-        <url-pattern>/search/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>Nordic News</filter-name>
-        <url-pattern>/search/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>Picture Search</filter-name>
-        <url-pattern>/search/*</url-pattern>
-        <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
-    <!-- UNUSED FILTER MAPPINGS -->
-<!--
-<filter-mapping>
-  <filter-name>Google</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
-
-<filter-mapping>
-  <filter-name>Yahoo</filter-name>
-  <url-pattern>/search/*</url-pattern>
-  <dispatcher>REQUEST</dispatcher>
-</filter-mapping>
--->
-
-
-<!-- UNUSED FILTERS -->
-<!--
-<filter>
- <filter-name>Google</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.google.GoogleFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>7000</param-value>
-  </init-param>
-</filter>
-<filter>
- <filter-name>Yahoo</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.yahoo.YahooFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>0</param-value>
-  </init-param>
-</filter>
-<filter>
- <filter-name>Overture</filter-name>
- <filter-class>no.schibstedsok.front.searchportal.filters.overture.OvertureFilter</filter-class>
-  <init-param>
-	<param-name>max-wait-time</param-name>
-	<param-value>1500</param-value>
-  </init-param>
-</filter>
-
--->
+    <!-- SITMESH END -->
     <servlet>
-      <servlet-name>Nada BaseServlet</servlet-name>
-      <servlet-class>no.schibstedsok.front.searchportal.servlet.BaseServlet</servlet-class>
-      <load-on-startup>1</load-on-startup>
+        <servlet-name>search servlet</servlet-name>
+        <servlet-class>no.schibstedsok.front.searchportal.servlet.SearchServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+           <servlet-name>jsp</servlet-name>
+           <servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+        <init-param>
+            <param-name>development</param-name>
+            <param-value>false</param-value>
+        </init-param>
+        <init-param>
+            <param-name>reloading</param-name>
+            <param-value>false</param-value>
+        </init-param>
+
+        <load-on-startup>3</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-      <servlet-name>Nada BaseServlet</servlet-name>
-      <url-pattern>/search/*</url-pattern>
+        <servlet-name>search servlet</servlet-name>
+        <url-pattern>/search/*</url-pattern>
     </servlet-mapping>
 
     <servlet>
-      <servlet-name>MapServlet</servlet-name>
-      <servlet-class>no.schibstedsok.front.searchportal.servlet.MapServlet</servlet-class>
-      <load-on-startup>1</load-on-startup>
+        <servlet-name>MapServlet</servlet-name>
+        <servlet-class>no.schibstedsok.front.searchportal.servlet.MapServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
-      <servlet-name>MapServlet</servlet-name>
-      <url-pattern>/map/*</url-pattern>
+        <servlet-name>MapServlet</servlet-name>
+        <url-pattern>/map/*</url-pattern>
     </servlet-mapping>
 
+    <welcome-file-list>
+        <welcome-file>/index.jsp</welcome-file>
+    </welcome-file-list>
 
-  <welcome-file-list>
-    <welcome-file>/index.jsp</welcome-file>
-  </welcome-file-list>
-
-  <session-config>
-    <session-timeout>15</session-timeout>
-    <!-- 15 minutes -->
-  </session-config>
+    <session-config>
+        <session-timeout>15</session-timeout>
+        <!-- 15 minutes -->
+    </session-config>
 
 </web-app>
 

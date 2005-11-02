@@ -26,10 +26,12 @@
 
     <siteAddress>login.osl.basefarm.net</siteAddress>
 
-    <siteDirectory>/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/admin/front/search-front-html</siteDirectory>
+    <siteDirectory>
+        /www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/admin/front/search-front-html</siteDirectory>
 
     <repository>
-        <connection>scm:cvs:ext:${maven.user}@${schsok.cvshost}:/www/schibstedsok/versys/cvs:admin/front/search-front-html</connection>
+        <connection>
+            scm:cvs:ext:${maven.user}@${schsok.cvshost}:/www/schibstedsok/versys/cvs:admin/front/search-front-html</connection>
     </repository>
 
 
@@ -45,6 +47,17 @@
     </developers>
 
     <dependencies>
+
+        <!-- Clickstream -->
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>clickstream</artifactId>
+            <version>1.0.3</version>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
 
         <!-- Maven plugins -->
         <dependency>
@@ -90,11 +103,28 @@
         </dependency>
 
         <dependency>
-            <id>commons-lang</id>
-            <version>2.0</version>
+            <id>commons-codec</id>
+            <version>1.3</version>
             <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <id>commons-collections</id>
+            <version>3.1</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <id>commons-lang</id>
+            <version>2.0</version>
+            <type>jar</type>
+            <properties> <war.bundle>true</war.bundle>
             </properties>
         </dependency>
 
@@ -103,13 +133,22 @@
             <version>2.0</version>
             <type>jar</type>
             <properties>
-                <war.bundle>false</war.bundle>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <id>struts</id>
+            <version>1.2.7</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
             </properties>
         </dependency>
 
         <dependency>
             <groupId>velocity</groupId>
-            <artifactId>velocity-dep</artifactId>
+            <artifactId>velocity</artifactId>
             <version>1.4</version>
             <type>jar</type>
             <properties>
@@ -135,6 +174,13 @@
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>jep</groupId>
+            <artifactId>jep</artifactId>
+            <version>2.24</version>
+            <properties><war.bundle>true</war.bundle></properties>
         </dependency>
 
         <dependency>
@@ -169,6 +215,15 @@
             <id>sitemesh</id>
             <version>2.2.1</version>
             <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>oscache</artifactId>
+            <version>2.2-rc</version>
             <properties>
                 <war.bundle>true</war.bundle>
             </properties>
@@ -215,8 +270,28 @@
             </properties>
         </dependency>
 
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>2.0_01_pd</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
+        <dependency>
+            <groupId>xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.1.2</version>
+            <type>jar</type>
+            <properties>
+                <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+
         <!-- Schibsted Sok components -->
-        
+
         <!-- build only, is deployed separate -->
         <dependency>
             <groupId>schibstedsok</groupId>
@@ -227,7 +302,7 @@
                 <war.bundle>false</war.bundle>
             </properties>
         </dependency>
-        
+
         <!-- build only, should be deployed as Hibernate SAR -->
         <dependency>
             <groupId>schibstedsok</groupId>
@@ -257,8 +332,12 @@
             </properties>
         </dependency>
 
-
-
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <type>jar</type>
+        </dependency> 
     </dependencies>
 
     <build>

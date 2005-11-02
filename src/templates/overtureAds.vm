@@ -1,0 +1,25 @@
+<html>
+<head>
+    <meta name="decorator" content="maindecorator" />
+</head>
+
+<body>
+
+
+<content tag="ads">
+
+    #if ($result.getResults().size() > 0)
+        <div id="ads">
+            <div id="ads_header">Annons&#248rer:</div>
+            #foreach ($item in $result.getResults())
+                <p>
+                    <a href="$item.getField('clickURL')">$item.getField('title')</a><br />
+                    <span class="ads_desc">$item.getField('description')</span><br />
+                    <span class="sitehost">$item.getField('siteHost')</span>
+                </p>
+            #end
+        </div>
+    #end
+</content>
+</body>
+</html>

@@ -1,0 +1,1124 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<tabs>
+    <searchModes>
+
+        <!-- Magic search -->
+        <entry>
+            <string>d</string>
+            <no.schibstedsok.front.searchportal.configuration.SearchMode>
+                <searchCommandExecutor
+                        class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
+                <key>d</key>
+
+		<!-- For counting news only -->
+                <searchConfigurations class="list">
+                    <!-- Sources navigation search -->
+                    <FastSearch>
+                        <collections>
+                            <string>retriever</string>
+                            <string>moreover</string>
+                            <string>retrievernordic</string>
+                            <string>mano</string>
+                        </collections>
+                        <queryServerURL>http://localhost:15100</queryServerURL>
+                        <lemmatizeEnabled>true</lemmatizeEnabled>
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <resultView>urls</resultView>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>newsPrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                        </queryTransformers>
+                        <navigators>
+                            <entry>
+                                <string>sources</string>
+                                <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                    <field>contentsource</field>
+                                    <name>contentsourcenavigator</name>
+                                    <displayName>Kilder</displayName>
+                                </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                            </entry>
+                        </navigators>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.SumFastModifiers>
+                                <navigatorName>sources</navigatorName>
+                                <targetModifier>Nyhetss&#248;k</targetModifier>
+                                <modifierNames class="list">
+                                    <string>Norske nyheter</string>
+                                    <string>Nordiske nyheter</string>
+                                    <string>Internasjonale nyheter</string>
+                                    <string>Mediearkivet</string>
+                                </modifierNames>
+                            </no.schibstedsok.front.searchportal.result.SumFastModifiers>
+                            <no.schibstedsok.front.searchportal.result.ContentSourceCollector/>
+                        </resultHandlers>
+
+
+                        <clusteringEnabled>false</clusteringEnabled>
+                        <name>mainPageSourceNavigator</name>
+                        <pageSize>10</pageSize>
+                        <resultFields class="list">
+                        </resultFields>
+                        <resultsToReturn>1</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+
+                    <!-- Norwegian web crawl -->
+                    <FastSearch>
+                        <queryServerURL>http://localhost:15100</queryServerURL>
+                        <collections class="list">
+                            <string>webcrawlno1</string>
+                            <string>webcrawlno1deep1</string>
+                            <string>webcrawlno2</string>
+                            <string>robots</string>
+                        </collections>
+                        <offensiveScoreLimit>35</offensiveScoreLimit>
+                        <clusteringEnabled>false</clusteringEnabled>
+                        <collapsingEnabled>true</collapsingEnabled>
+                        <keywordClusteringEnabled>false</keywordClusteringEnabled>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <spellcheckEnabled>true</spellcheckEnabled>
+                        <navigators/>
+                        <name>defaultSearch</name>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
+                                <minimumScore>-1</minimumScore>
+                                <maxSuggestions>3</maxSuggestions>
+                                <maxDistance>0</maxDistance>
+                                <muchBetter>5</muchBetter>
+                                <longQuery>2</longQuery>
+                                <veryLongQuery>3</veryLongQuery>
+                                <maxSuggestionsForLongQueries>2</maxSuggestionsForLongQueries>
+                            </no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
+                            <!-- Prints out certain file formats after title -->
+                            <no.schibstedsok.front.searchportal.result.FindFileFormat/>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler></no.schibstedsok.front.searchportal.result.VelocityResultHandler>
+                        </resultHandlers>
+                        <pageSize>10</pageSize>
+
+                        <resultFields class="list">
+                            <string>title</string>
+                            <string>url</string>
+                            <string>body</string>
+
+                        </resultFields>
+                        <resultsToReturn>10</resultsToReturn>
+                        <isPagingEnabled>true</isPagingEnabled>
+                    </FastSearch>
+
+                    <!-- Global crawl   -->
+                    <FastSearch>
+                        <queryServerURL>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL>
+                        <spamScoreLimit>10</spamScoreLimit>
+                         <collapsingEnabled>true</collapsingEnabled>
+                         <clusteringEnabled>false</clusteringEnabled>
+                         <lemmatizeEnabled>false</lemmatizeEnabled>
+                         <spellcheckEnabled>false</spellcheckEnabled>
+                         <name>globalSearch</name>
+                         <resultHandlers>
+                             <no.schibstedsok.front.searchportal.result.FieldChooser>
+                                 <targetField>title</targetField>
+                                 <fields class="list">
+                                     <string>title</string>
+                                     <string>url</string>
+                                 </fields>
+                             </no.schibstedsok.front.searchportal.result.FieldChooser>
+                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                         </resultHandlers>
+                         <pageSize>10</pageSize>
+                         <resultFields class="list">
+                             <string>title</string>
+                             <string>body</string>
+                             <string>url</string>
+                         </resultFields>
+                         <resultsToReturn>10</resultsToReturn>
+                         <isPagingEnabled>true</isPagingEnabled>
+                    </FastSearch>
+                    <!-- Global crawl   -->
+
+                    <FastSearch>
+                        <rule>globalSearch</rule>
+                        <ruleThreshold>1</ruleThreshold>
+                        <queryServerURL>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL>
+                        <spamScoreLimit>10</spamScoreLimit>
+                         <collapsingEnabled>true</collapsingEnabled>
+                         <clusteringEnabled>false</clusteringEnabled>
+                         <lemmatizeEnabled>false</lemmatizeEnabled>
+                         <spellcheckEnabled>false</spellcheckEnabled>
+                         <name>globalSearchEnrichment</name>
+                         <resultHandlers>
+                             <no.schibstedsok.front.searchportal.result.FieldChooser>
+                                 <targetField>title</targetField>
+                                 <fields class="list">
+                                     <string>title</string>
+                                     <string>url</string>
+                                 </fields>
+                             </no.schibstedsok.front.searchportal.result.FieldChooser>
+                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                         </resultHandlers>
+                         <pageSize>10</pageSize>
+                         <resultFields class="list">
+                             <string>title</string>
+                             <string>body</string>
+                             <string>url</string>
+                         </resultFields>
+                         <resultsToReturn>3</resultsToReturn>
+                         <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+
+                    <!-- PIC SEARCH -->
+                    <PicSearch>
+                        <rule>picSearch</rule>
+                        <ruleThreshold>1</ruleThreshold>
+                        <isAlwaysRunEnabled>true</isAlwaysRunEnabled>
+                        <name>picSearchEnrichment</name>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>picturePrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                                <modifierName>Bildes&#248;k</modifierName>
+                            </no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <resultFields class="list">
+                            <string>thumb_url</string>
+                            <string>page_url</string>
+                            <string>thumb_width</string>
+                            <string>thumb_height</string>
+                            <string>height</string>
+                            <string>width</string>
+                            <string>filesize</string>
+                        </resultFields>
+                        <resultsToReturn>3</resultsToReturn>
+                    </PicSearch>
+
+                    <FastSearch>
+                        <rule>wikipedia</rule>
+                        <ruleThreshold>20</ruleThreshold>
+                        <queryServerURL>http://localhost:15100</queryServerURL>
+                        <collections class="list">
+                            <string>wikipedia</string>
+                        </collections>
+                        <resultView>wikipedia</resultView>
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <spellcheckEnabled>false</spellcheckEnabled>
+                        <sortBy>standard</sortBy>
+                        <navigators/>
+                        <name>wikipedia</name>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>wikipediaPrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <resultFields class="list">
+                            <string>wikititle</string>
+                            <string>url</string>
+                            <string>wikibody</string>
+                        </resultFields>
+                        <resultsToReturn>1</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+
+                    <FastSearch>
+                        <rule>yellowPages</rule>
+                        <ruleThreshold>20</ruleThreshold>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <isAlwaysRunEnabled>true</isAlwaysRunEnabled>
+                        <sortBy>yellowpages2 +ypnavn2</sortBy>
+                        <lemmatizeEnabled>true</lemmatizeEnabled>
+                        <name>yellowPagesEnrichment</name>
+                        <resultView>yellowpages</resultView>
+                        <qtPipeline>yellow</qtPipeline>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>cataloguePrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                            <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
+                            <no.schibstedsok.front.searchportal.query.YellowQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.PhoneNumberChooser/>
+                            <!-- format phonenumbers -->
+                            <no.schibstedsok.front.searchportal.result.PhoneNumberFormatter/>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                            <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                                <modifierName>Bedriftss&#248;k</modifierName>
+                            </no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                        </resultHandlers>
+                        <resultFields class="list">
+                            <string>ypnavn2</string>
+                            <string>ypadresse</string>
+                            <string>ywpostnr</string>
+                            <string>ywpoststed</string>
+                            <string>yptelefon</string>
+                            <string>ypandretelefoner</string>
+                            <string>recordid</string>
+                            <string>ypmobiltelefon</string>
+                            <string>xcoord</string>
+                            <string>ycoord</string>
+                        </resultFields>
+                        <collections class="list">
+                            <string>yellow</string>
+                        </collections>
+                        <resultsToReturn>3</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+
+                    <FastSearch>
+                        <rule>whitePages</rule>
+                        <ruleThreshold>5</ruleThreshold>
+                        <isAlwaysRunEnabled>true</isAlwaysRunEnabled>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <collections class="list">
+                            <string>white</string>
+                        </collections>
+                        <resultView>whitepages</resultView>
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <spellcheckEnabled>false</spellcheckEnabled>
+                        <sortBy>whitepages +wpfornavn +wpetternavn</sortBy>
+                        <name>whitePagesEnrichment</name>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>cataloguePrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                            <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
+                            <no.schibstedsok.front.searchportal.query.WhiteQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <!-- format phonenumbers -->
+                            <no.schibstedsok.front.searchportal.result.PhoneNumberFormatter/>
+                            <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                                <modifierName>Persons&#248;k</modifierName>
+                            </no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <pageSize>10</pageSize>
+                        <resultFields class="list">
+                            <string>wpfornavn</string>
+                            <string>wpetternavn</string>
+                            <string>wpmellomnavn</string>
+                            <string>wptelefon</string>
+                            <string>wpadresse</string>
+                            <string>ywpostnr</string>
+                            <string>ywpoststed</string>
+                            <string>wpmobiltelefon</string>
+                            <string>recordid</string>
+                            <string>xcoord</string>
+                            <string>ycoord</string>
+                        </resultFields>
+                        <resultsToReturn>3</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+
+                    <FastSearch>
+                        <rule>news</rule>
+                        <ruleThreshold>20</ruleThreshold>
+                        <collections class="list">
+                            <string>retriever</string>
+                        </collections>
+                        <sortBy>retrievernews +docdatetime</sortBy>
+                        <resultView>retriever</resultView>
+                        <queryServerURL>http://localhost:15100</queryServerURL>
+                        <!-- isRunEmptyQuery>true</isRunEmptyQuery -->
+                        <collapsingEnabled>true</collapsingEnabled>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <spellcheckEnabled>false</spellcheckEnabled>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>newsPrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                        </queryTransformers>
+                        <navigators/>
+                        <name>norwegianNewsEnrichment</name>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.AgeCalculatorResultHandler>
+                                <sourceField>docdatetime</sourceField>
+                                <targetField>age</targetField>
+                            </no.schibstedsok.front.searchportal.result.AgeCalculatorResultHandler>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <resultFields class="list">
+                            <string>newssource</string>
+                            <string>newsbody</string>
+                            <string>newstitle</string>
+                            <string>url</string>
+                            <string>docdatetime</string>
+                        </resultFields>
+                        <resultsToReturn>3</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+
+
+
+                    <!--  ***********************************************************  -->
+                    <!--          TV Enrichment                                        -->
+                    <!--  ***********************************************************  -->
+                    <FastSearch>
+                        <!-- Tekstanalyse regel (AnalysisRule.java) -->
+                        <rule>tv</rule>
+                        <!-- Minium poeng for å kunne vises som berikelse -->
+                        <ruleThreshold>30</ruleThreshold>
+                        <!-- Søk i Fast Collection -->
+                        <collections class="list">
+                            <string>tv</string>
+                        </collections>
+                        <!-- Sorter, Default: ?? -->
+                        <sortBy>+docdatetime</sortBy>
+                        <!-- Connect til denne serveren -->
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <!-- Fast: Grupper treff -->
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <!-- Fast: Lemmatiz (Fonetisk)-->
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <!-- Fast: spellcheck-->
+                        <spellcheckEnabled>false</spellcheckEnabled>
+                        <!-- Fast: Ulke drill down -->
+                        <navigators/>
+                        <!-- Template file - .vm -->
+                        <name>tvEnrich</name>
+                        <!-- Populerer resultat, feks finner riktig template (velocity) -->
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>tvPrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+
+                            <no.schibstedsok.front.searchportal.query.TvQueryTransformer/>
+
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.TvEnrichmentDateFormatHandler>
+                                 <sourceField>date</sourceField>
+                                 <targetField>hour</targetField>
+                            </no.schibstedsok.front.searchportal.result.TvEnrichmentDateFormatHandler>
+
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <!-- Bruk kun disse feltene -->
+                        <resultFields class="list">
+                            <!-- Title of program -->
+                            <string>title AS title</string>
+                            <!-- Uniq ID of program -->
+                            <string>url AS id</string>
+                            <!-- Start time -->
+                            <string>docdatetime AS date</string>
+                            <!-- Channel -->
+                            <string>generic1 AS channel</string>
+                            <!-- Category -->
+                            <string>generic3 AS category</string>
+                        </resultFields>
+                        <!-- Størrelse på resultat -->
+                        <resultsToReturn>3</resultsToReturn>
+                        <!-- Neste 10 treff ja/nei-->
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+
+                    <!--  ************************************************************  -->
+                    <!--          Weather Enrichment                                    -->
+                    <!--  ************************************************************  -->
+                    <FastSearch>
+                        <!-- Tekstanalyse regel (AnalysisRule.java) -->
+                        <rule>weather</rule>
+                        <!-- Minium poeng for å kunne vises som berikelse -->
+                        <ruleThreshold>30</ruleThreshold>
+                        <!-- Søk i Fast Collection -->
+                        <collections class="list">
+                            <string>weather</string>
+                        </collections>
+                        <!-- Sorter, D?efault: ?? -->
+                        <sortBy/>
+
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>weatherPrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                        </queryTransformers>
+                        <!-- Fast: Hent kun disse feltene -->
+                        <!-- Connect til denne serveren -->
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <!-- Fast: Grupper treff -->
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <!-- Fast: Lemmatiz (Fonetisk)-->
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <!-- Fast: spellcheck-->
+                        <spellcheckEnabled>false</spellcheckEnabled>
+                        <!-- Fast: Ulke drill down -->
+                        <navigators/>
+                        <!-- Template file - .vm -->
+                        <name>weatherEnrichment</name>
+                        <!-- Populerer resultat, feks finner riktig template (velocity) -->
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.WeatherDateHandler>
+                                <sourceField>datetime</sourceField>
+                                <targetField>/dev/null</targetField>
+                            </no.schibstedsok.front.searchportal.result.WeatherDateHandler>
+                            <no.schibstedsok.front.searchportal.result.WeatherCelciusHandler2>
+                                <sourceField>temperature</sourceField>
+                                <targetField>temperature</targetField>
+                            </no.schibstedsok.front.searchportal.result.WeatherCelciusHandler2>
+
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+
+                        </resultHandlers>
+                        <!-- Bruk kun disse feltene -->
+                        <resultFields class="list">
+                            <!-- Name of location-->
+                            <string>wpadresse AS location</string>
+                            <!-- Lattitue-->
+                            <string>flat AS latitude</string>
+                            <!-- Lonitute-->
+                            <string>flon AS longitude</string>
+                            <!-- Symbol -->
+                            <string>generic2 AS condition</string>
+                            <!-- Symbol -->
+                            <string>generic3 AS conditionText</string>
+                            <!-- Temperatur-->
+                            <string>ypadresse AS temperature</string>
+                            <!-- Windspeed-->
+                            <string>yppostnr2 AS windspeedText</string>
+                            <!-- Winddirection-->
+                            <string>yppoststed2 AS winddirection</string>
+                            <!--Datetime -->
+                            <string>dtgeneric1 AS datetime</string>
+                            <!-- Link -->
+                            <string>ypurl AS url</string>
+                        </resultFields>
+                        <!-- Størrelse på resultat -->
+                        <resultsToReturn>1</resultsToReturn>
+                        <!-- Neste 10 treff ja/nei-->
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+
+                    <OverturePPCSearch>
+                        <name>overtureAds</name>
+                        <resultsToReturn>3</resultsToReturn>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                    </OverturePPCSearch>
+
+                    <MathExpression>
+                        <rule>mathExpression</rule>
+                        <ruleThreshold>400</ruleThreshold>
+                        <name>mathExpression</name>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                    </MathExpression>
+
+                </searchConfigurations>
+            </no.schibstedsok.front.searchportal.configuration.SearchMode>
+        </entry>
+
+        <entry>
+            <string>w</string>
+            <no.schibstedsok.front.searchportal.configuration.SearchMode>
+                <searchCommandExecutor
+                        class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
+                <key>w</key>
+                <searchConfigurations class="list">
+                    <FastSearch>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <collections class="list">
+                            <string>white</string>
+                        </collections>
+                        <navigators>
+                            <entry>
+                                <string>geographic</string>
+                                <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                    <name>ywfylkesnavigator</name>
+                                    <field>ywfylke</field>
+                                    <displayName>Fylker</displayName>
+                                    <childNavigator>
+                                        <name>ywkommunenavigator</name>
+                                        <field>ywkommune</field>
+                                        <displayName>Kommuner</displayName>
+                                        <childNavigator>
+                                            <name>ywpoststednavigator</name>
+                                            <field>ywpoststed</field>
+                                            <displayName>Poststed</displayName>
+                                            <childNavigator>
+                                                <name>ywbydelnavigator</name>
+                                                <field>ywbydel</field>
+                                                <displayName>Bydel</displayName>
+                                                <childNavigator>
+                                                    <name>ywstedsnavnnavigator</name>
+                                                    <field>ywstedsnavn</field>
+                                                    <displayName>Stedsnavn</displayName>
+                                                </childNavigator>
+                                            </childNavigator>
+                                        </childNavigator>
+                                    </childNavigator>
+                                </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                            </entry>
+                            <entry>
+                                <string>lastName</string>
+                                <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                    <displayName>Alle etternavn</displayName>
+                                    <field>wpetternavn</field>
+                                    <name>wpetternavnnavigator</name>
+                                </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                            </entry>
+                            <entry>
+                                <string>firstName</string>
+                                <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                    <field>wpfornavn</field>
+                                    <name>wpfornavnnavigator</name>
+                                    <displayName>Alle fornavn</displayName>
+                                </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                            </entry>
+                        </navigators>
+                        <qtPipeline>white</qtPipeline>
+                        <resultView>whitepages</resultView>
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <spellcheckEnabled>true</spellcheckEnabled>
+                        <sortBy>whitepages +wpfornavn +wpetternavn</sortBy>
+                        <name>whitePages</name>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>cataloguePrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                            <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
+                            <no.schibstedsok.front.searchportal.query.WhiteQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.MultiValuedFieldCollector>
+                                <fieldMap>
+                                    <entry>
+                                        <string>wptelefon</string>
+                                        <string>manyPhoneNumbers</string>
+                                    </entry>
+                                    <entry>
+                                        <string>wpmobiltelefon</string>
+                                        <string>manyMobilePhoneNumbers</string>
+                                    </entry>
+                                </fieldMap>
+                            </no.schibstedsok.front.searchportal.result.MultiValuedFieldCollector>
+
+                            <no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
+                                <minimumScore>-1</minimumScore>
+                                <maxSuggestions>3</maxSuggestions>
+                                <maxDistance>0</maxDistance>
+                                <muchBetter>5</muchBetter>
+                                <longQuery>2</longQuery>
+                                <veryLongQuery>3</veryLongQuery>
+                                <maxSuggestionsForLongQueries>2</maxSuggestionsForLongQueries>
+                            </no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <pageSize>10</pageSize>
+                        <resultFields class="list">
+                            <string>wpfornavn</string>
+                            <string>wpetternavn</string>
+                            <string>wpmellomnavn</string>
+                            <string>wptelefon</string>
+                            <string>wpadresse</string>
+                            <string>ywpostnr</string>
+                            <string>ywpoststed</string>
+                            <string>wpmobiltelefon</string>
+                            <string>recordid</string>
+                            <string>xcoord</string>
+                            <string>ycoord</string>
+                        </resultFields>
+                        <resultsToReturn>10</resultsToReturn>
+                        <isPagingEnabled>true</isPagingEnabled>
+                    </FastSearch>
+                    <FastSearch>
+                        <collections>
+                            <string>yellow</string>
+                        </collections>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <lemmatizeEnabled>true</lemmatizeEnabled>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>cataloguePrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                            <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
+                            <no.schibstedsok.front.searchportal.query.YellowQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                                <modifierName>Bedriftss&#248;k</modifierName>
+                            </no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                        </resultHandlers>
+                        <name>whiteYelloweSourceNavigator</name>
+                        <pageSize>10</pageSize>
+                        <resultFields class="list">
+                        </resultFields>
+                        <resultsToReturn>1</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+                </searchConfigurations>
+            </no.schibstedsok.front.searchportal.configuration.SearchMode>
+        </entry>
+
+
+	<!-- News Search -->
+        <entry>
+             <string>m</string>
+             <no.schibstedsok.front.searchportal.configuration.SearchMode>
+                 <searchCommandExecutor
+                         class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
+                 <key>m</key>
+		<!-- Count News results, Ignoring contentsource -->
+                 <searchConfigurations class="list">
+                     <FastSearch>
+                         <ignoreNavigationEnabled>true</ignoreNavigationEnabled>
+                         <collections class="list">
+                             <string>retriever</string>
+                             <string>moreover</string>
+                             <string>retrievernordic</string>
+                             <string>mano</string>
+                         </collections>
+                         <queryTransformers>
+                             <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                 <prefixes class="list">
+                                     <string>newsPrefix</string>
+                                 </prefixes>
+                             </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                         </queryTransformers>
+                         <navigators>
+                             <entry>
+                                 <string>sources</string>
+                                 <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                     <field>contentsource</field>
+                                     <name>contentsourcenavigator</name>
+                                     <displayName>Alle nyhetskilder</displayName>
+                                 </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                             </entry>
+                         </navigators>
+                         <!-- isRunEmptyQuery>true</isRunEmptyQuery -->
+                         <clusteringEnabled>false</clusteringEnabled>
+                         <queryServerURL>http://localhost:15100</queryServerURL>
+                         <collapsingEnabled>true</collapsingEnabled>
+                         <lemmatizeEnabled>false</lemmatizeEnabled>
+                         <spellcheckEnabled>false</spellcheckEnabled>
+                         <name>newsSearchNavigator</name>
+                         <resultHandlers>
+                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                         </resultHandlers>
+                         <resultsToReturn>1</resultsToReturn>
+                         <isPagingEnabled>true</isPagingEnabled>
+                     </FastSearch>
+		     <!-- Actual newssearch -->
+                     <FastSearch>
+                         <collections class="list">
+
+                             <string>retriever</string>
+                             <string>retrievernordic</string>
+                             <string>moreover</string>
+                             <string>mano</string>
+                         </collections>
+
+                         <navigators>
+                             <entry>
+                                 <string>newspaperNames</string>
+                                 <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                     <field>ywpopnavn</field>
+                                     <name>ywpopnavnnavigator</name>
+                                     <displayName>Kilder</displayName>
+                                 </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                             </entry>
+                             <entry>
+                                 <string>sources</string>
+                                 <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                     <field>contentsource</field>
+                                     <name>contentsourcenavigator</name>
+                                     <displayName>Alle nyhetskilder</displayName>
+                                 </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                             </entry>
+                         </navigators>
+
+                         <queryTransformers>
+                             <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                 <prefixes class="list">
+                                     <string>newsPrefix</string>
+                                 </prefixes>
+                             </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                         </queryTransformers>
+
+                         <sortBy>retrievernews +docdatetime</sortBy>
+                         <clusteringEnabled>false</clusteringEnabled>
+                         <queryServerURL>http://localhost:15100</queryServerURL>
+                         <!-- isRunEmptyQuery>true</isRunEmptyQuery -->
+                         <collapsingEnabled>true</collapsingEnabled>
+                         <lemmatizeEnabled>false</lemmatizeEnabled>
+                         <spellcheckEnabled>false</spellcheckEnabled>
+                         <name>newsSearch</name>
+                         <resultHandlers>
+                         <no.schibstedsok.front.searchportal.result.AgeCalculatorResultHandler>
+                                 <sourceField>docdatetime</sourceField>
+                                 <targetField>age</targetField>
+                             </no.schibstedsok.front.searchportal.result.AgeCalculatorResultHandler>
+                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                         </resultHandlers>
+                         <pageSize>10</pageSize>
+                         <resultFields class="list">
+                             <string>newsbodyteaser</string>
+                             <string>newsauthor</string>
+                             <string>manorawbody</string>
+                             <string>newssource</string>
+                             <string>newsbody</string>
+                             <string>newstitle</string>
+                             <string>url</string>
+                             <string>docdatetime</string>
+                             <string>contentsource</string>
+                             <string>collection</string>
+                         </resultFields>
+
+                         <resultsToReturn>10</resultsToReturn>
+                         <isPagingEnabled>true</isPagingEnabled>
+                     </FastSearch>
+
+                     <OverturePPCSearch>
+                        <name>overtureAds</name>
+                        <resultsToReturn>3</resultsToReturn>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                     </OverturePPCSearch>
+                 </searchConfigurations>
+             </no.schibstedsok.front.searchportal.configuration.SearchMode>
+         </entry>
+
+        <!-- Yellowpages -->
+        <entry>
+            <string>y</string>
+            <no.schibstedsok.front.searchportal.configuration.SearchMode>
+                <searchCommandExecutor
+                        class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
+                <key>y</key>
+                <searchConfigurations class="list">
+                    <FastSearch>
+                        <resultView>yellowpages</resultView>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <lemmatizeEnabled>true</lemmatizeEnabled>
+                        <spellcheckEnabled>false</spellcheckEnabled>
+                        <qtPipeline>yellow</qtPipeline>
+                        <navigators>
+                            <entry>
+                                <string>trade</string>
+                                <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                    <displayName>Alle bransjer</displayName>
+                                    <field>ypbransje</field>
+                                    <name>ypbransjenavigator</name>
+                                </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                            </entry>
+                            <entry>
+                                <string>geographic</string>
+                                <no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                                    <name>ywfylkesnavigator</name>
+                                    <field>ywfylke</field>
+                                    <displayName>Fylker</displayName>
+                                    <childNavigator>
+                                        <name>ywkommunenavigator</name>
+                                        <field>ywkommune</field>
+                                        <displayName>Kommuner</displayName>
+                                        <childNavigator>
+                                            <name>ywpoststednavigator</name>
+                                            <field>ywpoststed</field>
+                                            <displayName>Poststed</displayName>
+                                            <childNavigator>
+                                                <name>ywbydelnavigator</name>
+                                                <field>ywbydel</field>
+                                                <displayName>Bydel</displayName>
+                                                <childNavigator>
+                                                    <name>ywstedsnavnnavigator</name>
+                                                    <field>ywstedsnavn</field>
+                                                    <displayName>Stedsnavn</displayName>
+                                                </childNavigator>
+                                            </childNavigator>
+                                        </childNavigator>
+                                    </childNavigator>
+                                </no.schibstedsok.front.searchportal.configuration.FastNavigator>
+                            </entry>
+                        </navigators>
+                        <name>yellowPages</name>
+                        <sortBy>yellowpages2 +ypnavn2</sortBy>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>cataloguePrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                            <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
+                            <no.schibstedsok.front.searchportal.query.YellowQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.PhoneNumberChooser/>
+                            <!-- format phonenumbers -->
+                            <no.schibstedsok.front.searchportal.result.PhoneNumberFormatter/>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <pageSize>10</pageSize>
+                        <resultFields class="list">
+                            <string>ypnavn2</string>
+                            <string>ypadresse</string>
+                            <string>ywpostnr</string>
+                            <string>ywpoststed</string>
+                            <string>yptelefon</string>
+                            <string>ypandretelefoner</string>
+                            <string>recordid</string>
+                            <string>ypmobiltelefon</string>
+                            <string>xcoord</string>
+                            <string>ycoord</string>
+                        </resultFields>
+                        <collections class="list">
+                            <string>yellow</string>
+                        </collections>
+                        <resultsToReturn>10</resultsToReturn>
+                        <isPagingEnabled>true</isPagingEnabled>
+                    </FastSearch>
+
+                    <FastSearch>
+                        <collections>
+                            <string>white</string>
+                        </collections>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>cataloguePrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                            <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
+                            <no.schibstedsok.front.searchportal.query.WhiteQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                                <modifierName>Persons&#248;k</modifierName>
+                            </no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                        </resultHandlers>
+                        <name>whiteYelloweSourceNavigator</name>
+                        <pageSize>10</pageSize>
+                        <resultFields class="list">
+                        </resultFields>
+                        <resultsToReturn>1</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+                </searchConfigurations>
+            </no.schibstedsok.front.searchportal.configuration.SearchMode>
+        </entry>
+
+        <entry>
+            <string>yip</string>
+            <no.schibstedsok.front.searchportal.configuration.SearchMode>
+                <searchCommandExecutor
+                        class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
+                <key>yip</key>
+                <parentMode>y</parentMode>
+                <searchConfigurations class="list">
+                    <FastSearch>
+                        <useParameterAsQuery>companyId</useParameterAsQuery>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <spellcheckEnabled>false</spellcheckEnabled>
+                        <navigators/>
+                        <sortBy>yellowpages +ypnavn2</sortBy>
+                        <name>yellowInfopage</name>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.InfopageQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.PhoneNumberChooser/>
+                            <!-- format phonenumbers -->
+                            <no.schibstedsok.front.searchportal.result.PhoneNumberFormatter/>
+                            <!-- splits ypbransje to category links -->
+                            <no.schibstedsok.front.searchportal.result.CategorySplitter/>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <resultFields class="list">
+                            <string>ypnavn2</string>
+                            <string>ypadresse</string>
+                            <string>ywpostnr</string>
+                            <string>ywpoststed</string>
+                            <string>yptelefon</string>
+                            <string>ypandretelefoner</string>
+                            <string>recordid</string>
+                            <string>ypmobiltelefon</string>
+                            <string>xcoord</string>
+                            <string>ycoord</string>
+                            <string>yptelefax</string>
+                            <string>yporgnummer</string>
+                            <string>ypfirmatype</string>
+                            <string>ypbransje</string>
+                        </resultFields>
+                        <collections class="list">
+                            <string>yellow</string>
+                        </collections>
+                        <resultsToReturn>1</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+                    <FastSearch>
+                        <collections>
+                            <string>white</string>
+                        </collections>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.WhiteQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                                <modifierName>Persons&#248;k</modifierName>
+                            </no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                        </resultHandlers>
+                        <name>whiteYelloweSourceNavigator</name>
+                        <pageSize>10</pageSize>
+                        <resultFields class="list">
+                        </resultFields>
+                        <resultsToReturn>1</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+                </searchConfigurations>
+            </no.schibstedsok.front.searchportal.configuration.SearchMode>
+        </entry>
+
+
+        <entry>
+            <string>wip</string>
+            <no.schibstedsok.front.searchportal.configuration.SearchMode>
+                <searchCommandExecutor
+                        class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
+                <key>wip</key>
+                <parentMode>w</parentMode>
+                <searchConfigurations class="list">
+                    <FastSearch>
+                        <useParameterAsQuery>personId</useParameterAsQuery>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <collapsingEnabled>false</collapsingEnabled>
+                        <lemmatizeEnabled>false</lemmatizeEnabled>
+                        <spellcheckEnabled>false</spellcheckEnabled>
+                        <navigators/>
+                        <sortBy>whitepages</sortBy>
+                        <name>whiteInfopage</name>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.InfopageQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.MultiValuedFieldCollector>
+                                <fieldMap>
+                                    <entry>
+                                        <string>wptelefon</string>
+                                        <string>manyPhoneNumbers</string>
+                                    </entry>
+                                    <entry>
+                                        <string>wpmobiltelefon</string>
+                                        <string>manyMobilePhoneNumbers</string>
+                                    </entry>
+                                 </fieldMap>
+                            </no.schibstedsok.front.searchportal.result.MultiValuedFieldCollector>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <resultFields class="list">
+                            <string>wpfornavn</string>
+                            <string>wpetternavn</string>
+                            <string>wpmellomnavn</string>
+                            <string>wptelefon</string>
+                            <string>wpadresse</string>
+                            <string>ywpostnr</string>
+                            <string>ywpoststed</string>
+                            <string>wpmobiltelefon</string>
+                            <string>recordid</string>
+                            <string>xcoord</string>
+                            <string>ycoord</string>
+                        </resultFields>
+                        <collections class="list">
+                            <string>white</string>
+                        </collections>
+                        <resultsToReturn>1</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+                    <FastSearch>
+                        <collections>
+                            <string>yellow</string>
+                        </collections>
+                        <queryServerURL>http://localhost:15200</queryServerURL>
+                        <lemmatizeEnabled>true</lemmatizeEnabled>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.YellowQueryTransformer/>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                                <modifierName>Bedriftss&#248;k</modifierName>
+                            </no.schibstedsok.front.searchportal.result.AddDocCountModifier>
+                        </resultHandlers>
+                        <name>whiteYelloweSourceNavigator</name>
+                        <pageSize>10</pageSize>
+                        <resultFields class="list">
+                        </resultFields>
+                        <resultsToReturn>1</resultsToReturn>
+                        <isPagingEnabled>false</isPagingEnabled>
+                    </FastSearch>
+                </searchConfigurations>
+            </no.schibstedsok.front.searchportal.configuration.SearchMode>
+        </entry>
+
+        <entry>
+            <string>p</string>
+            <no.schibstedsok.front.searchportal.configuration.SearchMode>
+                <searchCommandExecutor
+                        class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
+                <key>p</key>
+                <searchConfigurations class="list">
+                    <PicSearch>
+                        <name>picSearch</name>
+                        <queryTransformers>
+                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                                <prefixes class="list">
+                                    <string>picturePrefix</string>
+                                </prefixes>
+                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                        </queryTransformers>
+                        <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                        </resultHandlers>
+                        <resultFields class="list">
+                            <string>thumb_url</string>
+                            <string>page_url</string>
+                            <string>thumb_width</string>
+                            <string>thumb_height</string>
+                            <string>height</string>
+                            <string>width</string>
+                            <string>filesize</string>
+                        </resultFields>
+                        <resultsToReturn>12</resultsToReturn>
+                        <pageSize>12</pageSize>
+                        <isPagingEnabled>true</isPagingEnabled>
+                    </PicSearch>
+                </searchConfigurations>
+            </no.schibstedsok.front.searchportal.configuration.SearchMode>
+        </entry>
+    </searchModes>
+</tabs>

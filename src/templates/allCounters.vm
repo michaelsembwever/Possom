@@ -1,0 +1,18 @@
+<html>
+<head>
+    <meta name="decorator" content="maindecorator" />
+</head>
+<body bgcolor="#eeeeff">
+
+<content tag="norwegianWebCounter">$result.getModifierCount('contentsourcenavigator', 'Norske nettsider')</content>
+
+<content tag="norwegianNewsCounter">$result.getModifierCount('contentsourcenavigator', 'Norske nyheter')</content>
+
+<content tag="globalNewsCounter">$result.getModifierCount('contentsourcenavigator', 'Internasjonale nyheter')</content>
+
+<content tag="whiteCounter">$result.getModifierCount('contentsourcenavigator', 'White')</content>
+
+<content tag="yellowCounter">$result.getModifierCount('contentsourcenavigator', 'yellow')</content>
+
+</body>
+</html>

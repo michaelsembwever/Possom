@@ -1,0 +1,131 @@
+<script language="JavaScript" type="text/JavaScript">
+
+function denySubmit() {
+	alert('Du m&aring; trykke "Send tilbakemelding"!');
+	return false;
+}
+
+function iterate() {
+	// inserts email to form
+	var email = getCookie('ssbeta');
+	if(email != null) {
+		document.fb.email.value = email;
+	}
+	// inserts search string
+	//if(getQuery().length > 0) {
+	//	document.getElementById('qs').innerHTML='Du s&oslash;kte p&aring;: <b>' + getQuery() + '</b>';
+	//}
+	//else {
+	//	document.getElementById('qs').innerHTML='(Ingen s&oslash;kestreng)';
+	//}
+	var style3 = document.getElementById('extraframe').style;
+	style3.display = "block";
+	
+}
+
+function getQuery() {
+	var rvalue = 0;
+	var url=window.location.href;
+	if(url.indexOf("?") > -1) {
+		var s = url.split('?');
+		var t = s[1].split('&');
+		for(var i=0;i<t.length;i++) {
+			if(t[i].indexOf('q=') > -1) {
+				var q = t[i].split('=');
+				rvalue = q[1].replace(/\+/g, " "); 
+			}
+		}
+	}	
+	return unescape(rvalue);
+}
+
+// starts it all
+function send (popupAddress,toMail) {
+	
+	setCookie('ssbeta',document.fb.email.value);
+	
+	var scoreValue;
+	for (i=0;i<document.fb.score.length;i++) {
+		if(document.fb.score[i].checked) {
+			scoreValue = document.fb.score[i].value;
+		}
+	}
+	
+  window.open(popupAddress + '?'
+  + 'score=' + scoreValue 
+  + '&message=' + document.fb.message.value
+  + '&oUrl=' + escape(window.location.href)
+  + '&user=' + document.fb.email.value
+  + '&rcptTo=' + toMail
+  + '&bodyOnloadClose=yes'
+  , 'popup', 'width=300,height=300,scrollbars=no');
+
+	// hides the submit form
+	var style = document.getElementById('formframe').style;
+	var style2 = document.getElementById('receiptframe').style;
+
+	style.display = "none";
+	style2.display = "block";
+	
+}
+
+
+function setCookie(name, value, expires, path, domain, secure)
+{
+  document.cookie= name + "=" + escape(value) +
+    ((expires) ? "; expires=" + expires.toGMTString() : "") +
+    ((path) ? "; path=" + path : "") +
+    ((domain) ? "; domain=" + domain : "") +
+    ((secure) ? "; secure" : "");
+}
+
+function getCookie(name)
+{
+  var dc = document.cookie;
+  var prefix = name + "=";
+  var begin = dc.indexOf("; " + prefix);
+  if (begin == -1)
+    {
+      begin = dc.indexOf(prefix);
+      if (begin != 0) return null;
+    }
+  else
+    {
+      begin += 2;
+    }
+  var end = document.cookie.indexOf(";", begin);
+  if (end == -1)
+    {
+      end = dc.length;
+    }
+  return unescape(dc.substring(begin + prefix.length, end));
+}
+
+</script>
+
+<form name="fb" onsubmit="return denySubmit(this)" action="javascript:denySubmit()">
+
+<div id="formframe">
+<h3>Tilbakemelding</h3>
+
+Hva synes du om s&oslash;keresultatet?<br />
+<input type="radio" name="score" value="1" onclick="iterate()" /> Godt<br />
+<input type="radio" name="score" value="2" onclick="iterate()" /> Middels<br />
+<input type="radio" name="score" value="3" onclick="iterate()" /> D&aring;rlig<br />
+
+<div id="extraframe">
+<span id="qs">#if ($query) Du s&#248;kte p&#229;: <b>$query</b> #else Ingen s&#248;estreng #end</span>
+<p>
+Kommentar:<br />
+<textarea name="message" rows="8" cols="18"></textarea>
+</p>
+<p>
+E-post (premietrekning):<br />
+<input type="text" name="email" id="email" />
+</p>
+<input type="button" name="sendbutton" value="Send tilbakemelding" onclick="send('http://admindev.schibstedsok.no/betafeedback/BetaFeedback','beta-general@schibstedsok.basefarm.net')" />
+</div>
+</div>
+
+<div id="receiptframe"><b>Takk for tilbakemeldingen!</b></div>
+</form>

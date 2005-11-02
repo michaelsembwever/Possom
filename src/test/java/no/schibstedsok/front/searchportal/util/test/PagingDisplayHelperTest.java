@@ -110,6 +110,27 @@ public class PagingDisplayHelperTest extends TestCase {
         assertEquals(20, pager.getNumberOfPages());
     }
 
+    public void testDifferentPageSize() {
+
+        pager = new PagingDisplayHelper(12, 10);
+        pager.setNumberOfResults(2000);
+        pager.setCurrentOffset(120);
+
+        assertEquals(11, pager.getFirstVisiblePage());
+
+        pager.setCurrentOffset(0);
+        assertEquals(1, pager.getFirstVisiblePage());
+
+        pager.setCurrentOffset(108);
+        assertEquals(1, pager.getFirstVisiblePage());
+
+        pager.setCurrentOffset(30);
+        assertEquals(1, pager.getFirstVisiblePage());
+
+        pager.setCurrentOffset(240);
+        assertEquals(21, pager.getFirstVisiblePage());
+    }
+
     protected void tearDown() throws Exception {
         super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
     }

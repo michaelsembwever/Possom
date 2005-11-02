@@ -3,7 +3,6 @@
  * 
  */
 package no.schibstedsok.front.searchportal.util;
-
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
@@ -40,6 +39,10 @@ public class PagingDisplayHelper {
         return (numberOfResults + pageSize - 1) / pageSize;
     }
 
+    public int getPageSize() {
+        return pageSize;
+    }
+
     public boolean isFirstPage() {
         return getCurrentPage() == 1;
     }
@@ -65,7 +68,7 @@ public class PagingDisplayHelper {
     }
 
     public int getFirstVisiblePage() {
-        return (getCurrentPage() - 1) / pageSize * maxPages + 1;
+        return ((getCurrentPage() - 1) / maxPages) * maxPages + 1;
     }
 
     public int getLastVisiblePage() {
@@ -83,10 +86,14 @@ public class PagingDisplayHelper {
     }
 
     public int getLastHitOnPage() {
-        return getFirstHitOnPage() + pageSize - 1;
+        return Math.min(numberOfResults, getFirstHitOnPage() + pageSize - 1);
     }
 
     public void setNumberOfResults(int numberOfResults) {
         this.numberOfResults = numberOfResults;
+    }
+
+    public int getNumberOfResults() {
+        return numberOfResults;
     }
 }

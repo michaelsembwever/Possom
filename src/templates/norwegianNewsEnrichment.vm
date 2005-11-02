@@ -1,0 +1,32 @@
+<html>
+<head>
+    <meta name="decorator" content="maindecorator" />
+</head>
+
+<body bgcolor="#eeeeff">
+
+#if ($result.hitCount > 0)
+    <content tag="norwegianNewsEnrichment">
+        <table class="enrichment">
+            <tr>
+                <td colspan="2" class="title"><a href="?c=m&amp;q=$query&amp;nav_sources=contentsourcenavigator&amp;contentsource=Norske%20nyheter">$text.getMessage($locale, "hitsOnNyheter", $result.hitCount, $query)</a></td>
+            </tr>
+            <tr>
+                <td valign="top" class="img">
+                    <a href="?c=m&amp;q=$query&amp;nav_sources=contentsourcenavigator&amp;contentsource=Norske%20nyheter"><img src="../images/enrichment/news.jpg" alt="Nyheter" /></a>
+                </td>
+                <td>
+                    #foreach( $item in $result.results )
+                        #if ($velocityCount <= 3)
+                           <a href="$item.getField('url')">$item.getField('newstitle')</a>
+                           <span class="timestamp">$item.getField('newssource'), $item.getField('age')</span><br />
+                        #end
+                    #end
+                </td>
+            </tr>
+        </table>
+    </content>
+#end
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<html>
+<head>
+    <meta name="decorator" content="maindecorator">
+</head>
+
+<body>
+    <content tag="wikipedia">
+        #foreach( $item in $result.results)
+            <table class="enrichment">
+                <tr>
+                    <td colspan="2" class="title"><a href="$item.getField('url')">$text.getMessage($locale, "hitsOnWiki", $item.getField('wikititle'))</a></td>
+                </tr>
+                <tr>
+                    <td valign="top" class="img">
+                        <a href="$item.getField('url')"><img src="../images/enrichment/wiki.jpg" alt="Leksikon (wikipedia)" /></a>
+                    </td>
+                    <td>
+                        #if (!$item.getField('wikibody').equals("_TVM:UNDEFINED_")) $item.getField('wikibody')#end
+                    </td>
+                </tr>
+            </table>
+        #end
+    </content>
+</body>
+</html>

@@ -1,0 +1,135 @@
+#macro(navigatorInit $navigatorKey)
+    #set ($otherNavigators = "")
+    #set ($otherNavigatorsMap = $result.searchCommand.getOtherNavigators($navigatorKey))
+    #foreach ($key in $otherNavigatorsMap.keySet())
+        #set ($otherNavigators = "$!otherNavigators&amp;nav_$key=$otherNavigatorsMap.get($key)")
+    #end
+#end
+
+#macro(allNavigators)
+#set ($allNavigators = "")
+#if ($result.searchCommand.getOtherNavigators('xxx'))
+#set ($otherNavigatorsMap = $result.searchCommand.getOtherNavigators('xxx'))
+#foreach ($key in $otherNavigatorsMap.keySet())
+#set ($allNavigators = "$!allNavigators&amp;nav_$key=$otherNavigatorsMap.get($key)")
+#end
+#end
+$allNavigators
+#end
+
+
+#macro(searchBar)
+    <form name="sf" action="">
+    <input name="lang" value="en" type="hidden" />
+    <input name="c" value="$currentTab.getKey()" type="hidden" />
+    #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "w" || $currentTab.getKey() == "yip" || $currentTab.getKey() == "wip")
+    <div id="search_table_bar_large"
+    #else
+    <div id="search_table_bar"
+    #end
+        style="background-color:#if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip") #F1A42B #elseif ($currentTab.getKey() == "m") #7F73C5 #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip") #50BAD3 #elseif ($currentTab.getKey() == "p") #838092  #else #A6408E #end; ">
+
+        #if ($currentTab.getKey() == "m")
+        <input type="hidden" name="nav_sources" value="contentsourcenavigator" />
+        <img src="../images/searchbar/m.jpg" height="22" align="left" alt="" />
+        #elseif ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
+        <img src="../images/searchbar/y.jpg" height="22" align="left" alt="" />
+        #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
+        <img src="../images/searchbar/w.jpg" height="22" align="left" alt="" />
+        #elseif ($currentTab.getKey() == "p")
+        <img src="../images/searchbar/p.jpg" height="22" align="left" alt="" />
+        #else
+        <img src="../images/searchbar/d.jpg" height="22" align="left" alt="" />
+        #end
+    </div>
+
+    #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "w" || $currentTab.getKey() == "yip" || $currentTab.getKey() == "wip")
+    <div id="search_table_large">
+    #else
+    <div id="search_table">
+    #end
+    <table border="0" cellspacing="3" cellpadding="0">
+    <tr>
+        <td width="400" valign="top"><input type="text" name="q" value="$query" class="input_main" /></td>
+        <td width="8">&nbsp;</td>
+        #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
+        <td valign="top"><input type="submit" value="" id="submit_button" class="submit_y" /></td>
+        #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
+        <td valign="top"><input type="submit" value="" id="submit_button" class="submit_w" /></td>
+        #elseif ($currentTab.getKey() == "p")
+        <td valign="top"><input type="submit" value="" id="submit_button" class="submit_p" /></td>
+        #elseif ($currentTab.getKey() == "d")
+        <td valign="top"><input type="submit" value="" id="submit_button" class="submit_d" /></td>
+        #elseif ($currentTab.getKey() == "m")
+        <td valign="top"><input type="submit" value="" id="submit_button" class="submit_m" /></td>
+        #end
+    </tr>
+    <tr>
+        <td class="small_dark">
+            #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
+                Søk på bransje, firmanavn, adresse, sted osv
+            #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
+                Du kan søke på telefonnummer, navn, adresse osv
+            #elseif ($currentTab.getKey() == "d")
+
+                #set ($norwayChecked = "CHECKED")
+                #set ($worldChecked = "")
+
+                #if ($request.getParameter("s") && $request.getParameter("s") == "g")
+                   #set ($worldChecked = "CHECKED")
+                   #set ($norwayChecked = "")
+                #end
+                <input type="radio" name="s" value="d" $norwayChecked /> Norge &nbsp;&nbsp;
+                <input type="radio" name="s" value="g" $worldChecked /> Verden
+            #else
+                &nbsp;
+            #end
+        </td>
+        <td>&nbsp;</td>
+        <td class="small_dark">
+            #if ($currentTab.getKey() == "d" || $currentTab.getKey() == "m")
+            <a href="?c=d&amp;smart=true&amp;pg=1&amp;q=">S&#248;k smart</a>
+            #end
+        </td>
+    </tr>
+    </table>
+    </div>
+
+    </form>
+#end
+
+
+#macro(navigatorBackLink $navigatorKey)
+#set ($parentNavigator = $result.searchCommand.getParentNavigator($navigatorKey))
+
+#if ($parentNavigator)
+<a href="?nav_$navigatorKey=$parentNavigator.getName()&amp;q=$query&amp;c=$currentTab.getKey()$!previousNavigationParameters$otherNavigators">&lt;&lt;</a>
+#else
+#if (!$result.searchCommand.isTopLevelNavigator($navigatorKey))
+<a href="?q=$query&amp;c=$currentTab.getKey()$previousNavigationParameters$otherNavigators">&lt;&lt;</a>
+#end
+#end
+#end
+
+#macro(navigatorLink $navigatorKey $velocityCount)
+#set ($nav = "nav_$navigatorKey")
+
+#if ($request.getParameter($result.searchCommand.getNavigatedTo($navigatorKey).getField()))
+    #set ($navfield = $request.getParameter($result.searchCommand.getNavigatedTo($navigatorKey).getField()))
+#end
+
+#if ($navfield && ($navfield == $category.name && $request.getParameter($nav)))
+    $category.name
+    #else
+        #set ($navname = $result.searchCommand.getNavigatedTo($navigatorKey).getName())
+
+        #if ($navname == 'ywfylkesnavigator' && $category.name == 'Oslo')
+            <a href="?nav_geographic=ywpoststednavigator&amp;ywpoststed=Oslo&amp;ywkommune=Oslo&amp;ywfylke=Oslo&amp;q=$query&amp;c=$currentTab.getKey()$otherNavigators" id="$navigatorKey$velocityCount">$category.name</a>
+        #else
+            <a href="?nav_$navigatorKey=$result.searchCommand.getNavigatedTo($navigatorKey).getName()&amp;q=$query&amp;c=$currentTab.getKey()&amp;$result.searchCommand.getNavigatedTo($navigatorKey).field=$category.name$previousNavigationParameters$otherNavigators" id="$navigatorKey$velocityCount">$category.name</a>
+        #end
+    #end
+#end
+
+
+

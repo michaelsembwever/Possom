@@ -1,0 +1,289 @@
+<html>
+<head>
+</head>
+<body>
+
+<table>
+    <tr>
+
+    #set ($company = $result.results.get(0))
+    #set ($env = $coordHelper.getEnvelope($company))
+    #set ($zoomLevels = $coordHelper.getZoomLevels())
+
+<content tag="infopage-nav">
+
+</content>
+
+<content tag="search-bar">
+    #searchBar()
+</content>
+
+
+<content tag="infopage">
+
+        <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>
+        <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/mapicon.js'></SCRIPT>
+        <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/layers.js'></SCRIPT>
+
+        <script type="text/javascript" language="JavaScript">
+
+            #if ($company.getField('xcoord') && $company.getField('ycoord'))
+                var hasCoords = true;
+                var countZoomLevels = $coordHelper.getZoomCount();
+                var arrZoomLevels = new Array();
+                var arrCompany = new Array();
+                arrCompany[0] = new coordObj($company.getField('xcoord'), $company.getField('ycoord'), $company.getField('recordid'));
+
+                #foreach ($level in $zoomLevels)
+                #set ($index = $velocityCount - 1)
+                arrZoomLevels[$index] = $level;
+                #end
+
+                ##variable som hentes fra noen konfigurasjon
+                var imgHeigth = $coordHelper.getImgHeigth();
+                var imgWidth = $coordHelper.getImgWidth();
+                var iconHeigth = $coordHelper.getIconPxSizeHeigth();
+                var iconWidth = $coordHelper.getIconPxSizeWidth();
+                var iconOffsetHeigth = $coordHelper.getIconOffsetHeigth();
+                var iconOffsetWidth = $coordHelper.getIconOffsetWidth();
+                var iconOverlapOffsetHeigth = $coordHelper.getIconOverlapOffsetHeigth();
+                var iconOverlapOffsetWidth = $coordHelper.getIconOverlapOffsetWidth();
+                var envFactor = $coordHelper.getEnvFactor();
+                var panfactor = $coordHelper.getPanFactor();
+                var zoomfactor = $coordHelper.getZoomFactor();
+                var imgMeterSize = $coordHelper.getImgMeterSize();//størrelse på kartbilde i meter
+                var pixelSize = $coordHelper.getPixelsize();
+                var defaultNoCoord = $coordHelper.getDefaultNoCoord();
+
+                ##current variable
+                var currentZoomLevel = $coordHelper.getDefaultZoom();
+                var prevZoomLevel = currentZoomLevel;//initielt
+                var currentZoomScale = arrZoomLevels[currentZoomLevel-1];
+                var maxX = $env.maxX;
+                var minX = $env.minX;
+                var maxY = $env.maxY;
+                var minY = $env.minY;
+                var centerCoordX = $company.getField('xcoord');
+                var centerCoordY = $company.getField('ycoord');
+                var centerPixY = imgHeigth/2;
+                var centerPixX = imgWidth/2;
+                var dX = maxX - minX;
+                var dY = maxY - minY;
+
+                ##var prevMaxX = maxX;
+                ##var prevMinX = minX;
+                ##var prevMaxY = maxY;
+                ##var prevMinY = minY;
+                var contextPath = "$contextPath";
+            #else
+                    var hasCoords = false;
+            #end
+
+            function checkCoord(){
+                return hasCoords;
+            }
+
+            function init(){
+                if(hasCoords){
+                    //må finne kartets posisjon i kartet.
+                    //initializeEvents();
+                    setImgMapOffset(document.getElementById("mapcontent"));
+                    getUrl();
+                    setInitZoomBarImg()
+                }
+            }
+        </script>
+
+        <table id="greybar_main" cellpadding="0" cellspacing="0" width="758">
+            <tr>
+                <td class="left_yel"><b>$company.getField('ypnavn2')</b></td>
+                <td class="right_yel">&nbsp;</td>
+            </tr>
+        </table>
+
+        <div id="info_submenu">
+            <img src="../images/arrow.gif" width="3" height="11"/> <a href="javascript:window.print();">$text.getMessage($locale, "print")</a> &nbsp;&nbsp;
+            <img src="../images/arrow.gif" width="3" height="11"/> <script type="text/javascript">ml('107,97,116,97,108,111,103,102,101,105,108,64,115,101,115,97,109,46,110,111','Send oss oppdatert informasjon','Endring av firmainformasjon [$company.getField('recordid')] - Sesam.no');</script><noscript><b>(Må slå på javascript for å se e-postadresse)</b></noscript> &nbsp;
+            <!--
+                        <img src="../images/arrow.gif" width="3" height="11"/> <a href="">$text.getMessage($locale, "sendSMS")</a> &nbsp;&nbsp;
+                        <img src="../images/arrow.gif" width="3" height="11"/> <a href="">$text.getMessage($locale, "sendEmail")</a> &nbsp;&nbsp;
+                        <img src="../images/arrow.gif" width="3" height="11"/> <a href="">Lagre V-card (adressekort)</a>
+            -->
+        </div>
+        <img src="../images/navLine.gif" width="758" height="1" />
+
+        <div id="yellow_table">
+                <div class="yellow_results">
+                    <table border="0" cellspacing="0" cellpadding="0" id="info_list">
+                        <tr>
+                            <td valign="top">Firmanavn</td>
+                            <td valign="top" class="cellright"><b>$company.getField('ypnavn2')</b></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
+                        </tr>
+                        <tr>
+                            <td valign="top">$text.getMessage($locale, "visitAddress")</td>
+                            <td valign="top" class="cellright">$!{company.getField('ypadresse')}#if ($company.getField('ypadresse') && ($company.getField('ywpostnr') || $company.getField('ywpoststed'))),#end $!{company.getField('ywpostnr')} $!{company.getField('ywpoststed')}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
+                        </tr>
+                        #if ($company.getField('ypanynumber'))
+                        <tr>
+                            <td valign="top">$text.getMessage($locale, "telephone")</td>
+                            <td valign="top" class="cellright">$company.getField('ypanynumber')</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
+                        </tr>
+                        #end
+                        #if ($company.getField('yptelefax'))
+                        <tr>
+                            <td valign="top">$text.getMessage($locale, "telefax")</td>
+                            <td valign="top" class="cellright">$company.getField('yptelefax')</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
+                        </tr>
+                        #end
+                        #if ($company.getField('yporgnummer'))
+                        <tr>
+                            <td valign="top">$text.getMessage($locale, "orgNumber")</td>
+                            <td valign="top" class="cellright">$company.getField('yporgnummer')</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
+                        </tr>
+                        #end
+                        #if ($company.getField('ypfirmatype'))
+                        <tr>
+                            <td valign="top">$text.getMessage($locale, "firmType")</td>
+                            <td valign="top" class="cellright">$company.getField('ypfirmatype')</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
+                        </tr>
+                        #end
+                        #if ($company.getField('ypbransje'))
+                        <tr>
+                            <td valign="top">#if ($company.getMultivaluedField('manyCategories').size()> 1) $text.getMessage($locale, "categories") #else  $text.getMessage($locale, "category") #end</td>
+                            <td valign="top" class="cellright">
+                                #foreach ($category in $company.getMultivaluedField('manyCategories'))
+                                    #if ($velocityCount != 1)
+                                        &nbsp;|&nbsp;
+                                    #end
+                                    <a href="?nav_trade=ypbransjenavigator&amp;q=$query&amp;c=y&amp;ypbransje=$category">$category</a>
+                                #end
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
+                        </tr>
+                        #end
+                    </table>
+                </div>
+
+                <div class="mapcell">
+                    	<table bgcolor="#F3F3F3" border="0" cellspacing="0" cellpadding="0" width="385">
+                    		<tr>
+                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a></td>
+                                    <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px"><a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/panN.jpg" height="11" alt="panorer"/></a></td>
+                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer"/></a></td>
+                    		</tr>
+                    		<tr>
+                                    <td width="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('w');}"><img src="../images/mapicon/panW.jpg" width="11" alt="panorer"/></a></td>
+                                    <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
+                                        <div id="mapcontent" style="POSITION: absolute; OVERFLOW: hidden; WIDTH: $coordHelper.getImgWidth()px; HEIGTH: $coordHelper.getImgHeigth()px;">
+                                            #if ($company.getField('xcoord') && $company.getField('ycoord'))
+                                                 <img name="map" src="../images/mapicon/loading.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
+                                                 <img src="../images/mapicon/bubble.gif" border="0" id="icon_$company.getField('recordid')" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" alt="$company.getField('ypnavn2')" style="POSITION: absolute;TOP: $coordHelper.getMapCenterPxY()px;LEFT: $coordHelper.getMapCenterPxX()px;Z-INDEX: 100;"/>
+                                            #else
+                                                 <img name="map" src="../images/mapicon/nomap_new.jpg" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
+                                            #end
+                                            </div>
+                                    </td>
+                                    <td width="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/panE.jpg" width="11" alt="panorer"/></a></td>
+                                </tr>
+                                <tr>
+                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a></td>
+                                    <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px"><a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/panS.jpg" height="11" alt="panorer"/></a></td>
+                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a></td>
+                    		    </tr>
+                                <tr bgcolor="#FFFFFF">
+                                    <td colspan="3" height="5">&nbsp;</td>
+                                </tr>
+                                <tr bgcolor="#FFFFFF">
+                                    <td colspan="3" align="center" valign="center" class="printhide">
+                                        <a href="javascript:if(checkCoord()){ zoomout('uselevel');}"><img src="../images/mapicon/zoom_ut_knapp.jpg" height="22" width="64" alt="Zoom ut"/></a>
+                                        &nbsp;
+                                        <script type="text/javascript" language="JavaScript">
+                                            if (hasCoords)
+                                                document.writeln('<img src="../images/pix.gif" name="zoombar" height="21" width="169" alt="Zoom bar" usemap="#zoombarmap" border="0"/>');
+                                            else
+                                                document.writeln('<img src="../images/mapicon/map_nav.jpg" name="zoombar" height="21" width="169" alt="Zoom bar" border="0"/>');
+                                        </script>
+                                        &nbsp;
+                                        <a href="javascript:if(checkCoord()){ zoomin('uselevel');}"><img src="../images/mapicon/zoom_inn_knapp.jpg" height="22" width="68" alt="Zoom inn"/></a>
+                                    </td>
+                                </tr>
+                                <tr bgcolor="#FFFFFF">
+                                    <td colspan="3" height="5" style="color: #939393;" align="center" class="printhide">Land <img src="../images/pix.gif" width="28" height="1" /> Kommune <img src="../images/pix.gif" width="28" height="1" /> Gate</td>
+                                </tr>
+                         </table>
+                 </div>
+        </div>
+
+            #if ($company.getField('xcoord') && $company.getField('ycoord'))
+            <script type="text/javascript" language="JavaScript">
+                 //zoom box
+                 content = '<img name="zoomImageTop" src="../images/mapicon/pixel.gif" width="1" height="1">';
+                 createLayer("zoomBoxTop",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
+                 content = '<img name="zoomImageLeft" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                 createLayer("zoomBoxLeft",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
+                 content = '<img name="zoomImageRight" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                 createLayer("zoomBoxRight",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
+                 content = '<img name="zoomImageBottom" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                 createLayer("zoomBoxBottom",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
+
+                 initializeEvents();
+
+                 setLayerBackgroundColor("zoomBoxTop", zoomBoxColor);
+                 setLayerBackgroundColor("zoomBoxLeft", zoomBoxColor);
+                 setLayerBackgroundColor("zoomBoxRight", zoomBoxColor);
+                 setLayerBackgroundColor("zoomBoxBottom", zoomBoxColor);
+            </script>
+            #end
+
+              <map id="zoombar_1" name="zoombarmap">
+                   <area shape="rect" name="M&aring;lestokkniv&aring; 7"
+                    coords="5,3,32,38" href="javascript:zoomlevel(7);" title="&#34;Zoom til m&aring;lestokkniv&aring; 7&#34;" />
+                   <area shape="rect" name="M&aring;lestokkniv&aring; 6"
+                    coords="32,4,50,37" href="javascript:zoomlevel(6);" title="&#34;Zoom til m&aring;lestokkniv&aring; 6&#34;" />
+                   <area shape="rect" name="M&aring;lestokkniv&aring; 5"
+                    coords="52,4,68,37" href="javascript: zoomlevel(5);" title="&#34;Zoom til m&aring;lestokkniv&aring; 5&#34;" />
+                   <area shape="rect" name="M&aring;lestokkniv&aring; 4"
+                    coords="70,5,90,38" href="javascript: zoomlevel(4);" title="&#34;Zoom til m&aring;lestokkniv&aring; 4&#34;" />
+                   <area shape="rect" name="M&aring;lestokkniv&aring; 3"
+                    coords="91,5,114,37" href="javascript:zoomlevel(3);" title="&#34;Zoom til m&aring;lestokkniv&aring; 3&#34;" />
+                   <area shape="rect" name="M&aring;lestokkniv&aring; 2"
+                    coords="115,5,135,37" href="javascript:zoomlevel(2);" title="&#34;Zoom til m&aring;lestokkniv&aring; 2&#34;" />
+                   <area shape="rect" name="M&aring;lestokkniv&aring; 1"
+                    coords="136,5,166,37" href="javascript:zoomlevel(1);" title="&#34;Zoom til m&aring;lestokkniv&aring; 1&#34;" />
+            </map>
+
+
+        <br clear="both"/>
+
+</content>
+
+
+<content tag="verbosePager">
+    #parse("verbosePager.vm")
+</content>
+?
+    </tr>
+</table>
+
+</body>
+</html>

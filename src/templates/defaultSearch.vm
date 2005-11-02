@@ -1,0 +1,383 @@
+<html>
+<head>
+    <meta name="decorator" content="maindecorator" />
+</head>
+
+<body>
+
+<content tag="search-bar">
+    #searchBar()
+</content>
+
+
+<content tag="globalSearchTips">
+    #if ($globalSearchTips)
+        <div class="spelling_suggestion">
+        <em>
+         <img src="../images/star.gif" alt="Tips" />
+         $globalSearchTips
+        </em>
+        </div>
+    #end
+</content>
+
+<content tag="greybar_magic">
+        <table id="greybar_main" cellpadding="0" cellspacing="0" width="561">
+            <tr>
+                <td class="left">Norske nettsider: $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$query</b></td>
+                <td class="right">&nbsp;</td>
+            </tr>
+        </table>
+
+        #set ($baseURL = "?c=d&amp;q=$query")
+        #if ($result.getQuerySuggestions().size() > 0)
+         <div class="spelling_suggestion">
+                <span class="stavekontroll"><img src="../images/star.gif"/> $text.getMessage($locale, "didYouMean"):</span>
+                #foreach ($querySuggestion in $result.querySuggestions)
+                    <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
+                    #if  ($velocityCount < $result.getQuerySuggestions().size())
+                      eller
+                    #end
+                    #end
+                    ?
+            </div>
+        #end
+</content>
+
+
+<content tag="greybar_magic_enrichment">
+        <table id="greybar_main" cellpadding="0" cellspacing="0" width="561">
+            <tr>
+                <td class="left">Treff p&#229; <b>$query</b></td>
+                <td class="right">&nbsp;</td>
+            </tr>
+        </table>
+
+        #set ($baseURL = "?c=d&amp;q=$query")
+        #if ($result.getQuerySuggestions().size() > 0)
+            <div class="spelling_suggestion">
+                <span class="stavekontroll"><img src="../images/star.gif"/> $text.getMessage($locale, "didYouMean"):</span>
+                #foreach ($querySuggestion in $result.querySuggestions)
+                    <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
+                    #if  ($velocityCount < $result.getQuerySuggestions().size())
+                      eller
+                    #end
+                    #end
+                    ?
+            </div>
+        #end
+</content>
+
+<content tag="greybar_smart">
+        <table id="greybar_main" cellpadding="0" cellspacing="0" width="561">
+            <tr>
+                <td class="left">
+                    <b>S&#248;k smart!</b>
+                </td>
+                <td class="right">&nbsp;</td>
+            </tr>
+        </table>
+</content>
+
+<content tag="greybar_help">
+        <table id="greybar_main" cellpadding="0" cellspacing="0" width="561">
+            <tr>
+                <td class="left"><b>Slik bruker du Sesam</b></td>
+                <td class="right">&nbsp;</td>
+            </tr>
+        </table>
+</content>
+
+<content tag="smart-nav">
+    <div style="margin-top:61px;">
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <div class="geo_header">S&#248;k smart!</div>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
+            #if ($request.getParameter("pg") && $request.getParameter("pg")=="1")
+                <tr>
+                    <td class="nav_pad">Tegn og operat&#248;rer</td>
+                    <td class="nav_pad" align="right">&nbsp;</td>
+                </tr>
+            #else
+                <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;smart=true&amp;pg=1&amp;q=";'>
+                    <td class="nav_pad">
+                        <a href="?c=d&amp;smart=true&amp;pg=1&amp;q=">Tegn og operat&#248;rer</a>
+                    </td>
+                    <td class="nav_pad" align="right">&nbsp;</td>
+                </tr>
+            #end
+            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td></tr>
+            #if ($request.getParameter("pg") && $request.getParameter("pg")=="2")
+                <tr>
+                    <td class="nav_pad">Magiske Sesam-ord</td>
+                    <td class="nav_pad" align="right">&nbsp;</td>
+                </tr>
+            #else
+                <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;smart=true&amp;pg=2&amp;q=";'>
+                    <td class="nav_pad">
+                        <a href="?c=d&amp;smart=true&amp;pg=2&amp;q=">Magiske Sesam-ord</a>
+                    </td>
+                    <td class="nav_pad" align="right">&nbsp;</td>
+                </tr>
+            #end
+            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td></tr>
+            #if ($request.getParameter("pg") && $request.getParameter("pg")=="3")
+                <tr>
+                    <td class="nav_pad">For d&#229;rlig treffliste?</td>
+                    <td class="nav_pad" align="right">&nbsp;</td>
+                </tr>
+            #else
+                <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;smart=true&amp;pg=1&amp;q=";'>
+                    <td class="nav_pad">
+                        <a href="?c=d&amp;smart=true&amp;pg=3&amp;q=">For d&#229;rlig treffliste?</a>
+                    </td>
+                    <td class="nav_pad" align="right">&nbsp;</td>
+                </tr>
+            #end
+            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td></tr>
+        </table>
+    </div>
+</content>
+
+<content tag="help-nav">
+    #set ($helpnavs = ["Slik virker Sesam", "Naviger mellom s&#248;kene", "Slik s&#248;ker du", "S&#248;keresultatet", "Drill deg ned", "Nyhetss&#248;k", "Bedriftss&#248;k", "Persons&#248;k", "Bildes&#248;k", "TV, v&#230;r og leksikon", "Ikonene i Sesam", "Sesams&#248;k som startside"])
+    <div style="margin-top: 61px;">
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <div class="geo_header">Hjelp</div>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+    </div>
+    <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
+        #foreach ($menu in $helpnavs)
+            <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=&amp;help=true&amp;pg=$velocityCount";'>
+                <td colspan="2" class="nav_pad">
+                    #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
+                        $menu
+                    #else
+                        <a href="?c=d&amp;q=&amp;help=true&amp;pg=$velocityCount">$menu</a>
+                    #end
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td>
+            </tr>
+        #end
+    </table>
+</content>
+
+
+<content tag="about-nav">
+    <div style="margin-top: 61px;">
+        <a href="../doc/annonse.pdf" style="font-size:1.1em">Stilling ledig</a>
+    </div>
+</content>
+
+<content tag="fast-results">
+
+    #if ($pager.numberOfResults > 0)
+        <div id="search_result">
+
+            #*<b>$text.getMessage($locale, "keywords")</b><br/>
+            #foreach ($keyword in $result.sortedClusters)
+                #if ($velocityCount < 10)
+                    <a href="?$httpQueryString&amp;kw=%22$keyword.key%22">$keyword.key</a> <br/>
+                #end
+            #end *#
+
+            #foreach( $item in $result.results )
+                <p>
+                    <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a>
+                    #if ($item.getField('fileformat')) <span class="timestamp">$item.getField('fileformat')</span> #end<br />
+                    #if ($item.getField('body'))
+                        <span class="search_summary">$!{item.getField('body')}</span><br />
+                    #end
+                    <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                </p>
+            #end
+        </div>
+    #end
+
+</content>
+
+<content tag="fast-results-norwegian_part1">
+
+        #if ($pager.isFirstPage())
+            #if ($pager.numberOfResults > 0)
+                <div id="search_result">
+
+                    #*<b>$text.getMessage($locale, "keywords")</b><br/>
+                    #foreach ($keyword in $result.sortedClusters)
+                        #if ($velocityCount < 10)
+                            <a href="?$httpQueryString&amp;kw=%22$keyword.key%22">$keyword.key</a> <br/>
+                        #end
+                    #end *#
+
+                    #foreach( $item in $result.results )
+                        #if ($velocityCount < 4)
+                            <p>
+                                <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a>
+                                #if ($item.getField('fileformat')) <span class="timestamp">$item.getField('fileformat')</span> #end<br />
+                                #if ($item.getField('body'))
+                                    <span class="search_summary">$!{item.getField('body')}</span><br />
+                                #end
+                                <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                            </p>
+                        #end
+                    #end
+                </div>
+                ##parse("verbosePager.vm")
+            #end
+        #else
+            #if ($pager.numberOfResults > 0)
+                <div id="search_result">
+
+                    #*<b>$text.getMessage($locale, "keywords")</b><br/>
+                    #foreach ($keyword in $result.sortedClusters)
+                        #if ($velocityCount < 10)
+                            <a href="?$httpQueryString&amp;kw=%22$keyword.key%22">$keyword.key</a> <br/>
+                        #end
+                    #end *#
+
+                    #foreach( $item in $result.results )
+                        <p>
+                            <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a>
+                            #if ($item.getField('fileformat')) <span class="timestamp">$item.getField('fileformat')</span> #end<br />
+                            <span class="search_summary">$!{item.getField('body')}</span><br />
+                            <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                        </p>
+                    #end
+                </div>
+                ##parse("verbosePager.vm")
+            #end
+        #end
+
+
+</content>
+
+<content tag="fast-results-norwegian_part2">
+
+        #if ($pager.isFirstPage())
+
+            #if ($pager.numberOfResults > 0)
+                <div id="search_result">
+
+                    #foreach( $item in $result.results )
+                        #if ($velocityCount > 3)
+                            <p>
+                                <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a>
+                                #if ($item.getField('fileformat')) <span class="timestamp">$item.getField('fileformat')</span> #end<br />
+                                #if ($item.getField('body'))
+                                    <span class="search_summary">$!{item.getField('body')}</span><br />
+                                #end
+                                <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                            </p>
+                        #end
+                    #end
+                </div>
+            #end
+
+        #end
+
+</content>
+
+<content tag="cluster">
+    #if ($pager.numberOfResults > 0)
+        <div class="geo_element">
+            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <div class="geo_header">
+                Clusternavigator
+            </div>
+            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
+                #foreach ($keyword in $result.sortedClusters)
+                    #if ($velocityCount < 10)
+                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FFF';">
+                            <td class="left_marg">
+                                <a href="?$httpQueryString&amp;kw=%22$keyword.key%22">$keyword.key</a>
+                            </td>
+                            <td align="right">$keyword.score</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        </tr>
+                    #end
+                #end
+            </table>
+        </div>
+    #end
+</content>
+
+<content tag="noHits">
+    #parse("no-hits.vm")
+</content>
+
+<content tag="verbosePager">
+    #parse("verbosePager.vm")
+</content>
+
+<content tag="feedback-form">
+    #parse("feedbackForm.vm")
+</content>
+
+<content tag="smart">
+    <div id="help">
+        #if ($request.getParameter("pg"))
+          #if ($request.getParameter("pg")=="1")
+              <h3>Tegn og operat&#248;rer</h3>
+          #elseif ($request.getParameter("pg")=="2")
+              <h3>Magiske Sesam-ord</h3>
+          #elseif ($request.getParameter("pg")=="3")
+              <h3>For d&#229;rlig treffliste?</h3>
+          #end
+        #end
+        #parse("smartText.vm")
+    </div>
+    <div id="footer_space">
+        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>
+        #parse("footer.vm")
+    </div>
+</content>
+
+<content tag="about">
+    <div id="help">
+        <h3>Om Sesam</h3>
+        #include("aboutText.vm")
+    </div>
+    <div id="footer_space">
+        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>
+        #parse("footer.vm")
+    </div>
+</content>
+
+
+<content tag="ads_help">
+    <div id="help">
+        <h3>Annonsering</h3>
+        #include("adsText.vm")
+        <div id="footer_space">
+            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>
+            #parse("footer.vm")
+        </div>
+    </div>
+</content>
+
+
+<content tag="help">
+    <div id="help">
+        #set ($helpnavs = ["Slik virker Sesam", "Naviger mellom s&#248;kene", "Slik s&#248;ker du", "S&#248;keresultatet", "Drill deg ned", "Nyhetss&#248;k", "Bedriftss&#248;k", "Persons&#248;k", "Bildes&#248;k", "TV, v&#230;r og leksikon", "Ikonene i Sesam", "Sesams&#248;k som startside"])
+        #foreach ($menu in $helpnavs)
+        #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
+            <h3>$menu</h3>
+        #end
+        #end
+        #parse("helpText.vm")
+    </div>
+    <div id="footer_space">
+        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>
+        #parse("footer.vm")
+    </div>
+</content>
+
+
+</body>
+</html>

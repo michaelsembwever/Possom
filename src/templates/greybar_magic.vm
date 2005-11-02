@@ -1,0 +1,34 @@
+<html>
+<head>
+    <meta name="decorator" content="maindecorator">
+</head>
+
+<body>
+
+
+    <content tag="greybar_magic">
+        #searchBar()
+
+        <div id="greybar_main">
+            <div class="left">$text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$query</b></div>
+            <div class="right">&nbsp;</div>
+        </div>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" />
+        #set ($baseURL = "?c=d&amp;q=$query")
+        #if ($result.getQuerySuggestions().size() > 0)
+            <div class="spelling_suggestion">
+                <span class="stavekontroll"><img src="../images/star.gif" align="middle"/> $text.getMessage($locale, "didYouMean"):</span>
+                #foreach ($querySuggestion in $result.querySuggestions)
+                    <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
+                    #if  ($velocityCount < $result.getQuerySuggestions().size())
+                      eller
+                    #end
+                    #end
+                    ?
+            </div>
+        #end
+    </content>
+
+
+</body>
+</html>
