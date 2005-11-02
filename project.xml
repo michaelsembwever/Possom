@@ -8,7 +8,7 @@
     <name>Schibsted Sok Search-front</name>
     <groupId>schibstedsok</groupId>
     <artifactId>search-front-html</artifactId>
-    <currentVersion>0.1-b1-SNAPSHOT</currentVersion>
+    <currentVersion>1.0</currentVersion>
     <organization>
         <name>Schibsted Søk AS</name>
         <url>http://www.schibstedsok.no/</url>
@@ -290,29 +290,6 @@
             </properties>
         </dependency>
 
-        <!-- Schibsted Sok components -->
-
-        <!-- build only, is deployed separate -->
-        <dependency>
-            <groupId>schibstedsok</groupId>
-            <artifactId>persistence-dal</artifactId>
-            <version>0.1-b1-SNAPSHOT</version>
-            <type>jar</type>
-            <properties>
-                <war.bundle>false</war.bundle>
-            </properties>
-        </dependency>
-
-        <!-- build only, should be deployed as Hibernate SAR -->
-        <dependency>
-            <groupId>schibstedsok</groupId>
-            <artifactId>TV-feed-application</artifactId>
-            <version>0.1-b1-SNAPSHOT</version>
-            <type>jar</type>
-            <properties>
-                <war.bundle>false</war.bundle>
-            </properties>
-        </dependency>
         <!-- Testing -->
         <dependency>
             <groupId>conduct-testfw</groupId>
