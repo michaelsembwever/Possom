@@ -1,7 +1,7 @@
 <%@ page
         language="java"
         pageEncoding="ISO-8859-1"
-        contentType="text/html;charset=UTF-8"
+        contentType="text/html;charset=utf-8"
         %>
 
 <%@ page import="org.apache.struts.util.MessageResources,
@@ -75,11 +75,11 @@
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css"/>
-    <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css"/>
-    <link rel="icon" href="../favicon.ico" type="image/x-icon">
-    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
+    <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -90,7 +90,7 @@ function strep(qtag) {
         if(qlink.indexOf("q=")!=-1){
             qtag.href=qlink.replace(new RegExp("q=[^&$]*"),"q="+qenc);
         }else{
-            qtag.href=qlink+"&q="+qenc;
+            qtag.href=qlink+"&amp;q="+qenc;
         }
     }
     return 1;
@@ -103,12 +103,18 @@ function ml(ar, na, s) {
   if (s != '') ss = '?subject=' + s;
   document.write('<a href="mailto:' + str + ss + '">' + na + '<\/a>');
 }
+
+function setfocus() {
+    if(document.forms[0].q.value == ""){
+        document.forms[0].q.focus();
+    }
+}
 // -->
 </script>
 </head>
 
 
-<body <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("w") || currentC.equals("wip")) {%>onload="init();"<%}%>>
+<body onload="setfocus();<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
 
 <div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
 
@@ -315,13 +321,13 @@ function ml(ar, na, s) {
                              <% if ("n".equals(searchType)) { %>
                                     <% if (no_hits > 0) { %>
                                         <decorator:getProperty property="page.fast-results"/>
-                                    <%  } else { %>
+                                    <%  } else if(!q.trim().equals("")){ %>
                                         <decorator:getProperty property="page.noHits"/>
                                     <% } %>
                              <% } else if ("g".equals(searchType)) { %>
                                     <% if (int_hits > 0) { %>
                                         <decorator:getProperty property="page.global-results"/>
-                                    <%  } else { %>
+                                    <%  } else if(!q.trim().equals("")){ %>
                                         <decorator:getProperty property="page.noHits"/>
                                     <% } %>
                              <%  } else { %>
@@ -405,7 +411,7 @@ function ml(ar, na, s) {
                                         <% if (no_hits > 0) { %>
                                             <%--  shows the result as usual if 1 or less enrichments  --%>
                                             <decorator:getProperty property="page.fast-results"/>
-                                        <% } else {%>
+                                        <% } else if(!q.trim().equals("")){%>
                                             <decorator:getProperty property="page.noHits"/>
                                         <% } %>
                                     <% } %>
@@ -456,17 +462,15 @@ function ml(ar, na, s) {
 
             </td>
 
-            <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") ) {%>
+            <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("p")) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
-                </td>
-            <% }else if(currentC.equals("p")) { %>
-                <td class="cell_four" valign="top" width="225" style="padding-left: 20px;">
-                    <a href="http://www.picsearch.com/" target="_blank"><img src="../images/picsearch.gif" width="100" height="49" alt="" /></a>
                 </td>
             <%}%>
     </tr>
 </table>
+
+<decorator:getProperty property="page.map-script"/>
 
 </body>
 </html>

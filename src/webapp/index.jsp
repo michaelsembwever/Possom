@@ -31,6 +31,7 @@
 
     function check() {
         if(document.forms[0].q.value == ""){
+            document.forms[0].q.focus();
             return false;
         }
     }
@@ -61,9 +62,9 @@
         <input name="c" value="d" type="hidden" />
         <table width="680" border="0" cellspacing="0" cellpadding="0" style="padding-top:6px;">
             <tr>
-                <td width="400" valign="top"><input type="text" name="q" class="input_main" /></td>
+                <td width="400"><input type="text" name="q" class="input_main" /></td>
                 <td width="15">&nbsp;</td>
-                <td valign="bottom" width="265" align="left"><input type="submit" value="" id="submit_button" class="submit_d" /> &nbsp; <a href="search/?c=d&amp;smart=true&amp;pg=1&amp;q=">S&#248;k smart</a></td>
+                <td width="265" align="left"><input type="submit" value="Sesams&#248;k" id="submit_button" class="submit_d" /> &nbsp; <a href="search/?c=d&amp;smart=true&amp;pg=1&amp;q=">S&#248;k smart</a></td>
             </tr>
             <tr>
                 <td colspan="3" class="index_example" align="left">Eksempel: <a href="search/?lan=en&amp;c=d&amp;q=trollveggen">Trollveggen</a></td>
@@ -144,7 +145,7 @@
                 &nbsp;&nbsp;|&nbsp;&nbsp;
                 <a href="search/?c=d&amp;ads_help=true&amp;q=">Bli annons&#248;r</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="search/?c=d&amp;about=true&amp;q=">Om oss</a>
+                <a href="search/?c=d&amp;about=true&amp;q=&amp;pg=1">Om oss</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
                 <a href="search/?c=d&amp;q=&amp;help=true&amp;pg=1">Hjelp</a>
             </div>

@@ -1,3 +1,4 @@
+#if ($request.getParameter("pg").equals("1"))
 <p>
     <b>Kom til saken!</b><br />
     Sesam er en norsk s&#248;kemotor som hjelper deg &#229; finne akkurat det du vil ha, og ikke alt mulig annet.
@@ -20,15 +21,15 @@
 </p>
 <p>
     <b>Kilder i Sesam</b><br />
-    Sesam er delt inn i flere deler, eller innholdskilder. S&#248;k fra forsiden og knappen ”Sesams&#248;k” s&#248;ker i alle kilder samtidig og presenterer norske nett-treff  ”beriket” med treff i andre, relevante kilder. Du kan alltid bruke venstre marg til &#229; navigere deg videre til spesielle typer treff.
+    Sesam er delt inn i flere deler, eller innholdskilder. S&#248;k fra forsiden og knappen &#34;Sesams&#248;k&#34; s&#248;ker i alle kilder samtidig og presenterer norske nett-treff  ”beriket” med treff i andre, relevante kilder. Du kan alltid bruke venstre marg til &#229; navigere deg videre til spesielle typer treff.
 </p>
 <p>
     <a href="?c=d&amp;help=true&amp;pg=11&amp;q=">Les mer om de ulike typer berikelser og spesialiserte s&#248;k du kan gj&#248;re p&#229; Sesam.</a>
 </p>
 <p>
     <b>Tips Sesam om nettside</b><br/>
-    Sesam oppdateres fortløpende med nye nettsider. Dersom du savner noe, kan du tipse Sesam på
-    <script type="text/javascript">ml('116,105,112,115,117,114,108,64,115,101,115,97,109,46,110,111','','Tips om URL - Sesam.no');</script><noscript><b>(Må slå på javascript for å se e-postadresse)</b></noscript>. Sesam forbeholder seg retten til å vurdere tipsene som kommer inn.
+    Sesam oppdateres fortl&#248;pende med nye nettsider. Dersom du savner noe, kan du tipse Sesam p&#229;
+    <script type="text/javascript">ml('116,105,112,115,117,114,108,64,115,101,115,97,109,46,110,111','','Tips om URL - Sesam.no');</script><noscript><b>(M&#229; sl&#229; p&#229; javascript for &#229; se e-postadresse)</b></noscript>. Sesam forbeholder seg retten til &#229; vurdere tipsene som kommer inn.
 </p>
 <p>
     <b>Teknologi</b><br />
@@ -59,8 +60,26 @@
 <p>
     <b>Kontakt</b><br />
     Sesam tar gjerne i mot innspill, kommentarer og sp&#248;rsm&#229;l, enten du er bruker, annons&#248;r eller interessert av en annen grunn. Sesam kan kontaktes p&#229;
-    <a href="mailto:info@sesam.no">info@sesam.no</a>    
+    <a href="mailto:info@sesam.no">info@sesam.no</a>
 </p>
 <p>
     <a href="?c=d&amp;ads_help=true&amp;q=">Bli annons&#248;r</a>
 </p>
+
+
+#elseif($request.getParameter("pg").equals("2"))
+
+        <p>Sesam har følgende stillinger ledig:</p>
+        <p>
+            <b>Controller</b><br/>
+            Stillingen vil være sentral i å bygge opp støttefunksjoner for ledelsen i et nystartet selskap.<br/>
+            For fullstendig stillingsannonse klikk <a href="http://www.finn.no/finn/job/object/;pdc=1131006526881?finnkode=6326670&amp;sid=6alWvVMY1526874&amp;pos=1&amp;tot=1">her</a>
+        </p>
+
+        <p>
+            <b>Salgskonsuleneter</b><br/>
+            Vi søker Norges mest sultne Annonseselgere til Sesam.no.<br/>
+            For fullstendig stillingsannonse klikk <a href="http://www.finn.no/finn/job/object/;pdc=1130936510964?finnkode=6351758&amp;sid=6aZ9yDP9z510948&amp;pos=2&amp;tot=58">her</a>
+        </p>
+
+#end

@@ -38,48 +38,53 @@
 
 
 
-
-
-
 <div id="footer">
 
     #if ($pager && $pager.getNumberOfPages() > 1)
-    <div style="margin: 20px 0px 10px 0px;">
-        $text.getMessage($locale, "showMoreHits", $query)&nbsp;
-        #foreach ($page in [$pager.getFirstVisiblePage()..$pager.getLastVisiblePage()])
+        <table border="0" cellspacing="0" cellpadding="0" width="561" style="margin-bottom: 10px;">
+            <tr>
+                <td valign="bottom">
+                    $text.getMessage($locale, "showMoreHits", $query)&nbsp;
+                    #foreach ($page in [$pager.getFirstVisiblePage()..$pager.getLastVisiblePage()])
 
-            ## First Itereation.
-            #if ($velocityCount == 1)
-                #if (!$pager.isFirstPage())
-                    &lt;&lt;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfPreviousPage()">$text.getMessage($locale, "prev")</a>
-                #end
-            #end
+                        ## First Itereation.
+                        #if ($velocityCount == 1)
+                            #if (!$pager.isFirstPage())
+                                &lt;&lt;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfPreviousPage()">$text.getMessage($locale, "prev")</a>
+                            #end
+                        #end
 
-        #if ($page == $pager.getCurrentPage())
-            #if ($velocityCount == 1)
-                &nbsp;&nbsp;&nbsp;$page
-            #else
-                &nbsp;&nbsp;&nbsp;$page
-            #end
-        #else
-            #if ($velocityCount == 1)
-                &nbsp;&nbsp;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfPage($page)">$page</a>
-            #else
-                &nbsp;&nbsp;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfPage($page)">$page</a>
-            #end
-        #end
+                    #if ($page == $pager.getCurrentPage())
+                        #if ($velocityCount == 1)
+                            &nbsp;&nbsp;&nbsp;$page
+                        #else
+                            &nbsp;&nbsp;&nbsp;$page
+                        #end
+                    #else
+                        #if ($velocityCount == 1)
+                            &nbsp;&nbsp;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfPage($page)">$page</a>
+                        #else
+                            &nbsp;&nbsp;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfPage($page)">$page</a>
+                        #end
+                    #end
 
-        ## Last iteration.
-        #if ($page == ${pager.getLastVisiblePage()})
-            #if ($pager.isLastPage())
-                &nbsp;&nbsp;&nbsp;Neste&nbsp;&gt;&gt;
-            #else
-                &nbsp;&nbsp;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfNextPage()">$text.getMessage($locale, "next")</a>&nbsp;&gt;&gt;
-            #end
-        #end
+                    ## Last iteration.
+                    #if ($page == ${pager.getLastVisiblePage()})
+                        #if ($pager.isLastPage())
+                            &nbsp;&nbsp;&nbsp;Neste&nbsp;&gt;&gt;
+                        #else
+                            &nbsp;&nbsp;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfNextPage()">$text.getMessage($locale, "next")</a>&nbsp;&gt;&gt;
+                        #end
+                    #end
 
-        #end
-    </div>
+                    #end
+                </td>
+
+            #if ($currentTab.getKey() == "p")
+                <td valign="bottom" align="right"><a href="http://www.picsearch.com/" target="_blank"><img src="../images/picsearch.gif" width="100" height="49" alt="" /></a></td>
+            #end
+            </tr>
+        </table>
 
 #else
     <br clear="both" /><br />
@@ -97,15 +102,15 @@
                 <td width="400" valign="middle"><input type="text" name="q" value="$query" class="input_main" /></td>
                 <td width="8">&nbsp;</td>
                 #if ($currentTab.getKey() == "m")
-                <td valign="middle"><input type="submit" value="" id="submit_button" class="submit_m" /></td>
+                <td valign="middle"><input type="submit" value="Nyhetss&#248;k" id="submit_button" class="submit_m" /></td>
                 #elseif ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
-                <td valign="middle"><input type="submit" value="" id="submit_button" class="submit_y" /></td>
+                <td valign="middle"><input type="submit" value="Bedriftss&#248;k" id="submit_button" class="submit_y" /></td>
                 #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
-                <td valign="middle"><input type="submit" value="" id="submit_button" class="submit_w" /></td>
+                <td valign="middle"><input type="submit" value="Persons&#248;k" id="submit_button" class="submit_w" /></td>
                 #elseif ($currentTab.getKey() == "p")
-                <td valign="middle"><input type="submit" value="" id="submit_button" class="submit_p" /></td>
+                <td valign="middle"><input type="submit" value="Bildes&#248;k" id="submit_button" class="submit_p" /></td>
                 #else
-                <td valign="middle"><input type="submit" value="" id="submit_button" class="submit_d" /></td>
+                <td valign="middle"><input type="submit" value="Sesams&#248;k" id="submit_button" class="submit_d" /></td>
                 #end
             </tr>
         </table>

@@ -1,7 +1,7 @@
 //Create a DHTML layer
 
 function createLayer(name, inleft, intop, width, height, visible, content) {
-    document.writeln('<div id="' + name + '" name="' + name + '" style="position:absolute; overflow:hidden; left:' + inleft + 'px; top:' + intop + 'px; width:' + width + 'px; height:' + height + 'px;' + '; visibility:' + (visible ? 'visible;' : 'hidden;') +  '">');
+    document.writeln('<div id="' + name + '" name="' + name + '" style="position:absolute; overflow:hidden; z-index: 2; left:' + inleft + 'px; top:' + intop + 'px; width:' + width + 'px; height:' + height + 'px;' + '; visibility:' + (visible ? 'visible;' : 'hidden;') +  '">');
     document.writeln(content);
     document.writeln('</div>');
 }

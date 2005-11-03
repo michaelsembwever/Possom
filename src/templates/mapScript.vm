@@ -1,0 +1,35 @@
+                <script type="text/javascript" language="JavaScript">
+                     //zoom box
+                     content = '<img name="zoomImageTop" src="../images/mapicon/pixel.gif" width="1" height="1">';
+                     createLayer("zoomBoxTop",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
+                     content = '<img name="zoomImageLeft" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                     createLayer("zoomBoxLeft",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
+                     content = '<img name="zoomImageRight" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                     createLayer("zoomBoxRight",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
+                     content = '<img name="zoomImageBottom" src="../images/mapicon/pixel.gif" width=1 height=1>';
+                     createLayer("zoomBoxBottom",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
+
+                     initializeEvents();
+
+                     setLayerBackgroundColor("zoomBoxTop", zoomBoxColor);
+                     setLayerBackgroundColor("zoomBoxLeft", zoomBoxColor);
+                     setLayerBackgroundColor("zoomBoxRight", zoomBoxColor);
+                     setLayerBackgroundColor("zoomBoxBottom", zoomBoxColor);
+                </script>
+
+                <map id="zoombar_1" name="zoombarmap">
+                       <area shape="rect" name="M&aring;lestokkniv&aring; 7"
+                        coords="0,0,19,18"    href="javascript:zoomlevel(7);" title="&#34;Zoom til m&aring;lestokkniv&aring; 7&#34;" />
+                       <area shape="rect" name="M&aring;lestokkniv&aring; 6"
+                        coords="25,0,44,18"   href="javascript:zoomlevel(6);" title="&#34;Zoom til m&aring;lestokkniv&aring; 6&#34;" />
+                       <area shape="rect" name="M&aring;lestokkniv&aring; 5"
+                        coords="50,0,69,18"   href="javascript: zoomlevel(5);" title="&#34;Zoom til m&aring;lestokkniv&aring; 5&#34;" />
+                       <area shape="rect" name="M&aring;lestokkniv&aring; 4"
+                        coords="75,0,94,18"   href="javascript: zoomlevel(4);" title="&#34;Zoom til m&aring;lestokkniv&aring; 4&#34;" />
+                       <area shape="rect" name="M&aring;lestokkniv&aring; 3"
+                        coords="100,0,119,18" href="javascript:zoomlevel(3);" title="&#34;Zoom til m&aring;lestokkniv&aring; 3&#34;" />
+                       <area shape="rect" name="M&aring;lestokkniv&aring; 2"
+                        coords="125,0,144,18" href="javascript:zoomlevel(2);" title="&#34;Zoom til m&aring;lestokkniv&aring; 2&#34;" />
+                       <area shape="rect" name="M&aring;lestokkniv&aring; 1"
+                        coords="150,0,168,18" href="javascript:zoomlevel(1);" title="&#34;Zoom til m&aring;lestokkniv&aring; 1&#34;" />
+                </map>

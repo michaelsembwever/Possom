@@ -167,9 +167,28 @@
 
 
 <content tag="about-nav">
+    #set ($helpnavs = ["Om oss", "Stilling Ledig"])
     <div style="margin-top: 61px;">
-        <a href="../doc/annonse.pdf" style="font-size:1.1em">Stilling ledig</a>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <div class="geo_header">Om Sesam</div>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
     </div>
+    <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
+        #foreach ($menu in $helpnavs)
+        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=&amp;about=true&amp;pg=$velocityCount";'>
+            <td class="nav_pad">
+                #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
+                    $menu
+                #else
+                    <a href="?c=d&amp;q=&amp;about=true&amp;pg=$velocityCount">$menu</a>
+                #end
+            </td>
+        </tr>
+        <tr>
+            <td class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td>
+        </tr>
+        #end
+    </table>
 </content>
 
 <content tag="fast-results">
@@ -324,6 +343,7 @@
         #if ($request.getParameter("pg"))
           #if ($request.getParameter("pg")=="1")
               <h3>Tegn og operat&#248;rer</h3>
+              Tegn og operat&#248;rer fungerer kun i Sesams&#248;k og Nyhetss&#248;k.
           #elseif ($request.getParameter("pg")=="2")
               <h3>Magiske Sesam-ord</h3>
           #elseif ($request.getParameter("pg")=="3")
@@ -339,9 +359,14 @@
 </content>
 
 <content tag="about">
+    #set ($helpnavs = ["Om oss", "Stilling Ledig"])
     <div id="help">
-        <h3>Om Sesam</h3>
-        #include("aboutText.vm")
+        #foreach ($menu in $helpnavs)
+        #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
+            <h3>$menu</h3>
+        #end
+        #end
+        #parse("aboutText.vm")
     </div>
     <div id="footer_space">
         <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>

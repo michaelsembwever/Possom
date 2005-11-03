@@ -25,7 +25,7 @@
                    <span class="timestamp">Kl. $item.getField('hour')  $item.getField('channel')</span>
                     <br/>
                 #end
-                <a href="http://fredag.dagbladet.no/tv/">S&oslash;k i hele TV-programmet</a>
+                <a href="http://fredag.dagbladet.no/tv/">S&oslash;k i hele tv-programmet</a>
                 </td>
             </tr>
         </table>

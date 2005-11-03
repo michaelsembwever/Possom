@@ -262,6 +262,7 @@ a {
 
 .input_main{
     border: 1px solid #ACA9AE;
+    font-family: arial, verdana, sans-serif;
     font-size: 12px;
     padding: 3px 2px 3px 2px;
     width: 400px;
@@ -1014,7 +1015,10 @@ a {
 /* =Submit buttons */
 
 #submit_button{
-    border: 0px;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-family: verdana, arial, sans-serif;
+    font-size: 11px;
     width: 98px;
     height: 22px;
     cursor: pointer;
@@ -1022,25 +1026,60 @@ a {
 
 
 .submit_d{
-    background-image: url(../images/searchbar/search_d.jpg);
+    background: #A63F83;
+    border-top: 1px solid #A63F83;
+    border-left: 1px solid #A63F83;
+    border-bottom: 1px solid #7F366E;
+    border-right: 1px solid #7F366E;
+    background-image: url(../images/searchbar/search_bg_d.jpg);
+    background-repeat: no-repeat;
+    background-position: 97% 24%;
 }
 
 
 .submit_m{
-    background-image: url(../images/searchbar/search_m.jpg);
+    background: #786EB7;
+    border-top: 1px solid #7F73C5;
+    border-left: 1px solid #7F73C5;
+    border-bottom: 1px solid #7067A2;
+    border-right: 1px solid #7067A2;
+    background-image: url(../images/searchbar/search_bg_m.jpg);
+    background-repeat: no-repeat;
+    background-position: 98% 24%;
 }
 
 
 .submit_y{
-    background-image: url(../images/searchbar/search_y.jpg);
+    background: #F8A91F;
+    border-top: 1px solid #F8A91F;
+    border-left: 1px solid #F8A91F;
+    border-bottom: 1px solid #DC8F08;
+    border-right: 1px solid #DC8F08;
+    background-image: url(../images/searchbar/search_bg_y.jpg);
+    background-repeat: no-repeat;
+    background-position: 98% 24%;
 }
 
 
 .submit_w{
-    background-image: url(../images/searchbar/search_w.jpg);
+    background: #50BAD3;
+    border-top: 1px solid #50BAD3;
+    border-left: 1px solid #50BAD3;
+    border-bottom: 1px solid #4B99AB;
+    border-right: 1px solid #4B99AB;
+    background-image: url(../images/searchbar/search_bg_w.jpg);
+    background-repeat: no-repeat;
+    background-position: 99% 24%;
 }
 
 
 .submit_p{
-    background-image: url(../images/searchbar/search_p.jpg);
+    background: #7C798A;
+    border-top: 1px solid #7C798A;
+    border-left: 1px solid #7C798A;
+    border-bottom: 1px solid #5B5964;
+    border-right: 1px solid #5B5964;
+    background-image: url(../images/searchbar/search_bg_p.jpg);
+    background-repeat: no-repeat;
+    background-position: 97% 24%;
 }

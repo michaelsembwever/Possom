@@ -1,36 +1,25 @@
 package no.schibstedsok.front.searchportal.analyzer;
 
+import no.schibstedsok.front.searchportal.http.HTTPClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.lang.time.StopWatch;
 import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
 import org.w3c.dom.Element;
-import org.xml.sax.InputSource;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.ParserConfigurationException;
-import java.util.*;
-import java.net.URLEncoder;
-import java.io.UnsupportedEncodingException;
-import java.io.StringReader;
 import java.io.IOException;
-
-import no.schibstedsok.front.searchportal.QueryTokenizer;
-import no.schibstedsok.front.searchportal.http.HTTPClient;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * VeryFastTokenEvaluator is part of no.schibstedsok.front.searchportal.analyzer
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
  * @version 0.1
- * @vesrion $Revision$, $Author$, $Date$
+ * @version $Revision$, $Author$, $Date$
  */
 public class VeryFastTokenEvaluator implements TokenEvaluator {
 
@@ -51,7 +40,7 @@ public class VeryFastTokenEvaluator implements TokenEvaluator {
     private Map analysisResult;
 
     private HTTPClient httpClient = HTTPClient.instance("token_evaluator", "localhost", 15200);
-
+                  
     /**
      * Search fast and initialize analyzis result
      * @param query
@@ -93,6 +82,8 @@ public class VeryFastTokenEvaluator implements TokenEvaluator {
         if (query == null || query.equals("")) {
             return;
         }
+
+        query = query.replaceAll("\"", "");
 
         String token = null;
         try {

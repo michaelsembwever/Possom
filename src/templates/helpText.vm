@@ -16,7 +16,7 @@ Treff p&#229; norske nettsider vises frem f&#248;rst. I noen tilfeller er beskri
 #elseif ($request.getParameter("pg").equals("3"))
 <p>Bruk ett eller flere ord n&#229;r du s&#248;ker. Sesams&#248;k behandler s&#248;keuttrykket som at alle ordene skal v&#230;re med i s&#248;ketreffene. Et godt r&#229;d er &#229; starte s&#229; enkelt og konkret som mulig. Bruk deskriptive, spesifikke ord som er vanlige innenfor emnet du er interessert i.</p>
 <p>F&#229;r du veldig mange treff, og de f&#248;rste ikke er relevante for deg, tenk etter om du kan v&#230;re enda mer spesifikk i s&#248;keordene.</p>
-<p>Hvis du ikke f&#229;r for f&#229; eller ingen relevante treff, b&#248;r du pr&#248;ve synonymer, f&#230;rre ord eller mer generelle ord. Feilstavinger og s&#230;rskrivinger av sammensatte ord kan ogs&#229; virke.</p>
+<p>Hvis du f&#229;r for f&#229; eller ingen relevante treff, b&#248;r du pr&#248;ve synonymer, f&#230;rre ord eller mer generelle ord. Feilstavinger og s&#230;rskrivinger av sammensatte ord kan ogs&#229; virke.</p>
 <p>Etter at du har s&#248;kt med Sesams&#248;k, kan du navigere deg videre og plukke ut treff i norske eller internasjonale nettsider, eller treff bare blant bedrifter, personer, nyheter eller bilder.</p>
 <p><b>Pluss, minus og frase</b><br/>
 Ser du etter ord i bestemt rekkef&#248;lge, bruk anf&#248;rselstegn rundt ordene. Du kan bruke + (pluss) for &#229; inkludere bestemt ord, - (minus) for &#229; ekskludere ett og * (asterisk) for &#229; s&#248;ke p&#229; alle ord som begynner p&#229; det du skriver f&#248;r *.</p>
@@ -25,8 +25,8 @@ Ser du etter ord i bestemt rekkef&#248;lge, bruk anf&#248;rselstegn rundt ordene
 
 
 #elseif ($request.getParameter("pg").equals("4"))
-<p>S&#248;ker du fra forsiden til Sesam s&#248;kes det i norske og internasjonale nettsider, og de andre kildene i Sesam - nyheter, personer, bedrifter og bilder.</p>
-<p>Den gr&#229; linjen oppsummerer hvor mange treff du har f&#229;tt p&#229; s&#248;keordene i norske nettsider. Se til venstre for tall som viser hvor mange treff som er i internasjonale s&#248;keresultater og i spesielle deler av Sesam.</p>
+<p>S&#248;ker du fra forsiden til Sesam s&#248;kes det i norske nettsider, og de andre kildene i Sesam - nyheter, personer, bedrifter og bilder.</p>
+<p>Den gr&#229; linjen under s&#248;kefeltet oppsummerer hvor mange treff du har f&#229;tt p&#229; s&#248;keordene i norske nettsider. Til venstre for s&#248;kefeltet finner du antall treff i de andre kildene.</p>
 <p>P&#229; trefflisten vises de mest relevante treffene &#248;verst. Flere treff finner du ved &#229; bla deg videre til flere treff ved hjelp av sidetallene og "Neste"-lenken nederst p&#229; siden.</p>
 <p>P&#229; trefflisten og med lenkene i venstre marg kan du peile deg videre i s&#248;ket. Du kan for eksempel velge "Bedriftss&#248;k" og komme til treffene som passet s&#248;keuttrykket ditt bare innenfor bedrifter. Du kommer tilbake til alle treffene i hele Sesam ved &#229; velge Sesams&#248;k i &#248;vre linje eller venstre marg.</p>
 <p>Forskjellige ikoner brukes for &#229; vise hva slags informasjon du finner. Her finner du en <a href="?c=d&amp;q=&amp;help=true&amp;pg=11">oversikt over ikonene</a>.</p>
@@ -37,7 +37,7 @@ Sesam pr&#248;ver p&#229; "automagisk" vis &#229; forst&#229; hva du egentlig le
 
 #elseif ($request.getParameter("pg").equals("5"))
 <p>N&#229;r du s&#248;ker generelt i Sesam og f&#229;r mange treff, hjelper vi deg &#229; komme n&#230;rmere og n&#230;rmere det du leter etter.</p>
-<p>Se i venstre marg: S&#248;ker du fra Sesams forside kan du velge &#229; g&#229; videre til treff bare blant nyheter, personer, bedrifter eller bilder. Du kan ogs&#229; veksle mellom treff i norske og i internasjonale nettsider.</p>
+<p>Se i venstre marg: S&#248;ker du fra Sesams forside kan du velge &#229; g&#229; videre til treff bare blant nyheter, personer, bedrifter eller bilder.</p>
 <p>De forskjellige s&#248;kene er markert med forskjellige ikoner og farger. Her ser du en <a href="?c=d&amp;q=&amp;help=true&amp;pg=11">oversikt over ikonene</a>.</p>
 <p>N&#229;r du har valgt treff i ett av s&#248;kene, for eksempel persons&#248;k, fortsetter du &#229; bruke venstre marg til &#229; drille deg lenger ned i resultatene og f&#229; mer spesifikk informasjon. Hva som vises her varierer med hvilket s&#248;k du bruker. Har du for eksempel s&#248;kt p&#229; Anne og g&#229;r til persons&#248;k, kan du derfra sortere p&#229; sted, og p&#229; ulike etternavn og fornavn.</p>
 <p><b>Snevrer inn s&#248;ket</b><br/>
@@ -53,7 +53,7 @@ N&#229;r du bruker linkene i venstre marg til &#229; navigere deg nedover, snevr
 N&#229;r du st&#229;r i nyhetss&#248;k vil det neste s&#248;ket du gj&#248;r i s&#248;kefeltet ogs&#229; gj&#248;res innenfor nyhetss&#248;k. Hvis du vil s&#248;ke nettsider eller annet, klikk Sesams&#248;k enten f&#248;r eller etter at du gj&#248;r ditt neste s&#248;k.</p>
 <p><b>Nettaviser og papiraviser</b><br/>
 "Norske nyheter" viser treff i aviser og tidsskrifter p&#229; nett. N&#229;r du klikker p&#229; en tittel, kommer du til originalen p&#229; avisens eller tidsskriftets nettsted. Arkivet inneholder nyheter og artikler fra de siste ca 2 &#229;r.</p>
-<p>"Papiraviser 1983-2005" er treff fra Mediearkivet. Mange artikler st&#229;r bare i avisens papirutgaven og kommer ikke ut p&#229; nett. Mediearkivet har samlet alle artikler som har st&#229;tt i de fleste st&#248;rre norske avisene siden 1985, og fram til dags dato. Her vil du derfor finne artikler du ikke finner under "Norske nyheter". N&#229;r du klikker p&#229; en av titlene i trefflisten, f&#229;r du opp hele artikkelen i fulltekst uten &#229; forlate Sesam.</p>
+<p>"Papiraviser 1983-2005" er treff fra Mediearkivet. Mange artikler st&#229;r bare i avisens papirutgave og kommer ikke ut p&#229; nett. Mediearkivet har samlet alle artikler som har st&#229;tt i de fleste st&#248;rre norske avisene siden 1985, og fram til dags dato. Her vil du derfor finne artikler du ikke finner under "Norske nyheter". N&#229;r du klikker p&#229; en av titlene i trefflisten, f&#229;r du opp hele artikkelen i fulltekst uten &#229; forlate Sesam.</p>
 <p>"internasjonale nyheter" viser treff i internasjonale nettaviser og medier p&#229; nett. Arkivet inneholder nyheter og artikler.</p>
 <p><b>Sorter etter avis</b><br/>
 Under "Velg nyheter i kilde" sorterer du ytterligere, etter avis. Hvilke aviser som listes opp her avhenger om du i menyen ovenfor ("Velg treff i") har valgt norske nyheter, internasjonale nyheter eller papiraviser.</p>
@@ -120,8 +120,8 @@ Hvis ikke personen du leter er med p&#229; f&#248;rste treffside, kan du gj&#248
 Under overskriften "Sted" i venstre marg kan du zoome deg ned til det omr&#229;det du vet eller tror personen bor i. Du vil f&#248;rst se hvilke fylker det bor personer som passer til s&#248;ket ditt i. De som har flest ligger &#248;verst. Lenken "Vis alle" tar fram alle fylkene med treff, hvis det er flere enn seks. Under hvert fylke listes det opp kommuner, og under kommunene byer, bydeler og steder.</p>
 <p>Du kan komme deg opp igjen p&#229; landsniv&#229; ved &#229; klikke p&#229; "&gt;&gt; Fylker", og p&#229; fylkesniv&#229; ved &#229; klikke fylkets navn, og tilsvarende for kommuner, bydeler og mindre steder.</p>
 <p><b>Sorter etter fornavn</b><br/>
-Under overskriften "Fornavn" lister Sesam opp forskjellige fornavn som passer til s&#248;ket ditt. Har du s&#248;kt p&#229; <a href="?c=w&amp;q=Hansen%20Oslo">Hansen Oslo</a>, vil du f&#229; mange forskjellige forslag her. N&#229;r det er mange fornavn, f&#229;r du opp resten ved &#229; klikke lenken "Vis alle". Velger du et navn fra listen, f&#229;r du opp én eller flere personer med navnet. Hvis du vil tilbake til alle fornavnene s&#248;ket traff p&#229;, klikk deg tilbake med "&gt;&gt; Alle fornavn".</p>
-<p>Du kan bruke sorteringen p&#229; sted, fornavn og etternavn hver for seg eller sammen. Har du s&#248;kt p&#229; Jan Johansen, klikket deg ned til Fredrikstad under sted, Jan Erik under fornavn og Johansen under etternavn, vil du f&#229; fram en liste over de som har Jan Erik og Johansen i navnet og bor i Fredrikstad. Klikker du deg deretter opp igjen til ¯stfold, vil du f&#229; opp personer som har Jan Erik og Johansen i navnet, og som har adresse i ¯stfold.</p>
+Under overskriften "Fornavn" lister Sesam opp forskjellige fornavn som passer til s&#248;ket ditt. Har du s&#248;kt p&#229; <a href="?c=w&amp;q=Hansen%20Oslo">Hansen Oslo</a>, vil du f&#229; mange forskjellige forslag her. N&#229;r det er mange fornavn, f&#229;r du opp resten ved &#229; klikke lenken "Vis alle". Velger du et navn fra listen, f&#229;r du opp en eller flere personer med navnet. Hvis du vil tilbake til alle fornavnene s&#248;ket traff p&#229;, klikk deg tilbake med "&gt;&gt; Alle fornavn".</p>
+<p>Du kan bruke sorteringen p&#229; sted, fornavn og etternavn hver for seg eller sammen. Har du s&#248;kt p&#229; Jan Johansen, klikket deg ned til Fredrikstad under sted, Jan Erik under fornavn og Johansen under etternavn, vil du f&#229; fram en liste over de som har Jan Erik og Johansen i navnet og bor i Fredrikstad. Klikker du deg deretter opp igjen til &#216;stfold, vil du f&#229; opp personer som har Jan Erik og Johansen i navnet, og som har adresse i &#216;stfold.</p>
 <p><b>Usikker p&#229; stavingen av navnet?</b><br/>
 S&#248;ket h&#229;ndterer flere stavem&#229;ter og dobbeltnavn, s&#229; hvis du s&#248;ker med fornavnet <a href="?c=w&amp;q=Kathrine">Kathrine</a>, vil du ogs&#229; f&#229; treff p&#229; blant annet Cathrine, Katrine og Anne-Cathrine. Med <a href="?c=w&amp;q=Hansen">Hansen</a> vil du ogs&#229; f&#229; treff p&#229; Hanssen.</p>
 <p><b>Plassering p&#229; kart</b><br/>
@@ -130,7 +130,7 @@ Alle personer som har en fullstendig adresse vises p&#229; kart. Du zoomer opp o
 
 
 #elseif ($request.getParameter("pg").equals("9"))
-<p>Sesams bildes&#248;k lar deg finne bilder p&#229; internett. Legg inn beskrivende ord, navn p&#229; personer, og lignende. Du vil f&#229; treff p&#229; norske og internasjonale nettsider som har et bilde som passer til s&#248;keordene. Bildene kan v&#230;re fotografier, logoer, ikoner og grafikk som er lagt ut i et bildeformat.</p>
+<p>Sesams bildes&#248;k lar deg finne bilder p&#229; internett ved hjelp av <a href="http://www.picsearch.com">picsearch.com</a>. Legg inn beskrivende ord, navn p&#229; personer, og lignende. Du vil f&#229; treff p&#229; norske og internasjonale nettsider som har et bilde som passer til s&#248;keordene. Bildene kan v&#230;re fotografier, logoer, ikoner og grafikk som er lagt ut i et bildeformat.</p>
 <p>Husk at bilder p&#229; internett ikke er til fri bruk bare fordi de er lagt ut p&#229; nettet og er s&#248;kbare p&#229; s&#248;ketjenester p&#229; Sesam. Hvis du vil bruke et bilde til noe, sp&#248;r eieren f&#248;rst.</p>
 <p><font color="red">S&#248;ket har et innebygget filter mot st&#248;tende innhold. Sesam kan likevel ikke garantere at man ikke kan finne st&#248;tende bilder i bildes&#248;ket.</font></p>
 <p><b>S&#248;k p&#229; nytt</b><br/>
@@ -163,8 +163,8 @@ Vi lenker til artikler i det norske, dugnadsbaserte leksikonet Wikipedia dersom 
 <p><img src="../images/enrichment/pic.jpg" align="left" style="padding-right: 4px;" /><b>Bilder</b><br />Ikonet signaliserer relevante treff i bilder. Du kan ogs&#229; s&#248;ke direkte i bilder ved &#229; klikke deg inn p&#229; bildes&#248;k.</p>
 <p>Bildes&#248;ket er basert p&#229; crawling av internett p&#229; samme m&#229;te som nettsidene v&#229;re. Rettighetene til bildene ligger hos de som har publisert bildene, ikke hos Sesam. Bildes&#248;ket er internasjonalt, og har et innebygget filter mot st&#248;tende innhold.</p>
 <p><img src="../images/enrichment/wiki.jpg" align="left" style="padding-right: 4px;" /><b>Leksikon</b><br />Ikonet signaliserer relevante treff fra det folkeskapte nettleksikonet Wikipedia.</p>
-<p><img src="../images/enrichment/tv_icon.jpg" align="left" style="padding-right: 4px;" /><b>TV</b><br />Ikonet signaliserer relevante treff fra dagens program i Dagbladets TV-guide.</p>
-<p><img src="../images/enrichment/weather/weathericon_1.jpg" align="left" style="padding-right: 4px;" /><b>V&#230;r</b><br />Ikonet signaliserer relevante treff i v&#230;rvarslingen hos VG.</p>
+<p><img src="../images/enrichment/tv_icon.jpg" align="left" style="padding-right: 4px;" /><b>TV</b><br />Ikonet signaliserer relevante treff i dagens tv-program fra Universum AS. For mer utfyllende tv-program lenkes du til Dagbladets tv-guide.</p>
+<p><img src="../images/enrichment/weather/weathericon_1.jpg" align="left" style="padding-right: 4px;" /><b>V&#230;r</b><br />Ikonet signaliserer relevante treff i v&#230;rvarslingen fra Storm Weather Center. For mer utfyllende v&#230;varsling, lenkes du videre til VG.</p>
 
 
 #elseif ($request.getParameter("pg").equals("12"))

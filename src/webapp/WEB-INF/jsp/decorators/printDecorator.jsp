@@ -1,7 +1,7 @@
 <%@ page
         language="java"
         pageEncoding="ISO-8859-1"
-        contentType="text/html;charset=UTF-8"%>
+        contentType="text/html;charset=utf-8"%>
 
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 

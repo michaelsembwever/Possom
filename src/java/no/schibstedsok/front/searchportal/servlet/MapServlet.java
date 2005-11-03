@@ -4,30 +4,22 @@
  */
 package no.schibstedsok.front.searchportal.servlet;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import javax.servlet.*;
-import javax.servlet.http.*;
-
-import no.geodata.maputil.CoordHelper;
-import no.geodata.maputil.MapPoint;
-import no.geodata.maputil.MapEnvelope;
-
-
-//webservices
 import no.geodata.arcweb.AuthenticationLocator;
 import no.geodata.arcweb.AuthenticationSoap;
-import no.geodata.prod.webservices.arcweb.Envelope;
+import no.geodata.maputil.CoordHelper;
+import no.geodata.maputil.MapEnvelope;
+import no.geodata.maputil.MapPoint;
+import no.geodata.prod.webservices.arcweb.*;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.rpc.ServiceException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.rmi.RemoteException;
-import no.geodata.prod.webservices.arcweb.MapImageInfo;
-import no.geodata.prod.webservices.arcweb.MapImageLocator;
-import no.geodata.prod.webservices.arcweb.MapImageOptions;
-import no.geodata.prod.webservices.arcweb.MapImageSize;
-import no.geodata.prod.webservices.arcweb.MapImageSoap;
+import java.util.Vector;
 
 
 /**
@@ -106,7 +98,7 @@ public class MapServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
 
         String sUrl = new String();

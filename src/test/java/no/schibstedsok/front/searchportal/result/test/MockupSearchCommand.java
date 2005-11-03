@@ -3,6 +3,7 @@ package no.schibstedsok.front.searchportal.result.test;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.result.SearchResult;
 
 import java.util.HashMap;
 
@@ -27,6 +28,10 @@ public class MockupSearchCommand implements SearchCommand {
 
     public RunningQuery getQuery() {
         return query;
+    }
+
+    public SearchResult execute() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public Object call() throws Exception {

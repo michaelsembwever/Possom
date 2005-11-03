@@ -205,7 +205,9 @@ function yPixToCoord(ypix){
 //start zoom in.... box displayed
 function startZoomBox(e) {
     //Movelayer bare resposisjonerer for å forsikre om at bildet ligger der det skal
-    //moveLayer("mapcontent",xMapOffset,yMapOffset);
+    if(isNS){
+        moveLayer("mapcontent",xMapOffset,yMapOffset);
+    }
     getImageXY(e);
     //keep it within the MapImage
     if ((mouseX<imgWidth) && (mouseY<imgHeigth) && (mouseY>0)) {

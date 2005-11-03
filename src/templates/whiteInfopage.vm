@@ -127,7 +127,7 @@
                             <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" alt="" /></td>
                         </tr>
                         <tr>
-                            <td valign="top">$text.getMessage($locale, "visitAddress")</td>
+                            <td valign="top">$text.getMessage($locale, "address")</td>
                             <td valign="top" class="cellright">$!{person.getField('wpadresse')}#if ($person.getField('wpadresse') && ($person.getField('ywpostnr') || $person.getField('ywpoststed'))),#end $!{person.getField('ywpostnr')} $!{person.getField('ywpoststed')}</td>
                         </tr>
                         <tr>
@@ -200,47 +200,15 @@
                  </div>
             </div>
 
-            #if ($person.getField('xcoord') && $person.getField('ycoord'))
-            <script type="text/javascript" language="JavaScript">
-                 //zoom box
-                 content = '<img name="zoomImageTop" src="../images/mapicon/pixel.gif" width="1" height="1" alt="" />';
-                 createLayer("zoomBoxTop",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
-                 content = '<img name="zoomImageLeft" src="../images/mapicon/pixel.gif" width=1 height=1 alt="" />';
-                 createLayer("zoomBoxLeft",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
-                 content = '<img name="zoomImageRight" src="../images/mapicon/pixel.gif" width=1 height=1 alt="" />';
-                 createLayer("zoomBoxRight",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
-                 content = '<img name="zoomImageBottom" src="../images/mapicon/pixel.gif" width=1 height=1 alt="" />';
-                 createLayer("zoomBoxBottom",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
-
-                 initializeEvents();
-
-                 setLayerBackgroundColor("zoomBoxTop", zoomBoxColor);
-                 setLayerBackgroundColor("zoomBoxLeft", zoomBoxColor);
-                 setLayerBackgroundColor("zoomBoxRight", zoomBoxColor);
-                 setLayerBackgroundColor("zoomBoxBottom", zoomBoxColor);
-            </script>
-            #end
-
-             <map id="zoombar_1" name="zoombarmap">
-                   <area shape="rect" name="M&aring;lestokkniv&aring; 7"
-                    coords="5,3,32,38" href="javascript:zoomlevel(7);" title="&#34;Zoom til m&aring;lestokkniv&aring; 7&#34;" />
-                   <area shape="rect" name="M&aring;lestokkniv&aring; 6"
-                    coords="32,4,50,37" href="javascript:zoomlevel(6);" title="&#34;Zoom til m&aring;lestokkniv&aring; 6&#34;" />
-                   <area shape="rect" name="M&aring;lestokkniv&aring; 5"
-                    coords="52,4,68,37" href="javascript: zoomlevel(5);" title="&#34;Zoom til m&aring;lestokkniv&aring; 5&#34;" />
-                   <area shape="rect" name="M&aring;lestokkniv&aring; 4"
-                    coords="70,5,90,38" href="javascript: zoomlevel(4);" title="&#34;Zoom til m&aring;lestokkniv&aring; 4&#34;" />
-                   <area shape="rect" name="M&aring;lestokkniv&aring; 3"
-                    coords="91,5,114,37" href="javascript:zoomlevel(3);" title="&#34;Zoom til m&aring;lestokkniv&aring; 3&#34;" />
-                   <area shape="rect" name="M&aring;lestokkniv&aring; 2"
-                    coords="115,5,135,37" href="javascript:zoomlevel(2);" title="&#34;Zoom til m&aring;lestokkniv&aring; 2&#34;" />
-                   <area shape="rect" name="M&aring;lestokkniv&aring; 1"
-                    coords="136,5,166,37" href="javascript:zoomlevel(1);" title="&#34;Zoom til m&aring;lestokkniv&aring; 1&#34;" />
-            </map>
-
-
         <br clear="both"/>
 
+</content>
+
+
+<content tag="map-script">
+    #if ($person.getField('xcoord') && $person.getField('ycoord'))
+        #include("mapScript.vm")
+    #end
 </content>
 
 

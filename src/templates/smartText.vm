@@ -57,7 +57,7 @@
 *#
 #elseif ($request.getParameter("pg") && $request.getParameter("pg")=="2")
     <p>
-        Du kan bruke spesielle ord for &#229; trigge Sesam til &#229; gi deg bestemte typer informasjon og treff &#248;verst p&#229; resultatsiden.
+        Du kan bruke spesielle ord for &#229; f&#229; Sesam til &#229; trylle fram bestemte typer informasjon og treff &#248;verst p&#229; resultatsiden.
     </p>
     <p>
         <b>V&#230;rvarsel:</b><br />
