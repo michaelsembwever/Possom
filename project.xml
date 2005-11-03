@@ -324,6 +324,7 @@
         <resources>
             <resource>
                 <directory>src/conf</directory>
+                <filtering>true</filtering>
                 <includes>
                     <include>*.xml</include>
                     <include>*.properties</include>
