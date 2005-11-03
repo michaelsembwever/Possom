@@ -39,13 +39,14 @@ public class VeryFastTokenEvaluator implements TokenEvaluator {
     private static Log log = LogFactory.getLog(VeryFastTokenEvaluator.class);
     private Map analysisResult;
 
-    private HTTPClient httpClient = HTTPClient.instance("token_evaluator", "localhost", 15200);
-                  
+    private HTTPClient httpClient = null;
+
     /**
      * Search fast and initialize analyzis result
      * @param query
      */
-    public VeryFastTokenEvaluator(String query) {
+    public VeryFastTokenEvaluator(HTTPClient client, String query) {
+        this.httpClient = client;
         queryFast(query);
     }
 
@@ -110,23 +111,16 @@ public class VeryFastTokenEvaluator implements TokenEvaluator {
                 Element trans = (Element) l.item(i++);
                 String name = trans.getAttribute("NAME");
                 analysisResult.put(name, new Boolean(true));
-
                 String custom = trans.getAttribute("CUSTOM");
-
                 custom = custom.replaceAll("->", "");
-
                 if (custom.equalsIgnoreCase(query)) {
-
                     String key = name.substring(name.indexOf('_') + 1, name.indexOf("QM"));
-
                     analysisResult.put("FastQT_exact_" + key + "QM", new Boolean(true));
                 }
-
                 if (name.indexOf("fullname") > -1) {
                     fullNameMatch = custom;
                 }
             }
-
             if (wikiMatch != null && fullNameMatch != null) {
                 if (fullNameMatch.length() > wikiMatch.length()) {
                     analysisResult.put("FastQT_nameLongerThanWikipediaQM", new Boolean(true));

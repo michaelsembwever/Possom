@@ -4,6 +4,12 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 
 import java.util.Map;
+import java.util.Properties;
+import java.io.IOException;
+
+import no.schibstedsok.front.searchportal.http.HTTPClient;
+import no.schibstedsok.front.searchportal.util.SearchConstants;
+import no.schibstedsok.front.searchportal.InfrastructureException;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -19,7 +25,7 @@ public class TokenEvaluatorFactory {
     private Map parameters;
 
     public TokenEvaluatorFactory(String query, Map parameters) {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: TokenEvaluatorFactory()");
         }
         this.query = query;
@@ -96,9 +102,28 @@ public class TokenEvaluatorFactory {
 
     private TokenEvaluator getFastEvaluator() {
         if (fastEvaluator == null) {
-            synchronized(this) {
-                if (fastEvaluator == null) {
-                    fastEvaluator = new VeryFastTokenEvaluator(query);
+
+            if(log.isInfoEnabled()){
+                log.info("getFastEvaluator(): Loading new instance ");
+            }
+            synchronized (this) {
+                try {
+                    Properties props = new Properties();
+                    props.load(this.getClass().getResourceAsStream("/" + SearchConstants.CONFIGURATION_FILE));
+
+                    log.info("Read configuration from " + SearchConstants.CONFIGURATION_FILE);
+                    String host = props.getProperty("tokenevaluator.host");
+                    int port = new Integer(props.getProperty("tokenevaluator.port")).intValue();
+                    fastEvaluator = new VeryFastTokenEvaluator(
+                            HTTPClient.instance("token_evaluator", host, port), query);
+
+                    if(log.isInfoEnabled()){
+                        log.info("getFastEvaluator(): host = " + host);
+                        log.info("getFastEvalutor(): port = " + port);
+                    }
+                } catch (IOException e) {
+                    log.error("XMLSearchTabsCreator When Reading Configuration from " + SearchConstants.CONFIGURATION_FILE, e);
+                    throw new InfrastructureException("Unable to read properties from " + SearchConstants.CONFIGURATION_FILE, e);
                 }
             }
         }
