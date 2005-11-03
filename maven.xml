@@ -1,14 +1,21 @@
 <project xmlns:ant="jelly:ant">
+
+    <!-- Filter develop / production URLs -->
+    <!-- Filter log4j paths -->
+    <preGoal name="java:jar-resources" >
+        <ant:filter filtersfile="${target}.properties" />
+    </preGoal>
+
     <preGoal name="java:compile">
+        <echo> java:compile</echo>
         <attainGoal name="axis:compile"/>
     </preGoal>
 
-    <goal name="deploy" prereqs="war:webapp">
+    <goal name="deploy" prereqs="war:webapp" >
         <copy todir="${maven.tomcat.home}/webapps">
             <fileset dir="${maven.build.dir}">
                 <include name="${pom.artifactId}/**"/>
             </fileset>
         </copy>
     </goal>
-
 </project>
