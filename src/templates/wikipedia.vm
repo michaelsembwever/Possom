@@ -14,8 +14,8 @@
                     <td valign="top" class="img">
                         <a href="$item.getField('url')"><img src="../images/enrichment/wiki.jpg" alt="Leksikon (wikipedia)" /></a>
                     </td>
-                    <td>
-                        #if (!$item.getField('wikibody').equals("_TVM:UNDEFINED_")) $item.getField('wikibody')#end
+                    <td valign="top">
+                        #if (!$item.getField('wikibody').equals("_TVM:UNDEFINED_")) $item.getField('wikibody')#end &nbsp;
                     </td>
                 </tr>
             </table>

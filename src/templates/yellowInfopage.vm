@@ -123,7 +123,7 @@
                             <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
                         </tr>
                         <tr>
-                            <td valign="top">$text.getMessage($locale, "address")</td>
+                            <td valign="top">$text.getMessage($locale, "visitAddress")</td>
                             <td valign="top" class="cellright">$!{company.getField('ypadresse')}#if ($company.getField('ypadresse') && ($company.getField('ywpostnr') || $company.getField('ywpoststed'))),#end $!{company.getField('ywpostnr')} $!{company.getField('ywpoststed')}</td>
                         </tr>
                         <tr>

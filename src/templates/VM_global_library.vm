@@ -72,11 +72,11 @@ $allNavigators
                 Du kan søke på telefonnummer, navn, adresse osv
             #elseif ($currentTab.getKey() == "d")
 
-                #set ($norwayChecked = "CHECKED")
+                #set ($norwayChecked = "checked='checked'")
                 #set ($worldChecked = "")
 
                 #if ($request.getParameter("s") && $request.getParameter("s") == "g")
-                   #set ($worldChecked = "CHECKED")
+                   #set ($worldChecked = "checked='checked'")
                    #set ($norwayChecked = "")
                 #end
                 <input type="radio" name="s" value="d" $norwayChecked /> Norge &nbsp;&nbsp;

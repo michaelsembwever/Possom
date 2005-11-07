@@ -162,7 +162,7 @@ public class RunningQuery {
                 log.debug("run(): InvokeAll Commands.size=" + commands.size());
             }
 
-            results = searchMode.getExecutor().invokeAll(commands, 10000);
+            results = searchMode.getExecutor().invokeAll(commands, 3000);
 
             for (Iterator iterator = results.iterator(); iterator.hasNext();) {
                 SearchTask task = (SearchTask) iterator.next();

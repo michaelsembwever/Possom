@@ -163,7 +163,6 @@
             var hasCoords = true;
             var arrZoomLevels = new Array();
             var arrCompany = new Array();
-
             #foreach ($level in $zoomLevels)
                 #set ($index = $velocityCount - 1)
                 arrZoomLevels[$index] = $level;
@@ -224,8 +223,10 @@
             function init(){
                 #if ($pager.numberOfResults > 0)
                 setImgMapOffset(document.getElementById("mapcontent"));
+                #if ($hasCoords)
                 getUrl();
                 setZoomBarImg(currentZoomLevel)
+                #end
                 #end
             }
 

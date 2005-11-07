@@ -47,7 +47,7 @@
     <div style="width: 680px; text-align: left;"><img src="images/index/logo.jpg" id="logo_index" alt="logo" /></div><br/>
     <div id="index_searchlinks">
         Sesams&#248;k
-        <a href="search/?nav_sources=contentsourcenavigator&c=m&contentsource=Norske Nyheter&userSortBy=datetime&q=" onclick="return strep(this);">Nyhetss&#248;k</a>
+        <a href="search/?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske Nyheter&amp;userSortBy=datetime&amp;q=" onclick="return strep(this);">Nyhetss&#248;k</a>
         <a href="search/?c=y" onclick="return strep(this);">Bedriftss&#248;k</a>
         <a href="search/?c=w" onclick="return strep(this);">Persons&#248;k</a>
         <a href="search/?c=p" onclick="return strep(this);">Bildes&#248;k</a>

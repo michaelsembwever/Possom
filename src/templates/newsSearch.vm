@@ -142,7 +142,7 @@
             </script>
 
             <div id="result_container">
-            <div id="search_result">
+            <div class="search_result">
                 #foreach( $item in $result.results)
                     <p>
                         <!--

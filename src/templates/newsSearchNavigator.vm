@@ -14,26 +14,26 @@
                 <td colspan="2" class="navbar_menu" id="navbar_menu_m">Nyhetss&#248;k</td>
             </tr>
             <tr>
-                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" /></td>
+                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
             </tr>
             <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=$query";'>
                 <td class="nav_pad_icon">
-                    <img src="../images/nav_d.gif" class="nav_icon" align="left" />
+                    <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam ikon" />
                     <a href="?c=d&amp;q=$query">Sesams&#248;k</a>
                 </td>
                 <td class="nav_pad" align="right">&nbsp;</td>
             </tr>
             <tr>
-                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots"></td>
+                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
             </tr>
         </table>
         #if ($pager.numberOfResults > 0)
             #navigatorInit('sources')
 
             <div style="margin-top:36px;">
-                <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+                <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
                 <div class="geo_header">Velg treff i:</div>
-                <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+                <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
                 <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                     #foreach ($category in $result.getModifiers('sources'))
                     #set ($tablink = "?nav_sources=$result.searchCommand.getNavigatedTo('sources').getName()&amp;q=$query&amp;c=$currentTab.getKey()&amp;$result.searchCommand.getNavigatedTo('sources').field=$category.name$previousNavigationParameters$otherNavigators")
@@ -55,7 +55,7 @@
                         <td class="nav_pad" align="right">$text.getMessage($locale, "numberFormat", $category.count)</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots"></td>
+                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                     #end
                 </table>

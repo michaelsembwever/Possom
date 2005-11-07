@@ -317,7 +317,7 @@ function setfocus() {
                             <decorator:getProperty property="page.ads_help"/>
                          <% } else { %>
 
-                             <div id="result_container">
+                         <div id="result_container">
                              <% if ("n".equals(searchType)) { %>
                                     <% if (no_hits > 0) { %>
                                         <decorator:getProperty property="page.fast-results"/>
@@ -382,42 +382,42 @@ function setfocus() {
 
                                 <% } else { %>  <%-- one or zero enrichment --%>
 
-                                    <% if (enrichmentSize == 1) { %>
+                                        <% if (enrichmentSize == 1) { %>
 
-                                        <% if (no_hits > 0) { %>
-                                        <%
-                                            Enrichment enrichment = (Enrichment) enrichments.get(0);
-                                            String enrichment1 = siteMeshPage.getProperty("page." + enrichment.getName());{
-                                        } %>
-                                            <% if (enrichment.getAnalysisResult() >= 85) { %>
-                                                    <%= enrichment1 == null ? "" : enrichment1 %>
-                                                    <decorator:getProperty property="page.fast-results"/>
+                                            <% if (no_hits > 0) { %>
+                                                    <%
+                                                        Enrichment enrichment = (Enrichment) enrichments.get(0);
+                                                        String enrichment1 = siteMeshPage.getProperty("page." + enrichment.getName());{
+                                                    } %>
+                                                    <% if (enrichment.getAnalysisResult() >= 85) { %>
+                                                            <%= enrichment1 == null ? "" : enrichment1 %>
+                                                            <decorator:getProperty property="page.fast-results"/>
+                                                    <% } else { %>
+                                                           <decorator:getProperty property="page.fast-results-norwegian_part1"/>
+                                                           <%= enrichment1 == null ? "" : enrichment1 %>
+                                                           <decorator:getProperty property="page.fast-results-norwegian_part2"/>
+                                                    <%  } %>
                                             <% } else { %>
-                                                   <decorator:getProperty property="page.fast-results-norwegian_part1"/>
-                                                   <%= enrichment1 == null ? "" : enrichment1 %>
-                                                   <decorator:getProperty property="page.fast-results-norwegian_part2"/>
-                                            <%  } %>
-                                        <% } else { %>
-                                        <%
-                                            Enrichment enrichment = (Enrichment) enrichments.get(0);
-                                            String enrichment1 = siteMeshPage.getProperty("page." + enrichment.getName());{
-                                        } %>
-                                            <%= enrichment1 == null ? "" : enrichment1 %>
+                                                    <%
+                                                        Enrichment enrichment = (Enrichment) enrichments.get(0);
+                                                        String enrichment1 = siteMeshPage.getProperty("page." + enrichment.getName());{
+                                                    } %>
+                                                    <%= enrichment1 == null ? "" : enrichment1 %>
+                                            <% } %>
+
+
+                                        <% } else { %>  <%-- Display enrichments in order --%>
+
+                                                <% if (no_hits > 0) { %>
+                                                    <%--  shows the result as usual if 1 or less enrichments  --%>
+                                                    <decorator:getProperty property="page.fast-results"/>
+                                                <% } else if(!q.trim().equals("")){%>
+                                                    <decorator:getProperty property="page.noHits"/>
+                                                <% } %>
                                         <% } %>
-
-
-                                    <% } else { %>  <%-- Display enrichments in order --%>
-
-                                        <% if (no_hits > 0) { %>
-                                            <%--  shows the result as usual if 1 or less enrichments  --%>
-                                            <decorator:getProperty property="page.fast-results"/>
-                                        <% } else if(!q.trim().equals("")){%>
-                                            <decorator:getProperty property="page.noHits"/>
-                                        <% } %>
-                                    <% } %>
                                 <% } %>
                             <% } %>
-                            </div>
+                        </div>
                         <% } %>  <%-- Sok smart --%>
                 <%}%>
 

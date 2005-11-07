@@ -89,53 +89,26 @@
 </content>
 
 <content tag="smart-nav">
+    #set ($helpnavs = ["Tegn og operat&#248;rer", "Magiske Sesam-ord", "For d&#229;rlig treffliste?"])
     <div style="margin-top:61px;">
         <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
         <div class="geo_header">S&#248;k smart!</div>
         <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
         <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
-            #if ($request.getParameter("pg") && $request.getParameter("pg")=="1")
-                <tr>
-                    <td class="nav_pad">Tegn og operat&#248;rer</td>
-                    <td class="nav_pad" align="right">&nbsp;</td>
-                </tr>
-            #else
-                <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;smart=true&amp;pg=1&amp;q=";'>
-                    <td class="nav_pad">
-                        <a href="?c=d&amp;smart=true&amp;pg=1&amp;q=">Tegn og operat&#248;rer</a>
-                    </td>
-                    <td class="nav_pad" align="right">&nbsp;</td>
-                </tr>
-            #end
-            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td></tr>
-            #if ($request.getParameter("pg") && $request.getParameter("pg")=="2")
-                <tr>
-                    <td class="nav_pad">Magiske Sesam-ord</td>
-                    <td class="nav_pad" align="right">&nbsp;</td>
-                </tr>
-            #else
-                <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;smart=true&amp;pg=2&amp;q=";'>
-                    <td class="nav_pad">
-                        <a href="?c=d&amp;smart=true&amp;pg=2&amp;q=">Magiske Sesam-ord</a>
-                    </td>
-                    <td class="nav_pad" align="right">&nbsp;</td>
-                </tr>
-            #end
-            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td></tr>
-            #if ($request.getParameter("pg") && $request.getParameter("pg")=="3")
-                <tr>
-                    <td class="nav_pad">For d&#229;rlig treffliste?</td>
-                    <td class="nav_pad" align="right">&nbsp;</td>
-                </tr>
-            #else
-                <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;smart=true&amp;pg=1&amp;q=";'>
-                    <td class="nav_pad">
-                        <a href="?c=d&amp;smart=true&amp;pg=3&amp;q=">For d&#229;rlig treffliste?</a>
-                    </td>
-                    <td class="nav_pad" align="right">&nbsp;</td>
-                </tr>
-            #end
-            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td></tr>
+        #foreach ($menu in $helpnavs)
+            <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=&amp;smart=true&amp;pg=$velocityCount";'>
+                <td colspan="2" class="nav_pad">
+                    #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
+                        $menu
+                    #else
+                        <a href="?c=d&amp;q=&amp;smart=true&amp;pg=$velocityCount">$menu</a>
+                    #end
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td>
+            </tr>
+        #end
         </table>
     </div>
 </content>
@@ -194,7 +167,7 @@
 <content tag="fast-results">
 
     #if ($pager.numberOfResults > 0)
-        <div id="search_result">
+        <div class="search_result">
 
             #*<b>$text.getMessage($locale, "keywords")</b><br/>
             #foreach ($keyword in $result.sortedClusters)
@@ -222,7 +195,7 @@
 
         #if ($pager.isFirstPage())
             #if ($pager.numberOfResults > 0)
-                <div id="search_result">
+                <div class="search_result">
 
                     #*<b>$text.getMessage($locale, "keywords")</b><br/>
                     #foreach ($keyword in $result.sortedClusters)
@@ -248,7 +221,7 @@
             #end
         #else
             #if ($pager.numberOfResults > 0)
-                <div id="search_result">
+                <div class="search_result">
 
                     #*<b>$text.getMessage($locale, "keywords")</b><br/>
                     #foreach ($keyword in $result.sortedClusters)
@@ -278,7 +251,7 @@
         #if ($pager.isFirstPage())
 
             #if ($pager.numberOfResults > 0)
-                <div id="search_result">
+                <div class="search_result">
 
                     #foreach( $item in $result.results )
                         #if ($velocityCount > 3)

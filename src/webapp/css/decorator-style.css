@@ -697,11 +697,11 @@ a {
 /* ------------------------------------------------------------------ */
 /* =SEARCH-RESULT */
 
-#search_result {
+.search_result {
     margin: 16px 0px 10px 0px;
 }
 
-#search_result p {
+.search_result p {
     margin-top: 13px;
 }
 
@@ -814,6 +814,7 @@ a {
 
 .enrichment, .spelling_suggestion {
     margin-top: 10px;
+    width: 531px;
     font-size: 1.09em;
 }
 
@@ -846,6 +847,7 @@ a {
     margin: 4px 20px 4px 0px;
     float: left;
     border: 1px solid #CCC;
+    background: #999;
 }
 
 

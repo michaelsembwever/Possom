@@ -216,14 +216,19 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         FastSearchResult searchResult = new FastSearchResult(this);
         int cnt = getCurrentOffset(0);
         int maxIndex = Math.min(cnt + configuration.getResultsToReturn(), result.getDocCount());
+        searchResult.setHitCount(result.getDocCount());
 
         for (int i = cnt; i < maxIndex; i++) {
             IDocumentSummary document = result.getDocument(i + 1);
-            SearchResultItem item = createResultItem(document);
-            searchResult.addResult(item);
+            //catch nullpointerException because of unaccurate doccount
+            try {
+                SearchResultItem item = createResultItem(document);
+                searchResult.addResult(item);
+            } catch (Exception e) {
+                if (log.isDebugEnabled()) log.info("Error finding document");
+                return searchResult;
+            }
         }
-
-        searchResult.setHitCount(result.getDocCount());
         return searchResult;
     }
 

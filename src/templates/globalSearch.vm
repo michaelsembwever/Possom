@@ -59,7 +59,7 @@
 
 
     #if ($pager.numberOfResults > 0)
-        <div id="search_result">
+        <div class="search_result">
 
             #foreach( $item in $result.results )
             <p>

@@ -109,8 +109,8 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         }
         */
 
-        if(log.isInfoEnabled()){
-            log.info("call(): ExecuteQuery?" + executeQuery);
+        if(log.isDebugEnabled()){
+            log.debug("call(): ExecuteQuery?" + executeQuery);
         }
         result = executeQuery ? execute() : new BasicSearchResult(this);
 
