@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * A common base class for search configurations.
  *
@@ -15,6 +18,8 @@ import java.util.List;
  * @version <tt>$Revision$</tt>
  */
 public abstract class AbstractSearchConfiguration implements SearchConfiguration {
+
+    Log log = LogFactory.getLog(AbstractSearchConfiguration.class);
 
     private String name;
     private List queryTransformers = new ArrayList();
@@ -37,14 +42,17 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
      * @param pagingEnabled
      */
     public final void setPagingEnabled(final boolean pagingEnabled) {
-        isPagingEnabled = pagingEnabled;
+        if (log.isDebugEnabled()) {
+            log.debug("setPagingEnabled() " + pagingEnabled);
+        }
+        this.isPagingEnabled = pagingEnabled;
     }
 
     /**
      * Returns a list of {@link QueryTransformer} that should be applied
      * to the query before it is sent to the search command.
      *
-     * @return
+     * @return queryTransfomer
      */
     public final List getQueryTransformers() {
         return queryTransformers;

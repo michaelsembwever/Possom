@@ -61,6 +61,9 @@ $allNavigators
         #elseif ($currentTab.getKey() == "d")
         <td><input type="submit" value="Sesams&#248;k" id="submit_button" class="submit_d" /></td>
         #elseif ($currentTab.getKey() == "m")
+            #if("standard" == $request.getParameter("userSortBy"))
+                <input type="hidden" name="userSortBy" value="standard" >
+            #end
         <td><input type="submit" value="Nyhetss&#248;k" id="submit_button" class="submit_m" /></td>
         #end
     </tr>

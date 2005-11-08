@@ -5,7 +5,13 @@
 
   <body>
 
+  #set ($userSortBy = $request.getParameter("userSortBy"))
   #set ($previousNavigationParameters = "")
+
+  #if($userSortBy)
+    #set ($previousNavigationParameters = "&amp;userSortBy=$userSortBy")
+  #end
+
   #set ($baseURL = "?c=m&amp;q=$query")
 
     <content tag="newsSearchNavigator">

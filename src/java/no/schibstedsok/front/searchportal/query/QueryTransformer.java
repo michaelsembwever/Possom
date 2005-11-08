@@ -20,12 +20,15 @@ public interface QueryTransformer {
     String getTransformedQuery(String originalQuery);
 
     /**
-     * Set filter for thiw query.
+     * Set filter for this query. By analizing the query we can
+     * set dynamic filter. For example a special sort order or specify contentsource
+     *
      * Example to add docdatetime argument
      *
      * +docdatetime:>2005-10-28
      *
      * @return filterstring
      */
-    String getFilter();
+    String getFilter(String originalQuery);
+
 }

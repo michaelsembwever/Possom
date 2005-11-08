@@ -30,14 +30,13 @@
        <filter-name>clickstream</filter-name>
        <url-pattern>/search/</url-pattern>
     </filter-mapping>
-    -->
-    <!-- END CLICKSTREAM -->
-
- 
 
     <listener>
        <listener-class>com.opensymphony.clickstream.ClickstreamListener</listener-class>
     </listener>
+
+    -->
+    <!-- END CLICKSTREAM -->
     <!-- SITEMESH configuration -->
     <filter>
         <filter-name>sitemesh</filter-name>

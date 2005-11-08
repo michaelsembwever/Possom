@@ -67,29 +67,50 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             IFastSearchEngine engine = getSearchEngine();
             IQuery fastQuery = createQuery();
 
+
             if (log.isDebugEnabled()) {
                 log.debug(configuration.getName() + " call: " + fastQuery);
             }
 
             IQueryResult result = null;
             try {
+                if(log.isDebugEnabled()){
+                    log.debug("engine.search()");
+                    log.debug("execute().configuration: QueryServerURL=" + fastConfiguration.getQueryServerURL());
+                    log.debug("execute().configuration: Collections=" + fastConfiguration.getCollections());
+                    log.debug("execute().configuration: Name=" + fastConfiguration.getName());
+                    log.debug("execute().configuration: Query=" + fastQuery.getQueryString());
+                    log.debug("execute().configuration: Filter=" + fastConfiguration.getCollectionFilterString());
+
+                }
+
                 result = engine.search(fastQuery);
+
+                if (log.isDebugEnabled()) {
+                    log.debug("Hits is " + configuration.getName() + ":" + result.getDocCount());
+                }
             } catch (Exception fastException) {
                 log.error("An error occured in FAST code " + fastException.getClass().getName());
                 log.error("Configuration is " + configuration.getName());
                 return new FastSearchResult(this);
             }
 
+
+
             if (log.isDebugEnabled()) {
+
+                log.debug("QUERY DUMPT: " + fastQuery);
                 String filter = null;
                 String query = null;
+                String collection = null;
+
                 try {
                     filter = fastQuery.getStringParameter("filter");
                     query = fastQuery.getStringParameter(BaseParameter.QUERY);
-
                 } catch (NoSuchParameterException e) {
+
                 }
-                log.debug("execute: engine.search(): Filter: " + filter
+                log.debug("execute:  Filter: " + filter
                         + " , query=" + query
                         + ", doc.count= "
                         + result.getDocCount());
@@ -325,7 +346,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         params.setParameter(new SearchParameter(BaseParameter.TYPE, dynamicType));
 
         params.setParameter(new SearchParameter(BaseParameter.FILTER,
-                filter.toString() + " " + dynamicLanguage + " " + superFilter));
+                filter.toString() + " " + dynamicLanguage + " " + superFilter ));
 
         if (fastConfiguration.getQtPipeline() != null) {
             params.setParameter(new SearchParameter(BaseParameter.QTPIPELINE,

@@ -69,7 +69,19 @@ public final class SearchConstants {
     public static final String CONFIGURATION_FILE = "configuration.properties";
     public static final Object PARAMETER_OFFSET = "offset";
 
-    public static final String[] ALL_COLLECTIONS = {"tv", "webcrawlno1", "webcrawlno1", "webcrawlno1deep1", "webcrawlno2", "wikipedia", "robots", "yellow", "white", "bokkilden", "carelscrawl", "retriever", "mano"};
+    public static final String[] ALL_COLLECTIONS = {"tv",
+                                                    "webcrawlno1",
+                                                    "webcrawlno1",
+                                                    "webcrawlno1deep1",
+                                                    "webcrawlno2",
+                                                    "wikipedia",
+                                                    "robots",
+                                                    "yellow",
+                                                    "white",
+                                                    "bokkilden",
+                                                    "carelscrawl",
+                                                    "retriever",
+                                                    "mano"};
 
 
 }

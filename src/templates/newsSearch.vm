@@ -83,10 +83,10 @@
                     <td class="left">$typeofnews $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$query</b></td>
                     <td class="right">Sorter p&aring;: &nbsp;&nbsp;
 
-                    #if($request.getParameter("userSortBy") && $request.getParameter("userSortBy") == "datetime")
-                        <a href="?lang=$!request.getParameter('lang')&amp;c=m&amp;nav_sources=contentsourcenavigator&amp;contentsource=$!request.getParameter('contentsource')&amp;q=$query&amp;offset=$!request.getParameter('offset')">Relevans</a> &nbsp;|&nbsp; Dato
-                    #else
+                    #if($request.getParameter("userSortBy") && $request.getParameter("userSortBy") == "standard")
                         Relevans &nbsp;|&nbsp; <a href="?lang=$!request.getParFameter('lang')&amp;c=m&amp;nav_sources=contentsourcenavigator&amp;contentsource=$!request.getParameter('contentsource')&amp;q=$query&userSortBy=datetime&amp;offset=$!request.getParameter('offset')"> Dato </a>
+                    #else
+                        <a href="?lang=$!request.getParameter('lang')&amp;c=m&amp;nav_sources=contentsourcenavigator&amp;contentsource=$!request.getParameter('contentsource')&amp;q=$query&amp;offset=$!request.getParameter('offset')&amp;userSortBy=standard">Relevans</a> &nbsp;|&nbsp; Dato
                     #end
                     </td>
                 </tr>

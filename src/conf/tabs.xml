@@ -704,6 +704,7 @@
                                      <string>newsPrefix</string>
                                  </prefixes>
                              </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                             <no.schibstedsok.front.searchportal.query.NewsTransformer/>
                          </queryTransformers>
                          <navigators>
                              <entry>
@@ -721,6 +722,7 @@
                          <collapsingEnabled>true</collapsingEnabled>
                          <lemmatizeEnabled>false</lemmatizeEnabled>
                          <spellcheckEnabled>false</spellcheckEnabled>
+
                          <name>newsSearchNavigator</name>
                          <resultHandlers>
                              <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
@@ -731,7 +733,6 @@
 		     <!-- Actual newssearch -->
                      <FastSearch>
                          <collections class="list">
-
                              <string>retriever</string>
                              <string>retrievernordic</string>
                              <string>moreover</string>
@@ -763,6 +764,8 @@
                                      <string>newsPrefix</string>
                                  </prefixes>
                              </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                             <no.schibstedsok.front.searchportal.query.NewsTransformer/>
+
                          </queryTransformers>
 
                          <sortBy>retrievernews +docdatetime</sortBy>

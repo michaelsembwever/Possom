@@ -49,11 +49,34 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         collections.add(collectionName);
     }
 
+
+            // Frr testing
+     private String generateFilterString() {
+
+        if (collections != null) {
+            if (collections.size() > 1) {
+
+                Object coll[] = collections.toArray();
+
+                for (int i = 0; i < coll.length; i++) {
+                    String collectionName = (String) coll[i];
+                    String s = "meta.collection:" + collectionName;
+                    coll[i] = s;
+                }
+
+                return "+(" + StringUtils.join(coll, ' ') + ")";
+            } else if (collections.size() == 1) {
+                return "+meta.collection:" + collections.get(0);
+            }
+        }
+        return "";
+    }
+
     public String getCollectionFilterString() {
         if (collectionString == null) {
             synchronized(this) {
                 if (collectionString == null) {
-                    collectionString = generateFilterString();
+                    collectionString = generateFilterString_();
                 }
             }
         }
@@ -61,13 +84,11 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return collectionString;
     }
 
-    private String generateFilterString() {
+    private String generateFilterString_() {
 
         if (collections != null) {
             if (collections.size() > 1) {
-
-                Collection invertedCollection = new ArrayList();
-
+             Collection invertedCollection = new ArrayList();
                 for (int i = 0; i < SearchConstants.ALL_COLLECTIONS.length; i++) {
                     String c = SearchConstants.ALL_COLLECTIONS[i];
                     invertedCollection.add(c);
