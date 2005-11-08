@@ -80,7 +80,6 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         } else {
             queryToUse = getQuery().getQueryString();
         }
-
         transformedQuery = queryToUse;
         applyQueryTransformers(configuration.getQueryTransformers());
         StopWatch watch = null;
@@ -103,11 +102,10 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             }
             executeQuery = true;
         }
-        /*
+
         if(filter != null){
             executeQuery = true;
         }
-        */
 
         if(log.isDebugEnabled()){
             log.debug("call(): ExecuteQuery?" + executeQuery);
@@ -116,7 +114,8 @@ public abstract class AbstractSearchCommand implements SearchCommand {
 
         if (log.isDebugEnabled()) {
             watch.stop();
-            log.debug("Hits is " + result.getHitCount());
+
+            log.debug("Hits is " + configuration.getName() + ":" + result.getHitCount());
             log.debug("Search " + configuration.getName() + " took " + watch);
         }
 
@@ -166,9 +165,9 @@ public abstract class AbstractSearchCommand implements SearchCommand {
                 transformedQuery = transformer.getTransformedQuery(transformedQuery);
 
                 if(filter == null){
-                    filter = transformer.getFilter();
-                } else if(transformer.getFilter() != null){
-                    filter += transformer.getFilter() + " ";
+                    filter = transformer.getFilter(transformedQuery);
+                } else if(transformer.getFilter(transformedQuery) != null){
+                    filter += transformer.getFilter(transformedQuery) + " ";
                 }
 
                 if(log.isDebugEnabled()){
