@@ -7,10 +7,10 @@
 
   #set ($contentsource = $request.getParameter("contentsource"))
 
-  #if(!$contentsource && !$query)
-
+  #if(!$contentsource && $query == '')
         #set ($contentsource = "Norske nyheter")
   #end
+
 
   #set ($userSortBy = $request.getParameter("userSortBy"))
   #set ($previousNavigationParameters = "")
