@@ -245,8 +245,8 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             try {
                 SearchResultItem item = createResultItem(document);
                 searchResult.addResult(item);
-            } catch (Exception e) {
-                if (log.isDebugEnabled()) log.info("Error finding document");
+            } catch (NullPointerException e) {
+                if (log.isDebugEnabled()) log.debug("Error finding document " + e);
                 return searchResult;
             }
         }

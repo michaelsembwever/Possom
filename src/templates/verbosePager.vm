@@ -41,9 +41,7 @@
 <div id="footer">
 
     #if ($pager && $pager.getNumberOfPages() > 1)
-        <table border="0" cellspacing="0" cellpadding="0" width="561" style="margin-bottom: 10px;">
-            <tr>
-                <td valign="bottom">
+        <div style="margin-bottom: 10px;">
                     $text.getMessage($locale, "showMoreHits", $query)&nbsp;
                     #foreach ($page in [$pager.getFirstVisiblePage()..$pager.getLastVisiblePage()])
 
@@ -78,13 +76,7 @@
                     #end
 
                     #end
-                </td>
-
-            #if ($currentTab.getKey() == "p")
-                <td valign="bottom" align="right"><a href="http://www.picsearch.com/" target="_blank"><img src="../images/picsearch.gif" width="100" height="49" alt="" /></a></td>
-            #end
-            </tr>
-        </table>
+        </div>
 
 #else
     <br clear="both" /><br />

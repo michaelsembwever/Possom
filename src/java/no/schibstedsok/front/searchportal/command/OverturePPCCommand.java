@@ -10,6 +10,7 @@ import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
+import no.schibstedsok.front.searchportal.InfrastructureException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -18,8 +19,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URLEncoder;
 
 /**
  * @author <a href="mailto:lars@conduct.no">Lars Johansson</a>
@@ -46,9 +49,14 @@ public class OverturePPCCommand extends AbstractSearchCommand {
         query = query.replace(' ', '+');
 
         StringBuffer url = new StringBuffer("/d/search/p/schibstedsok/xml/no/");
-        url.append("?mkt=no&adultFilter=clean&Partner=schibstedsok_xml_no_searchbox_imp1");
-        url.append("&Keywords=").append(query);
-        url.append("&maxCount=").append(configuration.getResultsToReturn());
+
+        try {
+            url.append("?mkt=no&adultFilter=clean&Partner=schibstedsok_xml_no_searchbox_imp1");
+            url.append("&Keywords=").append(URLEncoder.encode(query, "iso-8859-1"));
+            url.append("&maxCount=").append(configuration.getResultsToReturn());
+        } catch (UnsupportedEncodingException e) {
+            throw new InfrastructureException(e);
+        }
 
         log.debug("URI is " + url.toString());
 
@@ -111,7 +119,7 @@ public class OverturePPCCommand extends AbstractSearchCommand {
         runningQuery.run();
 
     }
-    
+
 }
 
 

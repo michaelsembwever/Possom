@@ -27,13 +27,6 @@ public abstract class AbstractSearchCommand implements SearchCommand {
     protected SearchConfiguration configuration;
     private Map parameters;
 
-    static String[] stopWordExpressions = { "cataloguePrefix",
-                                            "picturePrefix",
-                                            "newsPrefix",
-                                            "tvPrefix",
-                                            "weatherPrefix"};
-
-
     /**
      * @param query         The query to act on.
      * @param configuration The search configuration associated with this

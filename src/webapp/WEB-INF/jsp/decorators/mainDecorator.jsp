@@ -462,8 +462,12 @@ function setfocus() {
 
             </td>
 
-            <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("p")) {%>
+            <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g")) {%>
                 <td class="cell_four" valign="top" width="225">
+                    <decorator:getProperty property="page.ads"/>
+                </td>
+            <%}else if (currentC.equals("p")) {%>
+                <td class="cell_four" valign="bottom" width="225">
                     <decorator:getProperty property="page.ads"/>
                 </td>
             <%}%>

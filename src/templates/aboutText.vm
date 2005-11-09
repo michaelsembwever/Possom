@@ -26,11 +26,7 @@
 <p>
     <a href="?c=d&amp;help=true&amp;pg=11&amp;q=">Les mer om de ulike typer berikelser og spesialiserte s&#248;k du kan gj&#248;re p&#229; Sesam.</a>
 </p>
-<p>
-    <b>Tips Sesam om nettside</b><br/>
-    Sesam oppdateres fortl&#248;pende med nye nettsider. Dersom du savner noe, kan du tipse Sesam p&#229;
-    <script type="text/javascript">ml('116,105,112,115,117,114,108,64,115,101,115,97,109,46,110,111','','Tips om URL - Sesam.no');</script><noscript><b>(M&#229; sl&#229; p&#229; javascript for &#229; se e-postadresse)</b></noscript>. Sesam forbeholder seg retten til &#229; vurdere tipsene som kommer inn.
-</p>
+
 <p>
     <b>Teknologi</b><br />
     Sesam er utviklet sammen med Fast Search & Transfer, som representerer s&#248;keteknologi i verdenstoppen. Fast har ogs&#229; viktig erfaring fra da de selv lagde s&#248;kemotoren AlltheWeb. Fast er av analyseselskapet Gartner nylig k&#229;ret til &#229; verdens beste selskap innen s&#248;kemotorteknologi.
@@ -62,8 +58,21 @@
     Sesam tar gjerne i mot innspill, kommentarer og sp&#248;rsm&#229;l, enten du er bruker, annons&#248;r eller interessert av en annen grunn. Sesam kan kontaktes p&#229;
     <a href="mailto:info@sesam.no">info@sesam.no</a>
 </p>
+
 <p>
-    <a href="?c=d&amp;ads_help=true&amp;q=">Bli annons&#248;r</a>
+    <b>Tips om nettside</b><br/>
+    Sesam oppdateres fortl&#248;pende med nye nettsider. Dersom du savner noe, kan du tipse Sesam i feltet under. Sesam forbeholder seg retten til &#229; vurdere tipsene som kommer inn.
+</p>
+
+<p>
+    <form method="POST" action="http://admin.sesam.no/urltips/UrlTipsFeedback">
+        <input type="text" value="http://" name="url" size="40"/>  <input type="submit" value="Send tips til Sesam"/>
+    </form>
+</p>
+<p>
+    <b>Annonsere på Sesam?</b><br />
+    Informasjon om annonsemuligheter kan du lese mer om på siden <a href="?c=d&amp;ads_help=true&amp;q=">Bli annons&#248;r</a>
+
 </p>
 
 
