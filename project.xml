@@ -8,7 +8,7 @@
     <name>Schibsted Sok Search-front</name>
     <groupId>schibstedsok</groupId>
     <artifactId>search-front-html</artifactId>
-    <currentVersion>1.1-SNAPSHOT</currentVersion>
+    <currentVersion>1.2-SNAPSHOT</currentVersion>
     <organization>
         <name>Schibsted Søk AS</name>
         <url>http://www.schibstedsok.no/</url>
