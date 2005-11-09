@@ -5,6 +5,13 @@
 
   <body>
 
+  #set ($contentsource = $request.getParameter("contentsource"))
+
+  #if(!$contentsource && !$query)
+
+        #set ($contentsource = "Norske nyheter")
+  #end
+
   #set ($userSortBy = $request.getParameter("userSortBy"))
   #set ($previousNavigationParameters = "")
 
@@ -52,7 +59,7 @@
                             #set ($categoryDisplayName = $category.name)
                             #end
 
-                            #if ($request.getParameter('contentsource') && ($request.getParameter('contentsource') == $category.name))
+                            #if ($contentsource == $category.name)
                                 $categoryDisplayName
                             #else
                             <a href="$tablink">$categoryDisplayName</a>
