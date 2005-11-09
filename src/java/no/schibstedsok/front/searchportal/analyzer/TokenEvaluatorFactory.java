@@ -1,15 +1,14 @@
 package no.schibstedsok.front.searchportal.analyzer;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-
-import java.util.Map;
-import java.util.Properties;
-import java.io.IOException;
-
+import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
-import no.schibstedsok.front.searchportal.InfrastructureException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -37,27 +36,27 @@ public class TokenEvaluatorFactory {
     public TokenEvaluator getEvaluator(String token) {
 
         if (token.equals("companySuffix")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("weatherPrefix")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("tvPrefix")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("cataloguePrefix")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("alwaysTrue")) {
             return alwaysTrueEvaluator;
         } else if (token.equals("phoneNumber")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("orgNr")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("picturePrefix")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("newsPrefix")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("mathExpression")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("wikipediaPrefix")) {
-            return regExpEvals.getEvaluator(token);
+            return RegExpEvaluators.getEvaluator(token);
         } else if (token.equals("firstname")) {
             return getFastEvaluator();
         } else if (token.equals("lastname")) {
