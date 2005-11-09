@@ -47,7 +47,7 @@
     <div style="width: 680px; text-align: left;"><img src="images/index/logo.jpg" id="logo_index" alt="logo" /></div><br/>
     <div id="index_searchlinks">
         Sesams&#248;k
-        <a href="search/?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske nyheter&amp;userSortBy=datetime&amp;q=" onclick="return strep(this);">Nyhetss&#248;k</a>
+        <a href="search/?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske Nyheter&amp;userSortBy=datetime&amp;q=" onclick="return strep(this);">Nyhetss&#248;k</a>
         <a href="search/?c=y" onclick="return strep(this);">Bedriftss&#248;k</a>
         <a href="search/?c=w" onclick="return strep(this);">Persons&#248;k</a>
         <a href="search/?c=p" onclick="return strep(this);">Bildes&#248;k</a>
@@ -86,7 +86,7 @@
                 <td class="col_1" valign="top"><img src="images/index/m.jpg" alt="Nyheter" /></td>
                 <td valign="top">
                     <span class="bold_text">Nyheter:</span>&nbsp;S&#248;k p&#229; et aktuelt tema:<br />
-                    <a href="search/?c=d&amp;q=Nyheter Sesam">Nyheter Sesam</a>
+                    <a href="search/?c=d&amp;q=Nyheter Frankrike">Nyheter Frankrike</a>
                 </td>
                 <td class="col_3" valign="top"><img src="images/index/y.jpg" alt="Bedrifter" /></td>
                 <td valign="top">
@@ -98,12 +98,12 @@
                 <td class="col_1" valign="top"><img src="images/index/w.jpg" alt="Personer" /></td>
                 <td valign="top">
                     <span class="bold_text">Persons&#248;k:</span>&nbsp;S&#248;k p&#229; et telefonnummer, person eller adresse:<br />
-                    <a href="search/?c=d&amp;q=anne oslo">Anne Oslo</a>
+                    <a href="search/?c=d&amp;q=Harald Dronningensgate">Harald Dronningensgate</a>
                 </td>
                 <td class="col_3" valign="top"><img src="images/index/p.jpg" alt="Bilder" /></td>
                 <td valign="top">
                     <span class="bold_text">Bildes&#248;k:</span>&nbsp;S&#248;k p&#229; en person, ting eller tema:<br />
-                    <a href="search/?c=d&amp;q=bilder hamster">Bilder hamster</a>
+                    <a href="search/?c=d&amp;q=sort hull">Sort hull</a>
                 </td>
             </tr>
         </table>
@@ -124,7 +124,7 @@
                 </td>
                 <td width="314" align="left">
                     Skriv: <span class="bold_magic_text">Fakta</span> &lt;tema&gt;<br />
-                    Eksempel: <a href="search/?c=d&amp;q=Fakta fiolin">Fakta fiolin</a>
+                    Eksempel: <a href="search/?c=d&amp;q=Fakta franske revolusjon">Fakta franske revolusjon</a>
                 </td>
             </tr>
             <tr>

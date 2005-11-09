@@ -11,7 +11,7 @@
 <body bgcolor="#eeeeff">
     <content tag="$contentTag">
 
-   <table class="enrichment">
+   <table class="enrichment" cellpadding="0" cellspacing="0">
             <tr>
                 <td colspan="2" class="title"><a href="http://www.dagbladet.no/#tv">P&aring; TV i dag </a></td>
             </tr>
@@ -19,7 +19,7 @@
                 <td valign="top" class="img">
                     <img src="../images/enrichment/tv_icon.jpg" alt="TV" />
                 </td>
-                <td>
+                <td width="500">
                 #foreach ( $item in $result.results )
                    $item.getField('title')
                    <span class="timestamp">Kl. $item.getField('hour')  $item.getField('channel')</span>

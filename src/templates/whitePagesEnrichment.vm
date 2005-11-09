@@ -8,7 +8,7 @@
 #if ($result.hitCount > 0)
     <content tag="whitePagesEnrichment">
 
-        <table class="enrichment">
+        <table class="enrichment" cellspacing="0" cellpadding="0">
             #if ($result.hitCount != 1)
                 <tr>
                     <td colspan="2" class="title"><a href="?c=w&amp;q=$query">$text.getMessage($locale, "hitsOnWhiteEnrichment", $result.hitCount, $query)</a></td>
@@ -25,7 +25,7 @@
                 #if ($result.results.size() == 1) #foreach( $item in $result.results ) <a href="?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))"> #end #else <a href="?c=w&amp;q=$query"> #end
                     <img src="../images/enrichment/wp.jpg" alt="Personer" /></a>
                 </td>
-                <td>
+                <td width="500">
                     <table class="testtable" cellspacing="0">
                     #foreach( $item in $result.results )
                         #if ($velocityCount <= 3)
