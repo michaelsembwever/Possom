@@ -20,17 +20,11 @@
 <%
     MessageResources text = (MessageResources) request.getAttribute("text");
     Locale locale = (Locale) request.getAttribute("locale");
-
     // TODO: refactor to use Bean and SearchConstants.
-
     String currentC = "d";    //default collection
-
     currentC = (String) request.getAttribute("c");
-
     String searchType = request.getParameter("s");
-
     String q = (String) request.getAttribute("q");
-
     String help = request.getParameter("help");
 
     String about = request.getParameter("about");
@@ -456,9 +450,9 @@ function setfocus() {
                 <%}%>
 
                 <%--  footer  --%>
-                <% if (q == null || !q.trim().equals("")) { %>
+                <%if (q==null||!q.trim().equals("")||"m".equals(currentC)) {%>
                     <decorator:getProperty property="page.verbosePager"/>
-                <% } %>
+                <%}%>
 
             </td>
 
