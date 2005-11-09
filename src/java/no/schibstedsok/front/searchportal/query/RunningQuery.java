@@ -81,7 +81,7 @@ public class RunningQuery {
             log.debug("ENTR: getGlobalSearchTips()");
         }
         if(AdvancedQueryBuilder.isAdvancedQuery(query)){
-            return TextMessages.getMessages().getMessage("searchtip.use+-");
+            return TextMessages.getMessages().getMessage(locale, "searchtip.use+-");
         }else {
             return null;
         }
