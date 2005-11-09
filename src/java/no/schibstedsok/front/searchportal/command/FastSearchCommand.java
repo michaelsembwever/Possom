@@ -74,7 +74,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
 
             IQueryResult result = null;
             try {
-                if(log.isDebugEnabled()){
+                if (log.isDebugEnabled()) {
                     log.debug("engine.search()");
                     log.debug("execute().configuration: QueryServerURL=" + fastConfiguration.getQueryServerURL());
                     log.debug("execute().configuration: Collections=" + fastConfiguration.getCollections());
@@ -96,13 +96,10 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             }
 
 
-
             if (log.isDebugEnabled()) {
-
                 log.debug("QUERY DUMPT: " + fastQuery);
                 String filter = null;
                 String query = null;
-                String collection = null;
 
                 try {
                     filter = fastQuery.getStringParameter("filter");
@@ -321,6 +318,11 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             filter.append(" ").append(StringUtils.join(navStrings.iterator(), " "));
         }
 
+        String site = getDynamicParams(getParameters(), "site", null);
+
+        if (site != null) {
+            filter.append(" +site:" + site);
+        }
 
         if (fastConfiguration.getOffensiveScoreLimit() > 0) {
             filter.append(" ").append("+ocfscore:<").append(fastConfiguration.getOffensiveScoreLimit());
@@ -336,17 +338,19 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         String dynamicType = getDynamicParams(getParameters(), "type", "all");
         String superFilter = super.getFilter();
 
-        if(superFilter==null){superFilter = ""; }
+        if (superFilter == null) {
+            superFilter = "";
+        }
 
-        if(log.isDebugEnabled()){
-            log.debug("createQuery: superFilter=" +  superFilter);
+        if (log.isDebugEnabled()) {
+            log.debug("createQuery: superFilter=" + superFilter);
         }
         params.setParameter(new SearchParameter("filtertype", dynamicFilterType));
 
         params.setParameter(new SearchParameter(BaseParameter.TYPE, dynamicType));
 
         params.setParameter(new SearchParameter(BaseParameter.FILTER,
-                filter.toString() + " " + dynamicLanguage + " " + superFilter ));
+                filter.toString() + " " + dynamicLanguage + " " + superFilter));
 
         if (fastConfiguration.getQtPipeline() != null) {
             params.setParameter(new SearchParameter(BaseParameter.QTPIPELINE,
@@ -379,7 +383,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             if (log.isDebugEnabled()) {
                 log.debug("createQuery: SortBY " + sortBy[0]);
             }
-            if("datetime".equals(sortBy[0])){
+            if ("datetime".equals(sortBy[0])) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard"));
             }
         }
@@ -402,15 +406,22 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         }
         String value = null;
 
-        try {
-            value = (String) map.get(key);
-        } catch (Exception e) {
-            System.out.println(map.get(key).getClass());
-            e.printStackTrace();
+        Object o = map.get(key);
+        if (o == null) {
+            value = defaultValue;
+        } else if (o instanceof String[]) {
+            value = ((String[]) o)[0];
+        } else if (o instanceof String) {
+            value = (String) o;
+        } else {
+            throw new IllegalArgumentException("Unkown param instance " + o);
         }
 
         if (value == null || "null".equals(value) || "".equals(value)) {
-            return defaultValue;
+            value = defaultValue;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug("getDynamicParams: Return " + defaultValue);
         }
         return value;
     }
