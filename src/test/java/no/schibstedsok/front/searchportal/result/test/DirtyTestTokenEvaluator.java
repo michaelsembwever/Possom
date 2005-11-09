@@ -15,10 +15,9 @@ public class DirtyTestTokenEvaluator extends TestCase {
 
 
 
-
     public void testEvaluator (){
         System.out.println(" --- 1 ---");
-        TokenEvaluator te = new VeryFastTokenEvaluator("ola marius hoff sagli");
+        TokenEvaluator te = new VeryFastTokenEvaluator(null, "ola marius hoff sagli");
         System.out.println("firstname ? "+te.evaluateToken(VeryFastTokenEvaluator.FIRSTNAME, null));
         System.out.println("lastname ? "+te.evaluateToken(VeryFastTokenEvaluator.LASTNAME, null));
         System.out.println("company ? "+te.evaluateToken(VeryFastTokenEvaluator.COMPANY, null));
@@ -28,7 +27,7 @@ public class DirtyTestTokenEvaluator extends TestCase {
 
 
         System.out.println(" --- 2 ---");
-        TokenEvaluator te2 = new VeryFastTokenEvaluator("aftenposten");
+        TokenEvaluator te2 = new VeryFastTokenEvaluator(null, "aftenposten");
         System.out.println("firstname ? "+te2.evaluateToken(VeryFastTokenEvaluator.FIRSTNAME, null));
         System.out.println("lastname ? "+te2.evaluateToken(VeryFastTokenEvaluator.LASTNAME, null));
         System.out.println("company ? "+te2.evaluateToken(VeryFastTokenEvaluator.COMPANY, null));
@@ -37,7 +36,7 @@ public class DirtyTestTokenEvaluator extends TestCase {
         System.out.println("keywords ? "+te2.evaluateToken(VeryFastTokenEvaluator.KEYWORDS, null));
 
         System.out.println(" --- 3 ---");
-        TokenEvaluator te3 = new VeryFastTokenEvaluator("ola marius schibsted");
+        TokenEvaluator te3 = new VeryFastTokenEvaluator(null, "ola marius schibsted");
         System.out.println("firstname ? "+te3.evaluateToken(VeryFastTokenEvaluator.FIRSTNAME, null));
         System.out.println("lastname ? "+te3.evaluateToken(VeryFastTokenEvaluator.LASTNAME, null));
         System.out.println("company ? "+te3.evaluateToken(VeryFastTokenEvaluator.COMPANY, null));

@@ -17,7 +17,6 @@ import java.util.Properties;
  */
 public class XMLSearchTabsCreator implements SearchTabsCreator {
 
-
     Properties properties = new Properties();
 
 	private SearchTabs tabs;
@@ -59,12 +58,16 @@ public class XMLSearchTabsCreator implements SearchTabsCreator {
         return tabs;
     }
 
-	public static synchronized SearchTabsCreator getInstance() {
-		
-		if(instance == null)
-			instance = new XMLSearchTabsCreator();
-		
-		return instance;
-	}
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public static synchronized SearchTabsCreator getInstance() {
+
+        if(instance == null)
+            instance = new XMLSearchTabsCreator();
+
+        return instance;
+    }
 
 }

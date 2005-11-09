@@ -12,6 +12,7 @@ import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
+import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.executor.SearchTask;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.result.Enrichment;
@@ -68,7 +69,7 @@ public class RunningQuery {
 
         // This will among other things perform the initial fast search
         // for textual analysis.
-        tokenEvaluatorFactory = new TokenEvaluatorFactory(query, parameters);
+        tokenEvaluatorFactory = new TokenEvaluatorFactory(query, parameters, XMLSearchTabsCreator.getInstance().getProperties());
     }
 
     /**

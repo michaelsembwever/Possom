@@ -1,12 +1,9 @@
 package no.schibstedsok.front.searchportal.analyzer;
 
-import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -22,14 +19,16 @@ public class TokenEvaluatorFactory {
     private TokenEvaluator fastEvaluator;
     private static TokenEvaluator alwaysTrueEvaluator = new AlwaysTrueTokenEvaluator();
     private Map parameters;
+    private Properties props;
 
-    public TokenEvaluatorFactory(String query, Map parameters) {
+    public TokenEvaluatorFactory(String query, Map parameters, Properties properties) {
         if (log.isDebugEnabled()) {
             log.debug("ENTR: TokenEvaluatorFactory()");
         }
         this.query = query;
         this.parameters = parameters;
         this.regExpEvals = new RegExpEvaluators();
+        this.props = properties;
 //        fastEvaluator = new FastTokenEvaluator(query);
     }
 
@@ -101,28 +100,13 @@ public class TokenEvaluatorFactory {
 
     private TokenEvaluator getFastEvaluator() {
         if (fastEvaluator == null) {
-
-            if(log.isInfoEnabled()){
-                log.info("getFastEvaluator(): Loading new instance ");
-            }
             synchronized (this) {
-                try {
-                    Properties props = new Properties();
-                    props.load(this.getClass().getResourceAsStream("/" + SearchConstants.CONFIGURATION_FILE));
-
-                    log.info("Read configuration from " + SearchConstants.CONFIGURATION_FILE);
+                // Sonmeone else might already have done this, so check for null again.
+                if (fastEvaluator == null) {
                     String host = props.getProperty("tokenevaluator.host");
-                    int port = new Integer(props.getProperty("tokenevaluator.port")).intValue();
+                    int port = Integer.parseInt(props.getProperty("tokenevaluator.port"));
                     fastEvaluator = new VeryFastTokenEvaluator(
                             HTTPClient.instance("token_evaluator", host, port), query);
-
-                    if(log.isInfoEnabled()){
-                        log.info("getFastEvaluator(): host = " + host);
-                        log.info("getFastEvalutor(): port = " + port);
-                    }
-                } catch (IOException e) {
-                    log.error("XMLSearchTabsCreator When Reading Configuration from " + SearchConstants.CONFIGURATION_FILE, e);
-                    throw new InfrastructureException("Unable to read properties from " + SearchConstants.CONFIGURATION_FILE, e);
                 }
             }
         }
