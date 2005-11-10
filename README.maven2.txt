@@ -11,22 +11,33 @@ External resource:
 
 In order to port search-front-html to m2 the following steps are required:
 
-# Plugins
-Upodate sesam maven repository or local repository with, at least, wsdl2java plugin. 
-There is no official port for this yet.
+h3. Pros
 
-Get more plugins (Subversion)
+* Runs (much)faster than maven1
+
+* Dependency handling and inheritance	
+
+* Plugins can be written in java
+  Means its easy for us to write plugins:-)
+
+h3. Installing (not released yet) plugins 
+The best way is to deploy plugins like wsdl2java to dev.schiibstedsok.no,  
+but heres the manual way of doing it:
+
+Get Mojo plugins with svn(Subversion client)
 {noformat}
 	svn checkout svn://svn.codehaus.org/mojo/scm/trunk/ mojo-site
 {noformat}
-Compile wsdl2java by typing  *mvn install*
+Compile wsdl2java by typing  *mvn install*, this will install it in your local repo.
 
-# Config 
+h3. Config  and sourcelocation
+Convert parameters from maven1: \@paramname\@  to maven1 format $\{paramname\}
+
 Move source from src/java,src/wsdl to src/main/java, src/main/wsdl and so forth
 (or symlink for testing)
 
 Change directory into src/main/conf and execute ./genm2tabs.sh  and edit 
 configuration.properties. Edit log4j.properties and change file paths.
 
-# Execute mvn war:war ;-)
-
+h4.  Execute mvn war:war 
+	Good luck! ;-)
