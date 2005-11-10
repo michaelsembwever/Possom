@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+   <groupId>schibstedsok</groupId> 
+    <artifactId>search</artifactId>
+    <modelVersion>4.0.0</modelVersion>
+    <name>Schibsted Sok Search-front</name>
+    <version>1-0-SNAPSHOT</version>
+    <repositories>
+	<repository>
+		<id>Sesam</id>
+		<name>Local Maven2 Repository</name>
+		<url>https://dev.schibstedsok.no/maven2</url>
+	</repository>
+	<repository>
+		<id>Central</id>
+		<name>Maven Central Repository</name>
+		<url>http://repo1.maven.org/maven2</url>
+	</repository>
+
+	<repository>
+		<id>SourceForge</id>
+		<name>Sourceforge Maven Repository</name>
+		<url>http://maven-plugins.sourceforge.net/maven</url>
+	</repository>
+    </repositories>
+
+    <dependencies>
+     <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>oscache</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+      <dependency>
+            <groupId>struts</groupId>
+            <artifactId>struts</artifactId>
+            <version>1.2.7</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>velocity</groupId>
+            <artifactId>velocity</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>tomcat</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>5.0.18</version>
+        </dependency>	
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-saaj</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-wsdl4j</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+	 <dependency>
+            <groupId>jep</groupId>
+            <artifactId>jep</artifactId>
+            <version>2.24</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>2.0</version>
+            <type>jar</type>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+	    <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
+            <type>jar</type>
+        </dependency>
+
+        <!-- Web -->
+        <dependency>
+            <groupId>opensymphony</groupId>
+	    <artifactId>sitemesh</artifactId>
+            <version>2.2.1</version>
+            <type>jar</type>
+        </dependency>
+
+        <!-- Indexes APIs -->
+        <dependency>
+            <groupId>fastdsapi</groupId>
+            <artifactId>fastdsapi</artifactId>
+            <version>4.1</version>
+	    <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+            <version>2.0_01_pd</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>1.1.2</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <type>jar</type>
+        </dependency> 
+    </dependencies>
+
+    <build>
+	<plugins>
+		<plugin> 
+		    <groupId>org.codehaus.mojo</groupId>
+        	    <artifactId>wsdl2java-maven-plugin</artifactId>
+		     <executions>
+		       <execution>
+		          <goals>
+			     <goal>generate</goal>
+		         </goals>
+		      </execution>
+		   </executions>
+		</plugin>
+	</plugins>
+
+        <sourceDirectory>src/main/java</sourceDirectory>
+
+        <resources>
+            <resource>
+                <directory>src/main/conf</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>*.xml</include>
+                    <include>*.properties</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/templates</directory>
+                <includes>
+                    <include>*.vm</include>
+                    <include>*.html</include>
+                </includes>
+            </resource>
+        </resources>
+
+	<testResources>
+		<testResource>
+			<directory>src/test/conf</directory>
+		</testResource>	
+	</testResources>
+    </build>
+
+    <properties>
+	<queryServerURL.1>http://localhost:15100</queryServerURL.1>
+	<queryServerURL.2>http://localhost:15200</queryServerURL.2>
+	<queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
+	<queryServerURL.4>http://localhost:15200</queryServerURL.4>
+	<log.directory>.</log.directory>
+	<log.file>sesam.develop.log</log.file>
+	<tokenevaluator.host>localhost</tokenevaluator.host>
+	<tokenevaluator.port>15200</tokenevaluator.port>	
+	<project.packaging>war</project.packaging>
+    </properties>
+</project>
