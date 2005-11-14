@@ -34,13 +34,6 @@ public class SearchMode {
         this.key = key;
     }
 
-    public SearchConfiguration[] getSearchConfigurationsArray(){
-        if(searchConfigurations == null){
-            return new SearchConfiguration[0];
-        }
-        return (SearchConfiguration[])searchConfigurations.toArray(new SearchConfiguration[0]);
-    }
-
     public Collection getSearchConfigurations() {
         return searchConfigurations;
     }
