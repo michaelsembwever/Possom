@@ -4,19 +4,47 @@
  */
 package no.schibstedsok.front.searchportal.command;
 
-import no.fast.ds.search.*;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import no.fast.ds.search.BaseParameter;
+import no.fast.ds.search.ConfigurationException;
+import no.fast.ds.search.FastSearchEngineFactory;
+import no.fast.ds.search.IDocumentSummary;
+import no.fast.ds.search.IDocumentSummaryField;
+import no.fast.ds.search.IFastSearchEngine;
+import no.fast.ds.search.IFastSearchEngineFactory;
+import no.fast.ds.search.IModifier;
+import no.fast.ds.search.INavigator;
+import no.fast.ds.search.IQuery;
+import no.fast.ds.search.IQueryResult;
+import no.fast.ds.search.IQueryTransformation;
+import no.fast.ds.search.ISearchParameters;
+import no.fast.ds.search.NoSuchParameterException;
+import no.fast.ds.search.Query;
+import no.fast.ds.search.SearchEngineException;
+import no.fast.ds.search.SearchParameter;
+import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
-import no.schibstedsok.front.searchportal.result.*;
+import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.front.searchportal.result.FastSearchResult;
+import no.schibstedsok.front.searchportal.result.KeywordCluster;
+import no.schibstedsok.front.searchportal.result.Modifier;
+import no.schibstedsok.front.searchportal.result.SearchResult;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
 import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.net.MalformedURLException;
-import java.util.*;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
