@@ -1,7 +1,5 @@
 package no.schibstedsok.front.searchportal.result;
 
-import no.fast.ds.search.BaseParameter;
-
 import java.util.Iterator;
 import java.util.Map;
 

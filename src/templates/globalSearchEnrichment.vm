@@ -7,15 +7,15 @@
 
 #if ($result.hitCount > 0)
     <content tag="globalSearchEnrichment">
-        <table class="enrichment">
+        <table class="enrichment" cellpadding="0" cellspacing="0">
             <tr>
-                <td colspan="2" class="title"><a href="?c=d&amp;q=$query&amp;s=g">$text.getMessage($locale, "hitsOnGlobal", $result.hitCount, $query)</a></td>
+                <td colspan="2" class="title"><a href="?c=d&amp;q=$query&amp;s=g">$text.getMessage($locale, "hitsOnGlobal", $result.hitCount, $queryHTMLEscaped)</a></td>
             </tr>
             <tr>
                 <td valign="top" class="img">
                     <a href="?c=d&amp;q=$query&amp;s=g"><img src="../images/enrichment/world.jpg" alt="Internasjonale nettsider" /></a>
                 </td>
-                <td>
+                <td width="500">
                     #foreach( $item in $result.results )
                         #if ($velocityCount <= 3)
                            <a href="$item.getField('url')">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url') #end</a><br />

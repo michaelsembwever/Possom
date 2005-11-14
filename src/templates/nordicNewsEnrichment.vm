@@ -8,7 +8,7 @@
 #if ($result.hitCount > 0)
 <content tag="nordicNewsEnrichment">
     <div class="enrichment">
-        <a href="?c=m&amp;q=$query">$text.getMessage($locale, "hitsOnNordisk", $result.hitCount, $query)</a>
+        <a href="?c=m&amp;q=$query">$text.getMessage($locale, "hitsOnNordisk", $result.hitCount, $queryHTMLEscaped)</a>
         <ul>
             #foreach( $item in $result.results )
             #if ($velocityCount <= 3)

@@ -1,7 +1,5 @@
 package no.schibstedsok.front.searchportal.result;
 
-import no.fast.ds.search.BaseParameter;
-
 import java.util.Iterator;
 import java.util.Map;
 
@@ -50,7 +48,11 @@ public class PhoneNumberFormatter implements ResultHandler {
 
             //formatting yptelefax in yip
             if (yptelefax != null) {
-                format = yptelefax.substring(0,2) + " " + yptelefax.substring(2,4) + " " + yptelefax.substring(4,6) + " " + yptelefax.substring(6,8);
+                if (yptelefax.length() == 8)
+                    format = yptelefax.substring(0,2) + " " + yptelefax.substring(2,4) + " " + yptelefax.substring(4,6) + " " + yptelefax.substring(6,8);
+                else
+                    format = yptelefax;
+
                 searchResultItem.addField("yptelefax", format);
             }
 

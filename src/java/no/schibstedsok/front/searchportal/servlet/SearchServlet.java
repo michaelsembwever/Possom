@@ -23,7 +23,8 @@ import java.io.IOException;
  */
 public class SearchServlet extends HttpServlet {
 
-    private String headerTemplate;
+    /** The serialVersionUID */
+    private static final long serialVersionUID = 3068140845772756438L;
 
     private static Log log = LogFactory.getLog(SearchServlet.class);
 
@@ -107,7 +108,7 @@ public class SearchServlet extends HttpServlet {
         }
 
         if (httpServletRequest.getParameter("q") != null) {
-            httpServletRequest.setAttribute("q", StringEscapeUtils.escapeHtml(httpServletRequest.getParameter("q")));
+            httpServletRequest.setAttribute("q", httpServletRequest.getParameter("q"));
         }
 
         httpServletRequest.setAttribute("c", searchModeKey);

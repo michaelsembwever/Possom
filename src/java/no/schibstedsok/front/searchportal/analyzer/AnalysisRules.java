@@ -14,27 +14,21 @@ import java.util.Map;
  */
 public class AnalysisRules {
 
-    Log log = LogFactory.getLog(AnalysisRules.class);
-    static Map rules = new HashMap();
+    private static Log log = LogFactory.getLog(AnalysisRules.class);
+    private static Map rules = new HashMap();
 
     static {
 
         // Basic predicates.
 
-
         Predicate exactFirst = new TokenPredicate("exact_firstname");
         Predicate exactLast = new TokenPredicate("exact_lastname");
-
         Predicate exactFirstOrLast = PredicateUtils.orPredicate(exactLast, exactFirst);
-
-        Predicate picture = new TokenPredicate("picture");
         Predicate tns = new TokenPredicate("tns");
-
         Predicate firstName = new TokenPredicate("firstname");
         Predicate lastName = new TokenPredicate("lastname");
         Predicate companyName = new TokenPredicate("company");
         Predicate exactCompanyName = new TokenPredicate("exact_company");
-//        Predicate geo = new TokenPredicate("geo");
         Predicate geoLocal = new TokenPredicate("geolocal");
         Predicate geoGlobal = new TokenPredicate("geoglobal");
         Predicate geoLocalExact = new TokenPredicate("exact_geolocal");
@@ -54,9 +48,6 @@ public class AnalysisRules {
         Predicate phoneNumber = new TokenPredicate("phoneNumber");
         Predicate englishWords = new TokenPredicate("international");
         Predicate tvPrefix = new TokenPredicate("tvPrefix");
-        Predicate nameLongerThanWikipedia = new TokenPredicate("nameLongerThanWikipedia");
-        Predicate globalSearchEnabled = new ParameterPredicate("s", "g");
-        Predicate globalSearchNotEnabled = PredicateUtils.notPredicate(globalSearchEnabled);
         Predicate companySuffix = new TokenPredicate("companySuffix");
         Predicate mathPredicate = new TokenPredicate("mathExpression");
 
@@ -70,7 +61,13 @@ public class AnalysisRules {
         Predicate firstOrLast = PredicateUtils.orPredicate(firstName, lastName);
         Predicate firstOrLastAndGeo = PredicateUtils.andPredicate(firstOrLast, geo);
 
-        Predicate[] aa = {exactWiki, companySuffix, keyword, category, PredicateUtils.andPredicate(prioCompanyName, PredicateUtils.notPredicate(firstName))};
+        Predicate[] aa = {
+                exactWiki,
+                companySuffix,
+                keyword,
+                category,
+                PredicateUtils.andPredicate(prioCompanyName, PredicateUtils
+                        .notPredicate(firstName)) };
 
         Predicate notWikiNotCompanyPostfix = PredicateUtils.nonePredicate(aa);
         Predicate firstOrLastNotCompany = PredicateUtils.andPredicate(notWikiNotCompanyPostfix, firstOrLastAndGeo);
@@ -101,7 +98,7 @@ public class AnalysisRules {
         Predicate categoryOrKeyword = PredicateUtils.orPredicate(category, keyword);
         company.addPredicateScore(categoryOrKeyword, 100);
 
-        Predicate g[] = {companySuffix, keyword, category, prioCompanyName};
+        Predicate[] g = {companySuffix, keyword, category, prioCompanyName};
 
         company.addPredicateScore(PredicateUtils.andPredicate(exactWiki, PredicateUtils.nonePredicate(g)), -500);
         Predicate companyNotPerson = PredicateUtils.andPredicate(PredicateUtils.notPredicate(firstAndLastName), companyName);
@@ -111,8 +108,13 @@ public class AnalysisRules {
         company.addPredicateScore(geoExact, -500);
         company.addPredicateScore(orgNr, 120);
         company.addPredicateScore(phoneNumber, 200);
-        company.addPredicateScore(PredicateUtils.allPredicate(new Predicate[] {PredicateUtils.notPredicate(prioCompanyName), PredicateUtils.notPredicate(companySuffix), firstOrLastAndGeo, PredicateUtils.notPredicate(categoryOrKeyword)}), -500);
-        company.addPredicateScore(PredicateUtils.allPredicate(new Predicate[] {cataloguePrefix, firstOrLast, PredicateUtils.notPredicate(companySuffix)}), -500);
+        company.addPredicateScore(PredicateUtils.allPredicate(new Predicate[] {
+                PredicateUtils.notPredicate(prioCompanyName),
+                PredicateUtils.notPredicate(companySuffix), firstOrLastAndGeo,
+                PredicateUtils.notPredicate(categoryOrKeyword) }), -500);
+        company.addPredicateScore(PredicateUtils.allPredicate(new Predicate[] {
+                cataloguePrefix, firstOrLast,
+                PredicateUtils.notPredicate(companySuffix) }), -500);
         company.addPredicateScore(newsPrefix, -500);
         company.addPredicateScore(tns, -500);
         company.addPredicateScore(exactFirst, -500);
@@ -121,7 +123,7 @@ public class AnalysisRules {
 
         AnalysisRule globalEnrichment = new AnalysisRule();
 
-        Predicate[] ppp = {keyword, category, firstName,lastName,companyName};
+        Predicate[] ppp = {keyword, category, firstName, lastName, companyName};
 
         globalEnrichment.addPredicateScore(PredicateUtils.andPredicate(englishWords, PredicateUtils.notPredicate(wikipedia)), 90);
         globalEnrichment.addPredicateScore(PredicateUtils.anyPredicate(ppp), -500);
@@ -203,7 +205,9 @@ public class AnalysisRules {
         Predicate[] allCompanyAndPresonHits = {fullName, keyword, category, companyName};
         weather.addPredicateScore(PredicateUtils.andPredicate(weatherPrefix, geo), 400);
         weather.addPredicateScore(geoExact, 500);
-        weather.addPredicateScore(PredicateUtils.andPredicate(PredicateUtils.notPredicate(geo), PredicateUtils.anyPredicate(allCompanyAndPresonHits)), -500);
+        weather.addPredicateScore(PredicateUtils.andPredicate(PredicateUtils
+                .notPredicate(geo), PredicateUtils
+                .anyPredicate(allCompanyAndPresonHits)), -500);
         weather.addPredicateScore(tns, -500);
         rules.put("weather", weather);
 
@@ -213,16 +217,29 @@ public class AnalysisRules {
 
     }
 
+    /**
+     *
+     * Returns a map of all the rules. The key is the name of the rule
+     *
+     * @return all rules.
+     */
     public Map getRules() {
         return rules;
     }
 
 
-    public AnalysisRule getRule(String ruleName) {
-        if(log.isDebugEnabled()){
+    /**
+     *
+     * Returns the rule with the name <code>ruleName</code>.
+     *
+     * @param   ruleName    the name of the rule
+     * @return  the rule.
+     */
+    public AnalysisRule getRule(final String ruleName) {
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: getRule()" + ruleName);
         }
-        AnalysisRule rule= (AnalysisRule) rules.get(ruleName);
+        AnalysisRule rule = (AnalysisRule) rules.get(ruleName);
 
         return rule;
     }

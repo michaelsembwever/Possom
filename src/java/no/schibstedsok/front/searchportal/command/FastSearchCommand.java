@@ -15,7 +15,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.*;
 
@@ -140,9 +139,6 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             log.error("execute", e);
             throw new InfrastructureException(e);
         } catch (SearchEngineException e) {
-            log.error("execute", e);
-            throw new InfrastructureException(e);
-        } catch (IOException e) {
             log.error("execute", e);
             throw new InfrastructureException(e);
         }
@@ -555,7 +551,6 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         if (navigator.getChildNavigator() == null) {
             return null;
         } else if (navigator.getChildNavigator().getName().equals(navigatorName)) {
-            String field = navigator.getChildNavigator().getField();
 
             if (true) {
                 return navigator;
@@ -603,10 +598,11 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
 
             if (value == null) {
                 parent = findParentNavigator(fastConfiguration.getNavigator(navigatorKey), parent.getName());
-
-                value = getNavigatedValue(parent.getField());
+                
+                if (parent != null) {
+                    value = getNavigatedValue(parent.getField());
+                }
                 return value;
-
             } else {
                 return value;
             }

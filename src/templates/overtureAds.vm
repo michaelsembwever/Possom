@@ -9,8 +9,8 @@
 <content tag="ads">
 
     #if ($result.getResults().size() > 0)
+        <div id="ads_header">Sponsede lenker:</div>
         <div id="ads">
-            <div id="ads_header">Annons&#248rer:</div>
             #foreach ($item in $result.getResults())
                 <p>
                     <a href="$item.getField('clickURL')">$item.getField('title')</a><br />

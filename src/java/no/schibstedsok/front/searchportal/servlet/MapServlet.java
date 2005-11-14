@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.rpc.ServiceException;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.util.Vector;
 
@@ -29,6 +28,9 @@ import java.util.Vector;
  *
  */
 public class MapServlet extends HttpServlet {
+    /** The serialVersionUID */
+    private static final long serialVersionUID = -5879777378093939926L;
+
     //globale konstanter. Hvor bør disse settes?? xml fil.
     /*final static long zoomLevel1 = 10000; //kartskala ved zoom til ett punkt
     final static long zoomLevel2 = 20000;
@@ -99,13 +101,11 @@ public class MapServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
-        PrintWriter out = response.getWriter();
 
         String sUrl = new String();
         String token = new String();
         boolean retriveMapError = false;
         MapEnvelope me = new MapEnvelope();
-        boolean envelope = false;
         String maxX = request.getParameter("maxX");
         if (maxX != null){
             //koordinater for envelope er sendt i requesten

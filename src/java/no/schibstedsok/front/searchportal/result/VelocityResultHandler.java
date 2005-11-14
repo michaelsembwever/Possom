@@ -1,25 +1,28 @@
 package no.schibstedsok.front.searchportal.result;
 
-import no.schibstedsok.front.searchportal.InfrastructureException;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
-import no.schibstedsok.front.searchportal.i18n.TextMessages;
-import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import no.geodata.maputil.CoordHelper;
+import no.schibstedsok.front.searchportal.InfrastructureException;
+import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.i18n.TextMessages;
+import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Category;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.app.Velocity;
-import org.apache.log4j.Category;
+import org.apache.velocity.runtime.RuntimeConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
+import java.net.URLEncoder;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -76,14 +79,23 @@ public class VelocityResultHandler implements ResultHandler {
             log.debug("ENTR: populateVelocityContext()");
         }
         String queryString = result.getSearchCommand().getQuery().getQueryString();
-        queryString = StringEscapeUtils.escapeHtml(queryString);
+
+        String queryStringURLEncoded = null;
+
+        try {
+            queryStringURLEncoded = URLEncoder.encode(queryString, "UTF-8");
+            queryString = StringEscapeUtils.escapeHtml(queryString);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+
         context.put("result", result);
         context.put("request", request);
         context.put("response", response);
-        context.put("query", queryString);
+        context.put("query", queryStringURLEncoded);
         context.put("globalSearchTips", ((RunningQuery)request.getAttribute("query")).getGlobalSearchTips());
         context.put("command", result.getSearchCommand());
-        context.put("httpQueryString", request.getQueryString().replaceAll("&", "&amp;"));
+        context.put("queryHTMLEscaped", queryString);
         context.put("locale", result.getSearchCommand().getQuery().getLocale());
         context.put("text", TextMessages.getMessages());
         context.put("currentTab", result.getSearchCommand().getQuery().getSearchMode());
@@ -98,6 +110,9 @@ public class VelocityResultHandler implements ResultHandler {
             pager.setCurrentOffset(result.getSearchCommand().getQuery().getOffset());
             context.put("pager", pager);
         }
+
+        Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.getInstance().getProperties());
+        context.put("linkpulse", linkpulse);
     }
 
     private static void initVelocity() {

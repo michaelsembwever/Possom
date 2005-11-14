@@ -24,7 +24,6 @@ public class BasicSearchResult implements SearchResult {
     private List results = new ArrayList();
     private HashMap spellingSuggestions = new HashMap();
     private List querySuggestions = new ArrayList();
-    private int analysisResult;
 
     public BasicSearchResult(SearchCommand command) {
         this.searchCommand = command;

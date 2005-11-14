@@ -57,7 +57,7 @@
                 </table>
             #end
 
-            #if (!$result.searchCommand.getNavigatorTitle('geographic').equals("Fylker"))
+            #if ($result.searchCommand.getNavigatorTitle('geographic') != "Fylker")
                 <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
                 <div class="navbar_header2">
                     $!result.searchCommand.getNavigatorTitle('geographic')
@@ -111,7 +111,7 @@
                 </table>
             #end
 
-#*            #if (!$result.searchCommand.getNavigatorTitle('trade').equals("Alle bransjer"))
+#*            #if ($result.searchCommand.getNavigatorTitle('trade') != "Alle bransjer")
                 <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
                 <div class="navbar_header2">
                     $result.searchCommand.getNavigatorTitle('trade')
@@ -235,7 +235,7 @@
     #if (!$query.trim().equals(""))
     <table id="greybar_main" cellpadding="0" cellspacing="0" width="758">
         <tr>
-            <td class="left_yel">Bedriftss&#248;k: $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$query</b></td>
+            <td class="left_yel">Bedriftss&#248;k: $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$queryHTMLEscaped</b></td>
             <td class="right_yel">&nbsp;</td>
         </tr>
     </table>

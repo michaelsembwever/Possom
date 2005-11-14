@@ -10,9 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluator;
-import no.schibstedsok.front.searchportal.analyzer.RegExpEvaluators;
-
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>

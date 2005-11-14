@@ -42,7 +42,7 @@
 
     #if ($pager && $pager.getNumberOfPages() > 1)
         <div style="margin-bottom: 10px;">
-                    $text.getMessage($locale, "showMoreHits", $query)&nbsp;
+                    $text.getMessage($locale, "showMoreHits", $queryHTMLEscaped)&nbsp;
                     #foreach ($page in [$pager.getFirstVisiblePage()..$pager.getLastVisiblePage()])
 
                         ## First Itereation.
@@ -91,7 +91,7 @@
                 <td colspan="3"><img src="../images/pix.gif" width="1" height="5" alt="" /></td>
             </tr>
             <tr>
-                <td width="400" valign="middle"><input type="text" name="q" value="$query" class="input_main" /></td>
+                <td width="400" valign="middle"><input type="text" name="q" value="$queryHTMLEscaped" class="input_main" /></td>
                 <td width="8">&nbsp;</td>
                 #if ($currentTab.getKey() == "m")
                 <td valign="middle"><input type="submit" value="Nyhetss&#248;k" id="submit_button" class="submit_m" /></td>

@@ -5,7 +5,7 @@
             <img src="../images/enrichment/pic.jpg" align="left" alt="Bilder" />
         </td>
         <td valign="top" class="title">
-            <a href="?c=p&amp;q=$query">$text.getMessage($locale, "hitsOnPics", $result.hitCount, $query)</a>
+            <a href="?c=p&amp;q=$query">$text.getMessage($locale, "hitsOnPics", $result.hitCount, $queryHTMLEscaped)</a>
         </td>
     </tr>
     <tr>

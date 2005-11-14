@@ -9,9 +9,11 @@
     <content tag="yellowPagesEnrichment">
 
         <table class="enrichment" cellspacing="0" cellpadding="0">
+        ##set ($param = "category:enrichmentHeader;companyid:1234")
+        ##<td colspan="4"><a href='$linkpulse.getUrl("?c=y&amp;q=$query", "category:enrichmentHeader", "sgo")'>Test</a></td>
             #if ($result.hitCount != 1)
             <tr>
-                <td colspan="2" class="title"><a href="?c=y&amp;q=$query">$text.getMessage($locale, "hitsOnYellowEnrichment", $result.hitCount, $query)</a></td>
+                <td colspan="2" class="title"><a href='$linkpulse.getUrl("?c=y&amp;q=$query", "category:enrichmentHeader", "sgo")'>$text.getMessage($locale, "hitsOnYellowEnrichment", $result.hitCount, $queryHTMLEscaped)</a></td>
             </tr>
             #else
             <tr>
@@ -30,9 +32,9 @@
                     #foreach( $item in $result.results )
                         #if ($velocityCount <= 3)
                             <tr>
-                                <td><a href="?c=yip&amp;q=$query&amp;companyId=$item.getField('recordid')&amp;companyId_x=$hashGenerator.generateMD5($item.getField('recordid'))">$item.getField('ypnavn2')</a></td>
+                                <td valign="top"><a href="?c=yip&amp;q=$query&amp;companyId=$item.getField('recordid')&amp;companyId_x=$hashGenerator.generateMD5($item.getField('recordid'))">$item.getField('ypnavn2')</a></td>
                                 <td class="enrich_space"></td>
-                                <td>#if ($item.getField('ypadresse')) $!item.getField('ypadresse'), #end $!item.getField('ywpostnr') $!item.getField('ywpoststed')</td>
+                                <td valign="top">#if ($item.getField('ypadresse')) $!item.getField('ypadresse'), #end $!item.getField('ywpostnr') $!item.getField('ywpoststed')</td>
                                 #if ($item.getField('ypanynumber'))
                                     <td class="enrich_space"></td>
                                     <td valign="top" style="white-space: nowrap;">$item.getField('ypanynumber')</td>

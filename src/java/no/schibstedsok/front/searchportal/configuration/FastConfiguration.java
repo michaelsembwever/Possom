@@ -49,29 +49,6 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         collections.add(collectionName);
     }
 
-
-            // Frr testing
-     private String generateFilterString() {
-
-        if (collections != null) {
-            if (collections.size() > 1) {
-
-                Object coll[] = collections.toArray();
-
-                for (int i = 0; i < coll.length; i++) {
-                    String collectionName = (String) coll[i];
-                    String s = "meta.collection:" + collectionName;
-                    coll[i] = s;
-                }
-
-                return "+(" + StringUtils.join(coll, ' ') + ")";
-            } else if (collections.size() == 1) {
-                return "+meta.collection:" + collections.get(0);
-            }
-        }
-        return "";
-    }
-
     public String getCollectionFilterString() {
         if (collectionString == null) {
             synchronized(this) {

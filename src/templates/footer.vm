@@ -1,4 +1,5 @@
 <div id="footer_help">
+    <div style="float:left;">
             <span class="copy">&copy;2005</span> &nbsp;&nbsp;
             <script type="text/javascript" language="JavaScript">
                 if(navigator.appName.indexOf("Microsoft") >= 0){
@@ -36,4 +37,8 @@
             #else
             <a href="?c=d&amp;q=&amp;help=true&amp;pg=1">Hjelp</a>
             #end
+    </div>
+    #if ($currentTab.getKey() == "m")
+        <div style="float:right;"><a href="http://www.retriever-info.com/" target="_blank"><img src="../images/retriever_logo.jpg" alt="Retriever"  /></a></div>
+    #end
 </div>

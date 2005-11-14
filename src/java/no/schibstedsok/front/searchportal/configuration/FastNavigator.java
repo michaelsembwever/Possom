@@ -8,6 +8,8 @@ import java.io.Serializable;
  */
 public class FastNavigator implements Serializable {
 
+    /** The serialVersionUID */
+    private static final long serialVersionUID = -3135641813818854457L;
     private String name;
     private String field;
     private FastNavigator childNavigator;

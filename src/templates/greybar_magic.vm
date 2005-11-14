@@ -10,7 +10,7 @@
         #searchBar()
 
         <div id="greybar_main">
-            <div class="left">$text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$query</b></div>
+            <div class="left">$text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$queryHTMLEscaped</b></div>
             <div class="right">&nbsp;</div>
         </div>
         <img src="../images/pix.gif" width="100%" height="1" class="dots" />

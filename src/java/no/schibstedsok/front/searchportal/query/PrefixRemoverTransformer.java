@@ -2,7 +2,7 @@ package no.schibstedsok.front.searchportal.query;
 
 import no.schibstedsok.front.searchportal.analyzer.RegExpEvaluators;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
 
@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 public class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
-    public List prefixes = new ArrayList();
+    private Collection prefixes = new ArrayList();
 
     public String getTransformedQuery(String originalQuery) {
         for (Iterator iterator = prefixes.iterator(); iterator.hasNext();) {

@@ -9,10 +9,24 @@ package no.schibstedsok.front.searchportal;
  * @version <tt>$Revision$</tt>
  */
 public class InfrastructureException extends RuntimeException {
+    /** The serialVersionUID */
+    private static final long serialVersionUID = -4397027929558851526L;
+
+    /**
+     * Create a new InfrastructureException.
+     * 
+     * @param e
+     */
     public InfrastructureException(Exception e) {
         super(e);
     }
 
+    /**
+     * Create a new InfrastructureException.
+     * 
+     * @param s
+     * @param e
+     */
     public InfrastructureException(String s, Exception e) {
         super(s, e);
     }

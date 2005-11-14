@@ -3,7 +3,6 @@ package no.schibstedsok.front.searchportal.configuration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.List;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>

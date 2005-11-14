@@ -1,6 +1,5 @@
 package no.schibstedsok.front.searchportal.spell;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

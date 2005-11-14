@@ -87,7 +87,7 @@
                         p&#229;
                     #end
 
-                    <b>$query</b></td>
+                    <b>$queryHTMLEscaped</b></td>
 
                     <td class="right">
 

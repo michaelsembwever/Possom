@@ -204,7 +204,7 @@ a {
 
 
 #body_table{
-    margin-left: 20px;
+    margin: 0px 0px 20px 20px;
 }
 
 
@@ -938,27 +938,29 @@ a {
 /* =ADS */
 
 #ads {
-    margin-top: 132px;
+    margin-top: 24px;
     border-left: 1px solid #E9E9E9;
+    font-size: 1.1em;
 }
 
-#ads p, #ads_header {
-    padding: 0px 8px;
-}
 
 #ads_header {
+    margin-top: 94px;
     color: gray;
+    padding: 0px 12px;
 }
 
 
 #ads p {
     margin-top: 15px;
+    padding: 0px 12px;
 }
 
 .ads_desc {
     color: #525355;
     margin: 5px 0px 0px 0px;
 }
+
 .sitehost {
     color: #8F8F8F;
 }

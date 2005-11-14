@@ -5,7 +5,6 @@ import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Iterator;
 
 import org.apache.commons.logging.LogFactory;

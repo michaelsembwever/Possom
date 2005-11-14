@@ -11,7 +11,7 @@
         <table class="enrichment" cellspacing="0" cellpadding="0">
             #if ($result.hitCount != 1)
                 <tr>
-                    <td colspan="2" class="title"><a href="?c=w&amp;q=$query">$text.getMessage($locale, "hitsOnWhiteEnrichment", $result.hitCount, $query)</a></td>
+                    <td colspan="2" class="title"><a href="?c=w&amp;q=$queryHTMLEscaped">$text.getMessage($locale, "hitsOnWhiteEnrichment", $result.hitCount, $queryHTMLEscaped)</a></td>
                 </tr>
             #else
                 <tr>
@@ -30,9 +30,9 @@
                     #foreach( $item in $result.results )
                         #if ($velocityCount <= 3)
                             <tr>
-                                <td><a href="?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))">$!item.getField('wpfornavn') $!item.getField('wpetternavn')</a></td>
+                                <td valign="top"><a href="?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))">$!item.getField('wpfornavn') $!item.getField('wpetternavn')</a></td>
                                 <td class="enrich_space"></td>
-                                <td>
+                                <td valign="top">
                                     #if ($item.getField('wpadresse'))
                                         $!item.getField('wpadresse'),
                                     #end

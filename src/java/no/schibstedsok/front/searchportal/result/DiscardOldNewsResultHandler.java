@@ -6,16 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class DiscardOldNewsResultHandler implements ResultHandler {
-
-    private static Log log = LogFactory.getLog(DiscardOldNewsResultHandler.class);
 
     private String sourceField;
     private long maxAgeInMilliseconds = Long.MAX_VALUE;

@@ -114,7 +114,7 @@ Hva synes du om s&oslash;keresultatet?<br />
 <input type="radio" name="score" value="3" onclick="iterate()" /> D&aring;rlig<br />
 
 <div id="extraframe">
-<span id="qs">#if ($query) Du s&#248;kte p&#229;: <b>$query</b> #else Ingen s&#248;estreng #end</span>
+<span id="qs">#if ($query) Du s&#248;kte p&#229;: <b>$queryHTMLEscaped</b> #else Ingen s&#248;estreng #end</span>
 <p>
 Kommentar:<br />
 <textarea name="message" rows="8" cols="18"></textarea>

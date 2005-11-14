@@ -5,7 +5,6 @@ import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
 import no.schibstedsok.front.searchportal.spell.QuerySuggestion;
 
 import java.util.List;
-import java.util.Collection;
 import java.util.HashMap;
 
 /*

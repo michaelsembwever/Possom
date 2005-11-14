@@ -1,9 +1,6 @@
 package no.schibstedsok.front.searchportal.analyzer;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-
-import java.util.List;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -11,30 +8,40 @@ import java.util.regex.Matcher;
 import no.schibstedsok.front.searchportal.query.StopWordRemover;
 
 /**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * An implementation of TokenEvaluator which uses a set of {@link Pattern} to
+ * decide if a token occurs in a query.
+ *
+ * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @version $Revision$
  */
 public class RegExpTokenEvaluator implements TokenEvaluator, StopWordRemover {
 
-    Log log = LogFactory.getLog(RegExpTokenEvaluator.class);
-    private List expressions;
+    private Collection expressions;
 
-    public RegExpTokenEvaluator(List expressions) {
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: RegExpTokenEvaluator()");
-        }
+    /**
+     * Create a new RegExpTokenEvaluator.
+     *
+     * @param expressions
+     *            the patterns to use. Elements of collection must be
+     *            {@link Pattern}.
+     */
+    public RegExpTokenEvaluator(final Collection expressions) {
         this.expressions = expressions;
     }
 
-    public boolean evaluateToken(String token, String query) {
-
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: evaluateToken()");
-        }
+    /**
+     * Returns true if any of the patterns matches the query.
+     *
+     * @param token
+     *            not used by this implementation.
+     * @param query
+     *            the query to find matches in.
+     *
+     * @return true if any of the patterns matches.
+     */
+    public boolean evaluateToken(final String token, final String query) {
         for (Iterator iterator = expressions.iterator(); iterator.hasNext();) {
             Pattern p = (Pattern) iterator.next();
-
-            log.debug(query);
 
             Matcher m = p.matcher(query);
 
@@ -45,18 +52,30 @@ public class RegExpTokenEvaluator implements TokenEvaluator, StopWordRemover {
         return false;
     }
 
-    public String removeStopWords(String originalQuery) {
+    /**
+     * Remove all substrings from originalQuery that matches any of the
+     * expressions.
+     *
+     * @param originalQuery
+     *            the query to remove stop words form.
+     *
+     * @return  the query with all matches removed.
+     * @todo    does not belong in this class.
+     */
+    public String removeStopWords(final String originalQuery) {
 
         if (originalQuery.indexOf('"') > -1) {
             return originalQuery;
         }
 
+        String newQuery = originalQuery;
+
         for (Iterator iterator = expressions.iterator(); iterator.hasNext();) {
             Pattern p = (Pattern) iterator.next();
-            Matcher m = p.matcher(originalQuery);
-            originalQuery = m.replaceAll("");
+            Matcher m = p.matcher(newQuery);
+            newQuery = m.replaceAll("");
         }
 
-        return originalQuery;
+        return newQuery;
     }
 }

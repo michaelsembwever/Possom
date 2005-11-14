@@ -1,15 +1,10 @@
 package no.schibstedsok.front.searchportal.result;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
-
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
-import java.text.DecimalFormat;
-import java.math.BigDecimal;
 
 /**
  * WeatherDateHandler is part of no.schibstedsok.front.searchportal.result

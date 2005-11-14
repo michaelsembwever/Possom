@@ -6,8 +6,6 @@ package no.schibstedsok.front.searchportal.query;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluator;
-import no.schibstedsok.front.searchportal.analyzer.RegExpEvaluators;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>

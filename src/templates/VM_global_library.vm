@@ -50,7 +50,7 @@ $allNavigators
     #end
     <table border="0" cellspacing="3" cellpadding="0">
     <tr>
-        <td width="400"><input type="text" name="q" value="$query" class="input_main" /></td>
+        <td width="400"><input type="text" name="q" value="$queryHTMLEscaped" class="input_main" /></td>
         <td width="8">&nbsp;</td>
         #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
         <td><input type="submit" value="Bedriftss&#248;k" id="submit_button" class="submit_y" /></td>

@@ -92,7 +92,6 @@ public class OverturePPCCommand extends AbstractSearchCommand {
                 NodeList click = ppcListing.getElementsByTagName("ClickUrl");
 
                 if (click.getLength() > 0) {
-                    Element e;
                     item.addField("clickURL", click.item(0).getChildNodes().item(0).getNodeValue());
                 }
 

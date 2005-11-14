@@ -24,7 +24,7 @@
 <content tag="greybar_magic">
         <table id="greybar_main" cellpadding="0" cellspacing="0" width="561">
             <tr>
-                <td class="left">Norske nettsider: $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$query</b></td>
+                <td class="left">Norske nettsider: $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$queryHTMLEscaped</b></td>
                 <td class="right">&nbsp;</td>
             </tr>
         </table>
@@ -48,7 +48,7 @@
 <content tag="greybar_magic_enrichment">
         <table id="greybar_main" cellpadding="0" cellspacing="0" width="561">
             <tr>
-                <td class="left">Treff p&#229; <b>$query</b></td>
+                <td class="left">Treff p&#229; <b>$queryHTMLEscaped</b></td>
                 <td class="right">&nbsp;</td>
             </tr>
         </table>
@@ -168,13 +168,6 @@
 
     #if ($pager.numberOfResults > 0)
         <div class="search_result">
-
-            #*<b>$text.getMessage($locale, "keywords")</b><br/>
-            #foreach ($keyword in $result.sortedClusters)
-                #if ($velocityCount < 10)
-                    <a href="?$httpQueryString&amp;kw=%22$keyword.key%22">$keyword.key</a> <br/>
-                #end
-            #end *#
 
             #foreach( $item in $result.results )
                 <p>

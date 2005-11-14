@@ -274,7 +274,7 @@
     #if (!$query.trim().equals(""))
     <table id="greybar_main" cellpadding="0" cellspacing="0" width="758">
         <tr>
-            <td class="left_yel">Persons&#248;k: $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$query</b></td>
+            <td class="left_yel">Persons&#248;k: $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$queryHTMLEscaped</b></td>
             <td class="right_yel">&nbsp;</td>
         </tr>
     </table>

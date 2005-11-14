@@ -8,6 +8,9 @@ import org.apache.struts.util.MessageResources;
  * @version <tt>$Revision$</tt>
  */
 public class MessageResourcesFixFactory extends MessageResourcesFactory {
+    /** The serialVersionUID */
+    private static final long serialVersionUID = -6086490519846497756L;
+
     public MessageResources createResources(String string) {
         return new MessageResourcesFix(this, string);
     }

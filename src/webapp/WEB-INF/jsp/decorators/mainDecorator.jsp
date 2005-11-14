@@ -8,12 +8,13 @@
                  no.schibstedsok.front.searchportal.query.RunningQuery,
                  no.schibstedsok.front.searchportal.result.Modifier"%>
 <%@ page import="java.util.Locale"%>
+<%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Iterator"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
-<%@ page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 
@@ -25,7 +26,11 @@
     currentC = (String) request.getAttribute("c");
     String searchType = request.getParameter("s");
     String q = (String) request.getAttribute("q");
-    String help = request.getParameter("help");
+	String qURLEncoded = URLEncoder.encode(q, "utf-8");
+
+	q = StringEscapeUtils.escapeHtml(q);
+	
+	String help = request.getParameter("help");
 
     String about = request.getParameter("about");
 
@@ -118,15 +123,15 @@ function setfocus() {
         <td width="24"><img src="../images/pix.gif" width="24" height="60" alt="" /></td>
         <td valign="bottom">
             <div id="linkback">
-                <a href="?c=d&amp;q=<%=q%>" <%if (currentC.equals("d")) {%>class="highlite"<%}%> onclick="return strep(this);">Sesams&#248;k</a>
+                <a href="?c=d&amp;q=<%=qURLEncoded%>" <%if (currentC.equals("d")) {%>class="highlite"<%}%> onclick="return strep(this);">Sesams&#248;k</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="?nav_sources=contentsourcenavigator&amp;c=m&amp;q=<%=q%>" <%if (currentC.equals("m")) {%>class="highlite"<%}%> onclick="return strep(this);">Nyhetss&#248;k</a>
+                <a href="?nav_sources=contentsourcenavigator&amp;c=m&amp;q=<%=qURLEncoded%>" <%if (currentC.equals("m")) {%>class="highlite"<%}%> onclick="return strep(this);">Nyhetss&#248;k</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="?c=y&amp;q=<%=q%>" <%if (currentC.equals("y") || currentC.equals("yip")) {%>class="highlite"<%}%> onclick="return strep(this);">Bedriftss&#248;k</a>
+                <a href="?c=y&amp;q=<%=qURLEncoded%>" <%if (currentC.equals("y") || currentC.equals("yip")) {%>class="highlite"<%}%> onclick="return strep(this);">Bedriftss&#248;k</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="?c=w&amp;q=<%=q%>" <%if (currentC.equals("w") || currentC.equals("wip")) {%>class="highlite"<%}%> onclick="return strep(this);">Persons&#248;k</a>
+                <a href="?c=w&amp;q=<%=qURLEncoded%>" <%if (currentC.equals("w") || currentC.equals("wip")) {%>class="highlite"<%}%> onclick="return strep(this);">Persons&#248;k</a>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="?c=p&amp;q=<%=q%>" <%if (currentC.equals("p")) {%>class="highlite"<%}%> onclick="return strep(this);">Bildes&#248;k</a>
+                <a href="?c=p&amp;q=<%=qURLEncoded%>" <%if (currentC.equals("p")) {%>class="highlite"<%}%> onclick="return strep(this);">Bildes&#248;k</a>
             </div>
         </td>
         <td>&nbsp;</td>
@@ -143,10 +148,10 @@ function setfocus() {
                     <tr>
                         <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" /></td>
                     </tr>
-                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=<%=q%>";'>
+                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=<%=qURLEncoded%>";'>
                         <td class="nav_pad_icon">
                             <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
-                            <a href="?c=d&amp;q=<%=q%>">Sesams&#248;k</a>
+                            <a href="?c=d&amp;q=<%=qURLEncoded%>">Sesams&#248;k</a>
                         </td>
                         <td class="nav_pad" align="right">&nbsp;</td>
                     </tr>
@@ -156,10 +161,10 @@ function setfocus() {
                     <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                     Modifier e = (Modifier) iterator.next();
                     %>
-                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=q%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
+                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
                             <td class="nav_pad_icon">
                                 <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                <a href="?q=<%=q%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
+                                <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
@@ -189,10 +194,10 @@ function setfocus() {
                     <tr>
                         <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
                     </tr>
-                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=<%=q%>";'>
+                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=<%=qURLEncoded%>";'>
                         <td class="nav_pad_icon">
                             <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
-                            <a href="?c=d&amp;q=<%=q%>">Sesams&#248;k</a>
+                            <a href="?c=d&amp;q=<%=qURLEncoded%>">Sesams&#248;k</a>
                         </td>
                         <td class="nav_pad" align="right">&nbsp;</td>
                     </tr>
@@ -202,10 +207,10 @@ function setfocus() {
                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                     Modifier e = (Modifier) iterator.next();
                     %>
-                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=q%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
+                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
                         <td class="nav_pad_icon">
                             <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
-                            <a href="?q=<%=q%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
+                            <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                         </td>
                         <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
                     </tr>
@@ -245,10 +250,10 @@ function setfocus() {
                         Modifier e = (Modifier) iterator.next();
 
                         %>
-                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=q%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
+                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
                             <td class="nav_pad_icon">
                                 <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } else if (e.getName().equals("Bildesøk")) { %> src="../images/nav_p.gif" <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/nav_m.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                <a href="?q=<%=q%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
+                                <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
@@ -469,6 +474,29 @@ function setfocus() {
 </table>
 
 <decorator:getProperty property="page.map-script"/>
+
+<!-- start Gallup -->
+<script type='text/javascript' language='JavaScript' src='../javascript/tmv11.js'></script>
+<script type="text/javascript" language="JavaScript">
+<!--
+var tmsec = new Array(2);
+tmsec[0]="tmsec=sesam";
+tmsec[1]="tmsec=sesamsok";
+getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
+//-->
+</script>
+<% if (currentC.equals("d")) { %>
+<noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok"></noscript>
+<%} else if (currentC.equals("m")) { %>
+<noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok/"></noscript>
+<% } else if (currentC.equals("y") || currentC.equals("yip")) { %>
+<noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bedriftssok"></noscript>
+<% } else if (currentC.equals("w") || currentC.equals("wip")) { %>
+<noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=personsok"></noscript>
+<%} else if (currentC.equals("p")) { %>
+<noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bildesok/"></noscript>
+<% } %>
+<!-- end gallup -->
 
 </body>
 </html>

@@ -6,16 +6,11 @@ import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 
 import java.util.*;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class FastSearchResult extends BasicSearchResult implements SearchResult {
-
-    private static Log log = LogFactory.getLog(FastSearchResult.class);
 
     private HashMap navigators = new HashMap();
     private ScoreKeeper clusters = new ScoreKeeper();

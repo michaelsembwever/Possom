@@ -40,7 +40,7 @@
 
     <module name="TreeWalker">
 
-        <property name="cacheFile" value="${checkstyle.cache.file}"/>
+        <property name="cacheFile" value="target/cacheFile"/>
 
         <!-- Moria modifications -->
         <property name="tabWidth" value="4"/>
@@ -51,9 +51,15 @@
 
 
         <!-- Standard Sun checks -->
-        <module name="JavadocMethod"/>
-        <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
+        <module name="JavadocMethod">
+	  <property name="scope" value="protected"/>
+	</module>
+        <module name="JavadocType">
+	  <property name="scope" value="protected"/>
+	</module>
+        <module name="JavadocVariable">
+	  <property name="scope" value="protected"/>
+	</module>
         <module name="JavadocStyle"/>
 
 
@@ -72,10 +78,11 @@
 
         <!-- Checks for Headers                              -->
         <!-- See http://checkstyle.sf.net/config_header.html -->
+<!--
         <module name="Header">
-            <property name="headerFile" value="${checkstyle.header.file}"/>
+            <property name="headerFile" value="headerfile.txt"/>
         </module>
-
+-->
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
         <module name="AvoidStarImport"/>
@@ -123,7 +130,10 @@
         <module name="DoubleCheckedLocking"/>    <!-- MY FAVOURITE -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
-        <module name="HiddenField"/>
+        <module name="HiddenField">
+	  <property name="ignoreConstructorParameter" value="true"/>
+	  <property name="ignoreSetter" value="true"/>
+	</module>
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MagicNumber"/>
@@ -134,7 +144,9 @@
 
         <!-- Checks for class design                         -->
         <!-- See http://checkstyle.sf.net/config_design.html -->
+	<!--
         <module name="DesignForExtension"/>
+	-->
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>

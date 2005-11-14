@@ -9,10 +9,19 @@ import org.apache.commons.logging.Log;
  */
 public class AlwaysTrueTokenEvaluator implements TokenEvaluator {
 
-    Log log = LogFactory.getLog(AlwaysTrueTokenEvaluator.class);
+    private static Log log = LogFactory.getLog(AlwaysTrueTokenEvaluator.class);
 
-    public boolean evaluateToken(String token, String query) {
-        if(log.isDebugEnabled()){
+    /**
+     * Evaluates to true.
+     *
+     * @param   token   The token to look for.
+     * @param   query   The query string to look in.
+     *
+     * @return  true.
+     *
+     */
+    public boolean evaluateToken(final String token, final String query) {
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: evaluateToken()");
         }
         return true;

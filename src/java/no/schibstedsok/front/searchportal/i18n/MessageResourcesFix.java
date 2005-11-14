@@ -16,6 +16,9 @@ import java.util.Locale;
  */
 public class MessageResourcesFix extends PropertyMessageResources {
 
+    /** The serialVersionUID */
+    private static final long serialVersionUID = -2003509545097260916L;
+
     public MessageResourcesFix(MessageResourcesFactory messageResourcesFactory, String s) {
         super(messageResourcesFactory, s);
     }

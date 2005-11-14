@@ -153,5 +153,19 @@
     </div>
 </div>
 
+<!-- start Gallup -->
+<script type='text/javascript' language='JavaScript' src='javascript/tmv11.js'></script>
+<script type="text/javascript" language="JavaScript">
+<!--
+var tmsec = new Array(2);
+tmsec[0]="tmsec=sesam";
+tmsec[1]="tmsec=sesamsok";
+getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
+//-->
+</script>
+<noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamforside"></noscript>
+
+<!-- end gallup -->
+
 </body>
 </html>

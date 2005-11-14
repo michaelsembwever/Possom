@@ -9,6 +9,7 @@ import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRules;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactoryImpl;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
@@ -69,7 +70,7 @@ public class RunningQuery {
 
         // This will among other things perform the initial fast search
         // for textual analysis.
-        tokenEvaluatorFactory = new TokenEvaluatorFactory(query, parameters, XMLSearchTabsCreator.getInstance().getProperties());
+        tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(query, XMLSearchTabsCreator.getInstance().getProperties());
     }
 
     /**
@@ -78,15 +79,15 @@ public class RunningQuery {
      * @return user tip
      */
     public String getGlobalSearchTips (){
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: getGlobalSearchTips()");
         }
-        if(AdvancedQueryBuilder.isAdvancedQuery(query)){
-            return TextMessages.getMessages().getMessage(locale, "searchtip.use+-");
-        }else {
+        if (AdvancedQueryBuilder.isAdvancedQuery(query)) {
+            return TextMessages.getMessages().getMessage(locale,
+                    "searchtip.use+-");
+        } else {
             return null;
         }
-
         // return TextMessages.getMessages().getMessage("searchtip.use+-");
     }
 
@@ -123,7 +124,7 @@ public class RunningQuery {
                         if(log.isDebugEnabled()){
                             log.debug("run: searchMode.getKey().equals(d) && offset == 0");
                         }
-                        int score = rule.analyze(query, tokenEvaluatorFactory);
+                        int score = rule.evaluate(query, tokenEvaluatorFactory);
 
                         if (log.isDebugEnabled()) {
                             log.debug("Score for " + searchConfiguration.getName() + " is " + score);
