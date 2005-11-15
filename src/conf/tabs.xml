@@ -232,7 +232,7 @@
                         <isPagingEnabled>false</isPagingEnabled>
                     </FastSearch>
 
-                    <FastSearch>
+                    <YellowSearch>
                         <rule>yellowPages</rule>
                         <ruleThreshold>20</ruleThreshold>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
@@ -277,7 +277,7 @@
                         </collections>
                         <resultsToReturn>3</resultsToReturn>
                         <isPagingEnabled>false</isPagingEnabled>
-                    </FastSearch>
+                    </YellowSearch>
 
                     <FastSearch>
                         <rule>whitePages</rule>
@@ -620,16 +620,6 @@
                                     </entry>
                                 </fieldMap>
                             </no.schibstedsok.front.searchportal.result.MultiValuedFieldCollector>
-
-                            <no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
-                                <minimumScore>-1</minimumScore>
-                                <maxSuggestions>3</maxSuggestions>
-                                <maxDistance>0</maxDistance>
-                                <muchBetter>5</muchBetter>
-                                <longQuery>2</longQuery>
-                                <veryLongQuery>3</veryLongQuery>
-                                <maxSuggestionsForLongQueries>2</maxSuggestionsForLongQueries>
-                            </no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
                         </resultHandlers>
                         <pageSize>10</pageSize>
@@ -649,7 +639,7 @@
                         <resultsToReturn>10</resultsToReturn>
                         <isPagingEnabled>true</isPagingEnabled>
                     </FastSearch>
-                    <FastSearch>
+                    <YellowSearch>
                         <collections>
                             <string>yellow</string>
                         </collections>
@@ -675,7 +665,7 @@
                         </resultFields>
                         <resultsToReturn>1</resultsToReturn>
                         <isPagingEnabled>false</isPagingEnabled>
-                    </FastSearch>
+                    </YellowSearch>
                 </searchConfigurations>
             </no.schibstedsok.front.searchportal.configuration.SearchMode>
         </entry>
@@ -820,7 +810,7 @@
                         class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
                 <key>y</key>
                 <searchConfigurations class="list">
-                    <FastSearch>
+                    <YellowSearch>
                         <resultView>yellowpages</resultView>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <collapsingEnabled>false</collapsingEnabled>
@@ -900,7 +890,7 @@
                         </collections>
                         <resultsToReturn>10</resultsToReturn>
                         <isPagingEnabled>true</isPagingEnabled>
-                    </FastSearch>
+                    </YellowSearch>
 
                     <FastSearch>
                         <collections>

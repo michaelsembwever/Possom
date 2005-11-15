@@ -396,20 +396,10 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             params.setParameter(new SearchParameter(BaseParameter.RESULT_VIEW, fastConfiguration.getResultView()));
         }
 
-        if (fastConfiguration.getSortBy() != null) {
-            params.setParameter(new SearchParameter(BaseParameter.SORT_BY, fastConfiguration.getSortBy()));
-        }
+        SearchParameter sortBy = getSortByParameter();
 
-        // TODO: Refactor
-        if (getParameters().containsKey("userSortBy")) {
-
-            String sortBy[] = (String[]) getParameters().get("userSortBy");
-            if (log.isDebugEnabled()) {
-                log.debug("createQuery: SortBY " + sortBy[0]);
-            }
-            if ("datetime".equals(sortBy[0])) {
-                params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard"));
-            }
+        if (sortBy != null) {
+            params.setParameter(sortBy);
         }
 
         params.setParameter(new SearchParameter(BaseParameter.NAVIGATORS, getNavigatorsString()));
@@ -421,6 +411,25 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         }
 
         return query;
+    }
+
+    protected SearchParameter getSortByParameter() {
+        if (fastConfiguration.getSortBy() != null) {
+            return new SearchParameter(BaseParameter.SORT_BY, fastConfiguration.getSortBy());
+        }
+
+        if (getParameters().containsKey("userSortBy")) {
+
+            String sortBy[] = (String[]) getParameters().get("userSortBy");
+            if (log.isDebugEnabled()) {
+                log.debug("createQuery: SortBY " + sortBy[0]);
+            }
+            if ("datetime".equals(sortBy[0])) {
+                return new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard");
+            }
+        }
+
+        return null;
     }
 
     private String getDynamicParams(Map map, String key, String defaultValue) {

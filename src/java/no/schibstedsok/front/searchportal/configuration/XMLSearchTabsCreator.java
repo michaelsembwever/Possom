@@ -19,40 +19,73 @@ public class XMLSearchTabsCreator implements SearchTabsCreator {
 
     Properties properties = new Properties();
 
-	private SearchTabs tabs;
-	private static SearchTabsCreator instance;
+    private SearchTabs tabs;
+
+    private static SearchTabsCreator instance;
+
     private static Log log = LogFactory.getLog(XMLSearchTabsCreator.class);
 
     private XMLSearchTabsCreator() {
 
-    	if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: XMLSearchTabsCreator()");
         }
 
         try {
-            properties.load(this.getClass().getResourceAsStream("/" + SearchConstants.CONFIGURATION_FILE));
-            log.info("Read configuration from " + SearchConstants.CONFIGURATION_FILE);
+            properties.load(this.getClass().getResourceAsStream(
+                    "/" + SearchConstants.CONFIGURATION_FILE));
+            log.info("Read configuration from "
+                    + SearchConstants.CONFIGURATION_FILE);
         } catch (IOException e) {
-            log.error("XMLSearchTabsCreator When Reading Configuration from " + SearchConstants.CONFIGURATION_FILE, e);
-            throw new InfrastructureException("Unable to read properties from " + SearchConstants.CONFIGURATION_FILE, e);
+            log.error("XMLSearchTabsCreator When Reading Configuration from "
+                    + SearchConstants.CONFIGURATION_FILE, e);
+            throw new InfrastructureException("Unable to read properties from "
+                    + SearchConstants.CONFIGURATION_FILE, e);
         }
     }
 
     public SearchTabs createSearchTabs() {
-        
-        if(log.isDebugEnabled()){
+
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: createSearchTabs()");
         }
 
-        if(tabs == null){
-        	XStream xstream = new XStream(new DomDriver());
-	        xstream.alias("FastSearch", no.schibstedsok.front.searchportal.configuration.FastConfiguration.class);
-	        xstream.alias("PicSearch", no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration.class);
-	        xstream.alias("tabs", no.schibstedsok.front.searchportal.configuration.SearchTabs.class);
-            xstream.alias("OverturePPCSearch", no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration.class);
-            xstream.alias("MathExpression", no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration.class);
-            tabs = (SearchTabs) xstream.fromXML(new InputStreamReader(this.getClass().getResourceAsStream("/" + properties.getProperty("tabs_configuration"))));
-	        log.info("Tabs created from " + properties.getProperty("tabs_configuration"));
+        if (tabs == null) {
+            XStream xstream = new XStream(new DomDriver());
+            xstream
+                    .alias(
+                            "FastSearch",
+                            no.schibstedsok.front.searchportal.configuration.FastConfiguration.class);
+            xstream
+                    .alias(
+                            "YellowSearch",
+                            no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration.class);
+            xstream
+                    .alias(
+                            "PicSearch",
+                            no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration.class);
+            xstream
+                    .alias(
+                            "tabs",
+                            no.schibstedsok.front.searchportal.configuration.SearchTabs.class);
+            xstream
+                    .alias(
+                            "OverturePPCSearch",
+                            no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration.class);
+            xstream
+                    .alias(
+                            "MathExpression",
+                            no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration.class);
+            tabs = (SearchTabs) xstream
+                    .fromXML(new InputStreamReader(
+                            this
+                                    .getClass()
+                                    .getResourceAsStream(
+                                            "/"
+                                                    + properties
+                                                            .getProperty("tabs_configuration"))));
+            log.info("Tabs created from "
+                    + properties.getProperty("tabs_configuration"));
         }
 
         return tabs;
@@ -64,7 +97,7 @@ public class XMLSearchTabsCreator implements SearchTabsCreator {
 
     public static synchronized SearchTabsCreator getInstance() {
 
-        if(instance == null)
+        if (instance == null)
             instance = new XMLSearchTabsCreator();
 
         return instance;
