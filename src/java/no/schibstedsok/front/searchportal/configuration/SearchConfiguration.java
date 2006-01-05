@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005) Schibsted Sï¿½k AS
  *
  */
 package no.schibstedsok.front.searchportal.configuration;
@@ -18,14 +18,6 @@ import java.util.Map;
  * @version <tt>$Revision$</tt>
  */
 public interface SearchConfiguration {
-    /**
-     * Creates a search command responsible for carrying out the search.
-     *
-     * @param query
-     * @param parameters
-     * @return
-     */
-    SearchCommand createCommand(RunningQuery query, Map parameters);
 
     /**
      * Returns a list of {@link no.schibstedsok.front.searchportal.query.QueryTransformer} that should be applied to

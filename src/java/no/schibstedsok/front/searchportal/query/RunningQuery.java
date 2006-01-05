@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005) Schibsted Sï¿½k AS
  *
  */
 package no.schibstedsok.front.searchportal.query;
@@ -11,6 +11,7 @@ import no.schibstedsok.front.searchportal.analyzer.AnalysisRules;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactoryImpl;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
+import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
@@ -117,6 +118,15 @@ public class RunningQuery {
             for (Iterator iterator = searchMode.getSearchConfigurations().iterator(); iterator.hasNext();) {
                 final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
 
+                // Factory responsible for creating commands against this configuration.
+                //  This would normally be a final member variable and this class implement SearchCommandFactory.Context
+                //   but it ain't a one-to-one query-to-configuration mapping ofcourse.
+                final SearchCommandFactory cmdFactory = new SearchCommandFactory(new SearchCommandFactory.Context(){
+                    public SearchConfiguration getSearchConfiguration(){
+                        return searchConfiguration;
+                    }
+                });
+                
                 AnalysisRule rule = rules.getRule(searchConfiguration.getRule());
 
                 if (rule != null) {
@@ -135,11 +145,11 @@ public class RunningQuery {
                             if (log.isDebugEnabled()) {
                                 log.debug("Adding " + searchConfiguration.getName());
                             }
-                            commands.add(searchConfiguration.createCommand(this, parameters));
+                            commands.add(cmdFactory.createSearchCommand(this, parameters));
                         }
 
                     } else if (searchConfiguration.isAlwaysRunEnabled()) {
-                        commands.add(searchConfiguration.createCommand(this, parameters));
+                        commands.add(cmdFactory.createSearchCommand(this, parameters));
                     }
                 } else {
                     // Optimazation. Alternate between the two web searches.
@@ -147,13 +157,13 @@ public class RunningQuery {
                         String searchType = getSingleParameter("s");
                         if (searchType != null && searchType.equals("g")) {
                             if (isInternational(searchConfiguration)) {
-                                commands.add(searchConfiguration.createCommand(this, parameters));
+                                commands.add(cmdFactory.createSearchCommand(this, parameters));
                             }
                         } else if (isNorwegian(searchConfiguration)) {
-                            commands.add(searchConfiguration.createCommand(this, parameters));
+                            commands.add(cmdFactory.createSearchCommand(this, parameters));
                         }
                     } else {
-                        commands.add(searchConfiguration.createCommand(this, parameters));
+                        commands.add(cmdFactory.createSearchCommand(this, parameters));
                     }
                 }
             }

@@ -11,7 +11,5 @@ import java.util.Map;
  * @version <tt>$Revision$</tt>
  */
 public class OverturePPCConfiguration extends AbstractSearchConfiguration {
-    public SearchCommand createCommand(RunningQuery query, Map parameters) {
-        return new OverturePPCCommand(query, this, parameters);
-    }
+
 }

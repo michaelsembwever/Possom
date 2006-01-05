@@ -11,7 +11,5 @@ import java.util.Map;
  * @version <tt>$Revision$</tt>
  */
 public class SensisSearchConfiguration extends FastConfiguration {
-    public SearchCommand createCommand(RunningQuery query, Map parameters) {
-        return new FastSearchCommand(query, this, parameters);
-    }
+
 }

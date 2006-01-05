@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005) Schibsted Sï¿½k AS
  *
  */
 package no.schibstedsok.front.searchportal.configuration;
@@ -17,19 +17,19 @@ import java.util.*;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class FastConfiguration extends AbstractSearchConfiguration implements SearchConfiguration {
+public class FastConfiguration extends AbstractSearchConfiguration {
 
-    private List collections = new ArrayList();
+    private final List collections = new ArrayList();
     private Map searchParameters;
     private boolean lemmatizeEnabled;
     private boolean spellcheckEnabled;
-    private Map navigators = new HashMap();
+    private final Map navigators = new HashMap();
     private String sortBy;
     private boolean collapsingEnabled;
     private String queryServerURL;
     private boolean keywordClusteringEnabled = false;
     private String qtPipeline;
-    private transient String collectionString;
+    private volatile transient String collectionString;
 
     private String resultView;
     private boolean clusteringEnabled = false;
@@ -37,23 +37,24 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
     private int offensiveScoreLimit = 0;
     private int spamScoreLimit = 0;
 
-    public SearchCommand createCommand(RunningQuery query, Map parameters) {
-        return new FastSearchCommand(query, this, parameters);
-    }
-
     public List getCollections() {
         return collections;
     }
 
-    public void addColletion(String collectionName) {
+    public void addColletion(final String collectionName) {
         collections.add(collectionName);
     }
 
+    /**
+     * Double-checked locking idiom will not work without the volatile keyword and JAVA 5.
+     * (Not a big performance difference to simply making the method synchronized).
+     * See Effective Java -> Item 48: Synchronize access to shared mutable data
+     **/
     public String getCollectionFilterString() {
         if (collectionString == null) {
             synchronized(this) {
                 if (collectionString == null) {
-                    collectionString = generateFilterString_();
+                    collectionString = generateFilterString();
                 }
             }
         }
@@ -61,7 +62,7 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return collectionString;
     }
 
-    private String generateFilterString_() {
+    private String generateFilterString() {
 
         if (collections != null) {
             if (collections.size() > 1) {
@@ -82,7 +83,7 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return "";
     }
 
-    private Object[] prependMetaCollection(Collection collectionStrings) {
+    private Object[] prependMetaCollection(final Collection collectionStrings) {
         Object coll[] =  collectionStrings.toArray();
 
         for (int i = 0; i < coll.length; i++) {
@@ -101,11 +102,11 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return searchParameters;
     }
 
-    public void setSearchParameters(Map searchParameters) {
+    public void setSearchParameters(final Map searchParameters) {
         this.searchParameters = searchParameters;
     }
 
-    public void setParameter(String parameterName, Object parameterValue) {
+    public void setParameter(final String parameterName, final Object parameterValue) {
         searchParameters.put(parameterName, parameterValue);
     }
 
@@ -113,7 +114,7 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return lemmatizeEnabled;
     }
 
-    public void setLemmatizeEnabled(boolean lemmatizeEnabled) {
+    public void setLemmatizeEnabled(final boolean lemmatizeEnabled) {
         this.lemmatizeEnabled = lemmatizeEnabled;
     }
 
@@ -121,7 +122,7 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return spellcheckEnabled;
     }
 
-    public void setSpellcheckEnabled(boolean spellcheckEnabled) {
+    public void setSpellcheckEnabled(final boolean spellcheckEnabled) {
         this.spellcheckEnabled = spellcheckEnabled;
     }
 
@@ -129,15 +130,15 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return navigators;
     }
 
-    public void setNavigators(Map navigators) {
-        this.navigators = navigators;
-    }
+//    public void setNavigators(Map navigators) {
+//        this.navigators = navigators;
+//    }
 
-    public void addNavigator(FastNavigator navigator, String navKey) {
+    public void addNavigator(final FastNavigator navigator, final String navKey) {
         navigators.put(navKey, navigator);
     }
 
-    public FastNavigator getNavigator(String navigatorKey) {
+    public FastNavigator getNavigator(final String navigatorKey) {
         return (FastNavigator) navigators.get(navigatorKey);
     }
 
@@ -157,7 +158,7 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return collapsingEnabled;
     }
 
-    public void setCollapsingEnabled(boolean collapsingEnabled) {
+    public void setCollapsingEnabled(final boolean collapsingEnabled) {
         this.collapsingEnabled = collapsingEnabled;
     }
 
@@ -165,11 +166,11 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return resultView;
     }
 
-    public void setResultView(String resultView) {
+    public void setResultView(final String resultView) {
         this.resultView = resultView;
     }
 
-    public void setQueryServerURL(String queryServerURL) {
+    public void setQueryServerURL(final String queryServerURL) {
         this.queryServerURL = queryServerURL;
     }
 
@@ -177,7 +178,7 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return keywordClusteringEnabled;
     }
 
-    public void setKeywordClusteringEnabled(boolean keywordClusteringEnabled) {
+    public void setKeywordClusteringEnabled(final boolean keywordClusteringEnabled) {
         this.keywordClusteringEnabled = keywordClusteringEnabled;
     }
 
@@ -185,7 +186,7 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return qtPipeline;
     }
 
-    public void setQtPipeline(String qtPipeline) {
+    public void setQtPipeline(final String qtPipeline) {
         this.qtPipeline = qtPipeline;
     }
 
@@ -197,7 +198,7 @@ public class FastConfiguration extends AbstractSearchConfiguration implements Se
         return ignoreNavigationEnabled;
     }
 
-    public void setIgnoreNavigationEnabled(boolean ignoreNavigationEnabled) {
+    public void setIgnoreNavigationEnabled(final boolean ignoreNavigationEnabled) {
         this.ignoreNavigationEnabled = ignoreNavigationEnabled;
     }
 

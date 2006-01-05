@@ -1,10 +1,12 @@
 package no.schibstedsok.front.searchportal.result.test;
 
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
+import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.fast.searchengine.test.MockupFastSearchEngineFactory;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
@@ -16,10 +18,15 @@ import java.util.*;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class FastNavigatorsTest extends TestCase {
+public class FastNavigatorsTest extends TestCase implements SearchCommandFactory.Context{
 
     FastConfiguration config;
     MockupResultHandler resultHandler;
+    final SearchCommandFactory cmdFactory = new SearchCommandFactory(this);
+
+    public SearchConfiguration getSearchConfiguration(){
+        return config;
+    }
 
     protected void setUp() throws Exception {
         FastConfiguration config = new FastConfiguration();
@@ -64,7 +71,7 @@ public class FastNavigatorsTest extends TestCase {
         navigator.setDisplayName("Fylken");
 
         config.addNavigator(navigator, "geographic");
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , new HashMap());
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , new HashMap());
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         FastSearchResult result = (FastSearchResult) command.call();
 
@@ -84,7 +91,7 @@ public class FastNavigatorsTest extends TestCase {
         navigator.setChildNavigator(child);
 
         config.addNavigator(navigator, "geographic");
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , new HashMap());
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , new HashMap());
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         FastSearchResult result = (FastSearchResult) command.call();
 
@@ -112,7 +119,7 @@ public class FastNavigatorsTest extends TestCase {
 
         params.put("nav_geographic", navigated);
 
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         FastSearchResult result = (FastSearchResult) command.call();
@@ -137,7 +144,7 @@ public class FastNavigatorsTest extends TestCase {
 
         config.addNavigator(navigator, "geographic");
 
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         FastSearchResult result = (FastSearchResult) command.call();
@@ -171,7 +178,7 @@ public class FastNavigatorsTest extends TestCase {
 
         config.addNavigator(navigator, "geographic");
 
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         FastSearchResult result = (FastSearchResult) command.call();
@@ -186,7 +193,7 @@ public class FastNavigatorsTest extends TestCase {
         navigated[0] = "ywkommunenavigator";
         params.put("nav_geographic", navigated);
 
-        command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         result = (FastSearchResult) command.call();
@@ -216,7 +223,7 @@ public class FastNavigatorsTest extends TestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
 
         FastSearchResult result = (FastSearchResult) command.call();
     }
@@ -245,7 +252,7 @@ public class FastNavigatorsTest extends TestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
 
         FastSearchResult result = (FastSearchResult) command.call();
 
@@ -263,7 +270,7 @@ public class FastNavigatorsTest extends TestCase {
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue1);
 
-        command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
 
         command.call();
 
@@ -294,7 +301,7 @@ public class FastNavigatorsTest extends TestCase {
 
         navigatedValue[0] = "Oslo";
         params.put("nav_geographic", navigated);
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         FastSearchResult result = (FastSearchResult) command.call();
@@ -338,7 +345,7 @@ public class FastNavigatorsTest extends TestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        FastSearchCommand command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        FastSearchCommand command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         FastSearchResult result = (FastSearchResult) command.call();
@@ -383,7 +390,7 @@ public class FastNavigatorsTest extends TestCase {
         // Nothing navigated
         params = new HashMap();
         FastSearchCommand command;
-        command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         command.call();
@@ -401,7 +408,7 @@ public class FastNavigatorsTest extends TestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
         command.call();
 
         List links = command.getNavigatorBackLinks("geographic");
@@ -421,7 +428,7 @@ public class FastNavigatorsTest extends TestCase {
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue2);
 
-        command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -443,7 +450,7 @@ public class FastNavigatorsTest extends TestCase {
         params.put("ywkommune", navigatedValue2);
         params.put("ywbydel", navigatedValue3);
 
-        command = (FastSearchCommand) config.createCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
+        command = (FastSearchCommand) cmdFactory.createSearchCommand(new RunningQuery(new SearchMode(), "bil", new HashMap()) , params);
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
