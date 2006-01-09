@@ -1,0 +1,2086 @@
+2006-01-09 09:25:14,868 [main] INFO  no.schibstedsok.front.searchportal.query.parser.TestVisitor - firstName:magnus eklund "schibsted sok"
+2006-01-09 09:25:14,878 [main] INFO  no.schibstedsok.front.searchportal.query.parser.QueryParser - Found AND
+2006-01-09 09:47:24,506 [main] INFO  no.schibstedsok.front.searchportal.query.parser.TestVisitor - firstName:magnus eklund "schibsted sok"
+2006-01-09 09:47:24,507 [main] INFO  no.schibstedsok.front.searchportal.query.parser.TestVisitor - magnus AND eklund AND oslo OR "magnus eklund" 123
+2006-01-09 09:47:24,516 [main] INFO  no.schibstedsok.front.searchportal.query.parser.QueryParser - Found AND
+2006-01-09 09:51:19,641 [main] INFO  no.schibstedsok.front.searchportal.query.parser.TestVisitor - firstName:magnus eklund "schibsted sok"
+2006-01-09 09:51:19,642 [main] INFO  no.schibstedsok.front.searchportal.query.parser.TestVisitor - Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+2006-01-09 09:51:19,652 [main] INFO  no.schibstedsok.front.searchportal.query.parser.QueryParser - Found AND
+2006-01-09 09:51:19,652 [main] INFO  no.schibstedsok.front.searchportal.query.parser.QueryParser - Found AND
+2006-01-09 09:51:19,652 [main] INFO  no.schibstedsok.front.searchportal.query.parser.QueryParser - Found OR
+2006-01-09 09:51:19,653 [main] ERROR no.schibstedsok.front.searchportal.query.parser.TestVisitor - no.schibstedsok.front.searchportal.query.parser.ParseException: Encountered "123" at line 1, column 47.
+Was expecting one of:
+    "AND" ...
+    "OR" ...
+    "NOT" ...
+    "ANDNOT" ...
+    
+09:56:04,691 [main] INFO  TestVisitor: - firstName:magnus eklund "schibsted sok"
+09:56:04,692 [main] INFO  TestVisitor: - Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+09:56:04,701 [main] INFO  QueryParser: - Found AND
+09:56:04,701 [main] INFO  QueryParser: - Found AND
+09:56:04,702 [main] INFO  QueryParser: - Found OR
+09:56:04,702 [main] ERROR TestVisitor: - no.schibstedsok.front.searchportal.query.parser.ParseException: Encountered "123" at line 1, column 47.
+Was expecting one of:
+    "AND" ...
+    "OR" ...
+    "NOT" ...
+    "ANDNOT" ...
+    
+09:59:53,969 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+09:59:53,970 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+09:59:53,992 [main] INFO  QueryParser: Found AND
+09:59:53,992 [main] INFO  QueryParser: Found AND
+09:59:53,992 [main] INFO  QueryParser: Found OR
+09:59:53,993 [main] ERROR TestVisitor: no.schibstedsok.front.searchportal.query.parser.ParseException: Encountered "123" at line 1, column 47.
+Was expecting one of:
+    "AND" ...
+    "OR" ...
+    "NOT" ...
+    "ANDNOT" ...
+    
+10:00:15,536 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+10:00:15,596 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+10:00:15,606 [main] INFO  QueryParser: Found AND
+10:00:15,606 [main] INFO  QueryParser: Found AND
+10:00:15,606 [main] INFO  QueryParser: Found OR
+10:00:15,607 [main] ERROR TestVisitor: no.schibstedsok.front.searchportal.query.parser.ParseException: Encountered "123" at line 1, column 47.
+Was expecting one of:
+    "AND" ...
+    "OR" ...
+    "NOT" ...
+    "ANDNOT" ...
+    
+10:01:21,512 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+10:01:21,513 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+10:01:21,523 [main] INFO  QueryParser: Found AND
+10:01:21,523 [main] INFO  QueryParser: Found AND
+10:01:21,523 [main] INFO  QueryParser: Found OR
+10:01:21,524 [main] ERROR TestVisitor: no.schibstedsok.front.searchportal.query.parser.ParseException: Encountered "123" at line 1, column 47.
+Was expecting one of:
+    "AND" ...
+    "OR" ...
+    "NOT" ...
+    "ANDNOT" ...
+    
+12:32:48,211 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+12:32:48,326 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+12:32:48,335 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+12:32:48,336 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+12:32:48,336 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+12:32:48,336 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+12:32:48,335 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:48,344 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+12:32:48,345 [main] DEBUG RunningQuery: ENTR: run()
+12:32:49,419 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,429 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+12:32:49,442 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,469 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,469 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,470 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,470 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,470 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,470 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,472 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,472 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,473 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,473 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,474 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,474 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,474 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,474 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,475 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,475 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,475 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,475 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,476 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:49,476 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:49,476 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,552 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,560 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+12:32:50,561 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,563 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,563 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,563 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,563 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,565 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,566 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,566 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,567 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,567 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,568 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,568 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,568 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,568 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,568 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,568 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,569 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,569 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,569 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,569 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,569 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,569 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,569 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,569 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,570 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,571 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,571 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,571 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,572 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,573 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,573 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,573 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,573 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,573 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,573 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,573 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,574 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,574 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,574 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,574 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,574 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,575 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,575 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+12:32:50,576 [main] DEBUG RunningQuery: ENTR: getQueryString()
+12:32:50,577 [main] DEBUG RunningQuery: ENTR: getLocale()
+12:34:05,925 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+12:34:05,927 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+12:34:05,937 [main] INFO  QueryParser: Found null
+12:34:05,938 [main] INFO  QueryParser: Found AND
+12:34:05,938 [main] INFO  QueryParser: Found AND
+12:34:05,938 [main] INFO  QueryParser: Found AND
+12:34:05,938 [main] INFO  QueryParser: Found AND
+12:34:05,938 [main] INFO  QueryParser: Found OR
+12:34:05,940 [main] INFO  TestVisitor: magnus  eklund  oslo  ""magnus eklund"" 123
+13:52:36,188 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+13:52:36,226 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+13:52:36,235 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+13:52:36,235 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+13:52:36,235 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+13:52:36,235 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+13:52:36,234 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,243 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+13:52:36,243 [main] DEBUG RunningQuery: ENTR: run()
+13:52:36,772 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,782 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+13:52:36,795 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,822 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,822 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,823 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,824 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,824 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,824 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,826 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,826 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,826 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,826 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,827 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,827 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,828 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,828 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,828 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,828 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,829 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,829 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,829 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:36,830 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:36,830 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,325 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,334 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+13:52:37,335 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,337 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,337 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,337 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,338 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,340 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,341 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,341 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,342 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,342 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,342 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,342 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,342 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,342 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,343 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,343 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,343 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,343 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,343 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,343 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,344 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,344 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,344 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,344 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,344 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,345 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,346 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,346 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,346 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,346 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,346 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,346 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,346 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,346 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,347 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,347 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,347 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,347 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,347 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,347 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,347 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,347 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,348 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,348 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,348 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,348 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,348 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,349 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,349 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,349 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,349 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,350 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,350 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,350 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,350 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,350 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:37,350 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,350 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:52:37,351 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:52:37,351 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:52:37,351 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:52:57,227 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+13:52:57,228 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+13:52:57,238 [main] INFO  QueryParser: Found AND
+13:52:57,240 [main] INFO  TestVisitor: magnus eklund
+13:58:59,822 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+13:58:59,832 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+13:58:59,840 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+13:58:59,840 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+13:58:59,841 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+13:58:59,841 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+13:58:59,839 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:58:59,848 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+13:58:59,849 [main] DEBUG RunningQuery: ENTR: run()
+13:59:00,373 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,383 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+13:59:00,396 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,450 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,450 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,451 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,452 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,452 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,452 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,454 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,454 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,454 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,454 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,455 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,455 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,456 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,456 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,456 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,457 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,457 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,457 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,457 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,458 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,458 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,917 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,925 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+13:59:00,927 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,928 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,928 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,928 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,929 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,930 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,941 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,941 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,942 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,943 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,943 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,943 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,944 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,944 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,944 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,944 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,944 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,944 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,944 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,944 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,945 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,945 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,945 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,945 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,945 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,946 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,946 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,946 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,947 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,947 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,947 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,947 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,947 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,947 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,947 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,947 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,948 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,948 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,948 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,948 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,948 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,948 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,948 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,949 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,949 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,949 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,949 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,949 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,950 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,950 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,950 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,951 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,951 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,951 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,951 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,951 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:00,951 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,951 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+13:59:00,951 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+13:59:00,952 [main] DEBUG RunningQuery: ENTR: getQueryString()
+13:59:00,952 [main] DEBUG RunningQuery: ENTR: getLocale()
+13:59:16,491 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+13:59:16,492 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+13:59:16,503 [main] INFO  TestVisitor: magnus
+14:00:14,892 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+14:00:14,902 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+14:00:14,910 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:14,910 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+14:00:14,913 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+14:00:14,913 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+14:00:14,913 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+14:00:14,920 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:00:14,920 [main] DEBUG RunningQuery: ENTR: run()
+14:00:15,421 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,441 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:00:15,458 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,485 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,485 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,486 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,487 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,487 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,487 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,489 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,489 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,489 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,489 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,490 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,490 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,490 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,491 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,491 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,491 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,492 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,492 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,492 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:15,492 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:15,493 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,126 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,134 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:00:16,136 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,137 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,137 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,137 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,137 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,139 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,140 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,140 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,141 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,141 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,142 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,142 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,142 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,142 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,142 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,142 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,143 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,143 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,143 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,143 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,143 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,143 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,143 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,143 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,144 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,145 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,145 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,145 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,146 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,146 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,146 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,146 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,146 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,146 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,146 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,146 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,147 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,147 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,147 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,147 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,147 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,147 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,147 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,147 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,148 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,148 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,148 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,148 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,148 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,149 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,149 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:00:16,150 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:00:35,408 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:00:35,410 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:00:35,422 [main] INFO  QueryParser: Found OR
+14:00:35,422 [main] INFO  QueryParser: Found AND
+14:00:35,422 [main] INFO  QueryParser: Found AND
+14:00:35,426 [main] ERROR AbstractReflectionVisitor: Failed to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause@e0b6f5
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:54)
+	at no.schibstedsok.front.searchportal.query.parser.OrClause.accept(OrClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:54)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:54)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:106)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:54)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor.testBasicQueryParser(TestVisitor.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at junit.framework.TestCase.runTest(TestCase.java:154)
+	at junit.framework.TestCase.runBare(TestCase.java:127)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:325)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:536)
+Caused by: java.lang.IllegalArgumentException: Current visitor implementation does not handle visiting non clause subtypes. Tried to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(AbstractReflectionVisitor.java:73)
+	... 41 more
+14:00:35,428 [main] INFO  TestVisitor: magnus eklund  123
+14:04:23,022 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+14:04:23,028 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+14:04:23,028 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+14:04:23,029 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+14:04:23,029 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+14:04:23,029 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+14:04:23,043 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,052 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:04:23,052 [main] DEBUG RunningQuery: ENTR: run()
+14:04:23,547 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,558 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:04:23,572 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,598 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,598 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,600 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,600 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,602 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,602 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,603 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,603 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,604 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,604 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,605 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,605 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,605 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,605 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,606 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,608 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,608 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,608 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,609 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:23,609 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:23,609 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,189 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,198 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:04:24,199 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,200 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,200 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,201 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,201 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,203 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,204 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,204 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,205 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,205 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,205 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,205 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,206 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,206 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,206 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,206 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,206 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,206 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,207 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,207 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,207 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,207 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,207 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,207 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,207 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,209 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,209 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,209 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,209 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,209 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,209 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,209 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,209 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,210 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,210 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,210 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,210 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,210 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,210 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,210 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,210 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,211 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,211 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,211 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,211 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,211 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,212 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,212 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,212 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,212 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,212 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,213 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,213 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,213 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,213 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,213 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:24,214 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,214 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:04:24,214 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:04:24,214 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:04:24,214 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:04:42,151 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,152 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:04:42,153 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,154 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,154 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:04:42,154 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,154 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,154 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:04:42,154 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,154 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,154 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:04:42,155 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,155 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,155 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:04:42,155 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,155 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:04:42,155 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:04:42,166 [main] INFO  QueryParser: Found OR
+14:04:42,166 [main] INFO  QueryParser: Found AND
+14:04:42,166 [main] INFO  QueryParser: Found AND
+14:04:42,167 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,167 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:04:42,167 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:04:42,168 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,169 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,169 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:04:42,169 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,169 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,169 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:04:42,170 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter java.lang.Object
+14:04:42,170 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,171 [main] ERROR AbstractReflectionVisitor: Failed to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause@e0b6f5
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.OrClause.accept(OrClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:106)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor.testBasicQueryParser(TestVisitor.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at junit.framework.TestCase.runTest(TestCase.java:154)
+	at junit.framework.TestCase.runBare(TestCase.java:127)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:325)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:536)
+Caused by: java.lang.IllegalArgumentException: Current visitor implementation does not handle visiting non clause subtypes. Tried to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(AbstractReflectionVisitor.java:72)
+	... 41 more
+14:04:42,173 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:04:42,173 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:04:42,173 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:04:42,173 [main] INFO  AbstractReflectionVisitor: stop getMethod
+14:04:42,173 [main] INFO  TestVisitor: magnus eklund  123
+14:07:14,471 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+14:07:14,481 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+14:07:14,493 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+14:07:14,493 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+14:07:14,494 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+14:07:14,494 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+14:07:14,492 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:14,502 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:07:14,502 [main] DEBUG RunningQuery: ENTR: run()
+14:07:15,174 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,185 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:07:15,212 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,239 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,239 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,240 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,241 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,241 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,241 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,243 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,243 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,243 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,243 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,244 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,244 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,244 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,245 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,245 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,245 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,246 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,246 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,246 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,246 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,246 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,775 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,785 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:07:15,786 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,788 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,788 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,788 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,789 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,790 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,792 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,792 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,794 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,794 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,794 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,794 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,794 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,794 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,795 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,795 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,795 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,795 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,795 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,796 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,796 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,796 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,796 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,796 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,796 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,798 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,799 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,799 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,799 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,799 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,799 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,799 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,799 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,800 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,800 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,800 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,800 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,801 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,801 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,801 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,801 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,802 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,802 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:07:15,803 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:07:15,804 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:07:31,147 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,147 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:07:31,149 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,149 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,150 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:07:31,152 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,152 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,152 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:07:31,153 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:07:31,161 [main] INFO  QueryParser: Found OR
+14:07:31,162 [main] INFO  QueryParser: Found AND
+14:07:31,162 [main] INFO  QueryParser: Found AND
+14:07:31,162 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,163 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:07:31,163 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,163 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,163 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,163 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:07:31,163 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,164 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,165 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,165 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:07:31,165 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,165 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,165 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,165 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:07:31,165 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter java.lang.Object
+14:07:31,165 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,166 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,167 [main] ERROR AbstractReflectionVisitor: Failed to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause@e0b6f5
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.OrClause.accept(OrClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:106)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor.testBasicQueryParser(TestVisitor.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at junit.framework.TestCase.runTest(TestCase.java:154)
+	at junit.framework.TestCase.runBare(TestCase.java:127)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:325)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:536)
+Caused by: java.lang.IllegalArgumentException: Current visitor implementation does not handle visiting non clause subtypes. Tried to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(AbstractReflectionVisitor.java:72)
+	... 41 more
+14:07:31,169 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:07:31,169 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:07:31,169 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:07:31,169 [main] INFO  AbstractReflectionVisitor: Using visitImpl
+14:07:31,169 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:07:31,169 [main] INFO  TestVisitor: magnus eklund  123
+14:10:08,900 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+14:10:09,006 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+14:10:09,007 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+14:10:09,008 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+14:10:09,008 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+14:10:09,008 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+14:10:09,025 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,032 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:10:09,033 [main] DEBUG RunningQuery: ENTR: run()
+14:10:09,563 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,573 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:10:09,587 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,614 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,614 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,615 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,615 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,616 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,616 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,617 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,618 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,618 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,618 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,619 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,619 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,619 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,619 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,620 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,620 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,620 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,621 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,621 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:09,621 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:09,621 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,095 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,104 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:10:10,105 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,110 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,110 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,111 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,111 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,113 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,114 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,114 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,115 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,116 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,116 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,116 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,116 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,116 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,116 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,116 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,117 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,117 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,117 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,117 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,117 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,117 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,117 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,117 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,118 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,119 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,119 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,119 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,119 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,120 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,121 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,121 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,121 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,121 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,121 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,121 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,122 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,122 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,122 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,122 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,122 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,123 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,123 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,123 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:10:10,124 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:10:35,658 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,659 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:10:35,660 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:10:35,660 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,660 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,660 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:10:35,661 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:10:35,661 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,661 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,661 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:10:35,663 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,663 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:10:35,664 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:10:35,672 [main] INFO  QueryParser: Found OR
+14:10:35,673 [main] INFO  QueryParser: Found AND
+14:10:35,673 [main] INFO  QueryParser: Found AND
+14:10:35,674 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,674 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:10:35,674 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AllClause)>
+14:10:35,674 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,674 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:10:35,675 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,676 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,676 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:10:35,676 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:10:35,676 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,676 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,676 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:10:35,676 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter java.lang.Object
+14:10:35,677 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(java.lang.Object)>
+14:10:35,677 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,678 [main] ERROR AbstractReflectionVisitor: Failed to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause@e0b6f5
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.OrClause.accept(OrClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:106)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor.testBasicQueryParser(TestVisitor.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at junit.framework.TestCase.runTest(TestCase.java:154)
+	at junit.framework.TestCase.runBare(TestCase.java:127)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:325)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:536)
+Caused by: java.lang.IllegalArgumentException: Current visitor implementation does not handle visiting non clause subtypes. Tried to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(AbstractReflectionVisitor.java:72)
+	... 41 more
+14:10:35,680 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:10:35,680 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:10:35,680 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:10:35,680 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:10:35,680 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:10:35,681 [main] INFO  TestVisitor: magnus eklund  123
+14:15:40,115 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+14:15:40,126 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+14:15:40,134 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+14:15:40,135 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+14:15:40,136 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+14:15:40,136 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+14:15:40,134 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,144 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:15:40,144 [main] DEBUG RunningQuery: ENTR: run()
+14:15:40,670 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,680 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:15:40,692 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,730 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,730 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,731 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,731 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,732 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,732 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,734 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,734 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,734 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,734 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,735 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,735 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,736 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,736 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,736 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,736 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,737 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,737 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,737 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:40,737 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:40,738 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,249 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,258 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:15:41,260 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,261 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,261 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,261 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,262 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,263 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,264 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,265 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,265 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,266 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,266 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,266 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,266 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,267 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,267 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,267 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,267 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,267 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,267 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,267 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,267 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,268 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,268 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,268 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,268 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,269 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,269 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,269 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,270 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,271 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,271 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,271 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,271 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,271 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,271 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,271 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,272 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,272 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,272 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,273 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,273 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,273 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,273 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,274 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,274 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,274 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,274 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,274 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:41,274 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,274 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:15:41,274 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:15:41,275 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:15:41,275 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:15:56,754 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,755 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:15:56,756 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:15:56,757 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,757 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,757 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:15:56,757 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:15:56,757 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,757 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,757 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:15:56,759 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,760 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:15:56,760 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:15:56,768 [main] INFO  QueryParser: Found OR
+14:15:56,769 [main] INFO  QueryParser: Found AND
+14:15:56,784 [main] INFO  QueryParser: Found AND
+14:15:56,785 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,785 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:15:56,785 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AllClause)>
+14:15:56,785 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:15:56,786 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,787 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,787 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:15:56,787 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:15:56,787 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,787 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,787 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:15:56,788 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter java.lang.Object
+14:15:56,788 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OperationClause
+14:15:56,788 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(java.lang.Object)>
+14:15:56,788 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,790 [main] ERROR AbstractReflectionVisitor: Failed to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause@e0b6f5
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.OrClause.accept(OrClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:106)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor.testBasicQueryParser(TestVisitor.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at junit.framework.TestCase.runTest(TestCase.java:154)
+	at junit.framework.TestCase.runBare(TestCase.java:127)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:325)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:536)
+Caused by: java.lang.IllegalArgumentException: Current visitor implementation does not handle visiting non clause subtypes. Tried to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(AbstractReflectionVisitor.java:72)
+	... 41 more
+14:15:56,792 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:15:56,792 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:15:56,792 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:15:56,792 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:15:56,792 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:15:56,792 [main] INFO  TestVisitor: magnus eklund  123
+14:17:49,166 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:17:49,167 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:18:09,542 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:18:09,575 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:18:09,575 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:18:09,576 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:18:30,767 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:18:30,767 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:18:30,767 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:18:30,767 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:18:30,767 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:18:30,767 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:18:30,768 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:18:30,768 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:18:30,794 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:18:30,795 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:18:30,799 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:18:30,799 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:18:30,800 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:18:30,800 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:18:30,800 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:18:30,800 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:18:30,875 [main] INFO  QueryParser: Found OR
+14:18:30,891 [main] INFO  QueryParser: Found AND
+14:18:30,891 [main] INFO  QueryParser: Found AND
+14:18:40,553 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:18:40,553 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:19:25,347 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AllClause)>
+14:19:25,347 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:19:25,352 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:19:25,353 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:19:29,277 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:19:29,277 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:19:29,277 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:19:29,277 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:19:32,032 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:19:32,033 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:19:32,033 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:19:32,033 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:19:33,732 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:19:33,732 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:19:33,736 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:19:33,736 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:19:35,091 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:19:35,123 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:19:35,124 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:19:35,124 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:19:35,124 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter java.lang.Object
+14:20:00,587 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OperationClause
+14:20:00,588 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(java.lang.Object)>
+14:20:00,588 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:20:00,593 [main] ERROR AbstractReflectionVisitor: Failed to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause@1329642
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.OrClause.accept(OrClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:106)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor.testBasicQueryParser(TestVisitor.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at junit.framework.TestCase.runTest(TestCase.java:154)
+	at junit.framework.TestCase.runBare(TestCase.java:127)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:325)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:536)
+Caused by: java.lang.IllegalArgumentException: Current visitor implementation does not handle visiting non clause subtypes. Tried to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(AbstractReflectionVisitor.java:72)
+	... 41 more
+14:20:00,598 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:20:00,598 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:20:00,598 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:20:00,598 [main] INFO  AbstractReflectionVisitor: Using <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:20:00,598 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:20:00,598 [main] INFO  TestVisitor: magnus eklund  123
+14:28:30,103 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+14:28:30,113 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+14:28:30,121 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+14:28:30,122 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+14:28:30,122 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+14:28:30,122 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+14:28:30,121 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,130 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:28:30,130 [main] DEBUG RunningQuery: ENTR: run()
+14:28:30,653 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,664 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:28:30,686 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,714 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,714 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,715 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,716 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,716 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,716 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,718 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,718 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,718 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,718 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,719 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,719 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,720 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,720 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,720 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,721 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,721 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,721 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,722 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:30,722 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:30,722 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,303 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,312 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:28:31,313 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,315 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,315 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,315 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,315 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,317 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,318 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,318 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,319 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,320 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,320 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,320 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,320 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,321 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,321 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,321 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,321 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,321 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,321 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,321 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,321 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,322 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,322 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,322 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,322 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,324 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,324 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,324 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,324 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,324 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,324 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,324 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,324 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,325 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,325 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,325 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,325 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,325 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,325 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,325 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,325 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,326 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,326 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,326 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,326 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,326 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,327 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,327 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,327 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,327 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,327 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,328 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,328 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,328 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,328 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,328 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:28:31,329 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,329 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:28:31,329 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:28:31,329 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:28:31,329 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:30:30,946 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,957 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:30:30,959 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:30:30,959 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,959 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,959 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:30:30,959 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:30:30,960 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,960 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,960 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:30:30,962 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,962 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:30:30,963 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:30:30,972 [main] INFO  QueryParser: Found OR
+14:30:30,973 [main] INFO  QueryParser: Found AND
+14:30:30,973 [main] INFO  QueryParser: Found AND
+14:30:30,973 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,973 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:30:30,973 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AllClause)>
+14:30:30,973 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,974 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,974 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:30:30,974 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:30:30,975 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,976 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,976 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:30:30,976 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:30:30,976 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,976 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,977 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:30:30,977 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter java.lang.Object
+14:30:30,977 [main] INFO  AbstractReflectionVisitor: start getMethodFromInterface
+14:30:30,978 [main] ERROR AbstractReflectionVisitor: Failed to visit object: no.schibstedsok.front.searchportal.query.parser.AndClause@e0b6f5
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:106)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor.testBasicQueryParser(TestVisitor.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at junit.framework.TestCase.runTest(TestCase.java:154)
+	at junit.framework.TestCase.runBare(TestCase.java:127)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:325)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:536)
+Caused by: java.lang.NullPointerException
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.getMethodFromInterface(AbstractReflectionVisitor.java:141)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.getMethod(AbstractReflectionVisitor.java:97)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:51)
+	at no.schibstedsok.front.searchportal.query.parser.OrClause.accept(OrClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	... 34 more
+14:30:30,980 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:30:30,980 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:30:30,980 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:30:30,980 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:30:30,980 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:30:30,980 [main] INFO  TestVisitor: magnus eklund  123
+14:31:59,261 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+14:31:59,271 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+14:31:59,281 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+14:31:59,281 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+14:31:59,281 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+14:31:59,281 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+14:31:59,280 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,290 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:31:59,290 [main] DEBUG RunningQuery: ENTR: run()
+14:31:59,809 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,819 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:31:59,834 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,860 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,861 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,862 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,862 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,862 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,863 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,864 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,864 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,865 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,865 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,866 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,866 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,866 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,866 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,867 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,867 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,867 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,867 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,868 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:31:59,868 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:31:59,868 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,426 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,436 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:32:00,436 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,438 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,439 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,439 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,439 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,441 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,442 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,442 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,443 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,443 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,443 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,443 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,444 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,444 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,444 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,444 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,444 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,444 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,445 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,445 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,445 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,445 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,445 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,445 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,445 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,447 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,448 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,448 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,448 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,448 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,448 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,448 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,448 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,448 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,449 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,449 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,449 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,449 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,449 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,449 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,449 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,449 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,450 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,450 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,450 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,450 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,451 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,451 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,451 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,451 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,451 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,452 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,452 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,452 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,452 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,452 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:00,452 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,453 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:32:00,453 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:32:00,453 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:32:00,453 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:32:12,976 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,976 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:32:12,978 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:32:12,978 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,978 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,978 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:32:12,978 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:32:12,979 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,979 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,979 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:32:12,981 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,981 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:32:12,982 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:32:12,991 [main] INFO  QueryParser: Found OR
+14:32:12,991 [main] INFO  QueryParser: Found AND
+14:32:12,992 [main] INFO  QueryParser: Found AND
+14:32:12,992 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,992 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:32:12,992 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AllClause)>
+14:32:12,992 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,993 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,994 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:32:12,994 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:32:12,994 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,994 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: start getMethodFromInterface
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: Found <null>
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: end getMethodFromInterface
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(java.lang.Object)>
+14:32:12,995 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,997 [main] ERROR AbstractReflectionVisitor: Failed to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause@e0b6f5
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.OrClause.accept(OrClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:88)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.AndClause.accept(AndClause.java:17)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(TestVisitor.java:106)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visit(AbstractReflectionVisitor.java:53)
+	at no.schibstedsok.front.searchportal.query.parser.TestVisitor.testBasicQueryParser(TestVisitor.java:43)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:585)
+	at junit.framework.TestCase.runTest(TestCase.java:154)
+	at junit.framework.TestCase.runBare(TestCase.java:127)
+	at junit.framework.TestResult$1.protect(TestResult.java:106)
+	at junit.framework.TestResult.runProtected(TestResult.java:124)
+	at junit.framework.TestResult.run(TestResult.java:109)
+	at junit.framework.TestCase.run(TestCase.java:118)
+	at junit.framework.TestSuite.runTest(TestSuite.java:208)
+	at junit.framework.TestSuite.run(TestSuite.java:203)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.run(JUnitTestRunner.java:325)
+	at org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner.main(JUnitTestRunner.java:536)
+Caused by: java.lang.IllegalArgumentException: Current visitor implementation does not handle visiting non clause subtypes. Tried to visit object: no.schibstedsok.front.searchportal.query.parser.OrClause
+	at no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor.visitImpl(AbstractReflectionVisitor.java:72)
+	... 41 more
+14:32:12,998 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:32:12,999 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:32:12,999 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:32:12,999 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:32:12,999 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:32:12,999 [main] INFO  TestVisitor: magnus eklund  123
+14:34:08,560 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,561 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:34:08,562 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:34:08,563 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,563 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,563 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:34:08,563 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:34:08,563 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,563 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,564 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:34:08,566 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,566 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:34:08,567 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:34:08,575 [main] INFO  QueryParser: Found OR
+14:34:08,576 [main] INFO  QueryParser: Found AND
+14:34:08,576 [main] INFO  QueryParser: Found AND
+14:34:08,576 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,576 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:34:08,576 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AllClause)>
+14:34:08,577 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,577 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,577 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:34:08,577 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:34:08,577 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,577 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,578 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:34:08,578 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:34:08,578 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,578 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,578 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:34:08,578 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:34:08,578 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,579 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,579 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:34:08,579 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:34:08,579 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,579 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: start getMethodFromInterface
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: start getMethodFromInterface
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OperationClause
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.Clause)>
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: end getMethodFromInterface
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.Clause)>
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: end getMethodFromInterface
+14:34:08,580 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.Clause)>
+14:34:08,581 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,581 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:34:08,581 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:34:08,581 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:34:08,581 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:34:08,581 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:34:08,581 [main] INFO  TestVisitor: magnus eklund  123
+14:36:25,566 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,567 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:36:25,571 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:36:25,571 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,571 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,571 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:36:25,571 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:36:25,572 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,572 [main] INFO  TestVisitor: firstName:magnus eklund schibsted sok
+14:36:25,579 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:36:25,588 [main] INFO  QueryParser: Found OR
+14:36:25,588 [main] INFO  QueryParser: Found AND
+14:36:25,588 [main] INFO  QueryParser: Found AND
+14:36:25,589 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,589 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:36:25,589 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AllClause)>
+14:36:25,589 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,590 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,590 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:36:25,597 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:36:25,597 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,597 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,597 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:36:25,597 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:36:25,597 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,597 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,598 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:36:25,598 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:36:25,598 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,599 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,599 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:36:25,599 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:36:25,599 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,599 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,599 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:36:25,599 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.OrClause)>
+14:36:25,599 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,600 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,600 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:36:25,600 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:36:25,600 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,600 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,600 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:36:25,600 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:36:25,600 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,601 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:36:25,601 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:36:25,601 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:36:25,601 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:36:25,601 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:36:25,601 [main] INFO  TestVisitor: magnus eklund  ( oslo OR "magnus eklund" )  123
+14:39:49,776 [main] INFO  ThreadPoolInspector: Scheduling to run every 300000ms
+14:39:49,786 [Timer-0] INFO  ThreadPoolInspector: Thread pool size: 0
+14:39:49,792 [Timer-0] INFO  ThreadPoolInspector: Largest size: 0
+14:39:49,793 [Timer-0] INFO  ThreadPoolInspector: Active threads: 0
+14:39:49,793 [Timer-0] INFO  ThreadPoolInspector: Approx. task count: 0
+14:39:49,793 [Timer-0] INFO  ThreadPoolInspector: Completed count: 0
+14:39:49,795 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:49,803 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:39:49,804 [main] DEBUG RunningQuery: ENTR: run()
+14:39:50,349 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,359 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:39:50,372 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,400 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,400 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,401 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,401 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,402 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,402 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,403 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,404 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,404 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,404 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,405 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,405 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,405 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,405 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,406 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,406 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,406 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,407 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,407 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,407 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,407 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,914 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,923 [main] INFO  XMLSearchTabsCreator: Read configuration from configuration.properties
+14:39:50,923 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,925 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,925 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,925 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,926 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,927 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,929 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,929 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,930 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,930 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,930 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,931 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,931 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,931 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,931 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,931 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,931 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,932 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,932 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,932 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,932 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,932 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,932 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,932 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,933 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,934 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,934 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,934 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,934 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,934 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,934 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,934 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,935 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,936 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,936 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,936 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,937 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,937 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,937 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,937 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,937 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,938 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,938 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,938 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,938 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,939 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,939 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,939 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:39:50,939 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,939 [main] DEBUG RunningQuery: ENTR: RunningQuery(): Params: {}
+14:39:50,939 [main] DEBUG RunningQuery: ENTR: getNumberOfTerms()
+14:39:50,939 [main] DEBUG RunningQuery: ENTR: getQueryString()
+14:39:50,939 [main] DEBUG RunningQuery: ENTR: getLocale()
+14:40:13,864 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,865 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:40:13,869 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,870 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,871 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:40:13,871 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:40:13,871 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,871 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:40:13,871 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:40:13,880 [main] INFO  QueryParser: Found OR
+14:40:13,881 [main] INFO  QueryParser: Found AND
+14:40:13,881 [main] INFO  QueryParser: Found AND
+14:40:13,881 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,881 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AllClause
+14:40:13,881 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AllClause)>
+14:40:13,881 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,882 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,882 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.AndClause
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.AndClause)>
+14:40:13,883 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,884 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,884 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:40:13,884 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:40:13,884 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,884 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,884 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.OrClause
+14:40:13,884 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.OrClause)>
+14:40:13,884 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.PhraseClause
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.PhraseClause)>
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: start getMethod
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.IntegerClause
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: Looking for method visitImpl with parameter no.schibstedsok.front.searchportal.query.parser.WordClause
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: Found <public void no.schibstedsok.front.searchportal.query.parser.TestVisitor$VisitorImpl.visitImpl(no.schibstedsok.front.searchportal.query.parser.WordClause)>
+14:40:13,885 [main] INFO  AbstractReflectionVisitor: end getMethod
+14:40:13,886 [main] INFO  TestVisitor: magnus eklund oslo OR "magnus eklund" 123
+14:42:00,240 [main] INFO  TestVisitor: firstName:magnus eklund "schibsted sok"
+14:42:00,241 [main] INFO  TestVisitor: Starting testBasicQueryParser with input: magnus AND eklund AND oslo OR "magnus eklund" 123
+14:42:00,251 [main] INFO  QueryParser: Found OR
+14:42:00,252 [main] INFO  QueryParser: Found AND
+14:42:00,252 [main] INFO  QueryParser: Found AND
+14:42:00,254 [main] INFO  TestVisitor: magnus eklund oslo OR "magnus eklund" 123

@@ -1,4 +1,4 @@
-<project xmlns:ant="jelly:ant">
+<project default="war:war" xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven">
 
     <!-- Filter develop / production URLs -->
     <!-- Filter log4j paths -->
@@ -7,8 +7,17 @@
     </preGoal>
 
     <preGoal name="java:compile">
-        <echo> java:compile</echo>
+        <!-- JavaCC :: QueryParser -->
+        <j:set var="maven.javacc.javacc.grammar" value="src/javacc/QueryParser.jj"/>
+        <j:set var="maven.javacc.javacc.package" value="no.schibstedsok.front.searchportal.query.parser"/>
+        <attainGoal name="javacc:javacc-generate"/>
+        <path id="javacc.generated.src" location="target/generated-src/main/java/no/schibstedsok/front/searchportal/query/parser"/> 
+        <maven:addPath id="maven.compile.src.set" refid="javacc.generated.src"/>
+    
+        <!-- Axis -->
         <attainGoal name="axis:compile"/>
+        
+        <echo> ...java:compile preGoal finished.</echo>
     </preGoal>
 
     <goal name="deploy" prereqs="war:webapp" >
@@ -18,4 +27,12 @@
             </fileset>
         </copy>
     </goal>
+    
+    <!-- [FIXME] Keep junit tests logging to seperate files -->
+    <preGoal name="test:single">
+        <j:set var="log.file" value="sesam.junit.single.log"/>
+    </preGoal>
+    <preGoal name="test:test">
+        <j:set var="log.file" value="sesam.junit.batch.log"/>
+    </preGoal>
 </project>

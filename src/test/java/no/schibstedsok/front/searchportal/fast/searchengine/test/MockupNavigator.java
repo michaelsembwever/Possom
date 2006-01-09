@@ -38,6 +38,9 @@ public class MockupNavigator implements INavigator {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    /**
+     * @deprecated see INavigator's javadoc 
+     ***/
     public String getModifier() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
