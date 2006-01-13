@@ -1,10 +1,20 @@
 /*
- * Copyright (2005) Schibsted S�k AS
+ * Copyright (2005-2006) Schibsted Søk AS
  *
  */
 package no.schibstedsok.front.searchportal.query;
 
 import edu.emory.mathcs.backport.java.util.concurrent.CancellationException;
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRules;
@@ -17,53 +27,58 @@ import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.executor.SearchTask;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
+import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContext;
+import no.schibstedsok.front.searchportal.query.parser.Clause;
+import no.schibstedsok.front.searchportal.query.parser.Query;
+import no.schibstedsok.front.searchportal.query.parser.QueryParser;
+import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
+import no.schibstedsok.front.searchportal.query.parser.ParseException;
 import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.*;
-
 /**
- * An object representing a running query.
- *
+ * An object representing a running queryStr.
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class RunningQuery {
 
-    private static Log log = LogFactory.getLog(RunningQuery.class);
+    private static final Log LOG = LogFactory.getLog(RunningQuery.class);
     private SearchMode searchMode = new SearchMode();
-    private String query = "";
+    private String queryStr = "";
+    private Query queryObj = null;
     private Map parameters;
     private int offset;
     private Locale locale;
-    private List sources = new ArrayList();
-    private TokenEvaluatorFactory tokenEvaluatorFactory;
-    private List enrichments = new ArrayList();
-    private Map hits = new HashMap();
-    private static AnalysisRules rules = new AnalysisRules();
+    private final List sources = new ArrayList();
+    private final TokenEvaluatorFactory tokenEvaluatorFactory;
+    private final List enrichments = new ArrayList();
+    private final Map hits = new HashMap();
     private Map scores = new HashMap();
 
 
     /**
      * Create a new Running Query instance
-     *
+     * 
      * @param mode
-     * @param query
+     * @param queryStr
      * @param parameters
      */
-    public RunningQuery(SearchMode mode, String query, Map parameters) {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: RunningQuery(): Params: " + parameters);
+    public RunningQuery(final SearchMode mode, final String query, final Map parameters) {
+        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: RunningQuery(): Params: " + parameters);
         }
 
         this.searchMode = mode;
-        this.query = AdvancedQueryBuilder.trimDuplicateSpaces(query);
+        queryStr = AdvancedQueryBuilder.trimDuplicateSpaces(query);
 
-        if (query != null) {
-            this.query = query.trim();
+        if (queryStr != null) {
+            queryStr = queryStr.trim();
         }
 
         this.parameters = parameters;
@@ -71,19 +86,46 @@ public class RunningQuery {
 
         // This will among other things perform the initial fast search
         // for textual analysis.
-        tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(query, XMLSearchTabsCreator.getInstance().getProperties());
+        tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(
+                new TokenEvaluatorFactoryImpl.Context(){
+                    public String getQueryString() {
+                        return RunningQuery.this.getQueryString();
+                    }
+
+                    public Properties getApplicationProperties() {
+                        return XMLSearchTabsCreator.getInstance().getProperties();
+                    }
+
+                });
+        
+        // queryStr parser, avoid parsing an empty queryStr.
+        if( queryStr != null && queryStr.length() >0 ){
+            final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext(){
+                
+                public TokenEvaluatorFactory getTokenEvaluatorFactory(){
+                    return tokenEvaluatorFactory;
+                }
+            });
+            
+            try{
+                queryObj = parser.getQuery();
+            }catch(ParseException ex){
+                LOG.error(ex);
+            }
+        }
     }
 
     /**
-     * First find out if the user types in an advanced search etc by analyzing the query.
+     * First find out if the user types in an advanced search etc by analyzing the queryStr.
      * Then lookup correct tip using messageresources.
+     * 
      * @return user tip
      */
     public String getGlobalSearchTips (){
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getGlobalSearchTips()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getGlobalSearchTips()");
         }
-        if (AdvancedQueryBuilder.isAdvancedQuery(query)) {
+        if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
             return TextMessages.getMessages().getMessage(locale,
                     "searchtip.use+-");
         } else {
@@ -93,9 +135,9 @@ public class RunningQuery {
     }
 
 
-    public Integer getNumberOfHits(String configName) {
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: getNumberOfHits()");
+    public Integer getNumberOfHits(final String configName) {
+        if(LOG.isDebugEnabled()){
+            LOG.debug("ENTR: getNumberOfHits()");
         }
         Integer i = (Integer)hits.get(configName);
         if(i == null){ i = new Integer(0); }
@@ -108,42 +150,45 @@ public class RunningQuery {
      * @throws InterruptedException
      */
     public void run() throws InterruptedException {
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: run()");
+        if(LOG.isDebugEnabled()){
+            LOG.debug("ENTR: run()");
         }
         try {
 
-            Collection commands = new ArrayList();
+            final Collection commands = new ArrayList();
 
             for (Iterator iterator = searchMode.getSearchConfigurations().iterator(); iterator.hasNext();) {
                 final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
 
                 // Factory responsible for creating commands against this configuration.
-                //  This would normally be a final member variable and this class implement SearchCommandFactory.Context
-                //   but it ain't a one-to-one query-to-configuration mapping ofcourse.
+                //  This would normally be a final member variable and this class implements SearchCommandFactory.Context
+                //   but it ain't a one-to-one queryStr-to-configuration mapping ofcourse.
                 final SearchCommandFactory cmdFactory = new SearchCommandFactory(new SearchCommandFactory.Context(){
                     public SearchConfiguration getSearchConfiguration(){
                         return searchConfiguration;
                     }
                 });
                 
-                AnalysisRule rule = rules.getRule(searchConfiguration.getRule());
+                final AnalysisRule rule = AnalysisRules.getRule(searchConfiguration.getRule());
 
                 if (rule != null) {
                     if (searchMode.getKey().equals("d") && offset == 0 ) {
-                        if(log.isDebugEnabled()){
-                            log.debug("run: searchMode.getKey().equals(d) && offset == 0");
+                        if(LOG.isDebugEnabled()){
+                            LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
                         }
-                        int score = rule.evaluate(query, tokenEvaluatorFactory);
+                        final int score = rule.evaluate(queryStr, tokenEvaluatorFactory);
+                        final int newScore = rule.evaluate(queryObj,tokenEvaluatorFactory);
 
-                        if (log.isDebugEnabled()) {
-                            log.debug("Score for " + searchConfiguration.getName() + " is " + score);
+                        LOG.info("OldScore: "+score+"; NewScore: "+newScore+";");
+                        
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
                         }
                         scores.put(searchConfiguration.getName(), new Integer(score));
 
                         if (searchConfiguration.isAlwaysRunEnabled() || score >= searchConfiguration.getRuleThreshold()) {
-                            if (log.isDebugEnabled()) {
-                                log.debug("Adding " + searchConfiguration.getName());
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug("Adding " + searchConfiguration.getName());
                             }
                             commands.add(cmdFactory.createSearchCommand(this, parameters));
                         }
@@ -152,7 +197,7 @@ public class RunningQuery {
                         commands.add(cmdFactory.createSearchCommand(this, parameters));
                     }
                 } else {
-                    // Optimazation. Alternate between the two web searches.
+                    // Optimisation. Alternate between the two web searches.
                     if (isNorwegian(searchConfiguration) || isInternational(searchConfiguration)) {
                         String searchType = getSingleParameter("s");
                         if (searchType != null && searchType.equals("g")) {
@@ -170,8 +215,8 @@ public class RunningQuery {
 
             List results;
 
-            if (log.isDebugEnabled()) {
-                log.debug("run(): InvokeAll Commands.size=" + commands.size());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
             }
 
             results = searchMode.getExecutor().invokeAll(commands, 3000);
@@ -200,7 +245,7 @@ public class RunningQuery {
                             }
                         }
                     } catch (CancellationException e) {
-                        log.error("Task was cancelled " + task.getCommand());
+                        LOG.error("Task was cancelled " + task.getCommand());
                     }
                 }
             }
@@ -211,9 +256,9 @@ public class RunningQuery {
         }
     }
 
-    private String getSingleParameter(String paramName) {
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: getSingleParameter()");
+    private String getSingleParameter(final String paramName) {
+        if(LOG.isDebugEnabled()){
+            LOG.debug("ENTR: getSingleParameter()");
         }
         String[] param = (String[]) parameters.get(paramName);
 
@@ -237,79 +282,79 @@ public class RunningQuery {
     }
 
     public int getNumberOfTerms() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getNumberOfTerms()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getNumberOfTerms()");
         }
-        return QueryTokenizer.tokenize(query).size();
+        return QueryTokenizer.tokenize(queryStr).size();
     }
 
     public String getQueryString() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getQueryString()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getQueryString()");
         }
-        return query;
+        return queryStr;
     }
 
     public int getOffset() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getOffset(): " + offset);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getOffset(): " + offset);
         }
         return offset;
     }
 
     public void setOffset(int offset) {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: setOffset():" + offset);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: setOffset():" + offset);
         }
         this.offset = offset;
     }
 
     public Locale getLocale() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getLocale()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getLocale()");
         }
         return locale;
     }
 
     public SearchMode getSearchMode() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getSearchMode()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getSearchMode()");
         }
         return searchMode;
     }
 
     public List getSources() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getSources()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getSources()");
         }
         return sources;
     }
 
     public void addSource(Modifier modifier) {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: addSource()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: addSource()");
         }
         sources.add(modifier);
     }
 
     public List getEnrichments() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getEnrichments()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getEnrichments()");
         }
         return enrichments;
     }
 
     public TokenEvaluatorFactory getTokenEvaluatorFactory() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getTokenEvaluatorFactory()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getTokenEvaluatorFactory()");
         }
         return tokenEvaluatorFactory;
     }
 
     // Find some other way to do this. Really do!
     public String getSourceParameters(String source) {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getSourceParameters() Source=" + source);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getSourceParameters() Source=" + source);
         }
 
         if (source.equals("Norske nettsider")) {

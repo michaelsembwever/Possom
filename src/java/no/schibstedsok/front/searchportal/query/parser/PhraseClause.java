@@ -3,57 +3,58 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
+
 /**
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public class PhraseClause implements LeafClause {
+public class PhraseClause extends WordClause {
 
-    private final String phrase;
-    private final String field;
-
+    /** Values are WeakReference object to AbstractClause. 
+     * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
+     */
+    private static final Map/*<Long,WeakReference<AbstractClause>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AbstractClause>>*/();
+    
+    // [TOD0] this should be a WordClause specific list!    
+    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE = TokenPredicate.getTokenPredicates();
+    
+    
+    public static PhraseClause createPhraseClause(
+            final String term, 
+            final String field,
+            final TokenEvaluatorFactory predicate2evaluatorFactory) {
+        
+        // update the factory with what the current term is
+        predicate2evaluatorFactory.setCurrentTerm(term);
+        // use helper method from AbstractLeafClause
+        return (PhraseClause)createClause(
+                PhraseClause.class, 
+                term, 
+                field, 
+                predicate2evaluatorFactory, 
+                PREDICATES_APPLICABLE, WEAK_CACHE);
+    }
+    
+    
     /**
      *
-     * @param phrase
+     * @param term
      * @param field
      */
-    public PhraseClause(final String phrase, final String field) {
-        this.phrase = phrase;
-        this.field = field;
+    protected PhraseClause(
+            final String term, 
+            final String field,
+            final Set/*<Predicate>*/ knownPredicates,
+            final Set/*<Predicate>*/ possiblePredicates) {
+        
+        super(term, field, knownPredicates, possiblePredicates);
+        
     }
-
-    /**
-     *
-     * @param phrase
-     */
-    public PhraseClause(final String phrase) {
-         this(phrase, null);
-    }
-
-    /**
-     *
-     * @param visitor
-     */
-    public void accept(final Visitor visitor) {
-        visitor.visit(this);
-    }
-
-    /**
-     * Get the phrase.
-     *
-     * @return the phrase.
-     */
-    public String getPhrase() {
-        return phrase;
-    }
-
-    /**
-     * Get the field.
-     *
-     * @return the field.
-     */
-    public String getField() {
-        return field;
-    }
-
 }

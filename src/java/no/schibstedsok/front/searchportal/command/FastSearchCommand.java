@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005) Schibsted SÃ¸k AS
  *
  */
 package no.schibstedsok.front.searchportal.command;

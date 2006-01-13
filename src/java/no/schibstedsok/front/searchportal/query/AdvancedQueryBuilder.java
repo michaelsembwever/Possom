@@ -122,7 +122,9 @@ public class AdvancedQueryBuilder {
      * @return advanced query with operators
      */
     public String getQuery(){
-        createQuery();
+        if( query == null || queryAllWords != null || queryAnyWords != null || queryNot != null || queryPhrase != null ){
+            createQuery();
+        }
         return query;
     }
 
@@ -172,13 +174,17 @@ public class AdvancedQueryBuilder {
      */
     private void createQuery(){
 
-        StringBuffer query=new StringBuffer();
-        myAppender(query, queryAllWords, "AND", false);
-        myAppender(query, queryAnyWords, "OR", query.length() != 0);
+        StringBuffer query= this.query == null ? new StringBuffer() : new StringBuffer(this.query);
+        myAppender(query, queryAllWords, "AND", false, null);
+        myAppender(query, queryAnyWords, "OR", query.length() != 0, "OR");
         query.append(insertPhrase(queryPhrase, query.length() != 0));
-        myAppender(query, queryNot, "ANDNOT", query.length() != 0);
+        myAppender(query, queryNot, "ANDNOT", true, "NOT"); // if query.length() == null prefix must become "NOT"
+        
+        // we now have a query built
         this.query = query.toString();
-
+        // reset query components
+        queryAllWords = queryAnyWords = queryPhrase = queryNot = null;
+        
         if(log.isDebugEnabled()){
             log.debug("AdvancedQueryBuilder: Query=" + query);
         }
@@ -191,10 +197,14 @@ public class AdvancedQueryBuilder {
     private boolean myAppender(StringBuffer query,
                                String in,
                                String operator,
-                               boolean prefix) {
+                               boolean prefix,
+                               String prefixOperator) {
 
-        String insert = insertOperator(in, operator, prefix);
+        String insert = insertOperator(in, operator, prefix, prefixOperator);
         if (insert.length()>0) {
+            if( query.length()>0 ){
+                query.append(' ');
+            }
             query.append(insert);
             return true;
         }
@@ -208,15 +218,15 @@ public class AdvancedQueryBuilder {
         if (queryPhrase == null || queryPhrase.trim().equals("") ){
             return "";
         }
-        String p = prefix ? " AND" : "";
-        return p +  "\"" + queryPhrase + "\" ";
+        String p = prefix ? " AND " : "";
+        return p +  "\"" + queryPhrase + "\"";
     }
 
     /*
      * Replace duplicate whitespaces with one space only, then
      * substitue that space with " OPERATOR ".
      */
-    private String insertOperator(String in, String operator, boolean prefixKeyword) {
+    private String insertOperator(String in, String operator, boolean prefixKeyword, String prefixOperator) {
 
         String original=in;
         if (log.isDebugEnabled()) {
@@ -230,7 +240,7 @@ public class AdvancedQueryBuilder {
         in = in.replaceAll(" ", " " + operator + " ");
 
         if (prefixKeyword) {
-            in = " " + operator +" "+in;
+            in = prefixOperator +" "+in;
         }
         in.trim();
 

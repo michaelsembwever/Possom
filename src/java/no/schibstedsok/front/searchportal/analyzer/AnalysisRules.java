@@ -1,3 +1,4 @@
+// Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.analyzer;
 
 import org.apache.commons.collections.Predicate;
@@ -8,223 +9,267 @@ import org.apache.commons.logging.LogFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class AnalysisRules {
+public final class AnalysisRules {
 
-    private static Log log = LogFactory.getLog(AnalysisRules.class);
-    private static Map rules = new HashMap();
+    private static final Log LOG = LogFactory.getLog(AnalysisRules.class);
+    private static final Map RULES = new HashMap();
 
     static {
 
-        // Basic predicates.
+        // [TODO] Move into an xml configuration file. Ensure forward compatibility w/ neural-network design.
 
-        Predicate exactFirst = new TokenPredicate("exact_firstname");
-        Predicate exactLast = new TokenPredicate("exact_lastname");
-        Predicate exactFirstOrLast = PredicateUtils.orPredicate(exactLast, exactFirst);
-        Predicate tns = new TokenPredicate("tns");
-        Predicate firstName = new TokenPredicate("firstname");
-        Predicate lastName = new TokenPredicate("lastname");
-        Predicate companyName = new TokenPredicate("company");
-        Predicate exactCompanyName = new TokenPredicate("exact_company");
-        Predicate geoLocal = new TokenPredicate("geolocal");
-        Predicate geoGlobal = new TokenPredicate("geoglobal");
-        Predicate geoLocalExact = new TokenPredicate("exact_geolocal");
-        Predicate geoGlobalExact = new TokenPredicate("exact_geoglobal");
-        Predicate category = new TokenPredicate("category");
-        Predicate prioCompanyName = new TokenPredicate("companypriority");
-        Predicate keyword = new TokenPredicate("keyword");
-        Predicate fullName = new TokenPredicate("fullname"); // ?
-        Predicate cataloguePrefix = new TokenPredicate("cataloguePrefix");
-        Predicate weatherPrefix = new TokenPredicate("weatherPrefix");
-        Predicate picturePrefix = new TokenPredicate("picturePrefix");
-        Predicate newsPrefix = new TokenPredicate("newsPrefix");
-        Predicate exactWiki = new TokenPredicate("exact_wikino");
-        Predicate wikipediaPrefix = new TokenPredicate("wikipediaPrefix");
-        Predicate orgNr = new TokenPredicate("orgNr");
-        Predicate wikipedia = new TokenPredicate("wikino");
-        Predicate phoneNumber = new TokenPredicate("phoneNumber");
-        Predicate englishWords = new TokenPredicate("international");
-        Predicate tvPrefix = new TokenPredicate("tvPrefix");
-        Predicate companySuffix = new TokenPredicate("companySuffix");
-        Predicate mathPredicate = new TokenPredicate("mathExpression");
+        // Common joined predicates
+        final Predicate geo = PredicateUtils.orPredicate(TokenPredicate.GEOLOCAL, TokenPredicate.GEOGLOBAL);
+        final Predicate geoExact =  PredicateUtils.orPredicate(TokenPredicate.GEOLOCALEXACT, TokenPredicate.GEOGLOBALEXACT);
 
-        Predicate geo = PredicateUtils.orPredicate(geoLocal, geoGlobal);
-        Predicate geoExact = PredicateUtils.orPredicate(geoLocalExact, geoGlobalExact);
-
+        final Predicate exactFirstOrLast =  PredicateUtils.orPredicate(TokenPredicate.EXACTFIRST, TokenPredicate.EXACTLAST);
+        final Predicate firstAndLastName =  PredicateUtils.andPredicate(TokenPredicate.FIRSTNAME, TokenPredicate.LASTNAME);
+        final Predicate firstOrLast =  PredicateUtils.orPredicate(TokenPredicate.FIRSTNAME, TokenPredicate.LASTNAME);
+        final Predicate firstOrLastAndGeo =  PredicateUtils.andPredicate(firstOrLast, geo);        
+        
         // Person
-        AnalysisRule person = new AnalysisRule();
+        final AnalysisRule person = new AnalysisRule();
 
-        Predicate firstAndLastName = PredicateUtils.andPredicate(firstName, lastName);
-        Predicate firstOrLast = PredicateUtils.orPredicate(firstName, lastName);
-        Predicate firstOrLastAndGeo = PredicateUtils.andPredicate(firstOrLast, geo);
+        final Predicate[] aa = {
+                TokenPredicate.EXACTWIKI,
+                TokenPredicate.COMPANYSUFFIX,
+                TokenPredicate.KEYWORD,
+                TokenPredicate.CATEGORY,
+                PredicateUtils.andPredicate(TokenPredicate.PRIOCOMPANYNAME,
+                        PredicateUtils.notPredicate(TokenPredicate.FIRSTNAME))
+        };
 
-        Predicate[] aa = {
-                exactWiki,
-                companySuffix,
-                keyword,
-                category,
-                PredicateUtils.andPredicate(prioCompanyName, PredicateUtils
-                        .notPredicate(firstName)) };
+        final Predicate notWikiNotCompanyPostfix = PredicateUtils.nonePredicate(aa);
+        final Predicate firstOrLastNotCompany = PredicateUtils.andPredicate(notWikiNotCompanyPostfix, firstOrLastAndGeo);
 
-        Predicate notWikiNotCompanyPostfix = PredicateUtils.nonePredicate(aa);
-        Predicate firstOrLastNotCompany = PredicateUtils.andPredicate(notWikiNotCompanyPostfix, firstOrLastAndGeo);
-
-        Predicate w = PredicateUtils.andPredicate(notWikiNotCompanyPostfix, firstAndLastName);
+        final Predicate w = PredicateUtils.andPredicate(notWikiNotCompanyPostfix, firstAndLastName);
 
 
-        Predicate catalogueAndName = PredicateUtils.andPredicate(cataloguePrefix, firstOrLast);
-        Predicate whiteBoost = PredicateUtils.anyPredicate(new Predicate[] {firstOrLastNotCompany, w, catalogueAndName});
+        final Predicate catalogueAndName = PredicateUtils.andPredicate(TokenPredicate.CATALOGUEPREFIX, firstOrLast);
+        final Predicate whiteBoost = PredicateUtils.anyPredicate(new Predicate[] {
+            firstOrLastNotCompany,
+            w, 
+            catalogueAndName
+        });
 
 
-        person.addPredicateScore(fullName, 10);
+        person.addPredicateScore(TokenPredicate.FULLNAME, 10);
         person.addPredicateScore(w, 90);
         person.addPredicateScore(firstOrLastNotCompany, 90);
         person.addPredicateScore(geoExact, -500);
-        person.addPredicateScore(phoneNumber, 150);
+        person.addPredicateScore(TokenPredicate.PHONENUMBER, 150);
         person.addPredicateScore(catalogueAndName, 150);
-        Predicate[] personOtherPrefixes = {picturePrefix, weatherPrefix, newsPrefix, wikipediaPrefix, tvPrefix};
+        final Predicate[] personOtherPrefixes = {
+            TokenPredicate.PICTUREPREFIX,
+            TokenPredicate.WEATHERPREFIX,
+            TokenPredicate.NEWSPREFIX,
+            TokenPredicate.WIKIPEDIAPREFIX,
+            TokenPredicate.TVPREFIX
+        };
+
         person.addPredicateScore(PredicateUtils.anyPredicate(personOtherPrefixes), -500);
-        person.addPredicateScore(tns, -500);
+        person.addPredicateScore(TokenPredicate.TNS, -500);
         person.addPredicateScore(exactFirstOrLast, -500);
 
-        rules.put("whitePages", person);
+        RULES.put("whitePages", person);
 
         // Company
-        AnalysisRule company = new AnalysisRule();
+        final AnalysisRule company = new AnalysisRule();
 
-        Predicate categoryOrKeyword = PredicateUtils.orPredicate(category, keyword);
+        final Predicate categoryOrKeyword = PredicateUtils.orPredicate(TokenPredicate.CATEGORY, TokenPredicate.KEYWORD);
         company.addPredicateScore(categoryOrKeyword, 100);
 
-        Predicate[] g = {companySuffix, keyword, category, prioCompanyName};
+        final Predicate[] g = {
+            TokenPredicate.COMPANYSUFFIX,
+            TokenPredicate.KEYWORD,
+            TokenPredicate.CATEGORY,
+            TokenPredicate.PRIOCOMPANYNAME
+        };
 
-        company.addPredicateScore(PredicateUtils.andPredicate(exactWiki, PredicateUtils.nonePredicate(g)), -500);
-        Predicate companyNotPerson = PredicateUtils.andPredicate(PredicateUtils.notPredicate(firstAndLastName), companyName);
+        company.addPredicateScore(
+                PredicateUtils.andPredicate(TokenPredicate.EXACTWIKI, PredicateUtils.nonePredicate(g)), -500);
+        final Predicate companyNotPerson = PredicateUtils.andPredicate(
+                PredicateUtils.notPredicate(firstAndLastName), TokenPredicate.COMPANYNAME);
         company.addPredicateScore(companyNotPerson, 200);
-        company.addPredicateScore(PredicateUtils.andPredicate(firstAndLastName, companySuffix), 200);
-        company.addPredicateScore(prioCompanyName, 30);
+        company.addPredicateScore(PredicateUtils.andPredicate(firstAndLastName, TokenPredicate.COMPANYSUFFIX), 200);
+        company.addPredicateScore(TokenPredicate.PRIOCOMPANYNAME, 30);
         company.addPredicateScore(geoExact, -500);
-        company.addPredicateScore(orgNr, 120);
-        company.addPredicateScore(phoneNumber, 200);
-        company.addPredicateScore(PredicateUtils.allPredicate(new Predicate[] {
-                PredicateUtils.notPredicate(prioCompanyName),
-                PredicateUtils.notPredicate(companySuffix), firstOrLastAndGeo,
+        company.addPredicateScore(TokenPredicate.ORGNR, 120);
+        company.addPredicateScore(TokenPredicate.PHONENUMBER, 200);
+        company.addPredicateScore(PredicateUtils.allPredicate(new  Predicate[] {
+                PredicateUtils.notPredicate(TokenPredicate.PRIOCOMPANYNAME),
+                PredicateUtils.notPredicate(TokenPredicate.COMPANYSUFFIX), firstOrLastAndGeo,
                 PredicateUtils.notPredicate(categoryOrKeyword) }), -500);
-        company.addPredicateScore(PredicateUtils.allPredicate(new Predicate[] {
-                cataloguePrefix, firstOrLast,
-                PredicateUtils.notPredicate(companySuffix) }), -500);
-        company.addPredicateScore(newsPrefix, -500);
-        company.addPredicateScore(tns, -500);
-        company.addPredicateScore(exactFirst, -500);
+        company.addPredicateScore(PredicateUtils.allPredicate(new  Predicate[] {
+                TokenPredicate.CATALOGUEPREFIX, firstOrLast,
+                PredicateUtils.notPredicate(TokenPredicate.COMPANYSUFFIX) }), -500);
+        company.addPredicateScore(TokenPredicate.NEWSPREFIX, -500);
+        company.addPredicateScore(TokenPredicate.TNS, -500);
+        company.addPredicateScore(TokenPredicate.EXACTFIRST, -500);
 
-        rules.put("yellowPages", company);
+        RULES.put("yellowPages", company);
 
-        AnalysisRule globalEnrichment = new AnalysisRule();
+        final AnalysisRule globalEnrichment = new AnalysisRule();
 
-        Predicate[] ppp = {keyword, category, firstName, lastName, companyName};
+        final Predicate[] ppp = {
+            TokenPredicate.KEYWORD,
+            TokenPredicate.CATEGORY,
+            TokenPredicate.FIRSTNAME,
+            TokenPredicate.LASTNAME,
+            TokenPredicate.COMPANYNAME
+        };
 
-        globalEnrichment.addPredicateScore(PredicateUtils.andPredicate(englishWords, PredicateUtils.notPredicate(wikipedia)), 90);
+        globalEnrichment.addPredicateScore(PredicateUtils
+                .andPredicate(TokenPredicate.ENGLISHWORDS, PredicateUtils.notPredicate(TokenPredicate.WIKIPEDIA)), 90);
         globalEnrichment.addPredicateScore(PredicateUtils.anyPredicate(ppp), -500);
-        rules.put("globalEnrichment", globalEnrichment);
+        RULES.put("globalEnrichment", globalEnrichment);
 
-        AnalysisRule picSearch = new AnalysisRule();
+        final AnalysisRule picSearch = new AnalysisRule();
 
-        Predicate[] picOtherPrefixes = {exactCompanyName, cataloguePrefix, weatherPrefix, picturePrefix, newsPrefix, wikipediaPrefix};
-        Predicate picNotOtherPrefixes = PredicateUtils.nonePredicate(picOtherPrefixes);
+        final Predicate[] picOtherPrefixes = {
+            TokenPredicate.EXACTCOMPANYNAME,
+            TokenPredicate.CATALOGUEPREFIX,
+            TokenPredicate.WEATHERPREFIX,
+            TokenPredicate.PICTUREPREFIX,
+            TokenPredicate.NEWSPREFIX,
+            TokenPredicate.WIKIPEDIAPREFIX
+        };
+        final Predicate picNotOtherPrefixes = PredicateUtils.nonePredicate(picOtherPrefixes);
 
-        picSearch.addPredicateScore(PredicateUtils.andPredicate(picNotOtherPrefixes, exactWiki), 550);
-        picSearch.addPredicateScore(picturePrefix, 550);
+        picSearch.addPredicateScore(PredicateUtils.andPredicate(picNotOtherPrefixes, TokenPredicate.EXACTWIKI), 550);
+        picSearch.addPredicateScore(TokenPredicate.PICTUREPREFIX, 550);
         picSearch.addPredicateScore(geoExact, -600);
 
-        rules.put("picSearch", picSearch);
+        RULES.put("picSearch", picSearch);
 
-        AnalysisRule wwikipedia = new AnalysisRule();
+        final AnalysisRule wwikipedia = new AnalysisRule();
 
-        Predicate wikiAndCompany = PredicateUtils.andPredicate(prioCompanyName, wikipedia);
+        final Predicate wikiAndCompany = PredicateUtils.andPredicate(TokenPredicate.PRIOCOMPANYNAME, TokenPredicate.WIKIPEDIA);
 
-        Predicate[] wikiOtherPrefixes = {cataloguePrefix, weatherPrefix, picturePrefix, newsPrefix};
+        final Predicate[] wikiOtherPrefixes = {
+            TokenPredicate.CATALOGUEPREFIX,
+            TokenPredicate.WEATHERPREFIX,
+            TokenPredicate.PICTUREPREFIX,
+            TokenPredicate.NEWSPREFIX
+        };
 
-        Predicate notOtherPrefixes = PredicateUtils.nonePredicate(wikiOtherPrefixes);
+        final Predicate notOtherPrefixes = PredicateUtils.nonePredicate(wikiOtherPrefixes);
 
-        wwikipedia.addPredicateScore(PredicateUtils.andPredicate(wikipediaPrefix, wikipedia), 400);
-        wwikipedia.addPredicateScore(PredicateUtils.andPredicate(wikiAndCompany, notOtherPrefixes), -500);
-        wwikipedia.addPredicateScore(exactWiki, 300);
+        wwikipedia.addPredicateScore(
+                PredicateUtils.andPredicate(TokenPredicate.WIKIPEDIAPREFIX, TokenPredicate.WIKIPEDIA), 400);
+        wwikipedia.addPredicateScore(
+                PredicateUtils.andPredicate(wikiAndCompany, notOtherPrefixes), -500);
+        wwikipedia.addPredicateScore(TokenPredicate.EXACTWIKI, 300);
         wwikipedia.addPredicateScore(firstAndLastName, -220);
         wwikipedia.addPredicateScore(geoExact, -220);
-        wwikipedia.addPredicateScore(tns, -220);
+        wwikipedia.addPredicateScore(TokenPredicate.TNS, -220);
 
-        rules.put("wikipedia", wwikipedia);
+        RULES.put("wikipedia", wwikipedia);
 
-        Predicate[] lots = {tns, exactWiki, geo, keyword, category, firstOrLast};
+        final Predicate[] lots = {
+            TokenPredicate.TNS,
+            TokenPredicate.EXACTWIKI,
+            geo,
+            TokenPredicate.KEYWORD,
+            TokenPredicate.CATEGORY,
+            firstOrLast
+        };
 
-        AnalysisRule news = new AnalysisRule();
+        final AnalysisRule news = new AnalysisRule();
 
-        Predicate[] pp = {firstAndLastName, exactWiki, PredicateUtils.notPredicate(companySuffix)}; // and not big sites.
+        final Predicate[] pp = {
+            firstAndLastName,
+            TokenPredicate.EXACTWIKI,
+            PredicateUtils.notPredicate(TokenPredicate.COMPANYSUFFIX)}; // and not big sites.
 
-        news.addPredicateScore(PredicateUtils.andPredicate(prioCompanyName, PredicateUtils.neitherPredicate(firstName, geo)), 400);
+        news.addPredicateScore(PredicateUtils.andPredicate(TokenPredicate.PRIOCOMPANYNAME,
+                PredicateUtils.neitherPredicate(TokenPredicate.FIRSTNAME, geo)), 400);
         news.addPredicateScore(PredicateUtils.allPredicate(pp), 300);
-        news.addPredicateScore(newsPrefix, 400);
+        news.addPredicateScore(TokenPredicate.NEWSPREFIX, 400);
         news.addPredicateScore(PredicateUtils.truePredicate(), 100);
-        news.addPredicateScore(PredicateUtils.andPredicate(PredicateUtils.notPredicate(newsPrefix), categoryOrKeyword), -550);
-        news.addPredicateScore(PredicateUtils.andPredicate(companyName, PredicateUtils.notPredicate(prioCompanyName)), -20);
+        news.addPredicateScore(PredicateUtils.andPredicate(
+                PredicateUtils.notPredicate(TokenPredicate.NEWSPREFIX), categoryOrKeyword), -550);
+        news.addPredicateScore(
+                PredicateUtils.andPredicate(TokenPredicate.COMPANYNAME,
+                PredicateUtils.notPredicate(TokenPredicate.PRIOCOMPANYNAME)), -20);
         news.addPredicateScore(PredicateUtils.orPredicate(geoExact, whiteBoost), -20);
-        news.addPredicateScore(PredicateUtils.orPredicate(tns, companyNotPerson), -20);
-        news.addPredicateScore(cataloguePrefix, -500);
-        news.addPredicateScore(PredicateUtils.allPredicate(new Predicate[] {PredicateUtils.notPredicate(firstAndLastName), exactWiki}), -20);
-        news.addPredicateScore(wikipediaPrefix, -500);
-        news.addPredicateScore(weatherPrefix, -500);
-        news.addPredicateScore(PredicateUtils.andPredicate(englishWords, PredicateUtils.nonePredicate(lots)), -500);
+        news.addPredicateScore(PredicateUtils.orPredicate(TokenPredicate.TNS, companyNotPerson), -20);
+        news.addPredicateScore(TokenPredicate.CATALOGUEPREFIX, -500);
+        news.addPredicateScore(
+                PredicateUtils.allPredicate(new  Predicate[] {
+            PredicateUtils.notPredicate(firstAndLastName), TokenPredicate.EXACTWIKI
+        }), -20);
+        news.addPredicateScore(TokenPredicate.WIKIPEDIAPREFIX, -500);
+        news.addPredicateScore(TokenPredicate.WEATHERPREFIX, -500);
+        news.addPredicateScore(
+                PredicateUtils.andPredicate(TokenPredicate.ENGLISHWORDS, PredicateUtils.nonePredicate(lots)), -500);
 
-        news.addPredicateScore(PredicateUtils.andPredicate(PredicateUtils.neitherPredicate(companyName, exactWiki), exactFirst), -500);
+        news.addPredicateScore(PredicateUtils.andPredicate(
+                PredicateUtils.neitherPredicate(TokenPredicate.COMPANYNAME, TokenPredicate.EXACTWIKI),
+                TokenPredicate.EXACTFIRST), -500);
 
-        rules.put("news", news);
+        RULES.put("news", news);
 
 
-        AnalysisRule tv = new AnalysisRule();
+        final AnalysisRule tv = new AnalysisRule();
 
-        Predicate[] otherPrefTv = {cataloguePrefix, wikipediaPrefix, picturePrefix, weatherPrefix};
+        final Predicate[] otherPrefTv = {
+            TokenPredicate.CATALOGUEPREFIX,
+            TokenPredicate.WIKIPEDIAPREFIX,
+            TokenPredicate.PICTUREPREFIX,
+            TokenPredicate.WEATHERPREFIX
+        };
 
         tv.addPredicateScore(PredicateUtils.anyPredicate(otherPrefTv), -500);
-        tv.addPredicateScore(tvPrefix, 1000);
+        tv.addPredicateScore(TokenPredicate.TVPREFIX, 1000);
         tv.addPredicateScore(PredicateUtils.notPredicate(geo), 500);
-        tv.addPredicateScore(newsPrefix, -420);
+        tv.addPredicateScore(TokenPredicate.NEWSPREFIX, -420);
         tv.addPredicateScore(categoryOrKeyword, -420);
-        tv.addPredicateScore(tns, -500);
-        rules.put("tv", tv);
+        tv.addPredicateScore(TokenPredicate.TNS, -500);
+        RULES.put("tv", tv);
 
         // Global search
-        AnalysisRule globalSearch = new AnalysisRule();
+        final AnalysisRule globalSearch = new AnalysisRule();
 
-        globalSearch.addPredicateScore(PredicateUtils.andPredicate(englishWords, PredicateUtils.nonePredicate(lots)), 100);
-        rules.put("globalSearch", globalSearch);
+        globalSearch.addPredicateScore(
+                PredicateUtils.andPredicate(TokenPredicate.ENGLISHWORDS, PredicateUtils.nonePredicate(lots)), 100);
+        RULES.put("globalSearch", globalSearch);
 
 
-        AnalysisRule weather = new AnalysisRule();
-        Predicate[] allCompanyAndPresonHits = {fullName, keyword, category, companyName};
-        weather.addPredicateScore(PredicateUtils.andPredicate(weatherPrefix, geo), 400);
+        final AnalysisRule weather = new AnalysisRule();
+        final Predicate[] allCompanyAndPresonHits = {
+            TokenPredicate.FULLNAME,
+            TokenPredicate.KEYWORD,
+            TokenPredicate.CATEGORY,
+            TokenPredicate.COMPANYNAME
+        };
+        weather.addPredicateScore(PredicateUtils.andPredicate(TokenPredicate.WEATHERPREFIX, geo), 400);
         weather.addPredicateScore(geoExact, 500);
         weather.addPredicateScore(PredicateUtils.andPredicate(PredicateUtils
                 .notPredicate(geo), PredicateUtils
                 .anyPredicate(allCompanyAndPresonHits)), -500);
-        weather.addPredicateScore(tns, -500);
-        rules.put("weather", weather);
+        weather.addPredicateScore(TokenPredicate.TNS, -500);
+        RULES.put("weather", weather);
 
-        AnalysisRule mathExpression = new AnalysisRule();
-        mathExpression.addPredicateScore(mathPredicate, 500);
-        rules.put("mathExpression", mathExpression);
+        final AnalysisRule mathExpression = new AnalysisRule();
+        mathExpression.addPredicateScore(TokenPredicate.MATHPREDICATE, 500);
+        RULES.put("mathExpression", mathExpression);
 
     }
 
     /**
-     *
-     * Returns a map of all the rules. The key is the name of the rule
-     *
-     * @return all rules.
+     * 
+     * Returns a map of all the RULES. The key is the name of the rule
+     * 
+     * @return all RULES.
      */
-    public Map getRules() {
-        return rules;
+    public static Map getRules() {
+        return RULES;
     }
 
 
@@ -235,11 +280,11 @@ public class AnalysisRules {
      * @param   ruleName    the name of the rule
      * @return  the rule.
      */
-    public AnalysisRule getRule(final String ruleName) {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getRule()" + ruleName);
+    public static AnalysisRule getRule(final String ruleName) {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: getRule()" + ruleName);
         }
-        AnalysisRule rule = (AnalysisRule) rules.get(ruleName);
+        final AnalysisRule rule = (AnalysisRule) RULES.get(ruleName);
 
         return rule;
     }

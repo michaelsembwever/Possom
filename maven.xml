@@ -1,14 +1,15 @@
-<project default="war:war" xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven">
+<project default="war:webapp" xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven">
 
     <!-- Filter develop / production URLs -->
     <!-- Filter log4j paths -->
     <preGoal name="java:jar-resources" >
+        <ant:filter filtersfile="build.properties" />
         <ant:filter filtersfile="${target}.properties" />
     </preGoal>
 
     <preGoal name="java:compile">
         <!-- JavaCC :: QueryParser -->
-        <j:set var="maven.javacc.javacc.grammar" value="src/javacc/QueryParser.jj"/>
+        <j:set var="maven.javacc.javacc.grammar" value="src/javacc/QueryParserImpl.jj"/>
         <j:set var="maven.javacc.javacc.package" value="no.schibstedsok.front.searchportal.query.parser"/>
         <attainGoal name="javacc:javacc-generate"/>
         <path id="javacc.generated.src" location="target/generated-src/main/java/no/schibstedsok/front/searchportal/query/parser"/> 
@@ -28,11 +29,29 @@
         </copy>
     </goal>
     
-    <!-- [FIXME] Keep junit tests logging to seperate files -->
-    <preGoal name="test:single">
-        <j:set var="log.file" value="sesam.junit.single.log"/>
-    </preGoal>
-    <preGoal name="test:test">
-        <j:set var="log.file" value="sesam.junit.batch.log"/>
-    </preGoal>
+    
+    <!-- 
+      - Keep junit tests logging to seperate files
+     -->
+    <preGoal name="test:test-resources"><attainGoal name="alter-log4j-appenders-for-testing"/></preGoal>
+    <postGoal name="test:single"><attainGoal name="restore-log4j-appenders-for-testing"/></postGoal>
+    <postGoal name="test:test"><attainGoal name="restore-log4j-appenders-for-testing"/></postGoal>
+    
+    <goal name="alter-log4j-appenders-for-testing">
+        <ant:loadproperties srcFile="project.properties"/>
+        <ant:loadproperties srcFile="${target}.properties"/>
+        <ant:propertyfile file="target/classes/log4j.properties"> <!-- NEVER edit the original log4j.properties like this -->
+          <ant:entry key="log4j.appender.LOG_APPEND.File"   value="${log.directory}/${log.file}.test.log" />
+          <ant:entry key="log4j.appender.ERROR_APPEND.File" value="${log.directory}/${log.file}.test.error" />
+          <ant:entry key="log4j.appender.DUMP_APPEND.File"  value="${log.directory}/${log.file}.test.dump" />
+        </ant:propertyfile>
+    </goal>
+    <goal name="restore-log4j-appenders-for-testing">
+        <ant:propertyfile file="target/classes/log4j.properties"> <!-- NEVER edit the original log4j.properties like this -->
+          <ant:entry key="log4j.appender.LOG_APPEND.File"   value="${log.directory}/${log.file}.log" />
+          <ant:entry key="log4j.appender.ERROR_APPEND.File" value="${log.directory}/${log.file}.error" />
+          <ant:entry key="log4j.appender.DUMP_APPEND.File"  value="${log.directory}/${log.file}.dump" />
+        </ant:propertyfile>
+    </goal>
+    
 </project>

@@ -26,17 +26,20 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public abstract class AbstractReflectionVisitor implements Visitor {
+    
     /** String specifying name of method used to overload by any class extending this. **/
     public static final String VISIT_METHOD_IMPL = "visitImpl";
 
     private static final Log LOG = LogFactory.getLog(AbstractReflectionVisitor.class);
 
     private static final String ERR_CLAUSE_SUBTYPE_NOT_FOUND = "Current visitor implementation does not handle visiting "
-            + "non clause subtypes. Tried to visit object: ";
-    private static final String ERR_FAILED_TO_VISIT = "Failed to visit object: ";
-    private static final String ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT = "Failed to find method that exists in this class!!";
+            + "non clause subtypes. Tried to visit object ";
+    private static final String ERR_FAILED_TO_VISIT = "Failed to visit object ";
+    private static final String ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT = "Failed to find method that exists in this class!!"
+            +"Was trying to visit object ";
     private static final String DEBUG_LOOKING_AT = "Looking for method "
             + VISIT_METHOD_IMPL + " with parameter ";
+
 
 
     /** Creates a new instance of AbstractReflectionVisitor.
@@ -53,6 +56,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         final Method method = getMethod(clause.getClass());
         try {
             method.invoke(this, new Object[] {clause});
+            
         } catch (IllegalArgumentException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
         } catch (InvocationTargetException ex) {
@@ -63,29 +67,22 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     }
 
     /**
-     * You must implement this method at the minimum.
-     * Default handling of a visit to any Clause object where a more appropriate overloaded method is not implemented.
-     * @param clause
-     */
-    public abstract void visitImpl(Clause clause);
-
-    /**
      * Final fallback method. This means that the object being visited is not a Clause (or subclass of) object!
      * This behaviour is not intendedly supported and this implementation throws an IllegalArgumentException!
      * @param clause
      */
-    public void visitImpl(final Object clause) {
+    public void visitImpl(Object clause) {
         throw new IllegalArgumentException(ERR_CLAUSE_SUBTYPE_NOT_FOUND + clause.getClass().getName());
     }
 
     private Method getMethod(final Class clauseClass) {
         final Class me = getClass();
         Method method = null;
-        Class currClauseClass = clauseClass;
 
         LOG.debug("start getMethod");
 
         // Try the superclasses
+        Class currClauseClass = clauseClass;
         while (method == null && currClauseClass != Object.class) {
             LOG.debug(DEBUG_LOOKING_AT + currClauseClass.getName());
             try {
@@ -97,8 +94,13 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         }
 
         // Try the interfaces.
-        if (method == null) {
-            method = getMethodFromInterface(clauseClass);
+        // Gets alittle bit tricky because we must not only search subinterfaces 
+        //  but search both interfaces and superinterfaces of superclasses...
+        currClauseClass = clauseClass;
+        while (method == null && currClauseClass != Object.class) {
+
+            method = getMethodFromInterface(currClauseClass);
+            currClauseClass = currClauseClass.getSuperclass();
         }
 
         // fallback to visitImpl(Object)
@@ -107,13 +109,12 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {Object.class});
 
             } catch (SecurityException ex) {
-                LOG.error(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT, ex);
+                LOG.error(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT+clauseClass.getName(), ex);
             } catch (NoSuchMethodException ex) {
-                LOG.fatal(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT, ex);
+                LOG.fatal(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT+clauseClass.getName(), ex);
             }
 
         }
-        LOG.debug("Found <" + method.toString() + ">");
         LOG.debug("end getMethod");
         return method;
     }
@@ -126,15 +127,16 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         final Class me = getClass();
         Method method = null;
 
-        LOG.debug("start getMethodFromInterface");
+        LOG.debug("start getMethodFromInterface "+clauseClass.getName());
 
         final Class[] interfaces = clauseClass.getInterfaces();
         for (int i = 0; i < interfaces.length && method == null; i++) {
 
-            LOG.debug(DEBUG_LOOKING_AT + clauseClass.getName());
+            LOG.debug(DEBUG_LOOKING_AT + interfaces[i].getName());
 
             try {
                 method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {interfaces[i]});
+                LOG.debug("Found <" + method + ">");
 
             } catch (NoSuchMethodException e) {
                 // [RECURSION] Look for super interfaces
@@ -142,8 +144,8 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 // still null? look at next interface
             }
         }
-        LOG.debug("Found <" + method + ">");
-        LOG.debug("end getMethodFromInterface");
+        
+        LOG.debug("end getMethodFromInterface "+clauseClass.getName());
         return method;
     }
 

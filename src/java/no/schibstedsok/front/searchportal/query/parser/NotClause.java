@@ -3,11 +3,14 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.util.Collections;
+import java.util.Set;
+
 /**
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class NotClause implements OperationClause {
+public final class NotClause extends AbstractOperationClause {
 
     private Clause clause;
 
@@ -34,4 +37,5 @@ public final class NotClause implements OperationClause {
     public void accept(final Visitor visitor) {
         visitor.visit(this);
     }
+
 }

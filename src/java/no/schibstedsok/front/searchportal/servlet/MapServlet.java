@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005) Schibsted SÃ¸k AS
  * 
  */
 package no.schibstedsok.front.searchportal.servlet;
@@ -31,20 +31,20 @@ public class MapServlet extends HttpServlet {
     /** The serialVersionUID */
     private static final long serialVersionUID = -5879777378093939926L;
 
-    //globale konstanter. Hvor bør disse settes?? xml fil.
+    //globale konstanter. Hvor bï¿½r disse settes?? xml fil.
     /*final static long zoomLevel1 = 10000; //kartskala ved zoom til ett punkt
     final static long zoomLevel2 = 20000;
     final static long zoomLevel3 = 50000;
     final static long zoomLevel4 = 150000;
     final static long zoomLevel5 = 500000;
      */
-    //final static double envFactor = 1.2; //faktor for å lage rom rundt envelope
-    //final static int imgWidth = 350;//bildestørrelse i pixler, bredde
-    //final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
+    //final static double envFactor = 1.2; //faktor for ï¿½ lage rom rundt envelope
+    //final static int imgWidth = 350;//bildestï¿½rrelse i pixler, bredde
+    //final static int imgHeigth = 400;//bildestï¿½rrelse i pixler, hï¿½yde
     final static String datasource = "GEODATA.N50";
     final static String imgFormat = "png8";
 
-    int zoomnivaa = 2;//default zoomnivaa, brukes når ikke annet er angitt
+    int zoomnivaa = 2;//default zoomnivaa, brukes nï¿½r ikke annet er angitt
 
     CoordHelper coordHelper = new CoordHelper();
     String token;
@@ -95,8 +95,8 @@ public class MapServlet extends HttpServlet {
     }
 
     /**
-     * Metoden parser requesten fra kartklienten. Den kan motta to ulike typer sett med parametrer for å generere kart.
-     * Enten i form av fire hjørnekoordinater, eller iform av et punkt samt målestokk.
+     * Metoden parser requesten fra kartklienten. Den kan motta to ulike typer sett med parametrer for ï¿½ generere kart.
+     * Enten i form av fire hjï¿½rnekoordinater, eller iform av et punkt samt mï¿½lestokk.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -118,7 +118,7 @@ public class MapServlet extends HttpServlet {
             me.setMinY(Double.parseDouble(minY));
         }
         else{
-            //kun sendt koordinater inn i requesten. Envelope må beregnes.
+            //kun sendt koordinater inn i requesten. Envelope mï¿½ beregnes.
             String sCoords = request.getParameter("coords");
             Vector vMapPoints = coordHelper.parseCoordString(sCoords);
             //Sjekk om det finnes noen koordinater, hvis ikke kan resten glemmes.
@@ -129,11 +129,11 @@ public class MapServlet extends HttpServlet {
                 String temp = request.getParameter("zoom");
                 if (temp != null)
                     zoomnivaa = Integer.parseInt(temp);
-                if(action.compareToIgnoreCase("viewone") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
+                if(action.compareToIgnoreCase("viewone") == 0){//enkelt bedriftstreff. Mï¿½ beregne envelope utifra ett pkt, zoomlevel og bildestï¿½rrelse
                     MapPoint mp = (MapPoint) vMapPoints.get(0);
                     me = coordHelper.makeEnvelope(mp.getX(), mp.getY(), zoomnivaa);
                 }
-                else if(action.compareToIgnoreCase("viewmany") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
+                else if(action.compareToIgnoreCase("viewmany") == 0){//enkelt bedriftstreff. Mï¿½ beregne envelope utifra ett pkt, zoomlevel og bildestï¿½rrelse
                     me = coordHelper.makeEnvelope(vMapPoints);
                 }
             }

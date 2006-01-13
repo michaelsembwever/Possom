@@ -1,3 +1,4 @@
+// Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.navigation;
 
 import java.io.BufferedInputStream;
@@ -12,6 +13,8 @@ import junit.framework.TestCase;
 import no.fast.ds.search.IQueryResult;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 
+
+// TODO Move to test directory
 public class NavigationTest extends TestCase {
 
 	String query = "pizza";
@@ -139,19 +142,19 @@ public class NavigationTest extends TestCase {
 	/**
 	 * Test persistence of NavigationHandler. 
 	 */
-	public void testPersist() {
-
-		String collection = "y";
-		NavigationHandler handler = NavigationHandler.getNewHandler(collection, query); 
-		assertNotNull(handler);
-		
-		handler.persist();
-		
-//		assertNotNull(id);
-		
-//		assertNotNull(NavigationHandlerStore.getInstance().lookUp(id));
-//		assertSame(NavigationHandlerStore.getInstance().lookUp(id), handler);
-	}
+//	public void testPersist() {
+//
+//		String collection = "y";
+//		NavigationHandler handler = NavigationHandler.getNewHandler(collection, query); 
+//		assertNotNull(handler);
+//		
+//		handler.persist();
+//		
+////		assertNotNull(id);
+//		
+////		assertNotNull(NavigationHandlerStore.getInstance().lookUp(id));
+////		assertSame(NavigationHandlerStore.getInstance().lookUp(id), handler);
+//	}
 
 	/**
 	 * Test create Fast Filters.

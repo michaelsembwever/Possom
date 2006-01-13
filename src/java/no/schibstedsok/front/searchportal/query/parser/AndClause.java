@@ -3,11 +3,14 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.util.Collections;
+import java.util.Set;
+
 /**
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class AndClause implements OperationClause {
+public final class AndClause extends AbstractOperationClause {
 
     private final Clause firstClause;
     private final Clause secondClause;

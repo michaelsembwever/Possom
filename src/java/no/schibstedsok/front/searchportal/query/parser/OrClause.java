@@ -3,11 +3,14 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.util.Collections;
+import java.util.Set;
+
 /**
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class OrClause implements OperationClause {
+public final class OrClause extends AbstractOperationClause {
 
     private final Clause firstClause;
     private final Clause secondClause;
@@ -47,5 +50,4 @@ public final class OrClause implements OperationClause {
     public Clause getSecondClause() {
         return secondClause;
     }
-
 }

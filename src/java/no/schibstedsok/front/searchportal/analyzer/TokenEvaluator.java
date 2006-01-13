@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted S¿k AS
+ * Copyright (2005-2006) Schibsted SÃ¸k AS
  */
 package no.schibstedsok.front.searchportal.analyzer;
 
@@ -17,8 +17,9 @@ public interface TokenEvaluator {
      * other possiblities such as tokens that always evaluates to true.
      *
      * @param token     the token to look for.
-     * @param query     the query to look in.
      * @return true if token occurs in query
      */
-    boolean evaluateToken(String token, String query);
+    boolean evaluateToken(String token, String term, String query);
+    
+    boolean isQueryDependant();
 }

@@ -5,7 +5,11 @@ package no.schibstedsok.front.searchportal.query.parser;
 
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.Properties;
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -13,36 +17,70 @@ public final class TestVisitor extends TestCase{
 
     private static final Log LOG = LogFactory.getLog(TestVisitor.class);
 
-    public void testBasicVisitorImpl(){
-        final QueryVisitor visitor = new VisitorImpl();
+    public void testBasicTestVisitorImpl(){
+        final TestVisitorImpl visitor = new TestVisitorImpl();
+        final String queryStr = "firstName:magnus eklund \"schibsted sok\"";
+        
+        final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
+                new TokenEvaluatorFactoryImpl.Context(){
+                    public String getQueryString() {
+                        return queryStr;
+                    }
 
-        final Clause magnus = new WordClause("magnus", "firstName");
-        final Clause eklund = new WordClause("eklund");
-        final Clause ss = new PhraseClause("schibsted sok");
+                    public Properties getApplicationProperties() {
+                        return XMLSearchTabsCreator.getInstance().getProperties();
+                    }
+
+                });
+
+        final Clause magnus = WordClause.createWordClause("magnus", "firstName",tokenEvaluatorFactory);
+        final Clause eklund = WordClause.createWordClause("eklund", null, tokenEvaluatorFactory);
+        final Clause ss = PhraseClause.createPhraseClause("schibsted sok", null, tokenEvaluatorFactory);
         final Clause andClause = new AndClause(magnus, eklund);
         final Clause a = new AndClause(andClause, ss);
         
         visitor.visit(a);
         
-        final String goldenResult = "firstName:magnus eklund \"schibsted sok\"";
+        final String goldenResult = "firstName:magnus AND eklund AND \"schibsted sok\"";
         LOG.info("Visitor built: "+visitor.getQueryAsString());
         // assert test
         assertNotNull(visitor.getQueryAsString());
         assertEquals(goldenResult,visitor.getQueryAsString());
     }
     
-    public void testBasicQueryParser(){
+    public void testBasicQueryParserWithTestVisitorImpl(){
 
-        final String queryInput = "magnus AND eklund AND oslo OR \"magnus eklund\" 123";
+        final String queryInput = "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123";
         LOG.info("Starting testBasicQueryParser with input: " + queryInput);
-        final QueryParser p = new QueryParser(new StringReader(queryInput));
+        
+        final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
+                new TokenEvaluatorFactoryImpl.Context(){
+                    public String getQueryString() {
+                        return queryInput;
+                    }
+
+                    public Properties getApplicationProperties() {
+                        return XMLSearchTabsCreator.getInstance().getProperties();
+                    }
+
+                });
+                
+        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext(){
+                public String getQueryString(){
+                    return queryInput;
+                }
+                public TokenEvaluatorFactory getTokenEvaluatorFactory(){
+                    return tokenEvaluatorFactory;
+                }
+            });
+        
         try{
-            final Clause c = p.parse();
-            final QueryVisitor visitor = new VisitorImpl();
+            final Query q = parser.getQuery();
+            final TestVisitorImpl visitor = new TestVisitorImpl();
             
-            visitor.visit(c);
+            visitor.visit(q.getRootClause());
             
-            final String goldenResult = "magnus eklund oslo OR \"magnus eklund\" 123";
+            final String goldenResult = "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123";
             LOG.info("Visitor built: "+visitor.getQueryAsString());
             // assert test
             assertNotNull(visitor.getQueryAsString());
@@ -56,11 +94,11 @@ public final class TestVisitor extends TestCase{
     }
 
     /** Mickey Mouse visitor implementation to test the basics... */
-    private static class VisitorImpl extends AbstractReflectionVisitor implements QueryVisitor{
+    private static class TestVisitorImpl extends AbstractReflectionVisitor{
 
         private final StringBuffer sb;
 
-        public VisitorImpl() {
+        public TestVisitorImpl() {
             sb = new StringBuffer();
         }
 
@@ -84,7 +122,7 @@ public final class TestVisitor extends TestCase{
 
         public void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
-            sb.append(" ");
+            sb.append(" AND ");
             clause.getSecondClause().accept(this);
         }
         
@@ -101,19 +139,8 @@ public final class TestVisitor extends TestCase{
             }
 
             sb.append("\"");
-            sb.append(clause.getPhrase());
+            sb.append(clause.getTerm());
             sb.append("\"");
-        }
-
-        public void visitImpl(final AllClause clausePart) {
-
-            for (Iterator iter = clausePart.getClauses().iterator(); iter.hasNext();) {
-                final Clause clause = (Clause) iter.next();
-                clause.accept(this);
-                if (iter.hasNext()) {
-                    sb.append(" ");
-                }
-            }
         }
 
         public void visitImpl(final Clause clause) {

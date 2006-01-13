@@ -13,6 +13,18 @@ public interface Query {
      *
      * @return
      */
-    AllClause getAllClause();
+    Clause getRootClause();
+    
+    /**
+     *
+     * @return
+     */
+    String getQueryString();
+    
+    /**
+     *
+     * @return
+     */
+    Clause getFirstLeafClause();
 
 }

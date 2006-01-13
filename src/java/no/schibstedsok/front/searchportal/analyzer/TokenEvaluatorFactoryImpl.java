@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted S¿k AS
+ * Copyright (2005-2006) Schibsted SÃ¸k AS
  */
 package no.schibstedsok.front.searchportal.analyzer;
 
@@ -17,104 +17,120 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
-    private static TokenEvaluator alwaysTrueEvaluator = new AlwaysTrueTokenEvaluator();
+public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
+
+    public interface Context {
+        String getQueryString();
+        Properties getApplicationProperties();
+    }
+
+    private static final TokenEvaluator alwaysTrueEvaluator = new AlwaysTrueTokenEvaluator();
 
     private volatile TokenEvaluator fastEvaluator;
 
-    Log log = LogFactory.getLog(TokenEvaluatorFactoryImpl.class);
+    private static final Log LOG = LogFactory.getLog(TokenEvaluatorFactoryImpl.class);
 
-    private Properties props;
+    private final Context context;
 
-    private String query;
+    /** The current term the parser is on **/
+    private String currTerm = null;
 
     /**
      * Create a new TokenEvaluatorFactory.
-     * 
+     *
      * @param query
      * @param params
      * @param properties
      */
-    public TokenEvaluatorFactoryImpl(String query, Properties properties) {
-        this.query = query;
-        this.props = properties;
+    public TokenEvaluatorFactoryImpl(final Context cxt) {
+        context = cxt;
     }
 
     /**
      * FIXME Comment this
-     * 
+     *
      * @param token
      * @return
      * @todo    Simplify. Maybe using different prefixes for different evaluators.
      */
-    public TokenEvaluator getEvaluator(String token) {
+    public TokenEvaluator getEvaluator(final TokenPredicate token) {
 
-        if (token.equals("companySuffix")) {
+        if (token == TokenPredicate.COMPANYSUFFIX ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("weatherPrefix")) {
+        } else if (token == TokenPredicate.WEATHERPREFIX ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("tvPrefix")) {
+        } else if (token == TokenPredicate.TVPREFIX ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("cataloguePrefix")) {
+        } else if (token == TokenPredicate.CATALOGUEPREFIX ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("alwaysTrue")) {
+        } else if (token == TokenPredicate.ALWAYSTRUE ) {
             return alwaysTrueEvaluator;
-        } else if (token.equals("phoneNumber")) {
+        } else if (token == TokenPredicate.PHONENUMBER ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("orgNr")) {
+        } else if (token == TokenPredicate.ORGNR ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("picturePrefix")) {
+        } else if (token == TokenPredicate.PICTUREPREFIX ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("newsPrefix")) {
+        } else if (token == TokenPredicate.NEWSPREFIX ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("mathExpression")) {
+        } else if (token == TokenPredicate.MATHPREDICATE ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("wikipediaPrefix")) {
+        } else if (token == TokenPredicate.WIKIPEDIAPREFIX ) {
             return RegExpEvaluators.getEvaluator(token);
-        } else if (token.equals("firstname")) {
+        } else if (token == TokenPredicate.FIRSTNAME ) {
             return getFastEvaluator();
-        } else if (token.equals("lastname")) {
+        } else if (token == TokenPredicate.LASTNAME ) {
             return getFastEvaluator();
-        } else if (token.equals("geo")) {
+//        } else if (token == TokenPredicate.GEO ) { // shouldn't be called as it's a OrPredicate from AnalysisRules
+//            return getFastEvaluator();
+        } else if (token == TokenPredicate.EXACTWIKI ) {
             return getFastEvaluator();
-        } else if (token.equals("exactWiki")) {
+        } else if (token == TokenPredicate.GEOLOCAL ) {
             return getFastEvaluator();
-        } else if (token.equals("geolocal")) {
+        } else if (token == TokenPredicate.GEOGLOBAL ) {
             return getFastEvaluator();
-        } else if (token.equals("geoglobal")) {
+        } else if (token == TokenPredicate.COMPANYNAME ) {
             return getFastEvaluator();
-        } else if (token.equals("company")) {
+        } else if (token == TokenPredicate.KEYWORD ) {
             return getFastEvaluator();
-        } else if (token.equals("keyword")) {
+        } else if (token == TokenPredicate.CATEGORY ) {
             return getFastEvaluator();
-        } else if (token.equals("category")) {
+//        } else if (token == TokenPredicate.NAMELONGERTHANWIKIPEDIA ) { // FIXME where the hell is this used?
+//            return getFastEvaluator();
+        } else if (token == TokenPredicate.ENGLISHWORDS ) {
             return getFastEvaluator();
-        } else if (token.equals("nameLongerThanWikipedia")) {
+        } else if (token == TokenPredicate.PRIOCOMPANYNAME ) {
             return getFastEvaluator();
-        } else if (token.equals("international")) {
+//        } else if (token == TokenPredicate.EXACT_ ) { // FIXME where the hell is this used?
+//            return getFastEvaluator();
+        } else if (token == TokenPredicate.FULLNAME ) {
             return getFastEvaluator();
-        } else if (token.equals("companypriority")) {
+        } else if (token == TokenPredicate.WIKIPEDIA ) {
             return getFastEvaluator();
-        } else if (token.startsWith("exact_")) {
+        } else if (token == TokenPredicate.TNS ) {
             return getFastEvaluator();
-        } else if (token.equals("fullname")) {
+//        } else if (token == TokenPredicate.PICTURE ) { // FIXME where the hell is this used?
+//            return getFastEvaluator();
+        } else if (token == TokenPredicate.EXACTCOMPANYNAME ) {
             return getFastEvaluator();
-        } else if (token.equals("wikino")) {
+        } else if (token == TokenPredicate.GEOGLOBALEXACT ) {
             return getFastEvaluator();
-        } else if (token.equals("tns")) {
+        } else if (token == TokenPredicate.GEOLOCALEXACT ) {
             return getFastEvaluator();
-        } else if (token.equals("picture")) {
+        } else if (token == TokenPredicate.EXACTFIRST ) {
             return getFastEvaluator();
-        } else if (token.equals("exact_firstname")) {
-            return getFastEvaluator();
-        } else if (token.equals("exact_lastname")) {
+        } else if (token == TokenPredicate.EXACTLAST ) {
             return getFastEvaluator();
         }
         throw new RuntimeException("Unknown token " + token);
     }
 
-    public String getQuery() {
-        return query;
+    public String getQueryString() {
+        return context.getQueryString();
+    }
+
+    protected Properties getProperties() {
+        return context.getApplicationProperties();
     }
 
     private TokenEvaluator getFastEvaluator() {
@@ -122,15 +138,24 @@ public class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
             synchronized (this) {
                 // Sonmeone else might have reached this point, so check for null
                 // again.
+                // XXX This double-checked locking idiom ONLY works in Java5!
                 if (fastEvaluator == null) {
-                    String host = props.getProperty("tokenevaluator.host");
-                    int port = Integer.parseInt(props
-                            .getProperty("tokenevaluator.port"));
-                    fastEvaluator = new VeryFastTokenEvaluator(HTTPClient
-                            .instance("token_evaluator", host, port), query);
+                    final String host = getProperties().getProperty("tokenevaluator.host");
+                    final int port = Integer.parseInt(getProperties().getProperty("tokenevaluator.port"));
+
+                    fastEvaluator = new VeryFastTokenEvaluator(
+                            HTTPClient.instance("token_evaluator", host, port), getQueryString());
                 }
             }
         }
         return fastEvaluator;
+    }
+
+    public void setCurrentTerm(final String term) {
+        currTerm = term;
+    }
+
+    public String getCurrentTerm() {
+        return currTerm;
     }
 }

@@ -5,6 +5,7 @@ import no.schibstedsok.front.searchportal.analyzer.RegExpEvaluators;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
+import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -14,13 +15,15 @@ public class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
     private Collection prefixes = new ArrayList();
 
-    public String getTransformedQuery(String originalQuery) {
+    public String getTransformedQuery(final String originalQuery) {
+        String result = originalQuery;
+        
         for (Iterator iterator = prefixes.iterator(); iterator.hasNext();) {
-            String name = (String) iterator.next();
-            StopWordRemover remover = RegExpEvaluators.getStopWordRemover(name);
-            originalQuery = remover.removeStopWords(originalQuery);
+            final TokenPredicate token = TokenPredicate.valueOf((String) iterator.next());
+            final StopWordRemover remover = RegExpEvaluators.getStopWordRemover(token);
+            result = remover.removeStopWords(result);
         }
 
-        return originalQuery;
+        return result;
     }
 }

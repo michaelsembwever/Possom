@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted Sok AS
+ * Copyright (2005-2006) Schibsted SÃ¸k AS
  */
 package no.schibstedsok.front.searchportal.util;
 
@@ -62,8 +62,8 @@ public final class SearchConstants {
     public static final String PERSON_ID_FIELD = "personId";
     public static final String NORDIC_NEWS_COLLECTION = "retrievernordic";
     public static final String PIC_SEARCH_HOST = "license.picsearch.com";
-    public static final String OVERTURE_PPC_SEARCH_BASE_URL = "http://µ/";
-    public static final String OVERTURE_PPC_HOST= "xml.no.overture.com";
+    public static final String OVERTURE_PPC_SEARCH_BASE_URL = "http://?/";
+    public static final String OVERTURE_PPC_HOST = "xml.no.overture.com";
     public static final String OVERTURE_PPC_ELEMENT = "Listing";
     public static final Object REQUEST_PARAM_PICTURE_SEARCH = "p";
     public static final String CONFIGURATION_FILE = "configuration.properties";

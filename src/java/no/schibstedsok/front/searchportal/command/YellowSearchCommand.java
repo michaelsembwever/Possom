@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted S¿k AS
+ * Copyright (2005-2006) Schibsted SÃ¸k AS
  */
 package no.schibstedsok.front.searchportal.command;
 
@@ -22,7 +22,7 @@ import no.schibstedsok.front.searchportal.query.RunningQuery;
  * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
  * @version $Revision$
  */
-public class YellowSearchCommand extends FastSearchCommand {
+public final class YellowSearchCommand extends FastSearchCommand {
 
     private static final String YELLOWPAGES3_YPNAVN2 = "+yellowpages3 +ypnavn2";
 
@@ -38,8 +38,11 @@ public class YellowSearchCommand extends FastSearchCommand {
      * @param parameters
      *            parameters.
      */
-    public YellowSearchCommand(final RunningQuery query,
-            final FastConfiguration config, final Map parameters) {
+    public YellowSearchCommand(
+            final RunningQuery query,
+            final FastConfiguration config,
+            final Map parameters) {
+
         super(query, config, parameters);
     }
 
@@ -50,14 +53,14 @@ public class YellowSearchCommand extends FastSearchCommand {
      * the default (as specified by the search configuration) sort order is
      * chosen.
      *
+     * [TODO] Refactor this method to a more appropriate place. It doesn't belong here (see metrics report).
+     *
      * @return a SearchParameter.
      */
     protected SearchParameter getSortByParameter() {
 
-        Predicate company = new TokenPredicate("exact_company");
-        Predicate prioCompany = new TokenPredicate("exact_companypriority");
-
-        Predicate eitherCompany = PredicateUtils.orPredicate(company, prioCompany);
+        Predicate eitherCompany =
+                PredicateUtils.orPredicate(TokenPredicate.EXACTCOMPANYNAME, TokenPredicate.PRIOCOMPANYNAME);
 
         AnalysisRule rule = new AnalysisRule();
         rule.addPredicateScore(eitherCompany, MATCH_SCORE);

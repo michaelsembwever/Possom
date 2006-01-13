@@ -17,27 +17,27 @@ import java.util.Properties;
  */
 public class XMLSearchTabsCreator implements SearchTabsCreator {
 
-    Properties properties = new Properties();
+    final Properties properties = new Properties();
 
     private SearchTabs tabs;
 
     private static SearchTabsCreator instance;
 
-    private static Log log = LogFactory.getLog(XMLSearchTabsCreator.class);
+    private static final Log LOG = LogFactory.getLog(XMLSearchTabsCreator.class);
 
     private XMLSearchTabsCreator() {
 
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: XMLSearchTabsCreator()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: XMLSearchTabsCreator()");
         }
 
         try {
             properties.load(this.getClass().getResourceAsStream(
                     "/" + SearchConstants.CONFIGURATION_FILE));
-            log.info("Read configuration from "
+            LOG.info("Read configuration from "
                     + SearchConstants.CONFIGURATION_FILE);
         } catch (IOException e) {
-            log.error("XMLSearchTabsCreator When Reading Configuration from "
+            LOG.error("XMLSearchTabsCreator When Reading Configuration from "
                     + SearchConstants.CONFIGURATION_FILE, e);
             throw new InfrastructureException("Unable to read properties from "
                     + SearchConstants.CONFIGURATION_FILE, e);
@@ -46,8 +46,8 @@ public class XMLSearchTabsCreator implements SearchTabsCreator {
 
     public SearchTabs createSearchTabs() {
 
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: createSearchTabs()");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: createSearchTabs()");
         }
 
         if (tabs == null) {
@@ -84,7 +84,7 @@ public class XMLSearchTabsCreator implements SearchTabsCreator {
                                             "/"
                                                     + properties
                                                             .getProperty("tabs_configuration"))));
-            log.info("Tabs created from "
+            LOG.info("Tabs created from "
                     + properties.getProperty("tabs_configuration"));
         }
 
