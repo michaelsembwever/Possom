@@ -3,6 +3,8 @@
  */
 package no.schibstedsok.front.searchportal.analyzer;
 
+import no.schibstedsok.front.searchportal.query.parser.Clause;
+
 /**
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>

@@ -26,9 +26,6 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
 
     private static final Log LOG = LogFactory.getLog(AbstractLeafClause.class);
 
-    private static final String ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR
-            = "Failed to find (or use) constructor with parameters (String, String, Set, Set) for class: ";
-
     /** Works off the assumption that LeafClause constructor's have the exact parameter list:
      *       final String term,
      *       final String field,
@@ -93,9 +90,10 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
     protected AbstractLeafClause() {  }
 
     protected AbstractLeafClause(
+            final String term,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
-        super(knownPredicates, possiblePredicates);
+        super(term, knownPredicates, possiblePredicates);
     }
 }

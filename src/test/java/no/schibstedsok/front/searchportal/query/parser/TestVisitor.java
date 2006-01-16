@@ -33,19 +33,23 @@ public final class TestVisitor extends TestCase{
 
                 });
 
-        final Clause magnus = WordClause.createWordClause("magnus", "firstName",tokenEvaluatorFactory);
-        final Clause eklund = WordClause.createWordClause("eklund", null, tokenEvaluatorFactory);
-        final Clause ss = PhraseClause.createPhraseClause("schibsted sok", null, tokenEvaluatorFactory);
-        final Clause andClause = new AndClause(magnus, eklund);
-        final Clause a = new AndClause(andClause, ss);
+        final LeafClause magnus = WordClause.createWordClause("magnus", "firstName",tokenEvaluatorFactory);
+        final LeafClause eklund = WordClause.createWordClause("eklund", null, tokenEvaluatorFactory);
+        final LeafClause ss = PhraseClause.createPhraseClause("\"schibsted sok\"", null, tokenEvaluatorFactory);
         
-        visitor.visit(a);
+        // build right-leaning tree. requirement of current Clause/QueryParser implementation.
+        final Clause a = AndClause.createAndClause(eklund, ss, tokenEvaluatorFactory);
+        final Clause andClause = AndClause.createAndClause(magnus, a, tokenEvaluatorFactory);
+        
+        
+        visitor.visit(andClause);
         
         final String goldenResult = "firstName:magnus AND eklund AND \"schibsted sok\"";
         LOG.info("Visitor built: "+visitor.getQueryAsString());
         // assert test
         assertNotNull(visitor.getQueryAsString());
         assertEquals(goldenResult,visitor.getQueryAsString());
+        assertEquals(goldenResult,andClause.getTerm());
     }
     
     public void testBasicQueryParserWithTestVisitorImpl(){
@@ -85,6 +89,7 @@ public final class TestVisitor extends TestCase{
             // assert test
             assertNotNull(visitor.getQueryAsString());
             assertEquals(goldenResult,visitor.getQueryAsString());
+            assertEquals(goldenResult,q.getRootClause().getTerm());
 
         }catch(ParseException ex){
             LOG.error(ex);
@@ -93,7 +98,10 @@ public final class TestVisitor extends TestCase{
 
     }
 
-    /** Mickey Mouse visitor implementation to test the basics... */
+    /** Mickey Mouse visitor implementation to test the basics... 
+     * The clause interface already provides a getter to the term, which for the root clause should match what this
+     * visitor produces. But the getter is only for backward-compatibilty to RegExpTokenEvaluators...
+     */
     private static class TestVisitorImpl extends AbstractReflectionVisitor{
 
         private final StringBuffer sb;
@@ -138,9 +146,9 @@ public final class TestVisitor extends TestCase{
                 sb.append(":");
             }
 
-            sb.append("\"");
+            //sb.append("\"");
             sb.append(clause.getTerm());
-            sb.append("\"");
+            //sb.append("\"");
         }
 
         public void visitImpl(final Clause clause) {

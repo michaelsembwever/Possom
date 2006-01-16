@@ -44,6 +44,8 @@ TOKEN : {
 | <NOT: "NOT">              // choosing to identify "-" as the ANDNOT operator instead of the NOT operator.
 | <ANDNOT: ("ANDNOT"|"-")>
 /** then leaves **/
+| <PHONE_NUMBER: (("+"|"00")"47"(" ")*){0,1}(<DIGIT>(" "){0,1}){8}>
+| <ORGANISATION_NUMBER: (<DIGIT>){9}>
 | <INTEGER: ((<DIGIT>)+)>
 | <WORD: ((<LETTER>|<DIGIT>)+)>
 | <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\"">
@@ -90,16 +92,20 @@ Clause parse() :
 
 Clause clause() : 
 { 
-  Clause left, right;
+  LeafClause left;
+  Clause right;
 }
 {
     
     LOOKAHEAD(2)
-        (left = operation()) {return left;}
+        (right = operation()) {return right;}
     |
     /** Hidden|Unspecified OrClauses **/
     LOOKAHEAD(2)
-        ((left = leaf())(right = clause())) {return new OrClause(left,right);}
+        ((left = leaf())(right = clause()))
+            {
+                return context.createOrClause(left,right) ;
+            }
     |
     (left = leaf())  {return left;}
 }
@@ -110,18 +116,76 @@ Clause operation() :
     Clause right;
 }
 {
-    (<NOT>(right = leaf())) { return new NotClause(right);}
+    (<NOT>(left = leaf())) 
+            {
+                return context.createNotClause(left) ;
+            }
     | 
     LOOKAHEAD(2)
-        ((left = leaf())<AND>(right = clause())) { return new AndClause(left,right);}
+        ((left = leaf())<AND>(right = clause())) 
+            {
+                return context.createAndClause(left,right) ;
+            }
 
     | 
     LOOKAHEAD(2) 
-        ((left = leaf())<OR>(right = clause())) { return new OrClause(left,right);}
+        ((left = leaf())<OR>(right = clause())) 
+            {
+                return context.createOrClause(left,right) ;
+            }
 
     |
     LOOKAHEAD(2)
-        ((left = leaf())<ANDNOT>(right = clause())) { return new AndNotClause(left,right);}
+        ((left = leaf())<ANDNOT>(right = clause())) 
+            {
+                return context.createAndNotClause(left,right) ;
+            }
+    | 
+    (<PHONE_NUMBER>) 
+            { 
+                // it might not be a phone number... // XXX Could this be done with parser logic...
+                
+                final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, null);
+                if( token.image.contains("+") || !token.image.contains(" ")){ 
+                    // it's definitely a phone number
+                    return phClause;
+                }else{
+                    Clause prevClause = null;
+                    final String[] numbers = token.image.split(" ");
+                    for(int i = 0; i < numbers.length; ++i){
+                        final String number = numbers[i];
+                        final IntegerClause intClause = context.createIntegerClause(number,null);
+                        if( prevClause != null ){
+                            final OrClause orClause = context.createOrClause(intClause,prevClause);
+                            prevClause = orClause;
+                        }else{
+                            prevClause = intClause;
+                        }
+                    }
+                    return context.createOrClause(phClause,prevClause);
+                }
+            }
+    | 
+    (<ORGANISATION_NUMBER>) 
+            { 
+                // it might not be a Organisation number... // XXX Could this be done with parser logic...
+                
+                final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(token.image, null);
+                
+                Clause prevClause = null;
+                final String[] numbers = token.image.split(" ");
+                for(int i = 0; i < numbers.length; ++i){
+                    final String number = numbers[i];
+                    final IntegerClause intClause = context.createIntegerClause(number,null);
+                    if( prevClause != null ){
+                        final OrClause orClause = context.createOrClause(intClause,prevClause);
+                        prevClause = orClause;
+                    }else{
+                        prevClause = intClause;
+                    }
+                }
+                return context.createOrClause(orgClause,prevClause);
+            }
 } 
 
 LeafClause leaf() :
@@ -129,7 +193,7 @@ LeafClause leaf() :
     Token field = null;
 }
 {
-    ([LOOKAHEAD(2)
+    ([LOOKAHEAD(3)
         (field=<WORD>":")]<WORD>) 
             { 
                 return context.createWordClause(
@@ -137,17 +201,20 @@ LeafClause leaf() :
                     field!=null ? field.image : null ) ;
             }
     | 
-    (<INTEGER>) 
+    ([LOOKAHEAD(3)
+        (field=<WORD>":")]<INTEGER>) 
             { 
                 return context.createIntegerClause(
                     token.image,
                     field!=null ? field.image : null ) ;
             }
     | 
-    (<QUOTED_WORD>) 
+    ([LOOKAHEAD(3)
+        (field=<WORD>":")]<QUOTED_WORD>) 
             { 
                 return context.createPhraseClause(
-                    token.image.replaceAll("\"",""),
+                    token.image,
                     field!=null ? field.image : null ) ;
             }
+
 }

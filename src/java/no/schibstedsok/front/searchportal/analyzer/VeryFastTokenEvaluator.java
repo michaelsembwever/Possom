@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.analyzer;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
+import no.schibstedsok.front.searchportal.query.parser.Clause;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -73,7 +74,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     public boolean evaluateToken(final String token, final String term, final String query) {
 
         final String realTokenFQ = "FastQT_" + token + "QM";
-        return analysisResult.containsKey(realTokenFQ) && analysisResult.get(realTokenFQ).equals(term);
+        return analysisResult.containsKey(realTokenFQ) && 
+                ( term == null || analysisResult.get(realTokenFQ).equals(term));
     }
 
     /**

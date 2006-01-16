@@ -46,82 +46,30 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         context = cxt;
     }
 
-    /**
-     * FIXME Comment this
+    /** Find or create the TokenEvaluator that will evaluate if given (Token)Predicate is true.
      *
      * @param token
      * @return
-     * @todo    Simplify. Maybe using different prefixes for different evaluators.
      */
     public TokenEvaluator getEvaluator(final TokenPredicate token) {
 
-        if (token == TokenPredicate.COMPANYSUFFIX ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.WEATHERPREFIX ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.TVPREFIX ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.CATALOGUEPREFIX ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.ALWAYSTRUE ) {
+        if( token == TokenPredicate.ALWAYSTRUE ){
             return alwaysTrueEvaluator;
-        } else if (token == TokenPredicate.PHONENUMBER ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.ORGNR ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.PICTUREPREFIX ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.NEWSPREFIX ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.MATHPREDICATE ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.WIKIPEDIAPREFIX ) {
-            return RegExpEvaluators.getEvaluator(token);
-        } else if (token == TokenPredicate.FIRSTNAME ) {
+        }else if( token instanceof TokenPredicate.FastTokenPredicate ){
             return getFastEvaluator();
-        } else if (token == TokenPredicate.LASTNAME ) {
-            return getFastEvaluator();
+        }else if( token instanceof TokenPredicate.RegExpTokenPredicate ){
+            return RegExpEvaluators.getEvaluator(token);
+        }
+ 
 //        } else if (token == TokenPredicate.GEO ) { // shouldn't be called as it's a OrPredicate from AnalysisRules
 //            return getFastEvaluator();
-        } else if (token == TokenPredicate.EXACTWIKI ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.GEOLOCAL ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.GEOGLOBAL ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.COMPANYNAME ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.KEYWORD ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.CATEGORY ) {
-            return getFastEvaluator();
 //        } else if (token == TokenPredicate.NAMELONGERTHANWIKIPEDIA ) { // FIXME where the hell is this used?
 //            return getFastEvaluator();
-        } else if (token == TokenPredicate.ENGLISHWORDS ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.PRIOCOMPANYNAME ) {
-            return getFastEvaluator();
 //        } else if (token == TokenPredicate.EXACT_ ) { // FIXME where the hell is this used?
 //            return getFastEvaluator();
-        } else if (token == TokenPredicate.FULLNAME ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.WIKIPEDIA ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.TNS ) {
-            return getFastEvaluator();
 //        } else if (token == TokenPredicate.PICTURE ) { // FIXME where the hell is this used?
 //            return getFastEvaluator();
-        } else if (token == TokenPredicate.EXACTCOMPANYNAME ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.GEOGLOBALEXACT ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.GEOLOCALEXACT ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.EXACTFIRST ) {
-            return getFastEvaluator();
-        } else if (token == TokenPredicate.EXACTLAST ) {
-            return getFastEvaluator();
-        }
+
         throw new RuntimeException("Unknown token " + token);
     }
 

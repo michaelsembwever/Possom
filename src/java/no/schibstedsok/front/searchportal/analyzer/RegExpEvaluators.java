@@ -47,7 +47,7 @@ public final class RegExpEvaluators {
 
         final Collection picturePrefix = new ArrayList();
         picturePrefix.add("^bilde(r){0,1}\\s{0,1}(av){0,1}");
-        picturePrefix.add("^jpg ");
+        picturePrefix.add("^jpg");
         expressions.put(TokenPredicate.PICTUREPREFIX, picturePrefix);
         expressionsQueryDependant.put(TokenPredicate.PICTUREPREFIX, Boolean.TRUE);
 
@@ -61,18 +61,18 @@ public final class RegExpEvaluators {
 
         final Collection wikiPrefix = new ArrayList();
         wikiPrefix.add("wiki(pedia){0,1} ");
-        wikiPrefix.add("beskriv ");
-        wikiPrefix.add("leksikon ");
-        wikiPrefix.add("fakta ");
+        wikiPrefix.add("beskriv");
+        wikiPrefix.add("leksikon");
+        wikiPrefix.add("fakta");
         expressions.put(TokenPredicate.WIKIPEDIAPREFIX, wikiPrefix);
         expressionsQueryDependant.put(TokenPredicate.WIKIPEDIAPREFIX, Boolean.TRUE);
 
         final Collection tvPrefix = new ArrayList();
         tvPrefix.add("^p.* tv (i\\s{0,1}dag){0,1}");
         tvPrefix.add("^programoversikt ");
-        tvPrefix.add("^program ");
-        tvPrefix.add("^tv(-| )program ");
-        tvPrefix.add("^tv ");
+        tvPrefix.add("^program");
+        tvPrefix.add("^tv(-| )program");
+        tvPrefix.add("^tv");
         tvPrefix.add("^fjernsyn");
         expressions.put(TokenPredicate.TVPREFIX, tvPrefix);
         expressionsQueryDependant.put(TokenPredicate.TVPREFIX, Boolean.TRUE);
@@ -86,10 +86,10 @@ public final class RegExpEvaluators {
 
 
         final Collection weatherPrefix = new ArrayList();
-        weatherPrefix.add("^regn ");
-        weatherPrefix.add("^v.*r(et|melding|varsel){0,1}\\s{0,1}(i|p.*|for){0,1} ");
-        weatherPrefix.add("^temperatur\\s{0,1}(i|p.*|for){0,1} ");
-        weatherPrefix.add("^varsel\\s{0,1}(i|p.*|for){0,1} ");
+        weatherPrefix.add("^regn");
+        weatherPrefix.add("^v.*r(et|melding|varsel){0,1}\\s{0,1}(i|p.*|for){0,1}");
+        weatherPrefix.add("^temperatur\\s{0,1}(i|p.*|for){0,1}");
+        weatherPrefix.add("^varsel\\s{0,1}(i|p.*|for){0,1}");
         expressions.put(TokenPredicate.WEATHERPREFIX, weatherPrefix);
         expressionsQueryDependant.put(TokenPredicate.WEATHERPREFIX, Boolean.TRUE);
 

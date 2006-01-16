@@ -3,7 +3,9 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -22,9 +24,26 @@ public class PhraseClause extends WordClause {
      */
     private static final Map/*<Long,WeakReference<AbstractClause>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AbstractClause>>*/();
     
-    // [TOD0] this should be a WordClause specific list!    
-    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE = TokenPredicate.getTokenPredicates();
+    /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
+    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE; // TokenPredicate.getTokenPredicates();
     
+    static{
+        final Collection/*<Predicate>*/ predicates = new ArrayList();
+        predicates.add(TokenPredicate.ALWAYSTRUE);
+        // Predicates from RegExpEvaluators
+        predicates.add(TokenPredicate.PICTUREPREFIX);
+        predicates.add(TokenPredicate.NEWSPREFIX);
+        predicates.add(TokenPredicate.WIKIPEDIAPREFIX);
+        predicates.add(TokenPredicate.TVPREFIX);
+        predicates.add(TokenPredicate.COMPANYSUFFIX);
+        predicates.add(TokenPredicate.WEATHERPREFIX);
+        predicates.add(TokenPredicate.MATHPREDICATE);
+        predicates.add(TokenPredicate.CATALOGUEPREFIX);
+        predicates.add(TokenPredicate.ORGNR);
+        // Add all FastTokenPredicates
+        predicates.addAll(TokenPredicate.getFastTokenPredicates());
+        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
+    }
     
     public static PhraseClause createPhraseClause(
             final String term, 

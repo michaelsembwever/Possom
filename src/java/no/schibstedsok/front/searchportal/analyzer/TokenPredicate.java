@@ -13,46 +13,66 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
 
 
-/**
+/** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
+ * Predicates use TokenEvaluators to prove the Predicate's validity to the Query.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public final class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/ {
+public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/ {
+    
+    public static final class FastTokenPredicate extends TokenPredicate{
+        public  FastTokenPredicate(final String token){
+            super(token);
+        }
+    }
+    public static final class RegExpTokenPredicate extends TokenPredicate{
+        public  RegExpTokenPredicate(final String token){
+            super(token);
+        }
+    }    
     
     private static final Map/*<String>,<TokenPredicate>*/ tokenMap = new Hashtable/*<String>,<TokenPredicate>*/();
+    private static final Set/*<TokenPredicate>*/ fastTokens = new HashSet/*<TokenPredicate>*/();
     
     // Common predicates.
     // [TODO] TokenPredicate should be turned into a Java5 enum object with this list.
-    public static final TokenPredicate ALWAYSTRUE = new TokenPredicate("alwaysTrue");
-    public static final TokenPredicate EXACTFIRST = new TokenPredicate("exact_firstname");
-    public static final TokenPredicate EXACTLAST = new TokenPredicate("exact_lastname");
-    public static final TokenPredicate TNS = new TokenPredicate("tns");
-    public static final TokenPredicate FIRSTNAME = new TokenPredicate("firstname");
-    public static final TokenPredicate LASTNAME = new TokenPredicate("lastname");
-    public static final TokenPredicate COMPANYNAME = new TokenPredicate("company");
-    public static final TokenPredicate EXACTCOMPANYNAME = new TokenPredicate("exact_company");
-    public static final TokenPredicate GEOLOCAL = new TokenPredicate("geolocal");
-    public static final TokenPredicate GEOGLOBAL = new TokenPredicate("geoglobal");
-    public static final TokenPredicate GEOLOCALEXACT = new TokenPredicate("exact_geolocal");
-    public static final TokenPredicate GEOGLOBALEXACT = new TokenPredicate("exact_geoglobal");
-    public static final TokenPredicate CATEGORY = new TokenPredicate("category");
-    public static final TokenPredicate PRIOCOMPANYNAME = new TokenPredicate("companypriority");
-    public static final TokenPredicate KEYWORD = new TokenPredicate("keyword");
-    public static final TokenPredicate FULLNAME = new TokenPredicate("fullname"); // ?
-    public static final TokenPredicate CATALOGUEPREFIX = new TokenPredicate("cataloguePrefix"); 
-    public static final TokenPredicate WEATHERPREFIX = new TokenPredicate("weatherPrefix");
-    public static final TokenPredicate PICTUREPREFIX = new TokenPredicate("picturePrefix");
-    public static final TokenPredicate NEWSPREFIX = new TokenPredicate("newsPrefix");
-    public static final TokenPredicate EXACTWIKI = new TokenPredicate("exact_wikino"); 
-    public static final TokenPredicate WIKIPEDIAPREFIX = new TokenPredicate("wikipediaPrefix");
-    public static final TokenPredicate ORGNR = new TokenPredicate("orgNr"); 
-    public static final TokenPredicate WIKIPEDIA = new TokenPredicate("wikino"); 
-    public static final TokenPredicate PHONENUMBER = new TokenPredicate("phoneNumber"); 
-    public static final TokenPredicate ENGLISHWORDS = new TokenPredicate("international");
-    public static final TokenPredicate TVPREFIX = new TokenPredicate("tvPrefix");
-    public static final TokenPredicate COMPANYSUFFIX = new TokenPredicate("companySuffix");
-    public static final TokenPredicate MATHPREDICATE = new TokenPredicate("mathExpression");    
     
+    public static final TokenPredicate ALWAYSTRUE = new TokenPredicate("alwaysTrue");
+    
+    // Fast TokenPredicates
+    public static final FastTokenPredicate EXACTFIRST = new FastTokenPredicate("exact_firstname");
+    public static final FastTokenPredicate EXACTLAST = new FastTokenPredicate("exact_lastname");
+    public static final FastTokenPredicate TNS = new FastTokenPredicate("tns");
+    public static final FastTokenPredicate FIRSTNAME = new FastTokenPredicate("firstname");
+    public static final FastTokenPredicate LASTNAME = new FastTokenPredicate("lastname");
+    public static final FastTokenPredicate COMPANYNAME = new FastTokenPredicate("company");
+    public static final FastTokenPredicate EXACTCOMPANYNAME = new FastTokenPredicate("exact_company");
+    public static final FastTokenPredicate GEOLOCAL = new FastTokenPredicate("geolocal");
+    public static final FastTokenPredicate GEOGLOBAL = new FastTokenPredicate("geoglobal");
+    public static final FastTokenPredicate GEOLOCALEXACT = new FastTokenPredicate("exact_geolocal");
+    public static final FastTokenPredicate GEOGLOBALEXACT = new FastTokenPredicate("exact_geoglobal");
+    public static final FastTokenPredicate CATEGORY = new FastTokenPredicate("category");
+    public static final FastTokenPredicate PRIOCOMPANYNAME = new FastTokenPredicate("companypriority");
+    public static final FastTokenPredicate KEYWORD = new FastTokenPredicate("keyword");
+    public static final FastTokenPredicate FULLNAME = new FastTokenPredicate("fullname"); // ?
+    public static final FastTokenPredicate EXACTWIKI = new FastTokenPredicate("exact_wikino"); 
+    public static final FastTokenPredicate WIKIPEDIA = new FastTokenPredicate("wikino"); 
+    public static final FastTokenPredicate ENGLISHWORDS = new FastTokenPredicate("international");
+    
+    // RegExp TokenPredicates
+    public static final RegExpTokenPredicate CATALOGUEPREFIX = new RegExpTokenPredicate("cataloguePrefix"); 
+    public static final RegExpTokenPredicate COMPANYSUFFIX = new RegExpTokenPredicate("companySuffix");
+    public static final RegExpTokenPredicate MATHPREDICATE = new RegExpTokenPredicate("mathExpression");   
+    public static final RegExpTokenPredicate NEWSPREFIX = new RegExpTokenPredicate("newsPrefix");
+    public static final RegExpTokenPredicate ORGNR = new RegExpTokenPredicate("orgNr"); 
+    public static final RegExpTokenPredicate PICTUREPREFIX = new RegExpTokenPredicate("picturePrefix");
+    public static final RegExpTokenPredicate PHONENUMBER = new RegExpTokenPredicate("phoneNumber"); 
+    public static final RegExpTokenPredicate TVPREFIX = new RegExpTokenPredicate("tvPrefix");
+    public static final RegExpTokenPredicate WEATHERPREFIX = new RegExpTokenPredicate("weatherPrefix");
+    public static final RegExpTokenPredicate WIKIPEDIAPREFIX = new RegExpTokenPredicate("wikipediaPrefix");
+    
+    // instance fields
     private final String token;
 
 
@@ -65,17 +85,30 @@ public final class TokenPredicate implements Predicate, Comparable/*<TokenPredic
      *
      * @param token     the token.
      */
-    private TokenPredicate(final String token) {
+    protected TokenPredicate(final String token) {
         this.token = token;
         tokenMap.put(token,this);
+        if( this instanceof FastTokenPredicate ){
+            fastTokens.add(this);
+        }
     }
     
+    /** Public method to find the correct TokenPredicate given the Token's string.
+     */
     public static TokenPredicate valueOf(final String token){
         return (TokenPredicate)tokenMap.get(token);
     }
     
+    /** Utility method to use all TokenPredicates in existance. 
+     */
     public static Collection/*<TokenPredicate>*/ getTokenPredicates(){
         return Collections.unmodifiableCollection(tokenMap.values());
+    }
+    
+    /** Utility method to use all FastTokenPredicates in existance. 
+     */
+    public static Set/*<TokenPredicate>*/ getFastTokenPredicates(){
+        return Collections.unmodifiableSet(fastTokens);
     }
 
     /**
@@ -114,5 +147,5 @@ public final class TokenPredicate implements Predicate, Comparable/*<TokenPredic
         return "TokenPredicate: "+token;
     }
     
-    
+
 }
