@@ -27,11 +27,11 @@ public final class RegExpEvaluators {
     static {
         // [TODO] Replace w/ xml file.
         final Collection cataloguePrefix = new ArrayList();
-        cataloguePrefix.add("telefon(nummer){0,1} (til|for){0,1}");
-        cataloguePrefix.add("tlf (til|for){0,1}");
-        cataloguePrefix.add("nummer (til|for){0,1}");
-        cataloguePrefix.add("adresse(n){0,1} (til|for){0,1}");
-        cataloguePrefix.add("Hvor (er){0,1}");
+        cataloguePrefix.add("telefon(nummer){0,1}\\s+(til|for){0,1}(\\s*\\:){0,1}");
+        cataloguePrefix.add("tlf\\s+(til|for){0,1}(\\s*\\:){0,1}");
+        cataloguePrefix.add("nummer\\s+(til|for){0,1}(\\s*\\:){0,1}");
+        cataloguePrefix.add("adresse(n){0,1}\\s+(til|for){0,1}(\\s*\\:){0,1}");
+        cataloguePrefix.add("Hvor(\\s+er){0,1}");
         expressions.put(TokenPredicate.CATALOGUEPREFIX, cataloguePrefix);
         expressionsQueryDependant.put(TokenPredicate.CATALOGUEPREFIX, Boolean.FALSE);
 
@@ -46,34 +46,34 @@ public final class RegExpEvaluators {
         expressionsQueryDependant.put(TokenPredicate.ORGNR, Boolean.FALSE);
 
         final Collection picturePrefix = new ArrayList();
-        picturePrefix.add("^bilde(r){0,1}\\s{0,1}(av){0,1}");
-        picturePrefix.add("^jpg");
+        picturePrefix.add("^bilde(r){0,1}\\s{0,1}(av){0,1}(\\s*\\:){0,1}");
+        picturePrefix.add("^jpg(\\s*\\:){0,1}");
         expressions.put(TokenPredicate.PICTUREPREFIX, picturePrefix);
         expressionsQueryDependant.put(TokenPredicate.PICTUREPREFIX, Boolean.TRUE);
 
         final Collection newsPrefix = new ArrayList();
-        newsPrefix.add("^nyhet(er){0,1}\\s{0,1}(om){0,1}");
-        newsPrefix.add("^(siste ){0,1}nytt\\s{0,1}(om){0,1}");
-        newsPrefix.add("^aviser");
-        newsPrefix.add("^nettaviser");
+        newsPrefix.add("^nyhet(er){0,1}(\\s+om){0,1}(\\s*\\:){0,1}");
+        newsPrefix.add("^(siste\\s+){0,1}nytt(\\s+om){0,1}(\\s*\\:){0,1}");
+        newsPrefix.add("^aviser(\\s*\\:){0,1}");
+        newsPrefix.add("^nettaviser(\\s*\\:){0,1}");
         expressions.put(TokenPredicate.NEWSPREFIX, newsPrefix);
         expressionsQueryDependant.put(TokenPredicate.NEWSPREFIX, Boolean.TRUE);
 
         final Collection wikiPrefix = new ArrayList();
-        wikiPrefix.add("wiki(pedia){0,1} ");
-        wikiPrefix.add("beskriv");
-        wikiPrefix.add("leksikon");
-        wikiPrefix.add("fakta");
+        wikiPrefix.add("wiki(pedia){0,1}(\\s*\\:){0,1}");
+        wikiPrefix.add("beskriv(\\s*\\:){0,1}");
+        wikiPrefix.add("leksikon(\\s*\\:){0,1}");
+        wikiPrefix.add("fakta(\\s*\\:){0,1}");
         expressions.put(TokenPredicate.WIKIPEDIAPREFIX, wikiPrefix);
         expressionsQueryDependant.put(TokenPredicate.WIKIPEDIAPREFIX, Boolean.TRUE);
 
         final Collection tvPrefix = new ArrayList();
-        tvPrefix.add("^p.* tv (i\\s{0,1}dag){0,1}");
-        tvPrefix.add("^programoversikt ");
-        tvPrefix.add("^program");
-        tvPrefix.add("^tv(-| )program");
-        tvPrefix.add("^tv");
-        tvPrefix.add("^fjernsyn");
+        tvPrefix.add("^p.*\\s+tv\\s+(i\\s{0,1}dag){0,1}(\\s*\\:){0,1}");
+        tvPrefix.add("^programoversikt(\\s*\\:){0,1}");
+        tvPrefix.add("^program(\\s*\\:){0,1}");
+        tvPrefix.add("^tv(-| )program(\\s*\\:){0,1}");
+        tvPrefix.add("^tv(\\s*\\:){0,1}");
+        tvPrefix.add("^fjernsyn(\\s*\\:){0,1}");
         expressions.put(TokenPredicate.TVPREFIX, tvPrefix);
         expressionsQueryDependant.put(TokenPredicate.TVPREFIX, Boolean.TRUE);
 
@@ -86,10 +86,10 @@ public final class RegExpEvaluators {
 
 
         final Collection weatherPrefix = new ArrayList();
-        weatherPrefix.add("^regn");
-        weatherPrefix.add("^v.*r(et|melding|varsel){0,1}\\s{0,1}(i|p.*|for){0,1}");
-        weatherPrefix.add("^temperatur\\s{0,1}(i|p.*|for){0,1}");
-        weatherPrefix.add("^varsel\\s{0,1}(i|p.*|for){0,1}");
+        weatherPrefix.add("^regn(\\s*\\:){0,1}");
+        weatherPrefix.add("^v.*r(et|melding|varsel){0,1}\\s{0,1}(i|p.*|for){0,1}(\\s*\\:){0,1}");
+        weatherPrefix.add("^temperatur\\s{0,1}(i|p.*|for){0,1}(\\s*\\:){0,1}");
+        weatherPrefix.add("^varsel\\s{0,1}(i|p.*|for){0,1}(\\s*\\:){0,1}");
         expressions.put(TokenPredicate.WEATHERPREFIX, weatherPrefix);
         expressionsQueryDependant.put(TokenPredicate.WEATHERPREFIX, Boolean.TRUE);
 
