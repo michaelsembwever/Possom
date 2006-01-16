@@ -30,8 +30,8 @@ public final class AnalysisRules {
         final Predicate exactFirstOrLast =  PredicateUtils.orPredicate(TokenPredicate.EXACTFIRST, TokenPredicate.EXACTLAST);
         final Predicate firstAndLastName =  PredicateUtils.andPredicate(TokenPredicate.FIRSTNAME, TokenPredicate.LASTNAME);
         final Predicate firstOrLast =  PredicateUtils.orPredicate(TokenPredicate.FIRSTNAME, TokenPredicate.LASTNAME);
-        final Predicate firstOrLastAndGeo =  PredicateUtils.andPredicate(firstOrLast, geo);        
-        
+        final Predicate firstOrLastAndGeo =  PredicateUtils.andPredicate(firstOrLast, geo);
+
         // Person
         final AnalysisRule person = new AnalysisRule();
 
@@ -53,7 +53,7 @@ public final class AnalysisRules {
         final Predicate catalogueAndName = PredicateUtils.andPredicate(TokenPredicate.CATALOGUEPREFIX, firstOrLast);
         final Predicate whiteBoost = PredicateUtils.anyPredicate(new Predicate[] {
             firstOrLastNotCompany,
-            w, 
+            w,
             catalogueAndName
         });
 
@@ -262,10 +262,13 @@ public final class AnalysisRules {
 
     }
 
+    private AnalysisRules() {
+        // avoid construction of a utility class
+    }
     /**
-     * 
+     *
      * Returns a map of all the RULES. The key is the name of the rule
-     * 
+     *
      * @return all RULES.
      */
     public static Map getRules() {

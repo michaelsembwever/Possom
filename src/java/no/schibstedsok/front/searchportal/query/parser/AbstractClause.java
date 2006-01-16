@@ -38,7 +38,7 @@ public abstract class AbstractClause implements Clause {
     private final Set/*<Predicate>*/ knownPredicates = new HashSet/*<Predicate>*/();
     private final Set/*<Predicate>*/ possiblePredicates = new HashSet/*<Predicate>*/();
 
-    
+
 
     /** See if there is an identical and immutable Clause already in use in the JVM. **/
     protected static final AbstractClause findClauseInUse(
@@ -112,7 +112,7 @@ public abstract class AbstractClause implements Clause {
         this.possiblePredicates.addAll(possiblePredicates);
     }
 
-    public String getTerm(){
+    public String getTerm() {
         return term;
     }
 
@@ -127,7 +127,7 @@ public abstract class AbstractClause implements Clause {
 
     protected static final String ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR
             = "Failed to find (or use) constructor with parameters (String, String, Set, Set) for class: ";
-            
+
     private static final String DEBUG_FOUND_PREDICATE_PREFIX = "Found (for \"";
     private static final String DEBUG_FOUND_PREDICATE_KNOWN = "\") known ";
     private static final String DEBUG_FOUND_PREDICATE_POSSIBLE = "\") possible ";

@@ -14,13 +14,13 @@ public interface Query {
      * @return
      */
     Clause getRootClause();
-    
+
     /**
      *
      * @return
      */
     String getQueryString();
-    
+
     /**
      *
      * @return

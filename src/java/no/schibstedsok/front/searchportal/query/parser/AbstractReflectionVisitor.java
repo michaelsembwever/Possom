@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public abstract class AbstractReflectionVisitor implements Visitor {
-    
+
     /** String specifying name of method used to overload by any class extending this. **/
     public static final String VISIT_METHOD_IMPL = "visitImpl";
 
@@ -36,7 +36,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
             + "non clause subtypes. Tried to visit object ";
     private static final String ERR_FAILED_TO_VISIT = "Failed to visit object ";
     private static final String ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT = "Failed to find method that exists in this class!!"
-            +"Was trying to visit object ";
+            + "Was trying to visit object ";
     private static final String DEBUG_LOOKING_AT = "Looking for method "
             + VISIT_METHOD_IMPL + " with parameter ";
 
@@ -56,7 +56,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         final Method method = getMethod(clause.getClass());
         try {
             method.invoke(this, new Object[] {clause});
-            
+
         } catch (IllegalArgumentException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
         } catch (InvocationTargetException ex) {
@@ -71,7 +71,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
      * This behaviour is not intendedly supported and this implementation throws an IllegalArgumentException!
      * @param clause
      */
-    public void visitImpl(Object clause) {
+    public void visitImpl(final Object clause) {
         throw new IllegalArgumentException(ERR_CLAUSE_SUBTYPE_NOT_FOUND + clause.getClass().getName());
     }
 
@@ -94,7 +94,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         }
 
         // Try the interfaces.
-        // Gets alittle bit tricky because we must not only search subinterfaces 
+        // Gets alittle bit tricky because we must not only search subinterfaces
         //  but search both interfaces and superinterfaces of superclasses...
         currClauseClass = clauseClass;
         while (method == null && currClauseClass != Object.class) {
@@ -109,9 +109,9 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {Object.class});
 
             } catch (SecurityException ex) {
-                LOG.error(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT+clauseClass.getName(), ex);
+                LOG.error(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT + clauseClass.getName(), ex);
             } catch (NoSuchMethodException ex) {
-                LOG.fatal(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT+clauseClass.getName(), ex);
+                LOG.fatal(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT + clauseClass.getName(), ex);
             }
 
         }
@@ -127,7 +127,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         final Class me = getClass();
         Method method = null;
 
-        LOG.debug("start getMethodFromInterface "+clauseClass.getName());
+        LOG.debug("start getMethodFromInterface " + clauseClass.getName());
 
         final Class[] interfaces = clauseClass.getInterfaces();
         for (int i = 0; i < interfaces.length && method == null; i++) {
@@ -144,8 +144,8 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 // still null? look at next interface
             }
         }
-        
-        LOG.debug("end getMethodFromInterface "+clauseClass.getName());
+
+        LOG.debug("end getMethodFromInterface " + clauseClass.getName());
         return method;
     }
 

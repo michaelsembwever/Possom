@@ -3,7 +3,6 @@
  */
 package no.schibstedsok.front.searchportal.analyzer;
 
-import no.schibstedsok.front.searchportal.query.parser.Clause;
 
 /**
  *
@@ -22,6 +21,6 @@ public interface TokenEvaluator {
      * @return true if token occurs in query
      */
     boolean evaluateToken(String token, String term, String query);
-    
+
     boolean isQueryDependant();
 }

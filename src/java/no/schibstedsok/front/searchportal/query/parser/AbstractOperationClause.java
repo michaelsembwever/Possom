@@ -18,15 +18,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * 
- * 
+ *
+ *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
 public abstract class AbstractOperationClause extends AbstractClause implements OperationClause {
-    
+
     private static final Log LOG = LogFactory.getLog(AbstractLeafClause.class);
-    
+
     /** Works off the assumption that OperationClause constructor's have the exact parameter list:
      *       final String term,
      *       final Clause left,
@@ -88,15 +88,15 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
         }
 
         return clause;
-    }    
+    }
 
-    protected AbstractOperationClause(){}
-    
+    protected AbstractOperationClause() {  }
+
     protected AbstractOperationClause(
             final String term,
             final Set/*<Predicate>*/ knownPredicates,
-            final Set/*<Predicate>*/ possiblePredicates){
-        
-        super(term,knownPredicates,possiblePredicates);
+            final Set/*<Predicate>*/ possiblePredicates) {
+
+        super(term, knownPredicates, possiblePredicates);
     }
 }

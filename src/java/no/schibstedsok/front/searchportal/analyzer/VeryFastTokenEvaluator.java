@@ -2,7 +2,6 @@
 package no.schibstedsok.front.searchportal.analyzer;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
-import no.schibstedsok.front.searchportal.query.parser.Clause;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
@@ -51,7 +50,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
      */
     public VeryFastTokenEvaluator(final HTTPClient client, final String query) {
         // pre-condition check
-        if( client == null ){
+        if ( client == null ) {
             throw new IllegalArgumentException("Not allowed to use null HTTPClient!");
         }
         this.httpClient = client;
@@ -74,7 +73,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     public boolean evaluateToken(final String token, final String term, final String query) {
 
         final String realTokenFQ = "FastQT_" + token + "QM";
-        return analysisResult.containsKey(realTokenFQ) && 
+        return analysisResult.containsKey(realTokenFQ) &&
                 ( term == null || analysisResult.get(realTokenFQ).equals(term));
     }
 

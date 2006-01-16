@@ -18,24 +18,36 @@ import org.apache.commons.logging.LogFactory;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public abstract class AbstractQueryParser implements QueryParser{
-    
-    public interface Context{
+public abstract class AbstractQueryParser implements QueryParser {
+
+    public interface Context {
         String getQueryString();
         TokenEvaluatorFactory getTokenEvaluatorFactory();
+
+        //// Operation creators
+
+        AndClause createAndClause( final LeafClause first, final Clause second);
+        OrClause createOrClause( final LeafClause first, final Clause second);
+        AndNotClause createAndNotClause( final LeafClause first, final Clause second);
+        NotClause createNotClause( final LeafClause first);
+
+        //// Leaf creators
+
         WordClause createWordClause(final String term, final String field);
         PhraseClause createPhraseClause(final String term, final String field);
         IntegerClause createIntegerClause(final String term, final String field);
-        
+        PhoneNumberClause createPhoneNumberClause(final String term, final String field);
+        OrganisationNumberClause createOrganisationNumberClause(final String term, final String field);
+
     }
 
     protected static final Log LOG = LogFactory.getLog(AbstractQueryParser.class);
-    protected static final String ERR_CANNOT_PARSE_EMPTY_QUERY 
+    protected static final String ERR_CANNOT_PARSE_EMPTY_QUERY
         = "QueryParser can not parse an empty query. (The \"QueryParser(QueryParser.Context)\" constructor must be used!)";
 
     protected Context context;
     protected Query query;
-    
+
     public abstract Clause parse() throws ParseException;
 
     public Query getQuery() throws ParseException{
@@ -53,5 +65,5 @@ public abstract class AbstractQueryParser implements QueryParser{
         }
         return query;
     }
-    
+
 }

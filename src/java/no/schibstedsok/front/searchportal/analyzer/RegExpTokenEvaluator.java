@@ -1,3 +1,4 @@
+// Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.analyzer;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator, StopWordRemov
 
     private final Collection/*<Pattern>*/ expressions = new ArrayList/*<Pattern>*/();
     private final boolean queryDependant;
-    
+
     /**
      * Create a new RegExpTokenEvaluator.
      *
@@ -29,7 +30,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator, StopWordRemov
      *            {@link Pattern}.
      */
     public RegExpTokenEvaluator(final Collection/*<Pattern>*/ expressions, final boolean queryDependant) {
-        
+
         this.expressions.addAll(expressions);
         this.queryDependant = queryDependant;
     }
@@ -39,7 +40,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator, StopWordRemov
      *
      * @param token
      *            not used by this implementation.
-     * @param term 
+     * @param term
      *            the term currently parsing.
      * @param query
      *            the query to find matches in.
@@ -48,11 +49,11 @@ public final class RegExpTokenEvaluator implements TokenEvaluator, StopWordRemov
      * @return true if any of the patterns matches.
      */
     public boolean evaluateToken(final String token, final String term, final String query) {
-        
+
         for (Iterator iterator = expressions.iterator(); iterator.hasNext();) {
             final Pattern p = (Pattern) iterator.next();
 
-            final Matcher m = queryDependant || term == null ? p.matcher(query) : p.matcher(term);
+            final Matcher m = term == null ? p.matcher(query) : p.matcher(term);
 
             if (m.find()) {
                 return true;

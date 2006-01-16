@@ -24,7 +24,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         Properties getApplicationProperties();
     }
 
-    private static final TokenEvaluator alwaysTrueEvaluator = new AlwaysTrueTokenEvaluator();
+    private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new AlwaysTrueTokenEvaluator();
 
     private volatile TokenEvaluator fastEvaluator;
 
@@ -53,14 +53,14 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
      */
     public TokenEvaluator getEvaluator(final TokenPredicate token) {
 
-        if( token == TokenPredicate.ALWAYSTRUE ){
-            return alwaysTrueEvaluator;
-        }else if( token instanceof TokenPredicate.FastTokenPredicate ){
+        if ( token == TokenPredicate.ALWAYSTRUE ) {
+            return ALWAYS_TRUE_EVALUATOR;
+        }  else if ( token instanceof TokenPredicate.FastTokenPredicate ) {
             return getFastEvaluator();
-        }else if( token instanceof TokenPredicate.RegExpTokenPredicate ){
+        }  else if ( token instanceof TokenPredicate.RegExpTokenPredicate ) {
             return RegExpEvaluators.getEvaluator(token);
         }
- 
+
 //        } else if (token == TokenPredicate.GEO ) { // shouldn't be called as it's a OrPredicate from AnalysisRules
 //            return getFastEvaluator();
 //        } else if (token == TokenPredicate.NAMELONGERTHANWIKIPEDIA ) { // FIXME where the hell is this used?

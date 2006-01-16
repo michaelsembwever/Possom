@@ -5,7 +5,6 @@
 package no.schibstedsok.front.searchportal.query;
 
 import edu.emory.mathcs.backport.java.util.concurrent.CancellationException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,7 +27,6 @@ import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.executor.SearchTask;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContext;
-import no.schibstedsok.front.searchportal.query.parser.Clause;
 import no.schibstedsok.front.searchportal.query.parser.Query;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
@@ -41,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * An object representing a running queryStr.
- * 
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
@@ -62,14 +60,14 @@ public class RunningQuery {
 
 
     /**
-     * Create a new Running Query instance
-     * 
+     * Create a new Running Query instance.
+     *
      * @param mode
      * @param queryStr
      * @param parameters
      */
     public RunningQuery(final SearchMode mode, final String query, final Map parameters) {
-        
+
         if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: RunningQuery(): Params: " + parameters);
         }
@@ -87,8 +85,8 @@ public class RunningQuery {
         // This will among other things perform the initial fast search
         // for textual analysis.
         tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(
-                new TokenEvaluatorFactoryImpl.Context(){
-                    public String getQueryString() {
+                new TokenEvaluatorFactoryImpl.Context() {
+                    public String getQueryString()  {
                         return RunningQuery.this.getQueryString();
                     }
 
@@ -97,19 +95,19 @@ public class RunningQuery {
                     }
 
                 });
-        
+
         // queryStr parser, avoid parsing an empty queryStr.
-        if( queryStr != null && queryStr.length() >0 ){
-            final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext(){
-                
-                public TokenEvaluatorFactory getTokenEvaluatorFactory(){
+        if ( queryStr != null && queryStr.length() > 0 ) {
+            final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
+
+                public TokenEvaluatorFactory getTokenEvaluatorFactory() {
                     return tokenEvaluatorFactory;
                 }
             });
-            
-            try{
+
+            try  {
                 queryObj = parser.getQuery();
-            }catch(ParseException ex){
+            } catch (ParseException ex)  {
                 LOG.error(ex);
             }
         }
@@ -118,11 +116,11 @@ public class RunningQuery {
     /**
      * First find out if the user types in an advanced search etc by analyzing the queryStr.
      * Then lookup correct tip using messageresources.
-     * 
+     *
      * @return user tip
      */
-    public String getGlobalSearchTips (){
-        if (LOG.isDebugEnabled()) {
+    public String getGlobalSearchTips () {
+        if (LOG.isDebugEnabled())  {
             LOG.debug("ENTR: getGlobalSearchTips()");
         }
         if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
@@ -136,11 +134,11 @@ public class RunningQuery {
 
 
     public Integer getNumberOfHits(final String configName) {
-        if(LOG.isDebugEnabled()){
+        if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: getNumberOfHits()");
         }
-        Integer i = (Integer)hits.get(configName);
-        if(i == null){ i = new Integer(0); }
+        Integer i = (Integer) hits.get(configName);
+        if (i == null) { i = new Integer(0); }
         return i;
     }
 
@@ -150,7 +148,7 @@ public class RunningQuery {
      * @throws InterruptedException
      */
     public void run() throws InterruptedException {
-        if(LOG.isDebugEnabled()){
+        if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: run()");
         }
         try {
@@ -163,24 +161,25 @@ public class RunningQuery {
                 // Factory responsible for creating commands against this configuration.
                 //  This would normally be a final member variable and this class implements SearchCommandFactory.Context
                 //   but it ain't a one-to-one queryStr-to-configuration mapping ofcourse.
-                final SearchCommandFactory cmdFactory = new SearchCommandFactory(new SearchCommandFactory.Context(){
-                    public SearchConfiguration getSearchConfiguration(){
+                final SearchCommandFactory cmdFactory = new SearchCommandFactory(new SearchCommandFactory.Context() {
+                    public SearchConfiguration getSearchConfiguration() {
                         return searchConfiguration;
                     }
                 });
-                
+
                 final AnalysisRule rule = AnalysisRules.getRule(searchConfiguration.getRule());
 
                 if (rule != null) {
                     if (searchMode.getKey().equals("d") && offset == 0 ) {
-                        if(LOG.isDebugEnabled()){
+                        if (LOG.isDebugEnabled()) {
                             LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
                         }
                         final int score = rule.evaluate(queryStr, tokenEvaluatorFactory);
-                        final int newScore = rule.evaluate(queryObj,tokenEvaluatorFactory);
+                        final int newScore = rule.evaluate(queryObj, tokenEvaluatorFactory);
 
-                        LOG.info("OldScore: "+score+"; NewScore: "+newScore+";");
-                        
+                        LOG.info("OldScore: " + score + "; NewScore: " + newScore + ";");
+                        assert (score == newScore); // if this fails, goto mick, do not pass go, do not collect $200.
+
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
                         }
@@ -257,7 +256,7 @@ public class RunningQuery {
     }
 
     private String getSingleParameter(final String paramName) {
-        if(LOG.isDebugEnabled()){
+        if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: getSingleParameter()");
         }
         String[] param = (String[]) parameters.get(paramName);
@@ -269,15 +268,15 @@ public class RunningQuery {
         }
     }
 
-    private boolean isInternational(SearchConfiguration searchConfiguration) {
+    private boolean isInternational(final SearchConfiguration searchConfiguration) {
         return searchConfiguration.getName().equals("globalSearch");
     }
 
-    private boolean isNorwegian(SearchConfiguration searchConfiguration) {
+    private boolean isNorwegian(final SearchConfiguration searchConfiguration) {
         return searchConfiguration.getName().equals("defaultSearch");
     }
 
-    protected void addParameter(String key, Object obj) {
+    protected void addParameter(final String key, final Object obj) {
         parameters.put(key, obj);
     }
 
@@ -302,7 +301,7 @@ public class RunningQuery {
         return offset;
     }
 
-    public void setOffset(int offset) {
+    public void setOffset(final int offset) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: setOffset():" + offset);
         }
@@ -330,7 +329,7 @@ public class RunningQuery {
         return sources;
     }
 
-    public void addSource(Modifier modifier) {
+    public void addSource(final Modifier modifier) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: addSource()");
         }
@@ -352,7 +351,7 @@ public class RunningQuery {
     }
 
     // Find some other way to do this. Really do!
-    public String getSourceParameters(String source) {
+    public String getSourceParameters(final String source) {
         if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: getSourceParameters() Source=" + source);
         }

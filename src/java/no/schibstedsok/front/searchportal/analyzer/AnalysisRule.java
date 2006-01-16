@@ -7,16 +7,11 @@ package no.schibstedsok.front.searchportal.analyzer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
-import no.schibstedsok.front.searchportal.query.parser.AndClause;
-import no.schibstedsok.front.searchportal.query.parser.AndNotClause;
-import no.schibstedsok.front.searchportal.query.parser.Clause;
-import no.schibstedsok.front.searchportal.query.parser.NotClause;
-import no.schibstedsok.front.searchportal.query.parser.OrClause;
 import no.schibstedsok.front.searchportal.query.parser.Query;
-
 import org.apache.commons.collections.Predicate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * The AnalysisRule provides scoring of a query based on a set of
@@ -26,6 +21,8 @@ import org.apache.commons.collections.Predicate;
  * @version $Revision$
  */
 public final class AnalysisRule {
+
+     private static final Log LOG = LogFactory.getLog(AnalysisRule.class);
 
     /** Although we have access to the Predicates through the PredicateScore object it is possible to do set arithmetic
      * when we can access the predicate collection wihtout looping them out first.
@@ -71,6 +68,7 @@ public final class AnalysisRule {
 
             if (match) {
                 score += p.getScore();
+                LOG.debug("Adding Score: " + p.getScore() + "; from " + p.getPredicate());
             }
         }
 
@@ -94,6 +92,7 @@ public final class AnalysisRule {
         int score = 0;
 
         // we're done with parsing individual terms.
+        //  we need to do this to ensure possible predicates are now checked against the whole query string.
         evalFactory.setCurrentTerm(null);
 
         // New (post-QueryParser) implementation.
@@ -101,8 +100,8 @@ public final class AnalysisRule {
             public TokenEvaluatorFactory getTokenEvaluatorFactory() {
                 return evalFactory;
             }
-            
-            public Map/*<PredicateScore,Predicate>*/ getPredicates(){
+
+            public Map/*<PredicateScore,? extends Predicate>*/ getPredicates() {
                 return predicates;
             }
 

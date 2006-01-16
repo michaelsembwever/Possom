@@ -14,6 +14,7 @@ import java.util.Set;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface Clause extends Visitable {
+    String getTerm();
     Set/*<Predicate>*/ getKnownPredicates();
     Set/*<Predicate>*/ getPossiblePredicates();
 }

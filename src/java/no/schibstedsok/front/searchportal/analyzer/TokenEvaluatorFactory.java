@@ -3,7 +3,6 @@
  */
 package no.schibstedsok.front.searchportal.analyzer;
 
-import no.schibstedsok.front.searchportal.query.parser.Query;
 
 /**
  * A TokenEvaluateFactory provides knowledge about which implementation of
@@ -17,11 +16,9 @@ import no.schibstedsok.front.searchportal.query.parser.Query;
 public interface TokenEvaluatorFactory {
 
     /**
-     * FIXME Comment this
      *
      * @param token
      * @return
-     * @todo    Simplify. Maybe using different prefixes for different evaluators.
      */
     TokenEvaluator getEvaluator(TokenPredicate token);
 
@@ -31,9 +28,9 @@ public interface TokenEvaluatorFactory {
      * @return
      */
      String getQueryString();
-     
+
      void setCurrentTerm(String term);
-     
+
      String getCurrentTerm();
 
 }

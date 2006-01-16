@@ -14,5 +14,5 @@ package no.schibstedsok.front.searchportal.query.parser;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface LeafClause extends Clause {
-    
+    String getField();
 }

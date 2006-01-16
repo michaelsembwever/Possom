@@ -1,17 +1,14 @@
 // Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.analyzer;
 
-import java.lang.IllegalArgumentException;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.PredicateUtils;
-
 
 /** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
  * Predicates use TokenEvaluators to prove the Predicate's validity to the Query.
@@ -20,26 +17,26 @@ import org.apache.commons.collections.PredicateUtils;
  * @version <tt>$Revision$</tt>
  */
 public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/ {
-    
-    public static final class FastTokenPredicate extends TokenPredicate{
-        public  FastTokenPredicate(final String token){
+
+    public static final class FastTokenPredicate extends TokenPredicate {
+        public  FastTokenPredicate(final String token) {
             super(token);
         }
     }
-    public static final class RegExpTokenPredicate extends TokenPredicate{
-        public  RegExpTokenPredicate(final String token){
+    public static final class RegExpTokenPredicate extends TokenPredicate {
+        public  RegExpTokenPredicate(final String token) {
             super(token);
         }
-    }    
-    
-    private static final Map/*<String>,<TokenPredicate>*/ tokenMap = new Hashtable/*<String>,<TokenPredicate>*/();
-    private static final Set/*<TokenPredicate>*/ fastTokens = new HashSet/*<TokenPredicate>*/();
-    
+    }
+
+    private static final Map/*<String>,<TokenPredicate>*/ TOKEN_MAP = new Hashtable/*<String>,<TokenPredicate>*/();
+    private static final Set/*<TokenPredicate>*/ FAST_TOKENS = new HashSet/*<TokenPredicate>*/();
+
     // Common predicates.
     // [TODO] TokenPredicate should be turned into a Java5 enum object with this list.
-    
+
     public static final TokenPredicate ALWAYSTRUE = new TokenPredicate("alwaysTrue");
-    
+
     // Fast TokenPredicates
     public static final FastTokenPredicate EXACTFIRST = new FastTokenPredicate("exact_firstname");
     public static final FastTokenPredicate EXACTLAST = new FastTokenPredicate("exact_lastname");
@@ -56,27 +53,27 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final FastTokenPredicate PRIOCOMPANYNAME = new FastTokenPredicate("companypriority");
     public static final FastTokenPredicate KEYWORD = new FastTokenPredicate("keyword");
     public static final FastTokenPredicate FULLNAME = new FastTokenPredicate("fullname"); // ?
-    public static final FastTokenPredicate EXACTWIKI = new FastTokenPredicate("exact_wikino"); 
-    public static final FastTokenPredicate WIKIPEDIA = new FastTokenPredicate("wikino"); 
+    public static final FastTokenPredicate EXACTWIKI = new FastTokenPredicate("exact_wikino");
+    public static final FastTokenPredicate WIKIPEDIA = new FastTokenPredicate("wikino");
     public static final FastTokenPredicate ENGLISHWORDS = new FastTokenPredicate("international");
-    
+
     // RegExp TokenPredicates
-    public static final RegExpTokenPredicate CATALOGUEPREFIX = new RegExpTokenPredicate("cataloguePrefix"); 
+    public static final RegExpTokenPredicate CATALOGUEPREFIX = new RegExpTokenPredicate("cataloguePrefix");
     public static final RegExpTokenPredicate COMPANYSUFFIX = new RegExpTokenPredicate("companySuffix");
-    public static final RegExpTokenPredicate MATHPREDICATE = new RegExpTokenPredicate("mathExpression");   
+    public static final RegExpTokenPredicate MATHPREDICATE = new RegExpTokenPredicate("mathExpression");
     public static final RegExpTokenPredicate NEWSPREFIX = new RegExpTokenPredicate("newsPrefix");
-    public static final RegExpTokenPredicate ORGNR = new RegExpTokenPredicate("orgNr"); 
+    public static final RegExpTokenPredicate ORGNR = new RegExpTokenPredicate("orgNr");
     public static final RegExpTokenPredicate PICTUREPREFIX = new RegExpTokenPredicate("picturePrefix");
-    public static final RegExpTokenPredicate PHONENUMBER = new RegExpTokenPredicate("phoneNumber"); 
+    public static final RegExpTokenPredicate PHONENUMBER = new RegExpTokenPredicate("phoneNumber");
     public static final RegExpTokenPredicate TVPREFIX = new RegExpTokenPredicate("tvPrefix");
     public static final RegExpTokenPredicate WEATHERPREFIX = new RegExpTokenPredicate("weatherPrefix");
     public static final RegExpTokenPredicate WIKIPEDIAPREFIX = new RegExpTokenPredicate("wikipediaPrefix");
-    
+
     // instance fields
     private final String token;
 
 
-    private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY 
+    private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
             = "Argument to evuluate must be an instance of a TokenEvaluatorFactory";
 
     /**
@@ -87,28 +84,28 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
      */
     protected TokenPredicate(final String token) {
         this.token = token;
-        tokenMap.put(token,this);
-        if( this instanceof FastTokenPredicate ){
-            fastTokens.add(this);
+        TOKEN_MAP.put(token, this);
+        if ( this instanceof FastTokenPredicate ) {
+            FAST_TOKENS.add( this);
         }
     }
-    
+
     /** Public method to find the correct TokenPredicate given the Token's string.
      */
-    public static TokenPredicate valueOf(final String token){
-        return (TokenPredicate)tokenMap.get(token);
+    public static TokenPredicate valueOf(final String token) {
+        return (TokenPredicate) TOKEN_MAP.get(token);
     }
-    
-    /** Utility method to use all TokenPredicates in existance. 
+
+    /** Utility method to use all TokenPredicates in existance.
      */
-    public static Collection/*<TokenPredicate>*/ getTokenPredicates(){
-        return Collections.unmodifiableCollection(tokenMap.values());
+    public static Collection/*<TokenPredicate>*/ getTokenPredicates() {
+        return Collections.unmodifiableCollection(TOKEN_MAP.values());
     }
-    
-    /** Utility method to use all FastTokenPredicates in existance. 
+
+    /** Utility method to use all FastTokenPredicates in existance.
      */
-    public static Set/*<TokenPredicate>*/ getFastTokenPredicates(){
-        return Collections.unmodifiableSet(fastTokens);
+    public static Set/*<TokenPredicate>*/ getFastTokenPredicates() {
+        return Collections.unmodifiableSet(FAST_TOKENS);
     }
 
     /**
@@ -124,28 +121,28 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
      */
     public boolean evaluate(final Object evalFactory) {
         // pre-condition check
-        if( ! (evalFactory instanceof TokenEvaluatorFactory) ){
+        if ( ! (evalFactory instanceof TokenEvaluatorFactory) ) {
             throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
         }
         // process
         final TokenEvaluatorFactory factory = (TokenEvaluatorFactory) evalFactory;
         final String query = factory.getQueryString();
-        return factory.getEvaluator(this).evaluateToken(token, factory.getCurrentTerm(), query); 
+        return factory.getEvaluator(this).evaluateToken(token, factory.getCurrentTerm(), query);
     }
 
     public int compareTo(final Object/*TokenPredicate*/ obj) {
         // pre-condition check
-        if( !(obj instanceof TokenPredicate) ){
-            throw new IllegalArgumentException("Will not compare against object of type "+obj.getClass().getName());
+        if ( !(obj instanceof TokenPredicate) ) {
+            throw new IllegalArgumentException("Will not compare against object of type " + obj.getClass().getName());
         }
         // compare
-        final TokenPredicate tp = (TokenPredicate)obj;
+        final TokenPredicate tp = (TokenPredicate) obj;
         return token.compareTo(tp.token);
     }
 
     public String toString() {
-        return "TokenPredicate: "+token;
+        return "TokenPredicate: " + token;
     }
-    
+
 
 }

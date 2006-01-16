@@ -17,9 +17,9 @@ import java.util.regex.Pattern;
  * @version <tt>$Revision$</tt>
  */
 public final class RegExpEvaluators {
-    
+
     private static final Log LOG = LogFactory.getLog(RegExpEvaluators.class);
-    
+
     private static Map/*<TokenPredicate>,<Collection>*/ expressions = new HashMap/*<TokenPredicate>,<Collection>*/();
     private static Map/*<TokenPredicate>,<Collection>*/ expressionsQueryDependant = new HashMap/*<TokenPredicate>,<Collection>*/();
     private static Map/*<TokenPredicate>,<Collection>*/ regExpEvaluators = new HashMap/*<TokenPredicate>,<Collection>*/();
@@ -97,7 +97,7 @@ public final class RegExpEvaluators {
         mathExpression.add("[\\+\\-\\*\\/(]");
         expressions.put(TokenPredicate.MATHPREDICATE, mathExpression);
         expressionsQueryDependant.put(TokenPredicate.MATHPREDICATE, Boolean.FALSE);
-        
+
 
         for (Iterator iterator = expressions.keySet().iterator(); iterator.hasNext();) {
             final TokenPredicate token = (TokenPredicate) iterator.next();
@@ -117,8 +117,8 @@ public final class RegExpEvaluators {
             }
             final RegExpTokenEvaluator evaluator = new RegExpTokenEvaluator(
                     (Collection) compiled,
-                    ((Boolean)expressionsQueryDependant.get(token)).booleanValue());
-            
+                    ((Boolean) expressionsQueryDependant.get(token)).booleanValue());
+
             regExpEvaluators.put(token, evaluator);
         }
     }
@@ -128,7 +128,7 @@ public final class RegExpEvaluators {
 
     /**
      *
-     * @param token 
+     * @param token
      * @return
      */
     public static RegExpTokenEvaluator getEvaluator(final TokenPredicate token) {
