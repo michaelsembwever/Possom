@@ -20,7 +20,7 @@
     <siteAddress>login.osl.basefarm.net</siteAddress>
     <siteDirectory>/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/admin/front/search-front-html</siteDirectory>
     <repository>
-        <connection>scm:cvs:ext:${maven.user}@${schsok.cvshost}:/www/schibstedsok/versys/cvs:admin/front/search-front-html</connection>
+        <connection>scm:cvs:local:/www/schibstedsok/versys/cvs:search-front-html</connection>
     </repository>
     <developers>
         <developer>
@@ -295,7 +295,6 @@
             <artifactId>javacc</artifactId>
             <version>3.2</version>
             <type>jar</type>
-            <url>https://javacc.dev.java.net/</url>
             <properties>
                 <war.bundle>false</war.bundle>
             </properties>
