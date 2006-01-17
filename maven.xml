@@ -3,6 +3,7 @@
     <!-- Filter develop / production URLs -->
     <!-- Filter log4j paths -->
     <preGoal name="java:jar-resources" >
+        <ant:touch file="build.properties"/>
         <ant:filter filtersfile="build.properties" />
         <ant:filter filtersfile="${target}.properties" />
     </preGoal>
