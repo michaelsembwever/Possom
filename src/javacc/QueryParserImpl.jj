@@ -146,7 +146,7 @@ Clause operation() :
                 // it might not be a phone number... // XXX Could this be done with parser logic...
                 
                 final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, null);
-                if( token.image.contains("+") || !token.image.contains(" ")){ 
+                if( token.image.indexOf("+") >=0 || token.image.indexOf(" ")<0 ){ 
                     // it's definitely a phone number
                     return phClause;
                 }else{

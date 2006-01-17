@@ -39,7 +39,7 @@ public final class LoggingServlet extends HttpServlet{
             unsorted.put(log.getName(), log.getEffectiveLevel());
         }
         final List/*<String>*/ sortedList = new ArrayList/*<String>*/(unsorted.keySet());
-        final StringBuilder buffer = new StringBuilder();
+        final /*StringBuilder*/StringBuffer buffer = new /*StringBuilder*/StringBuffer();
         Collections.sort(sortedList);
         try{
 
