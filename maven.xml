@@ -30,6 +30,12 @@
         </copy>
     </goal>
     
+    <goal name="byggePaa.sch-dev01.dev" prereqs="site" >
+        <copy todir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html">
+            <fileset dir="${maven.build.dir}/docs"/>
+        </copy>
+    </goal>
+    
     
     <!-- 
       - Keep junit tests logging to seperate files
