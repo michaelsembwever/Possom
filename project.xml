@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- $Id$ -->
+<!--
+ - Copyright (2005-2006) Schibsted Søk AS
+ - $Id$ 
+-->
 <project>
     <pomVersion>3</pomVersion>
     <name>Schibsted Søk Search-front</name>
@@ -20,7 +23,7 @@
     <siteAddress>login.osl.basefarm.net</siteAddress>
     <siteDirectory>/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/admin/front/search-front-html</siteDirectory>
     <repository>
-        <connection>scm:cvs:local:/www/schibstedsok/versys/cvs:search-front-html</connection>
+        <connection>scm:cvs:ext:${maven.user}@${schsok.cvshost}:/www/schibstedsok/versys/cvs:search-front-html</connection>
     </repository>
     <developers>
         <developer>
@@ -37,6 +40,20 @@
             <email>mick@wever.org</email>
             <organization>Schibsted Søk</organization>
             <url>http://www.wever.org</url>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Thomas Kjærstad</name>
+            <id>itthkjer</id>
+            <email>itthkjer@sesam.no</email>
+            <organization>Schibsted Søk AS</organization>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Magnus Eklund</name>
+            <id>magnuse</id>
+            <email>magnus.eklund@sesam.no</email>
+            <organization>Schibsted Søk AS</organization>
             <timezone>+1</timezone>
         </developer>
     </developers>
@@ -190,6 +207,14 @@
             <version>1.2.1</version>
             <properties>
                 <war.bundle>true</war.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-ant</artifactId>
+            <version>1.2-beta-3</version>
+            <properties>
+                <war.bundle>false</war.bundle>
             </properties>
         </dependency>
         <dependency>
