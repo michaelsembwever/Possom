@@ -154,12 +154,14 @@ Clause operation() :
                     final String[] numbers = token.image.split(" ");
                     for(int i = 0; i < numbers.length; ++i){
                         final String number = numbers[i];
-                        final IntegerClause intClause = context.createIntegerClause(number,null);
+                        final LeafClause leafClause = number.indexOf("+") <0
+                                ? context.createIntegerClause(number,null)
+                                : context.createWordClause(number,null);
                         if( prevClause != null ){
-                            final OrClause orClause = context.createOrClause(intClause,prevClause);
+                            final OrClause orClause = context.createOrClause(leafClause,prevClause);
                             prevClause = orClause;
                         }else{
-                            prevClause = intClause;
+                            prevClause = leafClause;
                         }
                     }
                     return context.createOrClause(phClause,prevClause);
@@ -193,28 +195,28 @@ LeafClause leaf() :
     Token field = null;
 }
 {
-    ([LOOKAHEAD(3)
+    ([LOOKAHEAD(2)
         (field=<WORD>":")]<WORD>) 
             { 
                 return context.createWordClause(
                     token.image,
-                    field!=null ? field.image : null ) ;
+                    field!=null ? field.image : null );
             }
     | 
-    ([LOOKAHEAD(3)
+    ([LOOKAHEAD(2)
         (field=<WORD>":")]<INTEGER>) 
             { 
                 return context.createIntegerClause(
                     token.image,
-                    field!=null ? field.image : null ) ;
+                    field!=null ? field.image : null );
             }
     | 
-    ([LOOKAHEAD(3)
+    ([LOOKAHEAD(2)
         (field=<WORD>":")]<QUOTED_WORD>) 
             { 
                 return context.createPhraseClause(
                     token.image,
-                    field!=null ? field.image : null ) ;
+                    field!=null ? field.image : null );
             }
 
 }

@@ -14,7 +14,22 @@ import java.util.Set;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface Clause extends Visitable {
+    /**
+     * get the term.
+     * @return the term.
+     */
     String getTerm();
+
+    /**
+     * get the set of known predicates.
+     * @return the set of known predicates.
+     */
     Set/*<Predicate>*/ getKnownPredicates();
+
+    /**
+     * the set of possible predicates.
+     * @return the set of possible predicates.
+     */
     Set/*<Predicate>*/ getPossiblePredicates();
+
 }

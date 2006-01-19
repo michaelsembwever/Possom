@@ -9,14 +9,19 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
-/**
+/** Interface for Classes that will implement the Visitor pattern.
+ * See complimentary Visitor interface.
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface Visitable {
-    /**
+
+    /** Method to accept a visitor.
+     * This method usually doesn't do more than
+     * <code>visitor.visit(this);</code>
      *
-     * @param visitor
+     * @param visitor the visitor knocking on the door.
      */
     void accept(Visitor visitor);
 }

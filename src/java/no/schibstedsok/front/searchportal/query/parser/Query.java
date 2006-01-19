@@ -3,27 +3,30 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
-/**
+/** A Query represents a users inputted query string.
+ * The query contains an heirarchy of Clause objects implemented against a visitor pattern
+ * that visitors are free to use.
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface Query {
 
-    /**
-     *
-     * @return
+    /** The root clause to the clause heirarchy.
+     * Will always be an operation clause if more than one term exists in the query.
+     * @return the root clause.
      */
     Clause getRootClause();
 
-    /**
+    /** The schibstedsøk style string formatted representation of this query.
      *
-     * @return
+     * @return schibstedsøk style string formatted representation of this query.
      */
     String getQueryString();
 
-    /**
+    /** The first term (leaf clause) in the query.
      *
-     * @return
+     * @return the first leaf clause.
      */
     Clause getFirstLeafClause();
 

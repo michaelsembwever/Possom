@@ -13,6 +13,10 @@ import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
 
 /**
+ * The OrClause represents a joining clause between two terms in the query.
+ * For example: "term1 OR term2".
+ *<b>Objects of this class are immutable</b>
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
@@ -40,6 +44,22 @@ public final class OrClause extends AbstractOperationClause {
     private final Clause firstClause;
     private final Clause secondClause;
 
+    /**
+     * Creator method for OrClause objects. By avoiding the constructors,
+     * and assuming all OrClause objects are immutable, we can keep track
+     * (via a weak reference map) of instances already in use in this JVM and reuse
+     * them.
+     * The methods also allow a chunk of creation logic for the OrClause to be moved
+     * out of the QueryParserImpl.jj file to here.
+     * @param first the left child clause of the operation clause we are about to create (or find).
+     * The current implementation always creates a right-leaning query heirarchy.
+     * Therefore the left child clause to any operation clause must be a LeafClause.
+     * @param second the right child clause of the operation clause we are about to create (or find).
+     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * Also holds state information about the current term/clause we are finding predicates against.
+     * @return returns a OrClause instance matching the term, left and right child clauses.
+     * May be either newly created or reused.
+     */
     public static OrClause createOrClause(
         final LeafClause first,
         final Clause second,
@@ -50,7 +70,7 @@ public final class OrClause extends AbstractOperationClause {
         final String term = (first.getField() != null ? first.getField() + ":" : "")
                 + first.getTerm()
                 + " OR "
-                + ( second instanceof LeafClause && ((LeafClause) second).getField() != null
+                + (second instanceof LeafClause && ((LeafClause) second).getField() != null
                     ?  ((LeafClause) second).getField() + ":"
                     : "")
                 + second.getTerm();
@@ -69,13 +89,16 @@ public final class OrClause extends AbstractOperationClause {
     }
 
     /**
-     *
-     * @param first
-     * @param second
+     * Create the OrClause with the given term, left and right child clauses, and known and possible predicate sets.
+     * @param term the term for this OrClause.
+     * @param knownPredicates set of known predicates.
+     * @param possiblePredicates set of possible predicates.
+     * @param first the left child clause.
+     * @param second the right child clause.
      */
     protected OrClause(
             final String term,
-            final Clause first,
+            final Clause first,  // really is a LeafClause
             final Clause second,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
@@ -83,14 +106,6 @@ public final class OrClause extends AbstractOperationClause {
         super(term, knownPredicates, possiblePredicates);
         this.firstClause = first;
         this.secondClause = second;
-    }
-
-    /**
-     *
-     * @param visitor
-     */
-    public void accept(final Visitor visitor) {
-        visitor.visit(this);
     }
 
     /**

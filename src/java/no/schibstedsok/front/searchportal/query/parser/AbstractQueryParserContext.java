@@ -15,10 +15,13 @@ package no.schibstedsok.front.searchportal.query.parser;
  */
 public abstract class AbstractQueryParserContext implements AbstractQueryParser.Context {
 
-    /** Creates a new instance of AbstractQueryParserContext. */
+    /** Creates a new instance of AbstractQueryParserContext.
+     */
     public AbstractQueryParserContext() {
     }
 
+    /** {@inheritDoc}
+     */
     public String getQueryString() {
         return getTokenEvaluatorFactory().getQueryString();
     }
@@ -26,6 +29,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     //// Operator creators
 
+    /** {@inheritDoc}
+     */
     public AndClause createAndClause(
         final LeafClause first,
         final Clause second) {
@@ -33,6 +38,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         return AndClause.createAndClause(first, second, getTokenEvaluatorFactory());
     }
 
+    /** {@inheritDoc}
+     */
     public OrClause createOrClause(
         final LeafClause first,
         final Clause second) {
@@ -40,6 +47,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         return OrClause.createOrClause(first, second, getTokenEvaluatorFactory());
     }
 
+    /** {@inheritDoc}
+     */
     public AndNotClause createAndNotClause(
         final LeafClause first,
         final Clause second) {
@@ -47,6 +56,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         return AndNotClause.createAndNotClause(first, second, getTokenEvaluatorFactory());
     }
 
+    /** {@inheritDoc}
+     */
     public NotClause createNotClause(
         final LeafClause first) {
 
@@ -56,6 +67,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     //// Leaf creators
 
+    /** {@inheritDoc}
+     */
     public WordClause createWordClause(
         final String term,
         final String field) {
@@ -63,6 +76,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         return WordClause.createWordClause(term, field, getTokenEvaluatorFactory());
     }
 
+    /** {@inheritDoc}
+     */
     public PhraseClause createPhraseClause(
         final String term,
         final String field) {
@@ -70,6 +85,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         return PhraseClause.createPhraseClause(term, field, getTokenEvaluatorFactory());
     }
 
+    /** {@inheritDoc}
+     */
     public IntegerClause createIntegerClause(
         final String term,
         final String field) {
@@ -77,6 +94,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         return IntegerClause.createIntegerClause(term, field, getTokenEvaluatorFactory());
     }
 
+    /** {@inheritDoc}
+     */
     public PhoneNumberClause createPhoneNumberClause(
         final String term,
         final String field) {
@@ -84,6 +103,8 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         return PhoneNumberClause.createPhoneNumberClause(term, field, getTokenEvaluatorFactory());
     }
 
+    /** {@inheritDoc}
+     */
     public OrganisationNumberClause createOrganisationNumberClause(
         final String term,
         final String field) {

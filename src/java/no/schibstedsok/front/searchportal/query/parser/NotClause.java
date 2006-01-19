@@ -13,6 +13,10 @@ import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
 
 /**
+ * The NotClause represents a not clause between prefixing another term in the query.
+ * For example: "NOT term1".
+ *<b>Objects of this class are immutable</b>
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
@@ -35,6 +39,21 @@ public final class NotClause extends AbstractOperationClause {
 
     private final Clause clause;
 
+    /**
+     * Creator method for NotClause objects. By avoiding the constructors,
+     * and assuming all NotClause objects are immutable, we can keep track
+     * (via a weak reference map) of instances already in use in this JVM and reuse
+     * them.
+     * The methods also allow a chunk of creation logic for the NotClause to be moved
+     * out of the QueryParserImpl.jj file to here.
+     * @param first the left child clause of the operation clause we are about to create (or find).
+     * The current implementation always creates a right-leaning query heirarchy.
+     * Therefore the left child clause to any operation clause must be a LeafClause.
+     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * Also holds state information about the current term/clause we are finding predicates against.
+     * @return returns a NotClause instance matching the term, and left child clauses.
+     * May be either newly created or reused.
+     */
     public static NotClause createNotClause(
         final LeafClause first,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
@@ -59,8 +78,13 @@ public final class NotClause extends AbstractOperationClause {
     }
 
     /**
-     *
-     * @param clause
+     * Create the NotClause with the given term, and left child clauses, and known and possible predicate sets.
+     * @param term the term for this OrClause.
+     * @param knownPredicates set of known predicates.
+     * @param possiblePredicates set of possible predicates.
+     * @param first the left child clause.
+     * @param second the right child clause.
+     * NOT USED but required to utilitise the createClause method in createNotClause.
      */
     protected NotClause(
             final String term,
@@ -74,20 +98,12 @@ public final class NotClause extends AbstractOperationClause {
         //this.secondClause = second; // this parameter not used! On purpose. See {@link createClause}.
     }
 
-    /**
+    /** Get the clause.
      *
-     * @return
+     * @return the clause.
      */
     public Clause getClause() {
         return clause;
-    }
-
-    /**
-     *
-     * @param visitor
-     */
-    public void accept(final Visitor visitor) {
-        visitor.visit(this);
     }
 
 }

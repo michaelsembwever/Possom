@@ -9,12 +9,18 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
-import no.schibstedsok.front.searchportal.query.parser.ParseException;
 
-/**
+/** Parser responsible for building the Query and its clause heirarchy.
+ * This interface does not define the behaviour as to how the QueryParser will get the query string.
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface QueryParser {
+    /** Get the Query.
+     *
+     *@return the Query object.
+     *@throws ParseException when parsing the inputted query string.
+     **/
     Query getQuery() throws ParseException;
 }

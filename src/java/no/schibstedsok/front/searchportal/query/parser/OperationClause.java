@@ -9,7 +9,9 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
-/**
+/** An operation clause. Often a join between two other clauses, but can also be a prefix operator
+ * to another term.
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */

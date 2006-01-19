@@ -9,10 +9,15 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
-/**
+/** A clause representing a leaf. That is, a term or word in the query string.
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface LeafClause extends Clause {
+    /** Leaf clauses can be specified with a field.
+     * For example: "firstname:magnus" gives a LeafClause with term = magnus and field = firstname.
+     * @return the field for this Clause.
+     **/
     String getField();
 }

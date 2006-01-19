@@ -50,7 +50,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     /**
      * Method implementing Visitor interface. Uses reflection to find the method with name VISIT_METHOD_IMPL with the
      * closest match to the clause subclass.
-     * @param clause
+     * @param clause the clause we're visiting.
      */
     public void visit(final Object clause) {
         final Method method = getMethod(clause.getClass());
@@ -69,7 +69,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     /**
      * Final fallback method. This means that the object being visited is not a Clause (or subclass of) object!
      * This behaviour is not intendedly supported and this implementation throws an IllegalArgumentException!
-     * @param clause
+     * @param clause the clause we're visiting (that's not acutally a clause subtype ;)
      */
     public void visitImpl(final Object clause) {
         throw new IllegalArgumentException(ERR_CLAUSE_SUBTYPE_NOT_FOUND + clause.getClass().getName());

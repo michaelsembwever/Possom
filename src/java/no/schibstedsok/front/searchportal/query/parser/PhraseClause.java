@@ -44,6 +44,20 @@ public class PhraseClause extends WordClause {
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 
+    /**
+     * Creator method for PhraseClause objects. By avoiding the constructors,
+     * and assuming all PhraseClause objects are immutable, we can keep track
+     * (via a weak reference map) of instances already in use in this JVM and reuse
+     * them.
+     * The methods also allow a chunk of creation logic for the PhraseClause to be moved
+     * out of the QueryParserImpl.jj file to here.
+     * @param term the term this clause represents.
+     * @param field any field this clause was specified against.
+     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * Also holds state information about the current term/clause we are finding predicates against.
+     * @return returns a PhraseClause instance matching the term, left and right child clauses.
+     * May be either newly created or reused.
+     */
     public static PhraseClause createPhraseClause(
             final String term,
             final String field,
@@ -62,9 +76,11 @@ public class PhraseClause extends WordClause {
 
 
     /**
-     *
-     * @param term
-     * @param field
+     * Create clause with the given term, known and possible predicates.
+     * @param term the term (query string) for this clause.
+     * @param field the field for this clause. <b>May be <code>null</code></b>.
+     * @param knownPredicates the set of known predicates for this clause.
+     * @param possiblePredicates the set of possible predicates for this clause.
      */
     protected PhraseClause(
             final String term,
