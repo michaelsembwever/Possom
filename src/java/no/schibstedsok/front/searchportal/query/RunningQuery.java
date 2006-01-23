@@ -23,6 +23,7 @@ import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
+import no.schibstedsok.front.searchportal.configuration.SearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.executor.SearchTask;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
@@ -40,13 +41,21 @@ import org.apache.commons.logging.LogFactory;
 /**
  * An object representing a running queryStr.
  *
+ * XXX Pull out an interface from this. Too much implementation for a base class.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class RunningQuery {
 
+    public interface Context extends SearchTabsCreator.Context {
+        SearchMode getSearchMode();
+    }
+
     private static final Log LOG = LogFactory.getLog(RunningQuery.class);
-    private SearchMode searchMode = new SearchMode();
+
+
+    private final Context context;
     private String queryStr = "";
     private Query queryObj = null;
     private Map parameters;
@@ -66,13 +75,13 @@ public class RunningQuery {
      * @param queryStr
      * @param parameters
      */
-    public RunningQuery(final SearchMode mode, final String query, final Map parameters) {
+    public RunningQuery(final Context cxt, final String query, final Map parameters) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: RunningQuery(): Params: " + parameters);
         }
 
-        this.searchMode = mode;
+        context = cxt;
         queryStr = AdvancedQueryBuilder.trimDuplicateSpaces(query);
 
         if (queryStr != null) {
@@ -91,13 +100,13 @@ public class RunningQuery {
                     }
 
                     public Properties getApplicationProperties() {
-                        return XMLSearchTabsCreator.getInstance().getProperties();
+                        return XMLSearchTabsCreator.valueOf(cxt).getProperties();
                     }
 
                 });
 
         // queryStr parser, avoid parsing an empty queryStr.
-        if ( queryStr != null && queryStr.length() > 0 ) {
+        if (queryStr != null && queryStr.length() > 0) {
             final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
 
                 public TokenEvaluatorFactory getTokenEvaluatorFactory() {
@@ -155,7 +164,7 @@ public class RunningQuery {
 
             final Collection commands = new ArrayList();
 
-            for (Iterator iterator = searchMode.getSearchConfigurations().iterator(); iterator.hasNext();) {
+            for (Iterator iterator = context.getSearchMode().getSearchConfigurations().iterator(); iterator.hasNext();) {
                 final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
 
                 // Factory responsible for creating commands against this configuration.
@@ -170,7 +179,7 @@ public class RunningQuery {
                 final AnalysisRule rule = AnalysisRules.getRule(searchConfiguration.getRule());
 
                 if (rule != null) {
-                    if (searchMode.getKey().equals("d") && offset == 0 ) {
+                    if (context.getSearchMode().getKey().equals("d") && offset == 0) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
                         }
@@ -218,7 +227,7 @@ public class RunningQuery {
                 LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
             }
 
-            results = searchMode.getExecutor().invokeAll(commands, 3000);
+            results = context.getSearchMode().getExecutor().invokeAll(commands, 3000);
 
             for (Iterator iterator = results.iterator(); iterator.hasNext();) {
                 SearchTask task = (SearchTask) iterator.next();
@@ -319,7 +328,7 @@ public class RunningQuery {
         if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: getSearchMode()");
         }
-        return searchMode;
+        return context.getSearchMode();
     }
 
     public List getSources() {

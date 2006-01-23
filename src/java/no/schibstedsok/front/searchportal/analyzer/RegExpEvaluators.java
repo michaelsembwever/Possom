@@ -65,7 +65,7 @@ public final class RegExpEvaluators {
         wikiPrefix.add("leksikon(\\s*\\:){0,1}");
         wikiPrefix.add("fakta(\\s*\\:){0,1}");
         expressions.put(TokenPredicate.WIKIPEDIAPREFIX, wikiPrefix);
-        expressionsQueryDependant.put(TokenPredicate.WIKIPEDIAPREFIX, Boolean.TRUE);
+        expressionsQueryDependant.put(TokenPredicate.WIKIPEDIAPREFIX, Boolean.FALSE);
 
         final Collection tvPrefix = new ArrayList();
         tvPrefix.add("^p.*\\s+tv\\s+(i\\s{0,1}dag){0,1}(\\s*\\:){0,1}");

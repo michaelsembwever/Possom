@@ -1,25 +1,58 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result.test;
 
+import com.thoughtworks.xstream.XStream;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 
 import java.util.HashMap;
+import java.util.Properties;
+import no.schibstedsok.front.searchportal.configuration.SearchMode;
+import no.schibstedsok.front.searchportal.configuration.loaders.FileResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
+import no.schibstedsok.front.searchportal.site.Site;
 
-/**
+/** Create a Mockup SearchCommand.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class MockupSearchCommand implements SearchCommand {
 
-    RunningQuery query = new RunningQuery(null, "", new HashMap());
+    private final RunningQuery.Context rqCxt = new RunningQuery.Context() {
+
+        private final SearchMode mode = new SearchMode();
+
+        public SearchMode getSearchMode() {
+            return mode;
+        }
+
+        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+            return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+        }
+
+        public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+            return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+        }
+
+        public Site getSite() {
+            return Site.DEFAULT;
+        }
+
+    };
+
+    private RunningQuery query = new RunningQuery(rqCxt, "", new HashMap());
 
     public MockupSearchCommand() {
     }
 
-    public MockupSearchCommand(String queryString) {
-        query = new RunningQuery(null, queryString, new HashMap());
+    public MockupSearchCommand(final String queryString) {
+
+
+        query = new RunningQuery(rqCxt, queryString, new HashMap());
     }
 
     public SearchConfiguration getSearchConfiguration() {

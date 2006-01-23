@@ -1,8 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - Copyright (2005-2006) Schibsted Søk AS
+ - $Id$ 
+-->
 <project default="war:webapp" xmlns:j="jelly:core" xmlns:ant="jelly:ant" xmlns:maven="jelly:maven">
 
     <!-- Filter develop / production URLs -->
     <!-- Filter log4j paths -->
-    <preGoal name="java:jar-resources" >
+    <preGoal name="java:prepare-filesystem" >
         <ant:touch file="build.properties"/>
         <ant:filter filtersfile="build.properties" />
         <ant:filter filtersfile="${target}.properties" />
@@ -38,9 +43,13 @@
     
     
     <!-- 
-      - Keep junit tests logging to seperate files
+      - 1) Keep junit tests logging to seperate files.
+      - 2) Ensure search-front-config is available.
      -->
-    <preGoal name="test:test-resources"><attainGoal name="alter-log4j-appenders-for-testing"/></preGoal>
+    <preGoal name="test:test-resources">
+        <attainGoal name="ensure-config-running"/>
+        <attainGoal name="alter-log4j-appenders-for-testing"/>
+    </preGoal>
     <postGoal name="test:single"><attainGoal name="restore-log4j-appenders-for-testing"/></postGoal>
     <postGoal name="test:test"><attainGoal name="restore-log4j-appenders-for-testing"/></postGoal>
     
@@ -59,6 +68,19 @@
           <ant:entry key="log4j.appender.ERROR_APPEND.File" value="${log.directory}/${log.file}.error" />
           <ant:entry key="log4j.appender.DUMP_APPEND.File"  value="${log.directory}/${log.file}.dump" />
         </ant:propertyfile>
+    </goal>
+    
+    <goal name="ensure-config-running">
+        <!-- TODO how to test search-front-config is up and available? -->
+    <!--
+        <ant:junit failureproperty="search-front-config.unavailable">
+            <test name="no.schibstedsok.front.searchportal.configuration.DefaultSiteSearchTabsCreatorTest"/>
+        </ant:junit>
+        <ant:fail if="search-front-config.unavailable"><br/>
+            Unable to obtain configuration resources from search-front-config. 
+            Please start this service before trying to build/deploy search-front-html.
+        </ant:fail>
+    -->
     </goal>
     
 </project>

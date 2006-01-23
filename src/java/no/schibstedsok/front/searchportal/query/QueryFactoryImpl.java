@@ -1,6 +1,7 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query;
 
-import no.schibstedsok.front.searchportal.configuration.SearchMode;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,16 +11,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * QueryFactoryImpl is part of no.schibstedsok.front.searchportal.query
+ * QueryFactoryImpl is part of no.schibstedsok.front.searchportal.query.
  * Use this class to create an instance of a RunningQuery
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @version 0.1
  * @vesrion $Revision$, $Author$, $Date$
  */
-public class QueryFactoryImpl extends QueryFactory {
+public final class QueryFactoryImpl extends QueryFactory {
 
-    Log log = LogFactory.getLog(QueryFactoryImpl.class);
+    private static final Log LOG = LogFactory.getLog(QueryFactoryImpl.class);
 
     /**
      * Create a new instance of running query. The implementation can
@@ -36,20 +36,23 @@ public class QueryFactoryImpl extends QueryFactory {
      * @param request with parameters populated with search params
      * @return instance of RunningQuery
      */
-    public RunningQuery createQuery(SearchMode mode,
-                                    HttpServletRequest request,
-                                    HttpServletResponse response) {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: createQuery() Type=" + request.getParameter("t"));
+    public RunningQuery createQuery(
+            final RunningQuery.Context cxt,
+            final HttpServletRequest request,
+            final HttpServletResponse response) {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: createQuery() Type=" + request.getParameter("t"));
         }
+
+        RunningQuery query;
 
         if ("adv".equals(request.getParameter("t"))) {
 
-            AdvancedQueryBuilder builder = new AdvancedQueryBuilder(request);
-            HashMap param = new HashMap();
+            final AdvancedQueryBuilder builder = new AdvancedQueryBuilder(request);
+            final Map param = new HashMap();
             param.put("type", "adv");
-            RunningQuery query =
-                    new RunningQuery(mode, builder.getQuery(), param);
+            query = new RunningQuery(cxt, builder.getQuery(), param);
 
             query.addParameter("request", request);
             query.addParameter("response", response);
@@ -57,32 +60,24 @@ public class QueryFactoryImpl extends QueryFactory {
             query.addParameter("type", builder.getType());
             query.addParameter("language", builder.getFilterLanguage());
 
-            return query;
-
         } else if ("adv_urls".equals(request.getParameter("t"))) {
             // Search for similar urls
-            String q = "urls:" + request.getParameter("q_urls");
-            if (log.isDebugEnabled()) {
-                log.debug("createQuery: Query modified to " + q);
+            final String q = "urls:" + request.getParameter("q_urls");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("createQuery: Query modified to " + q);
             }
-            RunningQuery query = new RunningWebQuery(mode,
-                    q,
-                    request,
-                    response);
-            return query;
+            query = new RunningWebQuery(cxt, q, request, response);
 
         } else {
-            String q = request.getParameter("q");
+            final String q = request.getParameter("q");
 
-            RunningQuery query = new RunningWebQuery(mode,
-                    q,
-                    request,
-                    response);
+            query = new RunningWebQuery(cxt, q, request, response);
 
             if ("m".equals(request.getParameter("c"))) {
 
                 if (request.getParameter("userSortBy") == null
-                        ||"".equals(request.getParameter("q"))) {
+                        || "".equals(request.getParameter("q"))) {
+
                     query.addParameter("userSortBy", new String[]{"datetime", ""});
                 }
 
@@ -91,7 +86,7 @@ public class QueryFactoryImpl extends QueryFactory {
                     query.addParameter("contentsource", new String[]{"Norske Nyheter", ""});
                 }
             }
-            return query;
         }
+        return query;
     }
 }

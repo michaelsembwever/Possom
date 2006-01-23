@@ -14,23 +14,24 @@ import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchTabs;
+import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 
 
 /**
  * NavigationHandler.
- * 
- * Holds state regarding navigation graphs and their nodes. 
- *  
+ *
+ * Holds state regarding navigation graphs and their nodes.
+ *
  * @author Lars Johansson
  *
  */
-public class NavigationHandler implements Serializable {
+public final class NavigationHandler implements Serializable {
 
 	/**
-	 * Unique id for handler
-	 */ 
-//	private String handlerId = IdGenerator.getInstance().generateUniqueId();
+	 * Unique id for handler.
+	 */
+//	private String handlerId = IdGenerator.valueOf().generateUniqueId();
 	
 	private String collection;
 	private String query;		//navigation is only valid within a single query
@@ -85,7 +86,7 @@ public class NavigationHandler implements Serializable {
 	 * @return
 	 */
 	private static SearchMode getSearchMode(String collection) {
-		SearchTabs tabs = XMLSearchTabsCreator.getInstance().createSearchTabs();
+		SearchTabs tabs = XMLSearchTabsCreator.valueOf(Site.DEFAULT).getSearchTabs();
 		return tabs.getSearchMode(collection);
 	}
 	

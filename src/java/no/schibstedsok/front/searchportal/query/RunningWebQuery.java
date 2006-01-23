@@ -1,6 +1,6 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query;
 
-import no.schibstedsok.front.searchportal.configuration.SearchMode;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +16,8 @@ import org.apache.commons.logging.Log;
  *
  */
 public class RunningWebQuery extends RunningQuery {
-    Log log = LogFactory.getLog(RunningWebQuery.class);
+
+    private static final Log LOG = LogFactory.getLog(RunningWebQuery.class);
 
 
     /**
@@ -26,28 +27,28 @@ public class RunningWebQuery extends RunningQuery {
      * @param request
      * @param response
      */
-    public RunningWebQuery(SearchMode mode,
-                           String query,
-                           HttpServletRequest request,
-                           HttpServletResponse response) {
+    public RunningWebQuery(final Context cxt,
+                           final String query,
+                           final HttpServletRequest request,
+                           final HttpServletResponse response) {
 
-        super(mode, query, new HashMap());
-        
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: RunningWebQuery(mode, query, request,response)");
+        super(cxt, query, new HashMap());
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: RunningWebQuery(mode, query, request,response)");
         }
         for (Iterator iterator = request.getParameterMap().keySet().iterator(); iterator.hasNext();) {
             String parameterName = (String) iterator.next();
             String[] parameterValues = request.getParameterValues(parameterName);
             addParameter(parameterName, parameterValues);
 
-            if(log.isDebugEnabled()){
+            if (LOG.isDebugEnabled()) {
                 StringBuffer buff = new StringBuffer();
 
-                for(int i=0; i<parameterValues.length; i++){
+                for (int i = 0; i < parameterValues.length; i++) {
                     buff.append(parameterValues[i] + ", ");
                 }
-                log.debug("RunningWebQuery: Added " + parameterName + ", values: " + buff);
+                LOG.debug("RunningWebQuery: Added " + parameterName + ", values: " + buff);
             }
 
         }

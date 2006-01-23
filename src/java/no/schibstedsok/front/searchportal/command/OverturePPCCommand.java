@@ -1,5 +1,6 @@
 package no.schibstedsok.front.searchportal.command;
 
+import com.thoughtworks.xstream.XStream;
 import no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
@@ -23,6 +24,11 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.net.URLEncoder;
+import java.util.Properties;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.UrlResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
+import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * @author <a href="mailto:lars@conduct.no">Lars Johansson</a>
@@ -103,17 +109,37 @@ public class OverturePPCCommand extends AbstractSearchCommand {
     }
 
 
+    // TODO move this to a test class
     public static void main(String[] args) throws Exception {
 
         String query = "linux";
 
-        SearchMode mode = new SearchMode();
+        final SearchMode mode = new SearchMode();
         mode.setExecutor(new ParallelSearchCommandExecutor());
         SearchConfiguration searchConfiguration = new OverturePPCConfiguration();
         searchConfiguration.setResultsToReturn(3);
         mode.addSearchConfiguration(searchConfiguration);
 
-        RunningQuery runningQuery = new RunningQuery(mode, query, new HashMap());
+        final RunningQuery.Context rqCxt = new RunningQuery.Context(){
+            public SearchMode getSearchMode() {
+                return mode;
+            }
+
+            public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
+                return UrlResourceLoader.newPropertiesLoader(this,resource, properties);
+            }
+
+            public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
+                return UrlResourceLoader.newXStreamLoader(this,resource, xstream);
+            }
+
+            public Site getSite() {
+                return Site.DEFAULT; //FIXME implement me properly
+            }
+            
+        };
+        
+        final RunningQuery runningQuery = new RunningQuery(rqCxt, query, new HashMap());
 
         runningQuery.run();
 

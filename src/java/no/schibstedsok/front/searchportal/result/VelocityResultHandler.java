@@ -1,8 +1,10 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result;
 
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
+import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
@@ -24,7 +26,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
 
-/**
+/** Handles the populating the velocity contexts.
+ * Strictly view domain.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
@@ -37,9 +41,9 @@ public class VelocityResultHandler implements ResultHandler {
         initVelocity();
     }
 
-    public void handleResult(SearchResult result, Map parameters) {
+    public void handleResult(final SearchResult result, final Map parameters) {
 
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: handleResult()");
         }
         // This requirement of the users of this class to send the web stuff
@@ -54,12 +58,12 @@ public class VelocityResultHandler implements ResultHandler {
         Writer w = new StringWriter();
         SearchConfiguration searchConfiguration = result.getSearchCommand().getSearchConfiguration();
         try {
-            if(log.isDebugEnabled()){
-                log.debug("handleResult: Looking for template: "+searchConfiguration + searchConfiguration.getName() + ".vm");
+            if (log.isDebugEnabled()) {
+                log.debug("handleResult: Looking for template: " + searchConfiguration + searchConfiguration.getName() + ".vm");
             }
             Template template = Velocity.getTemplate(searchConfiguration.getName() + ".vm");
-            if(log.isDebugEnabled()){
-                log.debug("handleResult: Created Template="+ template.getName());
+            if (log.isDebugEnabled()) {
+                log.debug("handleResult: Created Template=" + template.getName());
             }
             VelocityContext context = new VelocityContext();
             populateVelocityContext(context, result, request, response);
@@ -70,12 +74,12 @@ public class VelocityResultHandler implements ResultHandler {
         }
     }
 
-    protected void populateVelocityContext(VelocityContext context,
-                                           SearchResult result,
-                                           HttpServletRequest request,
-                                           HttpServletResponse response) {
+    protected void populateVelocityContext(final VelocityContext context,
+                                           final SearchResult result,
+                                           final HttpServletRequest request,
+                                           final HttpServletResponse response) {
 
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: populateVelocityContext()");
         }
         String queryString = result.getSearchCommand().getQuery().getQueryString();
@@ -93,7 +97,7 @@ public class VelocityResultHandler implements ResultHandler {
         context.put("request", request);
         context.put("response", response);
         context.put("query", queryStringURLEncoded);
-        context.put("globalSearchTips", ((RunningQuery)request.getAttribute("query")).getGlobalSearchTips());
+        context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
         context.put("command", result.getSearchCommand());
         context.put("queryHTMLEscaped", queryString);
         context.put("locale", result.getSearchCommand().getQuery().getLocale());
@@ -111,12 +115,12 @@ public class VelocityResultHandler implements ResultHandler {
             context.put("pager", pager);
         }
 
-        Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.getInstance().getProperties());
+        Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(Site.DEFAULT).getProperties());
         context.put("linkpulse", linkpulse);
     }
 
     private static void initVelocity() {
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug("ENTR: initVelocity()");
         }
         try {

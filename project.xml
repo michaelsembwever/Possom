@@ -12,13 +12,14 @@
     <currentVersion>1.1</currentVersion>
     <organization>
         <name>Schibsted Søk AS</name>
-        <url>http://www.schibstedsok.no/</url>
+        <url>http://www.sesam.no/</url>
     </organization>
+    <logo>http://sesam.no/images/index/logo.jpg</logo>
     <inceptionYear>2005</inceptionYear>
     <package>no.schibstedsok.front</package>
     <shortDescription>Search-front application for Schibsted Søk.</shortDescription>
     <description>This is the project for Schibsted Søk's search-front application.</description>
-    <url>https://dev.schibstedsok.no/maven/sites/admin/front/search-front</url>
+    <url>https://dev.schibstedsok.no/maven/sites/search-front-html/</url>
     <issueTrackingUrl>https://dev.schibstedsok.no/jira/secure/BrowseProject.jspa?id=10000</issueTrackingUrl>
     <siteAddress>login.osl.basefarm.net</siteAddress>
     <siteDirectory>/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/admin/front/search-front-html</siteDirectory>

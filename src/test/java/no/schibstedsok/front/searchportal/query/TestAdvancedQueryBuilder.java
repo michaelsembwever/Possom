@@ -1,7 +1,7 @@
 // Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query;
 
-import no.schibstedsok.front.searchportal.TestCase;
+import junit.framework.TestCase;
 
 /**
  * TestAdvancedQueryBuilder is part of no.schibstedsok.front.searchportal.query package.
@@ -12,7 +12,8 @@ import no.schibstedsok.front.searchportal.TestCase;
  */
 public final class TestAdvancedQueryBuilder extends TestCase {
 
-
+    /** Test a basic query combination.
+     */
     public void testQuery() {
 
 
@@ -34,18 +35,22 @@ public final class TestAdvancedQueryBuilder extends TestCase {
 
         qb.setQueryNot("ola marius hoff sagli");
         assertEquals("NOT ola ANDNOT marius ANDNOT hoff ANDNOT sagli", qb.getQuery());
-        
+
         qb.setQueryPhrase("dette er en test");
         assertEquals("NOT ola ANDNOT marius ANDNOT hoff ANDNOT sagli AND \"dette er en test\"", qb.getQuery());
 
     }
 
+    /** Test advanced query detection works.
+     */
     public void testIsAdvanced () {
         assertTrue(AdvancedQueryBuilder.isAdvancedQuery("ola AND marius NOT sagli"));
         assertFalse(AdvancedQueryBuilder.isAdvancedQuery("ola marius hoff sagli"));
     }
 
 
+    /** Test duplicate whitespace can be normalised.
+     */
     public void testRemoveDups() {
         assertEquals("marius", AdvancedQueryBuilder.trimDuplicateSpaces("           marius").trim());
         assertEquals("\" marius\"", AdvancedQueryBuilder.trimDuplicateSpaces("\"           marius\"").trim());

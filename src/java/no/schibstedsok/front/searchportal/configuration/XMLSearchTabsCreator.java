@@ -1,106 +1,162 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.configuration;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
-import no.schibstedsok.front.searchportal.InfrastructureException;
+import java.util.HashMap;
+import java.util.Map;
+import no.schibstedsok.front.searchportal.configuration.loaders.ResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.UrlResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
+import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Properties;
 
-/**
+/** SearchTabsCreator when SearchModes are serialised in an XML configuration file.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class XMLSearchTabsCreator implements SearchTabsCreator {
+public final class XMLSearchTabsCreator implements SearchTabsCreator {
 
-    final Properties properties = new Properties();
+    private final Properties properties = new Properties(); // XXX why isn't this private
+    private final XStream xstream = new XStream(new DomDriver());
+
+    private final Context context;
+
+    private final PropertiesLoader propertyLoader;
+    private XStreamLoader tabsLoader;
 
     private SearchTabs tabs;
 
-    private static SearchTabsCreator instance;
+    /**
+     * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
+     * time. But only one will persist in the map.
+     *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
+     * the resources to improve the performance. But I doubt this would gain much, if anything at all.
+     */
+    private static final Map/*<Site,XMLSearchTabsCreator>*/ INSTANCES = new HashMap/*<Site,XMLSearchTabsCreator>*/();
 
     private static final Log LOG = LogFactory.getLog(XMLSearchTabsCreator.class);
 
-    private XMLSearchTabsCreator() {
+    private static final String ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD = "Interrupted waiting for resource to load";
+
+    private XMLSearchTabsCreator(final Context cxt) {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: XMLSearchTabsCreator()");
         }
 
-        try {
-            properties.load(this.getClass().getResourceAsStream(
-                    "/" + SearchConstants.CONFIGURATION_FILE));
-            LOG.info("Read configuration from "
-                    + SearchConstants.CONFIGURATION_FILE);
-        } catch (IOException e) {
-            LOG.error("XMLSearchTabsCreator When Reading Configuration from "
-                    + SearchConstants.CONFIGURATION_FILE, e);
-            throw new InfrastructureException("Unable to read properties from "
-                    + SearchConstants.CONFIGURATION_FILE, e);
+        context = cxt;
+
+        propertyLoader = context.newPropertiesLoader(SearchConstants.CONFIGURATION_FILE, properties);
+
+        initialiseXStream();
+        if (context.getSite() != null) {
+            INSTANCES.put(context.getSite(), this);
         }
     }
 
-    public SearchTabs createSearchTabs() {
+    public SearchTabs getSearchTabs() {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: createSearchTabs()");
+        synchronized (this) {
+            if (tabsLoader == null) {
+                // unable to put this in the constructor because it relies on properties being loaded.
+                tabsLoader = context.newXStreamLoader(getProperties().getProperty("tabs_configuration"), xstream);
+            }
         }
 
-        if (tabs == null) {
-            XStream xstream = new XStream(new DomDriver());
-            xstream
-                    .alias(
-                            "FastSearch",
-                            no.schibstedsok.front.searchportal.configuration.FastConfiguration.class);
-            xstream
-                    .alias(
-                            "YellowSearch",
-                            no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration.class);
-            xstream
-                    .alias(
-                            "PicSearch",
-                            no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration.class);
-            xstream
-                    .alias(
-                            "tabs",
-                            no.schibstedsok.front.searchportal.configuration.SearchTabs.class);
-            xstream
-                    .alias(
-                            "OverturePPCSearch",
-                            no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration.class);
-            xstream
-                    .alias(
-                            "MathExpression",
-                            no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration.class);
-            tabs = (SearchTabs) xstream
-                    .fromXML(new InputStreamReader(
-                            this
-                                    .getClass()
-                                    .getResourceAsStream(
-                                            "/"
-                                                    + properties
-                                                            .getProperty("tabs_configuration"))));
-            LOG.info("Tabs created from "
-                    + properties.getProperty("tabs_configuration"));
-        }
+        join(tabsLoader);
+
+        tabs = (SearchTabs) tabsLoader.getXStreamResult();
+
+        LOG.info("Tabs created from "
+                + properties.getProperty("tabs_configuration"));
 
         return tabs;
     }
 
+    private void initialiseXStream() {
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("ENTR: createSearchTabsImpl()");
+        }
+
+
+        xstream.alias(
+                        "FastSearch",
+                        no.schibstedsok.front.searchportal.configuration.FastConfiguration.class);
+        xstream.alias(
+                        "YellowSearch",
+                        no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration.class);
+        xstream.alias(
+                        "PicSearch",
+                        no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration.class);
+        xstream.alias(
+                        "tabs",
+                        no.schibstedsok.front.searchportal.configuration.SearchTabs.class);
+        xstream.alias(
+                        "OverturePPCSearch",
+                        no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration.class);
+        xstream.alias(
+                        "MathExpression",
+                        no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration.class);
+
+    }
+
     public Properties getProperties() {
+        join(propertyLoader);
         return properties;
     }
 
-    public static synchronized SearchTabsCreator getInstance() {
+    /** Simple wrapper to avoid dealing with InterruptedException. **/
+    private void join(final ResourceLoader loader) {
+        if (loader instanceof Thread) {
+            try {
+                ((Thread) loader).join();
+            } catch (InterruptedException ex) {
+                LOG.error(ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD, ex);
+            }
+        }
+    }
 
-        if (instance == null)
-            instance = new XMLSearchTabsCreator();
-
+    /** Find the correct instance handling this Site.
+     * We need to use a Context instead of the Site directly so we can handle different styles of loading resources.
+     **/
+    public static SearchTabsCreator valueOf(final Context cxt) {
+        final Site site = cxt.getSite();
+        SearchTabsCreator instance = (SearchTabsCreator) INSTANCES.get(site);
+        if (instance == null) {
+            instance = new XMLSearchTabsCreator(cxt);
+        }
         return instance;
+    }
+
+    /**
+     * Utility wrapper to the valueOf(Context).
+     * <b>Makes the presumption we will be using the UrlResourceLoader to load all resources.</b>
+     */
+    public static SearchTabsCreator valueOf(final Site site) {
+
+        // XMLSearchTabsCreator.Context for this site & UrlResourceLoader.
+        final SearchTabsCreator stc = XMLSearchTabsCreator.valueOf(new SearchTabsCreator.Context() {
+            public Site getSite() {
+                return site;
+            }
+
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+            }
+
+            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
+            }
+
+        });
+        return stc;
     }
 
 }

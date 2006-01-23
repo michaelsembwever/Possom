@@ -1,14 +1,15 @@
 /*
- * Copyright (2005) Schibsted Søk AS
- * 
+ * Copyright (2005-2006) Schibsted Søk AS
+ *
  */
 package no.schibstedsok.front.searchportal.util.test;
 
-import no.schibstedsok.front.searchportal.TestCase;
+import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import junit.framework.TestResult;
 
-/**
+/** Test a PagingDisplayHelper.
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
@@ -135,7 +136,7 @@ public class PagingDisplayHelperTest extends TestCase {
         super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public void run(TestResult testResult) {
+    public void run(final TestResult testResult) {
         super.run(testResult);    //To change body of overridden methods use File | Settings | File Templates.
     }
 

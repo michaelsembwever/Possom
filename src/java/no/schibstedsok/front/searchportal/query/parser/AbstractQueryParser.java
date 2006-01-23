@@ -8,7 +8,6 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
-import java.io.StringReader;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,12 +27,8 @@ public abstract class AbstractQueryParser implements QueryParser {
      *  - holding the tokenEvalautorFactory responsible for tokenPredicate to evaluator mappings,
      *  - creation of Clause subtypes.
      **/
-    public interface Context {
-        /** Get the original query string.
-         *
-         * @return the original query string.
-         */
-        String getQueryString();
+    public interface Context extends QueryStringContext {
+
         /** Get the tokenEvalautorFactory.
          * Responsible for  handing out evaluators against TokenPredicates.
          * Also holds state information about the current term/clause we are finding predicates against.

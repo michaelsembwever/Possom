@@ -3,106 +3,115 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
-import java.io.StringReader;
-import java.util.Iterator;
+
 import java.util.Properties;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactoryImpl;
-import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.FileResourcesSearchTabsCreatorTest;
+import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public final class TestVisitor extends TestCase{
+/** Test the QueryParser's visitor pattern.
+ *
+ * @version $Id$
+ * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ **/
+public final class TestVisitor extends TestCase {
 
     private static final Log LOG = LogFactory.getLog(TestVisitor.class);
 
-    public void testBasicTestVisitorImpl(){
+    /** test a visitor on a  basic clause heirarchy.
+     **/
+    public void testBasicTestVisitorImpl() {
         final TestVisitorImpl visitor = new TestVisitorImpl();
         final String queryStr = "firstName:magnus eklund \"schibsted sok\"";
-        
+
         final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
-                new TokenEvaluatorFactoryImpl.Context(){
+                new TokenEvaluatorFactoryImpl.Context() {
                     public String getQueryString() {
                         return queryStr;
                     }
 
                     public Properties getApplicationProperties() {
-                        return XMLSearchTabsCreator.getInstance().getProperties();
+                        return FileResourcesSearchTabsCreatorTest.valueOf(Site.DEFAULT).getProperties();
                     }
 
                 });
 
-        final LeafClause magnus = WordClause.createWordClause("magnus", "firstName",tokenEvaluatorFactory);
+        final LeafClause magnus = WordClause.createWordClause("magnus", "firstName", tokenEvaluatorFactory);
         final LeafClause eklund = WordClause.createWordClause("eklund", null, tokenEvaluatorFactory);
         final LeafClause ss = PhraseClause.createPhraseClause("\"schibsted sok\"", null, tokenEvaluatorFactory);
-        
+
         // build right-leaning tree. requirement of current Clause/QueryParser implementation.
         final Clause a = AndClause.createAndClause(eklund, ss, tokenEvaluatorFactory);
         final Clause andClause = AndClause.createAndClause(magnus, a, tokenEvaluatorFactory);
-        
-        
+
+
         visitor.visit(andClause);
-        
+
         final String goldenResult = "firstName:magnus AND eklund AND \"schibsted sok\"";
-        LOG.info("Visitor built: "+visitor.getQueryAsString());
+        LOG.info("Visitor built: " + visitor.getQueryAsString());
         // assert test
         assertNotNull(visitor.getQueryAsString());
-        assertEquals(goldenResult,visitor.getQueryAsString());
-        assertEquals(goldenResult,andClause.getTerm());
+        assertEquals(goldenResult, visitor.getQueryAsString());
+        assertEquals(goldenResult, andClause.getTerm());
     }
-    
-    public void testBasicQueryParserWithTestVisitorImpl(){
+
+    /** test a visitor on a QuerParser built clause heirarchy.
+     **/
+    public void testBasicQueryParserWithTestVisitorImpl() {
 
         final String queryInput = "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123";
         LOG.info("Starting testBasicQueryParser with input: " + queryInput);
-        
+
         final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
-                new TokenEvaluatorFactoryImpl.Context(){
+                new TokenEvaluatorFactoryImpl.Context() {
                     public String getQueryString() {
                         return queryInput;
                     }
 
                     public Properties getApplicationProperties() {
-                        return XMLSearchTabsCreator.getInstance().getProperties();
+                        return FileResourcesSearchTabsCreatorTest.valueOf(Site.DEFAULT).getProperties();
                     }
 
                 });
-                
-        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext(){
-                public String getQueryString(){
+
+        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
+                public String getQueryString() {
                     return queryInput;
                 }
-                public TokenEvaluatorFactory getTokenEvaluatorFactory(){
+                public TokenEvaluatorFactory getTokenEvaluatorFactory() {
                     return tokenEvaluatorFactory;
                 }
             });
-        
-        try{
+
+        try  {
             final Query q = parser.getQuery();
             final TestVisitorImpl visitor = new TestVisitorImpl();
-            
+
             visitor.visit(q.getRootClause());
-            
+
             final String goldenResult = "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123";
-            LOG.info("Visitor built: "+visitor.getQueryAsString());
+            LOG.info("Visitor built: " + visitor.getQueryAsString());
             // assert test
             assertNotNull(visitor.getQueryAsString());
-            assertEquals(goldenResult,visitor.getQueryAsString());
-            assertEquals(goldenResult,q.getRootClause().getTerm());
+            assertEquals(goldenResult, visitor.getQueryAsString());
+            assertEquals(goldenResult, q.getRootClause().getTerm());
 
-        }catch(ParseException ex){
+        }  catch (ParseException ex) {
             LOG.error(ex);
             fail(ex.getLocalizedMessage());
         }
 
     }
 
-    /** Mickey Mouse visitor implementation to test the basics... 
+    /** Mickey Mouse visitor implementation to test the basics...
      * The clause interface already provides a getter to the term, which for the root clause should match what this
      * visitor produces. But the getter is only for backward-compatibilty to RegExpTokenEvaluators...
      */
-    private static class TestVisitorImpl extends AbstractReflectionVisitor{
+    private static class TestVisitorImpl extends AbstractReflectionVisitor {
 
         private final StringBuffer sb;
 
@@ -133,7 +142,7 @@ public final class TestVisitor extends TestCase{
             sb.append(" AND ");
             clause.getSecondClause().accept(this);
         }
-        
+
         public void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
             sb.append(" OR ");
