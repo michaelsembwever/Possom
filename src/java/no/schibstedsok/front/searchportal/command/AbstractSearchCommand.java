@@ -19,12 +19,11 @@ import java.util.Map;
  * @version <tt>$Revision$</tt>
  */
 public abstract class AbstractSearchCommand implements SearchCommand {
-    private static Log log = LogFactory.getLog(AbstractSearchCommand.class);
+    private static Log LOG = LogFactory.getLog(AbstractSearchCommand.class);
 
-    private RunningQuery query;
+    private final Context context;
     private String filter;
     private String transformedQuery;
-    protected SearchConfiguration configuration;
     private Map parameters;
 
     /**
@@ -33,14 +32,13 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public AbstractSearchCommand(final RunningQuery query,
-                                 final SearchConfiguration configuration,
+    public AbstractSearchCommand(final SearchCommand.Context cxt,
                                  final Map parameters) {
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: AbstractSearchCommand()");
+        
+        if(LOG.isDebugEnabled()){
+            LOG.debug("ENTR: AbstractSearchCommand()");
         }
-        this.query = query;
-        this.configuration = configuration;
+        context = cxt;
         this.parameters = parameters;
     }
 
@@ -50,10 +48,10 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      * @return The Query.
      */
     public final RunningQuery getQuery() {
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: getQuery()");
+        if(LOG.isDebugEnabled()){
+            LOG.debug("ENTR: getQuery()");
         }
-        return query;
+        return context.getQuery();
     }
 
     public abstract SearchResult execute();
@@ -63,21 +61,21 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      * @return
      */
     public Object call() {
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: call()");
+        if(LOG.isDebugEnabled()){
+            LOG.debug("ENTR: call()");
         }
         String queryToUse;
 
-        if (configuration.getUseParameterAsQuery() != null) {
-            queryToUse = getSingleParameter(configuration.getUseParameterAsQuery());
+        if (getSearchConfiguration().getUseParameterAsQuery() != null) {
+            queryToUse = getSingleParameter(getSearchConfiguration().getUseParameterAsQuery());
         } else {
             queryToUse = getQuery().getQueryString();
         }
         transformedQuery = queryToUse;
-        applyQueryTransformers(configuration.getQueryTransformers());
+        applyQueryTransformers(getSearchConfiguration().getQueryTransformers());
         StopWatch watch = null;
 
-        if (log.isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
             watch = new StopWatch();
             watch.start();
         }
@@ -90,8 +88,8 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             executeQuery = true;
         }
         if(parameters.get("contentsource") != null){
-            if(log.isDebugEnabled()){
-                log.debug("call: Got contentsource, executeQuery=true");
+            if(LOG.isDebugEnabled()){
+                LOG.debug("call: Got contentsource, executeQuery=true");
             }
             executeQuery = true;
         }
@@ -100,19 +98,19 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             executeQuery = true;
         }
 
-        if(log.isDebugEnabled()){
-            log.debug("call(): ExecuteQuery?" + executeQuery);
+        if(LOG.isDebugEnabled()){
+            LOG.debug("call(): ExecuteQuery?" + executeQuery);
         }
         result = executeQuery ? execute() : new BasicSearchResult(this);
 
-        if (log.isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
             watch.stop();
 
-            log.debug("Hits is " + configuration.getName() + ":" + result.getHitCount());
-            log.debug("Search " + configuration.getName() + " took " + watch);
+            LOG.debug("Hits is " + getSearchConfiguration().getName() + ":" + result.getHitCount());
+            LOG.debug("Search " + getSearchConfiguration().getName() + " took " + watch);
         }
 
-        for (Iterator handlerIterator = configuration.getResultHandlers().iterator(); handlerIterator.hasNext();) {
+        for (Iterator handlerIterator = getSearchConfiguration().getResultHandlers().iterator(); handlerIterator.hasNext();) {
             ResultHandler resultHandler = (ResultHandler) handlerIterator.next();
             resultHandler.handleResult(result, parameters);
         }
@@ -129,8 +127,8 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      * @return i plus the offset of the current page.
      */
     protected final int getCurrentOffset(final int i) {
-        if (configuration.isPagingEnabled()) {
-            return i + query.getOffset();
+        if (getSearchConfiguration().isPagingEnabled()) {
+            return i + getQuery().getOffset();
         } else {
             return i;
         }
@@ -163,9 +161,9 @@ public abstract class AbstractSearchCommand implements SearchCommand {
                     filter += transformer.getFilter(transformedQuery) + " ";
                 }
 
-                if(log.isDebugEnabled()){
-                    log.debug("applyQueryTransformers: TransformedQuery=" + transformedQuery);
-                    log.debug("applyQueryTransformers: Filter=" + filter);
+                if(LOG.isDebugEnabled()){
+                    LOG.debug("applyQueryTransformers: TransformedQuery=" + transformedQuery);
+                    LOG.debug("applyQueryTransformers: Filter=" + filter);
                 }
             }
         }
@@ -173,7 +171,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
     }
 
     public SearchConfiguration getSearchConfiguration() {
-        return configuration;
+        return context.getSearchConfiguration();
     }
 
     protected Map getParameters() {
@@ -185,7 +183,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
     }
 
     public String toString() {
-        return configuration.getName() + " " + query.getQueryString();
+        return getSearchConfiguration().getName() + " " + getQuery().getQueryString();
     }
 
     public String getFilter() {

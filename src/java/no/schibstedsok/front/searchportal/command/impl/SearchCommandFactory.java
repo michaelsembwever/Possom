@@ -33,27 +33,12 @@ import no.schibstedsok.front.searchportal.query.RunningQuery;
  */
 public final class SearchCommandFactory {
     
-    /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it 
-     * creates.
-     */
-    public interface Context{
-        SearchConfiguration getSearchConfiguration();
-    }
-    
-    /**
-     * Creates a new instance of SearchCommandFactory
-     */
-    public SearchCommandFactory(final Context cxt) {
-        this.context = cxt;
-    }
-    
     /** Create the appropriate command.
-     * [TODO] Note that the provided Context argument can be passed along as is to all command objects since the Context
-     * implements all their Contexts as well.
-     * [TODO] Move RunningQuery into Context.
      **/
-    public SearchCommand createSearchCommand(final RunningQuery query, final Map parameters){
-        final SearchConfiguration config = context.getSearchConfiguration();
+    public static SearchCommand createSearchCommand(final SearchCommand.Context cxt, final Map parameters){
+        
+        
+        final SearchConfiguration config = cxt.getSearchConfiguration();
         
         // [FIXME] remove hardcoded knowledge of subclasses from here.
         // this is the drawback of removing the command dependency from configuration classes.
@@ -61,20 +46,19 @@ public final class SearchCommandFactory {
         // Possibilities are 1) move association to xml (tabs.xml?) or 2) use class naming scheme.
         // An example of possibility (2) would be XXXSearchConfiguration --> XXXSearchCommand
         if( config instanceof FastConfiguration ){
-            return new FastSearchCommand(query, (FastConfiguration)config, parameters);
+            return new FastSearchCommand(cxt, parameters);
         }else if( config instanceof MathExpressionConfiguration ){
-            return new MathExpressionCommand(query, config, parameters);
+            return new MathExpressionCommand(cxt, parameters);
         }else if( config instanceof OverturePPCConfiguration ){
-            return new OverturePPCCommand(query, (OverturePPCConfiguration)config, parameters);
+            return new OverturePPCCommand(cxt, parameters);
         }else if( config instanceof PicSearchConfiguration ){
-            return new PicSearchCommand(query, (PicSearchConfiguration)config, parameters);
+            return new PicSearchCommand(cxt, parameters);
         }else if( config instanceof SensisSearchConfiguration ){
-            return new FastSearchCommand(query, (FastConfiguration)config, parameters);
+            return new FastSearchCommand(cxt, parameters);
         }else if( config instanceof YellowSearchConfiguration ){
-            return new YellowSearchCommand(query, (YellowSearchConfiguration)config, parameters);
+            return new YellowSearchCommand(cxt, parameters);
         }
         throw new UnsupportedOperationException("Cannot find suitable command for "+config.getName());
     }
     
-    private final Context context;
 }

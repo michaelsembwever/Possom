@@ -14,4 +14,8 @@ package no.schibstedsok.front.searchportal.configuration.loaders;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface ResourceLoader {
+     /** Simple thread.join() wrapper to avoid dealing with InterruptedException.
+      * abut: To touch or end at one end or side; lie adjacent.
+      **/
+     void abut();
 }

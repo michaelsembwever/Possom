@@ -6,6 +6,7 @@ package no.schibstedsok.front.searchportal.analyzer;
 import java.util.Properties;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
+import no.schibstedsok.front.searchportal.query.parser.QueryStringContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -19,8 +20,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
-    public interface Context {
-        String getQueryString();
+    public interface Context extends RegExpEvaluatorFactory.Context, QueryStringContext{
         Properties getApplicationProperties();
     }
 
@@ -58,7 +58,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         }  else if ( token instanceof TokenPredicate.FastTokenPredicate ) {
             return getFastEvaluator();
         }  else if ( token instanceof TokenPredicate.RegExpTokenPredicate ) {
-            return RegExpEvaluators.getEvaluator(token);
+            return RegExpEvaluatorFactory.valueOf(context).getEvaluator(token);
         }
 
 //        } else if (token == TokenPredicate.GEO ) { // shouldn't be called as it's a OrPredicate from AnalysisRules

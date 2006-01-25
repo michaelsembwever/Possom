@@ -10,7 +10,9 @@ package no.schibstedsok.front.searchportal.configuration;
 
 import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loaders.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
@@ -83,6 +85,10 @@ public final class FileResourcesSearchTabsCreatorTest extends TestCase {
 
             public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
                 return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+            }
+            
+            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
         });

@@ -2,8 +2,10 @@
 package no.schibstedsok.front.searchportal.result.test;
 
 import com.thoughtworks.xstream.XStream;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 
@@ -36,6 +38,10 @@ public class MockupSearchCommand implements SearchCommand {
 
         public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
             return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+        }
+        
+        public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+            return FileResourceLoader.newDocumentLoader(this, resource, builder);
         }
 
         public Site getSite() {

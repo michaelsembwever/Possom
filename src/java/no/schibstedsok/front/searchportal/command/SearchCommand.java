@@ -13,6 +13,14 @@ import no.schibstedsok.front.searchportal.query.RunningQuery;
  * @version <tt>$Revision$</tt>
  */
 public interface SearchCommand extends Callable {
+    
+    /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it 
+     * creates.
+     */
+    public interface Context{
+        SearchConfiguration getSearchConfiguration();
+        RunningQuery getQuery();
+    }
 
     /**
      * Returns the configuration associated with this search command.

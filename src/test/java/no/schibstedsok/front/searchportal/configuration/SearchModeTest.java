@@ -2,7 +2,9 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import com.thoughtworks.xstream.XStream;
+import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.result.TextOutputResultHandler;
@@ -54,6 +56,10 @@ public class SearchModeTest extends TestCase {
 
             public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
                 return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+            }
+            
+            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
             public Site getSite() {

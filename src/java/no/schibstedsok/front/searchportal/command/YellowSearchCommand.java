@@ -39,11 +39,10 @@ public final class YellowSearchCommand extends FastSearchCommand {
      *            parameters.
      */
     public YellowSearchCommand(
-            final RunningQuery query,
-            final FastConfiguration config,
+            final SearchCommand.Context cxt,
             final Map parameters) {
 
-        super(query, config, parameters);
+        super(cxt, parameters);
     }
 
     /**
@@ -73,9 +72,9 @@ public final class YellowSearchCommand extends FastSearchCommand {
             return new SearchParameter(BaseParameter.SORT_BY,
                     YELLOWPAGES3_YPNAVN2);
         } else {
-            if (fastConfiguration.getSortBy() != null) {
+            if (getFastConfiguration().getSortBy() != null) {
                 return new SearchParameter(BaseParameter.SORT_BY,
-                        fastConfiguration.getSortBy());
+                        getFastConfiguration().getSortBy());
             } else {
                 return null;
             }

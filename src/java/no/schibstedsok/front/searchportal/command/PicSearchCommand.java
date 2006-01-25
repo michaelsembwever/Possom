@@ -36,8 +36,8 @@ public class PicSearchCommand extends AbstractSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public PicSearchCommand(RunningQuery query, SearchConfiguration configuration, Map parameters) {
-        super(query, configuration, parameters);
+    public PicSearchCommand(final SearchCommand.Context cxt, Map parameters) {
+        super(cxt, parameters);
     }
 
     public SearchResult execute() {
@@ -52,7 +52,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        String url = "/query?ie=UTF-8&tldb=no&custid=558735&version=2.6&thumbs=" + configuration.getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
+        String url = "/query?ie=UTF-8&tldb=no&custid=558735&version=2.6&thumbs=" + getSearchConfiguration().getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
 
         if (log.isDebugEnabled()) {
             log.debug("Using url " + url);
@@ -74,7 +74,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
 
                 BasicSearchResultItem item = new BasicSearchResultItem();
 
-                for (Iterator iterator = configuration.getResultFields().iterator(); iterator.hasNext();) {
+                for (Iterator iterator = getSearchConfiguration().getResultFields().iterator(); iterator.hasNext();) {
                     String fieldName = (String) iterator.next();
 
                     item.addField(fieldName, picture.getAttribute(fieldName));

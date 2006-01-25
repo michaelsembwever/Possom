@@ -8,13 +8,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.fast.searchengine.test.MockupFastSearchEngineFactory;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
@@ -30,11 +33,10 @@ import no.schibstedsok.front.searchportal.site.Site;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public final class FastNavigatorsTest extends TestCase implements SearchCommandFactory.Context {
+public final class FastNavigatorsTest extends TestCase {
 
     FastConfiguration config;
     MockupResultHandler resultHandler;
-    final SearchCommandFactory cmdFactory = new SearchCommandFactory(this);
 
     public SearchConfiguration getSearchConfiguration() {
         return config;
@@ -90,7 +92,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
 
 
         final FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , new HashMap());
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , new HashMap());
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         final FastSearchResult result = (FastSearchResult) command.call();
@@ -116,7 +118,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
 
 
         final FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , new HashMap());
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , new HashMap());
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         final FastSearchResult result = (FastSearchResult) command.call();
@@ -147,7 +149,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         params.put("nav_geographic", navigated);
 
         final FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         final FastSearchResult result = (FastSearchResult) command.call();
@@ -174,7 +176,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         config.addNavigator(navigator, "geographic");
 
         final FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         final FastSearchResult result = (FastSearchResult) command.call();
@@ -210,7 +212,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         config.addNavigator(navigator, "geographic");
 
         FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         FastSearchResult result = (FastSearchResult) command.call();
@@ -225,7 +227,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         navigated[0] = "ywkommunenavigator";
         params.put("nav_geographic", navigated);
 
-        command = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
 
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
         result = (FastSearchResult) command.call();
@@ -257,7 +259,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         params.put("ywfylke", navigatedValue);
 
         final FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
 
         final FastSearchResult result = (FastSearchResult) command.call();
     }
@@ -288,7 +290,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         params.put("ywfylke", navigatedValue);
 
         FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
 
         final FastSearchResult result = (FastSearchResult) command.call();
 
@@ -306,7 +308,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue1);
 
-        command = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
 
         command.call();
 
@@ -339,7 +341,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         navigatedValue[0] = "Oslo";
         params.put("nav_geographic", navigated);
         final FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         final FastSearchResult result = (FastSearchResult) command.call();
@@ -385,7 +387,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         params.put("ywfylke", navigatedValue);
 
         final FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         final FastSearchResult result = (FastSearchResult) command.call();
@@ -431,7 +433,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         // Nothing navigated
         params = new HashMap();
         FastSearchCommand command
-                = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         command.call();
@@ -449,7 +451,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        command = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
         command.call();
 
         List links = command.getNavigatorBackLinks("geographic");
@@ -469,7 +471,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue2);
 
-        command = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -491,7 +493,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
         params.put("ywkommune", navigatedValue2);
         params.put("ywbydel", navigatedValue3);
 
-        command = (FastSearchCommand) cmdFactory.createSearchCommand(newTestRunningQuery("bil") , params);
+        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -501,7 +503,7 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
 
     }
 
-    private RunningQuery newTestRunningQuery(final String query) {
+    private SearchCommand.Context createTestSearchCommandContext(final String query) {
 
         final RunningQuery.Context rqCxt = new RunningQuery.Context() {
 
@@ -518,6 +520,10 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
             public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
                 return FileResourceLoader.newXStreamLoader(this, resource, xstream);
             }
+            
+            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                return FileResourceLoader.newDocumentLoader(this, resource, builder);
+            }
 
             public Site getSite() {
                 return Site.DEFAULT;
@@ -525,7 +531,20 @@ public final class FastNavigatorsTest extends TestCase implements SearchCommandF
 
         };
 
-        return new RunningQuery(rqCxt, query, new HashMap());
+        final RunningQuery rq = new RunningQuery(rqCxt, query, new HashMap());
+        
+        final SearchCommand.Context searchCmdCxt = new SearchCommand.Context() {
+            public SearchConfiguration getSearchConfiguration() {
+                return config;
+            }
+
+            public RunningQuery getQuery() {
+                return rq;
+            }
+
+        };
+        
+        return searchCmdCxt;
     }
 
 }

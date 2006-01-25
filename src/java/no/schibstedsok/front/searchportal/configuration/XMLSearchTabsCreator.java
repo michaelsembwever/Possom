@@ -5,6 +5,8 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.util.HashMap;
 import java.util.Map;
+import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loaders.ResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loaders.UrlResourceLoader;
@@ -42,7 +44,7 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
 
     private static final Log LOG = LogFactory.getLog(XMLSearchTabsCreator.class);
 
-    private static final String ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD = "Interrupted waiting for resource to load";
+    
 
     private XMLSearchTabsCreator(final Context cxt) {
 
@@ -55,9 +57,7 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
         propertyLoader = context.newPropertiesLoader(SearchConstants.CONFIGURATION_FILE, properties);
 
         initialiseXStream();
-        if (context.getSite() != null) {
-            INSTANCES.put(context.getSite(), this);
-        }
+        INSTANCES.put(context.getSite(), this);
     }
 
     public SearchTabs getSearchTabs() {
@@ -69,7 +69,7 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
             }
         }
 
-        join(tabsLoader);
+        tabsLoader.abut();
 
         tabs = (SearchTabs) tabsLoader.getXStreamResult();
 
@@ -108,19 +108,8 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
     }
 
     public Properties getProperties() {
-        join(propertyLoader);
+        propertyLoader.abut();
         return properties;
-    }
-
-    /** Simple wrapper to avoid dealing with InterruptedException. **/
-    private void join(final ResourceLoader loader) {
-        if (loader instanceof Thread) {
-            try {
-                ((Thread) loader).join();
-            } catch (InterruptedException ex) {
-                LOG.error(ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD, ex);
-            }
-        }
     }
 
     /** Find the correct instance handling this Site.
@@ -153,6 +142,10 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
 
             public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
                 return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
+            }
+            
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
         });

@@ -27,8 +27,9 @@ public class NormalizePhoneNumberTransformer extends AbstractQueryTransformer{
     }
 
 
-    public static void main(String[] args) {
-        QueryTransformer t = new NormalizePhoneNumberTransformer();
-        System.out.println(t.getTransformedQuery("974 0 33 06"));
-    }
+    // TODO move to test class
+//    public static void main(String[] args) {
+//        QueryTransformer t = new NormalizePhoneNumberTransformer();
+//        System.out.println(t.getTransformedQuery("974 0 33 06"));
+//    }
 }

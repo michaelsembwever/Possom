@@ -127,7 +127,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
         // process
         final TokenEvaluatorFactory factory = (TokenEvaluatorFactory) evalFactory;
         final String query = factory.getQueryString();
-        return factory.getEvaluator(this).evaluateToken(token, factory.getCurrentTerm(), query);
+        final TokenEvaluator evaluator = factory.getEvaluator(this);
+        return evaluator.evaluateToken(token, factory.getCurrentTerm(), query);
     }
 
     public int compareTo(final Object/*TokenPredicate*/ obj) {

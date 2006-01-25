@@ -13,10 +13,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /** Loads resources through URL references.
  *
@@ -59,6 +62,22 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         return xl;
     }
 
+    /** Create a new DocumentLoader for the given resource name/path and load it with the given DocumentBuilder.
+     * @param siteCxt the SiteContext that will tell us which site we are dealing with.
+     * @param resource the resource name/path.
+     * @param builder the DocumentBuilder to build the DOM resource with.
+     * @return the new DocumentLoader to use.
+     **/
+    public static DocumentLoader newDocumentLoader(
+            final SiteContext siteCxt,
+            final String resource,
+            final DocumentBuilder builder) {
+
+        final DocumentLoader dl = new UrlResourceLoader(siteCxt);
+        dl.init(resource, builder);
+        return dl;
+    }
+    
     /** {@inheritDoc}
      */
     private UrlResourceLoader(final SiteContext cxt) {
@@ -91,7 +110,11 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                 props.load(url.openStream());
             }
             if (xstream != null) {
-                xstreamResult = xstream.fromXML(new InputStreamReader(url.openStream()));
+                xstreamResult = xstream.fromXML(new InputStreamReader( url.openStream() ));
+            }
+            if (builder != null) {
+                document = builder.parse( 
+                        new InputSource( new InputStreamReader( url.openStream() ) ) );
             }
 
             LOG.info("Read configuration from " + getResource());
@@ -102,6 +125,11 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             throw new InfrastructureException(err, e);
 
         } catch (IOException e) {
+            final String err = "When Reading Configuration from " + getResource();
+            LOG.error(err, e);
+            throw new InfrastructureException(err, e);
+            
+        } catch (SAXException e) {
             final String err = "When Reading Configuration from " + getResource();
             LOG.error(err, e);
             throw new InfrastructureException(err, e);

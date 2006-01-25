@@ -3,8 +3,10 @@ package no.schibstedsok.front.searchportal.servlet;
 
 import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchTabs;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
@@ -108,6 +110,10 @@ public final class SearchServlet extends HttpServlet {
 
             public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
                 return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
+            }
+            
+            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
             public Site getSite() {

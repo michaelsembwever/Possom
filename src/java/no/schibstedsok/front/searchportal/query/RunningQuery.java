@@ -4,6 +4,7 @@
  */
 package no.schibstedsok.front.searchportal.query;
 
+import com.thoughtworks.xstream.XStream;
 import edu.emory.mathcs.backport.java.util.concurrent.CancellationException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRules;
@@ -25,6 +27,9 @@ import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
 import no.schibstedsok.front.searchportal.executor.SearchTask;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContext;
@@ -35,6 +40,7 @@ import no.schibstedsok.front.searchportal.query.parser.ParseException;
 import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
+import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -95,6 +101,23 @@ public class RunningQuery {
         // for textual analysis.
         tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(
                 new TokenEvaluatorFactoryImpl.Context() {
+
+                    public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
+                        return context.newPropertiesLoader(resource, properties);
+                    }
+
+                    public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
+                        return context.newXStreamLoader(resource, xstream);
+                    }
+
+                    public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                        return context.newDocumentLoader(resource, builder);
+                    }
+
+                    public Site getSite() {
+                        return context.getSite();
+                    }
+
                     public String getQueryString()  {
                         return RunningQuery.this.getQueryString();
                     }
@@ -102,6 +125,7 @@ public class RunningQuery {
                     public Properties getApplicationProperties() {
                         return XMLSearchTabsCreator.valueOf(cxt).getProperties();
                     }
+
 
                 });
 
@@ -167,14 +191,16 @@ public class RunningQuery {
             for (Iterator iterator = context.getSearchMode().getSearchConfigurations().iterator(); iterator.hasNext();) {
                 final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
 
-                // Factory responsible for creating commands against this configuration.
-                //  This would normally be a final member variable and this class implements SearchCommandFactory.Context
-                //   but it ain't a one-to-one queryStr-to-configuration mapping ofcourse.
-                final SearchCommandFactory cmdFactory = new SearchCommandFactory(new SearchCommandFactory.Context() {
+                final SearchCommand.Context searchCmdCxt = new SearchCommand.Context() {
                     public SearchConfiguration getSearchConfiguration() {
                         return searchConfiguration;
                     }
-                });
+
+                    public RunningQuery getQuery() {
+                        return RunningQuery.this;
+                    }
+                    
+                };
 
                 final AnalysisRule rule = AnalysisRules.getRule(searchConfiguration.getRule());
 
@@ -188,7 +214,10 @@ public class RunningQuery {
 
                         LOG.info("OldScore: " + score + "; NewScore: " + newScore + ";");
                         assert (score == newScore); // if this fails, goto mick, do not pass go, do not collect $200.
-
+                        if( score != newScore ){
+                            LOG.fatal("\n\n!!! Old score does not match new score !!!\n\n");
+                        }
+                        
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
                         }
@@ -198,11 +227,11 @@ public class RunningQuery {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("Adding " + searchConfiguration.getName());
                             }
-                            commands.add(cmdFactory.createSearchCommand(this, parameters));
+                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
 
                     } else if (searchConfiguration.isAlwaysRunEnabled()) {
-                        commands.add(cmdFactory.createSearchCommand(this, parameters));
+                        commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                     }
                 } else {
                     // Optimisation. Alternate between the two web searches.
@@ -210,13 +239,13 @@ public class RunningQuery {
                         String searchType = getSingleParameter("s");
                         if (searchType != null && searchType.equals("g")) {
                             if (isInternational(searchConfiguration)) {
-                                commands.add(cmdFactory.createSearchCommand(this, parameters));
+                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                             }
                         } else if (isNorwegian(searchConfiguration)) {
-                            commands.add(cmdFactory.createSearchCommand(this, parameters));
+                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
                     } else {
-                        commands.add(cmdFactory.createSearchCommand(this, parameters));
+                        commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                     }
                 }
             }

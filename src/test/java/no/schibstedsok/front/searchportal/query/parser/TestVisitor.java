@@ -4,11 +4,17 @@
 package no.schibstedsok.front.searchportal.query.parser;
 
 
+import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactoryImpl;
 import no.schibstedsok.front.searchportal.configuration.FileResourcesSearchTabsCreatorTest;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.FileResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +42,22 @@ public final class TestVisitor extends TestCase {
 
                     public Properties getApplicationProperties() {
                         return FileResourcesSearchTabsCreatorTest.valueOf(Site.DEFAULT).getProperties();
+                    }
+                    
+                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                        return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+                    }
+
+                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                        return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+                    }
+
+                    public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                        return FileResourceLoader.newDocumentLoader(this, resource, builder);
+                    }
+                    
+                    public Site getSite()  {
+                        return Site.DEFAULT;
                     }
 
                 });
@@ -74,6 +96,22 @@ public final class TestVisitor extends TestCase {
 
                     public Properties getApplicationProperties() {
                         return FileResourcesSearchTabsCreatorTest.valueOf(Site.DEFAULT).getProperties();
+                    }
+                    
+                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                        return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+                    }
+
+                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                        return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+                    }
+
+                    public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                        return FileResourceLoader.newDocumentLoader(this, resource, builder);
+                    }
+                    
+                    public Site getSite()  {
+                        return Site.DEFAULT;
                     }
 
                 });

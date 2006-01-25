@@ -1,9 +1,11 @@
 package no.schibstedsok.front.searchportal.command;
 
 import com.thoughtworks.xstream.XStream;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
@@ -45,8 +47,8 @@ public class OverturePPCCommand extends AbstractSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public OverturePPCCommand(RunningQuery query, SearchConfiguration configuration, Map parameters) {
-        super(query, configuration, parameters);
+    public OverturePPCCommand(final Context cxt, Map parameters) {
+        super(cxt, parameters);
     }
 
     public SearchResult execute() {
@@ -59,7 +61,7 @@ public class OverturePPCCommand extends AbstractSearchCommand {
         try {
             url.append("?mkt=no&adultFilter=clean&Partner=schibstedsok_xml_no_searchbox_imp1");
             url.append("&Keywords=").append(URLEncoder.encode(query, "iso-8859-1"));
-            url.append("&maxCount=").append(configuration.getResultsToReturn());
+            url.append("&maxCount=").append(getSearchConfiguration().getResultsToReturn());
         } catch (UnsupportedEncodingException e) {
             throw new InfrastructureException(e);
         }
@@ -131,6 +133,10 @@ public class OverturePPCCommand extends AbstractSearchCommand {
 
             public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
                 return UrlResourceLoader.newXStreamLoader(this,resource, xstream);
+            }
+            
+            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
             public Site getSite() {

@@ -28,8 +28,8 @@ public class MathExpressionCommand extends AbstractSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public MathExpressionCommand(RunningQuery query, SearchConfiguration configuration, Map parameters) {
-        super(query, configuration, parameters);
+    public MathExpressionCommand(final Context cxt, Map parameters) {
+        super(cxt, parameters);
     }
 
 
