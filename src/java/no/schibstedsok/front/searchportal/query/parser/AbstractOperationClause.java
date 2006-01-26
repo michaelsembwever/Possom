@@ -10,9 +10,9 @@ package no.schibstedsok.front.searchportal.query.parser;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -67,8 +67,8 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
 
         if (clause == null) {
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
-            final Set/*<Predicate>*/ knownPredicates  = new TreeSet/*<Predicate>*/();
-            final Set/*<Predicate>*/ possiblePredicates  = new TreeSet/*<Predicate>*/();
+            final Set/*<Predicate>*/ knownPredicates  = new HashSet/*<Predicate>*/();
+            final Set/*<Predicate>*/ possiblePredicates  = new HashSet/*<Predicate>*/();
 
             // find the applicale predicates now
             findPredicates(predicate2evaluatorFactory, predicates2check, knownPredicates, possiblePredicates);

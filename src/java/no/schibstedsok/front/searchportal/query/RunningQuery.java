@@ -62,6 +62,7 @@ public class RunningQuery {
 
 
     private final Context context;
+    private final AnalysisRules rules;
     private String queryStr = "";
     private Query queryObj = null;
     private Map parameters;
@@ -102,15 +103,15 @@ public class RunningQuery {
         tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(
                 new TokenEvaluatorFactoryImpl.Context() {
 
-                    public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
+                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                         return context.newPropertiesLoader(resource, properties);
                     }
 
-                    public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
+                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
                         return context.newXStreamLoader(resource, xstream);
                     }
 
-                    public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                         return context.newDocumentLoader(resource, builder);
                     }
 
@@ -144,6 +145,23 @@ public class RunningQuery {
                 LOG.error(ex);
             }
         }
+        rules = AnalysisRules.valueOf(new AnalysisRules.Context() {
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return context.newPropertiesLoader(resource, properties);
+            }
+
+            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                return context.newXStreamLoader(resource, xstream);
+            }
+
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                return context.newDocumentLoader(resource, builder);
+            }
+
+            public Site getSite() {
+                return context.getSite();
+            }
+        });
     }
 
     /**
@@ -199,10 +217,10 @@ public class RunningQuery {
                     public RunningQuery getQuery() {
                         return RunningQuery.this;
                     }
-                    
+
                 };
 
-                final AnalysisRule rule = AnalysisRules.getRule(searchConfiguration.getRule());
+                final AnalysisRule rule = rules.getRule(searchConfiguration.getRule());
 
                 if (rule != null) {
                     if (context.getSearchMode().getKey().equals("d") && offset == 0) {
@@ -214,10 +232,10 @@ public class RunningQuery {
 
                         LOG.info("OldScore: " + score + "; NewScore: " + newScore + ";");
                         assert (score == newScore); // if this fails, goto mick, do not pass go, do not collect $200.
-                        if( score != newScore ){
+                        if (score != newScore) {
                             LOG.fatal("\n\n!!! Old score does not match new score !!!\n\n");
                         }
-                        
+
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
                         }
@@ -236,7 +254,7 @@ public class RunningQuery {
                 } else {
                     // Optimisation. Alternate between the two web searches.
                     if (isNorwegian(searchConfiguration) || isInternational(searchConfiguration)) {
-                        String searchType = getSingleParameter("s");
+                        final String searchType = getSingleParameter("s");
                         if (searchType != null && searchType.equals("g")) {
                             if (isInternational(searchConfiguration)) {
                                 commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
@@ -250,29 +268,27 @@ public class RunningQuery {
                 }
             }
 
-            List results;
-
             if (LOG.isDebugEnabled()) {
                 LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
             }
 
-            results = context.getSearchMode().getExecutor().invokeAll(commands, 3000);
+            final List results = context.getSearchMode().getExecutor().invokeAll(commands, 3000);
 
             for (Iterator iterator = results.iterator(); iterator.hasNext();) {
-                SearchTask task = (SearchTask) iterator.next();
+                final SearchTask task = (SearchTask) iterator.next();
 
-                SearchCommand command = task.getCommand();
-                SearchConfiguration configuration = command.getSearchConfiguration();
+                final SearchCommand command = task.getCommand();
+                final SearchConfiguration configuration = command.getSearchConfiguration();
 
                 if (task.isDone()) {
                     try {
-                        SearchResult searchResult = (SearchResult) task.get();
+                        final SearchResult searchResult = (SearchResult) task.get();
 
                         if (searchResult != null) {
 
                             hits.put(configuration.getName(), new Integer(searchResult.getHitCount()));
 
-                            Integer score = (Integer) scores.get(task.getCommand().getSearchConfiguration().getName());
+                            final Integer score = (Integer) scores.get(task.getCommand().getSearchConfiguration().getName());
 
                             if (score != null && configuration.getRule() != null && score.intValue() >= task.getCommand().getSearchConfiguration().getRuleThreshold()) {
                                 if (searchResult.getResults().size() > 0 && score.intValue() > 15) {
@@ -289,7 +305,7 @@ public class RunningQuery {
             Collections.sort(enrichments);
             Collections.sort(sources);
         } catch (Exception e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOG.error("Failure to run query.", e);
         }
     }
 
@@ -307,11 +323,11 @@ public class RunningQuery {
     }
 
     private boolean isInternational(final SearchConfiguration searchConfiguration) {
-        return searchConfiguration.getName().equals("globalSearch");
+        return "globalSearch".equals(searchConfiguration.getName());
     }
 
     private boolean isNorwegian(final SearchConfiguration searchConfiguration) {
-        return searchConfiguration.getName().equals("defaultSearch");
+        return "defaultSearch".equals(searchConfiguration.getName());
     }
 
     protected void addParameter(final String key, final Object obj) {
