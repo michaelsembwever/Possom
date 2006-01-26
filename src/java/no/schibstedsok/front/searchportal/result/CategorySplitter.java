@@ -12,8 +12,10 @@ import java.util.Iterator;
  */
 
 public class CategorySplitter implements ResultHandler {
-    public void handleResult(SearchResult result, Map parameters) {
-        for (Iterator iterator = result.getResults().iterator(); iterator.hasNext();) {
+    
+    public void handleResult(Context cxt, Map parameters) {
+        
+        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
             String ypbransje = searchResultItem.getField("ypbransje");

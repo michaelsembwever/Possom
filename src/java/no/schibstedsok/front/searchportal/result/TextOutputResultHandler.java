@@ -8,8 +8,10 @@ import java.util.Iterator;
  * @version <tt>$Revision$</tt>
  */
 public class TextOutputResultHandler implements ResultHandler {
-    public void handleResult(SearchResult result, Map parameters) {
-        for (Iterator iterator = result.getResults().iterator(); iterator.hasNext();) {
+    
+    public void handleResult(Context cxt, Map parameters) {
+        
+        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             BasicSearchResultItem basicSearchResultItem = (BasicSearchResultItem) iterator.next();
 
             for (Iterator iterator1 = basicSearchResultItem.getFieldNames().iterator(); iterator1.hasNext();) {

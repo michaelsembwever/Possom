@@ -41,11 +41,13 @@ public class VelocityResultHandler implements ResultHandler {
         initVelocity();
     }
 
-    public void handleResult(final SearchResult result, final Map parameters) {
+    public void handleResult(final Context cxt, final Map parameters) {
 
         if (log.isDebugEnabled()) {
             log.debug("ENTR: handleResult()");
         }
+        final SearchResult result = cxt.getSearchResult();
+        
         // This requirement of the users of this class to send the web stuff
         // as parameters is a bit too implicit...
 
@@ -66,7 +68,7 @@ public class VelocityResultHandler implements ResultHandler {
                 log.debug("handleResult: Created Template=" + template.getName());
             }
             VelocityContext context = new VelocityContext();
-            populateVelocityContext(context, result, request, response);
+            populateVelocityContext(context, cxt, request, response);
             template.merge(context, w);
             response.getWriter().write(w.toString());
         } catch (Exception e) {
@@ -75,13 +77,14 @@ public class VelocityResultHandler implements ResultHandler {
     }
 
     protected void populateVelocityContext(final VelocityContext context,
-                                           final SearchResult result,
+                                           final Context cxt,
                                            final HttpServletRequest request,
                                            final HttpServletResponse response) {
 
         if (log.isDebugEnabled()) {
             log.debug("ENTR: populateVelocityContext()");
         }
+        final SearchResult result = cxt.getSearchResult();
         String queryString = result.getSearchCommand().getQuery().getQueryString();
 
         String queryStringURLEncoded = null;
@@ -115,7 +118,7 @@ public class VelocityResultHandler implements ResultHandler {
             context.put("pager", pager);
         }
 
-        Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(Site.DEFAULT).getProperties());
+        Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(cxt.getSite()).getProperties());
         context.put("linkpulse", linkpulse);
     }
 

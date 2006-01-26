@@ -8,8 +8,10 @@ import java.util.Map;
  * @version <tt>$Revision$</tt>
  */
 public class PhoneNumberFormatter implements ResultHandler {
-    public void handleResult(SearchResult result, Map parameters) {
-        for (Iterator iterator = result.getResults().iterator(); iterator.hasNext();) {
+    
+    public void handleResult(Context cxt, Map parameters) {
+        
+        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
             String ypanynumber = searchResultItem.getField("ypanynumber");

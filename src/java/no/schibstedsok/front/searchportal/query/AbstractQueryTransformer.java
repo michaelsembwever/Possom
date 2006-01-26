@@ -10,7 +10,7 @@ package no.schibstedsok.front.searchportal.query;
 public abstract class AbstractQueryTransformer implements QueryTransformer {
 
 
-    public String getFilter(String originalQuery){
+    public String getFilter(Context cxt){
         return null;
     }
 

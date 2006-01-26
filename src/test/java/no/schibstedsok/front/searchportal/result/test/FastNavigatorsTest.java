@@ -541,6 +541,10 @@ public final class FastNavigatorsTest extends TestCase {
             public RunningQuery getQuery() {
                 return rq;
             }
+            
+            public Site getSite() {
+                return Site.DEFAULT;
+            }
 
         };
         

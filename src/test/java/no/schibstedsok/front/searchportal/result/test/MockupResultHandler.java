@@ -13,8 +13,8 @@ public class MockupResultHandler implements ResultHandler {
     private SearchResult result;
     private Map parameters;
 
-    public void handleResult(SearchResult result, Map parameters) {
-        this.result = result;
+    public void handleResult(Context cxt, Map parameters) {
+        this.result = cxt.getSearchResult();
         this.parameters = parameters;
     }
 

@@ -6,6 +6,7 @@ import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.result.ResultHandler;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
+import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -79,7 +80,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             watch = new StopWatch();
             watch.start();
         }
-        SearchResult result = null;
+        //SearchResult result = null;
 
         //TODO: Hide this in QueryRule.execute(some parameters)
         boolean executeQuery = false;
@@ -101,7 +102,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         if(LOG.isDebugEnabled()){
             LOG.debug("call(): ExecuteQuery?" + executeQuery);
         }
-        result = executeQuery ? execute() : new BasicSearchResult(this);
+        final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
 
         if (LOG.isDebugEnabled()) {
             watch.stop();
@@ -111,8 +112,18 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         }
 
         for (Iterator handlerIterator = getSearchConfiguration().getResultHandlers().iterator(); handlerIterator.hasNext();) {
-            ResultHandler resultHandler = (ResultHandler) handlerIterator.next();
-            resultHandler.handleResult(result, parameters);
+            final ResultHandler resultHandler = (ResultHandler) handlerIterator.next();
+            final ResultHandler.Context resultHandlerContext = new ResultHandler.Context(){
+                public SearchResult getSearchResult() {
+                    return result;
+                }
+
+                public Site getSite() {
+                    return context.getSite();
+                }
+                
+            };
+            resultHandler.handleResult(resultHandlerContext, parameters);
         }
 
         return result;
@@ -151,14 +162,25 @@ public abstract class AbstractSearchCommand implements SearchCommand {
     private void applyQueryTransformers(List transformers) {
         if (transformers != null) {
             for (Iterator iterator = transformers.iterator(); iterator.hasNext();) {
-                QueryTransformer transformer = (QueryTransformer) iterator.next();
+                final QueryTransformer transformer = (QueryTransformer) iterator.next();
+                final QueryTransformer.Context qtCxt = new QueryTransformer.Context(){
+                    public String getQueryString() {
+                        return transformedQuery;
+                    }
 
-                transformedQuery = transformer.getTransformedQuery(transformedQuery);
+                    public Site getSite() {
+                        return context.getSite();
+                    }
+                    
+                };
+                
+
+                transformedQuery = transformer.getTransformedQuery(qtCxt);
 
                 if(filter == null){
-                    filter = transformer.getFilter(transformedQuery);
-                } else if(transformer.getFilter(transformedQuery) != null){
-                    filter += transformer.getFilter(transformedQuery) + " ";
+                    filter = transformer.getFilter(qtCxt);
+                } else if(transformer.getFilter(qtCxt) != null){
+                    filter += transformer.getFilter(qtCxt) + " ";
                 }
 
                 if(LOG.isDebugEnabled()){

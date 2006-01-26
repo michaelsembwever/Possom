@@ -27,12 +27,12 @@ public class TvEnrichmentDateFormatHandler implements ResultHandler {
         this.targetField = targetField;
     }
 
-    public void handleResult(SearchResult result, Map parameters) {
+    public void handleResult(Context cxt, Map parameters) {
     	// TODO: for performance reasons, is SimpleDateFormat usage avoidable?
     	SimpleDateFormat inputDF=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat outputDF = new SimpleDateFormat("HH:mm");
 
-        for (Iterator iterator = result.getResults().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
             String docDateTime = searchResultItem.getField(sourceField);

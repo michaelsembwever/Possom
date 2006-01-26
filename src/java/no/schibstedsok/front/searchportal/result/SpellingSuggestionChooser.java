@@ -35,8 +35,9 @@ public class SpellingSuggestionChooser implements ResultHandler {
         this.maxSuggestions = maxSuggestions;
     }
 
-    public void handleResult(SearchResult result, Map parameters) {
+    public void handleResult(Context cxt, Map parameters) {
 
+        final SearchResult result = cxt.getSearchResult();
         if (log.isDebugEnabled()) {
             log.debug("Number of corrected terms are " + numberOfCorrectedTerms(result.getSpellingSuggestions()));
         }

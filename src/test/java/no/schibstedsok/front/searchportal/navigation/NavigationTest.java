@@ -201,7 +201,7 @@ public class NavigationTest extends TestCase {
 		
 		Search search = new Search();
 		IQueryResult result = search.search(geographicGraph, "pizza");
-		assertTrue(geographicGraph.getPosition().options().size() > 0);
+		assertEquals(0, geographicGraph.getPosition().options().size() );
 		geographicGraph.select("Oslo");
 //		printFilterInfo(geographicGraph);
 		result = search.search(geographicGraph, "pizza");

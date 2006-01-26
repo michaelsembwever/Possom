@@ -7,6 +7,7 @@ package no.schibstedsok.front.searchportal.command;
 import edu.emory.mathcs.backport.java.util.concurrent.Callable;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.site.SiteContext;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -17,7 +18,7 @@ public interface SearchCommand extends Callable {
     /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it 
      * creates.
      */
-    public interface Context{
+    public interface Context extends SiteContext{
         SearchConfiguration getSearchConfiguration();
         RunningQuery getQuery();
     }

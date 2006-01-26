@@ -1,5 +1,8 @@
 package no.schibstedsok.front.searchportal.query;
 
+import no.schibstedsok.front.searchportal.query.parser.QueryStringContext;
+import no.schibstedsok.front.searchportal.site.SiteContext;
+
 
 /**
  * Query query can be applied to queries before sending them away to
@@ -9,6 +12,8 @@ package no.schibstedsok.front.searchportal.query;
  * @version <tt>$Revision$</tt>
  */
 public interface QueryTransformer {
+    
+    public interface Context extends QueryStringContext, SiteContext{}
 
 
     /**
@@ -17,7 +22,7 @@ public interface QueryTransformer {
      * @param originalQuery
      * @return
      */
-    String getTransformedQuery(String originalQuery);
+    String getTransformedQuery(Context cxt);
 
     /**
      * Set filter for this query. By analizing the query we can
@@ -29,6 +34,6 @@ public interface QueryTransformer {
      *
      * @return filterstring
      */
-    String getFilter(String originalQuery);
+    String getFilter(Context cxt);
 
 }

@@ -19,7 +19,10 @@ public class TvQueryTransformer extends AbstractQueryTransformer {
      * @param originalQuery
      * @return
      */
-    public String getTransformedQuery(String originalQuery) {
+    public String getTransformedQuery(final Context cxt) {
+        
+        final String originalQuery = cxt.getQueryString();
+
         return originalQuery;
     }
 
@@ -28,7 +31,10 @@ public class TvQueryTransformer extends AbstractQueryTransformer {
      * Set docdatetime > current date
      * @return docdatetime:>[FORMATTED DATE]
      */
-    public String getFilter() {
+    public String getFilter(final Context cxt) {
+        
+        final String originalQuery = cxt.getQueryString();
+
 
         SimpleDateFormat sdf = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss'Z'");
         return "+expiresdate:>" + sdf.format(new Date());

@@ -23,21 +23,24 @@ public class AgeCalculatorResultHandler implements ResultHandler {
 
     private transient static Log log = LogFactory.getLog(AgeCalculatorResultHandler.class);
 
-    public void handleResult(SearchResult result, Map parameters) {
+    public void handleResult(Context cxt, Map parameters) {
 
-        Locale currentLocale = result.getSearchCommand().getQuery().getLocale();
+        Locale currentLocale = cxt.getSearchResult().getSearchCommand().getQuery().getLocale();
 
         //TODO: for performance reasons, is SimpleDateFormat avoidable?
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-        for (Iterator iterator = result.getResults().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
             String docTime = searchResultItem.getField(sourceField);
 
-            docTime = docTime.replaceAll("T", " ").replaceAll("Z", " ").trim();
+            
 
             if (docTime != null) {
+                
+                docTime = docTime.replaceAll("T", " ").replaceAll("Z", " ").trim();
+                
                 try {
                     long stamp = df.parse(docTime).getTime();
                     long age = System.currentTimeMillis() - stamp;

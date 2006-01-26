@@ -23,7 +23,9 @@ import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
+import no.schibstedsok.front.searchportal.navigation.*;
 import no.schibstedsok.front.searchportal.query.QueryTransformer;
+import no.schibstedsok.front.searchportal.site.Site;
 
 public class Search {
 
@@ -194,12 +196,21 @@ public class Search {
 		String transformedQuery = this.transformedQuery;
 
 		if (transformers != null) {
-			for (Iterator iterator = transformers.iterator(); iterator
-					.hasNext();) {
-				QueryTransformer transformer = (QueryTransformer) iterator
-						.next();
-				transformedQuery = transformer
-						.getTransformedQuery(transformedQuery);
+			for (Iterator iterator = transformers.iterator(); iterator.hasNext();) {
+				QueryTransformer transformer = (QueryTransformer) iterator.next();
+                
+                final String origQuery = transformedQuery;
+                final QueryTransformer.Context qtCxt = new QueryTransformer.Context(){
+                    public String getQueryString() {
+                        return origQuery;
+                    }
+
+                    public Site getSite() {
+                        return Site.DEFAULT;
+                    }
+                    
+                };
+				transformedQuery = transformer.getTransformedQuery(qtCxt);
 			}
 		}
 		return transformedQuery;

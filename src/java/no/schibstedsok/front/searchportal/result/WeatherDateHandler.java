@@ -30,9 +30,9 @@ public class WeatherDateHandler implements ResultHandler  {
         this.targetField = targetField;
     }
 
-    public void handleResult(SearchResult result, Map parameters) {
+    public void handleResult(Context cxt, Map parameters) {
 
-        for (Iterator iterator = result.getResults().iterator(); iterator.hasNext();) {
+        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
             String datestring = searchResultItem.getField(sourceField);
             Date date = null;

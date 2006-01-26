@@ -14,8 +14,9 @@ public class MultiValuedFieldCollector implements ResultHandler {
 
     private Map fieldMap = new HashMap();
 
-    public void handleResult(SearchResult result, Map parameters) {
-        for (Iterator iterator = result.getResults().iterator(); iterator.hasNext();) {
+    public void handleResult(Context cxt, Map parameters) {
+        
+        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
             for (Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {

@@ -76,5 +76,45 @@ public class SearchModeTest extends TestCase {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
+    
+
+    public void testOverturePPCConfiguration() throws Exception {
+
+        final String query = "linux";
+
+        final SearchMode mode = new SearchMode();
+        mode.setExecutor(new ParallelSearchCommandExecutor());
+        final SearchConfiguration searchConfiguration = new OverturePPCConfiguration();
+        searchConfiguration.setResultsToReturn(3);
+        mode.addSearchConfiguration(searchConfiguration);
+
+        final RunningQuery.Context rqCxt = new RunningQuery.Context(){
+            public SearchMode getSearchMode() {
+                return mode;
+            }
+
+            public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
+                return FileResourceLoader.newPropertiesLoader(this,resource, properties);
+            }
+
+            public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
+                return FileResourceLoader.newXStreamLoader(this,resource, xstream);
+            }
+            
+            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                return FileResourceLoader.newDocumentLoader(this, resource, builder);
+            }
+
+            public Site getSite() {
+                return Site.DEFAULT; 
+            }
+            
+        };
+        
+        final RunningQuery runningQuery = new RunningQuery(rqCxt, query, new HashMap());
+
+        runningQuery.run();
+
+    }
 }
 

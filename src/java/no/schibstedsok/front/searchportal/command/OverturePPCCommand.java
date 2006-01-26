@@ -111,46 +111,6 @@ public class OverturePPCCommand extends AbstractSearchCommand {
     }
 
 
-    // TODO move this to a test class
-    public static void main(String[] args) throws Exception {
-
-        String query = "linux";
-
-        final SearchMode mode = new SearchMode();
-        mode.setExecutor(new ParallelSearchCommandExecutor());
-        SearchConfiguration searchConfiguration = new OverturePPCConfiguration();
-        searchConfiguration.setResultsToReturn(3);
-        mode.addSearchConfiguration(searchConfiguration);
-
-        final RunningQuery.Context rqCxt = new RunningQuery.Context(){
-            public SearchMode getSearchMode() {
-                return mode;
-            }
-
-            public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
-                return UrlResourceLoader.newPropertiesLoader(this,resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
-                return UrlResourceLoader.newXStreamLoader(this,resource, xstream);
-            }
-            
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
-                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-
-            public Site getSite() {
-                return Site.DEFAULT; //FIXME implement me properly
-            }
-            
-        };
-        
-        final RunningQuery runningQuery = new RunningQuery(rqCxt, query, new HashMap());
-
-        runningQuery.run();
-
-    }
-
 }
 
 

@@ -1,6 +1,7 @@
 package no.schibstedsok.front.searchportal.result;
 
 import java.util.Map;
+import no.schibstedsok.front.searchportal.site.SiteContext;
 
 /*
  * @version <tt>$Revision$</tt>
@@ -9,5 +10,13 @@ import java.util.Map;
  */
 
 public interface ResultHandler {
-    void handleResult(SearchResult result, Map parameters);
+    /** Contextual demands from a ResultHandler.
+     * Slightly unusual in that the context never becomes a member field but is only used inside the 
+     * handleResult method.
+     */
+    public interface Context extends SiteContext{
+        SearchResult getSearchResult();
+    }
+    
+    void handleResult(Context cxt, Map parameters);
 }

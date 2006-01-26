@@ -19,7 +19,10 @@ public class NewsTransformer  implements QueryTransformer {
      * @param originalQuery
      * @return
      */
-    public String getTransformedQuery(String originalQuery) {
+    public String getTransformedQuery(final Context cxt) {
+        
+        final String originalQuery = cxt.getQueryString();
+
        return originalQuery;
     }
 
@@ -31,7 +34,10 @@ public class NewsTransformer  implements QueryTransformer {
      *
      * @return filterstring
      */
-    public String getFilter(String origQuery) {
+    public String getFilter(final Context cxt) {
+        
+        final String origQuery = cxt.getQueryString();
+
         if(origQuery == null) {
             throw new IllegalArgumentException("setQuery not called with minimum empty query");
         }

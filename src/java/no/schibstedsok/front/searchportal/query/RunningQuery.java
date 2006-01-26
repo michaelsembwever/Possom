@@ -217,6 +217,10 @@ public class RunningQuery {
                     public RunningQuery getQuery() {
                         return RunningQuery.this;
                     }
+                    
+                    public Site getSite(){
+                        return context.getSite();
+                    }
 
                 };
 

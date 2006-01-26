@@ -10,10 +10,11 @@ import java.util.*;
  */
 public class ContentSourceCollector implements ResultHandler {
 
-    public void handleResult(SearchResult result, Map parameters) {
-        RunningQuery query = result.getSearchCommand().getQuery();
-        if (result.getHitCount() > 0) {
-            FastSearchResult fastResult = (FastSearchResult) result;
+    public void handleResult(Context cxt, Map parameters) {
+        
+        RunningQuery query = cxt.getSearchResult().getSearchCommand().getQuery();
+        if (cxt.getSearchResult().getHitCount() > 0) {
+            FastSearchResult fastResult = (FastSearchResult) cxt.getSearchResult();
             if (fastResult.getModifiers("sources") != null) {
                 for (Iterator iterator = fastResult.getModifiers("sources").iterator(); iterator.hasNext();) {
                     Modifier modifier = (Modifier) iterator.next();

@@ -16,12 +16,15 @@ public class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
     private Collection prefixes = new ArrayList();
 
-    public String getTransformedQuery(final String originalQuery) {
+    public String getTransformedQuery(final Context cxt) {
+        
+        final String originalQuery = cxt.getQueryString();
+
         String result = originalQuery;
         
         for (Iterator iterator = prefixes.iterator(); iterator.hasNext();) {
             final TokenPredicate token = TokenPredicate.valueOf((String) iterator.next());
-            final StopWordRemover remover = RegExpEvaluatorFactory.valueOf(Site.DEFAULT).getStopWordRemover(token); // FIXME!! completely wrong!
+            final StopWordRemover remover = RegExpEvaluatorFactory.valueOf(cxt.getSite()).getStopWordRemover(token);
             result = remover.removeStopWords(result);
         }
 

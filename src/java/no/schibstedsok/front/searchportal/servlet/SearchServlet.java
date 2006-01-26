@@ -78,13 +78,23 @@ public final class SearchServlet extends HttpServlet {
             stopWatch = new StopWatch();
             stopWatch.start();
         }
+        
+        // find the current site. Since we are behind a ajp13 connection request.getServerName()
+        // httpd.conf needs: "JkEnvVar SERVER_NAME" inside the virtual host directive. 
+        final String vhost = null != httpServletRequest.getAttribute("SERVER_NAME")
+            ? (String)httpServletRequest.getAttribute("SERVER_NAME")
+            // falls back to this when not behind Apache. (Development machine).
+            : httpServletRequest.getServerName()+":"+httpServletRequest.getServerPort(); 
+        
+        final Site site = Site.valueOf(vhost);
+        
         if (tabs == null
                 || (httpServletRequest.getParameter("reload") != null
                         && httpServletRequest.getParameter("reload").equals("tabs"))) {
 
             LOG.info("doGet(): ReLoading tabs");
 
-            tabs = loadSearchTabs(Site.DEFAULT);
+            tabs = loadSearchTabs(site);
             LOG.warn("Tabs reloaded");
         }
 
@@ -117,7 +127,7 @@ public final class SearchServlet extends HttpServlet {
             }
 
             public Site getSite() {
-                return Site.DEFAULT; //FIXME implement me properly
+                return site;
             }
 
         };

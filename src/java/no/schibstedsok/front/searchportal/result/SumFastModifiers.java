@@ -24,8 +24,9 @@ public class SumFastModifiers implements ResultHandler {
         modifierNames.add(modifierName);
     }
 
-    public void handleResult(SearchResult result, Map parameters) {
+    public void handleResult(Context cxt, Map parameters) {
 
+        final SearchResult result = cxt.getSearchResult();
         if (result.getHitCount() > 0 ) {
 
             FastSearchResult fastResult = (FastSearchResult) result;

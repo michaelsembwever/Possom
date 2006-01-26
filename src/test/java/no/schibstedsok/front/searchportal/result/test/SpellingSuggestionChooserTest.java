@@ -1,8 +1,11 @@
 package no.schibstedsok.front.searchportal.result.test;
 
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.result.ResultHandler;
+import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
+import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
 
 import java.util.HashMap;
@@ -18,7 +21,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
     public void testNoSuggestions() {
         SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
@@ -27,7 +30,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting"));
         SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(1, numberOfSuggestions(result, "slankting"));
     }
@@ -37,7 +40,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
@@ -48,7 +51,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(2, numberOfSuggestions(result, "slankting"));
     }
@@ -62,7 +65,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(3, numberOfSuggestions(result, "slankting"));
     }
@@ -78,7 +81,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
         result.addSpellingSuggestion(suggestion4);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(3, numberOfSuggestions(result, "slankting"));
     }
@@ -98,7 +101,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         result.addSpellingSuggestion(suggestion4);
         result.addSpellingSuggestion(suggestion5);
         result.addSpellingSuggestion(suggestion6);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(3, numberOfSuggestions(result, "slankting"));
 
@@ -119,7 +122,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
         result.addSpellingSuggestion(suggestion4);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
@@ -130,7 +133,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 230);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(1, numberOfSuggestions(result, "slankting"));
         List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
@@ -144,7 +147,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(2, numberOfTermsCorrected(result));
         List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
@@ -161,7 +164,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(1, numberOfTermsCorrected(result));
         List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
@@ -178,7 +181,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(2, numberOfTermsCorrected(result));
         List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
@@ -195,7 +198,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(0, numberOfTermsCorrected(result));
         assertEquals(0, result.getQuerySuggestions().size());
     }
@@ -205,7 +208,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykkel bil"));
         SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
-        chooser.handleResult(result, new HashMap());
+        handleResult(chooser,result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(1, result.getQuerySuggestions().size());
     }
@@ -218,5 +221,19 @@ public class SpellingSuggestionChooserTest extends TestCase {
     private int numberOfSuggestions(BasicSearchResult result, String term) {
         List listOfSuggestions = (List) result.getSpellingSuggestions().get(term);
         return listOfSuggestions.size();
+    }
+    
+    private void handleResult(final SpellingSuggestionChooser chooser, final SearchResult result){
+        final ResultHandler.Context resultHandlerContext = new ResultHandler.Context(){
+            public SearchResult getSearchResult() {
+                return result;
+            }
+
+            public Site getSite() {
+                return Site.DEFAULT;
+            }
+
+        };
+        chooser.handleResult(resultHandlerContext, new HashMap());
     }
 }
