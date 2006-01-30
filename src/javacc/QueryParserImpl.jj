@@ -15,7 +15,10 @@ import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** This class is NOT synchronized. You must use a separate instance for each query. **/
+/** This class is NOT synchronized. You must use a separate instance for each query. 
+ *
+ * @todo the LOOKAHEAD's can be reduced to one. but how?...
+ **/
 public final class QueryParserImpl extends AbstractQueryParser{
 
     public QueryParserImpl(final Context cxt){
