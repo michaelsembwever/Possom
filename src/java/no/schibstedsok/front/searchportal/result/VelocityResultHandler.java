@@ -17,6 +17,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.tools.generic.MathTool;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +44,13 @@ public class VelocityResultHandler implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        if (log.isDebugEnabled()) {
+        // Skip this result handler if xml is wanted.
+        String[] xmlParam = (String[]) parameters.get("xml");
+        if (xmlParam != null && xmlParam[0].equals("yes")) {
+            return;
+        }
+        
+        if(log.isDebugEnabled()){
             log.debug("ENTR: handleResult()");
         }
         final SearchResult result = cxt.getSearchResult();
@@ -109,7 +116,9 @@ public class VelocityResultHandler implements ResultHandler {
         context.put("coordHelper", new CoordHelper());
         context.put("contextPath", request.getContextPath());
         context.put("hashGenerator", request.getAttribute("hashGenerator"));
-
+        context.put("runningQuery", result.getSearchCommand().getQuery());        
+        context.put("math", new MathTool());
+        
         SearchConfiguration config = result.getSearchCommand().getSearchConfiguration();
 
         if (config.isPagingEnabled()) {
@@ -120,6 +129,10 @@ public class VelocityResultHandler implements ResultHandler {
 
         Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(cxt.getSite()).getProperties());
         context.put("linkpulse", linkpulse);
+
+        Decoder decoder = new Decoder();
+        context.put("decoder", decoder);
+
     }
 
     private static void initVelocity() {

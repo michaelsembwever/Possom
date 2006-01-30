@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class NormalizePhoneNumberTransformer extends AbstractQueryTransformer{
 
     private transient static Pattern countryPrefix = Pattern.compile("(\\+|00)47");
-    private transient static Pattern phoneNumber = Pattern.compile("(\\d)\\s{0,1}(\\d)\\s{0,1}(\\d)\\s{0,1}(\\d)\\s{0,1}(\\d)\\s{0,1}(\\d)\\s{0,1}(\\d)\\s{0,1}(\\d)\\s{0,1}");
+    private transient static Pattern phoneNumber = Pattern.compile("(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*");
 
     public String getTransformedQuery(final Context cxt) {
         
@@ -30,9 +30,11 @@ public class NormalizePhoneNumberTransformer extends AbstractQueryTransformer{
     }
 
 
+
     // TODO move to test class
 //    public static void main(String[] args) {
 //        QueryTransformer t = new NormalizePhoneNumberTransformer();
 //        System.out.println(t.getTransformedQuery("974 0 33 06"));
 //    }
+
 }

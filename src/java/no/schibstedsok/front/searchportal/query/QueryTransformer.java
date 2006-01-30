@@ -4,6 +4,10 @@ import no.schibstedsok.front.searchportal.query.parser.QueryStringContext;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
 
+import java.util.Map;
+
+
+
 /**
  * Query query can be applied to queries before sending them away to
  * indices or other sources for further processing.
@@ -34,6 +38,5 @@ public interface QueryTransformer {
      *
      * @return filterstring
      */
-    String getFilter(Context cxt);
-
+    String getFilter(Context cxt, Map parameters);
 }

@@ -10,10 +10,10 @@
 
         <table class="enrichment" cellspacing="0" cellpadding="0">
         ##set ($param = "category:enrichmentHeader;companyid:1234")
-        ##<td colspan="4"><a href='$linkpulse.getUrl("?c=y&amp;q=$query", "category:enrichmentHeader", "sgo")'>Test</a></td>
+        ##<td colspan="4"><a href='$linkpulse.getUrl("?c=y&amp;q=$query", "category:enrichmentHeader", "sgo", "")'>Test</a></td>
             #if ($result.hitCount != 1)
             <tr>
-                <td colspan="2" class="title"><a href='$linkpulse.getUrl("?c=y&amp;q=$query", "category:enrichmentHeader", "sgo")'>$text.getMessage($locale, "hitsOnYellowEnrichment", $result.hitCount, $queryHTMLEscaped)</a></td>
+                <td colspan="2" class="title"><a href='$linkpulse.getUrl("?c=y&amp;q=$query", "category:enrichmentHeader", "sgo", "")'>$text.getMessage($locale, "hitsOnYellowEnrichment", $result.hitCount, $queryHTMLEscaped)</a></td>
             </tr>
             #else
             <tr>
@@ -27,7 +27,7 @@
                     #if ($result.results.size() == 1) #foreach( $item in $result.results ) <a href="?c=yip&amp;q=$query&amp;companyId=$item.getField('recordid')&amp;companyId_x=$hashGenerator.generateMD5($item.getField('recordid'))"> #end #else <a href="?c=y&amp;q=$query"> #end
                     <img src="../images/enrichment/yp.jpg" alt="Bedrifter" /></a>
                 </td>
-                <td width="500">
+                <td width="500" class="enrich_text">
                     <table cellspacing="0">
                     #foreach( $item in $result.results )
                         #if ($velocityCount <= 3)

@@ -148,6 +148,30 @@
                     flag.value = "close";
                     swap_class('media_frame_hide', 'media_frame_null');
                 }
+
+                function writeRetrieverLog(paper, flag) {
+                    var http_request = false;
+                    if (flag.value != "open"){
+                        http_request = false;
+                        url = "writeLog.do?paper=" + escape(paper);
+                        if (window.XMLHttpRequest) { // Mozilla, Safari,...
+                            http_request = new XMLHttpRequest();
+                            if (http_request.overrideMimeType) {
+                                http_request.overrideMimeType('text/xml');
+                            }
+                        } else if (window.ActiveXObject) { // IE
+                            try {
+                                http_request = new ActiveXObject("Msxml2.XMLHTTP");
+                            } catch (e) {
+                                try {
+                                    http_request = new ActiveXObject("Microsoft.XMLHTTP");
+                                } catch (e) {}
+                            }
+                        }
+                        http_request.open('GET', url, false);
+                        http_request.send(null);
+                    }
+                }
             </script>
 
             <div id="result_container">
@@ -165,17 +189,18 @@
                             <a href="$item.getField('url')" class="search_big_url">$item.getField('newstitle')</a>
                             #else
                                 #if ($item.getField('manorawbody'))
-                                    <span id="expander_$velocityCount"><a href="javascript:;" onclick="media_open(document.mediaform_${velocityCount}.mediafield_${velocityCount}, 'search_summary_$velocityCount', 'manorawbody_$velocityCount', 'hider_$velocityCount', 'mediaframe_$velocityCount');" class="search_big_url">$item.getField('newstitle')</a></span>
+                                     #set ($newssource_param = $item.getField('newssource'))
+                                    <span id="expander_$velocityCount"><a href="javascript:;" onclick="writeRetrieverLog('$newssource_param', document.mediaform_${velocityCount}.mediafield_${velocityCount}); media_open(document.mediaform_${velocityCount}.mediafield_${velocityCount}, 'search_summary_$velocityCount', 'manorawbody_$velocityCount', 'hider_$velocityCount', 'mediaframe_$velocityCount');" class="search_big_url" style="color: #206CCC;">$item.getField('newstitle')</a></span>
                                 #else
                                     <span class="search_big_url">$item.getField('newstitle')</span>
                                 #end
                             #end
                             <span class="timestamp">
-                            #if ($request.getParameter("contentsource") && ($request.getParameter("contentsource") == "Mediearkivet"))
-                                $item.getField('newssource') papirutgave, $item.getField('age')
-                            #else
-                                $item.getField('newssource'), $item.getField('age')
-                            #end
+                                #if ($item.getField('manorawbody'))
+                                    $item.getField('newssource') papirutgave, $item.getField('age')
+                                #else
+                                    $item.getField('newssource'), $item.getField('age')
+                                #end
                             </span>
                             <div class="search_summary" id="search_summary_$velocityCount">$!item.getField('newsbody')</div>
                             #if ($item.getField('manorawbody'))

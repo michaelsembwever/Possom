@@ -65,6 +65,7 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final RegExpTokenPredicate ORGNR = new RegExpTokenPredicate("orgNr");
     public static final RegExpTokenPredicate PICTUREPREFIX = new RegExpTokenPredicate("picturePrefix");
     public static final RegExpTokenPredicate PHONENUMBER = new RegExpTokenPredicate("phoneNumber");
+    public static final RegExpTokenPredicate SITEPREFIX = new RegExpTokenPredicate("sitePrefix");
     public static final RegExpTokenPredicate TVPREFIX = new RegExpTokenPredicate("tvPrefix");
     public static final RegExpTokenPredicate WEATHERPREFIX = new RegExpTokenPredicate("weatherPrefix");
     public static final RegExpTokenPredicate WIKIPEDIAPREFIX = new RegExpTokenPredicate("wikipediaPrefix");

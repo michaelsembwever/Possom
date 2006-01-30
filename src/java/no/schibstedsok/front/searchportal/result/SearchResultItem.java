@@ -9,6 +9,7 @@ import java.util.Collection;
 public interface SearchResultItem {
     void addField(String field, String value);
     String getField(String field);
+    Object getFieldAsObject(String field);
     Collection getFieldNames();
     public Collection getMultivaluedField(String field);
     public void addToMultivaluedField(String field, String value);

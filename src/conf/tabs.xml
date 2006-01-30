@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Copyright (2006) Schibsted SÃ¸k AS
+-->
 <tabs>
     <searchModes>
 
@@ -9,11 +12,12 @@
                 <searchCommandExecutor
                         class="no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor"/>
                 <key>d</key>
-
+				<queryAnalysisEnabled>true</queryAnalysisEnabled>
 		<!-- For counting news only -->
                 <searchConfigurations class="list">
                     <!-- Sources navigation search -->
                     <FastSearch>
+				       <statisticsName>fast_retriever</statisticsName>
                         <collections>
                             <string>retriever</string>
                             <string>moreover</string>
@@ -25,11 +29,10 @@
                         <collapsingEnabled>false</collapsingEnabled>
                         <resultView>urls</resultView>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>newsPrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+						   <no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
+						   		<sourcePrefix>nyhetskilde</sourcePrefix>
+						   		<targetPrefix>newssource</targetPrefix>
+						   </no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
                         </queryTransformers>
                         <navigators>
                             <entry>
@@ -67,13 +70,48 @@
 
                     <!-- Norwegian web crawl -->
                     <FastSearch>
+		                <statisticsName>fast_norwegianweb</statisticsName>
                         <queryServerURL>@queryServerURL.1@</queryServerURL>
                         <collections class="list">
                             <string>webcrawlno1</string>
                             <string>webcrawlno1deep1</string>
                             <string>webcrawlno2</string>
                             <string>robots</string>
+                            <string>retriever</string>
                         </collections>
+                        <synonymsEnabled>true</synonymsEnabled>
+                        <queryTransformers>
+			                <no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
+                                <sourcePrefix>site</sourcePrefix>
+                                <targetPrefix>site</targetPrefix>
+			                </no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
+                            <no.schibstedsok.front.searchportal.query.SimpleSiteSearchTransformer>
+                                <parameterName>ssr</parameterName>
+                                <filterName>site</filterName>
+                                <sites>
+                                    <entry>
+                                        <string>ds</string>
+                                        <string>dinside.no</string>
+                                    </entry>
+                                    <entry>
+                                        <string>it</string>
+                                        <string>itavisen.no</string>
+                                    </entry>
+                                    <entry>
+                                        <string>di</string>
+                                        <string>digi.no</string>
+                                    </entry>
+                                    <entry>
+                                        <string>pr</string>
+                                        <string>propaganda-as.no</string>
+                                    </entry>
+                                    <entry>
+                                        <string>im</string>
+                                        <string>imarkedet.no</string>
+                                    </entry>
+                                </sites>
+                            </no.schibstedsok.front.searchportal.query.SimpleSiteSearchTransformer>
+                        </queryTransformers>
                         <offensiveScoreLimit>35</offensiveScoreLimit>
                         <clusteringEnabled>false</clusteringEnabled>
                         <collapsingEnabled>true</collapsingEnabled>
@@ -83,26 +121,43 @@
                         <navigators/>
                         <name>defaultSearch</name>
                         <resultHandlers>
-                            <no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
-                                <minimumScore>-1</minimumScore>
-                                <maxSuggestions>3</maxSuggestions>
-                                <maxDistance>0</maxDistance>
-                                <muchBetter>5</muchBetter>
-                                <longQuery>2</longQuery>
-                                <veryLongQuery>3</veryLongQuery>
-                                <maxSuggestionsForLongQueries>2</maxSuggestionsForLongQueries>
-                            </no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
-                            <!-- Prints out certain file formats after title -->
-                            <no.schibstedsok.front.searchportal.result.FindFileFormat/>
-                            <no.schibstedsok.front.searchportal.result.VelocityResultHandler></no.schibstedsok.front.searchportal.result.VelocityResultHandler>
+                          <no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
+                            <minimumScore>-1</minimumScore>
+                            <maxSuggestions>3</maxSuggestions>
+                            <maxDistance>0</maxDistance>
+                            <muchBetter>5</muchBetter>
+                            <longQuery>2</longQuery>
+                            <veryLongQuery>3</veryLongQuery>
+                            <maxSuggestionsForLongQueries>2</maxSuggestionsForLongQueries>
+                          </no.schibstedsok.front.searchportal.result.SpellingSuggestionChooser>
+                          <!-- Prints out certain file formats after title -->
+                          <no.schibstedsok.front.searchportal.result.FindFileFormat/>
+                          <no.schibstedsok.front.searchportal.result.FieldChooser>
+                            <targetField>title</targetField>
+                            <fields class="list">
+                              <string>newstitle</string>
+                              <string>title</string>
+                            </fields>
+                          </no.schibstedsok.front.searchportal.result.FieldChooser>
+                          <no.schibstedsok.front.searchportal.result.FieldChooser>
+                            <targetField>body</targetField>
+                            <fields class="list">
+                              <string>newsbody</string>
+                              <string>body</string>
+                            </fields>
+                          </no.schibstedsok.front.searchportal.result.FieldChooser>
+                          <no.schibstedsok.front.searchportal.result.VelocityResultHandler></no.schibstedsok.front.searchportal.result.VelocityResultHandler>
+			  <!--  Optional xml result handler. Only invoked if parameter xml=yes exists -->
+			  <no.schibstedsok.front.searchportal.result.XmlOutputResultHandler/>
                         </resultHandlers>
                         <pageSize>10</pageSize>
 
                         <resultFields class="list">
-                            <string>title</string>
-                            <string>url</string>
-                            <string>body</string>
-
+                          <string>title</string>
+                          <string>url</string>
+                          <string>body</string>
+			  <string>newstitle</string>
+			  <string>newsbody</string>
                         </resultFields>
                         <resultsToReturn>10</resultsToReturn>
                         <isPagingEnabled>true</isPagingEnabled>
@@ -110,7 +165,8 @@
 
                     <!-- Global crawl   -->
                     <FastSearch>
-                        <queryServerURL>@queryServerURL.3@</queryServerURL>
+					   <statisticsName>sensis_globalweb</statisticsName>
+                        <queryServerURL>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL>
                         <spamScoreLimit>10</spamScoreLimit>
                          <collapsingEnabled>true</collapsingEnabled>
                          <clusteringEnabled>false</clusteringEnabled>
@@ -125,7 +181,7 @@
                                      <string>url</string>
                                  </fields>
                              </no.schibstedsok.front.searchportal.result.FieldChooser>
-                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+                              <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
                          </resultHandlers>
                          <pageSize>10</pageSize>
                          <resultFields class="list">
@@ -136,9 +192,8 @@
                          <resultsToReturn>10</resultsToReturn>
                          <isPagingEnabled>true</isPagingEnabled>
                     </FastSearch>
-                    <!-- Global crawl   -->
-
-                    <FastSearch>
+                   <FastSearch>
+					   <statisticsName>sensis_globalweb</statisticsName>
                         <rule>globalSearch</rule>
                         <ruleThreshold>1</ruleThreshold>
                         <queryServerURL>@queryServerURL.3@</queryServerURL>
@@ -170,16 +225,12 @@
 
                     <!-- PIC SEARCH -->
                     <PicSearch>
+					   <statisticsName>picsearch_picsearch</statisticsName>
                         <rule>picSearch</rule>
                         <ruleThreshold>1</ruleThreshold>
                         <isAlwaysRunEnabled>true</isAlwaysRunEnabled>
                         <name>picSearchEnrichment</name>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>picturePrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
@@ -200,13 +251,14 @@
                     </PicSearch>
 
                     <FastSearch>
+						<statisticsName>fast_wikipedia</statisticsName>
                         <rule>wikipedia</rule>
                         <ruleThreshold>20</ruleThreshold>
                         <queryServerURL>@queryServerURL.1@</queryServerURL>
                         <collections class="list">
-                            <string>wikipedia</string>
+                            <string>wikipedia2</string>
                         </collections>
-                        <resultView>wikipedia</resultView>
+
                         <collapsingEnabled>false</collapsingEnabled>
                         <lemmatizeEnabled>false</lemmatizeEnabled>
                         <spellcheckEnabled>false</spellcheckEnabled>
@@ -214,25 +266,31 @@
                         <navigators/>
                         <name>wikipedia</name>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>wikipediaPrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                              <no.schibstedsok.front.searchportal.query.ExactTitleMatchTransformer />
                         </queryTransformers>
                         <resultHandlers>
+                            <no.schibstedsok.front.searchportal.result.FieldChooser>
+                                 <targetField>wikibody</targetField>
+                                 <fields class="list">
+                                     <string>wikibody</string>
+                                     <string>wikibodyteaser</string>
+                                 </fields>
+                             </no.schibstedsok.front.searchportal.result.FieldChooser>
+                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
                         </resultHandlers>
                         <resultFields class="list">
                             <string>wikititle</string>
                             <string>url</string>
                             <string>wikibody</string>
+                            <string>wikibodyteaser</string>
                         </resultFields>
                         <resultsToReturn>1</resultsToReturn>
                         <isPagingEnabled>false</isPagingEnabled>
                     </FastSearch>
 
                     <YellowSearch>
+			<statisticsName>fast_yellow</statisticsName>
                         <rule>yellowPages</rule>
                         <ruleThreshold>20</ruleThreshold>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
@@ -243,13 +301,11 @@
                         <resultView>yellowpages</resultView>
                         <qtPipeline>yellow</qtPipeline>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>cataloguePrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
                             <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
-                            <no.schibstedsok.front.searchportal.query.YellowQueryTransformer/>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>yellowphon</prefix>
+			      <numberPrefix>yellowpages</numberPrefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.PhoneNumberChooser/>
@@ -271,6 +327,7 @@
                             <string>ypmobiltelefon</string>
                             <string>xcoord</string>
                             <string>ycoord</string>
+			    <string>rank</string>
                         </resultFields>
                         <collections class="list">
                             <string>yellow</string>
@@ -280,6 +337,8 @@
                     </YellowSearch>
 
                     <FastSearch>
+			<statisticsName>fast_white</statisticsName>
+                        <qtPipeline>white</qtPipeline>
                         <rule>whitePages</rule>
                         <ruleThreshold>5</ruleThreshold>
                         <isAlwaysRunEnabled>true</isAlwaysRunEnabled>
@@ -294,13 +353,11 @@
                         <sortBy>whitepages +wpfornavn +wpetternavn</sortBy>
                         <name>whitePagesEnrichment</name>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>cataloguePrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
                             <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
-                            <no.schibstedsok.front.searchportal.query.WhiteQueryTransformer/>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>whitephon</prefix>
+			      <numberPrefix>whitepages</numberPrefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <!-- format phonenumbers -->
@@ -329,12 +386,13 @@
                     </FastSearch>
 
                     <FastSearch>
+			<statisticsName>fast_retriever</statisticsName>
                         <rule>news</rule>
                         <ruleThreshold>20</ruleThreshold>
                         <collections class="list">
                             <string>retriever</string>
                         </collections>
-                        <sortBy>retrievernews +docdatetime</sortBy>
+                        <sortBy>docdatetime+standard</sortBy>
                         <resultView>retriever</resultView>
                         <queryServerURL>@queryServerURL.1@</queryServerURL>
                         <!-- isRunEmptyQuery>true</isRunEmptyQuery -->
@@ -342,11 +400,10 @@
                         <lemmatizeEnabled>false</lemmatizeEnabled>
                         <spellcheckEnabled>false</spellcheckEnabled>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>newsPrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+						   <no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
+						   		<sourcePrefix>nyhetskilde</sourcePrefix>
+						   		<targetPrefix>newssource</targetPrefix>
+						   </no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
                         </queryTransformers>
                         <navigators/>
                         <name>norwegianNewsEnrichment</name>
@@ -374,11 +431,12 @@
                     <!--          TV Enrichment                                        -->
                     <!--  ***********************************************************  -->
                     <FastSearch>
+					<statisticsName>fast_tv</statisticsName>
                         <!-- Tekstanalyse regel (AnalysisRule.java) -->
                         <rule>tv</rule>
-                        <!-- Minium poeng for å kunne vises som berikelse -->
+                        <!-- Minium poeng for Ã¥ kunne vises som berikelse -->
                         <ruleThreshold>30</ruleThreshold>
-                        <!-- Søk i Fast Collection -->
+                        <!-- SÃ¸k i Fast Collection -->
                         <collections class="list">
                             <string>tv</string>
                         </collections>
@@ -398,14 +456,10 @@
                         <name>tvEnrich</name>
                         <!-- Populerer resultat, feks finner riktig template (velocity) -->
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>tvPrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-
                             <no.schibstedsok.front.searchportal.query.TvQueryTransformer/>
-
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>tv</prefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.TvEnrichmentDateFormatHandler>
@@ -418,17 +472,15 @@
                         <!-- Bruk kun disse feltene -->
                         <resultFields class="list">
                             <!-- Title of program -->
-                            <string>title AS title</string>
+                            <string>tvtitle AS title</string>
                             <!-- Uniq ID of program -->
                             <string>url AS id</string>
                             <!-- Start time -->
-                            <string>docdatetime AS date</string>
+                            <string>tvstarttime AS date</string>
                             <!-- Channel -->
-                            <string>generic1 AS channel</string>
-                            <!-- Category -->
-                            <string>generic3 AS category</string>
+                            <string>tvchannel AS channel</string>
                         </resultFields>
-                        <!-- Størrelse på resultat -->
+                        <!-- StÃ¸rrelse pÃ¥ resultat -->
                         <resultsToReturn>3</resultsToReturn>
                         <!-- Neste 10 treff ja/nei-->
                         <isPagingEnabled>false</isPagingEnabled>
@@ -438,11 +490,12 @@
                     <!--          Weather Enrichment                                    -->
                     <!--  ************************************************************  -->
                     <FastSearch>
+					<statisticsName>fast_weather</statisticsName>
                         <!-- Tekstanalyse regel (AnalysisRule.java) -->
                         <rule>weather</rule>
-                        <!-- Minium poeng for å kunne vises som berikelse -->
+                        <!-- Minium poeng for Ã¥ kunne vises som berikelse -->
                         <ruleThreshold>30</ruleThreshold>
-                        <!-- Søk i Fast Collection -->
+                        <!-- SÃ¸k i Fast Collection -->
                         <collections class="list">
                             <string>weather</string>
                         </collections>
@@ -450,11 +503,9 @@
                         <sortBy/>
 
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>weatherPrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>weatherlocation</prefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <!-- Fast: Hent kun disse feltene -->
                         <!-- Connect til denne serveren -->
@@ -486,33 +537,35 @@
                         <!-- Bruk kun disse feltene -->
                         <resultFields class="list">
                             <!-- Name of location-->
-                            <string>wpadresse AS location</string>
+                            <string>weatherlocation AS location</string>
                             <!-- Lattitue-->
-                            <string>flat AS latitude</string>
+                            <string>lat AS latitude</string>
                             <!-- Lonitute-->
-                            <string>flon AS longitude</string>
+                            <string>lon AS longitude</string>
                             <!-- Symbol -->
-                            <string>generic2 AS condition</string>
+                            <string>weathersymbol1 AS condition</string>
                             <!-- Symbol -->
-                            <string>generic3 AS conditionText</string>
+                            <string>weathersymbol2 AS conditionText</string>
                             <!-- Temperatur-->
-                            <string>ypadresse AS temperature</string>
+                            <string>weathertemperature AS temperature</string>
                             <!-- Windspeed-->
-                            <string>yppostnr2 AS windspeedText</string>
+                            <string>weatherwindspeed AS windspeedText</string>
                             <!-- Winddirection-->
-                            <string>yppoststed2 AS winddirection</string>
+                            <string>weatherwinddirection AS winddirection</string>
                             <!--Datetime -->
-                            <string>dtgeneric1 AS datetime</string>
+                            <string>weatherdate AS datetime</string>
                             <!-- Link -->
-                            <string>ypurl AS url</string>
+                            <string>weatherurl AS url</string>
                         </resultFields>
-                        <!-- Størrelse på resultat -->
+			<resultView>weather</resultView>
+                        <!-- StÃ¸rrelse pÃ¥ resultat -->
                         <resultsToReturn>1</resultsToReturn>
                         <!-- Neste 10 treff ja/nei-->
                         <isPagingEnabled>false</isPagingEnabled>
                     </FastSearch>
 
                     <OverturePPCSearch>
+					<statisticsName>overture_ads</statisticsName>
                         <name>overtureAds</name>
                         <resultsToReturn>3</resultsToReturn>
                         <resultHandlers>
@@ -541,6 +594,8 @@
                 <key>w</key>
                 <searchConfigurations class="list">
                     <FastSearch>
+			<statisticsName>fast_white</statisticsName>
+
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <collections class="list">
                             <string>white</string>
@@ -599,13 +654,11 @@
                         <sortBy>whitepages +wpfornavn +wpetternavn</sortBy>
                         <name>whitePages</name>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>cataloguePrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
                             <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
-                            <no.schibstedsok.front.searchportal.query.WhiteQueryTransformer/>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>whitephon</prefix>
+			      <numberPrefix>whitepages</numberPrefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.MultiValuedFieldCollector>
@@ -621,6 +674,8 @@
                                 </fieldMap>
                             </no.schibstedsok.front.searchportal.result.MultiValuedFieldCollector>
                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+       					  <!--  Optional xml result handler. Only invoked if parameter xml=yes exists -->
+						  <no.schibstedsok.front.searchportal.result.XmlOutputResultHandler/>
                         </resultHandlers>
                         <pageSize>10</pageSize>
                         <resultFields class="list">
@@ -639,20 +694,20 @@
                         <resultsToReturn>10</resultsToReturn>
                         <isPagingEnabled>true</isPagingEnabled>
                     </FastSearch>
+
                     <YellowSearch>
+		      <statisticsName>fast_yellow</statisticsName>
                         <collections>
                             <string>yellow</string>
                         </collections>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <lemmatizeEnabled>true</lemmatizeEnabled>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>cataloguePrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
                             <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
-                            <no.schibstedsok.front.searchportal.query.YellowQueryTransformer/>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>yellowphon</prefix>
+			      <numberPrefix>yellowpages</numberPrefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
@@ -666,6 +721,7 @@
                         <resultsToReturn>1</resultsToReturn>
                         <isPagingEnabled>false</isPagingEnabled>
                     </YellowSearch>
+                    
                 </searchConfigurations>
             </no.schibstedsok.front.searchportal.configuration.SearchMode>
         </entry>
@@ -681,6 +737,7 @@
 		<!-- Count News results, Ignoring contentsource -->
                  <searchConfigurations class="list">
                      <FastSearch>
+					<statisticsName>fast_retriever</statisticsName>
                          <ignoreNavigationEnabled>true</ignoreNavigationEnabled>
                          <collections class="list">
                              <string>retriever</string>
@@ -689,11 +746,10 @@
                              <string>mano</string>
                          </collections>
                          <queryTransformers>
-                             <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                 <prefixes class="list">
-                                     <string>newsPrefix</string>
-                                 </prefixes>
-                             </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+						   <no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
+						   		<sourcePrefix>nyhetskilde</sourcePrefix>
+						   		<targetPrefix>newssource</targetPrefix>
+						   </no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
                              <no.schibstedsok.front.searchportal.query.NewsTransformer/>
                          </queryTransformers>
                          <navigators>
@@ -722,6 +778,7 @@
                      </FastSearch>
 		     <!-- Actual newssearch -->
                      <FastSearch>
+					<statisticsName>fast_retriever</statisticsName>
                          <collections class="list">
                              <string>retriever</string>
                              <string>retrievernordic</string>
@@ -749,13 +806,11 @@
                          </navigators>
 
                          <queryTransformers>
-                             <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                 <prefixes class="list">
-                                     <string>newsPrefix</string>
-                                 </prefixes>
-                             </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
+						   <no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
+						   		<sourcePrefix>nyhetskilde</sourcePrefix>
+						   		<targetPrefix>newssource</targetPrefix>
+						   </no.schibstedsok.front.searchportal.query.SiteFilterTransformer>
                              <no.schibstedsok.front.searchportal.query.NewsTransformer/>
-
                          </queryTransformers>
 
                          <sortBy>retrievernews +docdatetime</sortBy>
@@ -772,6 +827,8 @@
                                  <targetField>age</targetField>
                              </no.schibstedsok.front.searchportal.result.AgeCalculatorResultHandler>
                              <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+       					  <!--  Optional xml result handler. Only invoked if parameter xml=yes exists -->
+						  <no.schibstedsok.front.searchportal.result.XmlOutputResultHandler/>
                          </resultHandlers>
                          <pageSize>10</pageSize>
                          <resultFields class="list">
@@ -792,6 +849,7 @@
                      </FastSearch>
 
                      <OverturePPCSearch>
+					<statisticsName>overture_ads</statisticsName>
                         <name>overtureAds</name>
                         <resultsToReturn>3</resultsToReturn>
                         <resultHandlers>
@@ -811,6 +869,7 @@
                 <key>y</key>
                 <searchConfigurations class="list">
                     <YellowSearch>
+			<statisticsName>fast_yellow</statisticsName>
                         <resultView>yellowpages</resultView>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <collapsingEnabled>false</collapsingEnabled>
@@ -858,19 +917,19 @@
                         <name>yellowPages</name>
                         <sortBy>yellowpages2 +ypnavn2</sortBy>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>cataloguePrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
                             <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
-                            <no.schibstedsok.front.searchportal.query.YellowQueryTransformer/>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>yellowphon</prefix>
+			      <numberPrefix>yellowpages</numberPrefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.PhoneNumberChooser/>
                             <!-- format phonenumbers -->
                             <no.schibstedsok.front.searchportal.result.PhoneNumberFormatter/>
                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+       					  <!--  Optional xml result handler. Only invoked if parameter xml=yes exists -->
+						  <no.schibstedsok.front.searchportal.result.XmlOutputResultHandler/>
                         </resultHandlers>
                         <pageSize>10</pageSize>
                         <resultFields class="list">
@@ -884,6 +943,10 @@
                             <string>ypmobiltelefon</string>
                             <string>xcoord</string>
                             <string>ycoord</string>
+                            <string>rank</string>
+                            <string>ypshortdesc</string>
+                            <string>ypurl</string>
+                            <string>ypcommercial</string>
                         </resultFields>
                         <collections class="list">
                             <string>yellow</string>
@@ -893,19 +956,19 @@
                     </YellowSearch>
 
                     <FastSearch>
+					<statisticsName>fast_white</statisticsName>
                         <collections>
                             <string>white</string>
                         </collections>
+                        <qtPipeline>white</qtPipeline>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <lemmatizeEnabled>false</lemmatizeEnabled>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>cataloguePrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
                             <no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer/>
-                            <no.schibstedsok.front.searchportal.query.WhiteQueryTransformer/>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>whitephon</prefix>
+			      <numberPrefix>whitepages</numberPrefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
@@ -918,7 +981,7 @@
                         </resultFields>
                         <resultsToReturn>1</resultsToReturn>
                         <isPagingEnabled>false</isPagingEnabled>
-                    </FastSearch>
+				</FastSearch>
                 </searchConfigurations>
             </no.schibstedsok.front.searchportal.configuration.SearchMode>
         </entry>
@@ -932,6 +995,7 @@
                 <parentMode>y</parentMode>
                 <searchConfigurations class="list">
                     <FastSearch>
+					<statisticsName>fast_yellow</statisticsName>
                         <useParameterAsQuery>companyId</useParameterAsQuery>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <collapsingEnabled>false</collapsingEnabled>
@@ -949,6 +1013,18 @@
                             <no.schibstedsok.front.searchportal.result.PhoneNumberFormatter/>
                             <!-- splits ypbransje to category links -->
                             <no.schibstedsok.front.searchportal.result.CategorySplitter/>
+                            <no.schibstedsok.front.searchportal.result.ImageHelper>
+                                <fieldMap>
+                                    <entry>
+                                        <string>ypimages</string>
+                                        <string>manyYpimages</string>
+                                    </entry>
+                                    <entry>
+                                        <string>ypmastermarks</string>
+                                        <string>manyYpmastermarks</string>
+                                    </entry>
+                                </fieldMap>
+                            </no.schibstedsok.front.searchportal.result.ImageHelper>
                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
                         </resultHandlers>
                         <resultFields class="list">
@@ -966,6 +1042,19 @@
                             <string>yporgnummer</string>
                             <string>ypfirmatype</string>
                             <string>ypbransje</string>
+                            <string>ypimages</string>
+                            <string>ypshortdesc</string>
+                            <string>yplogo</string>
+                            <string>ypcontactform</string>
+                            <string>ypinfotext</string>
+                            <string>ypmastermarks</string>
+                            <string>yppostaddress</string>
+                            <string>yppostpostnumber</string>
+                            <string>yppostpostaladdress</string>
+                            <string>ypurl</string>
+                            <string>ypikid</string>
+                            <string>ypepost</string>
+                            <string>ypcommercial</string>
                         </resultFields>
                         <collections class="list">
                             <string>yellow</string>
@@ -974,13 +1063,17 @@
                         <isPagingEnabled>false</isPagingEnabled>
                     </FastSearch>
                     <FastSearch>
+					<statisticsName>fast_yellow</statisticsName>
                         <collections>
                             <string>white</string>
                         </collections>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <lemmatizeEnabled>false</lemmatizeEnabled>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.WhiteQueryTransformer/>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>whitephon</prefix>
+			      <numberPrefix>whitepages</numberPrefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
@@ -1008,6 +1101,7 @@
                 <parentMode>w</parentMode>
                 <searchConfigurations class="list">
                     <FastSearch>
+					<statisticsName>fast_white</statisticsName>
                         <useParameterAsQuery>personId</useParameterAsQuery>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <collapsingEnabled>false</collapsingEnabled>
@@ -1054,13 +1148,17 @@
                         <isPagingEnabled>false</isPagingEnabled>
                     </FastSearch>
                     <FastSearch>
+					<statisticsName>fast_yellow</statisticsName>
                         <collections>
                             <string>yellow</string>
                         </collections>
                         <queryServerURL>@queryServerURL.2@</queryServerURL>
                         <lemmatizeEnabled>true</lemmatizeEnabled>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.YellowQueryTransformer/>
+                            <no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
+			      <prefix>yellowphon</prefix>
+			      <numberPrefix>yellowpages</numberPrefix>
+			    </no.schibstedsok.front.searchportal.query.TermPrefixTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.AddDocCountModifier>
@@ -1086,16 +1184,14 @@
                 <key>p</key>
                 <searchConfigurations class="list">
                     <PicSearch>
+					<statisticsName>picsearch_picsearch</statisticsName>
                         <name>picSearch</name>
                         <queryTransformers>
-                            <no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
-                                <prefixes class="list">
-                                    <string>picturePrefix</string>
-                                </prefixes>
-                            </no.schibstedsok.front.searchportal.query.PrefixRemoverTransformer>
                         </queryTransformers>
                         <resultHandlers>
                             <no.schibstedsok.front.searchportal.result.VelocityResultHandler/>
+       					  <!--  Optional xml result handler. Only invoked if parameter xml=yes exists -->
+						  <no.schibstedsok.front.searchportal.result.XmlOutputResultHandler/>
                         </resultHandlers>
                         <resultFields class="list">
                             <string>thumb_url</string>
@@ -1113,5 +1209,6 @@
                 </searchConfigurations>
             </no.schibstedsok.front.searchportal.configuration.SearchMode>
         </entry>
+
     </searchModes>
 </tabs>

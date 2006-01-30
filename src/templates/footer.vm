@@ -1,17 +1,38 @@
 <div id="footer_help">
     <div style="float:left;">
-            <span class="copy">&copy;2005</span> &nbsp;&nbsp;
+            <span class="copy">&copy;2005</span>&nbsp;
             <script type="text/javascript" language="JavaScript">
-                if(navigator.appName.indexOf("Microsoft") >= 0){
-                    document.write('<a href="javascript:;" onclick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://www.sesam.no/\');">Sett som startside</a> &nbsp;&nbsp;|&nbsp;&nbsp;');
+                if(document.all){
+                    try {
+                        document.write(link);
+                    } catch(e) {}
                 }
             </script>
 
+            #if ($request.getParameter("toolbar").equals("true"))
+            Verkt&#248;ylinje
+            #else
+            <a href='$linkpulse.getUrl("?c=d&amp;toolbar=true&amp;pg=1&amp;q=", "category:footer_toolbar", "sgo", "")'>Verkt&#248;ylinje</a>
+            ##<a href="?c=d&amp;box=true&amp;pg=1&amp;q=">S&#248;keboks p&#229; din side</a>
+            #end
+
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+
+            #if ($request.getParameter("box").equals("true"))
+            S&#248;keboks p&#229; din side
+            #else
+            <a href='$linkpulse.getUrl("?c=d&amp;box=true&amp;pg=1&amp;q=", "category:footer_searchbox", "sgo", "")'>S&#248;keboks p&#229; din side</a>
+            ##<a href="?c=d&amp;box=true&amp;pg=1&amp;q=">S&#248;keboks p&#229; din side</a>
+            #end
+
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+
             #if (!$request.getParameter("c").equals("y") && !$request.getParameter("c").equals("yip") && !$request.getParameter("c").equals("w") && !$request.getParameter("c").equals("wip") && !$request.getParameter("c").equals("p"))
                 #if ($request.getParameter("smart").equals("true"))
-                S&#248;k smart
+                S&#248;ketips
                 #else
-                <a href="?c=d&amp;smart=true&amp;pg=1&amp;q=">S&#248;k smart</a>
+                <a href='$linkpulse.getUrl("?c=d&amp;smart=true&amp;pg=1&amp;q=", "category:footer_smart", "sgo", "")'>S&#248;ketips</a>
+                ##<a href="?c=d&amp;smart=true&amp;pg=1&amp;q=">S&#248;ketips</a>
                 #end
 
                 &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -20,7 +41,8 @@
             #if ($request.getParameter("ads_help").equals("true"))
                 Bli Annons&#248;r
             #else
-                <a href="?c=d&amp;ads_help=true&amp;q=">Bli annons&#248;r</a>
+                <a href='$linkpulse.getUrl("?c=d&amp;ads_help=true&amp;pg=1&amp;q=", "category:footer_adsHelp", "sgo", "")'>Bli annons&#248;r</a>
+                ##<a href="?c=d&amp;ads_help=true&amp;q=">Bli annons&#248;r</a>
             #end
 
             &nbsp;&nbsp;|&nbsp;&nbsp;
@@ -28,17 +50,22 @@
             #if ($request.getParameter("about").equals("true"))
                 Om oss
             #else
-                <a href="?c=d&amp;q=&amp;about=true&amp;pg=1">Om oss</a>
+                <a href='$linkpulse.getUrl("?c=d&amp;q=&amp;about=true&amp;pg=1", "category:footer_aboutUs", "sgo", "")'>Om oss</a>
+                ##<a href="?c=d&amp;q=&amp;about=true&amp;pg=1">Om oss</a>
             #end
             &nbsp;&nbsp;|&nbsp;&nbsp;
 
             #if ($request.getParameter("help").equals("true"))
             Hjelp
             #else
-            <a href="?c=d&amp;q=&amp;help=true&amp;pg=1">Hjelp</a>
+                <a href='$linkpulse.getUrl("?c=d&amp;q=&amp;help=true&amp;pg=1", "category:footer_help", "sgo", "")'>Hjelp</a>
+                ##<a href="?c=d&amp;q=&amp;help=true&amp;pg=1">Hjelp</a>
             #end
     </div>
     #if ($currentTab.getKey() == "m")
-        <div style="float:right;"><a href="http://www.retriever-info.com/" target="_blank"><img src="../images/retriever_logo.jpg" alt="Retriever"  /></a></div>
+        <div id="retriever_footer">
+        <div id="retriever_footer_c1">Nyheter fra norske og nordiske nettaviser samt <a href="?c=d&amp;q=&amp;help=true&amp;pg=6">deler av mediearkivet ATEKST</a> er tilgjengeliggjort for s&#248;king i Retriever.</div>
+        <div id="retriever_footer_c2"><a href="http://www.retriever-info.com/" target="_blank"><img src="../images/retriever_logo.jpg" alt="Retriever logo"  /></a></div>
+        </div>
     #end
 </div>

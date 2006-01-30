@@ -85,7 +85,6 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
             LOG.debug("ENTR: createSearchTabsImpl()");
         }
 
-
         xstream.alias(
                         "FastSearch",
                         no.schibstedsok.front.searchportal.configuration.FastConfiguration.class);

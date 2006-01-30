@@ -37,6 +37,9 @@ public class FastConfiguration extends AbstractSearchConfiguration {
     private int offensiveScoreLimit = 0;
     private int spamScoreLimit = 0;
 
+
+    private boolean synonymsEnabled = false;
+
     public List getCollections() {
         return collections;
     }
@@ -208,5 +211,9 @@ public class FastConfiguration extends AbstractSearchConfiguration {
 
     public int getSpamScoreLimit() {
         return spamScoreLimit;
+    }
+
+    public boolean isSynonymsEnabled() {
+        return synonymsEnabled;
     }
 }

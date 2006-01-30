@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.analyzer;
 
+import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
 
@@ -38,6 +39,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     
     private Set/*<Predicate>*/ knownPredicates;
     private Set/*<Predicate>*/ possiblePredicates;
+
+    private Locale locale;
 
     /**
      * Create a new TokenEvaluatorFactory.

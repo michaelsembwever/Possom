@@ -27,6 +27,8 @@ public class FindFileFormat implements ResultHandler {
 				searchResultItem.addField("fileformat", "[power point]");
             else if (url.endsWith(".xls"))
 				searchResultItem.addField("fileformat", "[excel]");
+            else if (url.endsWith(".txt"))
+				searchResultItem.addField("fileformat", "[txt]");
 
         }
     }

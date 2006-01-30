@@ -19,7 +19,7 @@
                 <td valign="top" class="img">
                     <img src="../images/enrichment/tv_icon.jpg" alt="TV" />
                 </td>
-                <td width="500">
+                <td width="500" class="enrich_text">
                 #foreach ( $item in $result.results )
                    $item.getField('title')
                    <span class="timestamp">Kl. $item.getField('hour')  $item.getField('channel')</span>

@@ -3,15 +3,20 @@ package no.schibstedsok.front.searchportal.query;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import no.schibstedsok.front.searchportal.analyzer.AnalysisRules;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * TvQueryTransformer is part of no.schibstedsok.front.searchportal.query
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @version 0.1
  * @vesrion $Revision$, $Author$, $Date$
  */
 public class TvQueryTransformer extends AbstractQueryTransformer {
 
+    private static Log log = LogFactory.getLog(TvQueryTransformer.class);
 
     /**
      * Add keywords to query to get better searchresults
@@ -23,6 +28,14 @@ public class TvQueryTransformer extends AbstractQueryTransformer {
         
         final String originalQuery = cxt.getQueryString();
 
+        if (originalQuery.matches("^tv$")) {
+            return "";
+        }
+        
+        if (originalQuery.matches("p.*\\stv\\sidag$")) {
+            return "";
+        }
+        
         return originalQuery;
     }
 
@@ -35,8 +48,9 @@ public class TvQueryTransformer extends AbstractQueryTransformer {
         
         final String originalQuery = cxt.getQueryString();
 
+        log.debug("TVVVVVV");
 
         SimpleDateFormat sdf = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        return "+expiresdate:>" + sdf.format(new Date());
+        return "+tvendtime:>" + sdf.format(new Date());
     }
 }

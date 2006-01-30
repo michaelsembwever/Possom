@@ -6,7 +6,7 @@
     </p>
     <p>
         <b>Eller: ()</b><br />
-        Hvis du &#248;nsker &#229; finne nettsider som inneholder enten ett ord eller et annet, bruk parentes () rundt.<br />
+        Hvis du &#248;nsker &#229; finne nettsider som inneholder enten ett ord eller et annet, bruk parentes () rundt ordene. Nettsider som inneholder begge ordene gir ogs&#229; treff n&#229;r du bruker parentes.<br />
         <i>Eksempel:</i> <a href="?q=(sukkerbr&#248;d kakebunn)&amp;c=$currentTab.getKey()">(sukkerbr&#248;d kakebunn)</a>
     </p>
     <p>
@@ -20,7 +20,7 @@
     </p>
     <p>
         <b>Trunkering: *</b><br />
-        Hvis du vil finne sider som omtaler flere varianter av ord som begynner p&#229; det samme, bruk en asterisk (*) til slutt. Trunkering kan kun brukes til h&#248;yre i et s&#248;keord.<br />
+        Hvis du vil finne sider som omtaler flere varianter av ord som begynner p&#229; det samme, bruk en stjerne (*) til slutt. Trunkering kan kun brukes til h&#248;yre i et s&#248;keord.<br />
         <i>Eksempel:</i> <a href="?q=overtids*&amp;c=$currentTab.getKey()">overtids*</a>
     </p>
 #*            <p>
@@ -72,7 +72,7 @@
     <p>
         <b>Bilder av noe:</b><br />
         Bilder &lt;objekt&gt;<br />
-        <i>Eksempel:</i> <a href="?q=bilde stetind&amp;c=$currentTab.getKey()">bilde stetind</a>
+        <i>Eksempel:</i> <a href="?q=bilder Stetind&amp;c=$currentTab.getKey()">bilder Stetind</a>
     </p>
     <p>
         <b>Nyheter om noe:</b><br />

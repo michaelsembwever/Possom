@@ -34,6 +34,8 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
     private String useParameterAsQuery;
     private boolean isAlwaysRunEnabled = false;
 
+    private String statisticsName;
+
 
     /**
      * Sets the paging enabled status of this configuration. The default is
@@ -130,4 +132,7 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
         this.useParameterAsQuery = useParameterAsQuery;
     }
 
+    public String getStatisticsName() {
+        return statisticsName;
+    }
 }

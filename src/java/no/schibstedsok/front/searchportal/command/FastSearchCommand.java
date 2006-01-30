@@ -34,12 +34,15 @@ import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
+
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.KeywordCluster;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
+import no.schibstedsok.front.searchportal.spell.RelevantQuery;
+
 import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
 
 import org.apache.commons.lang.StringUtils;
@@ -78,10 +81,20 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
     public SearchResult execute() {
 
         try {
-            if (getFastConfiguration().getNavigators() != null) {
-                for (Iterator iterator = getFastConfiguration().getNavigators().keySet().iterator(); iterator.hasNext();) {
+
+    
+            if (getNavigators() == null){
+                log.debug("AAA nav is null");
+            }
+            if (getNavigators() != null) {
+                log.debug("AAA Collecting navigated values " + getNavigators().size());
+                
+                for (Iterator iterator = getNavigators().keySet().iterator(); iterator.hasNext();) {
+
                     String navigatorKey = (String) iterator.next();
 
+                    log.debug("AAA Key is " + navigatorKey);
+                    
                     if (getParameters().containsKey("nav_" + navigatorKey)) {
                         String navigatedTo[] = (String[]) getParameters().get("nav_" + navigatorKey);
                         addNavigatedTo(navigatorKey, navigatedTo[0]);
@@ -146,11 +159,15 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
                 collectSpellingSuggestions(result, searchResult);
             }
 
-            if (getFastConfiguration().isKeywordClusteringEnabled()) {
-                collectKeywordClusters(result, searchResult);
+
+            if (getFastConfiguration().isSynonymsEnabled() && !getParameters().containsKey("qs")) {
+                collectRelevantQueries(result, searchResult);
+
             }
 
-            if (getFastConfiguration().getNavigators() != null) {
+
+            if (getNavigators() != null) {
+
                 collectModifiers(result, searchResult);
             }
 
@@ -167,41 +184,11 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         } catch (MalformedURLException e) {
             log.error("execute", e);
             throw new InfrastructureException(e);
-        } catch (SearchEngineException e) {
-            log.error("execute", e);
-            throw new InfrastructureException(e);
         }
     }
 
-    private void collectKeywordClusters(IQueryResult result, FastSearchResult searchResult) throws SearchEngineException {
-        Iterator i = result.documents();
-
-        int clusterIndex = 0;
-
-        while (clusterIndex++ < 20 && i.hasNext()) {
-            IDocumentSummary summary = (IDocumentSummary) i.next();
-            IDocumentSummaryField vectorField = summary.getSummaryField("docvector");
-
-            if (vectorField != null) {
-
-                String vector = vectorField.getSummary();
-
-                if (vector != null) {
-                    String[] concepts = vector.split("]");
-                    for (int idx = 0; idx < concepts.length; idx++) {
-                        String[] cpair = concepts[idx].split(",");
-                        if (cpair.length > 1) {
-                            String concept = cpair[0].substring(1, cpair[0].length());
-                            String score = cpair[1];
-                            if (concept.split(" ").length >= 2 && concept.length() < 100) {
-                                KeywordCluster cluster = new KeywordCluster(concept, new Float(score));
-                                searchResult.addKeywordCluster(cluster);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+    protected Map getNavigators() {
+        return getFastConfiguration().getNavigators();
     }
 
     private void collectSpellingSuggestions(IQueryResult result, FastSearchResult searchResult) {
@@ -214,6 +201,14 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
                     SpellingSuggestion suggestion = createSpellingSuggestion(custom);
                     searchResult.addSpellingSuggestion(suggestion);
                 }
+
+		if (transformation.getName().equals("FastQT_ProperName")) {
+		    String custom = transformation.getCustom();
+		    SpellingSuggestion suggestion = createProperNameSuggestion(custom);
+		    if (suggestion != null) {
+			searchResult.addSpellingSuggestion(suggestion);
+		    }
+		}
             }
         }
 
@@ -225,12 +220,6 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         if (getQuery().getQueryString().equalsIgnoreCase("meningen med livet")) {
             SpellingSuggestion egg = new SpellingSuggestion("meningen med livet", "42", 1000);
             searchResult.addSpellingSuggestion(egg);
-        }
-
-        if (getQuery().getQueryString().equals("yelo")) {
-            SpellingSuggestion suggestion = new SpellingSuggestion("yelo", "sesam", 1000);
-
-            searchResult.addSpellingSuggestion(suggestion);
         }
     }
 
@@ -249,16 +238,22 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         return new SpellingSuggestion(orig, string, Integer.parseInt(quality));
     }
 
+    
+    
     private FastSearchResult collectResults(IQueryResult result) {
 
         if (log.isDebugEnabled()) {
+
             log.debug(getFastConfiguration().getName() + " Collecting results. There are " + result.getDocCount());
             log.debug(getFastConfiguration().getName() + " Number of results to collect: " + getFastConfiguration().getResultsToReturn());
+
         }
 
         FastSearchResult searchResult = new FastSearchResult(this);
         int cnt = getCurrentOffset(0);
-        int maxIndex = Math.min(cnt + getFastConfiguration().getResultsToReturn(), result.getDocCount());
+
+        int maxIndex = Math.min(cnt + getResultsToReturn(), result.getDocCount());
+
         searchResult.setHitCount(result.getDocCount());
 
         for (int i = cnt; i < maxIndex; i++) {
@@ -273,6 +268,10 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             }
         }
         return searchResult;
+    }
+
+    protected int getResultsToReturn() {
+        return getFastConfiguration().getResultsToReturn();
     }
 
 
@@ -337,7 +336,9 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         // Set filter, the filtertype may be adv
         StringBuffer filter = new StringBuffer(getFastConfiguration().getCollectionFilterString());
 
-        if (!getFastConfiguration().isIgnoreNavigationEnabled() && getFastConfiguration().getNavigators() != null) {
+
+        if (!getFastConfiguration().isIgnoreNavigationEnabled() && getNavigators() != null) {
+
             Collection navStrings = createNavigationFilterStrings();
             filter.append(" ");
             filter.append(" ").append(StringUtils.join(navStrings.iterator(), " "));
@@ -351,12 +352,18 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
 
         if (getFastConfiguration().getOffensiveScoreLimit() > 0) {
             filter.append(" ").append("+ocfscore:<").append(getFastConfiguration().getOffensiveScoreLimit());
+
         }
 
         if (getFastConfiguration().getSpamScoreLimit() > 0) {
             filter.append(" ").append("+spamscore:<").append(getFastConfiguration().getSpamScoreLimit());
         }
 
+        if (getAdditionalFilter() != null) {
+            filter.append(" ");
+            filter.append(getAdditionalFilter());
+        }
+        
         // Init dynamic filters
         String dynamicLanguage = getDynamicParams(getParameters(), "language", "");
         String dynamicFilterType = getDynamicParams(getParameters(), "filtertype", "any");
@@ -386,11 +393,12 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
 
         params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, "no"));
 
-        if (getFastConfiguration().getNavigators() != null && getFastConfiguration().getNavigators().size() > 0) {
+
+        if (getNavigators() != null && getNavigators().size() > 0) {
             params.setParameter(new SearchParameter(BaseParameter.NAVIGATION, true));
         }
 
-        params.setParameter(new SearchParameter("hits", getFastConfiguration().getResultsToReturn()));
+        params.setParameter(new SearchParameter("hits", getResultsToReturn()));
         params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, getFastConfiguration().isClusteringEnabled()));
 
         if (getFastConfiguration().getResultView() != null) {
@@ -416,7 +424,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
 
     protected SearchParameter getSortByParameter() {
         if (getFastConfiguration().getSortBy() != null) {
-            return new SearchParameter(BaseParameter.SORT_BY, getFastConfiguration().getSortBy());
+            return new SearchParameter(BaseParameter.SORT_BY, getSortBy());
         }
 
         if (getParameters().containsKey("userSortBy")) {
@@ -431,6 +439,14 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         }
 
         return null;
+    }
+
+    protected String getAdditionalFilter() {
+        return null;
+    }
+
+    protected String getSortBy() {
+        return getFastConfiguration().getSortBy();
     }
 
     private String getDynamicParams(Map map, String key, String defaultValue) {
@@ -478,11 +494,15 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
     }
 
     private String getNavigatorsString() {
-        if (getFastConfiguration().getNavigators() != null) {
+
+        if (getNavigators() != null) {
+
 
             Collection allFlattened = new ArrayList();
 
-            for (Iterator iterator = getFastConfiguration().getNavigators().values().iterator(); iterator.hasNext();) {
+
+            for (Iterator iterator = getNavigators().values().iterator(); iterator.hasNext();) {
+
                 FastNavigator navigator = (FastNavigator) iterator.next();
                 allFlattened.addAll(flattenNavigators(new ArrayList(), navigator));
             }
@@ -554,14 +574,15 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
     }
 
     public void addNavigatedTo(String navigatorKey, String navigatorName) {
-        FastNavigator navigator = getFastConfiguration().getNavigator(navigatorKey);
+
+        FastNavigator navigator = (FastNavigator) getNavigators().get(navigatorKey);
 
         if (navigatorName == null) {
             navigatedTo.put(navigatorKey, navigator);
         } else {
             navigatedTo.put(navigatorKey, findChildNavigator(navigator, navigatorName));
         }
-    }
+        }
 
     public FastNavigator getNavigatedTo(String navigatorKey) {
         return (FastNavigator) navigatedTo.get(navigatorKey);
@@ -571,7 +592,9 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
     public FastNavigator getParentNavigator(String navigatorKey) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
             String navName[] = (String[]) getParameters().get("nav_" + navigatorKey);
-            return findParentNavigator((FastNavigator) getFastConfiguration().getNavigators().get(navigatorKey), navName[0]);
+
+            return findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), navName[0]);
+
         } else {
             return null;
         }
@@ -579,7 +602,9 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
 
     public FastNavigator getParentNavigator(String navigatorKey, String name) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
-            return findParentNavigator((FastNavigator) getFastConfiguration().getNavigators().get(navigatorKey), name);
+
+            return findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), name);
+
         } else {
             return null;
         }
@@ -626,7 +651,8 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
     public String getNavigatorTitle(String navigatorKey) {
         FastNavigator nav = getNavigatedTo(navigatorKey);
 
-        FastNavigator parent = findParentNavigator(getFastConfiguration().getNavigator(navigatorKey), nav.getName());
+
+        FastNavigator parent = findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), nav.getName());
 
         String value = getNavigatedValue(nav.getField());
 
@@ -635,7 +661,9 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             value = getNavigatedValue(parent.getField());
 
             if (value == null) {
-                parent = findParentNavigator(getFastConfiguration().getNavigator(navigatorKey), parent.getName());
+
+                parent = findParentNavigator((FastNavigator)getNavigators().get(navigatorKey), parent.getName());
+
                 
                 if (parent != null) {
                     value = getNavigatedValue(parent.getField());
@@ -723,5 +751,54 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         }
 
         return findChildNavigator(nav.getChildNavigator(), nameToFind);
+    }
+
+    private SpellingSuggestion createProperNameSuggestion(String custom) {
+        int suggestionIndex = custom.indexOf("->");
+
+        if (log.isDebugEnabled()) {
+            log.debug("Custom is " + custom);
+        }
+
+        String orig = custom.substring(0, suggestionIndex);
+        String string = custom.substring(suggestionIndex + 2);
+
+	string = string.replaceAll("\"", "");
+
+	if (orig.equalsIgnoreCase(string)) {
+	    return null;
+	}
+
+        return new SpellingSuggestion(orig, string, 1000);
+    }
+
+    private void collectRelevantQueries(IQueryResult result, FastSearchResult searchResult) {
+
+        if (result.getQueryTransformations(false).getSuggestions().size() > 0) {
+            for (Iterator iterator = result.getQueryTransformations(false).getAllQueryTransformations().iterator(); iterator.hasNext();) {
+                IQueryTransformation transformation = (IQueryTransformation) iterator.next();
+
+                if (transformation.getName().equals("FastQT_Synonym") && transformation.getMessageID() == 8) {
+                    String query = transformation.getQuery();
+
+                    String[] forWords = query.split("#!#");
+                    
+                    for (int i = 0; i < forWords.length; i++) {
+                        String[] forOneWord = forWords[i].split("###");
+
+                        for (int j = 0; j < forOneWord.length; j++) {
+
+                            String[] suggAndWeight = forOneWord[j].split("@");
+                            
+                            if (! this.getQuery().getQueryString().equalsIgnoreCase(suggAndWeight[0])) {
+                            
+                                RelevantQuery rq = new RelevantQuery(suggAndWeight[0], new Integer(suggAndWeight[1]));
+                                searchResult.addRelevantQuery(rq);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

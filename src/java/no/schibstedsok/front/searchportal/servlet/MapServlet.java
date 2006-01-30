@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -31,26 +33,26 @@ public class MapServlet extends HttpServlet {
     /** The serialVersionUID */
     private static final long serialVersionUID = -5879777378093939926L;
 
-    //globale konstanter. Hvor b�r disse settes?? xml fil.
+    //globale konstanter. Hvor bør disse settes?? xml fil.
     /*final static long zoomLevel1 = 10000; //kartskala ved zoom til ett punkt
     final static long zoomLevel2 = 20000;
     final static long zoomLevel3 = 50000;
     final static long zoomLevel4 = 150000;
     final static long zoomLevel5 = 500000;
      */
-    //final static double envFactor = 1.2; //faktor for � lage rom rundt envelope
-    //final static int imgWidth = 350;//bildest�rrelse i pixler, bredde
-    //final static int imgHeigth = 400;//bildest�rrelse i pixler, h�yde
+    //final static double envFactor = 1.2; //faktor for å lage rom rundt envelope
+    //final static int imgWidth = 350;//bildestørrelse i pixler, bredde
+    //final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
     final static String datasource = "GEODATA.N50";
     final static String imgFormat = "png8";
 
-    int zoomnivaa = 2;//default zoomnivaa, brukes n�r ikke annet er angitt
+    int zoomnivaa = 2;//default zoomnivaa, brukes når ikke annet er angitt
 
-    CoordHelper coordHelper = new CoordHelper();
     String token;
     long tokenTimeStamp = 0;
     private static final long TOKEN_REFRESH_INTERVAL = 10 * 60 * 1000;
 
+    private static Log log = LogFactory.getLog(SearchServlet.class);
 
     private String authenticate() throws RemoteException, ServiceException{
 
@@ -70,7 +72,7 @@ public class MapServlet extends HttpServlet {
         return token;
     }
 
-    private String getUrl(String token, MapEnvelope me) throws RemoteException, ServiceException{
+    private String getUrl(String token, MapEnvelope me, CoordHelper coordHelper) throws RemoteException, ServiceException{
          String URL = new String();
          Envelope envelope = new Envelope();
          envelope.setMinX(me.getMinX());
@@ -80,7 +82,7 @@ public class MapServlet extends HttpServlet {
 
          MapImageSize size = new MapImageSize();
          size.setWidth(coordHelper.getImgWidth());
-         size.setHeight(coordHelper.getImgHeigth());
+         size.setHeight(coordHelper.getImgHeight());
 
          MapImageOptions mapOptions = new MapImageOptions();
          mapOptions.setDataSource(datasource);
@@ -91,6 +93,7 @@ public class MapServlet extends HttpServlet {
          MapImageSoap mapImage = mapimageLocator.getMapImageSoap();
          MapImageInfo result = mapImage.getMap(envelope, mapOptions, token);
          URL = result.getMapURL();
+         log.info(URL);
          return URL;
     }
 
@@ -102,10 +105,21 @@ public class MapServlet extends HttpServlet {
     throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
 
+        CoordHelper coordHelper = new CoordHelper();
+
         String sUrl = new String();
         String token = new String();
         boolean retriveMapError = false;
         MapEnvelope me = new MapEnvelope();
+
+        String imgWidth = request.getParameter("width");
+        String imgHeight = request.getParameter("height");
+
+        if (imgWidth != null && imgHeight != null){
+            coordHelper.setImgWidth(Integer.parseInt(imgWidth));
+            coordHelper.setImgHeight(Integer.parseInt(imgHeight));
+        }
+
         String maxX = request.getParameter("maxX");
         if (maxX != null){
             //koordinater for envelope er sendt i requesten
@@ -140,7 +154,7 @@ public class MapServlet extends HttpServlet {
         }
         try {
             token = authenticate();
-            sUrl = getUrl(token, me);
+            sUrl = getUrl(token, me, coordHelper);
         }
         catch (ServiceException serviceExcep) {
         }

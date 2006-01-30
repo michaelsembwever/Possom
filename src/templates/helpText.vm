@@ -21,7 +21,7 @@ Treff p&#229; norske nettsider vises frem f&#248;rst. I noen tilfeller er beskri
 <p><b>Pluss, minus og frase</b><br/>
 Ser du etter ord i bestemt rekkef&#248;lge, bruk anf&#248;rselstegn rundt ordene. Du kan bruke + (pluss) for &#229; inkludere bestemt ord, - (minus) for &#229; ekskludere ett og * (asterisk) for &#229; s&#248;ke p&#229; alle ord som begynner p&#229; det du skriver f&#248;r *.</p>
 <p>Hvis du bruker spesielle s&#248;keord som tv eller v&#230;r vil du blant s&#248;ketreffene f&#229; opp v&#230;rvarsel og TV-program.</p>
-<p>Flere tips og en liste over mulige s&#248;keuttrykk finner du under <a href="?c=d&amp;q=&amp;smart=1">S&#248;k smart</a>.</p>
+<p>Flere tips og en liste over mulige s&#248;keuttrykk finner du under <a href="?c=d&amp;q=&amp;smart=true&amp;pg=1">S&#248;ketips</a>.</p>
 
 
 #elseif ($request.getParameter("pg").equals("4"))
@@ -52,9 +52,10 @@ N&#229;r du bruker linkene i venstre marg til &#229; navigere deg nedover, snevr
 <p><b>S&#248;k p&#229; nytt</b><br/>
 N&#229;r du st&#229;r i nyhetss&#248;k vil det neste s&#248;ket du gj&#248;r i s&#248;kefeltet ogs&#229; gj&#248;res innenfor nyhetss&#248;k. Hvis du vil s&#248;ke nettsider eller annet, klikk Sesams&#248;k enten f&#248;r eller etter at du gj&#248;r ditt neste s&#248;k.</p>
 <p><b>Nettaviser og papiraviser</b><br/>
-"Norske nyheter" viser treff i aviser og tidsskrifter p&#229; nett. N&#229;r du klikker p&#229; en tittel, kommer du til originalen p&#229; avisens eller tidsskriftets nettsted. Arkivet inneholder nyheter og artikler fra de siste ca 2 &#229;r.</p>
-<p>"Papiraviser 1983-2005" er treff fra Mediearkivet. Mange artikler st&#229;r bare i avisens papirutgave og kommer ikke ut p&#229; nett. Mediearkivet har samlet alle artikler som har st&#229;tt i de fleste st&#248;rre norske avisene siden 1985, og fram til dags dato. Her vil du derfor finne artikler du ikke finner under "Norske nyheter". N&#229;r du klikker p&#229; en av titlene i trefflisten, f&#229;r du opp hele artikkelen i fulltekst uten &#229; forlate Sesam.</p>
-<p>"internasjonale nyheter" viser treff i internasjonale nettaviser og medier p&#229; nett. Arkivet inneholder nyheter og artikler.</p>
+&#34;Norske nyheter&#34; viser treff i aviser og tidsskrifter p&#229; nett. N&#229;r du klikker p&#229; en tittel, kommer du til originalen p&#229; avisens eller tidsskriftets nettsted. Arkivet inneholder nyheter og artikler fra de siste ca 2 &#229;r.</p>
+<p>&#34;Papiraviser 1985-2005&#34; er treff fra deler av mediearkivet til <a href="http://www.retriever-info.com/sesam.php">Retriever</a>, ogs&#229; kjent som ATEKST. Du vil kunne finne artikler fra helt tilbake til 1984, men de aller fleste artiklene er fra 1985 og utover.</p>
+<p>Sesam f&#229;r papiravisartikler fra Aftenposten, VG, Dagbladet, Bergens Tidene og Adresseavisen i kategoriene reiseliv og restauranter, idrett, helse og underholdning.</p>
+<p>N&#229;r du klikker p&#229; en av titlene i trefflisten fra papiraviser, f&#229;r du opp hele artikkelen i fulltekst uten &#229; forlate Sesam.
 <p><b>Sorter etter avis</b><br/>
 Under "Velg nyheter i kilde" sorterer du ytterligere, etter avis. Hvilke aviser som listes opp her avhenger om du i menyen ovenfor ("Velg treff i") har valgt norske nyheter, internasjonale nyheter eller papiraviser.</p>
 <p>Vi viser opptil seks nyhetskildene med flest artikler som passer med s&#248;ket ditt. Klikker du p&#229; "Vis alle" f&#229;r du opp alle nyhetskildene med treff.</p>
@@ -159,7 +160,7 @@ Vi lenker til artikler i det norske, dugnadsbaserte leksikonet Wikipedia dersom 
 <p><img src="../images/enrichment/wp.jpg" align="left" style="padding-right: 4px;" /><b>Personer</b><br /> Ikonet signaliserer relevante treff fra v&#229;r telefonkatalog for privatpersoner. Du kan ogs&#229; s&#248;ke direkte i katalogen ved &#229; klikke deg inn p&#229; persons&#248;k.</p>
 <p>Katalogen inneholder navn, telefonnummer og adresser til privatpersoner i Norge. Den er basert p&#229; opplysninger fra de forskjellige teleoperat&#248;rene, og er ment &#229; v&#230;re dekkende. Hvis du oppdager feil, b&#248;r du kontakte teleoperat&#248;ren din. V&#229;rt register vil deretter bli oppdatert automatisk.</p>
 <p><img src="../images/enrichment/news.jpg" align="left" style="padding-right: 4px;" /><b>Nyheter</b><br />Ikonet signaliserer relevante treff i nyheter. Du kan ogs&#229; s&#248;ke direkte i ferske og arkiverte nyheter ved &#229; klikke deg inn p&#229; nyhetss&#248;k.</p>
-<p>Nyhetss&#248;ket finner artikler og nyheter fra norske og internasjonale nyhetskilder, inkludert artikler som har st&#229;tt i norske papiraviser fra 1983 fram til dags dato. Det er Schibsted-eide Retriever Norge AS som st&#229;r bak den norske og nordiske nyhetsindeksen, og Moreover som st&#229;r bak treffene i de internasjonale nyhetene.</p>
+<p>Nyhetss&#248;ket finner artikler og nyheter fra norske og internasjonale nyhetskilder, inkludert artikler som har st&#229;tt i norske papiraviser fra 1985 fram til dags dato. Det er Schibsted-eide Retriever Norge AS som tilgjengeliggj&#248;r nyheter fra norske og nordiske nettaviser samt <a href="?c=d&amp;q=&amp;help=true&amp;pg=6">deler av sitt papiravisarkiv</a> ATEKST. Moreover st&#229;r bak treffene i de internasjonale nyhetene.</p>
 <p><img src="../images/enrichment/pic.jpg" align="left" style="padding-right: 4px;" /><b>Bilder</b><br />Ikonet signaliserer relevante treff i bilder. Du kan ogs&#229; s&#248;ke direkte i bilder ved &#229; klikke deg inn p&#229; bildes&#248;k.</p>
 <p>Bildes&#248;ket er basert p&#229; crawling av internett p&#229; samme m&#229;te som nettsidene v&#229;re. Rettighetene til bildene ligger hos de som har publisert bildene, ikke hos Sesam. Bildes&#248;ket er internasjonalt, og har et innebygget filter mot st&#248;tende innhold.</p>
 <p><img src="../images/enrichment/wiki.jpg" align="left" style="padding-right: 4px;" /><b>Leksikon</b><br />Ikonet signaliserer relevante treff fra det folkeskapte nettleksikonet Wikipedia.</p>

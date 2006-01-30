@@ -131,6 +131,26 @@
         <url-pattern>/Log</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>RetrieverLog</servlet-name>
+        <servlet-class>no.schibstedsok.front.searchportal.servlet.RetrieverLogServlet</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>RetrieverLog</servlet-name>
+        <url-pattern>/search/writeLog.do</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>SendMail</servlet-name>
+        <servlet-class>no.schibstedsok.front.searchportal.servlet.SendMailServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>SendMail</servlet-name>
+        <url-pattern>/servlet/sendMail.do</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>/index.jsp</welcome-file>
     </welcome-file-list>

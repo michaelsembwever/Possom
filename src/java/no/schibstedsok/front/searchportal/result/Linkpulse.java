@@ -13,14 +13,15 @@ import java.util.Properties;
  */
 public class Linkpulse {
 
-    private String toUrl;
     private Properties props;
 
     public Linkpulse(final Properties properties) {
         this.props = properties;
-    };
+    }
 
-    public String  getUrl(final String orgUrl, final String paramString, final String script) {
+    public String  getUrl(String orgUrl, String paramString, String script, String indexpage) {
+
+        String toUrl = "";
 
         //linkpulse property is set to true only in the production build
         if (props.getProperty("tokenevaluator.linkpulse").equals("true")) {
@@ -43,7 +44,11 @@ public class Linkpulse {
             //adds the original url
             toUrl = toUrl + "/" + props.getProperty("tokenevaluator.linkpulseSesam") + orgUrl;
         } else
-            toUrl = orgUrl;
+            if (indexpage.equals("true"))
+                toUrl = "search/" + orgUrl;
+            else
+                toUrl = orgUrl;
+
 
         return toUrl;
     }

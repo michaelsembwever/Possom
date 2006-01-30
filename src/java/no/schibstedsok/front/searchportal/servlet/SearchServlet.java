@@ -98,9 +98,15 @@ public final class SearchServlet extends HttpServlet {
             LOG.warn("Tabs reloaded");
         }
 
-        httpServletResponse.setContentType("text/html; charset=utf-8");
+        final String xmlParam = httpServletRequest.getParameter("xml");
+        
+        if (xmlParam != null && xmlParam.equals("yes")) {
+            httpServletResponse.setContentType("text/xml; charset=utf-8");
+        } else {
+            httpServletResponse.setContentType("text/html; charset=utf-8");
+        }
         httpServletResponse.setCharacterEncoding("UTF-8"); // correct encoding
-
+        
         String searchModeKey = httpServletRequest.getParameter("c");
 
         if (searchModeKey == null) {

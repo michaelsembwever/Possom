@@ -21,6 +21,32 @@
     #end
 </content>
 
+<content tag="relevantQueries">
+    #if ($result.getRelevantQueries().size() > 0)
+        <div class="geo_element">
+            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <div class="geo_header">
+             Andre har s&#248;kt p&#229;:
+            </div>
+            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
+                #foreach ($relQuery in $result.getRelevantQueries())
+				#if ($velocityCount < 6) 
+                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FFF';">
+                            <td class="left_marg">
+                                <a href="?c=d&amp;q=$relQuery.query&amp;qs=true">$relQuery.query <!-- $relQuery.weight --></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="1" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        </tr>
+	#end
+                #end
+            </table>
+        </div>
+#end
+</content>
+
 <content tag="greybar_magic">
         <table id="greybar_main" cellpadding="0" cellspacing="0" width="561">
             <tr>
@@ -32,14 +58,16 @@
         #set ($baseURL = "?c=d&amp;q=$query")
         #if ($result.getQuerySuggestions().size() > 0)
          <div class="spelling_suggestion">
-                <span class="stavekontroll"><img src="../images/star.gif"/> $text.getMessage($locale, "didYouMean"):</span>
-                #foreach ($querySuggestion in $result.querySuggestions)
-                    <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
-                    #if  ($velocityCount < $result.getQuerySuggestions().size())
-                      eller
-                    #end
+                <img src="../images/star.gif" alt="star" />
+                <span class="stavekontroll">$text.getMessage($locale, "didYouMean"):
+                    #foreach ($querySuggestion in $result.querySuggestions)
+                        <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
+                        #if  ($velocityCount < $result.getQuerySuggestions().size())
+                          eller
+                        #end
                     #end
                     ?
+                </span>
             </div>
         #end
 </content>
@@ -56,23 +84,30 @@
         #set ($baseURL = "?c=d&amp;q=$query")
         #if ($result.getQuerySuggestions().size() > 0)
             <div class="spelling_suggestion">
-                <span class="stavekontroll"><img src="../images/star.gif"/> $text.getMessage($locale, "didYouMean"):</span>
-                #foreach ($querySuggestion in $result.querySuggestions)
-                    <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
-                    #if  ($velocityCount < $result.getQuerySuggestions().size())
-                      eller
-                    #end
+                <img src="../images/star.gif"/>
+                <span class="stavekontroll">
+                    $text.getMessage($locale, "didYouMean"):
+                    #foreach ($querySuggestion in $result.querySuggestions)
+                        <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
+                        #if  ($velocityCount < $result.getQuerySuggestions().size())
+                          eller
+                        #end
                     #end
                     ?
+                </span>
             </div>
         #end
+</content>
+
+<content tag="greybar_sitesearch">
+    $text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$queryHTMLEscaped</b>
 </content>
 
 <content tag="greybar_smart">
         <table id="greybar_main" cellpadding="0" cellspacing="0" width="561">
             <tr>
                 <td class="left">
-                    <b>S&#248;k smart!</b>
+                    <b>S&#248;ketips!</b>
                 </td>
                 <td class="right">&nbsp;</td>
             </tr>
@@ -91,9 +126,9 @@
 <content tag="smart-nav">
     #set ($helpnavs = ["Tegn og operat&#248;rer", "Magiske Sesam-ord", "For d&#229;rlig treffliste?"])
     <div style="margin-top:61px;">
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
-        <div class="geo_header">S&#248;k smart!</div>
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <div class="geo_header">S&#248;ketips!</div>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
         <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
         #foreach ($menu in $helpnavs)
             <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=&amp;smart=true&amp;pg=$velocityCount";'>
@@ -106,7 +141,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td>
+                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
             </tr>
         #end
         </table>
@@ -116,9 +151,9 @@
 <content tag="help-nav">
     #set ($helpnavs = ["Slik virker Sesam", "Naviger mellom s&#248;kene", "Slik s&#248;ker du", "S&#248;keresultatet", "Drill deg ned", "Nyhetss&#248;k", "Bedriftss&#248;k", "Persons&#248;k", "Bildes&#248;k", "TV, v&#230;r og leksikon", "Ikonene i Sesam", "Sesams&#248;k som startside"])
     <div style="margin-top: 61px;">
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
         <div class="geo_header">Hjelp</div>
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
     </div>
     <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
         #foreach ($menu in $helpnavs)
@@ -132,7 +167,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td>
+                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
             </tr>
         #end
     </table>
@@ -140,11 +175,11 @@
 
 
 <content tag="about-nav">
-    #set ($helpnavs = ["Om oss", "Stilling Ledig"])
+    #set ($helpnavs = ["Om oss", "Stilling ledig", "Marked"])
     <div style="margin-top: 61px;">
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
         <div class="geo_header">Om Sesam</div>
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" /><br/>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
     </div>
     <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
         #foreach ($menu in $helpnavs)
@@ -158,7 +193,32 @@
             </td>
         </tr>
         <tr>
-            <td class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" /></td>
+            <td class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+        </tr>
+        #end
+    </table>
+</content>
+
+<content tag="ads_help-nav">
+    #set ($helpnavs = ["Annonsere", "Bedriftssøk", "PPC"])
+    <div style="margin-top: 61px;">
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <div class="geo_header">Bli annons&#248;r</div>
+        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+    </div>
+    <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
+        #foreach ($menu in $helpnavs)
+        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=&amp;ads_help=true&amp;pg=$velocityCount";'>
+            <td class="nav_pad">
+                #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
+                    $menu
+                #else
+                    <a href="?c=d&amp;q=&amp;ads_help=true&amp;pg=$velocityCount">$menu</a>
+                #end
+            </td>
+        </tr>
+        <tr>
+            <td class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
         </tr>
         #end
     </table>
@@ -174,9 +234,9 @@
                     <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a>
                     #if ($item.getField('fileformat')) <span class="timestamp">$item.getField('fileformat')</span> #end<br />
                     #if ($item.getField('body'))
-                        <span class="search_summary">$!{item.getField('body')}</span><br />
+                        <span class="search_summary" style="word-wrap:break-word;">$!{item.getField('body')}</span>
                     #end
-                    <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                    <span class="search_small_url">$item.getField('url', 80)</span>
                 </p>
             #end
         </div>
@@ -203,9 +263,9 @@
                                 <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a>
                                 #if ($item.getField('fileformat')) <span class="timestamp">$item.getField('fileformat')</span> #end<br />
                                 #if ($item.getField('body'))
-                                    <span class="search_summary">$!{item.getField('body')}</span><br />
+                                    <span class="search_summary">$!{item.getField('body')}</span>
                                 #end
-                                <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                                <span class="search_small_url">$item.getField('url', 80)</span>
                             </p>
                         #end
                     #end
@@ -219,7 +279,7 @@
                     #*<b>$text.getMessage($locale, "keywords")</b><br/>
                     #foreach ($keyword in $result.sortedClusters)
                         #if ($velocityCount < 10)
-                            <a href="?$httpQueryString&amp;kw=%22$keyword.key%22">$keyword.key</a> <br/>
+                            <a href="?$httpQueryString&amp;kw=%22$keyword.key%22">$keyword.key</a>
                         #end
                     #end *#
 
@@ -227,8 +287,8 @@
                         <p>
                             <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a>
                             #if ($item.getField('fileformat')) <span class="timestamp">$item.getField('fileformat')</span> #end<br />
-                            <span class="search_summary">$!{item.getField('body')}</span><br />
-                            <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                            <span class="search_summary">$!{item.getField('body')}</span>
+                            <span class="search_small_url">$item.getField('url', 80)</span>
                         </p>
                     #end
                 </div>
@@ -252,9 +312,9 @@
                                 <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a>
                                 #if ($item.getField('fileformat')) <span class="timestamp">$item.getField('fileformat')</span> #end<br />
                                 #if ($item.getField('body'))
-                                    <span class="search_summary">$!{item.getField('body')}</span><br />
+                                    <span class="search_summary">$!{item.getField('body')}</span>
                                 #end
-                                <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                                <span class="search_small_url">$item.getField('url', 80)</span>
                             </p>
                         #end
                     #end
@@ -319,13 +379,13 @@
         #parse("smartText.vm")
     </div>
     <div id="footer_space">
-        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>
+        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
         #parse("footer.vm")
     </div>
 </content>
 
 <content tag="about">
-    #set ($helpnavs = ["Om oss", "Stilling Ledig"])
+    #set ($helpnavs = ["Om oss", "Stilling ledig", "Marked"])
     <div id="help">
         #foreach ($menu in $helpnavs)
         #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
@@ -335,23 +395,60 @@
         #parse("aboutText.vm")
     </div>
     <div id="footer_space">
-        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>
+        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
         #parse("footer.vm")
     </div>
 </content>
 
 
 <content tag="ads_help">
+    #set ($helpnavs = ["Annonsere", "Bedriftssøk", "PPC"])
     <div id="help">
-        <h3>Annonsering</h3>
-        #include("adsText.vm")
+        #foreach ($menu in $helpnavs)
+            #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
+                <h3>$menu</h3>
+            #end
+        #end
+        #parse("adsText.vm")
         <div id="footer_space">
-            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>
+            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
             #parse("footer.vm")
         </div>
     </div>
 </content>
 
+<content tag="searchbox">
+    <div id="help">
+        <h3>Sesam s&#248;keboks</h3>
+        #include("searchboxText.vm")
+        <div id="footer_space">
+            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+            #parse("footer.vm")
+        </div>
+    </div>
+</content>
+
+<content tag="searchbox">
+    <div id="help">
+        <h3>Sesam s&#248;keboks</h3>
+        #include("searchboxText.vm")
+        <div id="footer_space">
+            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+            #parse("footer.vm")
+        </div>
+    </div>
+</content>
+
+<content tag="toolbar">
+    <div id="help">
+        <h3>Sesam verkt&#248;ylinje</h3>
+        #include("toolbarText.vm")
+        <div id="footer_space">
+            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+            #parse("footer.vm")
+        </div>
+    </div>
+</content>
 
 <content tag="help">
     <div id="help">
@@ -364,7 +461,7 @@
         #parse("helpText.vm")
     </div>
     <div id="footer_space">
-        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" /></div>
+        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
         #parse("footer.vm")
     </div>
 </content>

@@ -17,6 +17,7 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
+ *
  * @version <tt>$Revision$</tt>
  */
 public abstract class AbstractSearchCommand implements SearchCommand {
@@ -62,7 +63,13 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      * @return
      */
     public Object call() {
-        if(LOG.isDebugEnabled()){
+
+
+        if (getSearchConfiguration().getStatisticsName() != null) {
+            LOG.info("STATISTICS: " + getSearchConfiguration().getStatisticsName());
+        } 
+        
+        if( LOG.isDebugEnabled()){
             LOG.debug("ENTR: call()");
         }
         String queryToUse;
@@ -70,7 +77,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         if (getSearchConfiguration().getUseParameterAsQuery() != null) {
             queryToUse = getSingleParameter(getSearchConfiguration().getUseParameterAsQuery());
         } else {
-            queryToUse = getQuery().getQueryString();
+            queryToUse = getQuery().getStrippedQueryString();
         }
         transformedQuery = queryToUse;
         applyQueryTransformers(getSearchConfiguration().getQueryTransformers());
@@ -177,12 +184,13 @@ public abstract class AbstractSearchCommand implements SearchCommand {
 
                 transformedQuery = transformer.getTransformedQuery(qtCxt);
 
-                if(filter == null){
-                    filter = transformer.getFilter(qtCxt);
-                } else if(transformer.getFilter(qtCxt) != null){
-                    filter += transformer.getFilter(qtCxt) + " ";
-                }
 
+                if (filter == null) {
+                    filter = transformer.getFilter(qtCxt, parameters);
+                } else if(transformer.getFilter(qtCxt, parameters) != null){
+                    filter += transformer.getFilter(qtCxt, parameters) + " ";
+                }
+		
                 if(LOG.isDebugEnabled()){
                     LOG.debug("applyQueryTransformers: TransformedQuery=" + transformedQuery);
                     LOG.debug("applyQueryTransformers: Filter=" + filter);

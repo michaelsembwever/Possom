@@ -98,4 +98,5 @@ public interface SearchConfiguration {
     public String getUseParameterAsQuery();
 
     boolean isAlwaysRunEnabled();
+    String getStatisticsName();
 }

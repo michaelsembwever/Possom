@@ -1,4 +1,11 @@
-#set ($baseURL = "?q=$!query&c=$!currentTab.getKey()#allNavigators()$!previousNavigationParameters$!{sortBy}")
+## --- sitesearch parameters (ss and ssr) added in baseURL ---
+#if ($request.getParameter('ss'))
+    #set ($ss = "&amp;ss=$request.getParameter('ss')")
+#end
+#if ($request.getParameter('ssr'))
+    #set ($ssr = "&amp;ssr=$request.getParameter('ssr')")
+#end
+#set ($baseURL = "?q=$!query&amp;c=$!currentTab.getKey()#allNavigators()$!previousNavigationParameters$!{sortBy}$!{viewall}$!{ss}$!{ssr}")
 
 #if ($request.getParameter("s"))
     #set ($localOrGlobal = $request.getParameter("s"))
@@ -68,9 +75,7 @@
 
                     ## Last iteration.
                     #if ($page == ${pager.getLastVisiblePage()})
-                        #if ($pager.isLastPage())
-                            &nbsp;&nbsp;&nbsp;Neste&nbsp;&gt;&gt;
-                        #else
+                        #if (!$pager.isLastPage())
                             &nbsp;&nbsp;&nbsp;<a href="$baseURL&amp;offset=$pager.getOffsetOfNextPage()">$text.getMessage($locale, "next")</a>&nbsp;&gt;&gt;
                         #end
                     #end
@@ -78,14 +83,14 @@
                     #end
         </div>
 
-#else
-    <br clear="both" /><br />
-#end
+    #else
+        <br /><br />
+    #end
 
     <form name="sf_bottom" action="">
     <input name="lang" value="en" type="hidden"/>
     <input name="c" value="$currentTab.getKey()" type="hidden"/>
-        <div id="search_table">
+        <div class="search_table">
         <table border="0" cellspacing="3" cellpadding="0">
             <tr>
                 <td colspan="3"><img src="../images/pix.gif" width="1" height="5" alt="" /></td>
@@ -94,15 +99,15 @@
                 <td width="400" valign="middle"><input type="text" name="q" value="$queryHTMLEscaped" class="input_main" /></td>
                 <td width="8">&nbsp;</td>
                 #if ($currentTab.getKey() == "m")
-                <td valign="middle"><input type="submit" value="Nyhetss&#248;k" id="submit_button" class="submit_m" /></td>
+                <td valign="middle"><input type="submit" value="Nyhetss&#248;k" class="submit_m" /></td>
                 #elseif ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
-                <td valign="middle"><input type="submit" value="Bedriftss&#248;k" id="submit_button" class="submit_y" /></td>
+                <td valign="middle"><input type="submit" value="Bedriftss&#248;k" class="submit_y" /></td>
                 #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
-                <td valign="middle"><input type="submit" value="Persons&#248;k" id="submit_button" class="submit_w" /></td>
+                <td valign="middle"><input type="submit" value="Persons&#248;k" class="submit_w" /></td>
                 #elseif ($currentTab.getKey() == "p")
-                <td valign="middle"><input type="submit" value="Bildes&#248;k" id="submit_button" class="submit_p" /></td>
+                <td valign="middle"><input type="submit" value="Bildes&#248;k" class="submit_p" /></td>
                 #else
-                <td valign="middle"><input type="submit" value="Sesams&#248;k" id="submit_button" class="submit_d" /></td>
+                <td valign="middle"><input type="submit" value="Sesams&#248;k" class="submit_d" /></td>
                 #end
             </tr>
         </table>

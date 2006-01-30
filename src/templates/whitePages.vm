@@ -192,9 +192,9 @@
 
 <content tag="persons-results">
 
-    <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>
-    <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/mapicon.js'></SCRIPT>
-    <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/layers.js'></SCRIPT>
+    <script type='text/javascript' language='JavaScript' src='../javascript/map.js'></script>
+    <script type='text/javascript' language='JavaScript' src='../javascript/mapicon.js'></script>
+    <script type='text/javascript' language='JavaScript' src='../javascript/layers.js'></script>
 
     <script type="text/javascript" language="JavaScript">
          var imgWidth;
@@ -284,14 +284,15 @@
 
     #if ($result.getQuerySuggestions().size() > 0)
     <div class="spelling_suggestion">
-    <span class="stavekontroll">$text.getMessage($locale, "didYouMean"):</span>
-    #foreach ($querySuggestion in $result.querySuggestions)
-    <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
-    #if  ($velocityCount < $result.getQuerySuggestions().size())
-      eller
-    #end
-    #end
-    ?
+        <span class="stavekontroll">$text.getMessage($locale, "didYouMean"):
+            #foreach ($querySuggestion in $result.querySuggestions)
+                <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
+                #if  ($velocityCount < $result.getQuerySuggestions().size())
+                  eller
+                #end
+            #end
+            ?
+        </span>
     </div>
     #end
 
@@ -352,19 +353,21 @@
                     #end
                         <td valign="top" class="detail">
                             #if($mappoint.x == $coordHelper.getDefaultNoCoord()) ## dersom det ikke finnes koordinater for bedriften vises ikke bokstaver
-                                <span style="margin-right: 8px;">#</span> <b>$!item.getField('wpfornavn')#if ($item.getField('wpmellomnavn')) $item.getField('wpmellomnavn')#end $!item.getField('wpetternavn')</b>
+                                <span style="margin-right: 8px;">#</span>
                             #else
-                                <span class="alphabet">$alphas.get($alphaCount)</span> <b>$!item.getField('wpfornavn')#if ($item.getField('wpmellomnavn')) $item.getField('wpmellomnavn')#end $!item.getField('wpetternavn')</b>
+                                <span class="alphabet" style="float: left;"><img src="../images/mapicon/white_map/${alphaCount}.gif" alt="tall boble"/></span>
                             #end
-                            &nbsp;&nbsp;<a href="?q=$query&amp;c=wip&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))">infoside</a><br/>
-                            #if ($item.getField('wpadresse') && $item.getField('ywpostnr'))
-                                $!{item.getField('wpadresse')},
-                            #else
-                                $!{item.getField('wpadresse')}
-                            #end
-                            $!{item.getField('ywpostnr')}
-                            $!{item.getField('ywpoststed')}
-                            &nbsp;
+                            <div style="padding-left: 28px;">
+                                <b>$!item.getField('wpfornavn')#if ($item.getField('wpmellomnavn')) $item.getField('wpmellomnavn')#end $!item.getField('wpetternavn')</b>
+	                            &nbsp;&nbsp;
+	                            <a href="?q=$query&amp;c=wip&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))">infoside</a><br/>
+	                            #if ($item.getField('wpadresse') && $item.getField('ywpostnr'))
+	                                $!{item.getField('wpadresse')},
+	                            #else
+	                                $!{item.getField('wpadresse')}
+	                            #end
+                            $!{item.getField('ywpostnr')}&nbsp;$!{item.getField('ywpoststed')}
+                            </div>
                         </td>
                         <td valign="top" align="right" class="detail" style="white-space: nowrap;">
                             #foreach ($number in $item.getMultivaluedField('manyPhoneNumbers'))
@@ -381,7 +384,7 @@
                     #end
                     #if ($comment.equals("true"))
                     <tr>
-                        <td colspan="2" class="small">&nbsp;<br/># = <i>Personen mangler adresseoppf&#248;ring, og kan ikke vises p&#229; kart</i></td>
+                        <td colspan="2" class="small">&nbsp;<br/># = <i>Personen kan ikke vises p&#229; kartet p&#229; grunn av ufullstendig adresse</i></td>
                     </tr>
                     #end
                 </table>
@@ -391,12 +394,24 @@
                 <div id="bubblegum"><div id="bubbletext"></div></div>
                 <table bgcolor="#F3F3F3" border="0" cellspacing="0" cellpadding="0" width="385">
                     <tr>
-                        <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a></td>
-                        <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px"><a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/panN.jpg" height="11" alt="panorer" /></a></td>
-                        <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer" /></a></td>
+                        <td width="11" height="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a>
+                        	</td>
+                        <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/panN.jpg" height="11" alt="panorer" /></a>
+                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                        	</td>
+                        <td width="11" height="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer" /></a>
+                        	</td>
                     </tr>
                     <tr>
-                        <td width="11" class="printhide"><a href="javascript:javascript:if(checkCoord()){pan('w');}"><img src="../images/mapicon/panW.jpg" width="11" alt="panorer" /></a></td>
+                        <td width="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:javascript:if(checkCoord()){pan('w');}"><img src="../images/mapicon/panW.jpg" width="11" alt="panorer" /></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
+                        	</td>
                         <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
                             <div id="mapcontent" style="POSITION: absolute; OVERFLOW: hidden; WIDTH: $coordHelper.getImgWidth()px; HEIGTH: $coordHelper.getImgHeigth()px;">
                                 #if($hasCoords)
@@ -411,7 +426,7 @@
                                         #else
                                         #set ($alphaCount = $alphaCount+1)
                                         #set ($bubbleid = "icon_$item.getField('recordid')")
-                                            <img src="../images/mapicon/bubble_${alphaCount}.gif" border="0" id="$bubbleid" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" alt="$!item.getField('wpfornavn') $!item.getField('wpetternavn')" onmouseover="javascript:boble('$alphas.get($alphaCount)','$bubbleid');document.getElementById('row_$alphas.get($alphaCount)').style.background='#F3F3F3';" onmouseout="javascript:bobleAv('$alphas.get($alphaCount)');document.getElementById('row_$alphas.get($alphaCount)').style.background='#FFFFFF';" onclick="location.href='?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))'" style="POSITION: absolute; TOP: $mappoint.getPxY()px; LEFT: $mappoint.getPxX()px; Z-INDEX: $zindex; CURSOR: pointer; VISIBILITY: visible"/>
+                                            <img src="../images/mapicon/white_map/${alphaCount}.gif" border="0" id="$bubbleid" alt="$!item.getField('wpfornavn') $!item.getField('wpetternavn')" onmouseover="javascript:boble('$alphas.get($alphaCount)','$bubbleid');document.getElementById('row_$alphas.get($alphaCount)').style.background='#F3F3F3';" onmouseout="javascript:bobleAv('$alphas.get($alphaCount)');document.getElementById('row_$alphas.get($alphaCount)').style.background='#FFFFFF';" onclick="location.href='?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))'" style="position: absolute; top: $mappoint.getPxY()px; left: $mappoint.getPxX()px; z-index: $zindex; cursor: pointer; visibility: visible"/>
                                         #end
                                     #end
                                 #else
@@ -419,12 +434,24 @@
                                 #end
                             </div>
                         </td>
-                        <td width="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/panE.jpg" width="11" alt="panorer"/></a></td>
+                        <td width="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/panE.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
+                        	</td>
                     </tr>
                     <tr>
-                        <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a></td>
-                        <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px"><a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/panS.jpg" height="11" alt="panorer"/></a></td>
-                        <td width="11" height="11" class="printhide"><a href="if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a></td>
+                        <td width="11" height="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a>
+                        	</td>
+                        <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/panS.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                        	</td>
+                        <td width="11" height="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a>
+                        	</td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
                         <td colspan="3" height="5">&nbsp;</td>

@@ -46,14 +46,17 @@
 
     #if ($result.getQuerySuggestions().size() > 0)
         <div class="spelling_suggestion">
-            <span class="stavekontroll"><img src="../images/star.gif" align="middle"/> $text.getMessage($locale, "didYouMean"):</span>
-            #foreach ($querySuggestion in $result.querySuggestions)
-                <em><a href="?c=$currentTab.getKey()&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
-                #if  ($velocityCount < $result.getQuerySuggestions().size())
-                    eller
+            <img src="../images/star.gif" align="middle" alt="star" />
+            <span class="stavekontroll">
+                $text.getMessage($locale, "didYouMean"):
+                #foreach ($querySuggestion in $result.querySuggestions)
+                    <em><a href="?c=$currentTab.getKey()&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
+                    #if  ($velocityCount < $result.getQuerySuggestions().size())
+                        eller
+                    #end
                 #end
-            #end
-            ?
+                ?
+            </span>
         </div>
     #end
 
@@ -65,9 +68,9 @@
             <p>
                 <a href="$item.getField('url')" class="search_big_url">#if ($item.getField('title')) $item.getField('title') #else $item.getField('url', 80) #end</a><br />
                 #if ($item.getField('body'))
-                    <span class="search_summary">$!{item.getField('body')}</span><br />
+                    <span class="search_summary">$!{item.getField('body')}</span>
                 #end
-                <a class="search_small_url" href="$item.getField('url')">$item.getField('url', 80)</a>
+                <span class="search_small_url">$item.getField('url', 80)</span>
             </p>
             #end
         </div>

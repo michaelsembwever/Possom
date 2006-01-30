@@ -9,10 +9,10 @@
         <p>$text.getMessage($locale, "possibleReasons")</p>
         <p>$text.getMessage($locale, "trySearchIn")</p>
         <p>
-            <div class="col_list"><img src="../images/enrichment/sesam.jpg" align="middle" /> &nbsp;<a href="?c=d&amp;q=$query" onclick="return strep(this);">Sesams&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/yp.jpg" align="middle" /> &nbsp;<a href="?c=y&amp;q=$query" onclick="return strep(this);">Bedriftss&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/wp.jpg" align="middle" /> &nbsp;<a href="?c=w&amp;q=$query" onclick="return strep(this);">Persons&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/pic.jpg" align="middle" /> &nbsp;<a href="?c=p&amp;q=$query" onclick="return strep(this);">Bildes&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/sesam.jpg" align="middle" alt="sesamikon" /> &nbsp;<a href="?c=d&amp;q=$query" onclick="return strep(this);">Sesams&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/yp.jpg" align="middle" alt="gulesider ikon" /> &nbsp;<a href="?c=y&amp;q=$query" onclick="return strep(this);">Bedriftss&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/wp.jpg" align="middle" alt="hvitesider ikon" /> &nbsp;<a href="?c=w&amp;q=$query" onclick="return strep(this);">Persons&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/pic.jpg" align="middle" alt="bilde ikon" /> &nbsp;<a href="?c=p&amp;q=$query" onclick="return strep(this);">Bildes&#248;k</a></div>
         </p>
         #end
 
@@ -21,10 +21,10 @@
         <p>$text.getMessage($locale, "possibleReasons")</p>
         <p>$text.getMessage($locale, "trySearchIn")</p>
         <p>
-            <div class="col_list"><img src="../images/enrichment/sesam.jpg" align="middle" /> &nbsp;<a href="?c=d&amp;q=$query" onclick="return strep(this);">Sesams&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/news.jpg" align="middle" /> &nbsp;<a href="?c=m&amp;q=$query" onclick="return strep(this);">Nyhetss&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/wp.jpg" align="middle" /> &nbsp;<a href="?c=w&amp;q=$query" onclick="return strep(this);">Persons&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/pic.jpg" align="middle" /> &nbsp;<a href="?c=p&amp;q=$query" onclick="return strep(this);">Bildes&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/sesam.jpg" align="middle" alt="sesam ikon" /> &nbsp;<a href="?c=d&amp;q=$query" onclick="return strep(this);">Sesams&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/news.jpg" align="middle" alt="nyheter ikon" /> &nbsp;<a href="?c=m&amp;q=$query" onclick="return strep(this);">Nyhetss&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/wp.jpg" align="middle" alt="hvitesider ikon" /> &nbsp;<a href="?c=w&amp;q=$query" onclick="return strep(this);">Persons&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/pic.jpg" align="middle" alt="bilde ikon" /> &nbsp;<a href="?c=p&amp;q=$query" onclick="return strep(this);">Bildes&#248;k</a></div>
         </p>
         #end
 
@@ -33,10 +33,10 @@
         <p>$text.getMessage($locale, "possibleReasons")</p>
         <p>$text.getMessage($locale, "trySearchIn")</p>
         <p>
-            <div class="col_list"><img src="../images/enrichment/sesam.jpg" align="middle" /> &nbsp;<a href="?c=d&amp;q=$query" onclick="return strep(this);">Sesams&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/news.jpg" align="middle" /> &nbsp;<a href="?c=m&amp;q=$query" onclick="return strep(this);">Nyhetss&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/yp.jpg" align="middle" /> &nbsp;<a href="?c=y&amp;q=$query" onclick="return strep(this);">Bedriftss&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/pic.jpg" align="middle" /> &nbsp;<a href="?c=p&amp;q=$query" onclick="return strep(this);">Bildes&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/sesam.jpg" align="middle" alt="sesam ikon" /> &nbsp;<a href="?c=d&amp;q=$query" onclick="return strep(this);">Sesams&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/news.jpg" align="middle" alt="nyhets ikon" /> &nbsp;<a href="?c=m&amp;q=$query" onclick="return strep(this);">Nyhetss&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/yp.jpg" align="middle" alt="gulesider ikon" /> &nbsp;<a href="?c=y&amp;q=$query" onclick="return strep(this);">Bedriftss&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/pic.jpg" align="middle" alt="bilde ikon" /> &nbsp;<a href="?c=p&amp;q=$query" onclick="return strep(this);">Bildes&#248;k</a></div>
         </p>
         #end
 
@@ -45,10 +45,10 @@
         <p>$text.getMessage($locale, "possibleReasons")</p>
         <p>$text.getMessage($locale, "trySearchIn")</p>
         <p>
-            <div class="col_list"><img src="../images/enrichment/sesam.jpg" align="middle" /> &nbsp;<a href="?c=d&amp;q=$query" onclick="return strep(this);">Sesams&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/news.jpg" align="middle" /> &nbsp;<a href="?c=m&amp;q=$query" onclick="return strep(this);">Nyhetss&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/yp.jpg" align="middle" /> &nbsp;<a href="?c=y&amp;q=$query" onclick="return strep(this);">Bedriftss&#248;k</a></div>
-            <div class="col_list"><img src="../images/enrichment/wp.jpg" align="middle" /> &nbsp;<a href="?c=w&amp;q=$query" onclick="return strep(this);">Persons&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/sesam.jpg" align="middle" alt="sesam ikon" /> &nbsp;<a href="?c=d&amp;q=$query" onclick="return strep(this);">Sesams&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/news.jpg" align="middle" alt="nyhets ikon" /> &nbsp;<a href="?c=m&amp;q=$query" onclick="return strep(this);">Nyhetss&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/yp.jpg" align="middle" alt="gulesider ikon" /> &nbsp;<a href="?c=y&amp;q=$query" onclick="return strep(this);">Bedriftss&#248;k</a></div>
+            <div class="col_list"><img src="../images/enrichment/wp.jpg" align="middle" alt="hvitesider ikon" /> &nbsp;<a href="?c=w&amp;q=$query" onclick="return strep(this);">Persons&#248;k</a></div>
         </p>
         #end
 </div>

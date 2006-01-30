@@ -63,8 +63,10 @@ public final class SearchConstants {
     public static final String PERSON_ID_FIELD = "personId";
     public static final String NORDIC_NEWS_COLLECTION = "retrievernordic";
     public static final String PIC_SEARCH_HOST = "license.picsearch.com";
+
     public static final String OVERTURE_PPC_SEARCH_BASE_URL = "http://?/";
     public static final String OVERTURE_PPC_HOST = "xml.no.overture.com";
+
     public static final String OVERTURE_PPC_ELEMENT = "Listing";
     public static final Object REQUEST_PARAM_PICTURE_SEARCH = "p";
     public static final String CONFIGURATION_FILE = "configuration.properties";
@@ -76,10 +78,12 @@ public final class SearchConstants {
                                                     "webcrawlno1deep1",
                                                     "webcrawlno2",
                                                     "wikipedia",
+                                                    "wikipedia2",
                                                     "robots",
                                                     "yellow",
                                                     "white",
                                                     "bokkilden",
+                                                    "weather",
                                                     "carelscrawl",
                                                     "retriever",
                                                     "mano"};

@@ -153,12 +153,24 @@
                 <div class="mapcell">
                     	<table bgcolor="#F3F3F3" border="0" cellspacing="0" cellpadding="0" width="385">
                     		<tr>
-                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer" /></a></td>
-                                    <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px"><a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/panN.jpg" height="11" alt="panorer" /></a></td>
-                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer" /></a></td>
+                            <td width="11" height="11" class="printhide">
+                            		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer" /></a>
+                            </td>
+                            <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
+		                    		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                            		<a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/panN.jpg" height="11" alt="panorer" /></a>
+	                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                            	</td>
+                            <td width="11" height="11" class="printhide">
+                            		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer" /></a>
+                            	</td>
                     		</tr>
                     		<tr>
-                                    <td width="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('w');}"><img src="../images/mapicon/panW.jpg" width="11" alt="panorer" /></a></td>
+                            <td width="11" class="printhide">
+	                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                            		<a href="javascript:if(checkCoord()){ pan('w');}"><img src="../images/mapicon/panW.jpg" width="11" alt="panorer" /></a><br/>
+	                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
+                            	</td>
                                     <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
                                         <div id="mapcontent" style="POSITION: absolute; OVERFLOW: hidden; WIDTH: $coordHelper.getImgWidth()px; HEIGTH: $coordHelper.getImgHeigth()px;">
                                             #if ($person.getField('xcoord') && $person.getField('ycoord'))
@@ -169,12 +181,24 @@
                                             #end
                                             </div>
                                     </td>
-                                    <td width="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/panE.jpg" width="11" alt="panorer" /></a></td>
+                                    <td width="11" class="printhide">
+			                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                                    		<a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/panE.jpg" width="11" alt="panorer" /></a><br/>
+			                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
+                                    	</td>
                                 </tr>
                                 <tr>
-                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer" /></a></td>
-                                    <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px"><a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/panS.jpg" height="11" alt="panorer" /></a></td>
-                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer" /></a></td>
+                                    <td width="11" height="11" class="printhide">
+                                    		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer" /></a>
+                                    	</td>
+                                    <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
+			                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                                    		<a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/panS.jpg" height="11" alt="panorer" /></a>
+			                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                                    	</td>
+                                    <td width="11" height="11" class="printhide">
+                                    		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer" /></a>
+                                    	</td>
                     		    </tr>
                                 <tr bgcolor="#FFFFFF">
                                     <td colspan="3" height="5">&nbsp;</td>

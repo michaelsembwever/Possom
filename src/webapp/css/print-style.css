@@ -244,35 +244,74 @@ a {
     border-bottom: 1px solid #DFDFDF;
 }
 
-
-/* -- the link tabs on the infopage -- */
-#yiptabs li {
-    display: inline;
+#yip_table p {
+    padding: 10px 0;
 }
 
-#yiptabs .last {
-    border-right: none;
+#yip_table h1 {
+    font-size: 1.1em;
+    color: #000000;
 }
 
-#yiptabs a {
-    border-right: solid 1px #E5DBC3;
-    border-bottom: solid 1px #E5DBC3;
-    padding: 3px 0px 3px 0px;
-    float: left;
-    width: 110px;
+.yip_row1 {
+    height: 20px;
+}
+
+.yip_row2_l {
+    height: 68px;
+    width: 270px;
+    border: 1px solid #DFDFDF;
     text-align: center;
-    vertical-align: middle;
-    background-image: url(../images/tab_bg.gif);
-    background-repeat: repeat-x;
-    text-decoration: none;
 }
 
-#yiptabs a.active, #yiptabs a:hover {
-    background-image: url(../images/mOver.gif);
-    background-repeat: repeat-x;
-    color: #446DA2;
+.yip_row2_r {
+    height: 70px;
+    margin-bottom: 3px;
 }
 
+#y1 dl {
+    clear: both;
+}
+
+#y1 dt, #y2 dt {
+    width: 27%;
+    float: left;
+    clear: left;
+    padding: 3px 0px 0px 0;
+}
+
+#y1 dd, #y2 dd {
+    width: 68%;
+    float: left;
+    padding: 3px 4px 0px 0px;
+    text-align: left;
+}
+
+#y2 {
+    padding: 0px 7px;
+    border-left: 1px solid #DFDFDF;
+}
+
+#y2 .yip_row2_r img {
+    border: 1px solid #DFDFDF;
+}
+
+#expand_top {
+    padding-left: 65px;
+}
+
+#hide_top {
+    padding-left: 65px;
+}
+
+#yellow_table .mastermarks {
+    margin-right: 7px;
+}
+
+#y3 {
+    padding: 0px 7px;
+    border-left: 1px solid #DFDFDF;
+}
 
 /* ------------------------------------------------------------------ */
 /* =SEARCH-RESULT */

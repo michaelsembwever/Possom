@@ -5,7 +5,8 @@
 
 <table>
     <tr>
-
+    $coordHelper.setImgWidth(736)
+    $coordHelper.setImgHeigth(450)
     #set ($company = $result.results.get(0))
     #set ($env = $coordHelper.getEnvelope($company))
     #set ($zoomLevels = $coordHelper.getZoomLevels())
@@ -21,18 +22,18 @@
 
 <content tag="infopage">
 
-        <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/map.js'></SCRIPT>
-        <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/mapicon.js'></SCRIPT>
-        <SCRIPT TYPE='text/javascript' LANGUAGE='JavaScript' SRC='../javascript/layers.js'></SCRIPT>
+        <script type='text/javascript' language='JavaScript' src='../javascript/map.js'></script>
+        <script type='text/javascript' language='JavaScript' src='../javascript/mapicon.js'></script>
+        <script type='text/javascript' language='JavaScript' src='../javascript/layers.js'></script>
+        <script type='text/javascript' language='JavaScript' src='../javascript/slide.js'></script>
 
         <script type="text/javascript" language="JavaScript">
-
             #if ($company.getField('xcoord') && $company.getField('ycoord'))
                 var hasCoords = true;
                 var countZoomLevels = $coordHelper.getZoomCount();
                 var arrZoomLevels = new Array();
                 var arrCompany = new Array();
-                arrCompany[0] = new coordObj($company.getField('xcoord'), $company.getField('ycoord'), $company.getField('recordid'));
+                arrCompany[0] = new coordObj($company.getField('xcoord'), $company.getField('ycoord'), "$company.getField('recordid')");
 
                 #foreach ($level in $zoomLevels)
                 #set ($index = $velocityCount - 1)
@@ -75,8 +76,9 @@
                 ##var prevMaxY = maxY;
                 ##var prevMinY = minY;
                 var contextPath = "$contextPath";
+		        var customLoadingImg = "../images/mapicon/loading_wide.gif";
             #else
-                    var hasCoords = false;
+                var hasCoords = false;
             #end
 
             function checkCoord(){
@@ -92,149 +94,308 @@
                     setInitZoomBarImg()
                 }
             }
+
+       		function expandIngress(){
+       			document.getElementById('infotext').style.display='block';
+       			document.getElementById('ingress').style.display='none';
+       			document.getElementById('expand').style.display='none';
+       			document.getElementById('hide').style.display='block';
+       		}
+
+       		function collapseIngress(){
+       			document.getElementById('infotext').style.display='none';
+       			document.getElementById('ingress').style.display='block';
+       			document.getElementById('expand').style.display='block';
+       			document.getElementById('hide').style.display='none';
+       			scroll(0,0);
+       		}
+
+            #if ($company.getField('ypimages'))
+                SLIDES = new slideshow("SLIDES");
+
+                #foreach ($img in $company.getMultivaluedField('manyYpimages'))
+                    s = new slide();
+                    sText = "../images/ik/$img";
+                    sep = sText.indexOf("#sep#");
+                    s.src =  sText.substring(0, sep);
+                    s.text = sText.substring(sep+5);
+                    SLIDES.add_slide(s);
+                #end
+            #end
+
+            function isEmail(string) {
+                if (string.search(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/) != -1)
+                return true;
+                else
+                return false;
+            }
+            function tipscheck(){
+                if(document.contactform.mailName.value==""){
+                    alert("Du har ikke fylt inn ditt navn");
+                    return false;
+                }
+                if(document.contactform.emailFrom.value==""){
+                    alert("Du har ikke fylt inn mottakers e-postadresse");
+                    return false;
+                }
+                if (isEmail(document.contactform.emailFrom.value) == false) {
+                     alert("Ugyldig e-postadresse!");
+                     return false;
+                }
+            }
         </script>
 
-        <table id="greybar_main" cellpadding="0" cellspacing="0" width="758">
-            <tr>
-                <td class="left_yel"><b>$company.getField('ypnavn2')</b></td>
-                <td class="right_yel">&nbsp;</td>
-            </tr>
-        </table>
-
         <div id="info_submenu">
-            <img src="../images/arrow.gif" width="3" height="11"/> <a href="javascript:window.print();">$text.getMessage($locale, "print")</a> &nbsp;&nbsp;
-            <img src="../images/arrow.gif" width="3" height="11"/> <script type="text/javascript">ml('107,97,116,97,108,111,103,102,101,105,108,64,115,101,115,97,109,46,110,111','Send oss oppdatert informasjon','Endring av firmainformasjon [$company.getField('recordid')] - Sesam.no&body=Vennligst fyll ut feltene under%0D%0A%0D%0AFirmanavn:%0D%0AAdresse:%0D%0APostnummer:%0D%0ASted:%0D%0ATelefon:%0D%0ATelefaks:%0D%0AOrg.nr:%0D%0AE-post:%0D%0AURL:%0D%0A');</script><noscript><b>(Må slå på javascript for å se e-postadresse)</b></noscript> &nbsp;
+            <img src="../images/arrow.gif" width="3" height="11" alt="pil" /> <a href="javascript:window.print();">$text.getMessage($locale, "print")</a> &nbsp;&nbsp;
+            <img src="../images/arrow.gif" width="3" height="11" alt="pil"/> <script type="text/javascript">ml('107,97,116,97,108,111,103,102,101,105,108,64,115,101,115,97,109,46,110,111','Send oss oppdatert informasjon','Endring av firmainformasjon [$company.getField('recordid')] - Sesam.no&#38;body=Vennligst fyll ut feltene under%0D%0A%0D%0AFirmanavn:%0D%0AAdresse:%0D%0APostnummer:%0D%0ASted:%0D%0ATelefon:%0D%0ATelefaks:%0D%0AOrg.nr:%0D%0AE-post:%0D%0AURL:%0D%0A');</script><noscript><b>(Må slå på javascript for å se e-postadresse)</b></noscript> &nbsp;&nbsp;
             <!--
                         <img src="../images/arrow.gif" width="3" height="11"/> <a href="">$text.getMessage($locale, "sendSMS")</a> &nbsp;&nbsp;
                         <img src="../images/arrow.gif" width="3" height="11"/> <a href="">$text.getMessage($locale, "sendEmail")</a> &nbsp;&nbsp;
                         <img src="../images/arrow.gif" width="3" height="11"/> <a href="">Lagre V-card (adressekort)</a>
             -->
         </div>
-        <img src="../images/navLine.gif" width="758" height="1" />
+        <img src="../images/navLine.gif" width="758" height="1" alt="" />
 
         <div id="yellow_table">
-                <div class="yellow_results">
-                    <table border="0" cellspacing="0" cellpadding="0" id="info_list">
-                        <tr>
-                            <td valign="top">Firmanavn</td>
-                            <td valign="top" class="cellright"><b>$company.getField('ypnavn2')</b></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
-                        </tr>
-                        <tr>
-                            <td valign="top">$text.getMessage($locale, "visitAddress")</td>
-                            <td valign="top" class="cellright">$!{company.getField('ypadresse')}#if ($company.getField('ypadresse') && ($company.getField('ywpostnr') || $company.getField('ywpoststed'))),#end $!{company.getField('ywpostnr')} $!{company.getField('ywpoststed')}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
-                        </tr>
-                        #if ($company.getField('ypanynumber'))
-                        <tr>
-                            <td valign="top">$text.getMessage($locale, "telephone")</td>
-                            <td valign="top" class="cellright">$company.getField('ypanynumber')</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
-                        </tr>
-                        #end
-                        #if ($company.getField('yptelefax'))
-                        <tr>
-                            <td valign="top">$text.getMessage($locale, "telefax")</td>
-                            <td valign="top" class="cellright">$company.getField('yptelefax')</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
-                        </tr>
-                        #end
-                        #if ($company.getField('yporgnummer'))
-                        <tr>
-                            <td valign="top">$text.getMessage($locale, "orgNumber")</td>
-                            <td valign="top" class="cellright">$company.getField('yporgnummer')</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
-                        </tr>
-                        #end
-                        #if ($company.getField('ypfirmatype'))
-                        <tr>
-                            <td valign="top">$text.getMessage($locale, "firmType")</td>
-                            <td valign="top" class="cellright">$company.getField('ypfirmatype')</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
-                        </tr>
-                        #end
-                        #if ($company.getField('ypbransje'))
-                        <tr>
-                            <td valign="top">#if ($company.getMultivaluedField('manyCategories').size()> 1) $text.getMessage($locale, "categories") #else  $text.getMessage($locale, "category") #end</td>
-                            <td valign="top" class="cellright">
-                                #foreach ($category in $company.getMultivaluedField('manyCategories'))
-                                    #if ($velocityCount != 1)
-                                        &nbsp;|&nbsp;
+            <table class="yip_table" width="758" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td width="302" id="y1" valign="top">
+                            <div class="yip_row1">
+                                <h1>$company.getField('ypnavn2')</h1>
+                            </div>
+                            #if ($company.getField('ypcommercial'))
+                                #if ($company.getField('yplogo'))
+                                    #if ($company.getField('ypurl'))
+                                        <div class="yip_row2_l"><a href="$decoder.ypurl($company.getField('ypurl'))" target="_blank"><img src="../images/ik/$company.getField('yplogo')" alt="logo" /></a></div>
+                                    #else
+                                        <div class="yip_row2_l"><img src="../images/ik/$company.getField('yplogo')" alt="logo" /></div>
                                     #end
-                                    <a href="?nav_trade=ypbransjenavigator&amp;q=$query&amp;c=y&amp;ypbransje=$category">$category</a>
+                                #end
+                            #end
+                            <dl>
+                                <dt>$text.getMessage($locale, "visitAddress")</dt>
+                                <dd>$!{company.getField('ypadresse')}#if ($company.getField('ypadresse') && ($company.getField('ywpostnr') || $company.getField('ywpoststed'))),#end $!{company.getField('ywpostnr')} $!{company.getField('ywpoststed')}</dd>
+                                #if ($company.getField('yppostaddress'))
+                                    <dt>$text.getMessage($locale, "postAddress")</dt>
+                                    <dd>$!{company.getField('yppostaddress')}#if ($company.getField('yppostadresse') && ($company.getField('yppostpostnumber') || $company.getField('yppostpostaladdress'))),#end $!{company.getField('yppostpostnumber')} $!{company.getField('yppostpostaladdress')}</dd>
+                                #end
+                                #if ($company.getField('ypanynumber'))
+                                    <dt>$text.getMessage($locale, "telephone")</dt>
+                                    <dd>$company.getField('ypanynumber')</dd>
+                                #end
+                                #if ($company.getField('yptelefax'))
+                                    <dt>$text.getMessage($locale, "telefax")</dt>
+                                    <dd>$company.getField('yptelefax')</dd>
+                                #end
+                                #if ($company.getField('ypepost'))
+                                    <dt>$text.getMessage($locale, "email")</dt>
+                                    <dd><a href="mailto:$company.getField('ypepost')">$company.getField('ypepost')</a></dd>
+                                #end
+                                #if ($company.getField('ypcommercial'))
+                                    #if ($company.getField('ypurl'))
+                                        <dt>$text.getMessage($locale, "homepage")</dt>
+                                        <dd><a href="$decoder.ypurl($company.getField('ypurl'))" target="_blank">$company.getField('ypurl')</a></dd>
+                                    #end
+                                #end
+                                #if ($company.getField('yporgnummer'))
+                                    <dt>$text.getMessage($locale, "orgNumber")</dt>
+                                    <dd>$company.getField('yporgnummer')</dd>
+                                #end
+                                #if ($company.getField('ypbransje'))
+                                    <dt>#if ($company.getMultivaluedField('manyCategories').size()> 1) $text.getMessage($locale, "categories") #else  $text.getMessage($locale, "category") #end</dt>
+                                    <dd>
+                                        #foreach ($category in $company.getMultivaluedField('manyCategories'))
+                                            #if ($velocityCount != 1)
+                                                &nbsp;|&nbsp;
+                                            #end
+                                            <a href="?nav_trade=ypbransjenavigator&amp;q=$category&amp;c=y">$category</a>
+                                        #end
+                                    </dd>
+                                #end
+                            </dl>
+                            #if ($company.getField('ypcommercial'))
+                                #if ($company.getField('ypcontactform'))
+                                    <img src="../images/pix.gif" width="100%" height="10" alt="" />
+                                    <div id="expandMail">
+                                        <a href="javascript:;" onclick="javascript:document.getElementById('sendMail').style.display='block';document.getElementById('expandMail').style.display='none';document.getElementById('hideMail_top').style.display='block';">Vis kontaktskjema</a>
+                                    </div>
+                                    <div id="hideMail_top" style="display:none;">
+                                        <a href="javascript:;" onclick="javascript:document.getElementById('sendMail').style.display='none';document.getElementById('expandMail').style.display='block';document.getElementById('hideMail_top').style.display='none';scroll(0,0);">Skjul kontaktskjema</a>
+                                    </div>
+                                    <img src="../images/pix.gif" width="100%" height="5" alt="" />
+                                    <div id="sendMail" style="display:none;">
+                                        <b>Send foresp&#248;rsel til $!company.getField('ypnavn2')</b>
+                                        <form method="get" name="contactform" action="../servlet/sendMail.do" onsubmit='return tipscheck();'>
+                                        <input type="hidden" name="emailTo" value="$company.getField('ypcontactform')" />
+                                        <input type="hidden" name="rdir" value="/search/?c=yip&amp;q=$query&amp;companyId=$company.getField('recordid')&amp;companyId_x=$hashGenerator.generateMD5($company.getField('recordid'))" />
+                                        <dl>
+                                            <dt>Ditt navn:</dt>
+                                            <dd><input type="text" name="mailName" size="26" /></dd>
+                                            <dt>Din epost:</dt>
+                                            <dd><input type="text" name="emailFrom" size="26" /></dd>
+                                            <dt>Ditt tlfnr:</dt>
+                                            <dd><input type="text" name="phone" size="10" /></dd>
+                                        </dl>
+                                        <div style="clear:both">Din melding:</div>
+                                        <div><textarea rows="6" cols="31" name="text"></textarea></div>
+                                        <div>
+                                            <dl>
+                                            <dt><span id="hideMail" style="display:inline;"><a href="javascript:;" onclick="javascript:document.getElementById('sendMail').style.display='none';document.getElementById('expandMail').style.display='block';document.getElementById('hideMail_top').style.display='none';scroll(0,0);">Skjul</a></span></dt>
+                                            <dd style="text-align:right"><input type="submit" value="Send melding" /></dd>
+                                            </dl>
+                                        </div>
+                                        </form>
+                                    </div>
+                                #end
+                            #end
+                    </td>
+                    #if ($company.getField('ypcommercial'))
+                        #if (!$company.getMultivaluedField('manyYpmastermarks') && !$company.getField('ypinfotext'))
+                        ## No data in second column
+                            <td valign="top" width="209" id="y3">
+                                #if ($company.getField('ypimages'))
+                                    #yip_col3()
                                 #end
                             </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="info_list_ul"><img src="../images/pix.gif" width="1" height="1" /></td>
-                        </tr>
-                        #end
-                    </table>
-                </div>
+                            <td width="246">
+                                &nbsp;
+                            </td>
+                        #else
+                            <td valign="top" width="245" id="y2">
 
-                <div class="mapcell">
-                    	<table bgcolor="#F3F3F3" border="0" cellspacing="0" cellpadding="0" width="385">
-                    		<tr>
-                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a></td>
-                                    <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px"><a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/panN.jpg" height="11" alt="panorer"/></a></td>
-                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer"/></a></td>
-                    		</tr>
-                    		<tr>
-                                    <td width="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('w');}"><img src="../images/mapicon/panW.jpg" width="11" alt="panorer"/></a></td>
-                                    <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
-                                        <div id="mapcontent" style="POSITION: absolute; OVERFLOW: hidden; WIDTH: $coordHelper.getImgWidth()px; HEIGTH: $coordHelper.getImgHeigth()px;">
-                                            #if ($company.getField('xcoord') && $company.getField('ycoord'))
-                                                 <img name="map" src="../images/mapicon/loading.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
-                                                 <img src="../images/mapicon/bubble.gif" border="0" id="icon_$company.getField('recordid')" width="$coordHelper.getIconPxSizeWidth()" heigth="$coordHelper.getIconPxSizeHeigth()" alt="$company.getField('ypnavn2')" style="POSITION: absolute;TOP: $coordHelper.getMapCenterPxY()px;LEFT: $coordHelper.getMapCenterPxX()px;Z-INDEX: 100;"/>
+                                <div id="y2_padding">
+                                    #if ($company.getMultivaluedField('manyYpmastermarks'))
+                                        #yip_mastermarks()
+                                    #end
+                                    #if ($company.getField('ypinfotext'))
+                                        <b>Generell informasjon</b>
+                                        <div id="ingress">
+                                            #if ($company.getField('ypmastermarks'))
+                                                $decoder.yip_decoder($company.getField('ypinfotext'), 120)
                                             #else
-                                                 <img name="map" src="../images/mapicon/nomap_new.jpg" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
+                                                $decoder.yip_decoder($company.getField('ypinfotext'), 200)
                                             #end
+                                        </div>
+                                        #if ($company.getField('ypmastermarks'))
+                                            #set ($length = 120)
+                                        #else
+                                            #set ($length = 200)
+                                        #end
+
+                                        #if ($decoder.checkInfoTextLength($company.getField('ypinfotext'), $length))
+                                            <div id="infotext" style="display:none;">
+                                                $decoder.yip_decoder($company.getField('ypinfotext'))
                                             </div>
-                                    </td>
-                                    <td width="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/panE.jpg" width="11" alt="panorer"/></a></td>
-                                </tr>
-                                <tr>
-                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a></td>
-                                    <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px"><a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/panS.jpg" height="11" alt="panorer"/></a></td>
-                                    <td width="11" height="11" class="printhide"><a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a></td>
-                    		    </tr>
-                                <tr bgcolor="#FFFFFF">
-                                    <td colspan="3" height="5">&nbsp;</td>
-                                </tr>
-                                <tr bgcolor="#FFFFFF">
-                                    <td colspan="3" align="center" valign="center" class="printhide">
-                                        <a href="javascript:if(checkCoord()){ zoomout('uselevel');}"><img src="../images/mapicon/zoom_ut_knapp.jpg" height="22" width="64" alt="Zoom ut"/></a>
-                                        &nbsp;
-                                        <script type="text/javascript" language="JavaScript">
-                                            if (hasCoords)
-                                                document.writeln('<img src="../images/pix.gif" name="zoombar" height="21" width="169" alt="Zoom bar" usemap="#zoombarmap" border="0"/>');
-                                            else
-                                                document.writeln('<img src="../images/mapicon/map_nav.jpg" name="zoombar" height="21" width="169" alt="Zoom bar" border="0"/>');
-                                        </script>
-                                        &nbsp;
-                                        <a href="javascript:if(checkCoord()){ zoomin('uselevel');}"><img src="../images/mapicon/zoom_inn_knapp.jpg" height="22" width="68" alt="Zoom inn"/></a>
-                                    </td>
-                                </tr>
-                                <tr bgcolor="#FFFFFF">
-                                    <td colspan="3" height="5" style="color: #939393;" align="center" class="printhide">Land <img src="../images/pix.gif" width="28" height="1" /> Kommune <img src="../images/pix.gif" width="28" height="1" /> Gate</td>
-                                </tr>
-                         </table>
-                 </div>
+                                            <p id="expand"><a href="javascript:;" onclick="javascript:expandIngress();">Les mer</a></p>
+                                            <p id="hide" style="display:none;"><a href="javascript:;" onclick="javascript:collapseIngress();">Skjul</a></p>
+                                        #end
+                                    #end
+                                </div>
+                            </td>
+                            <td valign="top" width="209" id="y3">
+                                #if ($company.getField('ypimages'))
+                                    #yip_col3()
+                                #else
+                                    &nbsp;
+                                #end
+                            </td>
+                        #end
+                    #else
+                        ##Show Mastermarks even though not paid(ypikid) if it exists
+                        #if ($company.getMultivaluedField('manyYpmastermarks'))
+                            <td valign="top" width="245" id="y2">
+                                #yip_mastermarks()
+                            </td>
+                            <td valign="top" width="209" id="y3">
+                                &nbsp;
+                            </td>
+                        #else
+                            <td width="456">&nbsp;</td>
+                        #end
+                    #end
+                </tr>
+            </table>
+            <div class="infomapcell">
+                <table bgcolor="#F3F3F3" border="0" cellspacing="0" cellpadding="0" width="758">
+                    <tr>
+                        <td width="11" height="11" class="printhide">
+                            <a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a>
+                        </td>
+                        <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
+                            <a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/wpanN.jpg" height="11" alt="panorer"/></a>
+                            <a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
+                        </td>
+                        <td width="11" height="11" class="printhide">
+                            <a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer"/></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                            <a href="javascript:if(checkCoord()){ pan('w');}"><img src="../images/mapicon/wpanW.jpg" width="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                        </td>
+                        <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
+                            <div id="mapcontent" style="overflow: hidden; width: $coordHelper.getImgWidth()px; height: $coordHelper.getImgHeigth()px;">
+                            <div>
+                                #if ($company.getField('xcoord') && $company.getField('ycoord'))
+                                		#set($tmp = $coordHelper.getMapCenterPxY())
+                                		#set($centerY = $math.add($tmp, 66))
+                                     <img name="map" src="../images/mapicon/loading_wide.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
+                                     <img src="../images/mapicon/bubble.gif" border="0" id="icon_$company.getField('recordid')" width="$coordHelper.getIconPxSizeWidth()"
+                                        height="$coordHelper.getIconPxSizeHeigth()" alt="$company.getField('ypnavn2')"
+                                        style="position: relative; float: left; top: -${centerY}px; left: $coordHelper.getMapCenterPxX()px; z-index: 100;"/>
+                                #else
+                                     <img name="map" src="../images/mapicon/nomap_new.jpg" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
+                                #end
+                                </div>
+                            </div>
+                        </td>
+                        <td width="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                            <a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/wpanE.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="11" height="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a>
+                        	</td>
+                        <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/wpanS.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
+                        	</td>
+                        <td width="11" height="11" class="printhide">
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a>
+                        	</td>
+                    </tr>
+                    <tr bgcolor="#FFFFFF">
+                        <td colspan="3" height="5">&nbsp;</td>
+                    </tr>
+                    <tr bgcolor="#FFFFFF">
+                        <td colspan="3" align="center" valign="middle" class="printhide">
+                            <a href="javascript:if(checkCoord()){ zoomout('uselevel');}"><img src="../images/mapicon/zoom_ut_knapp.jpg" height="22" width="64" alt="Zoom ut"/></a>
+                            &nbsp;
+                            <script type="text/javascript" language="JavaScript">
+                                if (hasCoords)
+                                    document.writeln('<img src="../images/pix.gif" name="zoombar" height="21" width="169" alt="Zoom bar" usemap="#zoombarmap" border="0"/>');
+                                else
+                                    document.writeln('<img src="../images/mapicon/map_nav.jpg" name="zoombar" height="21" width="169" alt="Zoom bar" border="0"/>');
+                            </script>
+                            &nbsp;
+                            <a href="javascript:if(checkCoord()){ zoomin('uselevel');}"><img src="../images/mapicon/zoom_inn_knapp.jpg" height="22" width="68" alt="Zoom inn"/></a>
+                        </td>
+                    </tr>
+                    <tr bgcolor="#FFFFFF">
+                        <td colspan="3" height="5" style="color: #939393;" align="center" class="printhide">Land <img alt="" src="../images/pix.gif" width="28" height="1" /> Kommune <img alt="" src="../images/pix.gif" width="28" height="1" /> Gate</td>
+                    </tr>
+                </table>
+             </div>
         </div>
 
-        <br clear="both"/>
+        ##<br clear="both"/>
 
 </content>
 

@@ -25,12 +25,12 @@
                 #if ($result.results.size() == 1) #foreach( $item in $result.results ) <a href="?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))"> #end #else <a href="?c=w&amp;q=$query"> #end
                     <img src="../images/enrichment/wp.jpg" alt="Personer" /></a>
                 </td>
-                <td width="500">
+                <td width="500" class="enrich_text">
                     <table class="testtable" cellspacing="0">
                     #foreach( $item in $result.results )
                         #if ($velocityCount <= 3)
                             <tr>
-                                <td valign="top"><a href="?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))">$!item.getField('wpfornavn') $!item.getField('wpetternavn')</a></td>
+                                <td valign="top"><a href="?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))">$!item.getField('wpfornavn') $!item.getField('wpmellomnavn') $!item.getField('wpetternavn')</a></td>                                
                                 <td class="enrich_space"></td>
                                 <td valign="top">
                                     #if ($item.getField('wpadresse'))

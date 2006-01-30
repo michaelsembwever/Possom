@@ -28,23 +28,27 @@ public class CoordHelper {
     public final static long zoom_7 = 3000000;
 
     public final static int zoomCount = 7;
+
     public final static int defaultZoom = 2;
-    public final static int imgWidth = 363; //bildestørrelse i pixler, bredde
-    public final static int imgHeigth = 363; //bildestørrelse i pixler, høyde
+    public static int imgWidth = 363; //bildestørrelse i pixler, bredde
+    public static int imgHeight = 363; //bildestørrelse i pixler, høyde
     public final static int envFactor = 30; //faktor for å lage rom rundt envelope. Angis i pixler
+
     public final static int iconPxSizeHeigth = 32;
     public final static int iconPxSizeWidth = 29;
+
     public final static int iconOffsetHeigth = 34; //plassering av ikon, avvik fra top. Positiv verdi
     public final static int iconOffsetWidth = 14; //plassering av ikon, avvik fra venstre. Positiv verdi
     public final static int iconOverlapOffsetWidth = 12; //hvor mange pixler skal ikonet flyttes for å unngå overlap. Verdi 0 tillater at ikonene kan ha samme plassering
     public final static int iconOverlapOffsetHeigth = 12; //hvor mange pixler skal ikonet flyttes for å unngå overlap. Verdi 0 tillater at ikonene kan ha samme plassering
-    public final static int mapCenterPxX = imgWidth / 2; //kartets midtpunkt i pixler, bredde
-    public final static int mapCenterPxY = imgHeigth / 2; //kartets midtpunkt i pixler - iconets st�rrelse/2, høyde
+    public static int mapCenterPxX = imgWidth / 2; //kartets midtpunkt i pixler, bredde
+    public static int mapCenterPxY = imgHeight / 2; //kartets midtpunkt i pixler - iconets st�rrelse/2, høyde
     public final static double panFactor = 0.45; //faktor som forteller hvor mye kartsentrum skal flyttet iforhold til kartets deltaX og y ved panning.
     public final static double zoomFactor = 2; //faktor som forteller hvor mye kartextentet skal minskes/utvides ved zoom inn/ut. zoom inn = 1/zoomFactor. Brukes ikke dersom fastezoomlevels benyttes.
     public final static double defaultNoCoord = -9999999;
 
     public double maxX = 1100000; //initielle verdier. Envelope som dekker hele Norge.
+
     public double minX = -83000;
     public double maxY = 7950000;
     public double minY = 6440000;
@@ -53,8 +57,10 @@ public class CoordHelper {
 
     public static final double METERS_PR_INCH = 0.0254;
     public static final int DPI = 96;
+
     public static final double pixelSize = METERS_PR_INCH / DPI;
-    public final static double imgMeterSize = pixelSize * imgWidth; //st�rrelse på kart på skjermen i meter.
+    public static double imgMeterSize = pixelSize * imgWidth; //st�rrelse på kart på skjermen i meter.
+
     /** Creates a new instance of CoordHelper */
     public CoordHelper() {
     }
@@ -105,12 +111,14 @@ public class CoordHelper {
      */
     public MapEnvelope makeEnvelope(final double x, final double y, final int zoom) {
         long zoomscale = getZoomScale(zoom);
+
         double metersPrPixel = zoomscale * pixelSize;
-        this.maxX = Math.round(x + metersPrPixel * imgHeigth);
-        this.minX = Math.round(x - metersPrPixel * imgHeigth);
+        this.maxX = Math.round(x + metersPrPixel * imgHeight);
+        this.minX = Math.round(x - metersPrPixel * imgHeight);
         this.maxY = Math.round(y + metersPrPixel * imgWidth);
         this.minY = Math.round(y - metersPrPixel * imgWidth);
         MapEnvelope mapEnvelope = new MapEnvelope(this.maxX, this.minX, this.maxY, this.minY);
+
         return mapEnvelope;
     }
 
@@ -287,7 +295,7 @@ public class CoordHelper {
                 centerY = me.maxY;
                 //m� finne deltaX
                 deltaX = Math.round(pixelSize * imgWidth * zoomscale);
-                deltaY = Math.round(pixelSize * imgHeigth * zoomscale);
+                deltaY = Math.round(pixelSize * imgHeight * zoomscale);
                 me.maxX = centerX + deltaX / 2;
                 me.minX = centerX - deltaX / 2;
                 me.maxY = centerY + deltaY / 2;
@@ -319,7 +327,7 @@ public class CoordHelper {
                     else if (deltaY == 0)
                         deltaY = 1;
                     //beregner delta x og y slik at de har et forhold som er lik imgHeight/imgWidth
-                    double factorHW = (double) imgWidth / (double) imgHeigth;
+                    double factorHW = (double) imgWidth / (double) imgHeight;
                     double factor_dXdY = deltaX / deltaY;
                     if (factor_dXdY < factorHW ) { //h�yden er iforhold til bildeh�yde/bredde mindre enn bredde. M� utvide bredde for � f� riktige proposisjoner
                         deltaX = deltaX * (factorHW / factor_dXdY);
@@ -474,7 +482,7 @@ public class CoordHelper {
         //beregne bildepixel koordinater. M� justere ikoner som har samme koordinatverdi.
         double deltaX = me.maxX - me.minX;
         double deltaY = me.maxY - me.minY;
-        double yFactor = imgHeigth / deltaY; //meter pr pixel
+        double yFactor = imgHeight / deltaY; //meter pr pixel
         double xFactor = imgWidth / deltaX; //meter pr pixel
         //double deltaX0Xn, deltaY0yn;
         long pixValueHeight, pixValueWidth;
@@ -579,14 +587,32 @@ public class CoordHelper {
 
     public String getDefaultZoom() {
         return Integer.toString(defaultZoom);
+
     }
     public int getImgWidth() {
+
         return imgWidth;
     }
-    public int getImgHeigth() {
-        return imgHeigth;
+    
+    public int getImgHeight() {
+
+        return imgHeight;
     }
-    public double getEnvFactor() {
+
+    public void setImgWidth(int imgWidth){
+        this.imgWidth = imgWidth;
+        this.mapCenterPxX = imgWidth / 2;
+        this.imgMeterSize = pixelSize * imgWidth;
+    }
+
+
+
+    public void setImgHeight(int imgHeigth){
+        this.imgHeight = imgHeigth;
+        this.mapCenterPxY = imgHeigth / 2;
+    }
+
+    public double getEnvFactor(){
         return envFactor;
     }
 

@@ -5,21 +5,40 @@
 
 <body>
 
+    <content tag="ads">
 
-<content tag="ads">
+        #if ($result.getResults().size() > 0)
 
-    #if ($result.getResults().size() > 0)
-        <div id="ads_header">Sponsede lenker:</div>
-        <div id="ads">
-            #foreach ($item in $result.getResults())
-                <p>
-                    <a href="$item.getField('clickURL')">$item.getField('title')</a><br />
-                    <span class="ads_desc">$item.getField('description')</span><br />
-                    <span class="sitehost">$item.getField('siteHost')</span>
-                </p>
+            #if ($request.getParameter("ssr") == "di" || $request.getParameter("ssr") == "pr" || $request.getParameter("ssr") == "ds" || $request.getParameter("ssr") == "it" || $request.getParameter("ssr") == "im")
+                <div id="ads_sitesearch">
+                    #foreach ($item in $result.getResults())
+                        <p>
+                            <span class="header"><a href="$item.getField('clickURL')">$item.getField('title')</a></span><br />
+                            <span class="ads_desc">$item.getField('description')</span><br />
+                            <span class="sitehost">$item.getField('siteHost')</span>
+                        </p>
+                    #end
+                </div>
+            #else
+                <div id="ads_header">Sponsede lenker:</div>
+                <div id="ads">
+                    #foreach ($item in $result.getResults())
+                        <p>
+                            <span class="header"><a href="$item.getField('clickURL')">$item.getField('title')</a></span><br />
+                            <span class="ads_desc">$item.getField('description')</span><br />
+                            <span class="sitehost">$item.getField('siteHost')</span>
+                        </p>
+                    #end
+                </div>
             #end
-        </div>
-    #end
-</content>
+        #end
+    </content>
+
+    <content tag="greybar_ad">
+        #if ($result.getResults().size() > 0)
+            Sponsede lenker
+        #end
+    </content>
+
 </body>
 </html>

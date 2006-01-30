@@ -27,6 +27,9 @@
     <evaluator token="ORGNR" query-dependant="false">
         <pattern>//d{9}</pattern>
     </evaluator>
+    <evaluator token="SITEPREFIX" query-dependant="true">
+        <pattern>^site{0,1}(\\s*\\:){0,1}</pattern>
+    </evaluator>
     <evaluator token="NEWSPREFIX" query-dependant="true">
         <pattern>^nyhet(er){0,1}(\\s+om){0,1}(\\s*\\:){0,1}</pattern>
         <pattern>^(siste\\s+){0,1}nytt(\\s+om){0,1}(\\s*\\:){0,1}</pattern>

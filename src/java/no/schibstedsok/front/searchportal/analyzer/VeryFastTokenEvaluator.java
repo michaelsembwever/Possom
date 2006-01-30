@@ -12,8 +12,16 @@ import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * VeryFastTokenEvaluator is part of no.schibstedsok.front.searchportal.analyzer
@@ -22,7 +30,7 @@ import java.util.Map;
  * @version 0.1
  * @version $Revision$, $Author$, $Date$
  */
-public final class VeryFastTokenEvaluator implements TokenEvaluator {
+public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
 
     /* Geo data*/
     public static final String GEO = "geo";
@@ -41,6 +49,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     private final Map/*<String>,<String>*/ analysisResult = new HashMap/*<String>,<String>*/();
 
     private HTTPClient httpClient = null;
+    private Locale locale;
 
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
 
@@ -77,6 +86,17 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 ( term == null || analysisResult.get(realTokenFQ).equals(term));
     }
 
+    public List reportToken(String token, String query) {
+        LOG.debug("SALE called");
+        if (evaluateToken(token, null, query)) {
+            String realTokenFQ = "FastQT_" + token +"QM";
+            List matches = (List) analysisResult.get(realTokenFQ);
+            return matches;
+        } else {
+            return new ArrayList();
+        }
+    }
+
     /**
      * Search fast and find out if the given tokesn are company, firstname, lastname etc
      * @param query
@@ -102,7 +122,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 + token + "&sortby=&rpf_navigation%3Anavigators=&qtpipeline=lookupword&sources=alone";
 
         try {
+
             final Document doc = httpClient.getXmlDocument("token_evaluator", url);
+
 
             NodeList l = doc.getElementsByTagName("QUERYTRANSFORMS");
             final Element e = (Element) l.item(0);
@@ -118,11 +140,15 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
                 final String name = trans.getAttribute("NAME");
                 final String custom = trans.getAttribute("CUSTOM").replaceAll("->", "");
                 // basic fast analysis hit
-                analysisResult.put(name, custom);
-                // exact fast analysis hit
+
+                addMatch(name, custom, query);
+                
+
                 if (custom.equalsIgnoreCase(query)) {
+
                     final String key = name.substring(name.indexOf('_') + 1, name.indexOf("QM"));
-                    analysisResult.put("FastQT_exact_" + key + "QM", custom);
+
+                    addMatch("FastQT_exact_" + key + "QM", custom, query);
                 }
                 if (name.indexOf("fullname") > -1) {
                     fullNameMatch = custom;
@@ -132,6 +158,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
             if (wikiMatch != null && fullNameMatch != null) {
                 if (fullNameMatch.length() > wikiMatch.length()) {
                     analysisResult.put("FastQT_nameLongerThanWikipediaQM", fullNameMatch);
+                    addMatch("FastQT_nameLongerThanWikipediaQM", fullNameMatch, query);
+
                 }
             }
         } catch (IOException e1) {
@@ -144,4 +172,24 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator {
     public boolean isQueryDependant() {
         return false;
     }
+
+    private void addMatch(String name, String custom, String query) {
+        String expr = "\\b" + custom + "\\b";
+        Pattern pattern = Pattern.compile(expr, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
+        Matcher m = pattern.matcher(query);
+
+        while (m.find()) {
+            
+            TokenMatch match = new TokenMatch(name, custom, m.start(), m.end());
+
+            if (!analysisResult.containsKey(name)) {
+                List matches = new ArrayList();
+                analysisResult.put(name, matches);
+            }
+            
+            List previousMatches = (List) analysisResult.get(name);
+            previousMatches.add(match);
+        }
+    }
+
 }

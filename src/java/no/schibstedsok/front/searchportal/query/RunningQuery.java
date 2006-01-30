@@ -19,8 +19,11 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRules;
+import no.schibstedsok.front.searchportal.analyzer.RegExpEvaluatorFactory;
+import no.schibstedsok.front.searchportal.analyzer.ReportingTokenEvaluator;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
@@ -73,7 +76,10 @@ public class RunningQuery {
     private final List enrichments = new ArrayList();
     private final Map hits = new HashMap();
     private Map scores = new HashMap();
+    private String strippedQueryString;
 
+    private final Collection removers;
+    
 
     /**
      * Create a new Running Query instance.
@@ -90,6 +96,7 @@ public class RunningQuery {
 
         context = cxt;
         queryStr = AdvancedQueryBuilder.trimDuplicateSpaces(query);
+        removers = getStopWordRemovers();
 
         if (queryStr != null) {
             queryStr = queryStr.trim();
@@ -98,6 +105,7 @@ public class RunningQuery {
         this.parameters = parameters;
         this.locale = new Locale("no", "NO");
 
+        this.strippedQueryString = removeAllPrefixes(this.getQueryString());
         // This will among other things perform the initial fast search
         // for textual analysis.
         tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(
@@ -162,6 +170,75 @@ public class RunningQuery {
                 return context.getSite();
             }
         });
+        
+    }
+
+    private List getTokenMatches(final String token) {
+        final ReportingTokenEvaluator e 
+                = (ReportingTokenEvaluator) tokenEvaluatorFactory.getEvaluator(TokenPredicate.valueOf(token));
+        return e.reportToken(token, queryStr);
+    }
+    
+    public List getGeographicMatches() {
+        List matches = new ArrayList();
+        
+        matches.addAll(getTokenMatches("geolocal"));
+        matches.addAll(getTokenMatches("geoglobal"));
+        
+        Collections.sort(matches);
+        
+        return matches;
+    }
+    
+    private Collection getStopWordRemovers() {
+        
+        final TokenPredicate[] prefixes = { 
+            TokenPredicate.SITEPREFIX,
+            TokenPredicate.CATALOGUEPREFIX,
+            TokenPredicate.PICTUREPREFIX,
+            TokenPredicate.NEWSPREFIX,
+            TokenPredicate.WIKIPEDIAPREFIX,
+            TokenPredicate.TVPREFIX,
+            TokenPredicate.WEATHERPREFIX
+        } ;
+        Collection stopWordRemovers = new ArrayList();
+        
+        final RegExpEvaluatorFactory factory = RegExpEvaluatorFactory.valueOf(new RegExpEvaluatorFactory.Context(){
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return context.newPropertiesLoader(resource, properties);
+            }
+
+            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                return context.newXStreamLoader(resource, xstream);
+            }
+
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                return context.newDocumentLoader(resource, builder);
+            }
+
+            public Site getSite() {
+                return context.getSite();
+            }
+        });
+        
+        for (int i = 0; i < prefixes.length; i++) {
+            final StopWordRemover remover = factory.getStopWordRemover(prefixes[i]);
+            if( remover == null ){
+                LOG.error("Failed to add "+prefixes[i]);
+            }
+            stopWordRemovers.add(remover);
+        }
+        return stopWordRemovers;
+    }
+
+
+    private String removeAllPrefixes(String queryString) {
+        for (Iterator iter = removers.iterator(); iter.hasNext();) {
+            final StopWordRemover remover = (StopWordRemover) iter.next();
+            queryString = remover.removeStopWords(queryString);
+        }
+        
+        return queryString.trim();
     }
 
     /**
@@ -227,7 +304,9 @@ public class RunningQuery {
                 final AnalysisRule rule = rules.getRule(searchConfiguration.getRule());
 
                 if (rule != null) {
-                    if (context.getSearchMode().getKey().equals("d") && offset == 0) {
+
+                    //if (context.getSearchMode().getKey().equals("d") && offset == 0) {
+                    if (context.getSearchMode().isQueryAnalysisEnabled() && offset == 0) {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
                         }
@@ -243,6 +322,7 @@ public class RunningQuery {
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
                         }
+
                         scores.put(searchConfiguration.getName(), new Integer(score));
 
                         if (searchConfiguration.isAlwaysRunEnabled() || score >= searchConfiguration.getRuleThreshold()) {
@@ -276,7 +356,7 @@ public class RunningQuery {
                 LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
             }
 
-            final List results = context.getSearchMode().getExecutor().invokeAll(commands, 3000);
+            final List results = context.getSearchMode().getExecutor().invokeAll(commands, 30000);
 
             for (Iterator iterator = results.iterator(); iterator.hasNext();) {
                 final SearchTask task = (SearchTask) iterator.next();
@@ -344,6 +424,7 @@ public class RunningQuery {
         }
         return QueryTokenizer.tokenize(queryStr).size();
     }
+
 
     public String getQueryString() {
         if (LOG.isDebugEnabled()) {
@@ -417,7 +498,7 @@ public class RunningQuery {
         if (source.equals("Norske nettsider")) {
             return "c=n";
         } else if (source.startsWith("Nyhets")) {
-            return "c=m&nav_sources=contentsourcenavigator";
+            return "c=m&amp;nav_sources=contentsourcenavigator";
         } else if (source.startsWith("Bild")) {
             return "c=p";
         } else if (source.startsWith("Person")) {
@@ -430,4 +511,18 @@ public class RunningQuery {
             return "c=d";
         }
     }
+
+
+
+    /**
+     * Get the strippedQueryString.
+     *
+     * @return the strippedQueryString.
+     */
+    public String getStrippedQueryString() {
+        return strippedQueryString;
+    } 
+
+
+
 }

@@ -1,0 +1,88 @@
+<p>
+    <b>Legg inn Sesam s&#248;keboks p&#229; 1-2-3!</b><br />
+    Med s&#248;keboksene under kan du la folk finne frem nettsider, nyheter, bedrifter og personinformasjon fra din hjemmeside.
+</p>
+<p>
+    <b>Slik gj&#248;r du</b><br />
+    1. Finn den s&#248;keboksen du &#248;nsker &#229; ha p&#229; din hjemmeside<br />
+    2. Finn frem til plassen p&#229; siden din du &#248;nsker &#229; plassere s&#248;keboksen<br />
+    3. Legg inn koden du finner  under s&#248;keboksen
+</p>
+<p>
+    <b>Alternativ 1: (468x28px)</b><br />
+    <form name="tipsform" method="get" action="http://www.sesam.no/psearch/">
+        <input name="lan" value="en" type="hidden" />
+        <table border="0" cellpadding="0" cellspacing="0" style="width:466px; height:26px; margin:5px 0px; background: #F3F3F3; border: 1px solid #D1D1D1;">
+             <tr>
+                <td valign="middle" width="85"><img src="../images/help/logo.gif" alt="logo" style="padding-left:5px;" /></td>
+                <td width="105">
+                    <select name="c">
+                        <option value="d">Sesams&#248;k</option>
+                        <option value="m">Nyhetss&#248;k</option>
+                        <option value="y">Bedriftss&#248;k&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                        <option value="w">Persons&#248;k</option>
+                        <option value="p">Bildes&#248;k</option>
+                    </select>
+                </td>
+                <td width="205"><input type="text" name="q" size="30" /></td>
+                <td width="71" align="left"><input type="image" src="../images/help/s_button.gif" style="padding-left: 5px;" /></td>
+            </tr>
+        </table>
+    </form>
+    Kode: &lt;script type="text/javascript" src="http://www.sesam.no/export/js/sesam1.js"&gt;&lt;/script&gt;
+</p>
+<p>
+    <b>Alternativ 2: (400x30px)</b><br />
+    <form name="tipsform" method="get" action="http://www.sesam.no/psearch/">
+        <input name="lan" value="en" type="hidden" />
+        <input name="c" value="d" type="hidden" />
+        <table border="0" cellpadding="0" cellspacing="0" style="width:398px; height:28px; margin:5px 0px; background: #F3F3F3; border: 1px solid #D1D1D1;">
+            <tr>
+                <td valign="middle" width="85"><img src="../images/help/logo.gif" alt="logo" style="padding-left:5px;" /></td>
+                <td width="215"><input type="text" name="q" size="32" /></td>
+                <td width="98"><input type="image" src="../images/help/l_button.gif" style="padding-left:5px;" /></td>
+            </tr>
+        </table>
+    </form>
+    Kode: &lt;script src="http://www.sesam.no/export/js/sesam2.js"&gt;&lt;/script&gt;
+</p>
+<p>
+    <b>Alternativ 3: (180x85px)</b><br />
+    <form name="tipsform" method="get" action="http://www.sesam.no/psearch/">
+        <input name="lan" value="en" type="hidden" />
+        <table border="0" cellpadding="0" cellspacing="0" style="width:178px; height: 83px; margin:5px 0px; background: #F3F3F3; border: 1px solid #A63F83;">
+            <tr><td valign="middle" style="padding-left:5px;"><img src="../images/help/logo.gif" alt="logo" /></td></tr>
+            <tr>
+                <td width="120" >
+                    <select name="c" style="margin-left: 5px;">
+                        <option value="d">Sesams&#248;k</option>
+                        <option value="m">Nyhetss&#248;k</option>
+                        <option value="y">Bedriftss&#248;k&nbsp;&nbsp;&nbsp;&nbsp;</option>
+                        <option value="w">Persons&#248;k</option>
+                        <option value="p">Bildes&#248;k</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td width="120"><input type="text" name="q" size="13" style="margin:0px 5px;" /></td>
+                <td width="58"><input type="image" src="../images/help/s_button.gif" /></td>
+            </tr>
+        </table>
+    </form>
+    Kode: &lt;script src="http://www.sesam.no/export/js/sesam3.js"&gt;&lt;/script&gt;
+</p>
+<p>
+    <b>Alternativ 4: (160x60px)</b><br />
+    <form name="tipsform" method="get" action="http://www.sesam.no/psearch/">
+        <input name="lan" value="en" type="hidden" />
+        <input name="c" value="d" type="hidden" />
+        <table border="0" width="158" height="58" cellpadding="0" cellborder="0" style="margin:5px 0px; background: #F3F3F3; border: 1px solid #A63F83;">
+            <tr><td valign="middle" style="padding-left:5px;"><img src="../images/help/logo.gif" alt="logo" /></td></tr>
+            <tr>
+                <td width="102"><input type="text" name="q" size="10" style="margin:0px 5px" /></td>
+                <td width="56"><input type="image" src="../images/help/s_button.gif" /></td>
+            </tr>
+        </table>
+    </form>
+    Kode: &lt;script src="http://www.sesam.no/export/js/sesam4.js"&gt;&lt;/script&gt;
+</p>

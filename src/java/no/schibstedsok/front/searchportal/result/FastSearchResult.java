@@ -1,6 +1,7 @@
 package no.schibstedsok.front.searchportal.result;
 
 import no.schibstedsok.front.searchportal.command.SearchCommand;
+import no.schibstedsok.front.searchportal.spell.RelevantQuery;
 import no.schibstedsok.front.searchportal.util.ScoreKeeper;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 
@@ -13,9 +14,9 @@ import java.util.*;
 public class FastSearchResult extends BasicSearchResult implements SearchResult {
 
     private HashMap navigators = new HashMap();
-    private ScoreKeeper clusters = new ScoreKeeper();
     private Map currentNavigators = new HashMap();
-
+    private List relevantQueries = new ArrayList();
+    
     public FastSearchResult(SearchCommand command) {
         super(command);
     }
@@ -64,14 +65,6 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         }
     }
 
-    public void addKeywordCluster(KeywordCluster cluster) {
-        clusters.addScore(cluster);
-    }
-
-    public List getSortedClusters() {
-        return clusters.getSortedByScore();
-    }
-
     public void addCurrentNavigator(FastNavigator currentNavigator, String navKey) {
         currentNavigators.put(navKey, currentNavigator);
     }
@@ -80,5 +73,17 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         return (FastNavigator) currentNavigators.get(navigatorName);
     }
 
+    public void addRelevantQuery(RelevantQuery query) {
+        relevantQueries.add(query);
+    }
 
+    /**
+     * Get the synonyms.
+     *
+     * @return the synonyms.
+     */
+    public List getRelevantQueries() {
+	Collections.sort(relevantQueries);
+        return relevantQueries;
+    }
 }

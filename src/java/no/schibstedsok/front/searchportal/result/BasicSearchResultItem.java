@@ -21,13 +21,17 @@ public class BasicSearchResultItem implements SearchResultItem {
     public String getField(String field) {
         String fieldValue = (String) fields.get(field);
 
-        if (fieldValue != null && fieldValue.equals("  ")) {
+        if (fieldValue != null && (fieldValue.equals("  ") || fieldValue.equals(" "))) {
             return null;
         } else {
             return fieldValue;
         }
     }
 
+    public Object getFieldAsObject(String field) {
+        return fields.get(field);
+    }
+    
     public Integer getInteger(String field) {
         String fieldValue = (String) fields.get(field);
 
@@ -69,5 +73,24 @@ public class BasicSearchResultItem implements SearchResultItem {
 
         Collection previousValues = (Collection) fields.get(field);
         previousValues.add(value);
+    }
+
+    public boolean equals(Object obj) {
+        SearchResultItem other = (SearchResultItem) obj;
+        
+        if (other.getField("recordid") != null && getField("recordid") != null) {
+            return getField("recordid").equals(other.getField("recordid"));
+        } else {
+            return super.equals(obj);
+        }
+    }
+
+    public int hashCode() {
+        
+        if (getField("recordid") != null) {
+            return getField("recordid").hashCode();
+        } else {
+            return super.hashCode();
+        }
     }
 }

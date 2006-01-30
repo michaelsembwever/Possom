@@ -82,12 +82,17 @@ public final class RegExpTokenEvaluator implements TokenEvaluator, StopWordRemov
         String newQuery = originalQuery;
 
         for (Iterator iterator = expressions.iterator(); iterator.hasNext();) {
-            final Pattern p = (Pattern) iterator.next();
-            final Matcher m = p.matcher(newQuery);
-            newQuery = m.replaceAll("");
+            Pattern p = (Pattern) iterator.next();
+            Matcher m = p.matcher(newQuery);
+            newQuery = m.replaceFirst("");
         }
 
-        return newQuery;
+        // FIXME    
+        if (newQuery.equals("")  || originalQuery.equalsIgnoreCase("nyheter") || originalQuery.equalsIgnoreCase("tv") || originalQuery.matches("p.* tv idag")) {
+            return originalQuery;
+        } else {
+            return newQuery;
+        }
     }
 
     public boolean isQueryDependant() {

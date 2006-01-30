@@ -21,7 +21,8 @@ public class SearchMode {
 
     private Collection searchConfigurations = new ArrayList();
     private String parentMode;
-
+    private boolean queryAnalysisEnabled = false;
+    
     public String getKey() {
         if (parentMode != null) {
             return parentMode;
@@ -61,5 +62,23 @@ public class SearchMode {
 
     public void setParentMode(String parentMode) {
         this.parentMode = parentMode;
+    }
+
+    /**
+     * Get the queryAnalysisEnabled.
+     *
+     * @return the queryAnalysisEnabled.
+     */
+    public boolean isQueryAnalysisEnabled() {
+        return queryAnalysisEnabled;
+    }
+
+    /**
+     * Set the queryAnalysisEnabled.
+     *
+     * @param queryAnalysisEnabled The queryAnalysisEnabled to set.
+     */
+    public void setQueryAnalysisEnabled(boolean queryAnalysisEnabled) {
+        this.queryAnalysisEnabled = queryAnalysisEnabled;
     }
 }

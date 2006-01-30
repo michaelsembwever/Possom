@@ -21,7 +21,7 @@
 </p>
 <p>
     <b>Kilder i Sesam</b><br />
-    Sesam er delt inn i flere deler, eller innholdskilder. S&#248;k fra forsiden og knappen &#34;Sesams&#248;k&#34; s&#248;ker i alle kilder samtidig og presenterer norske nett-treff  ”beriket” med treff i andre, relevante kilder. Du kan alltid bruke venstre marg til &#229; navigere deg videre til spesielle typer treff.
+    Sesam er delt inn i flere deler, eller innholdskilder. S&#248;k fra forsiden og knappen &#34;Sesams&#248;k&#34; s&#248;ker i alle kilder samtidig og presenterer norske nett-treff  &#34;beriket&#34; med treff i andre, relevante kilder. Du kan alltid bruke venstre marg til &#229; navigere deg videre til spesielle typer treff.
 </p>
 <p>
     <a href="?c=d&amp;help=true&amp;pg=11&amp;q=">Les mer om de ulike typer berikelser og spesialiserte s&#248;k du kan gj&#248;re p&#229; Sesam.</a>
@@ -29,7 +29,7 @@
 
 <p>
     <b>Teknologi</b><br />
-    Sesam er utviklet sammen med Fast Search & Transfer, som representerer s&#248;keteknologi i verdenstoppen. Fast har ogs&#229; viktig erfaring fra da de selv lagde s&#248;kemotoren AlltheWeb. Fast er av analyseselskapet Gartner nylig k&#229;ret til &#229; verdens beste selskap innen s&#248;kemotorteknologi.
+    Sesam er utviklet sammen med Fast Search &amp; Transfer, som representerer s&#248;keteknologi i verdenstoppen. Fast har ogs&#229; viktig erfaring fra da de selv lagde s&#248;kemotoren AlltheWeb. Fast er av analyseselskapet Gartner nylig k&#229;ret til &#229; verdens beste selskap innen s&#248;kemotorteknologi.
 </p>
 <p>
     Innholdet i Sesam vil v&#230;re ferskere enn andre tjenester i markedet, fordi vi sitter n&#230;rmere de norske kildene og har en spesiell relasjon til norsk nyhetsinnhold. Vi konsentrerer oss om Norge, hvor vi skal v&#230;re best, og Sesam er derfor ute og leser innhold p&#229; norske nettsider hele tiden.
@@ -65,30 +65,122 @@
 </p>
 
 <p>
-    <form method="POST" action="http://admin.sesam.no/urltips/UrlTipsFeedback">
+    <form method="post" action="http://admin.sesam.no/urltips/UrlTipsFeedback">
         <input type="text" value="http://" name="url" size="40"/>  <input type="submit" value="Send tips til Sesam"/>
     </form>
 </p>
 <p>
-    <b>Annonsere på Sesam?</b><br />
-    Informasjon om annonsemuligheter kan du lese mer om på siden <a href="?c=d&amp;ads_help=true&amp;q=">Bli annons&#248;r</a>
+    <b>Annonsere p&#229; Sesam?</b><br />
+    Informasjon om annonsemuligheter kan du lese mer om p&#229; siden <a href="?c=d&amp;ads_help=true&amp;q=">Bli annons&#248;r</a>
 
 </p>
 
+<!--
+<script type="text/javascript" language="JavaScript">
+    function isEmail(string) {
+        if (string.search(/^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/) != -1)
+        return true;
+        else
+        return false;
+    }
+    function tipscheck(){
+        if(document.tipsform.navn.value==""){
+            alert("Du har ikke fylt inn ditt navn");
+            return false;
+        }
+        if(document.tipsform.epost.value==""){
+            alert("Du har ikke fylt inn mottakers e-postadresse");
+            return false;
+        }
+        if (isEmail(document.tipsform.epost.value) == false) {
+             alert("Ugyldig e-postadresse!");
+             return false;
+        }
+    }
+</script>
+
+<p>
+    <b>Tips en venn</b><br/>
+    Send dine venner et tips om Sesam<br/>
+    <form name="tipsform" method="POST" action="" onsubmit='return tipscheck();'>
+        <table border="0" width="100%" style="background: #F3F3F3; border: 1px solid #D1D1D1; padding: 10px;">
+            <tr>
+                <td>
+                    Ditt navn:<br/>
+                    <input type="text" name="navn"/>
+                </td>
+                <td>
+                    Mottakers e-postadresse:<br/>
+                    <input type="text" name="epost"/>
+                </td>
+                <td>
+                    &nbsp;<br/>
+                    <input type="submit" value="Send tips"/>
+                </td>
+            </tr>
+        </table>
+    </form>
+</p>
+-->
 
 #elseif($request.getParameter("pg").equals("2"))
 
-        <p>Sesam har følgende stillinger ledig:</p>
+        <p>Sesam har f&#248;lgende stillinger ledig:</p>
         <p>
-            <b>Controller</b><br/>
-            Stillingen vil være sentral i å bygge opp støttefunksjoner for ledelsen i et nystartet selskap.<br/>
-            For fullstendig stillingsannonse klikk <a href="http://www.finn.no/finn/job/object/;pdc=1131006526881?finnkode=6326670&amp;sid=6alWvVMY1526874&amp;pos=1&amp;tot=1">her</a>
+            <b>Salgskonsulenter</b><br/>
+            Vi s&#248;ker Norges mest sultne Annonseselgere til Sesam.no.<br/>
+            For fullstendig stillingsannonse klikk <a href="http://www.finn.no/finn/job/object?finnkode=6904914&sid=2aSDTy_qj210918&pos=15&tot=16">her</a>
+        </p>
+        <p>
+            <b>Salgssjef</b><br/>
+            Vi s&#248;ker Salgssjef/Key Account Manager til Sesam.no.<br/>
+            For fullstendig stillingsannonse klikk <a href="http://www.finn.no/finn/job/object?finnkode=6850759">her</a>
         </p>
 
-        <p>
-            <b>Salgskonsuleneter</b><br/>
-            Vi søker Norges mest sultne Annonseselgere til Sesam.no.<br/>
-            For fullstendig stillingsannonse klikk <a href="http://www.finn.no/finn/job/object/;pdc=1130936510964?finnkode=6351758&amp;sid=6aZ9yDP9z510948&amp;pos=2&amp;tot=58">her</a>
-        </p>
+#elseif($request.getParameter("pg").equals("3"))
+
+    <p>
+        Velkommen til Sesam sine markedssider. Her finner du informasjon om litt av det som r&#248;rer seg hos Sesam. Vi utvikler stadig sidene og fyller p&#229; med mer informasjon om konkurranser og nyheter. Snart vil du ogs&#229; kunne laste ned logoer og titte p&#229; utvalgte presseklipp.
+    </p>
+    <p>
+        <b>Reklamefilm</b><br />
+        V&#229;re reklamefilmer har skapt stor iver og oppmerksomhet i en del milj&#248;er. P&#229; oppfordring fra v&#229;re brukere har vi derfor lagt ut de f&#248;rste filmene v&#229;re her.
+    </p>
+    <p>
+        <a href="http://www.sesam.no/media/hundeeierealene15s.mpg">Hundeeier alene 15 sekunder</a><br />
+        <a href="http://www.sesam.no/media/hundeeiereblabla15s.mpg">Hundeeier blabla 15 sekunder</a><br />
+        <a href="http://www.sesam.no/media/hundeeiereiparken30s.mpg">Hundeeiere i parken 30 sekunder</a>
+    </p>
+#*
+    <p>
+        <a href="http://www.sesam.no/media/sesamnohissen15s.mpg">Heisen 15 sekunder</a><br />
+        <a href="http://www.sesam.no/media/sesamnohissenv1_30s.mpg">Heisen 30 sekunder</a> versjon 1<br />
+        <a href="http://www.sesam.no/media/sesamnohissenv2_30s.mpg">Heisen 30 sekunder</a> versjon 2
+    </p>
+*#
+    <p>
+        <a href="http://www.sesam.no/media/sesamnokantinen15s.mpg"">Kantinen 15 sekunder</a><br />
+        <a href="http://www.sesam.no/media/sesamnokantinen40s.mpg">Kantinen 40 sekunder</a><br />
+    </p>
+    <p>
+        <a href="http://www.sesam.no/media/sesamnokjaeresteparforanpe.mpg"">Kj&#230;restepar foran peis</a><br />
+    </p>
+    <p>
+        <b>Radio</b><br />
+        Husker du ikke helt hvordan radiospotene v&#229;re slutter? Her kan du h&#248;re p&#229; de f&#248;rste spotene:
+    </p>
+    <p>
+        <a href="http://www.sesam.no/media/sesam_gitarkurs_18.mp3"">Gitarkurs 18 sekunder</a><br />
+        <a href="http://www.sesam.no/media/sesam_gikkentur_16.mp3">Gikk en tur 16 sekunder</a><br />
+        <a href="http://www.sesam.no/media/sesam_bryllup_24.mp3">Bryllup 24 sekunder</a>
+    </p>
+    <p>
+        <b>Toolbar</b><br />
+        Vi i Sesam har laget v&#229;r egen toolbar. Her kan du klikke deg inn og <a href='$linkpulse.getUrl("?c=d&amp;toolbar=true&amp;pg=1&amp;q=", "category:footer_toolbar", "sgo", "")'>laste den ned</a>.
+    </p>
+    <p>
+        Har du innspill eller sp&#248;rsm&#229;l til oss i markedsavdelingen, er du hjertelig velkommen til &#229; sende en e-post p&#229; <a href="mailto:info@sesam.no">info@sesam.no</a>
+    </p>
+
 
 #end

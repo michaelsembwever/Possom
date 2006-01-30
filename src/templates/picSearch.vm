@@ -25,7 +25,7 @@
             <td class="nav_pad" align="right">&nbsp;</td>
         </tr>
         <tr>
-            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt /></td>
+            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
         </tr>
     </table>
 </content>
@@ -61,13 +61,14 @@
                                                               height="$item.getField('thumb_height')"
                                                               src="$item.getField('thumb_url')" alt="" /></a>
                     <div class="pic_info">
-                    $item.getField('width') x $item.getField('height') $text.getMessage($locale, "pixels")
+                    $item.getField('width') x $item.getField('height') &nbsp; $item.getField('filesize')kb
                     </div>
                 </td>
             #if ($velocityCount == 3 || $velocityCount == 6 || $velocityCount == 9)
             </tr>
             #end
             #end
+            </tr>
         </table>
 
         #else

@@ -19,86 +19,152 @@ $allNavigators
 
 
 #macro(searchBar)
-    <form name="sf" action="">
-    <input name="lang" value="en" type="hidden" />
-    <input name="c" value="$currentTab.getKey()" type="hidden" />
-    #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "w" || $currentTab.getKey() == "yip" || $currentTab.getKey() == "wip")
-    <div id="search_table_bar_large"
-    #else
-    <div id="search_table_bar"
-    #end
-        style="background-color:#if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip") #F1A42B #elseif ($currentTab.getKey() == "m") #7F73C5 #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip") #50BAD3 #elseif ($currentTab.getKey() == "p") #838092  #else #A6408E #end; ">
 
-        #if ($currentTab.getKey() == "m")
-        <input type="hidden" name="nav_sources" value="contentsourcenavigator" />
-        <img src="../images/searchbar/m.jpg" height="22" align="left" alt="" />
-        #elseif ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
-        <img src="../images/searchbar/y.jpg" height="22" align="left" alt="" />
-        #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
-        <img src="../images/searchbar/w.jpg" height="22" align="left" alt="" />
-        #elseif ($currentTab.getKey() == "p")
-        <img src="../images/searchbar/p.jpg" height="22" align="left" alt="" />
-        #else
-        <img src="../images/searchbar/d.jpg" height="22" align="left" alt="" />
-        #end
-    </div>
+    #if ($request.getParameter("ssr") == "di" || $request.getParameter("ssr") == "pr" || $request.getParameter("ssr") == "ds" || $request.getParameter("ssr") == "it" || $request.getParameter("ssr") == "im")
 
-    #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "w" || $currentTab.getKey() == "yip" || $currentTab.getKey() == "wip")
-    <div id="search_table_large">
-    #else
-    <div id="search_table">
-    #end
-    <table border="0" cellspacing="3" cellpadding="0">
-    <tr>
-        <td width="400"><input type="text" name="q" value="$queryHTMLEscaped" class="input_main" /></td>
-        <td width="8">&nbsp;</td>
-        #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
-        <td><input type="submit" value="Bedriftss&#248;k" id="submit_button" class="submit_y" /></td>
-        #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
-        <td><input type="submit" value="Persons&#248;k" id="submit_button" class="submit_w" /></td>
-        #elseif ($currentTab.getKey() == "p")
-        <td><input type="submit" value="Bildes&#248;k" id="submit_button" class="submit_p" /></td>
-        #elseif ($currentTab.getKey() == "d")
-        <td><input type="submit" value="Sesams&#248;k" id="submit_button" class="submit_d" /></td>
-        #elseif ($currentTab.getKey() == "m")
-            #if("standard" == $request.getParameter("userSortBy"))
-                <input type="hidden" name="userSortBy" value="standard" >
+        <form name="sf" action="">
+            <input name="lang" value="en" type="hidden" />
+            <input name="c" value="$currentTab.getKey()" type="hidden" />
+            <input type="text" name="q" value="$queryHTMLEscaped" class="input_main" />
+            <input type="submit" value="S&#248;k" class="submit_d" /><br />
+            #if ($request.getParameter("ss") == "ds")
+                #set ($site = "DinSide")
+            #elseif ($request.getParameter("ss") == "it")
+                #set ($site = "Itavisen")
+            #elseif ($request.getParameter("ss") == "di")
+                #set ($site = "Digi")
+            #elseif ($request.getParameter("ss") == "pr")
+                #set ($site = "Propaganda")
+            #elseif ($request.getParameter("ss") == "im")
+                #set ($site = "iMarkedet")
             #end
-        <td><input type="submit" value="Nyhetss&#248;k" id="submit_button" class="submit_m" /></td>
-        #end
-    </tr>
-    <tr>
-        <td class="small_dark">
-            #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
-                Søk på bransje, firmanavn, adresse, sted osv
-            #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
-                Du kan søke på telefonnummer, navn, adresse osv
-            #elseif ($currentTab.getKey() == "d")
 
-                #set ($norwayChecked = "checked='checked'")
-                #set ($worldChecked = "")
-
-                #if ($request.getParameter("s") && $request.getParameter("s") == "g")
-                   #set ($worldChecked = "checked='checked'")
-                   #set ($norwayChecked = "")
-                #end
-                <input type="radio" name="s" value="d" $norwayChecked /> Norge &nbsp;&nbsp;
-                <input type="radio" name="s" value="g" $worldChecked /> Verden
+            #if ($request.getParameter("ssr") == "d")
+                #set ($siteChecked = "")
+                #set ($sesamChecked = "checked='checked'")
             #else
-                &nbsp;
+                #set ($siteChecked = "checked='checked'")
+                #set ($sesamChecked = "")
             #end
-        </td>
-        <td>&nbsp;</td>
-        <td class="small_dark">
-            #if ($currentTab.getKey() == "d" || $currentTab.getKey() == "m")
-            <a href="?c=d&amp;smart=true&amp;pg=1&amp;q=">S&#248;k smart</a>
-            #end
-        </td>
-    </tr>
-    </table>
-    </div>
 
-    </form>
+            <div id="radiobutton">
+                <input type="radio" name="ssr" value="$!request.getParameter('ss')" $siteChecked /> $site &nbsp;&nbsp;
+                <input type="radio" name="ssr" value="d" $sesamChecked /> Sesam
+            </div>
+            <input type="hidden" name="ss" value="$!request.getParameter('ss')" />
+        </form>
+    #else
+        <form name="sf" action="">
+        <input name="lang" value="en" type="hidden" />
+        <input name="c" value="$currentTab.getKey()" type="hidden" />
+        #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "w" || $currentTab.getKey() == "yip" || $currentTab.getKey() == "wip")
+        <div id="search_table_bar_large"
+        #else
+        <div id="search_table_bar"
+        #end
+            style="background-color:#if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip") #F1A42B #elseif ($currentTab.getKey() == "m") #7F73C5 #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip") #50BAD3 #elseif ($currentTab.getKey() == "p") #838092  #else #A6408E #end; ">
+
+            #if ($currentTab.getKey() == "m")
+            <input type="hidden" name="nav_sources" value="contentsourcenavigator" />
+            <img src="../images/searchbar/m.jpg" height="22" align="left" alt="" />
+            #elseif ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
+            <img src="../images/searchbar/y.jpg" height="22" align="left" alt="" />
+            #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
+            <img src="../images/searchbar/w.jpg" height="22" align="left" alt="" />
+            #elseif ($currentTab.getKey() == "p")
+            <img src="../images/searchbar/p.jpg" height="22" align="left" alt="" />
+            #else
+            <img src="../images/searchbar/d.jpg" height="22" align="left" alt="" />
+            #end
+        </div>
+
+        #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "w" || $currentTab.getKey() == "yip" || $currentTab.getKey() == "wip")
+        <div id="search_table_large">
+        #else
+        <div class="search_table">
+        #end
+        <table border="0" cellspacing="3" cellpadding="0">
+        <tr>
+            <td width="400"><input type="text" name="q" value="$queryHTMLEscaped" class="input_main" /></td>
+            <td width="8">&nbsp;</td>
+            #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
+            <td><input type="submit" value="Bedriftss&#248;k" class="submit_y" /></td>
+            #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
+            <td><input type="submit" value="Persons&#248;k" class="submit_w" /></td>
+            #elseif ($currentTab.getKey() == "p")
+            <td><input type="submit" value="Bildes&#248;k" class="submit_p" /></td>
+            #elseif ($currentTab.getKey() == "d")
+            <td><input type="submit" value="Sesams&#248;k" class="submit_d" /></td>
+            #elseif ($currentTab.getKey() == "m")
+                #if("standard" == $request.getParameter("userSortBy"))
+                    <input type="hidden" name="userSortBy" value="standard" >
+                #end
+            <td><input type="submit" value="Nyhetss&#248;k" class="submit_m" /></td>
+            #end
+        </tr>
+        <tr>
+            <td class="small_dark">
+                #if ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
+                    S&#248;k p&#229; bransje, firmanavn, adresse, sted osv
+                #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
+                    Du kan s&#248;ke p&#229; telefonnummer, navn, adresse osv
+                #elseif ($currentTab.getKey() == "d")
+
+                    ## --- sitesearch = ss, values: ds=dinside, it=itavisen, di=digi, pr=propaganda, im=imarkedet ---
+                    ## --- sitesearch radio button = ssr ---
+                    #if ($request.getParameter("ss") == "ds" || $request.getParameter("ss") == "it" || $request.getParameter("ss") == "di" || $request.getParameter("ss") == "pr" || $request.getParameter("ss") == "im")
+
+                        #if ($request.getParameter("ss") == "ds")
+                            #set ($site = "DinSide")
+                        #elseif ($request.getParameter("ss") == "it")
+                            #set ($site = "Itavisen")
+                        #elseif ($request.getParameter("ss") == "di")
+                            #set ($site = "Digi")
+                        #elseif ($request.getParameter("ss") == "pr")
+                            #set ($site = "Propaganda")
+                        #elseif ($request.getParameter("ss") == "im")
+                            #set ($site = "iMarkedet")
+                        #end
+
+                        #if ($request.getParameter("ssr") == "d")
+                            #set ($siteChecked = "")
+                            #set ($sesamChecked = "checked='checked'")
+                        #else
+                            #set ($siteChecked = "checked='checked'")
+                            #set ($sesamChecked = "")
+                        #end
+
+                        <input type="radio" name="ssr" value="$!request.getParameter('ss')" $siteChecked /> $site &nbsp;&nbsp;
+                        <input type="radio" name="ssr" value="d" $sesamChecked /> Sesam
+                        <input type="hidden" name="ss" value="$!request.getParameter('ss')" >
+                    #else
+                        #set ($norwayChecked = "checked='checked'")
+                        #set ($worldChecked = "")
+
+                        #if ($request.getParameter("s") && $request.getParameter("s") == "g")
+                           #set ($worldChecked = "checked='checked'")
+                           #set ($norwayChecked = "")
+                        #end
+                        <input type="radio" name="s" value="d" $norwayChecked /> Norge &nbsp;&nbsp;
+                        <input type="radio" name="s" value="g" $worldChecked /> Verden
+                    #end
+
+                #else
+                    &nbsp;
+                #end
+            </td>
+            <td>&nbsp;</td>
+            <td class="small_dark">
+                #if ($currentTab.getKey() == "d" || $currentTab.getKey() == "m")
+                <a href="?c=d&amp;smart=true&amp;pg=1&amp;q=">S&#248;ketips</a>
+                #end
+            </td>
+        </tr>
+        </table>
+        </div>
+
+        </form>
+    #end
 #end
 
 
@@ -106,10 +172,10 @@ $allNavigators
 #set ($parentNavigator = $result.searchCommand.getParentNavigator($navigatorKey))
 
 #if ($parentNavigator)
-<a href="?nav_$navigatorKey=$parentNavigator.getName()&amp;q=$query&amp;c=$currentTab.getKey()$!previousNavigationParameters$otherNavigators">&lt;&lt;</a>
+<a href="?nav_$navigatorKey=$parentNavigator.getName()&amp;q=$query&amp;c=$currentTab.getKey()$!previousNavigationParameters$otherNavigators$!viewall">&lt;&lt;</a>
 #else
 #if (!$result.searchCommand.isTopLevelNavigator($navigatorKey))
-<a href="?q=$query&amp;c=$currentTab.getKey()$previousNavigationParameters$otherNavigators">&lt;&lt;</a>
+<a href="?q=$query&amp;c=$currentTab.getKey()$previousNavigationParameters$otherNavigators$!viewall">&lt;&lt;</a>
 #end
 #end
 #end
@@ -127,11 +193,41 @@ $allNavigators
         #set ($navname = $result.searchCommand.getNavigatedTo($navigatorKey).getName())
 
         #if ($navname == 'ywfylkesnavigator' && $category.name == 'Oslo')
-            <a href="?nav_geographic=ywpoststednavigator&amp;ywpoststed=Oslo&amp;ywkommune=Oslo&amp;ywfylke=Oslo&amp;q=$query&amp;c=$currentTab.getKey()$otherNavigators" id="$navigatorKey$velocityCount">$category.name</a>
+            <a href="?nav_geographic=ywpoststednavigator&amp;ywpoststed=Oslo&amp;ywkommune=Oslo&amp;ywfylke=Oslo&amp;q=$query&amp;c=$currentTab.getKey()$otherNavigators$!viewall" id="$navigatorKey$velocityCount">$category.name</a>
         #else
-            <a href="?nav_$navigatorKey=$result.searchCommand.getNavigatedTo($navigatorKey).getName()&amp;q=$query&amp;c=$currentTab.getKey()&amp;$result.searchCommand.getNavigatedTo($navigatorKey).field=$category.name$previousNavigationParameters$otherNavigators" id="$navigatorKey$velocityCount">$category.name</a>
+            <a href="?nav_$navigatorKey=$result.searchCommand.getNavigatedTo($navigatorKey).getName()&amp;q=$query&amp;c=$currentTab.getKey()&amp;$result.searchCommand.getNavigatedTo($navigatorKey).field=$category.name$previousNavigationParameters$otherNavigators$!viewall" id="$navigatorKey$velocityCount">$category.name</a>
         #end
     #end
+#end
+
+#macro(yip_col3)
+    <div id="y3_padding">
+        <div class="yip_row1">
+            Bilder
+        </div>
+        <img name="SLIDESIMG" src="" alt="Slideshow image" />
+        <div id="SLIDESTEXT">&nbsp;</div>
+
+        <script type="text/javascript">
+        if (document.images) {
+          SLIDES.image = document.images.SLIDESIMG;
+          SLIDES.textid = "SLIDESTEXT";
+          SLIDES.update();
+          SLIDES.play();
+        }
+        </script>
+    </div>
+#end
+
+#macro(yip_mastermarks)
+    <div class="yip_row1">
+        Utmerkelser
+    </div>
+    <div class="yip_row2_r">
+        #foreach ($mark in $company.getMultivaluedField('manyYpmastermarks'))
+            <img src="../images/ik/$mark" class="mastermarks" alt="Mestermerker" />
+        #end
+    </div>
 #end
 
 

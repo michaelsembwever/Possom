@@ -39,12 +39,14 @@
                     <img src="../images/enrichment/weather/weathericon_${item.getField('condition')}.jpg"
                          alt="V&aeling;ret i $item.getField('location')" />
                 </td>
-                <td valign="top" align="left" class="title" width="500">
-                    <a href="$item.getField('url')">V&aelig;ret $item.getField('location')</a>
-                    <span class="timestamp"><span class="small">${item.getField('datePart')}</span> varsel som gjelder til <span class="small">${item.getField('timePart')}</span></span><br />
-                    $item.getField('temperature') &#176;C
-                    $item.getField('conditionText').
-                    $item.getField('windspeedText') fra $item.getField('winddirection').
+                <td valign="top" align="left" width="500">
+                    <span class="search_big_url"><a href="$item.getField('url')">V&aelig;ret $item.getField('location')</a></span>
+                    <span class="timestamp">${item.getField('datePart')} varsel som gjelder til ${item.getField('timePart')}</span>
+                    <div class="enrich_text">
+                        $item.getField('temperature') &#176;C
+                        $item.getField('conditionText').
+                        $item.getField('windspeedText') fra $item.getField('winddirection').
+                    </div>
                 </td>
             </tr>
            #end
