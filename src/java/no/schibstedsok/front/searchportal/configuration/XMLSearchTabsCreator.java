@@ -24,7 +24,7 @@ import java.util.Properties;
  */
 public final class XMLSearchTabsCreator implements SearchTabsCreator {
 
-    private final Properties properties = new Properties(); // XXX why isn't this private
+    private final Properties properties = new Properties();
     private final XStream xstream = new XStream(new DomDriver());
 
     private final Context context;

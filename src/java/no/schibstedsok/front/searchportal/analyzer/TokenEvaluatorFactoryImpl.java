@@ -4,6 +4,7 @@
 package no.schibstedsok.front.searchportal.analyzer;
 
 import java.util.Properties;
+import java.util.Set;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.parser.QueryStringContext;
@@ -34,6 +35,9 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
     /** The current term the parser is on **/
     private String currTerm = null;
+    
+    private Set/*<Predicate>*/ knownPredicates;
+    private Set/*<Predicate>*/ possiblePredicates;
 
     /**
      * Create a new TokenEvaluatorFactory.
@@ -105,5 +109,21 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
     public String getCurrentTerm() {
         return currTerm;
+    }
+
+    public void setClausesKnownPredicates(final Set _knownPredicates) {
+        knownPredicates = _knownPredicates;
+    }
+
+    public Set getClausesKnownPredicates() {
+        return knownPredicates;
+    }
+
+    public void setClausesPossiblePredicates(final Set _possiblePredicates) {
+        possiblePredicates = _possiblePredicates;
+    }
+
+    public Set getClausesPossiblePredicates() {
+        return possiblePredicates;
     }
 }

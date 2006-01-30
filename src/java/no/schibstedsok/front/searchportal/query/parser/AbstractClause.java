@@ -99,23 +99,26 @@ public abstract class AbstractClause implements Clause {
      */
     protected static final void findPredicates(
             final TokenEvaluatorFactory predicate2evaluatorFactory,
-            final Collection/*<Predicate>*/ predicates2check,
-            final Set/*<Predicate>*/ knownPredicates,
-            final Set/*<Predicate>*/ possiblePredicates) {
+            final Collection/*<Predicate>*/ predicates2check) {
 
-
+        final Set/*<Predicate>*/ knownPredicates = predicate2evaluatorFactory.getClausesKnownPredicates();
+        final Set/*<Predicate>*/ possiblePredicates = predicate2evaluatorFactory.getClausesPossiblePredicates();
+        
         for (Iterator it = predicates2check.iterator(); it.hasNext();) {
-            final TokenPredicate token = (TokenPredicate) it.next();  
-            final String currTerm = predicate2evaluatorFactory.getCurrentTerm();
+            final TokenPredicate token = (TokenPredicate) it.next(); 
+            // check it hasn't already been added
+            if( !(knownPredicates.contains(token) || possiblePredicates.contains(token)) ){
+                final String currTerm = predicate2evaluatorFactory.getCurrentTerm();
 
-            if (token.evaluate(predicate2evaluatorFactory)) {
-                final TokenEvaluator evaluator = predicate2evaluatorFactory.getEvaluator(token);
-                if (evaluator.isQueryDependant()) {
-                    possiblePredicates.add(token);
-                    LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_POSSIBLE + token);
-                }  else  {
-                    knownPredicates.add(token);
-                    LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_KNOWN + token);
+                if (token.evaluate(predicate2evaluatorFactory)) {
+                    final TokenEvaluator evaluator = predicate2evaluatorFactory.getEvaluator(token);
+                    if (evaluator.isQueryDependant()) {
+                        possiblePredicates.add(token);
+                        LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_POSSIBLE + token);
+                    }  else  {
+                        knownPredicates.add(token);
+                        LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_KNOWN + token);
+                    }
                 }
             }
         }

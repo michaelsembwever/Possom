@@ -49,7 +49,7 @@ public final class AnalysisRule {
      * as input. The score of those predicates that are true are added to the
      * final score (output of this method).
      *
-     *
+     * @deprecated not used by the new QueryParser and Scorer.
      * @param query
      *            the query to apply the rule to.
      * @param evalFactory

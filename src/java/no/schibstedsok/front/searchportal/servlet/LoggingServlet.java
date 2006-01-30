@@ -43,55 +43,72 @@ public final class LoggingServlet extends HttpServlet {
 
         LOG.debug("start doGet");
         request.setCharacterEncoding("UTF-8"); // correct encoding
-        final Enumeration en = LogManager.getCurrentLoggers();
-
-        Logger log;
-        // Sort first
-        final HashMap/*<String,Level>*/ unsorted = new HashMap/*<String,Level>*/();
-        while (en.hasMoreElements()) {
-            log = (Logger) en.nextElement();
-            unsorted.put(log.getName(), log.getEffectiveLevel());
-        }
-        final List/*<String>*/ sortedList = new ArrayList/*<String>*/(unsorted.keySet());
-        final /*StringBuilder*/StringBuffer buffer = new /*StringBuilder*/StringBuffer();
-        Collections.sort(sortedList);
-        try  {
-
-            //for( String key : sortedList ){
-            for (Iterator it = sortedList.iterator(); it.hasNext();) {
-                final String key = (String) it.next();
-                Level level = (Level) unsorted.get(key);
-                String value = level.toString();
-
-                // update if in request parameters
-                final String param = request.getParameter(key);
-                if (param != null && !param.equals(value)) {
-                    final Level newLevel = Level.toLevel(param);
-                    Logger.getLogger(key).setLevel(newLevel);
-                    LOG.warn("Logger " + key + " has been changed to level: " + param);
-                    level = newLevel;
-                    value = param;
-                }
-                // output html
-                final int option = getOption(level.toInt());
-                final String[] values = new String[]{"", "", "", "", "", "", ""};
-                values[option] = SELECTED;
-                // The MessageFormat constant does not support synchronous usage.
-                synchronized (OPTIONS) {
-                    buffer.append("<tr><td><b>" + key + "</b></td><td><select size=\"1\" name=\"" + key + "\">" + OPTIONS.format(values) + "</select></td></tr>");
-                }
-            }
-
-
+        
+        // restricted to only schibsted internal network. 
+        // Since we are behind a ajp13 connection request.getServerName() won't work!
+        // httpd.conf needs: "JkEnvVar REMOTE_ADDR" inside the virtual host directive. 
+        final String ipAddr = null != request.getAttribute("REMOTE_ADDR")
+            ? (String)request.getAttribute("REMOTE_ADDR")
+            : request.getRemoteAddr();
+        if( !( ipAddr.startsWith("80.91.33.") || ipAddr.startsWith("127.") ) ){
             final ServletOutputStream ss = response.getOutputStream();
             response.setContentType("text/html;charset=UTF-8");
-            ss.print("<form action=\"Log\"><div style=\"float: left;\"><table>");
-            ss.print(buffer.toString());
-            ss.print("</table></div><div style=\"float: right;\"><input class=\"submit\" type=\"submit\" value=\"Update\"/></div></form>");
+            ss.print("<strong>Restricted Area!</strong>");
             ss.close();
+            LOG.warn(ipAddr+" tried to access Log servlet!");
+        }else{
+        
+            
+            final Enumeration en = LogManager.getCurrentLoggers();
 
-        }  catch (IOException io) {
-            LOG.error("LoggingServlet.doGet " + io);
+            Logger log;
+            // Sort first
+            final HashMap/*<String,Level>*/ unsorted = new HashMap/*<String,Level>*/();
+            while (en.hasMoreElements()) {
+                log = (Logger) en.nextElement();
+                unsorted.put(log.getName(), log.getEffectiveLevel());
+            }
+            final List/*<String>*/ sortedList = new ArrayList/*<String>*/(unsorted.keySet());
+            final /*StringBuilder*/StringBuffer buffer = new /*StringBuilder*/StringBuffer();
+            Collections.sort(sortedList);
+            try  {
+
+                //for( String key : sortedList ){
+                for (Iterator it = sortedList.iterator(); it.hasNext();) {
+                    final String key = (String) it.next();
+                    Level level = (Level) unsorted.get(key);
+                    String value = level.toString();
+
+                    // update if in request parameters
+                    final String param = request.getParameter(key);
+                    if (param != null && !param.equals(value)) {
+                        final Level newLevel = Level.toLevel(param);
+                        Logger.getLogger(key).setLevel(newLevel);
+                        LOG.warn("Logger " + key + " has been changed to level: " + param);
+                        level = newLevel;
+                        value = param;
+                    }
+                    // output html
+                    final int option = getOption(level.toInt());
+                    final String[] values = new String[]{"", "", "", "", "", "", ""};
+                    values[option] = SELECTED;
+                    // The MessageFormat constant does not support synchronous usage.
+                    synchronized (OPTIONS) {
+                        buffer.append("<tr><td><b>" + key + "</b></td><td><select size=\"1\" name=\"" + key + "\">" + OPTIONS.format(values) + "</select></td></tr>");
+                    }
+                }
+
+
+                final ServletOutputStream ss = response.getOutputStream();
+                response.setContentType("text/html;charset=UTF-8");
+                ss.print("<form action=\"Log\"><div style=\"float: left;\"><table>");
+                ss.print(buffer.toString());
+                ss.print("</table></div><div style=\"float: right;\"><input class=\"submit\" type=\"submit\" value=\"Update\"/></div></form>");
+                ss.close();
+
+            }  catch (IOException io) {
+                LOG.error("LoggingServlet.doGet " + io);
+            }
         }
     }
 

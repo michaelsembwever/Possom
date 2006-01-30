@@ -79,7 +79,7 @@ public final class SearchServlet extends HttpServlet {
             stopWatch.start();
         }
         
-        // find the current site. Since we are behind a ajp13 connection request.getServerName()
+        // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
         // httpd.conf needs: "JkEnvVar SERVER_NAME" inside the virtual host directive. 
         final String vhost = null != httpServletRequest.getAttribute("SERVER_NAME")
             ? (String)httpServletRequest.getAttribute("SERVER_NAME")

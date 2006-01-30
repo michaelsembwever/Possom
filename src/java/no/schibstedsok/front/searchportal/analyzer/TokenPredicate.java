@@ -126,11 +126,24 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
         }
         // process
         final TokenEvaluatorFactory factory = (TokenEvaluatorFactory) evalFactory;
+        
+        // check that the evaluation hasn't already been done
+        // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether 
+        //  the evaluation is for the building of the known and possible predicate list (during query parsing)(in which
+        //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
+        //  applicable now (in the context of the whole query).
+        final Set/*<Predicate>*/ knownPredicates = factory.getClausesKnownPredicates();
+        if( null != knownPredicates && knownPredicates.contains(this) ){
+            return true;
+        }
+        
         final String query = factory.getQueryString();
         final TokenEvaluator evaluator = factory.getEvaluator(this);
         return evaluator.evaluateToken(token, factory.getCurrentTerm(), query);
     }
 
+    /** {@inheritDoc}
+     */
     public int compareTo(final Object/*TokenPredicate*/ obj) {
         // pre-condition check
         if ( !(obj instanceof TokenPredicate) ) {
@@ -141,6 +154,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
         return token.compareTo(tp.token);
     }
 
+    /** {@inheritDoc}
+     */
     public String toString() {
         return "TokenPredicate: " + token;
     }

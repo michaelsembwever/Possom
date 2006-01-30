@@ -67,11 +67,12 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
 
         if (clause == null) {
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
-            final Set/*<Predicate>*/ knownPredicates  = new HashSet/*<Predicate>*/();
-            final Set/*<Predicate>*/ possiblePredicates  = new HashSet/*<Predicate>*/();
-
+            
+            // create predicate sets
+            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet/*<Predicate>*/());
+            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet/*<Predicate>*/());
             // find the applicale predicates now
-            findPredicates(predicate2evaluatorFactory, predicates2check, knownPredicates, possiblePredicates);
+            findPredicates(predicate2evaluatorFactory, predicates2check);
             try {
                 // find the constructor...
                 final Constructor constructor = clauseClass.getDeclaredConstructor(new Class[]{
@@ -79,7 +80,11 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
                 });
                 // use the constructor...
                 clause = (AbstractOperationClause) constructor.newInstance(new Object[]{
-                    term, left, right, knownPredicates, possiblePredicates
+                    term, 
+                    left, 
+                    right, 
+                    predicate2evaluatorFactory.getClausesKnownPredicates(), 
+                    predicate2evaluatorFactory.getClausesPossiblePredicates()
                 });
 
             } catch (SecurityException ex) {
