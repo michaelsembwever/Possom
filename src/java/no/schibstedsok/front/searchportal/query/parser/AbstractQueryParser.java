@@ -8,7 +8,7 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

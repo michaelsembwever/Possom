@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
 /**
  * The OrClause represents a joining clause between two terms in the query.

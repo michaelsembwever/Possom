@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.analyzer;
 
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.collections.Predicate;
 
 public class QueryEqualsPredicate implements Predicate {

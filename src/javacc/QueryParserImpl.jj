@@ -11,7 +11,7 @@ package no.schibstedsok.front.searchportal.query.parser;
 import java.io.StringReader;
 import java.util.List;
 import java.util.ArrayList;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

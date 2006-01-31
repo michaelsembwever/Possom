@@ -1,11 +1,12 @@
 // Copyright (2005-2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import no.schibstedsok.front.searchportal.analyzer.*;
 
 import no.schibstedsok.front.searchportal.query.StopWordRemover;
 

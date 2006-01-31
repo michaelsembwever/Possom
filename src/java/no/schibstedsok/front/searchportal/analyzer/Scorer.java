@@ -18,6 +18,8 @@ import no.schibstedsok.front.searchportal.query.parser.AndNotClause;
 import no.schibstedsok.front.searchportal.query.parser.Clause;
 import no.schibstedsok.front.searchportal.query.parser.NotClause;
 import no.schibstedsok.front.searchportal.query.parser.OrClause;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

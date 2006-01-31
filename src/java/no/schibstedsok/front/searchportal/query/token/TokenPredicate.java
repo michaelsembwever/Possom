@@ -1,5 +1,5 @@
 // Copyright (2005-2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.token;
 
 
 import java.util.Collection;
@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.front.searchportal.analyzer.*;
 import org.apache.commons.collections.Predicate;
 
 /** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.

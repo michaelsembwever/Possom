@@ -1,11 +1,12 @@
 /*
  * Copyright (2005-2006) Schibsted Søk AS
  */
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
+import no.schibstedsok.front.searchportal.analyzer.*;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.parser.QueryStringContext;

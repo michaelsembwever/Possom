@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;

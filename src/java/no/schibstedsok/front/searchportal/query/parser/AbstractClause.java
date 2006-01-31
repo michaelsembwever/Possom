@@ -14,9 +14,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluator;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluator;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

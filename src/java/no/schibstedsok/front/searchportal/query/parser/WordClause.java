@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 /** Represent a word in the query. May contain the optional field (field:word).
  * May contain both character and digits but cannot contain only digits
  * (a IntegerClause will be used instead then).

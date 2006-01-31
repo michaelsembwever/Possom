@@ -3,8 +3,8 @@ package no.schibstedsok.front.searchportal.result.test;
 
 import java.util.Properties;
 import junit.framework.TestCase;
-import no.schibstedsok.front.searchportal.analyzer.VeryFastTokenEvaluator;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluator;
+import no.schibstedsok.front.searchportal.query.token.VeryFastTokenEvaluator;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluator;
 import no.schibstedsok.front.searchportal.configuration.FileResourcesSearchTabsCreatorTest;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.http.HTTPClient;

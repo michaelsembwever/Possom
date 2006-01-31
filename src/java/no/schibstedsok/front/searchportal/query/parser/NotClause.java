@@ -9,8 +9,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
 /**
  * The NotClause represents a not clause between prefixing another term in the query.

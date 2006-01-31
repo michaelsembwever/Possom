@@ -1,9 +1,10 @@
 /*
  * Copyright (2005) Schibsted Søk AS
  */
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.List;
+import no.schibstedsok.front.searchportal.analyzer.*;
 
 public interface ReportingTokenEvaluator {
     /**

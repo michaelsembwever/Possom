@@ -1,6 +1,7 @@
 // Copyright (2005-2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.token;
 
+import no.schibstedsok.front.searchportal.analyzer.*;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

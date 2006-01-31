@@ -11,8 +11,8 @@ import org.apache.commons.collections.PredicateUtils;
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.SearchParameter;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
-import no.schibstedsok.front.searchportal.analyzer.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 

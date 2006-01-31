@@ -1,11 +1,11 @@
 package no.schibstedsok.front.searchportal.query;
 
-import no.schibstedsok.front.searchportal.analyzer.RegExpEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.ArrayList;
-import no.schibstedsok.front.searchportal.analyzer.TokenPredicate;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**
