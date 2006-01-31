@@ -3,7 +3,6 @@
  */
 package no.schibstedsok.front.searchportal.query.token;
 
-import no.schibstedsok.front.searchportal.analyzer.*;
 
 
 /**

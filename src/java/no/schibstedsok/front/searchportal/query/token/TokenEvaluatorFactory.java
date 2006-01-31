@@ -4,7 +4,6 @@
 package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.Set;
-import no.schibstedsok.front.searchportal.analyzer.*;
 
 
 /**

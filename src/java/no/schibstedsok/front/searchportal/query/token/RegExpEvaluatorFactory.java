@@ -4,7 +4,6 @@ package no.schibstedsok.front.searchportal.query.token;
 import com.thoughtworks.xstream.XStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import no.schibstedsok.front.searchportal.analyzer.*;
 import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loaders.ResourceContext;
 import no.schibstedsok.front.searchportal.query.StopWordRemover;

@@ -1,7 +1,7 @@
 /*
  * Copyright (2005) Schibsted S�k AS
  */
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.token;
 
 public class TokenMatch
  implements Comparable {

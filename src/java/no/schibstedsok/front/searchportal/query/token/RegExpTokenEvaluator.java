@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import no.schibstedsok.front.searchportal.analyzer.*;
 
 import no.schibstedsok.front.searchportal.query.StopWordRemover;
 
