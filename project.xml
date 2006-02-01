@@ -8,8 +8,7 @@
     <name>Schibsted Søk Search-front</name>
     <groupId>schibstedsok</groupId>
     <artifactId>search-front-html</artifactId>
-    <currentVersion>1.2-SNAPSHOT</currentVersion>
-    <currentVersion>1.1</currentVersion>
+    <currentVersion>2.0</currentVersion>
     <organization>
         <name>Schibsted Søk AS</name>
         <url>http://www.sesam.no/</url>
