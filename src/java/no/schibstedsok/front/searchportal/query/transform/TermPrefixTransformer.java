@@ -1,10 +1,11 @@
 /*
  * Copyright (2005) Schibsted Søk AS
  */
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.transform;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import no.schibstedsok.front.searchportal.query.*;
 
 public class TermPrefixTransformer extends AbstractQueryTransformer {
 

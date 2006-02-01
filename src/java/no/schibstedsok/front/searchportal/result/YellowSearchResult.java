@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
-import no.schibstedsok.front.searchportal.query.QueryTransformer;
+import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 
 public class YellowSearchResult extends FastSearchResult {
 

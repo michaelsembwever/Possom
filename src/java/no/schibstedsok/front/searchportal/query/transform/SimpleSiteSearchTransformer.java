@@ -5,9 +5,10 @@
  *
  */
 
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.transform;
 
 import java.util.Map;
+import no.schibstedsok.front.searchportal.query.*;
 
 /**
  * SimpleSiteSearchTransformer

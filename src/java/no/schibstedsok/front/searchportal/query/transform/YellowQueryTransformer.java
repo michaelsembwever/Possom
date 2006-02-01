@@ -2,8 +2,9 @@
  * Copyright (2005) Schibsted Søk AS
  *
  */
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.transform;
 
+import no.schibstedsok.front.searchportal.query.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

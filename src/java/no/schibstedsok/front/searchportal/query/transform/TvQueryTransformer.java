@@ -1,9 +1,10 @@
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.transform;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRules;
+import no.schibstedsok.front.searchportal.query.*;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

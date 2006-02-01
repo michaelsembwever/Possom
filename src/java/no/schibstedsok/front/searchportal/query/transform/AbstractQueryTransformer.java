@@ -1,4 +1,6 @@
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.transform;
+
+import no.schibstedsok.front.searchportal.query.*;
 
 /**
  * AbstractQueryTransformer is part of no.schibstedsok.front.searchportal.query

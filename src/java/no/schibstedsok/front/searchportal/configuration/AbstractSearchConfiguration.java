@@ -1,6 +1,6 @@
 package no.schibstedsok.front.searchportal.configuration;
 
-import no.schibstedsok.front.searchportal.query.QueryTransformer;
+import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.result.ResultHandler;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 

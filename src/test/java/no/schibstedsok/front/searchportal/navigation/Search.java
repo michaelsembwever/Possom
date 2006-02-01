@@ -24,7 +24,7 @@ import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.navigation.*;
-import no.schibstedsok.front.searchportal.query.QueryTransformer;
+import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.site.Site;
 
 public class Search {
