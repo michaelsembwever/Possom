@@ -13,11 +13,11 @@
             <div class="left">$text.getMessage($locale, "numberFormat", $pager.numberOfResults) treff p&#229; <b>$queryHTMLEscaped</b></div>
             <div class="right">&nbsp;</div>
         </div>
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" />
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" />
         #set ($baseURL = "?c=d&amp;q=$query")
         #if ($result.getQuerySuggestions().size() > 0)
             <div class="spelling_suggestion">
-                <img src="../images/star.gif" align="middle"/>
+                <img src="$site.getImageDir()/star.gif" align="middle"/>
                 <span class="stavekontroll">
                     $text.getMessage($locale, "didYouMean"):
                     #foreach ($querySuggestion in $result.querySuggestions)

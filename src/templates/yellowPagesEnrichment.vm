@@ -25,7 +25,7 @@
             <tr>
                 <td valign="top" class="img">
                     #if ($result.results.size() == 1) #foreach( $item in $result.results ) <a href="?c=yip&amp;q=$query&amp;companyId=$item.getField('recordid')&amp;companyId_x=$hashGenerator.generateMD5($item.getField('recordid'))"> #end #else <a href="?c=y&amp;q=$query"> #end
-                    <img src="../images/enrichment/yp.jpg" alt="Bedrifter" /></a>
+                    <img src="$site.getImageDir()/enrichment/yp.jpg" alt="Bedrifter" /></a>
                 </td>
                 <td width="500" class="enrich_text">
                     <table cellspacing="0">

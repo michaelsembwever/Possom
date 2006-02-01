@@ -25,7 +25,7 @@
         Annonser i Sesam Bedriftss&#248;k kj&#248;pes for et helt &#229;r av gangen.
     </p>
     <p>
-        <img src="../images/info/adshelp_bedrift.jpg" alt="Bilde av Sesam bedriftss&#248;k" />
+        <img src="$site.getImageDir()/info/adshelp_bedrift.jpg" alt="Bilde av Sesam bedriftss&#248;k" />
     </p>
     <p>
         <a href="?c=d&amp;ads_help=true&amp;pg=2&amp;q=">Les mer om annonsering med Sesam Bedriftss&#248;k</a>
@@ -35,7 +35,7 @@
         Din annonse vises n&#229;r brukeren s&#248;ker etter noe som harmonerer med dine s&#248;keord/s&#248;kefraser. Du betaler bare n&#229;r noen klikker p&#229; annonsen din. Med denne annonseringsformen er det enkelt &#229; kontrollere utgifter til annonsering, og brukeren er p&#229; aktivt s&#248;k etter varer/tjenester din bedrift kan tilby. Rangeringen p&#229; annonsen bestemmes av budpris. Den som byr mest for s&#248;keordet/s&#248;kefrasen, f&#229;r sin annonse eksponert &#248;verst.
     </p>
     <p>
-        <img src="../images/info/adshelp_ppc.jpg" alt="Bilde av PPC-annonsering" />
+        <img src="$site.getImageDir()/info/adshelp_ppc.jpg" alt="Bilde av PPC-annonsering" />
     </p>
     <p>
         <a href="?c=d&amp;ads_help=true&amp;pg=3&amp;q=">Les mer om PPC-annonsering p&#229; Sesam</a>
@@ -53,7 +53,7 @@
         P&#229; forsiden av Sesam.no vises de tre &#248;verste treffene i et bedriftss&#248;k. Dette treffet kan v&#230;re resultat av s&#248;k p&#229; et bedriftsnavn, eller et s&#248;keord (se forklaring under).
     </p>
     <p>
-        <img src="../images/info/adshelp_bedrift.jpg" alt="Bilde av Sesam bedriftss&#248;k" />
+        <img src="$site.getImageDir()/info/adshelp_bedrift.jpg" alt="Bilde av Sesam bedriftss&#248;k" />
     </p>
     <p>
         <em>Treff p&#229; S&#248;keord</em>
@@ -73,7 +73,7 @@
         Etter dette listes andre bedrifter som har tilknytning til det aktuelle s&#248;keordet, sortert etter hvilken rangering de har kj&#248;pt for dette ordet.
     </p>
     <p>
-        <img src="../images/info/adshelp_resultatside.jpg" alt="Bedriftss&#248;k resultatside" />
+        <img src="$site.getImageDir()/info/adshelp_resultatside.jpg" alt="Bedriftss&#248;k resultatside" />
     </p>
     <p>
         <em>Stedsnavn</em>
@@ -91,7 +91,7 @@
         Annons&#248;rer kan kj&#248;pe en egen tekstlinje tilknyttet en eller flere bestemte s&#248;keord som vises p&#229; treffsiden ved s&#248;k p&#229; det aktuelle ordet.
     </p>
     <p>
-        <img src="../images/info/adshelp_infotekst.jpg" alt="Bedriftss&#248;k infotekst" />
+        <img src="$site.getImageDir()/info/adshelp_infotekst.jpg" alt="Bedriftss&#248;k infotekst" />
     </p>
     <p>
         <em>3. Firmainfoside</em><br />
@@ -105,7 +105,7 @@
         <li>Bildefelt med inntil fem forskjellige bilder i rullerende visning.</li>
     </ul>
     <p>
-        <img src="../images/info/adshelp_infoside.jpg" alt="Bedriftss&#248;k infoside" />
+        <img src="$site.getImageDir()/info/adshelp_infoside.jpg" alt="Bedriftss&#248;k infoside" />
     </p>
     <p>
         <b>Priseksempel</b><br />

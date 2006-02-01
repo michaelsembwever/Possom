@@ -1,12 +1,12 @@
                 <script type="text/javascript" language="JavaScript">
                      //zoom box
-                     content = '<img name="zoomImageTop" src="../images/mapicon/pixel.gif" width="1" height="1" alt="" />';
+                     content = '<img name="zoomImageTop" src="$site.getImageDir()/mapicon/pixel.gif" width="1" height="1" alt="" />';
                      createLayer("zoomBoxTop",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
-                     content = '<img name="zoomImageLeft" src="../images/mapicon/pixel.gif" width="1" height="1" alt="" />';
+                     content = '<img name="zoomImageLeft" src="$site.getImageDir()/mapicon/pixel.gif" width="1" height="1" alt="" />';
                      createLayer("zoomBoxLeft",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
-                     content = '<img name="zoomImageRight" src="../images/mapicon/pixel.gif" width="1" height="1" alt="" />';
+                     content = '<img name="zoomImageRight" src="$site.getImageDir()/mapicon/pixel.gif" width="1" height="1" alt="" />';
                      createLayer("zoomBoxRight",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
-                     content = '<img name="zoomImageBottom" src="../images/mapicon/pixel.gif" width="1" height="1" alt="" />';
+                     content = '<img name="zoomImageBottom" src="$site.getImageDir()/mapicon/pixel.gif" width="1" height="1" alt="" />';
                      createLayer("zoomBoxBottom",xMapOffset,yMapOffset,imgWidth,imgHeigth,false,content);
 
                      initializeEvents();

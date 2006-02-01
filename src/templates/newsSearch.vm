@@ -16,18 +16,18 @@
     <content tag="media-collection-nav">
 
         #if ($pager.numberOfResults > 0)
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" style="margin-top:30px;" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" style="margin-top:30px;" alt="" /><br/>
             <div class="geo_header">Velg nyheter i kilde:</div>
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
 
             #navigatorInit('newspaperNames')
             #if ($request.getParameter("nav_newspaperNames"))
                 <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=m&amp;q=$query$!previousNavigationParameters$!otherNavigators";'>
-                        <td class="nav_pad"><a href="?c=m&amp;q=$query$!previousNavigationParameters$!otherNavigators"><img src="../images/backArrow.gif" alt="" />Flere kilder</a></td>
+                        <td class="nav_pad"><a href="?c=m&amp;q=$query$!previousNavigationParameters$!otherNavigators"><img src="$site.getImageDir()/backArrow.gif" alt="" />Flere kilder</a></td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                 </table>
             #end
@@ -48,7 +48,7 @@
                             <td class="nav_pad" align="right">$text.getMessage($locale, "numberFormat", $category.count)</td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                            <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                         </tr>
                     #end
                 </table>
@@ -204,7 +204,7 @@
                             </span>
                             <div class="search_summary" id="search_summary_$velocityCount">$!item.getField('newsbody')</div>
                             #if ($item.getField('manorawbody'))
-                            <p><span id="hider_$velocityCount" class="media_frame_hide" style="display: none;">&nbsp;<a href="javascript:;" onclick="media_close(document.mediaform_${velocityCount}.mediafield_${velocityCount}, 'search_summary_$velocityCount', 'manorawbody_$velocityCount', 'hider_$velocityCount', 'mediaframe_$velocityCount');"><img src="../images/backArrow.gif" alt="back_arrow" />Skjul</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:window.print();">Skriv ut</a></span></p>
+                            <p><span id="hider_$velocityCount" class="media_frame_hide" style="display: none;">&nbsp;<a href="javascript:;" onclick="media_close(document.mediaform_${velocityCount}.mediafield_${velocityCount}, 'search_summary_$velocityCount', 'manorawbody_$velocityCount', 'hider_$velocityCount', 'mediaframe_$velocityCount');"><img src="$site.getImageDir()/backArrow.gif" alt="back_arrow" />Skjul</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="javascript:window.print();">Skriv ut</a></span></p>
                             <p>
                                 <form name="mediaform_$velocityCount"><input type="hidden" name="mediafield_$velocityCount" value="g" /></form>
                                 <div id="manorawbody_$velocityCount" class="search_summary" style="display:none;">
@@ -212,7 +212,7 @@
                                     <p><b>$item.getField('newsbodyteaser')</b></p>
                                     <p><font color="gray">$!item.getField('newsauthor') - $item.getField('newssource') papirutgave, $item.getField('age')</font></p>
                                     <p>$item.getField('manorawbody')</p>
-                                    <p><span class="media_frame_hide"><a href="#" onclick="media_close(document.mediaform_${velocityCount}.mediafield_${velocityCount}, 'search_summary_$velocityCount', 'manorawbody_$velocityCount', 'hider_$velocityCount', 'mediaframe_$velocityCount');"><img src="../images/backArrow.gif" alt="back_arrow" />Skjul</a>
+                                    <p><span class="media_frame_hide"><a href="#" onclick="media_close(document.mediaform_${velocityCount}.mediafield_${velocityCount}, 'search_summary_$velocityCount', 'manorawbody_$velocityCount', 'hider_$velocityCount', 'mediaframe_$velocityCount');"><img src="$site.getImageDir()/backArrow.gif" alt="back_arrow" />Skjul</a>
                                     &nbsp;&nbsp;|&nbsp;&nbsp;
                                     <a href="javascript:window.print();">Skriv ut</a></span></p>
                                 </div>

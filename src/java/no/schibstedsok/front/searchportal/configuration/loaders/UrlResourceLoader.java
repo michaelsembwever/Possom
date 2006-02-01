@@ -87,16 +87,12 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
     /** {@inheritDoc}
      */
     protected String getResource() {
-        // the web context (eg "sesam.no") must come from the site object.
-        final String vhost = getContext().getSite().getSiteName().endsWith("/")
-            ? getContext().getSite().getSiteName()
-            : getContext().getSite().getSiteName() + "/";
 
-        final String cxtName = vhost.indexOf(':') >= 0
-            ? vhost.substring(0, vhost.indexOf(':')) + "/" // don't include the port in the cxtName.
-            : vhost;
-
-        return "http://" + vhost + cxtName + "conf/" + super.getResource();
+        return "http://" 
+                + getContext().getSite().getName() 
+                + getContext().getSite().getConfigContext() 
+                + "conf/" 
+                + super.getResource();
     }
 
     /** {@inheritDoc}

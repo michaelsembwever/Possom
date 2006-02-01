@@ -14,7 +14,7 @@
     #if ($globalSearchTips)
         <div class="spelling_suggestion">
         <em>
-         <img src="../images/star.gif" alt="Tips" />
+         <img src="$site.getImageDir()/star.gif" alt="Tips" />
          $globalSearchTips
         </em>
         </div>
@@ -24,11 +24,11 @@
 <content tag="relevantQueries">
     #if ($result.getRelevantQueries().size() > 0)
         <div class="geo_element">
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
             <div class="geo_header">
              Andre har s&#248;kt p&#229;:
             </div>
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
             <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                 #foreach ($relQuery in $result.getRelevantQueries())
 				#if ($velocityCount < 6) 
@@ -38,7 +38,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="1" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                            <td colspan="1" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                         </tr>
 	#end
                 #end
@@ -58,7 +58,7 @@
         #set ($baseURL = "?c=d&amp;q=$query")
         #if ($result.getQuerySuggestions().size() > 0)
          <div class="spelling_suggestion">
-                <img src="../images/star.gif" alt="star" />
+                <img src="$site.getImageDir()/star.gif" alt="star" />
                 <span class="stavekontroll">$text.getMessage($locale, "didYouMean"):
                     #foreach ($querySuggestion in $result.querySuggestions)
                         <em><a href="?c=d&amp;q=$querySuggestion.query">$querySuggestion.displayQuery</a></em>
@@ -84,7 +84,7 @@
         #set ($baseURL = "?c=d&amp;q=$query")
         #if ($result.getQuerySuggestions().size() > 0)
             <div class="spelling_suggestion">
-                <img src="../images/star.gif"/>
+                <img src="$site.getImageDir()/star.gif"/>
                 <span class="stavekontroll">
                     $text.getMessage($locale, "didYouMean"):
                     #foreach ($querySuggestion in $result.querySuggestions)
@@ -126,9 +126,9 @@
 <content tag="smart-nav">
     #set ($helpnavs = ["Tegn og operat&#248;rer", "Magiske Sesam-ord", "For d&#229;rlig treffliste?"])
     <div style="margin-top:61px;">
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
         <div class="geo_header">S&#248;ketips!</div>
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
         <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
         #foreach ($menu in $helpnavs)
             <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=&amp;smart=true&amp;pg=$velocityCount";'>
@@ -141,7 +141,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
             </tr>
         #end
         </table>
@@ -151,9 +151,9 @@
 <content tag="help-nav">
     #set ($helpnavs = ["Slik virker Sesam", "Naviger mellom s&#248;kene", "Slik s&#248;ker du", "S&#248;keresultatet", "Drill deg ned", "Nyhetss&#248;k", "Bedriftss&#248;k", "Persons&#248;k", "Bildes&#248;k", "TV, v&#230;r og leksikon", "Ikonene i Sesam", "Sesams&#248;k som startside"])
     <div style="margin-top: 61px;">
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
         <div class="geo_header">Hjelp</div>
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
     </div>
     <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
         #foreach ($menu in $helpnavs)
@@ -167,7 +167,7 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
             </tr>
         #end
     </table>
@@ -177,9 +177,9 @@
 <content tag="about-nav">
     #set ($helpnavs = ["Om oss", "Stilling ledig", "Marked"])
     <div style="margin-top: 61px;">
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
         <div class="geo_header">Om Sesam</div>
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
     </div>
     <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
         #foreach ($menu in $helpnavs)
@@ -193,18 +193,18 @@
             </td>
         </tr>
         <tr>
-            <td class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+            <td class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
         </tr>
         #end
     </table>
 </content>
 
 <content tag="ads_help-nav">
-    #set ($helpnavs = ["Annonsere", "Bedriftssøk", "PPC"])
+    #set ($helpnavs = ["Annonsere", "Bedriftssï¿½k", "PPC"])
     <div style="margin-top: 61px;">
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
         <div class="geo_header">Bli annons&#248;r</div>
-        <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+        <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
     </div>
     <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
         #foreach ($menu in $helpnavs)
@@ -218,7 +218,7 @@
             </td>
         </tr>
         <tr>
-            <td class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+            <td class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
         </tr>
         #end
     </table>
@@ -328,11 +328,11 @@
 <content tag="cluster">
     #if ($pager.numberOfResults > 0)
         <div class="geo_element">
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
             <div class="geo_header">
                 Clusternavigator
             </div>
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
             <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                 #foreach ($keyword in $result.sortedClusters)
                     #if ($velocityCount < 10)
@@ -343,7 +343,7 @@
                             <td align="right">$keyword.score</td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                            <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                         </tr>
                     #end
                 #end
@@ -379,7 +379,7 @@
         #parse("smartText.vm")
     </div>
     <div id="footer_space">
-        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+        <div class="dots"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" alt="" /></div>
         #parse("footer.vm")
     </div>
 </content>
@@ -395,14 +395,14 @@
         #parse("aboutText.vm")
     </div>
     <div id="footer_space">
-        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+        <div class="dots"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" alt="" /></div>
         #parse("footer.vm")
     </div>
 </content>
 
 
 <content tag="ads_help">
-    #set ($helpnavs = ["Annonsere", "Bedriftssøk", "PPC"])
+    #set ($helpnavs = ["Annonsere", "Bedriftssï¿½k", "PPC"])
     <div id="help">
         #foreach ($menu in $helpnavs)
             #if ($request.getParameter("pg") && $request.getParameter("pg") == "${velocityCount}")
@@ -411,7 +411,7 @@
         #end
         #parse("adsText.vm")
         <div id="footer_space">
-            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+            <div class="dots"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" alt="" /></div>
             #parse("footer.vm")
         </div>
     </div>
@@ -422,7 +422,7 @@
         <h3>Sesam s&#248;keboks</h3>
         #include("searchboxText.vm")
         <div id="footer_space">
-            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+            <div class="dots"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" alt="" /></div>
             #parse("footer.vm")
         </div>
     </div>
@@ -433,7 +433,7 @@
         <h3>Sesam s&#248;keboks</h3>
         #include("searchboxText.vm")
         <div id="footer_space">
-            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+            <div class="dots"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" alt="" /></div>
             #parse("footer.vm")
         </div>
     </div>
@@ -444,7 +444,7 @@
         <h3>Sesam verkt&#248;ylinje</h3>
         #include("toolbarText.vm")
         <div id="footer_space">
-            <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+            <div class="dots"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" alt="" /></div>
             #parse("footer.vm")
         </div>
     </div>
@@ -461,7 +461,7 @@
         #parse("helpText.vm")
     </div>
     <div id="footer_space">
-        <div class="dots"><img src="../images/pix.gif" width="100%" height="1" alt="" /></div>
+        <div class="dots"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" alt="" /></div>
         #parse("footer.vm")
     </div>
 </content>

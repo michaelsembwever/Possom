@@ -11,7 +11,7 @@
             <td colspan="2" class="navbar_menu" id="navbar_menu_m">Netts&#248;k</td>
         </tr>
         <tr>
-            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" /></td>
+            <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" /></td>
         </tr>
         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=n&amp;q=$query&amp;n=no";'>
             <td class="nav_pad">
@@ -20,7 +20,7 @@
             <td class="nav_pad" align="right">&nbsp;</td>
         </tr>
         <tr>
-            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+            <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
         </tr>
         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=g&amp;q=$query";'>
             <td class="nav_pad">
@@ -29,7 +29,7 @@
             <td class="nav_pad" align="right">&nbsp;</td>
         </tr>
         <tr>
-            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+            <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
         </tr>
     </table>
 </content>
@@ -46,7 +46,7 @@
 
     #if ($result.getQuerySuggestions().size() > 0)
         <div class="spelling_suggestion">
-            <img src="../images/star.gif" align="middle" alt="star" />
+            <img src="$site.getImageDir()/star.gif" align="middle" alt="star" />
             <span class="stavekontroll">
                 $text.getMessage($locale, "didYouMean"):
                 #foreach ($querySuggestion in $result.querySuggestions)

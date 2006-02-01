@@ -36,7 +36,7 @@
           #foreach ( $item in $result.results )
             <tr>
                 <td valign="top" class="img">
-                    <img src="../images/enrichment/weather/weathericon_${item.getField('condition')}.jpg"
+                    <img src="$site.getImageDir()/enrichment/weather/weathericon_${item.getField('condition')}.jpg"
                          alt="V&aeling;ret i $item.getField('location')" />
                 </td>
                 <td valign="top" align="left" width="500">

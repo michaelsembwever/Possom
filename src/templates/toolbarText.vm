@@ -3,16 +3,16 @@
     Last ned gratis. Det tar bare noen sekunder &#229; innstallere.
 </p>
 <p>
-    <img src="../images/help/toolbar.gif" alt="toolbar bilde" />
+    <img src="$site.getImageDir()/help/toolbar.gif" alt="toolbar bilde" />
 </p>
 <p>
     <table>
         <tr>
-            <td><img src="../images/static/logo_ie.gif" alt="IE logo" /></td>
+            <td><img src="$site.getImageDir()/static/logo_ie.gif" alt="IE logo" /></td>
             <td valign="middle"><a href="http://www.smartad.biz/hosted/sesam/sesam.exe">Last ned Sesam verkt&#248;ylinje for Internet explorer</a></td>
         </tr>
         <tr>
-            <td><img src="../images/static/logo_ff.gif" alt="Firefox logo" /></td>
+            <td><img src="$site.getImageDir()/static/logo_ff.gif" alt="Firefox logo" /></td>
             <td valign="middle"><a href="http://www.smartad.biz/hosted/sesam/cab1_ff/">Last ned Sesam verkt&#248;ylinje for Mozilla Firefox</a></td>
         </tr>
     </table>

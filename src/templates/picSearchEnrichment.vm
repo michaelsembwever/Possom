@@ -2,7 +2,7 @@
 <table class="enrichment">
     <tr>
         <td class="img">
-            <img src="../images/enrichment/pic.jpg" align="left" alt="Bilder" />
+            <img src="$site.getImageDir()/enrichment/pic.jpg" align="left" alt="Bilder" />
         </td>
         <td valign="top" class="search_big_url">
             <div class="pic_url"><a href="?c=p&amp;q=$query">$text.getMessage($locale, "hitsOnPics", $result.hitCount, $queryHTMLEscaped)</a></div>

@@ -65,7 +65,7 @@
     #if ($currentTab.getKey() == "m")
         <div id="retriever_footer">
         <div id="retriever_footer_c1">Nyheter fra norske og nordiske nettaviser samt <a href="?c=d&amp;q=&amp;help=true&amp;pg=6">deler av mediearkivet ATEKST</a> er tilgjengeliggjort for s&#248;king i Retriever.</div>
-        <div id="retriever_footer_c2"><a href="http://www.retriever-info.com/" target="_blank"><img src="../images/retriever_logo.jpg" alt="Retriever logo"  /></a></div>
+        <div id="retriever_footer_c2"><a href="http://www.retriever-info.com/" target="_blank"><img src="$site.getImageDir()/retriever_logo.jpg" alt="Retriever logo"  /></a></div>
         </div>
     #end
 </div>

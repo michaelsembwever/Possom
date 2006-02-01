@@ -28,15 +28,15 @@ $allNavigators
             <input type="text" name="q" value="$queryHTMLEscaped" class="input_main" />
             <input type="submit" value="S&#248;k" class="submit_d" /><br />
             #if ($request.getParameter("ss") == "ds")
-                #set ($site = "DinSide")
+                #set ($ss = "DinSide")
             #elseif ($request.getParameter("ss") == "it")
-                #set ($site = "Itavisen")
+                #set ($ss = "Itavisen")
             #elseif ($request.getParameter("ss") == "di")
-                #set ($site = "Digi")
+                #set ($ss = "Digi")
             #elseif ($request.getParameter("ss") == "pr")
-                #set ($site = "Propaganda")
+                #set ($ss = "Propaganda")
             #elseif ($request.getParameter("ss") == "im")
-                #set ($site = "iMarkedet")
+                #set ($ss = "iMarkedet")
             #end
 
             #if ($request.getParameter("ssr") == "d")
@@ -48,7 +48,7 @@ $allNavigators
             #end
 
             <div id="radiobutton">
-                <input type="radio" name="ssr" value="$!request.getParameter('ss')" $siteChecked /> $site &nbsp;&nbsp;
+                <input type="radio" name="ssr" value="$!request.getParameter('ss')" $siteChecked /> $ss &nbsp;&nbsp;
                 <input type="radio" name="ssr" value="d" $sesamChecked /> Sesam
             </div>
             <input type="hidden" name="ss" value="$!request.getParameter('ss')" />
@@ -66,15 +66,15 @@ $allNavigators
 
             #if ($currentTab.getKey() == "m")
             <input type="hidden" name="nav_sources" value="contentsourcenavigator" />
-            <img src="../images/searchbar/m.jpg" height="22" align="left" alt="" />
+            <img src="$site.getImageDir()/searchbar/m.jpg" height="22" align="left" alt="" />
             #elseif ($currentTab.getKey() == "y" || $currentTab.getKey() == "yip")
-            <img src="../images/searchbar/y.jpg" height="22" align="left" alt="" />
+            <img src="$site.getImageDir()/searchbar/y.jpg" height="22" align="left" alt="" />
             #elseif ($currentTab.getKey() == "w" || $currentTab.getKey() == "wip")
-            <img src="../images/searchbar/w.jpg" height="22" align="left" alt="" />
+            <img src="$site.getImageDir()/searchbar/w.jpg" height="22" align="left" alt="" />
             #elseif ($currentTab.getKey() == "p")
-            <img src="../images/searchbar/p.jpg" height="22" align="left" alt="" />
+            <img src="$site.getImageDir()/searchbar/p.jpg" height="22" align="left" alt="" />
             #else
-            <img src="../images/searchbar/d.jpg" height="22" align="left" alt="" />
+            <img src="$site.getImageDir()/searchbar/d.jpg" height="22" align="left" alt="" />
             #end
         </div>
 
@@ -115,15 +115,15 @@ $allNavigators
                     #if ($request.getParameter("ss") == "ds" || $request.getParameter("ss") == "it" || $request.getParameter("ss") == "di" || $request.getParameter("ss") == "pr" || $request.getParameter("ss") == "im")
 
                         #if ($request.getParameter("ss") == "ds")
-                            #set ($site = "DinSide")
+                            #set ($ss = "DinSide")
                         #elseif ($request.getParameter("ss") == "it")
-                            #set ($site = "Itavisen")
+                            #set ($ss = "Itavisen")
                         #elseif ($request.getParameter("ss") == "di")
-                            #set ($site = "Digi")
+                            #set ($ss = "Digi")
                         #elseif ($request.getParameter("ss") == "pr")
-                            #set ($site = "Propaganda")
+                            #set ($ss = "Propaganda")
                         #elseif ($request.getParameter("ss") == "im")
-                            #set ($site = "iMarkedet")
+                            #set ($ss = "iMarkedet")
                         #end
 
                         #if ($request.getParameter("ssr") == "d")
@@ -134,7 +134,7 @@ $allNavigators
                             #set ($sesamChecked = "")
                         #end
 
-                        <input type="radio" name="ssr" value="$!request.getParameter('ss')" $siteChecked /> $site &nbsp;&nbsp;
+                        <input type="radio" name="ssr" value="$!request.getParameter('ss')" $siteChecked /> $ss &nbsp;&nbsp;
                         <input type="radio" name="ssr" value="d" $sesamChecked /> Sesam
                         <input type="hidden" name="ss" value="$!request.getParameter('ss')" >
                     #else
@@ -225,7 +225,7 @@ $allNavigators
     </div>
     <div class="yip_row2_r">
         #foreach ($mark in $company.getMultivaluedField('manyYpmastermarks'))
-            <img src="../images/ik/$mark" class="mastermarks" alt="Mestermerker" />
+            <img src="$site.getImageDir()/ik/$mark" class="mastermarks" alt="Mestermerker" />
         #end
     </div>
 #end

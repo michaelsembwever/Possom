@@ -13,7 +13,7 @@
             </tr>
             <tr>
                 <td valign="top" class="img">
-                    <a href="?c=m&amp;q=$query&amp;nav_sources=contentsourcenavigator&amp;contentsource=Norske%20nyheter"><img src="../images/enrichment/news.jpg" alt="Nyheter" /></a>
+                    <a href="?c=m&amp;q=$query&amp;nav_sources=contentsourcenavigator&amp;contentsource=Norske%20nyheter"><img src="$site.getImageDir()/enrichment/news.jpg" alt="Nyheter" /></a>
                 </td>
                 <td width="500" class="enrich_text">
                     #foreach( $item in $result.results )

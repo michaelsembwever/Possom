@@ -22,10 +22,10 @@
 
 <content tag="infopage">
 
-        <script type='text/javascript' language='JavaScript' src='../javascript/map.js'></script>
-        <script type='text/javascript' language='JavaScript' src='../javascript/mapicon.js'></script>
-        <script type='text/javascript' language='JavaScript' src='../javascript/layers.js'></script>
-        <script type='text/javascript' language='JavaScript' src='../javascript/slide.js'></script>
+        <script type='text/javascript' language='JavaScript' src='$site.getJsDir()/map.js'></script>
+        <script type='text/javascript' language='JavaScript' src='$site.getJsDir()/mapicon.js'></script>
+        <script type='text/javascript' language='JavaScript' src='$site.getJsDir()/layers.js'></script>
+        <script type='text/javascript' language='JavaScript' src='$site.getJsDir()/slide.js'></script>
 
         <script type="text/javascript" language="JavaScript">
             #if ($company.getField('xcoord') && $company.getField('ycoord'))
@@ -52,7 +52,7 @@
                 var envFactor = $coordHelper.getEnvFactor();
                 var panfactor = $coordHelper.getPanFactor();
                 var zoomfactor = $coordHelper.getZoomFactor();
-                var imgMeterSize = $coordHelper.getImgMeterSize();//størrelse på kartbilde i meter
+                var imgMeterSize = $coordHelper.getImgMeterSize();//stï¿½rrelse pï¿½ kartbilde i meter
                 var pixelSize = $coordHelper.getPixelsize();
                 var defaultNoCoord = $coordHelper.getDefaultNoCoord();
 
@@ -87,7 +87,7 @@
 
             function init(){
                 if(hasCoords){
-                    //må finne kartets posisjon i kartet.
+                    //mï¿½ finne kartets posisjon i kartet.
                     //initializeEvents();
                     setImgMapOffset(document.getElementById("mapcontent"));
                     getUrl();
@@ -146,15 +146,15 @@
         </script>
 
         <div id="info_submenu">
-            <img src="../images/arrow.gif" width="3" height="11" alt="pil" /> <a href="javascript:window.print();">$text.getMessage($locale, "print")</a> &nbsp;&nbsp;
-            <img src="../images/arrow.gif" width="3" height="11" alt="pil"/> <script type="text/javascript">ml('107,97,116,97,108,111,103,102,101,105,108,64,115,101,115,97,109,46,110,111','Send oss oppdatert informasjon','Endring av firmainformasjon [$company.getField('recordid')] - Sesam.no&#38;body=Vennligst fyll ut feltene under%0D%0A%0D%0AFirmanavn:%0D%0AAdresse:%0D%0APostnummer:%0D%0ASted:%0D%0ATelefon:%0D%0ATelefaks:%0D%0AOrg.nr:%0D%0AE-post:%0D%0AURL:%0D%0A');</script><noscript><b>(Må slå på javascript for å se e-postadresse)</b></noscript> &nbsp;&nbsp;
+            <img src="$site.getImageDir()/arrow.gif" width="3" height="11" alt="pil" /> <a href="javascript:window.print();">$text.getMessage($locale, "print")</a> &nbsp;&nbsp;
+            <img src="$site.getImageDir()/arrow.gif" width="3" height="11" alt="pil"/> <script type="text/javascript">ml('107,97,116,97,108,111,103,102,101,105,108,64,115,101,115,97,109,46,110,111','Send oss oppdatert informasjon','Endring av firmainformasjon [$company.getField('recordid')] - Sesam.no&#38;body=Vennligst fyll ut feltene under%0D%0A%0D%0AFirmanavn:%0D%0AAdresse:%0D%0APostnummer:%0D%0ASted:%0D%0ATelefon:%0D%0ATelefaks:%0D%0AOrg.nr:%0D%0AE-post:%0D%0AURL:%0D%0A');</script><noscript><b>(Mï¿½ slï¿½ pï¿½ javascript for ï¿½ se e-postadresse)</b></noscript> &nbsp;&nbsp;
             <!--
-                        <img src="../images/arrow.gif" width="3" height="11"/> <a href="">$text.getMessage($locale, "sendSMS")</a> &nbsp;&nbsp;
-                        <img src="../images/arrow.gif" width="3" height="11"/> <a href="">$text.getMessage($locale, "sendEmail")</a> &nbsp;&nbsp;
-                        <img src="../images/arrow.gif" width="3" height="11"/> <a href="">Lagre V-card (adressekort)</a>
+                        <img src="$site.getImageDir()/arrow.gif" width="3" height="11"/> <a href="">$text.getMessage($locale, "sendSMS")</a> &nbsp;&nbsp;
+                        <img src="$site.getImageDir()/arrow.gif" width="3" height="11"/> <a href="">$text.getMessage($locale, "sendEmail")</a> &nbsp;&nbsp;
+                        <img src="$site.getImageDir()/arrow.gif" width="3" height="11"/> <a href="">Lagre V-card (adressekort)</a>
             -->
         </div>
-        <img src="../images/navLine.gif" width="758" height="1" alt="" />
+        <img src="$site.getImageDir()/navLine.gif" width="758" height="1" alt="" />
 
         <div id="yellow_table">
             <table class="yip_table" width="758" border="0" cellspacing="0" cellpadding="0">
@@ -166,9 +166,9 @@
                             #if ($company.getField('ypcommercial'))
                                 #if ($company.getField('yplogo'))
                                     #if ($company.getField('ypurl'))
-                                        <div class="yip_row2_l"><a href="$decoder.ypurl($company.getField('ypurl'))" target="_blank"><img src="../images/ik/$company.getField('yplogo')" alt="logo" /></a></div>
+                                        <div class="yip_row2_l"><a href="$decoder.ypurl($company.getField('ypurl'))" target="_blank"><img src="$site.getImageDir()/ik/$company.getField('yplogo')" alt="logo" /></a></div>
                                     #else
-                                        <div class="yip_row2_l"><img src="../images/ik/$company.getField('yplogo')" alt="logo" /></div>
+                                        <div class="yip_row2_l"><img src="$site.getImageDir()/ik/$company.getField('yplogo')" alt="logo" /></div>
                                     #end
                                 #end
                             #end
@@ -215,14 +215,14 @@
                             </dl>
                             #if ($company.getField('ypcommercial'))
                                 #if ($company.getField('ypcontactform'))
-                                    <img src="../images/pix.gif" width="100%" height="10" alt="" />
+                                    <img src="$site.getImageDir()/pix.gif" width="100%" height="10" alt="" />
                                     <div id="expandMail">
                                         <a href="javascript:;" onclick="javascript:document.getElementById('sendMail').style.display='block';document.getElementById('expandMail').style.display='none';document.getElementById('hideMail_top').style.display='block';">Vis kontaktskjema</a>
                                     </div>
                                     <div id="hideMail_top" style="display:none;">
                                         <a href="javascript:;" onclick="javascript:document.getElementById('sendMail').style.display='none';document.getElementById('expandMail').style.display='block';document.getElementById('hideMail_top').style.display='none';scroll(0,0);">Skjul kontaktskjema</a>
                                     </div>
-                                    <img src="../images/pix.gif" width="100%" height="5" alt="" />
+                                    <img src="$site.getImageDir()/pix.gif" width="100%" height="5" alt="" />
                                     <div id="sendMail" style="display:none;">
                                         <b>Send foresp&#248;rsel til $!company.getField('ypnavn2')</b>
                                         <form method="get" name="contactform" action="../servlet/sendMail.do" onsubmit='return tipscheck();'>
@@ -319,22 +319,22 @@
                 <table bgcolor="#F3F3F3" border="0" cellspacing="0" cellpadding="0" width="758">
                     <tr>
                         <td width="11" height="11" class="printhide">
-                            <a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a>
+                            <a href="javascript:if(checkCoord()){ pan('nw');}"><img src="$site.getImageDir()/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a>
                         </td>
                         <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
-                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
-                            <a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/wpanN.jpg" height="11" alt="panorer"/></a>
-                            <a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="$site.getImageDir()/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
+                            <a href="javascript:if(checkCoord()){ pan('n');}"><img src="$site.getImageDir()/mapicon/wpanN.jpg" height="11" alt="panorer"/></a>
+                            <a href="javascript:if(checkCoord()){ pan('ne');}"><img src="$site.getImageDir()/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
                         </td>
                         <td width="11" height="11" class="printhide">
-                            <a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer"/></a>
+                            <a href="javascript:if(checkCoord()){ pan('ne');}"><img src="$site.getImageDir()/mapicon/panNE.jpg" width="11" height="11" alt="panorer"/></a>
                         </td>
                     </tr>
                     <tr>
                         <td width="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
-                            <a href="javascript:if(checkCoord()){ pan('w');}"><img src="../images/mapicon/wpanW.jpg" width="11" alt="panorer"/></a>
-                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="$site.getImageDir()/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                            <a href="javascript:if(checkCoord()){ pan('w');}"><img src="$site.getImageDir()/mapicon/wpanW.jpg" width="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="$site.getImageDir()/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
                         </td>
                         <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
                             <div id="mapcontent" style="overflow: hidden; width: $coordHelper.getImgWidth()px; height: $coordHelper.getImgHeigth()px;">
@@ -342,33 +342,33 @@
                                 #if ($company.getField('xcoord') && $company.getField('ycoord'))
                                 		#set($tmp = $coordHelper.getMapCenterPxY())
                                 		#set($centerY = $math.add($tmp, 66))
-                                     <img name="map" src="../images/mapicon/loading_wide.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
-                                     <img src="../images/mapicon/bubble.gif" border="0" id="icon_$company.getField('recordid')" width="$coordHelper.getIconPxSizeWidth()"
+                                     <img name="map" src="$site.getImageDir()/mapicon/loading_wide.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
+                                     <img src="$site.getImageDir()/mapicon/bubble.gif" border="0" id="icon_$company.getField('recordid')" width="$coordHelper.getIconPxSizeWidth()"
                                         height="$coordHelper.getIconPxSizeHeigth()" alt="$company.getField('ypnavn2')"
                                         style="position: relative; float: left; top: -${centerY}px; left: $coordHelper.getMapCenterPxX()px; z-index: 100;"/>
                                 #else
-                                     <img name="map" src="../images/mapicon/nomap_new.jpg" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
+                                     <img name="map" src="$site.getImageDir()/mapicon/nomap_new.jpg" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt=""/>
                                 #end
                                 </div>
                             </div>
                         </td>
                         <td width="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
-                            <a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/wpanE.jpg" width="11" alt="panorer"/></a><br/>
-                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="$site.getImageDir()/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                            <a href="javascript:if(checkCoord()){ pan('e');}"><img src="$site.getImageDir()/mapicon/wpanE.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="$site.getImageDir()/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
                         </td>
                     </tr>
                     <tr>
                         <td width="11" height="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="$site.getImageDir()/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a>
                         	</td>
                         <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
-                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
-                        		<a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/wpanS.jpg" height="11" alt="panorer"/></a>
-                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="$site.getImageDir()/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('s');}"><img src="$site.getImageDir()/mapicon/wpanS.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="$site.getImageDir()/mapicon/pan-padding-horizontal.jpg" height="11" width="82" alt="panorer"/></a>
                         	</td>
                         <td width="11" height="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="$site.getImageDir()/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a>
                         	</td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
@@ -376,20 +376,20 @@
                     </tr>
                     <tr bgcolor="#FFFFFF">
                         <td colspan="3" align="center" valign="middle" class="printhide">
-                            <a href="javascript:if(checkCoord()){ zoomout('uselevel');}"><img src="../images/mapicon/zoom_ut_knapp.jpg" height="22" width="64" alt="Zoom ut"/></a>
+                            <a href="javascript:if(checkCoord()){ zoomout('uselevel');}"><img src="$site.getImageDir()/mapicon/zoom_ut_knapp.jpg" height="22" width="64" alt="Zoom ut"/></a>
                             &nbsp;
                             <script type="text/javascript" language="JavaScript">
                                 if (hasCoords)
-                                    document.writeln('<img src="../images/pix.gif" name="zoombar" height="21" width="169" alt="Zoom bar" usemap="#zoombarmap" border="0"/>');
+                                    document.writeln('<img src="$site.getImageDir()/pix.gif" name="zoombar" height="21" width="169" alt="Zoom bar" usemap="#zoombarmap" border="0"/>');
                                 else
-                                    document.writeln('<img src="../images/mapicon/map_nav.jpg" name="zoombar" height="21" width="169" alt="Zoom bar" border="0"/>');
+                                    document.writeln('<img src="$site.getImageDir()/mapicon/map_nav.jpg" name="zoombar" height="21" width="169" alt="Zoom bar" border="0"/>');
                             </script>
                             &nbsp;
-                            <a href="javascript:if(checkCoord()){ zoomin('uselevel');}"><img src="../images/mapicon/zoom_inn_knapp.jpg" height="22" width="68" alt="Zoom inn"/></a>
+                            <a href="javascript:if(checkCoord()){ zoomin('uselevel');}"><img src="$site.getImageDir()/mapicon/zoom_inn_knapp.jpg" height="22" width="68" alt="Zoom inn"/></a>
                         </td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
-                        <td colspan="3" height="5" style="color: #939393;" align="center" class="printhide">Land <img alt="" src="../images/pix.gif" width="28" height="1" /> Kommune <img alt="" src="../images/pix.gif" width="28" height="1" /> Gate</td>
+                        <td colspan="3" height="5" style="color: #939393;" align="center" class="printhide">Land <img alt="" src="$site.getImageDir()/pix.gif" width="28" height="1" /> Kommune <img alt="" src="$site.getImageDir()/pix.gif" width="28" height="1" /> Gate</td>
                     </tr>
                 </table>
              </div>

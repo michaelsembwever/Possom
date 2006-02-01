@@ -118,6 +118,7 @@ public class VelocityResultHandler implements ResultHandler {
         context.put("hashGenerator", request.getAttribute("hashGenerator"));
         context.put("runningQuery", result.getSearchCommand().getQuery());        
         context.put("math", new MathTool());
+        context.put("site", cxt.getSite());
         
         SearchConfiguration config = result.getSearchCommand().getSearchConfiguration();
 

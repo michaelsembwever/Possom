@@ -1,6 +1,6 @@
 <%@ page
         language="java"
-        pageEncoding="ISO-8859-1"
+        pageEncoding="UTF-8"
         contentType="text/html;charset=utf-8"
         %>
 
@@ -13,6 +13,7 @@
 <%@ page import="java.util.Iterator"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
+<%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
@@ -21,6 +22,7 @@
 <%
     MessageResources text = (MessageResources) request.getAttribute("text");
     Locale locale = (Locale) request.getAttribute("locale");
+    final Site site = (Site) request.getAttribute("site");
     // TODO: refactor to use Bean and SearchConstants.
     String currentC = "d";    //default collection
     currentC = (String) request.getAttribute("c");
@@ -74,8 +76,8 @@
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
-    <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="<%= site.getCssDir() %>/decorator-style.css" rel="stylesheet" type="text/css" />
+    <link media="print" href="<%= site.getCssDir() %>/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -115,12 +117,12 @@ function setfocus() {
 
 <body onload="setfocus();<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
 
-<div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
+<div id="globalmenu_table"><img src="<%= site.getImageDir() %>/pix.gif" width="1" height="6" alt="" /></div>
 
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
     <tr>
-        <td width="180"><a href="../"><img src="../images/logo.jpg" width="146" height="44" alt="" /></a></td>
-        <td width="24"><img src="../images/pix.gif" width="24" height="60" alt="" /></td>
+        <td width="180"><a href="../"><img src="<%= site.getImageDir() %>/logo.jpg" width="146" height="44" alt="" /></a></td>
+        <td width="24"><img src="<%= site.getImageDir() %>/pix.gif" width="24" height="60" alt="" /></td>
         <td valign="bottom">
             <div id="linkback">
                 <a href="?c=d&amp;q=<%=qURLEncoded%>" <%if (currentC.equals("d")) {%>class="highlite"<%}%> onclick="return strep(this);">Sesams&#248;k</a>
@@ -146,36 +148,36 @@ function setfocus() {
                         <td colspan="2" class="navbar_menu" id="navbar_menu_y">Bedriftss&#248;k</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" /></td>
+                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" /></td>
                     </tr>
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=<%=qURLEncoded%>";'>
                         <td class="nav_pad_icon">
-                            <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
+                            <img src="<%= site.getImageDir() %>/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
                             <a href="?c=d&amp;q=<%=qURLEncoded%>">Sesams&#248;k</a>
                         </td>
                         <td class="nav_pad" align="right">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                     <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                     Modifier e = (Modifier) iterator.next();
                     %>
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
                             <td class="nav_pad_icon">
-                                <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                <img <% if (e.getName().equals("BedriftssÃ¸k")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("PersonsÃ¸k")) { %> src="<%= site.getImageDir() %>/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                            <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                         </tr>
                     <%}%>
                     <% if(int_w_hits > 0) { %>
                     <% }else{ %>
                     <tr>
-                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="../images/pix.gif" width="100%" height="25" alt="" /></td>
+                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="25" alt="" /></td>
                     </tr>
                     <%}%>
                 </table>
@@ -192,36 +194,36 @@ function setfocus() {
                         <td colspan="2" class="navbar_menu" id="navbar_menu_w">Persons&#248;k</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" alt="" /></td>
                     </tr>
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=d&amp;q=<%=qURLEncoded%>";'>
                         <td class="nav_pad_icon">
-                            <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
+                            <img src="<%= site.getImageDir() %>/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
                             <a href="?c=d&amp;q=<%=qURLEncoded%>">Sesams&#248;k</a>
                         </td>
                         <td class="nav_pad" align="right">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                     Modifier e = (Modifier) iterator.next();
                     %>
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
                         <td class="nav_pad_icon">
-                            <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
+                            <img <% if (e.getName().equals("BedriftssÃ¸k")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("PersonsÃ¸k")) { %> src="<%= site.getImageDir() %>/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
                             <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                         </td>
                         <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                     <%}%>
                     <% if(int_y_hits > 0) { %>
                     <% }else{ %>
                     <tr>
-                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="../images/pix.gif" width="100%" height="25" alt="" /></td>
+                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="25" alt="" /></td>
                     </tr>
                     <%}%>
                 </table>
@@ -244,7 +246,7 @@ function setfocus() {
                             <td colspan="2" class="navbar_menu" id="navbar_menu_d">Sesams&#248;k</td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
+                            <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" alt="" /></td>
                         </tr>
                         <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                         Modifier e = (Modifier) iterator.next();
@@ -252,13 +254,13 @@ function setfocus() {
                         %>
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>";'>
                             <td class="nav_pad_icon">
-                                <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } else if (e.getName().equals("Bildesøk")) { %> src="../images/nav_p.gif" <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/nav_m.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                <img <% if (e.getName().equals("BedriftssÃ¸k")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("PersonsÃ¸k")) { %> src="../images/nav_w.gif" <% } else if (e.getName().equals("BildesÃ¸k")) { %> src="../images/nav_p.gif" <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/nav_m.gif" <% } %> class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                            <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                         </tr>
                         <%}%>
                 </table>
@@ -273,7 +275,7 @@ function setfocus() {
             <%}%>
         </td>
 
-            <td class="cell_two" valign="top"><img src="../images/pix.gif" width="24" height="1" alt="" class="dash_<%=currentC%>" /></td>
+            <td class="cell_two" valign="top"><img src="<%= site.getImageDir() %>/pix.gif" width="24" height="1" alt="" class="dash_<%=currentC%>" /></td>
             <%if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")) {%>
             <td class="cell_three" valign="top">
             <% }else{ %>
@@ -476,7 +478,7 @@ function setfocus() {
 <decorator:getProperty property="page.map-script"/>
 
 <!-- start Gallup -->
-<script type='text/javascript' language='JavaScript' src='../javascript/tmv11.js'></script>
+<script type='text/javascript' language='JavaScript' src='<%= site.getJsDir() %>/tmv11.js'></script>
 <script type="text/javascript" language="JavaScript">
 <!--
 var tmsec = new Array(2);

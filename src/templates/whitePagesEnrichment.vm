@@ -23,7 +23,7 @@
             <tr>
                 <td valign="top" class="img">
                 #if ($result.results.size() == 1) #foreach( $item in $result.results ) <a href="?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))"> #end #else <a href="?c=w&amp;q=$query"> #end
-                    <img src="../images/enrichment/wp.jpg" alt="Personer" /></a>
+                    <img src="$site.getImageDir()/enrichment/wp.jpg" alt="Personer" /></a>
                 </td>
                 <td width="500" class="enrich_text">
                     <table class="testtable" cellspacing="0">

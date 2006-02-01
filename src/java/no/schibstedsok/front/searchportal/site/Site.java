@@ -48,10 +48,20 @@ public final class Site {
      * Holds value of property siteName.
      */
     private final String siteName;
+    /**
+     * Holds value of property cxtName.
+     */
+    private final String cxtName;
 
     /** Creates a new instance of Site. */
     private Site(final String siteName) {
-        this.siteName = siteName;
+        // siteName must finish with a '\'
+        this.siteName = siteName.endsWith("/")
+            ? siteName
+            : siteName + '/';
+        this.cxtName = siteName.indexOf(':') >= 0
+            ? siteName.substring(0, siteName.indexOf(':')) + "/" // don't include the port in the cxtName.
+            : siteName;
         INSTANCES.put(siteName, this);
     }
 
@@ -59,10 +69,34 @@ public final class Site {
 
     /**
      * Getter for property siteName.
+     * Guaranteed to have "www." prefix stripped.
+     * Guaranteed to finish with '/'.
      * @return Value of property siteName.
      */
-    public String getSiteName() {
+    public String getName() {
         return siteName;
+    }
+    
+    /**
+     * Getter for property siteName.
+     * Same as name but without port specification.
+     * Guaranteed to finish with '/'.
+     * @return Value of property siteName.
+     */
+    public String getConfigContext() {
+        return cxtName;
+    }
+    
+    public String getCssDir(){
+        return "http://" + siteName + cxtName + "css";
+    }
+    
+    public String getJsDir(){
+        return "http://" + siteName + cxtName + "javascript";
+    }
+    
+    public String getImageDir(){
+        return "http://" + siteName + cxtName + "images";
     }
 
     /** Get the instance for the given siteName.

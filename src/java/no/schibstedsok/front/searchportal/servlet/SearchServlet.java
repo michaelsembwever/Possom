@@ -79,14 +79,7 @@ public final class SearchServlet extends HttpServlet {
             stopWatch.start();
         }
         
-        // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
-        // httpd.conf needs: "JkEnvVar SERVER_NAME" inside the virtual host directive. 
-        final String vhost = null != httpServletRequest.getAttribute("SERVER_NAME")
-            ? (String)httpServletRequest.getAttribute("SERVER_NAME")
-            // falls back to this when not behind Apache. (Development machine).
-            : httpServletRequest.getServerName()+":"+httpServletRequest.getServerPort(); 
-        
-        final Site site = Site.valueOf(vhost);
+        final Site site = getSite(httpServletRequest);
         
         if (tabs == null
                 || (httpServletRequest.getParameter("reload") != null
@@ -143,6 +136,7 @@ public final class SearchServlet extends HttpServlet {
 
         httpServletRequest.setAttribute("locale", query.getLocale());
         httpServletRequest.setAttribute("query", query);
+        httpServletRequest.setAttribute("site", site);
         httpServletRequest.setAttribute("text", TextMessages.getMessages());
 
         if (httpServletRequest.getParameter("offset") != null
@@ -171,5 +165,16 @@ public final class SearchServlet extends HttpServlet {
 
     private SearchTabs loadSearchTabs(final Site site) {
         return XMLSearchTabsCreator.valueOf(site).getSearchTabs();
+    }
+    
+    public static Site getSite(final HttpServletRequest httpServletRequest){
+        // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
+        // httpd.conf needs: "JkEnvVar SERVER_NAME" inside the virtual host directive. 
+        final String vhost = null != httpServletRequest.getAttribute("SERVER_NAME")
+            ? (String)httpServletRequest.getAttribute("SERVER_NAME")
+            // falls back to this when not behind Apache. (Development machine).
+            : httpServletRequest.getServerName()+":"+httpServletRequest.getServerPort(); 
+        
+        return Site.valueOf(vhost);
     }
 }

@@ -1,14 +1,16 @@
 <%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
 <%@ page import="no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator"%>
+<%@ page import="no.schibstedsok.front.searchportal.servlet.SearchServlet"%>
 <%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
 <%@ page
         language="java"
         errorPage="/internal-error.jsp"
         contentType="text/html; charset=utf-8"
-        pageEncoding="ISO-8859-1"
+        pageEncoding="UTF-8"
         %>
 <%
-    Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(Site.DEFAULT).getProperties());
+   final Site site = SearchServlet.getSite(request);
+   final Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(site).getProperties());
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -17,7 +19,7 @@
 <head>
     <title>Sesam</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="css/decorator-style.css" rel="stylesheet" type="text/css" />
+    <link href="<%= site.getCssDir() %>/decorator-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <script type="text/javascript" language="JavaScript">
@@ -51,7 +53,7 @@
 <body onload="document.forms[0].q.focus();">
 
 <div class="index_center">
-    <img src="images/index/logo.jpg" id="logo_index" alt="logo" />
+    <img src="<%= site.getImageDir() %>/index/logo.jpg" id="logo_index" alt="logo" />
     <div id="index_searchlinks">
         Sesams&#248;k
         <a href="<%=linkpulse.getUrl("?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske Nyheter&amp;userSortBy=datetime&amp;q=", "category:topmenuFront_m", "sgo", "true") %>" onclick="return strep(this);">Nyhetss&#248;k</a>
@@ -68,7 +70,7 @@
         <jsp:include page="indTextIncl.html" />
 
         <div id="footer_space">
-            <div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
+            <div class="lightdots"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" alt="" /></div>
             <div id="footer_help">
                 <span class="copy">&copy;2005</span> &nbsp;&nbsp;
                 <script type="text/javascript" language="JavaScript">
@@ -93,7 +95,7 @@
 </div>
 
 <!-- start Gallup -->
-<script type='text/javascript' language='JavaScript' src='javascript/tmv11.js'></script>
+<script type='text/javascript' language='JavaScript' src='<%= site.getJsDir() %>/tmv11.js'></script>
 <script type="text/javascript" language="JavaScript">
 <!--
 var tmsec = new Array(2);

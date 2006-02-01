@@ -33,33 +33,33 @@
 
     #if ($pager.numberOfResults > 0)
         <div  style="margin-top: 11px;">
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
             <div class="geo_header">Sted</div>
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
 
             #navigatorInit('geographic')
             #if ($request.getParameter("nav_geographic"))
                 <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators";'>
-                        <td class="nav_pad"><a href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators"><img src="../images/backArrow.gif" alt="" />$result.searchCommand.searchConfiguration.getNavigator("geographic").getDisplayName()</a></td>
+                        <td class="nav_pad"><a href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators"><img src="$site.getImageDir()/backArrow.gif" alt="" />$result.searchCommand.searchConfiguration.getNavigator("geographic").getDisplayName()</a></td>
                     </tr>
                 #foreach ($back in $result.searchCommand.getNavigatorBackLinks('geographic'))
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=w&amp;q=$query&nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators";'>
-                        <td class="nav_pad"><a href="?c=w&amp;q=$query&nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators"><img src="../images/backArrow.gif" alt="" />$result.searchCommand.getNavigatorTitle($back)</a></td>
+                        <td class="nav_pad"><a href="?c=w&amp;q=$query&nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators"><img src="$site.getImageDir()/backArrow.gif" alt="" />$result.searchCommand.getNavigatorTitle($back)</a></td>
                     </tr>
                 #end
                 </table>
             #end
 
             #if (!$result.searchCommand.getNavigatorTitle('geographic').equals("Fylker"))
-                <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+                <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
                 <div class="navbar_header2">
                     $!result.searchCommand.getNavigatorTitle('geographic')
                 </div>
-                <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+                <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
             #end
 
             <div>
@@ -76,7 +76,7 @@
                     <td class="nav_pad" align="right">$text.getMessage($locale, "numberFormat", $category.count)</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                    <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                 </tr>
                 #end
             </table>
@@ -87,24 +87,24 @@
 
         #navigatorInit('lastName')
          <div style="margin-top: 20px;">
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
             <div class="geo_header">Etternavn</div>
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
 
             #if ($request.getParameter("nav_lastName"))
                 <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators";'>
-                        <td class="nav_pad"><a href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators"><img src="../images/backArrow.gif" alt="" />$result.searchCommand.searchConfiguration.getNavigator("lastName").getDisplayName()</a></td>
+                        <td class="nav_pad"><a href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators"><img src="$site.getImageDir()/backArrow.gif" alt="" />$result.searchCommand.searchConfiguration.getNavigator("lastName").getDisplayName()</a></td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                 #foreach ($back in $result.searchCommand.getNavigatorBackLinks('lastName'))
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=w&amp;q=$query&amp;nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators";'>
-                        <td class="nav_pad"><a href="?c=w&amp;q=$query&amp;nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators"><img src="../images/backArrow.gif" alt="" />$result.searchCommand.getNavigatorTitle($back)</a></td>>
+                        <td class="nav_pad"><a href="?c=w&amp;q=$query&amp;nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators"><img src="$site.getImageDir()/backArrow.gif" alt="" />$result.searchCommand.getNavigatorTitle($back)</a></td>>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                 #end
                 </table>
@@ -124,7 +124,7 @@
                         <td class="nav_pad" align="right">$text.getMessage($locale, "numberFormat", $category.count)</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                 #end
             </table>
@@ -136,24 +136,24 @@
 
         #navigatorInit('firstName')
         <div style="margin-top: 20px;">
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
             <div class="geo_header">Fornavn</div>
-            <img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
+            <img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /><br/>
 
             #if ($request.getParameter("nav_firstName"))
                 <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators";'>
-                        <td class="nav_pad"><a href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators"><img src="../images/backArrow.gif" alt="" />$result.searchCommand.searchConfiguration.getNavigator("firstName").getDisplayName()</a></td>
+                        <td class="nav_pad"><a href="?c=w&amp;q=$query$!previousNavigationParameters&$!otherNavigators"><img src="$site.getImageDir()/backArrow.gif" alt="" />$result.searchCommand.searchConfiguration.getNavigator("firstName").getDisplayName()</a></td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                 #foreach ($back in $result.searchCommand.getNavigatorBackLinks('firstName'))
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='location.href="?c=w&amp;q=$query&amp;nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators";'>
-                        <td class="nav_pad"><a href="?c=w&amp;q=$query&amp;nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators"><img src="../images/backArrow.gif" alt="" />$result.searchCommand.getNavigatorTitle($back)</a></td>>
+                        <td class="nav_pad"><a href="?c=w&amp;q=$query&amp;nav_geographic=$back.getName()$!previousNavigationParameters$!otherNavigators"><img src="$site.getImageDir()/backArrow.gif" alt="" />$result.searchCommand.getNavigatorTitle($back)</a></td>>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                 #end
                 </table>
@@ -173,7 +173,7 @@
                         <td class="nav_pad" align="right">$text.getMessage($locale, "numberFormat", $category.count)</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="$site.getImageDir()/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                 #end
             </table>
@@ -192,9 +192,9 @@
 
 <content tag="persons-results">
 
-    <script type='text/javascript' language='JavaScript' src='../javascript/map.js'></script>
-    <script type='text/javascript' language='JavaScript' src='../javascript/mapicon.js'></script>
-    <script type='text/javascript' language='JavaScript' src='../javascript/layers.js'></script>
+    <script type='text/javascript' language='JavaScript' src='$site.getJsDir()/map.js'></script>
+    <script type='text/javascript' language='JavaScript' src='$site.getJsDir()/mapicon.js'></script>
+    <script type='text/javascript' language='JavaScript' src='$site.getJsDir()/layers.js'></script>
 
     <script type="text/javascript" language="JavaScript">
          var imgWidth;
@@ -355,7 +355,7 @@
                             #if($mappoint.x == $coordHelper.getDefaultNoCoord()) ## dersom det ikke finnes koordinater for bedriften vises ikke bokstaver
                                 <span style="margin-right: 8px;">#</span>
                             #else
-                                <span class="alphabet" style="float: left;"><img src="../images/mapicon/white_map/${alphaCount}.gif" alt="tall boble"/></span>
+                                <span class="alphabet" style="float: left;"><img src="$site.getImageDir()/mapicon/white_map/${alphaCount}.gif" alt="tall boble"/></span>
                             #end
                             <div style="padding-left: 28px;">
                                 <b>$!item.getField('wpfornavn')#if ($item.getField('wpmellomnavn')) $item.getField('wpmellomnavn')#end $!item.getField('wpetternavn')</b>
@@ -379,7 +379,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="line"><img src="../images/pix.gif" width="1" height="1" alt="" /></td>
+                        <td colspan="2" class="line"><img src="$site.getImageDir()/pix.gif" width="1" height="1" alt="" /></td>
                     </tr>
                     #end
                     #if ($comment.equals("true"))
@@ -395,62 +395,62 @@
                 <table bgcolor="#F3F3F3" border="0" cellspacing="0" cellpadding="0" width="385">
                     <tr>
                         <td width="11" height="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="$site.getImageDir()/mapicon/panNW.jpg" width="11" height="11" alt="panorer"/></a>
                         	</td>
                         <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
-                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
-                        		<a href="javascript:if(checkCoord()){ pan('n');}"><img src="../images/mapicon/panN.jpg" height="11" alt="panorer" /></a>
-                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="$site.getImageDir()/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('n');}"><img src="$site.getImageDir()/mapicon/panN.jpg" height="11" alt="panorer" /></a>
+                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="$site.getImageDir()/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
                         	</td>
                         <td width="11" height="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/panNE.jpg" width="11" height="11" alt="panorer" /></a>
+                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="$site.getImageDir()/mapicon/panNE.jpg" width="11" height="11" alt="panorer" /></a>
                         	</td>
                     </tr>
                     <tr>
                         <td width="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
-                        		<a href="javascript:javascript:if(checkCoord()){pan('w');}"><img src="../images/mapicon/panW.jpg" width="11" alt="panorer" /></a><br/>
-                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('nw');}"><img src="$site.getImageDir()/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:javascript:if(checkCoord()){pan('w');}"><img src="$site.getImageDir()/mapicon/panW.jpg" width="11" alt="panorer" /></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="$site.getImageDir()/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
                         	</td>
                         <td width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" valign="top">
                             <div id="mapcontent" style="POSITION: absolute; OVERFLOW: hidden; WIDTH: $coordHelper.getImgWidth()px; HEIGTH: $coordHelper.getImgHeigth()px;">
                                 #if($hasCoords)
-                                <img name="map" src="../images/mapicon/loading.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="" style="z-index: 1"/>
+                                <img name="map" src="$site.getImageDir()/mapicon/loading.gif" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="" style="z-index: 1"/>
                                     #set ($alphaCount = 0)
                                     #foreach ($item in $result.results)
                                         #set ($index = $velocityCount - 1)
                                         #set ($zindex = 100 - $velocityCount)
                                         #set ($mappoint = $mappoints.get($index))
                                         #if($mappoint.x == $coordHelper.getDefaultNoCoord()) ## dersom det ikke finnes koordinater for bedriften vises ikke bilde
-                                            <img src="../images/mapicon/bubble.gif" border="0" id="icon_$item.getField('recordid')" onmouseover="return setImage('info', 'highlite', this.id);" onmouseout="return setImage('info', 'normal', this.id);" alt="$!item.getField('wpfornavn') $!item.getField('wpetternavn')" onclick="location.href='?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))'" style="POSITION: absolute;TOP: 0px;LEFT: 0px; Z-INDEX: 100; CURSOR: pointer; VISIBILITY: hidden"/>
+                                            <img src="$site.getImageDir()/mapicon/bubble.gif" border="0" id="icon_$item.getField('recordid')" onmouseover="return setImage('info', 'highlite', this.id);" onmouseout="return setImage('info', 'normal', this.id);" alt="$!item.getField('wpfornavn') $!item.getField('wpetternavn')" onclick="location.href='?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))'" style="POSITION: absolute;TOP: 0px;LEFT: 0px; Z-INDEX: 100; CURSOR: pointer; VISIBILITY: hidden"/>
                                         #else
                                         #set ($alphaCount = $alphaCount+1)
                                         #set ($bubbleid = "icon_$item.getField('recordid')")
-                                            <img src="../images/mapicon/white_map/${alphaCount}.gif" border="0" id="$bubbleid" alt="$!item.getField('wpfornavn') $!item.getField('wpetternavn')" onmouseover="javascript:boble('$alphas.get($alphaCount)','$bubbleid');document.getElementById('row_$alphas.get($alphaCount)').style.background='#F3F3F3';" onmouseout="javascript:bobleAv('$alphas.get($alphaCount)');document.getElementById('row_$alphas.get($alphaCount)').style.background='#FFFFFF';" onclick="location.href='?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))'" style="position: absolute; top: $mappoint.getPxY()px; left: $mappoint.getPxX()px; z-index: $zindex; cursor: pointer; visibility: visible"/>
+                                            <img src="$site.getImageDir()/mapicon/white_map/${alphaCount}.gif" border="0" id="$bubbleid" alt="$!item.getField('wpfornavn') $!item.getField('wpetternavn')" onmouseover="javascript:boble('$alphas.get($alphaCount)','$bubbleid');document.getElementById('row_$alphas.get($alphaCount)').style.background='#F3F3F3';" onmouseout="javascript:bobleAv('$alphas.get($alphaCount)');document.getElementById('row_$alphas.get($alphaCount)').style.background='#FFFFFF';" onclick="location.href='?c=wip&amp;q=$query&amp;personId=$item.getField('recordid')&amp;personId_x=$hashGenerator.generateMD5($item.getField('recordid'))'" style="position: absolute; top: $mappoint.getPxY()px; left: $mappoint.getPxX()px; z-index: $zindex; cursor: pointer; visibility: visible"/>
                                         #end
                                     #end
                                 #else
-                                <img name="map" src="../images/mapicon/nomap_new.jpg" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart" />
+                                <img name="map" src="$site.getImageDir()/mapicon/nomap_new.jpg" width="$coordHelper.getImgWidth()px" height="$coordHelper.getImgHeigth()px" border="0" alt="kart" />
                                 #end
                             </div>
                         </td>
                         <td width="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
-                        		<a href="javascript:if(checkCoord()){ pan('e');}"><img src="../images/mapicon/panE.jpg" width="11" alt="panorer"/></a><br/>
-                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('ne');}"><img src="$site.getImageDir()/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('e');}"><img src="$site.getImageDir()/mapicon/panE.jpg" width="11" alt="panorer"/></a><br/>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="$site.getImageDir()/mapicon/pan-padding-vertical.jpg" width="11" alt="panorer"/></a>
                         	</td>
                     </tr>
                     <tr>
                         <td width="11" height="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="$site.getImageDir()/mapicon/panSW.jpg" width="11" height="11" alt="panorer"/></a>
                         	</td>
                         <td align="center" height="11" class="printhide" width="$coordHelper.getImgWidth()px">
-                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
-                        		<a href="javascript:if(checkCoord()){ pan('s');}"><img src="../images/mapicon/panS.jpg" height="11" alt="panorer"/></a>
-                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('sw');}"><img src="$site.getImageDir()/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('s');}"><img src="$site.getImageDir()/mapicon/panS.jpg" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="$site.getImageDir()/mapicon/pan-padding-horizontal.jpg" height="11" alt="panorer"/></a>
                         	</td>
                         <td width="11" height="11" class="printhide">
-                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="../images/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a>
+                        		<a href="javascript:if(checkCoord()){ pan('se');}"><img src="$site.getImageDir()/mapicon/panSE.jpg" width="11" height="11" alt="panorer"/></a>
                         	</td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
@@ -458,20 +458,20 @@
                     </tr>
                     <tr bgcolor="#FFFFFF">
                         <td colspan="3" align="center" valign="center" class="printhide">
-                            <a href="javascript:if(checkCoord()){ zoomout('uselevel');}"><img src="../images/mapicon/zoom_ut_knapp.jpg" height="22" width="64" alt="Zoom ut"/></a>
+                            <a href="javascript:if(checkCoord()){ zoomout('uselevel');}"><img src="$site.getImageDir()/mapicon/zoom_ut_knapp.jpg" height="22" width="64" alt="Zoom ut"/></a>
                             &nbsp;
                             <script type="text/javascript" language="JavaScript">
                             if (hasCoords)
-                                document.writeln('<img src="../images/pix.gif" name="zoombar" height="21" width="169" alt="Zoom bar" usemap="#zoombarmap" border="0"/>');
+                                document.writeln('<img src="$site.getImageDir()/pix.gif" name="zoombar" height="21" width="169" alt="Zoom bar" usemap="#zoombarmap" border="0"/>');
                             else
-                                document.writeln('<img src="../images/mapicon/map_nav.jpg" name="zoombar" height="21" width="169" alt="Zoom bar" border="0"/>');
+                                document.writeln('<img src="$site.getImageDir()/mapicon/map_nav.jpg" name="zoombar" height="21" width="169" alt="Zoom bar" border="0"/>');
                             </script>
                             &nbsp;
-                            <a href="javascript:if(checkCoord()){ zoomin('uselevel');}"><img src="../images/mapicon/zoom_inn_knapp.jpg" height="22" width="68" alt="Zoom inn"/></a>
+                            <a href="javascript:if(checkCoord()){ zoomin('uselevel');}"><img src="$site.getImageDir()/mapicon/zoom_inn_knapp.jpg" height="22" width="68" alt="Zoom inn"/></a>
                         </td>
                     </tr>
                     <tr bgcolor="#FFFFFF">
-                        <td colspan="3" height="5" style="color: #939393;" align="center" class="printhide">Land <img src="../images/pix.gif" width="28" height="1" /> Kommune <img src="../images/pix.gif" width="28" height="1" /> Gate</td>
+                        <td colspan="3" height="5" style="color: #939393;" align="center" class="printhide">Land <img src="$site.getImageDir()/pix.gif" width="28" height="1" /> Kommune <img src="$site.getImageDir()/pix.gif" width="28" height="1" /> Gate</td>
                     </tr>
                 </table>
             </div>
