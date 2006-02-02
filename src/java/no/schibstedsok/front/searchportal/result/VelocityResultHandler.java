@@ -4,10 +4,10 @@ package no.schibstedsok.front.searchportal.result;
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,12 +49,12 @@ public class VelocityResultHandler implements ResultHandler {
         if (xmlParam != null && xmlParam[0].equals("yes")) {
             return;
         }
-        
-        if(log.isDebugEnabled()){
-            log.debug("ENTR: handleResult()");
+
+        if (log.isTraceEnabled()) {
+            log.trace("ENTR: handleResult()");
         }
         final SearchResult result = cxt.getSearchResult();
-        
+
         // This requirement of the users of this class to send the web stuff
         // as parameters is a bit too implicit...
 
@@ -70,7 +70,13 @@ public class VelocityResultHandler implements ResultHandler {
             if (log.isDebugEnabled()) {
                 log.debug("handleResult: Looking for template: " + searchConfiguration + searchConfiguration.getName() + ".vm");
             }
-            Template template = Velocity.getTemplate(searchConfiguration.getName() + ".vm");
+
+            final Site site = cxt.getSite();
+            final String templateUrl = "http://" + site.getName() + site.getConfigContext()
+                + "templates/" + searchConfiguration.getName() + ".vm";
+
+            Template template = Velocity.getTemplate(templateUrl);
+
             if (log.isDebugEnabled()) {
                 log.debug("handleResult: Created Template=" + template.getName());
             }
@@ -88,8 +94,8 @@ public class VelocityResultHandler implements ResultHandler {
                                            final HttpServletRequest request,
                                            final HttpServletResponse response) {
 
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: populateVelocityContext()");
+        if (log.isTraceEnabled()) {
+            log.trace("ENTR: populateVelocityContext()");
         }
         final SearchResult result = cxt.getSearchResult();
         String queryString = result.getSearchCommand().getQuery().getQueryString();
@@ -116,10 +122,10 @@ public class VelocityResultHandler implements ResultHandler {
         context.put("coordHelper", new CoordHelper());
         context.put("contextPath", request.getContextPath());
         context.put("hashGenerator", request.getAttribute("hashGenerator"));
-        context.put("runningQuery", result.getSearchCommand().getQuery());        
+        context.put("runningQuery", result.getSearchCommand().getQuery());
         context.put("math", new MathTool());
         context.put("site", cxt.getSite());
-        
+
         SearchConfiguration config = result.getSearchCommand().getSearchConfiguration();
 
         if (config.isPagingEnabled()) {
@@ -137,19 +143,20 @@ public class VelocityResultHandler implements ResultHandler {
     }
 
     private static void initVelocity() {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: initVelocity()");
+        if (log.isTraceEnabled()) {
+            log.trace("ENTR: initVelocity()");
         }
         try {
 
             Category category = Category.getInstance(VELOCITY_LOG_CATEGORY);
             Velocity.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
             Velocity.setProperty("runtime.log.logsystem.log4j.category", category.getName());
-            Velocity.setProperty(Velocity.RESOURCE_LOADER, "class");
-            Velocity.setProperty("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-            Velocity.setProperty("class.resource.loader.cache", "true");
-            Velocity.setProperty("class.resource.loader.modificationCheckInterval", "-1");
+            Velocity.setProperty(Velocity.RESOURCE_LOADER, "url");
+            Velocity.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.result.handler.velocity.URLVelocityTemplateLoader");
+            Velocity.setProperty("url.resource.loader.cache", "false");
+            Velocity.setProperty("url.resource.loader.modificationCheckInterval", "0");
             Velocity.init();
+            
         } catch (Exception e) {
             throw new InfrastructureException(e);
         }

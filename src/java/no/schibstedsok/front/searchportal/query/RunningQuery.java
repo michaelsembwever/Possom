@@ -90,8 +90,8 @@ public class RunningQuery {
      */
     public RunningQuery(final Context cxt, final String query, final Map parameters) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: RunningQuery(): Params: " + parameters);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: RunningQuery(): Params: " + parameters);
         }
 
         context = cxt;
@@ -248,8 +248,8 @@ public class RunningQuery {
      * @return user tip
      */
     public String getGlobalSearchTips () {
-        if (LOG.isDebugEnabled())  {
-            LOG.debug("ENTR: getGlobalSearchTips()");
+        if (LOG.isTraceEnabled())  {
+            LOG.trace("ENTR: getGlobalSearchTips()");
         }
         if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
             return TextMessages.getMessages().getMessage(locale,
@@ -262,8 +262,8 @@ public class RunningQuery {
 
 
     public Integer getNumberOfHits(final String configName) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getNumberOfHits()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getNumberOfHits()");
         }
         Integer i = (Integer) hits.get(configName);
         if (i == null) { i = new Integer(0); }
@@ -276,8 +276,8 @@ public class RunningQuery {
      * @throws InterruptedException
      */
     public void run() throws InterruptedException {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: run()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: run()");
         }
         try {
 
@@ -394,8 +394,8 @@ public class RunningQuery {
     }
 
     private String getSingleParameter(final String paramName) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getSingleParameter()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getSingleParameter()");
         }
         String[] param = (String[]) parameters.get(paramName);
 
@@ -419,80 +419,80 @@ public class RunningQuery {
     }
 
     public int getNumberOfTerms() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getNumberOfTerms()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getNumberOfTerms()");
         }
         return QueryTokenizer.tokenize(queryStr).size();
     }
 
 
     public String getQueryString() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getQueryString()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getQueryString()");
         }
         return queryStr;
     }
 
     public int getOffset() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getOffset(): " + offset);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getOffset(): " + offset);
         }
         return offset;
     }
 
     public void setOffset(final int offset) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: setOffset():" + offset);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: setOffset():" + offset);
         }
         this.offset = offset;
     }
 
     public Locale getLocale() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getLocale()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getLocale()");
         }
         return locale;
     }
 
     public SearchMode getSearchMode() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getSearchMode()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getSearchMode()");
         }
         return context.getSearchMode();
     }
 
     public List getSources() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getSources()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getSources()");
         }
         return sources;
     }
 
     public void addSource(final Modifier modifier) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: addSource()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: addSource()");
         }
         sources.add(modifier);
     }
 
     public List getEnrichments() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getEnrichments()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getEnrichments()");
         }
         return enrichments;
     }
 
     public TokenEvaluatorFactory getTokenEvaluatorFactory() {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getTokenEvaluatorFactory()");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getTokenEvaluatorFactory()");
         }
         return tokenEvaluatorFactory;
     }
 
     // Find some other way to do this. Really do!
     public String getSourceParameters(final String source) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getSourceParameters() Source=" + source);
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("ENTR: getSourceParameters() Source=" + source);
         }
 
         if (source.equals("Norske nettsider")) {

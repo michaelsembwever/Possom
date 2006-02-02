@@ -76,27 +76,55 @@ public final class Site {
     public String getName() {
         return siteName;
     }
-    
+
     /**
-     * Getter for property siteName.
+     * Getter for property cxtName.
      * Same as name but without port specification.
      * Guaranteed to finish with '/'.
-     * @return Value of property siteName.
+     * @return Value of property cxtName.
      */
     public String getConfigContext() {
         return cxtName;
     }
-    
-    public String getCssDir(){
+
+    /**
+     * Getter for property css directory.
+     * Absolute URL to directory css is found for this site.
+     * Guaranteed to finish with '/'.
+     * @return Value of property css directory.
+     */
+    public String getCssDir() {
         return "http://" + siteName + cxtName + "css";
     }
-    
-    public String getJsDir(){
+
+    /**
+     * Getter for property javascript directory.
+     * Absolute URL to directory javascript is found for this site.
+     * Guaranteed to finish with '/'.
+     * @return Value of property javascript directory.
+     */
+    public String getJsDir() {
         return "http://" + siteName + cxtName + "javascript";
     }
-    
-    public String getImageDir(){
+
+    /**
+     * Getter for property image directory.
+     * Absolute URL to directory image is found for this site.
+     * Guaranteed to finish with '/'.
+     * @return Value of property image directory.
+     */
+    public String getImageDir() {
         return "http://" + siteName + cxtName + "images";
+    }
+
+    /**
+     * Getter for property (velocity) template directory.
+     * Absolute URL to directory (velocity) template is found for this site.
+     * <b>Does not</b> finish with '/'. Reads nicer in templates #parse statements.
+     * @return Value of property (velocity) template directory.
+     */
+    public String getTemplateDir() {
+        return "http://" + siteName + cxtName + "templates";
     }
 
     /** Get the instance for the given siteName.
@@ -123,7 +151,7 @@ public final class Site {
     static {
         final Properties props = new Properties();
         try  {
-            props.load(Site.class.getResourceAsStream("/"+SearchConstants.CONFIGURATION_FILE));
+            props.load(Site.class.getResourceAsStream("/" + SearchConstants.CONFIGURATION_FILE));
         }  catch (IOException ex) {
             LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
         }
