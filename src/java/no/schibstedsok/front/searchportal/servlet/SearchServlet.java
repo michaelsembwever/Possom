@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.apache.log4j.NDC;
 
 /** The Central Controller to incoming queries.
  * Controls the SearchMode -> RunningQuery creation and handling.
@@ -81,6 +82,7 @@ public final class SearchServlet extends HttpServlet {
         }
         
         final Site site = getSite(httpServletRequest);
+        NDC.push(site.getName());
         
         if (tabs == null
                 || (httpServletRequest.getParameter("reload") != null
@@ -164,6 +166,9 @@ public final class SearchServlet extends HttpServlet {
         } catch (InterruptedException e) {
             LOG.error("Task timed out");
         }
+        
+        NDC.pop();
+        NDC.remove();
 
         if (LOG.isInfoEnabled()) {
             stopWatch.stop();
