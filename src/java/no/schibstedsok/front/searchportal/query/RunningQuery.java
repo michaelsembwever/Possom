@@ -252,8 +252,14 @@ public class RunningQuery {
             LOG.trace("ENTR: getGlobalSearchTips()");
         }
         if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
-            return TextMessages.getMessages().getMessage(locale,
-                    "searchtip.use+-");
+            return TextMessages.valueOf(new TextMessages.Context(){
+                public Site getSite(){
+                    return context.getSite();
+                }
+                public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props){
+                    return context.newPropertiesLoader(rsc, props);
+                }
+            }).getMessage("searchtip.use+-");
         } else {
             return null;
         }
@@ -298,6 +304,18 @@ public class RunningQuery {
                     public Site getSite(){
                         return context.getSite();
                     }
+                    
+                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                        return context.newPropertiesLoader(resource, properties);
+                    }
+
+                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                        return context.newXStreamLoader(resource, xstream);
+                    }
+
+                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                        return context.newDocumentLoader(resource, builder);
+                    }                    
 
                 };
 

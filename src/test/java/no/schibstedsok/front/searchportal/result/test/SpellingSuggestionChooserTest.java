@@ -1,5 +1,6 @@
 package no.schibstedsok.front.searchportal.result.test;
 
+import com.thoughtworks.xstream.XStream;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.result.ResultHandler;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -10,6 +11,12 @@ import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.FileResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
 
 
 /**
@@ -231,6 +238,18 @@ public class SpellingSuggestionChooserTest extends TestCase {
 
             public Site getSite() {
                 return Site.DEFAULT;
+            }
+            
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+            }
+
+            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+            }
+
+            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
         };

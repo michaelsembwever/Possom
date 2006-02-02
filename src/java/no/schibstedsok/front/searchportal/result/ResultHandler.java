@@ -1,6 +1,7 @@
 package no.schibstedsok.front.searchportal.result;
 
 import java.util.Map;
+import no.schibstedsok.front.searchportal.configuration.loaders.ResourceContext;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
 /*
@@ -14,7 +15,7 @@ public interface ResultHandler {
      * Slightly unusual in that the context never becomes a member field but is only used inside the 
      * handleResult method.
      */
-    public interface Context extends SiteContext{
+    public interface Context extends SiteContext, ResourceContext{
         SearchResult getSearchResult();
     }
     

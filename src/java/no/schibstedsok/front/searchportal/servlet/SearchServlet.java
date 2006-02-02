@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.servlet;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
@@ -137,7 +138,14 @@ public final class SearchServlet extends HttpServlet {
         httpServletRequest.setAttribute("locale", query.getLocale());
         httpServletRequest.setAttribute("query", query);
         httpServletRequest.setAttribute("site", site);
-        httpServletRequest.setAttribute("text", TextMessages.getMessages());
+        httpServletRequest.setAttribute("text", TextMessages.valueOf(new TextMessages.Context(){
+                public Site getSite(){
+                    return site;
+                }
+                public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props){
+                    return UrlResourceLoader.newPropertiesLoader(this, rsc, props);
+                }
+            }));
 
         if (httpServletRequest.getParameter("offset") != null
                 && !"".equals(httpServletRequest.getParameter("offset"))) {
@@ -175,6 +183,8 @@ public final class SearchServlet extends HttpServlet {
             // falls back to this when not behind Apache. (Development machine).
             : httpServletRequest.getServerName()+":"+httpServletRequest.getServerPort(); 
         
-        return Site.valueOf(vhost);
+        final Locale locale = httpServletRequest.getLocale();
+        
+        return Site.valueOf(vhost, locale);
     }
 }

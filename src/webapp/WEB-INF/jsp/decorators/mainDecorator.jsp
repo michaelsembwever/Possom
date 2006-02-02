@@ -4,14 +4,13 @@
         contentType="text/html;charset=utf-8"
         %>
 
-<%@ page import="org.apache.struts.util.MessageResources,
-                 no.schibstedsok.front.searchportal.query.RunningQuery,
-                 no.schibstedsok.front.searchportal.result.Modifier"%>
-<%@ page import="java.util.Locale"%>
+<%@ page import="no.schibstedsok.front.searchportal.i18n.TextMessages"%>
+<%@ page import="no.schibstedsok.front.searchportal.query.RunningQuery"%>
+<%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Iterator"%>
-<%@page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
 <%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
@@ -20,43 +19,32 @@
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 
 <%
-    MessageResources text = (MessageResources) request.getAttribute("text");
-    Locale locale = (Locale) request.getAttribute("locale");
+    final TextMessages text = (TextMessages) request.getAttribute("text");
     final Site site = (Site) request.getAttribute("site");
     // TODO: refactor to use Bean and SearchConstants.
     String currentC = "d";    //default collection
     currentC = (String) request.getAttribute("c");
     String searchType = request.getParameter("s");
     String q = (String) request.getAttribute("q");
-	String qURLEncoded = URLEncoder.encode(q, "utf-8");
-
-	q = StringEscapeUtils.escapeHtml(q);
-	
-	String help = request.getParameter("help");
-
+    String qURLEncoded = URLEncoder.encode(q, "utf-8");
+    q = StringEscapeUtils.escapeHtml(q);
+    String help = request.getParameter("help");
     String about = request.getParameter("about");
-
     String ads_help = request.getParameter("ads_help");
-
     String smart = request.getParameter("smart");
-
     List enrichments = (List) request.getAttribute("enrichments");
     int enrichmentSize = enrichments.size();
-
     Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
-
     RunningQuery query = (RunningQuery) request.getAttribute("query");
     List sources = query.getSources();
     Integer hits = (Integer) query.getNumberOfHits("defaultSearch");
     Integer hits_int = (Integer) query.getNumberOfHits("globalSearch");
     Integer hits_w_int = (Integer) query.getNumberOfHits("whiteYelloweSourceNavigator");
     Integer hits_y_int = (Integer) query.getNumberOfHits("whiteYelloweSourceNavigator");
-
     int no_hits = 0;
     int int_hits = 0;
     int int_w_hits = 0;
     int int_y_hits = 0;
-
     if (hits != null) {
         no_hits = hits.intValue();
     }
@@ -168,7 +156,7 @@ function setfocus() {
                                 <img <% if (e.getName().equals("Bedriftssøk")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="<%= site.getImageDir() %>/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
-                            <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
+                            <td class="nav_pad" align="right"><%=text.getMessage( "numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
                         <tr>
                             <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
@@ -214,7 +202,7 @@ function setfocus() {
                             <img <% if (e.getName().equals("Bedriftssøk")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="<%= site.getImageDir() %>/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
                             <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                         </td>
-                        <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
+                        <td class="nav_pad" align="right"><%=text.getMessage( "numberFormat", new Integer(e.getCount())) %></td>
                     </tr>
                     <tr>
                         <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
@@ -257,7 +245,7 @@ function setfocus() {
                                 <img <% if (e.getName().equals("Bedriftssøk")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } else if (e.getName().equals("Bildesøk")) { %> src="../images/nav_p.gif" <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/nav_m.gif" <% } %> class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
-                            <td class="nav_pad" align="right"><%=text.getMessage(locale, "numberFormat", new Integer(e.getCount())) %></td>
+                            <td class="nav_pad" align="right"><%=text.getMessage( "numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
                         <tr>
                             <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>

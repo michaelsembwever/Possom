@@ -1,10 +1,12 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result;
 
+import java.util.Properties;
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.site.Site;
@@ -116,8 +118,15 @@ public class VelocityResultHandler implements ResultHandler {
         context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
         context.put("command", result.getSearchCommand());
         context.put("queryHTMLEscaped", queryString);
-        context.put("locale", result.getSearchCommand().getQuery().getLocale());
-        context.put("text", TextMessages.getMessages());
+        context.put("locale", cxt.getSite().getLocale());
+        context.put("text", TextMessages.valueOf(new TextMessages.Context(){
+            public Site getSite(){
+                return cxt.getSite();
+            }
+            public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props){
+                return cxt.newPropertiesLoader(rsc, props);
+            }
+        }));
         context.put("currentTab", result.getSearchCommand().getQuery().getSearchMode());
         context.put("coordHelper", new CoordHelper());
         context.put("contextPath", request.getContextPath());

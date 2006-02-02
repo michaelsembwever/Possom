@@ -147,15 +147,6 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>struts</groupId>
-            <artifactId>struts</artifactId>
-            <version>1.2.7</version>
-            <type>jar</type>
-            <properties>
-                <war.bundle>true</war.bundle>
-            </properties>
-        </dependency>
-        <dependency>
             <groupId>velocity</groupId>
             <artifactId>velocity</artifactId>
             <version>1.4</version>

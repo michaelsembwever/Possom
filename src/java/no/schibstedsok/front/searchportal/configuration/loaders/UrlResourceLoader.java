@@ -118,12 +118,12 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         } catch (NullPointerException e) {
             final String err = "When Reading Configuration from " + getResource();
             LOG.error(err, e);
-            throw new InfrastructureException(err, e);
+            //throw new InfrastructureException(err, e);
 
         } catch (IOException e) {
             final String err = "When Reading Configuration from " + getResource();
             LOG.error(err, e);
-            throw new InfrastructureException(err, e);
+            //throw new InfrastructureException(err, e);
             
         } catch (SAXException e) {
             final String err = "When Reading Configuration from " + getResource();

@@ -3,10 +3,17 @@
  */
 package no.schibstedsok.front.searchportal.result;
 
+import com.thoughtworks.xstream.XStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.UrlResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 
 import org.apache.commons.logging.Log;
@@ -148,6 +155,18 @@ public class YellowSearchResult extends FastSearchResult {
 
                 public Site getSite() {
                     return Site.DEFAULT; // FIXME !!! Needs to work on a per SiteSearch basis.
+                }
+                
+                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                    return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                }
+
+                public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                    return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
+                }
+
+                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                    return UrlResourceLoader.newDocumentLoader(this, resource, builder);
                 }
                 
             };

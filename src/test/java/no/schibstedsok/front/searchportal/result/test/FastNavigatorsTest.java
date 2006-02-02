@@ -545,6 +545,18 @@ public final class FastNavigatorsTest extends TestCase {
             public Site getSite() {
                 return Site.DEFAULT;
             }
+            
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+            }
+
+            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+            }
+            
+            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                return FileResourceLoader.newDocumentLoader(this, resource, builder);
+            }            
 
         };
         

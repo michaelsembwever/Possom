@@ -1,6 +1,12 @@
 package no.schibstedsok.front.searchportal.command;
 
+import com.thoughtworks.xstream.XStream;
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.result.ResultHandler;
@@ -128,6 +134,19 @@ public abstract class AbstractSearchCommand implements SearchCommand {
                 public Site getSite() {
                     return context.getSite();
                 }
+                
+                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                    return context.newPropertiesLoader(resource, properties);
+                }
+
+                public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                    return context.newXStreamLoader(resource, xstream);
+                }
+
+                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                    return context.newDocumentLoader(resource, builder);
+                }
+
                 
             };
             resultHandler.handleResult(resultHandlerContext, parameters);

@@ -6,6 +6,7 @@ package no.schibstedsok.front.searchportal.command;
 
 import edu.emory.mathcs.backport.java.util.concurrent.Callable;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.loaders.ResourceContext;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
@@ -18,7 +19,7 @@ public interface SearchCommand extends Callable {
     /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it 
      * creates.
      */
-    public interface Context extends SiteContext{
+    public interface Context extends SiteContext, ResourceContext{
         SearchConfiguration getSearchConfiguration();
         RunningQuery getQuery();
     }
