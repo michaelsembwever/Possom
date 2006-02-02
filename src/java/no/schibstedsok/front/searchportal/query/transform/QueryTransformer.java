@@ -1,7 +1,7 @@
 package no.schibstedsok.front.searchportal.query.transform;
 
 import no.schibstedsok.front.searchportal.query.*;
-import no.schibstedsok.front.searchportal.query.parser.QueryStringContext;
+import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
 

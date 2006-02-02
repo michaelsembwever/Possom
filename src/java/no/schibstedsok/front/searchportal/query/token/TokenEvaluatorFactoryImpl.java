@@ -8,7 +8,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
-import no.schibstedsok.front.searchportal.query.parser.QueryStringContext;
+import no.schibstedsok.front.searchportal.query.QueryStringContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

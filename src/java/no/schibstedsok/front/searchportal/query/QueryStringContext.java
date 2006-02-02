@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package no.schibstedsok.front.searchportal.query.parser;
+package no.schibstedsok.front.searchportal.query;
 
 /**
  * @version $Id$
