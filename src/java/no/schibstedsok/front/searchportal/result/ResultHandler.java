@@ -1,7 +1,7 @@
 package no.schibstedsok.front.searchportal.result;
 
 import java.util.Map;
-import no.schibstedsok.front.searchportal.configuration.loaders.ResourceContext;
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
 /*

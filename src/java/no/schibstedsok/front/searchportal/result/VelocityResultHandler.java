@@ -6,7 +6,7 @@ import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.site.Site;

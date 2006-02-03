@@ -7,24 +7,23 @@ import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchTabs;
-import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.UrlResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.QueryFactory;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import org.apache.commons.lang.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 
 /** The Central Controller to incoming queries.
@@ -38,7 +37,7 @@ public final class SearchServlet extends HttpServlet {
     /** The serialVersionUID. */
     private static final long serialVersionUID = 3068140845772756438L;
 
-    private static final Log LOG = LogFactory.getLog(SearchServlet.class);
+    private static final Logger LOG = Logger.getLogger(SearchServlet.class);
 
     private SearchTabs tabs;
 

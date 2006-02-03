@@ -5,7 +5,7 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
-import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.net.URLEncoder;
 import java.util.Properties;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.UrlResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**

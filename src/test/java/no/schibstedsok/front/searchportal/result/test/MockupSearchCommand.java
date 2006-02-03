@@ -5,16 +5,16 @@ import com.thoughtworks.xstream.XStream;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 
 import java.util.HashMap;
 import java.util.Properties;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
-import no.schibstedsok.front.searchportal.configuration.loaders.FileResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /** Create a Mockup SearchCommand.

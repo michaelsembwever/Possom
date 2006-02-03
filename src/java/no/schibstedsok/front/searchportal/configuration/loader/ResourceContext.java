@@ -5,7 +5,7 @@
  *
  */
 
-package no.schibstedsok.front.searchportal.configuration.loaders;
+package no.schibstedsok.front.searchportal.configuration.loader;
 
 import com.thoughtworks.xstream.XStream;
 import java.util.Properties;

@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesContext;
-import no.schibstedsok.front.searchportal.configuration.loaders.UrlResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesContext;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;

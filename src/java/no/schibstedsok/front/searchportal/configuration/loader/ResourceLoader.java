@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package no.schibstedsok.front.searchportal.configuration.loaders;
+package no.schibstedsok.front.searchportal.configuration.loader;
 
 /**
  * @version $Id$

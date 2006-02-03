@@ -4,9 +4,9 @@ import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.result.ResultHandler;
@@ -14,12 +14,12 @@ import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.lang.time.StopWatch;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 import org.apache.log4j.NDC;
 
 /**
@@ -28,7 +28,7 @@ import org.apache.log4j.NDC;
  * @version <tt>$Revision$</tt>
  */
 public abstract class AbstractSearchCommand implements SearchCommand {
-    private static Log LOG = LogFactory.getLog(AbstractSearchCommand.class);
+    private static Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
 
     private final Context context;
     private String filter;

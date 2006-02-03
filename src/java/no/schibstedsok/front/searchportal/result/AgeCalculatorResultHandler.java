@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.site.Site;

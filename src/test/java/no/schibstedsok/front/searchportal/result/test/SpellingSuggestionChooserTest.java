@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.front.searchportal.configuration.loaders.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.FileResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loaders.XStreamLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 
 
 /**

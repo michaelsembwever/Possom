@@ -2,7 +2,7 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import java.util.Properties;
-import no.schibstedsok.front.searchportal.configuration.loaders.ResourceContext;
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
 /**
