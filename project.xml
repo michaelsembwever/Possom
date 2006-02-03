@@ -23,10 +23,7 @@
     <siteAddress>login.osl.basefarm.net</siteAddress>
     <siteDirectory>/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/admin/front/search-front-html</siteDirectory>
     <repository>
-      <!-- temporary until svn SSL problem is fixed on sch-dev01.dev -->
-        <connection>scm:svn:file:///www/schibstedsok/versys/subversion/search-front-html/trunk/</connection>
-
-        <!--connection>scm:svn:${svn.url}/search-front-html/trunk/</connection-->
+        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-front-html/trunk/</connection>
     </repository>
     <developers>
         <developer>
