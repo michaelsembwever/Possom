@@ -9,7 +9,9 @@
     <!-- Filter log4j paths -->
     <preGoal name="java:prepare-filesystem" >
         <ant:touch file="build.properties"/>
+        <ant:echo message="${line.separator}" file="build.properties" append="true"/>
         <ant:filter filtersfile="build.properties" />
+        <ant:filter filtersfile="project.properties"/>
         <ant:filter filtersfile="${target}.properties" />
     </preGoal>
 
@@ -54,19 +56,33 @@
     <postGoal name="test:test"><attainGoal name="restore-log4j-appenders-for-testing"/></postGoal>
     
     <goal name="alter-log4j-appenders-for-testing">
+        <ant:touch file="build.properties"/>
+        <ant:echo message="${line.separator}" file="build.properties" append="true"/>
+        <ant:loadproperties srcFile="build.properties" />
         <ant:loadproperties srcFile="project.properties"/>
         <ant:loadproperties srcFile="${target}.properties"/>
         <ant:propertyfile file="target/classes/log4j.properties"> <!-- NEVER edit the original log4j.properties like this -->
           <ant:entry key="log4j.appender.LOG_APPEND.File"   value="${log.directory}/${log.file}.test.log" />
           <ant:entry key="log4j.appender.ERROR_APPEND.File" value="${log.directory}/${log.file}.test.error" />
           <ant:entry key="log4j.appender.DUMP_APPEND.File"  value="${log.directory}/${log.file}.test.dump" />
+          <ant:entry key="log4j.appender.SALES_APPEND.File"  value="${log.directory}/${log.file}.test.sales" />
+          <ant:entry key="log4j.appender.MARKETING_APPEND.File"  value="${log.directory}/${log.file}.test.marketing" />
+          <ant:entry key="log4j.appender.PRODUCT_APPEND.File"  value="${log.directory}/${log.file}.test.product" />
         </ant:propertyfile>
     </goal>
     <goal name="restore-log4j-appenders-for-testing">
+        <ant:touch file="build.properties"/>
+        <ant:echo message="${line.separator}" file="build.properties" append="true"/>
+        <ant:loadproperties srcFile="build.properties" />
+        <ant:loadproperties srcFile="project.properties"/>
+        <ant:loadproperties srcFile="${target}.properties"/>
         <ant:propertyfile file="target/classes/log4j.properties"> <!-- NEVER edit the original log4j.properties like this -->
           <ant:entry key="log4j.appender.LOG_APPEND.File"   value="${log.directory}/${log.file}.log" />
           <ant:entry key="log4j.appender.ERROR_APPEND.File" value="${log.directory}/${log.file}.error" />
           <ant:entry key="log4j.appender.DUMP_APPEND.File"  value="${log.directory}/${log.file}.dump" />
+          <ant:entry key="log4j.appender.SALES_APPEND.File"  value="${log.directory}/${log.file}.sales" />
+          <ant:entry key="log4j.appender.MARKETING_APPEND.File"  value="${log.directory}/${log.file}.marketing" />
+          <ant:entry key="log4j.appender.PRODUCT_APPEND.File"  value="${log.directory}/${log.file}.product" />
         </ant:propertyfile>
     </goal>
     

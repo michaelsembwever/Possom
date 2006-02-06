@@ -36,6 +36,7 @@ public final class Site {
 
     /** Found from the configuration.properties resource found in this class's ClassLoader. **/
     private static final String DEFAULT_SITE_KEY = "site.default";
+    public static final String NAME_KEY = "site";
 
     /**
      * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
@@ -57,6 +58,12 @@ public final class Site {
      * Holds value of property _locale.
      */
     private Locale locale;
+    /**
+     * Holds value of property uniqueName.
+     */
+    private final String uniqueName;
+
+    
     
 
     /** Creates a new instance of Site. */
@@ -70,8 +77,9 @@ public final class Site {
             ? siteName.substring(0, siteName.indexOf(':')) + "/" // don't include the port in the cxtName.
             : siteName;
         this.locale = locale;
+        uniqueName = getUniqueName(siteName, locale);
         // register in global pool.
-        INSTANCES.put(getUniqueName(siteName,locale), this);
+        INSTANCES.put(uniqueName, this);
     }
 
 
@@ -148,21 +156,21 @@ public final class Site {
     /** {@inheritDoc}
      */
     public String toString(){
-        return getUniqueName(siteName,locale);
+        return uniqueName;
     }
     
     /** {@inheritDoc}
      */
     public boolean equals(Object obj) {
         return obj instanceof Site
-                ? getUniqueName(siteName,locale).equals(getUniqueName(((Site)obj).siteName,((Site)obj).locale))
+                ? uniqueName.equals( ((Site)obj).uniqueName )
                 : super.equals(obj);
     }
 
     /** {@inheritDoc}
      */
     public int hashCode() {
-        return getUniqueName(siteName,locale).hashCode();
+        return uniqueName.hashCode();
     }    
     
     /** Get the instance for the given siteName.

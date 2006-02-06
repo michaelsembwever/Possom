@@ -99,14 +99,13 @@ Clause clause() :
   Clause right;
 }
 {
-    
     LOOKAHEAD(2)
         (right = operation()) {return right;}
-    |
-    /** Hidden|Unspecified OrClauses **/
+    |    
     LOOKAHEAD(2)
         ((left = leaf())(right = clause()))
             {
+                /** Hidden OrClauses **/
                 return context.createOrClause(left,right) ;
             }
     |
@@ -196,30 +195,50 @@ Clause operation() :
 LeafClause leaf() :
 {
     Token field = null;
+    LeafClause fieldedLeaf = null;
 }
 {
-    ([LOOKAHEAD(2)
-        (field=<WORD>":")]<WORD>) 
-            { 
-                return context.createWordClause(
-                    token.image,
-                    field!=null ? field.image : null );
-            }
+
+    LOOKAHEAD(2)(field=<WORD>":")(fieldedLeaf = fieldedLeaf(field))
+        { 
+            return fieldedLeaf;
+        }
     | 
-    ([LOOKAHEAD(2)
-        (field=<WORD>":")]<INTEGER>) 
-            { 
-                return context.createIntegerClause(
-                    token.image,
-                    field!=null ? field.image : null );
-            }
+    <QUOTED_WORD>
+        { 
+            return context.createPhraseClause( token.image, null );
+        }
+    |
+    <INTEGER>
+        { 
+            return context.createIntegerClause( token.image, null );
+        }
     | 
-    ([LOOKAHEAD(2)
-        (field=<WORD>":")]<QUOTED_WORD>) 
-            { 
-                return context.createPhraseClause(
-                    token.image,
-                    field!=null ? field.image : null );
-            }
+    <WORD>
+        { 
+            return context.createWordClause( token.image, null );
+        }
+
+
+}
+
+LeafClause fieldedLeaf(final Token field) :
+{
+}
+{
+    <WORD>
+        { 
+            return context.createWordClause( token.image, field.image);
+        }
+    | 
+    <INTEGER>
+        { 
+            return context.createIntegerClause( token.image, field.image );
+        }
+    | 
+    <QUOTED_WORD>
+        { 
+            return context.createPhraseClause( token.image, field.image );
+        }
 
 }

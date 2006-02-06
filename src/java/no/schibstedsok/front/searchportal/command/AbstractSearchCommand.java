@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-import org.apache.log4j.NDC;
+import org.apache.log4j.MDC;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
@@ -70,7 +70,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      * @return
      */
     public Object call() {
-        NDC.push(context.getSite().getName());
+        MDC.put(Site.NAME_KEY, context.getSite().getName());
 
         if (getSearchConfiguration().getStatisticsName() != null) {
             LOG.info("STATISTICS: " + getSearchConfiguration().getStatisticsName());

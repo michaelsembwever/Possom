@@ -1,4 +1,16 @@
-<div><img src="images/pix.gif" width="100%" height="1" class="dots" alt="" /></div>
+<%@ page import="no.schibstedsok.front.searchportal.servlet.SearchServlet"%>
+<%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
+<%@ page
+        language="java"
+        errorPage="/internal-error.jsp"
+        contentType="text/html; charset=utf-8"
+        pageEncoding="UTF-8"
+        %>
+<%
+   final Site site = SearchServlet.getSite(request);
+%>
+
+<div><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></div>
 <div id="index_element">
     <div class="index_center">
     <form action="search/" onsubmit='return check();'>
@@ -15,4 +27,4 @@
     </form>
     </div>
 </div>
-<div><img src="images/pix.gif" width="100%" height="1" class="dots" alt="" /></div>
+<div><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></div>

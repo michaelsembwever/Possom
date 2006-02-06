@@ -9,6 +9,7 @@ import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.result.handler.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import org.apache.commons.logging.Log;
@@ -17,7 +18,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.Velocity;
+import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.generic.MathTool;
 
@@ -35,14 +36,9 @@ import java.net.URLEncoder;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class VelocityResultHandler implements ResultHandler {
+public final class VelocityResultHandler implements ResultHandler {
 
     private static Log log = LogFactory.getLog(VelocityResultHandler.class);
-    private static final String VELOCITY_LOG_CATEGORY = "org.apache.velocity";
-
-    static {
-        initVelocity();
-    }
 
     public void handleResult(final Context cxt, final Map parameters) {
 
@@ -60,32 +56,41 @@ public class VelocityResultHandler implements ResultHandler {
         // This requirement of the users of this class to send the web stuff
         // as parameters is a bit too implicit...
 
-        HttpServletRequest request = (HttpServletRequest) parameters.get("request");
-        HttpServletResponse response = (HttpServletResponse) parameters.get("response");
+        final HttpServletRequest request = (HttpServletRequest) parameters.get("request");
+        final HttpServletResponse response = (HttpServletResponse) parameters.get("response");
 
         if (request == null || response == null) {
             throw new IllegalStateException("Both request and response must be set in the parameters");
         }
-        Writer w = new StringWriter();
-        SearchConfiguration searchConfiguration = result.getSearchCommand().getSearchConfiguration();
+        
+        final Writer w = new StringWriter();
+        final SearchConfiguration searchConfiguration = result.getSearchCommand().getSearchConfiguration();
+        
         try {
             if (log.isDebugEnabled()) {
                 log.debug("handleResult: Looking for template: " + searchConfiguration + searchConfiguration.getName() + ".vm");
             }
 
             final Site site = cxt.getSite();
-            final String templateUrl = "http://" + site.getName() + site.getConfigContext()
-                + "templates/" + searchConfiguration.getName() + ".vm";
+            final String templateUrl = site.getTemplateDir() + "/" + searchConfiguration.getName() + ".vm";
+            
+            final VelocityEngine engine = VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context(){
+                public Site getSite(){
+                    return cxt.getSite();
+                }
+            });
 
-            Template template = Velocity.getTemplate(templateUrl);
+            final Template template = engine.getTemplate(templateUrl);
 
             if (log.isDebugEnabled()) {
                 log.debug("handleResult: Created Template=" + template.getName());
             }
-            VelocityContext context = new VelocityContext();
+            
+            final VelocityContext context = new VelocityContext();
             populateVelocityContext(context, cxt, request, response);
             template.merge(context, w);
             response.getWriter().write(w.toString());
+            
         } catch (Exception e) {
             throw new InfrastructureException(e);
         }
@@ -135,7 +140,7 @@ public class VelocityResultHandler implements ResultHandler {
         context.put("math", new MathTool());
         context.put("site", cxt.getSite());
 
-        SearchConfiguration config = result.getSearchCommand().getSearchConfiguration();
+        final SearchConfiguration config = result.getSearchCommand().getSearchConfiguration();
 
         if (config.isPagingEnabled()) {
             PagingDisplayHelper pager = new PagingDisplayHelper(result.getHitCount(), config.getResultsToReturn(), 10);
@@ -143,31 +148,12 @@ public class VelocityResultHandler implements ResultHandler {
             context.put("pager", pager);
         }
 
-        Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(cxt.getSite()).getProperties());
+        final Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(cxt.getSite()).getProperties());
         context.put("linkpulse", linkpulse);
 
-        Decoder decoder = new Decoder();
+        final Decoder decoder = new Decoder();
         context.put("decoder", decoder);
 
     }
 
-    private static void initVelocity() {
-        if (log.isTraceEnabled()) {
-            log.trace("ENTR: initVelocity()");
-        }
-        try {
-
-            Category category = Category.getInstance(VELOCITY_LOG_CATEGORY);
-            Velocity.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
-            Velocity.setProperty("runtime.log.logsystem.log4j.category", category.getName());
-            Velocity.setProperty(Velocity.RESOURCE_LOADER, "url");
-            Velocity.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.result.handler.velocity.URLVelocityTemplateLoader");
-            Velocity.setProperty("url.resource.loader.cache", "false");
-            Velocity.setProperty("url.resource.loader.modificationCheckInterval", "0");
-            Velocity.init();
-            
-        } catch (Exception e) {
-            throw new InfrastructureException(e);
-        }
-    }
 }

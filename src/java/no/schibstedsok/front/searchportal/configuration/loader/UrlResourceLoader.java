@@ -15,9 +15,9 @@ import java.net.URL;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.InfrastructureException;
+import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -28,7 +28,10 @@ import org.xml.sax.SAXException;
  */
 public final class UrlResourceLoader extends AbstractResourceLoader {
 
-    private static final Log LOG = LogFactory.getLog(UrlResourceLoader.class);
+    private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
+
+    private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";
+    private static final String FATAL_RESOURCE_NOT_LOADED = "Resource not found ";
 
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.
@@ -94,13 +97,37 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                 + "conf/" 
                 + super.getResource();
     }
+    
+    /** {@inheritDoc}
+     */
+    protected String getFallbackResource() {
+        final Site fallback = Site.DEFAULT;
+        
+        return "http://" 
+                + fallback.getName() 
+                + fallback.getConfigContext() 
+                + "conf/" 
+                + super.getResource();
+    }
 
     /** {@inheritDoc}
      */
     public void run() {
-         try {
+        if( !loadResource( getResource() )){
+            LOG.warn(WARN_USING_FALLBACK+getResource());
+            if( !loadResource( getFallbackResource() )){
+                LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
+            }
+        }
 
-            final URL url = new URL(getResource());
+    }
+
+    private boolean loadResource(final String resource){
+        
+        boolean success = false;
+        try {
+
+            final URL url = new URL( resource );
 
             if (props != null) {
                 props.load(url.openStream());
@@ -114,23 +141,25 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             }
 
             LOG.info("Read configuration from " + getResource());
+            success = true;
 
         } catch (NullPointerException e) {
             final String err = "When Reading Configuration from " + getResource();
-            LOG.error(err, e);
+            LOG.warn(err, e);
             //throw new InfrastructureException(err, e);
 
         } catch (IOException e) {
             final String err = "When Reading Configuration from " + getResource();
-            LOG.error(err, e);
+            LOG.warn(err, e);
             //throw new InfrastructureException(err, e);
-            
+
         } catch (SAXException e) {
             final String err = "When Reading Configuration from " + getResource();
-            LOG.error(err, e);
+            LOG.warn(err, e);
             throw new InfrastructureException(err, e);
         }
-    }
 
+        return success;
+    }
 
 }

@@ -43,7 +43,7 @@ import org.w3c.dom.NodeList;
 public final class AnalysisRules {
 
     /**
-     * The context the RegExpEvaluatorFactory must work against. *
+     * The context the AnalysisRules must work against. *
      */
     public interface Context extends ResourceContext, SiteContext {
     }

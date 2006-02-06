@@ -16,12 +16,14 @@ package no.schibstedsok.front.searchportal.result.handler.velocity;
  * limitations under the License.
  */
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
 import java.io.InputStream;
 import java.util.Vector;
+import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,7 +35,6 @@ import org.apache.commons.collections.ExtendedProperties;
 
 /** XXX This source file needs to be published to the internet as it is open-source code.
  *
- * XXX Implement caching!
  *
  * This is a simple URL-based loader.
  * ORIGINAL FROM http://svn.apache.org/repos/asf/jakarta/velocity/engine/trunk/whiteboard/geir/URLResourceLoader.java
@@ -43,6 +44,10 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  *
  * MODIFIED TO SUIT SCHIBSTEDSØK's NEEDS.
+ * There was a choice here to implement all the URL handling stuff from scratch or to plug into the existing 
+ * functionality found in no.schibstedsøk.front.searchportal.configuration.loader
+ * Since this class is hidden between the velocity API it made more sense to go from scratch to best 
+ * meet velocity's requirements...
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id: URLResourceLoader.java,v 1.3 2004/03/19 17:13:40 dlr Exp $
@@ -50,10 +55,19 @@ import org.apache.commons.collections.ExtendedProperties;
 public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     private static final Log LOG = LogFactory.getLog(URLVelocityTemplateLoader.class);
+    
+    private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
+    private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";
+    
+    private Site site;
+    private Site fallbackSite;
 
     /** {@inheritDoc}
      */
-    public void init(final ExtendedProperties configuration) { }
+    public void init(final ExtendedProperties configuration) { 
+        site = (Site)configuration.get("url.site");
+        fallbackSite = (Site)configuration.get("url.site.fallback");
+    }
 
     /**
      * Get an InputStream so that the Runtime can build a
@@ -68,35 +82,81 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         throws ResourceNotFoundException{
 
         LOG.trace("start getResourceStream( "+url+" )");
-        InputStream inputStream;
         try{
 
-            final URL u = new URL( url );
-            final URLConnection conn = u.openConnection();
-            inputStream = conn.getInputStream();
+            final URLConnection conn = getResourceURLConnection(url);
+            return conn.getInputStream();
 
         }catch( IOException e ){
-            final String msg = "Error: cannot find resource " + url;
 
-            LOG.error( msg );
-
-            throw new ResourceNotFoundException( msg );
+            LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
+            throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
-
-        return inputStream;
+        
+        
 
     }
 
     /** {@inheritDoc}
      */
     public boolean isSourceModified(Resource resource){
-        return true;
+
+        final boolean result =  getLastModified(resource) > resource.getLastModified();
+        LOG.debug("isSourceModified( "+resource.getName()+" ): "+result);
+        return result;
     }
 
     /** {@inheritDoc}
      */
     public long getLastModified(Resource resource){
+        
+        final String url = resource.getName();
+        LOG.trace("start getLastModified( "+url+" )");
+        try{
+        
+            final URLConnection conn = getResourceURLConnection(url);
+            return conn.getLastModified();
+
+        }catch( ResourceNotFoundException e ){
+            LOG.error( ERR_RESOURCE_NOT_FOUND + url );
+        }
         return 0;
+        
+    }
+    
+    private URLConnection getResourceURLConnection( final String url )
+        throws ResourceNotFoundException{
+        
+        try{
+        
+            URL u = new URL( url );
+            URLConnection conn = u.openConnection();
+            
+            // test it exists otherwise fallback to default site
+            try{
+                conn.getInputStream();
+            }catch(FileNotFoundException fnfe){
+                
+                LOG.warn(WARN_USING_FALLBACK+url);
+                u = new URL( getFallbackURL( url ));
+                conn = u.openConnection();
+            }
+            
+            return conn;
+            
+        }catch( IOException e ){
+
+            LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
+            throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
+        }
+
+    }
+    
+    private String getFallbackURL(final String url){
+        final String oldUrl = site.getName() + site.getConfigContext();
+        final String newUrl = fallbackSite.getName() + fallbackSite.getConfigContext();
+        
+        return url.replaceFirst(oldUrl, newUrl);
     }
 }
 
