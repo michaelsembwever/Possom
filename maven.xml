@@ -99,22 +99,20 @@
     <!-- CONTINUUM SPECIFIC TARGETS. Only meant to be run on sch-dev0.dev. Hence the hardcoded paths. -->
     <!-- -->
     
-    <goal name="continuum:continuum" prereqs="continuum:site,continuum:repository" />
-    
     <goal name="continuum:site" prereqs="site">
         <copy todir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html">
             <fileset dir="${maven.build.dir}/docs"/>
         </copy>
     </goal>
     
-    <goal name="continuum:repository">
+    <goal name="continuum:repository" prereqs="war:war">
         <exec executable="/local/bin/svnlook" outputproperty="svn.revision">
           <arg line="youngest /www/schibstedsok/versys/subversion/search-front-html"/>
         </exec>
-        <mkdir dir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/schibstedsok/wars/search-front-html/searchdev/${svn.revision}"/>
+        <mkdir dir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/schibstedsok/wars/search-front-html/${target}/${svn.revision}"/>
         <copy 
             file="${maven.build.dir}/search-front-html.war"
-            todir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/schibstedsok/wars/search-front-html/searchdev/${svn.revision}"/>
+            todir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/schibstedsok/wars/search-front-html/${target}/${svn.revision}"/>
     </goal>
     
 </project>
