@@ -107,9 +107,12 @@ public final class AnalysisRule {
             }
 
         });
-        scorer.visit(query.getRootClause());
-
-        return scorer.getScore();
+  
+        if (query != null) {
+            scorer.visit(query.getRootClause());
+            return scorer.getScore();
+        } else {
+            return 0;
+        }
     }
-
 }
