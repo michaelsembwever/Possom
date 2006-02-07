@@ -37,11 +37,7 @@
         </copy>
     </goal>
     
-    <goal name="byggePaa.sch-dev01.dev" prereqs="site" >
-        <copy todir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html">
-            <fileset dir="${maven.build.dir}/docs"/>
-        </copy>
-    </goal>
+    
     
     
     <!-- 
@@ -97,6 +93,28 @@
             Please start this service before trying to build/deploy search-front-html.
         </ant:fail>
     -->
+    </goal>
+    
+    <!-- -->
+    <!-- CONTINUUM SPECIFIC TARGETS. Only meant to be run on sch-dev0.dev. Hence the hardcoded paths. -->
+    <!-- -->
+    
+    <goal name="continuum:continuum" prereqs="continuum:site,continuum:repository" />
+    
+    <goal name="continuum:site" prereqs="site">
+        <copy todir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html">
+            <fileset dir="${maven.build.dir}/docs"/>
+        </copy>
+    </goal>
+    
+    <goal name="continuum:repository">
+        <exec executable="/local/bin/svnlook" outputproperty="svn.revision">
+          <arg line="youngest /www/schibstedsok/versys/subversion/search-front-html"/>
+        </exec>
+        <mkdir dir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/schibstedsok/wars/search-front-html/searchdev/${svn.revision}"/>
+        <copy 
+            file="${maven.build.dir}/search-front-html.war"
+            todir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/schibstedsok/wars/search-front-html/searchdev/${svn.revision}"/>
     </goal>
     
 </project>
