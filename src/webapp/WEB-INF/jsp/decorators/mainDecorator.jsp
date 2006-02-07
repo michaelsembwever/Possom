@@ -435,7 +435,6 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         </tr>
                         <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                         Modifier e = (Modifier) iterator.next();
-
                         %>
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
