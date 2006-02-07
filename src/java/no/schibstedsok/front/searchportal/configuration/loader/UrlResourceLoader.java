@@ -20,6 +20,7 @@ import no.schibstedsok.front.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 /** Loads resources through URL references.
  *
@@ -152,7 +153,11 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             final String err = "When Reading Configuration from " + getResource();
             LOG.warn(err, e);
             //throw new InfrastructureException(err, e);
-
+        } catch (SAXParseException e) {
+            final String err = "When Reading Configuration from " + getResource() + 
+                    " at " + e.getLineNumber() + ":" + e.getColumnNumber();
+            LOG.warn(err, e);
+            throw new InfrastructureException(err, e);
         } catch (SAXException e) {
             final String err = "When Reading Configuration from " + getResource();
             LOG.warn(err, e);
