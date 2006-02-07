@@ -51,7 +51,7 @@
         </init-param>
         <init-param>
             <param-name>protectedParameters</param-name>
-            <param-value>companyId,personId</param-value>
+            <param-value>companyId,personId,emailTo</param-value>
         </init-param>
     </filter>
 
@@ -70,7 +70,7 @@
 
     <filter-mapping>
         <filter-name>md5ProtectParameters</filter-name>
-        <url-pattern>/search/*</url-pattern>
+        <url-pattern>/*</url-pattern>
     </filter-mapping>
 <!--
     <filter-mapping>

@@ -12,6 +12,8 @@ import no.schibstedsok.front.searchportal.query.RunningQuery;
 import no.schibstedsok.front.searchportal.result.handler.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
+import no.schibstedsok.front.searchportal.util.TradeDoubler;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -139,6 +141,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("runningQuery", result.getSearchCommand().getQuery());
         context.put("math", new MathTool());
         context.put("site", cxt.getSite());
+	context.put("tradedoubler", new TradeDoubler(request));
 
         final SearchConfiguration config = result.getSearchCommand().getSearchConfiguration();
 
@@ -153,7 +156,5 @@ public final class VelocityResultHandler implements ResultHandler {
 
         final Decoder decoder = new Decoder();
         context.put("decoder", decoder);
-
     }
-
 }

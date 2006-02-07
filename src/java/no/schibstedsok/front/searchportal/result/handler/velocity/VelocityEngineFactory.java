@@ -63,6 +63,8 @@ public final class VelocityEngineFactory {
             engine.setProperty("velocimacro.library", site.getTemplateDir()+"/VM_global_library.vm");
             engine.setProperty("url.site", site);
             engine.setProperty("url.site.fallback",Site.DEFAULT);
+            engine.setProperty("input.encoding", "UTF-8");
+            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective");
             engine.init();
             
         } catch (Exception e) {

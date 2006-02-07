@@ -15,6 +15,17 @@
         <ant:filter filtersfile="${target}.properties" />
     </preGoal>
 
+    <preGoal name="war:war-resources">
+        <ant:filter filtersfile="${target}.properties" />
+        <ant:echo message="Filtering war resources: ${maven.war.src.includes}/tradedoubler/searchbox/*.js"/>
+        <ant:copy todir="${maven.war.webapp.dir}" filtering="true" preservelastmodified="true">
+            <ant:fileset dir="${maven.war.src}"
+                includes="${maven.war.src.includes}/tradedoubler/searchbox/*.js"
+                excludes="${maven.war.src.excludes}">
+            </ant:fileset>
+        </ant:copy>
+    </preGoal>
+
     <preGoal name="java:compile">
         <!-- JavaCC :: QueryParser -->
         <j:set var="maven.javacc.javacc.grammar" value="src/javacc/QueryParserImpl.jj"/>

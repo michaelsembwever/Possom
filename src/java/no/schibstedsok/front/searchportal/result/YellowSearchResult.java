@@ -49,8 +49,6 @@ public class YellowSearchResult extends FastSearchResult {
         for (Iterator iter = top3.getResults().iterator(); iter.hasNext();) {
             SearchResultItem item = (SearchResultItem) iter.next();
 
-            log.debug("AAAA " + item.getField("ypnavn2"));
-            
             if (Integer.parseInt(item.getField("rank")) > 100000) {    
                 resultsToAdd.add(item);
                 ++addedTop3;

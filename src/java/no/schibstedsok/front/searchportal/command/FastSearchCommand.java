@@ -7,6 +7,7 @@ package no.schibstedsok.front.searchportal.command;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -83,18 +84,11 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         try {
 
     
-            if (getNavigators() == null){
-                log.debug("AAA nav is null");
-            }
             if (getNavigators() != null) {
-                log.debug("AAA Collecting navigated values " + getNavigators().size());
-                
                 for (Iterator iterator = getNavigators().keySet().iterator(); iterator.hasNext();) {
 
                     String navigatorKey = (String) iterator.next();
 
-                    log.debug("AAA Key is " + navigatorKey);
-                    
                     if (getParameters().containsKey("nav_" + navigatorKey)) {
                         String navigatedTo[] = (String[]) getParameters().get("nav_" + navigatorKey);
                         addNavigatedTo(navigatorKey, navigatedTo[0]);
@@ -529,6 +523,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
 
             collectModifier(navigatorKey, result, searchResult);
         }
+
     }
 
     private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
@@ -546,6 +541,10 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
                 searchResult.addModifier(navigatorKey, mod);
             }
 
+            if (searchResult.getModifiers(navigatorKey) != null) {
+                Collections.sort(searchResult.getModifiers(navigatorKey));
+            }
+            
         } else if (nav.getChildNavigator() != null) {
             navigatedTo.put(navigatorKey, nav.getChildNavigator());
             collectModifier(navigatorKey, result, searchResult);

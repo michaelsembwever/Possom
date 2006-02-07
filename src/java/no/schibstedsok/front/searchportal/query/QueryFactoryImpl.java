@@ -74,14 +74,12 @@ public final class QueryFactoryImpl extends QueryFactory {
             query = new RunningWebQuery(cxt, q, request, response);
 
             if ("m".equals(request.getParameter("c"))) {
-
                 if (request.getParameter("userSortBy") == null
                         || "".equals(request.getParameter("q"))) {
 
                     query.addParameter("userSortBy", new String[]{"datetime", ""});
                 }
 
-                //
                 if ("".equals(q) && request.getParameter("contentsource") == null) {
                     query.addParameter("contentsource", new String[]{"Norske Nyheter", ""});
                 }

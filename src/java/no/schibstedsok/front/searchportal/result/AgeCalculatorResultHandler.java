@@ -23,24 +23,24 @@ public class AgeCalculatorResultHandler implements ResultHandler {
 
     private String targetField;
     private String sourceField;
-
+    private String dateFormat;
+    private boolean asDate = false;
+    private String ageMessageFormat;
+    
     private transient static Log log = LogFactory.getLog(AgeCalculatorResultHandler.class);
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        //TODO: for performance reasons, is SimpleDateFormat avoidable?
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formatString = dateFormat != null ? dateFormat : "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        String ageFormatKey = ageMessageFormat != null ? ageMessageFormat : "age";
 
         for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+        DateFormat df = new SimpleDateFormat(formatString);
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
             String docTime = searchResultItem.getField(sourceField);
 
-            
-
             if (docTime != null) {
-                
-                docTime = docTime.replaceAll("T", " ").replaceAll("Z", " ").trim();
                 
                 try {
                     long stamp = df.parse(docTime).getTime();
@@ -56,7 +56,7 @@ public class AgeCalculatorResultHandler implements ResultHandler {
                     dateParts[1] = new Long(age / (60 * 60 * 1000) % 24);
                     dateParts[2] = new Long(age / (60 * 1000) % 60);
 
-                    String ageString = ""; // = TextMessages.getMessages().getMessage(currentLocale, "age", dateParts);
+                    String ageString = ""; // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
                     String[] s = (String[]) parameters.get("contentsource");
                     
                     final TextMessages txtMsgs = TextMessages.valueOf(new TextMessages.Context(){
@@ -69,22 +69,22 @@ public class AgeCalculatorResultHandler implements ResultHandler {
                     });
 
                     //older than 3 days or source is Mediearkivet, show dd.mm.yyyy
-                    if (dateParts[0].longValue() > 3 || s != null && s[0].equals("Mediearkivet"))
+                    if (dateParts[0].longValue() > 3 || s != null && s[0].equals("Mediearkivet") || asDate == true)
                         ageString = docTime.substring(8,10) + "." + docTime.substring(5,7) + "." + docTime.substring(0,4);
                     //more than 1 day, show days
                     else if (dateParts[0].longValue() > 0) {
                         dateParts[1] = new Long(0);
                         dateParts[2] = new Long(0);
-                        ageString = txtMsgs.getMessage( "age", dateParts);
+                        ageString = txtMsgs.getMessage(ageFormatKey, dateParts);
                     //more than 1 hour, show hours
                     } else if (dateParts[1].longValue() > 0) {
                         dateParts[2] = new Long(0);
-                        ageString = txtMsgs.getMessage( "age", dateParts);
+                        ageString = txtMsgs.getMessage( ageFormatKey, dateParts);
                     //if less than 1 hour, show minutes
                     } else if (dateParts[2].longValue() > 0) {
                         dateParts[0] = new Long(0);
                         dateParts[1] = new Long(0);
-                        ageString = txtMsgs.getMessage( "age", dateParts);
+                        ageString = txtMsgs.getMessage( ageFormatKey, dateParts);
                     } else
                         ageString = docTime.substring(8,10) + "." + docTime.substring(5,7) + "." + docTime.substring(0,4);
 
