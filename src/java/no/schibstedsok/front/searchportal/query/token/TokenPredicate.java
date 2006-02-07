@@ -56,7 +56,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final FastTokenPredicate EXACTWIKI = new FastTokenPredicate("exact_wikino");
     public static final FastTokenPredicate WIKIPEDIA = new FastTokenPredicate("wikino");
     public static final FastTokenPredicate ENGLISHWORDS = new FastTokenPredicate("international");
-
+    public static final FastTokenPredicate TOP3EXACT = new FastTokenPredicate("top3boosts_exact");
+    
     // RegExp TokenPredicates
     public static final RegExpTokenPredicate CATALOGUEPREFIX = new RegExpTokenPredicate("cataloguePrefix");
     public static final RegExpTokenPredicate COMPANYSUFFIX = new RegExpTokenPredicate("companySuffix");
@@ -69,7 +70,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final RegExpTokenPredicate TVPREFIX = new RegExpTokenPredicate("tvPrefix");
     public static final RegExpTokenPredicate WEATHERPREFIX = new RegExpTokenPredicate("weatherPrefix");
     public static final RegExpTokenPredicate WIKIPEDIAPREFIX = new RegExpTokenPredicate("wikipediaPrefix");
-
+    public static final RegExpTokenPredicate ONLYSKIINFOPREFIX = new RegExpTokenPredicate("onlySkiInfoPrefix");
+    
     // instance fields
     private final String token;
 
