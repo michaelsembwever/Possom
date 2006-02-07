@@ -71,6 +71,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final RegExpTokenPredicate WEATHERPREFIX = new RegExpTokenPredicate("weatherPrefix");
     public static final RegExpTokenPredicate WIKIPEDIAPREFIX = new RegExpTokenPredicate("wikipediaPrefix");
     public static final RegExpTokenPredicate ONLYSKIINFOPREFIX = new RegExpTokenPredicate("onlySkiInfoPrefix");
+    public static final RegExpTokenPredicate SKIINFOPREFIX = new RegExpTokenPredicate("skiInfoPrefix");
+    public static final RegExpTokenPredicate EMPTYQUERY = new RegExpTokenPredicate("emptyQuery");
     
     // instance fields
     private final String token;
