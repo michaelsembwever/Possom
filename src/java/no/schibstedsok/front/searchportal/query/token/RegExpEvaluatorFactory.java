@@ -74,8 +74,9 @@ public final class RegExpEvaluatorFactory {
             throws ParserConfigurationException {
 
         context = cxt;
-        loader = context.newDocumentLoader(SearchConstants.REGEXP_EVALUATOR_XMLFILE,
-                DocumentBuilderFactory.newInstance().newDocumentBuilder());
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        loader = context.newDocumentLoader(SearchConstants.REGEXP_EVALUATOR_XMLFILE, factory.newDocumentBuilder());
 
         INSTANCES.put(context.getSite(), this);
     }
@@ -117,6 +118,7 @@ public final class RegExpEvaluatorFactory {
                         LOG.debug(" --->pattern: " + pattern);
 
                         final String expression = pattern.getFirstChild().getNodeValue();
+                        // FIXE remove \\s* from pattern. It really shouldn't be neccessary.
                         final Pattern p = Pattern.compile("\\s*" + expression + "\\s*", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
                         compiled.add(p);
                     }

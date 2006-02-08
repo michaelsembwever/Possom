@@ -79,7 +79,7 @@ public class RunningQuery {
     private String strippedQueryString;
 
     private final Collection removers;
-    
+
 
     /**
      * Create a new Running Query instance.
@@ -170,29 +170,29 @@ public class RunningQuery {
                 return context.getSite();
             }
         });
-        
+
     }
 
     private List getTokenMatches(final String token) {
-        final ReportingTokenEvaluator e 
+        final ReportingTokenEvaluator e
                 = (ReportingTokenEvaluator) tokenEvaluatorFactory.getEvaluator(TokenPredicate.valueOf(token));
         return e.reportToken(token, queryStr);
     }
-    
+
     public List getGeographicMatches() {
         List matches = new ArrayList();
-        
+
         matches.addAll(getTokenMatches("geolocal"));
         matches.addAll(getTokenMatches("geoglobal"));
-        
+
         Collections.sort(matches);
-        
+
         return matches;
     }
-    
+
     private Collection getStopWordRemovers() {
-        
-        final TokenPredicate[] prefixes = { 
+
+        final TokenPredicate[] prefixes = {
             TokenPredicate.SITEPREFIX,
             TokenPredicate.CATALOGUEPREFIX,
             TokenPredicate.PICTUREPREFIX,
@@ -200,10 +200,10 @@ public class RunningQuery {
             TokenPredicate.WIKIPEDIAPREFIX,
             TokenPredicate.TVPREFIX,
             TokenPredicate.WEATHERPREFIX
-        } ;
+        };
         Collection stopWordRemovers = new ArrayList();
-        
-        final RegExpEvaluatorFactory factory = RegExpEvaluatorFactory.valueOf(new RegExpEvaluatorFactory.Context(){
+
+        final RegExpEvaluatorFactory factory = RegExpEvaluatorFactory.valueOf(new RegExpEvaluatorFactory.Context() {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return context.newPropertiesLoader(resource, properties);
             }
@@ -220,11 +220,11 @@ public class RunningQuery {
                 return context.getSite();
             }
         });
-        
+
         for (int i = 0; i < prefixes.length; i++) {
             final StopWordRemover remover = factory.getStopWordRemover(prefixes[i]);
-            if( remover == null ){
-                LOG.error("Failed to add "+prefixes[i]);
+            if (remover == null) {
+                LOG.error("Failed to add " + prefixes[i]);
             }
             stopWordRemovers.add(remover);
         }
@@ -232,13 +232,14 @@ public class RunningQuery {
     }
 
 
-    private String removeAllPrefixes(String queryString) {
+    private String removeAllPrefixes(final String queryString) {
+        String qStr = queryString;
         for (Iterator iter = removers.iterator(); iter.hasNext();) {
             final StopWordRemover remover = (StopWordRemover) iter.next();
-            queryString = remover.removeStopWords(queryString);
+            qStr = remover.removeStopWords(queryString);
         }
-        
-        return queryString.trim();
+
+        return qStr.trim();
     }
 
     /**
@@ -252,11 +253,11 @@ public class RunningQuery {
             LOG.trace("ENTR: getGlobalSearchTips()");
         }
         if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
-            return TextMessages.valueOf(new TextMessages.Context(){
-                public Site getSite(){
+            return TextMessages.valueOf(new TextMessages.Context() {
+                public Site getSite() {
                     return context.getSite();
                 }
-                public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props){
+                public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props) {
                     return context.newPropertiesLoader(rsc, props);
                 }
             }).getMessage("searchtip.use+-");
@@ -300,11 +301,11 @@ public class RunningQuery {
                     public RunningQuery getQuery() {
                         return RunningQuery.this;
                     }
-                    
-                    public Site getSite(){
+
+                    public Site getSite() {
                         return context.getSite();
                     }
-                    
+
                     public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                         return context.newPropertiesLoader(resource, properties);
                     }
@@ -315,7 +316,7 @@ public class RunningQuery {
 
                     public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                         return context.newDocumentLoader(resource, builder);
-                    }                    
+                    }
 
                 };
 
@@ -325,25 +326,30 @@ public class RunningQuery {
 
                     //if (context.getSearchMode().getKey().equals("d") && offset == 0) {
                     if (context.getSearchMode().isQueryAnalysisEnabled() && offset == 0) {
+
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
                         }
-                        final int score = rule.evaluate(queryStr, tokenEvaluatorFactory);
+
+                        LOG.debug("Scoring old style");
+                        final int oldScore = rule.evaluate(queryStr, tokenEvaluatorFactory);
+                        LOG.debug("Scoring new style");
                         final int newScore = rule.evaluate(queryObj, tokenEvaluatorFactory);
 
-                        LOG.info("OldScore: " + score + "; NewScore: " + newScore + ";");
-                        assert (score == newScore); // if this fails, goto mick, do not pass go, do not collect $200.
-                        if (score != newScore) {
-                            LOG.fatal("\n\n!!! Old score does not match new score !!!\n\n");
+                        
+                        assert (oldScore == newScore); // if this fails, goto mick, do not pass go, do not collect $200.
+                        if (oldScore != newScore) {
+                            LOG.fatal("\n\n!!! Old score does not match new score !!!\n");
+                            LOG.fatal("OldScore: " + oldScore + "; NewScore: " + newScore + "; for " + searchConfiguration.getRule());
                         }
 
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
+                            LOG.debug("Score for " + searchConfiguration.getName() + " is " + newScore);
                         }
 
-                        scores.put(searchConfiguration.getName(), new Integer(score));
+                        scores.put(searchConfiguration.getName(), new Integer(newScore));
 
-                        if (searchConfiguration.isAlwaysRunEnabled() || score >= searchConfiguration.getRuleThreshold()) {
+                        if (searchConfiguration.isAlwaysRunEnabled() || newScore >= searchConfiguration.getRuleThreshold()) {
                             if (LOG.isDebugEnabled()) {
                                 LOG.debug("Adding " + searchConfiguration.getName());
                             }
@@ -539,7 +545,7 @@ public class RunningQuery {
      */
     public String getStrippedQueryString() {
         return strippedQueryString;
-    } 
+    }
 
 
 

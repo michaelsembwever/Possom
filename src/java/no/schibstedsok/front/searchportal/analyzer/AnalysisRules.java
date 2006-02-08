@@ -82,7 +82,9 @@ public final class AnalysisRules {
             throws ParserConfigurationException {
 
         context = cxt;
-        loader = context.newDocumentLoader(SearchConstants.ANALYSIS_RULES_XMLFILE, DocumentBuilderFactory.newInstance().newDocumentBuilder());
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        loader = context.newDocumentLoader(SearchConstants.ANALYSIS_RULES_XMLFILE, factory.newDocumentBuilder());
 
         INSTANCES.put(context.getSite(), this);
     }

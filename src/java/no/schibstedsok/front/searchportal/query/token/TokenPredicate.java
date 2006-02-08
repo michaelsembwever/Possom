@@ -21,6 +21,7 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final class FastTokenPredicate extends TokenPredicate {
         public  FastTokenPredicate(final String token) {
             super(token);
+            FAST_TOKENS.add( this );
         }
     }
     public static final class RegExpTokenPredicate extends TokenPredicate {
@@ -90,9 +91,6 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     protected TokenPredicate(final String token) {
         this.token = token;
         TOKEN_MAP.put(token, this);
-        if ( this instanceof FastTokenPredicate ) {
-            FAST_TOKENS.add( this);
-        }
     }
 
     /** Public method to find the correct TokenPredicate given the Token's string.

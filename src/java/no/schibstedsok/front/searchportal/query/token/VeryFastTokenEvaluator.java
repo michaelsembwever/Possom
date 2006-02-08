@@ -80,10 +80,22 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
      * @return true if the query contains any of the above
      */
     public boolean evaluateToken(final String token, final String term, final String query) {
-
+        
+        boolean evaluation = false;
         final String realTokenFQ = "FastQT_" + token + "QM";
-        return analysisResult.containsKey(realTokenFQ) &&
-                ( term == null || analysisResult.get(realTokenFQ).equals(term));
+        
+        if( analysisResult.containsKey(realTokenFQ) ){
+            if( term == null ){
+                evaluation = true;
+            }else{
+                final List/*<TokenMatch>*/ occurances = (List/*<TokenMatch>*/)analysisResult.get(realTokenFQ);
+                for( Iterator it = occurances.iterator(); !evaluation && it.hasNext(); ){
+                    final TokenMatch occurance = (TokenMatch)it.next();
+                    evaluation = occurance.getMatch().equals(term);
+                }
+            }
+        }
+        return evaluation;
     }
 
     public List reportToken(String token, String query) {
@@ -173,21 +185,21 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         return false;
     }
 
-    private void addMatch(String name, String custom, String query) {
-        String expr = "\\b" + custom + "\\b";
-        Pattern pattern = Pattern.compile(expr, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
-        Matcher m = pattern.matcher(query);
+    private void addMatch(final String name, final String custom, final String query) {
+        final String expr = "\\b" + custom + "\\b";
+        final Pattern pattern = Pattern.compile(expr, Pattern.CASE_INSENSITIVE|Pattern.UNICODE_CASE);
+        final Matcher m = pattern.matcher(query);
 
         while (m.find()) {
             
-            TokenMatch match = new TokenMatch(name, custom, m.start(), m.end());
+            final TokenMatch match = new TokenMatch(name, custom, m.start(), m.end());
 
             if (!analysisResult.containsKey(name)) {
-                List matches = new ArrayList();
+                final List matches = new ArrayList();
                 analysisResult.put(name, matches);
             }
             
-            List previousMatches = (List) analysisResult.get(name);
+            final List previousMatches = (List) analysisResult.get(name);
             previousMatches.add(match);
         }
     }
