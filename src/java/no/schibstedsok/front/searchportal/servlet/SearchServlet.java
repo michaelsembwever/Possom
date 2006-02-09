@@ -2,7 +2,6 @@
 package no.schibstedsok.front.searchportal.servlet;
 
 import com.thoughtworks.xstream.XStream;
-import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
@@ -24,7 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import org.apache.log4j.Logger;
-import org.apache.log4j.MDC;
 
 /** The Central Controller to incoming queries.
  * Controls the SearchMode -> RunningQuery creation and handling.
@@ -39,9 +37,6 @@ public final class SearchServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(SearchServlet.class);
 
-    private static final String ERR_UNCAUGHT_RUNTIME_EXCEPTION 
-            = "Following runtime exception was let loose in tomcat\n";
-    private static final String DEBUG_REQUESTED_VHOST = "Client at ";
 
     private SearchTabs tabs;
 
@@ -57,9 +52,7 @@ public final class SearchServlet extends HttpServlet {
             final HttpServletRequest httpServletRequest,
             final HttpServletResponse httpServletResponse)
                 throws ServletException, IOException {
-        
-    
-        try{
+
 
             if (httpServletRequest.getParameter("q") == null) {
                 String redir = httpServletRequest.getContextPath();
@@ -87,8 +80,7 @@ public final class SearchServlet extends HttpServlet {
                 stopWatch.start();
             }
 
-            final Site site = getSite(httpServletRequest);
-            MDC.put(Site.NAME_KEY, site.getName());
+            final Site site = (Site) httpServletRequest.getAttribute(Site.NAME_KEY);
 
             if (tabs == null
                     || (httpServletRequest.getParameter("reload") != null
@@ -177,33 +169,13 @@ public final class SearchServlet extends HttpServlet {
                 stopWatch.stop();
                 LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
             }
-            
-        }catch(RuntimeException e){
-            // Don't let anything through without logging it. 
-            //  Otherwise it ends in a different logfile.
-            LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION , e);
-            throw e;
-        }
+
+        
     }
 
     private SearchTabs loadSearchTabs(final Site site) {
         return XMLSearchTabsCreator.valueOf(site).getSearchTabs();
     }
 
-    public static Site getSite(final HttpServletRequest httpServletRequest) {
-        // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
-        // httpd.conf needs:
-        //      1) "JkEnvVar SERVER_NAME" inside the virtual host directive.
-        //      2) "UseCanonicalName Off" to assign ServerName from client's request.
-        final String vhost = null != httpServletRequest.getAttribute("SERVER_NAME")
-            ? (String) httpServletRequest.getAttribute("SERVER_NAME")
-            // falls back to this when not behind Apache. (Development machine).
-            : httpServletRequest.getServerName()+":"+httpServletRequest.getServerPort();
 
-        final Locale locale = httpServletRequest.getLocale();
-
-        LOG.debug(DEBUG_REQUESTED_VHOST + vhost);
-
-        return Site.valueOf(vhost, locale);
-    }
 }

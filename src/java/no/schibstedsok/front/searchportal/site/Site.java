@@ -105,36 +105,6 @@ public final class Site {
     }
 
     /**
-     * Getter for property css directory.
-     * Absolute URL to directory css is found for this site.
-     * <b>Does not</b> finish with '/'. Reads nicer in template statements.
-     * @return Value of property css directory.
-     */
-    public String getCssDir() {
-        return "http://" + siteName + cxtName + "css";
-    }
-
-    /**
-     * Getter for property javascript directory.
-     * Absolute URL to directory javascript is found for this site.
-     * <b>Does not</b> finish with '/'. Reads nicer in template statements.
-     * @return Value of property javascript directory.
-     */
-    public String getJsDir() {
-        return "http://" + siteName + cxtName + "javascript";
-    }
-
-    /**
-     * Getter for property image directory.
-     * Absolute URL to directory image is found for this site.
-     * <b>Does not</b> finish with '/'. Reads nicer in template statements.
-     * @return Value of property image directory.
-     */
-    public String getImageDir() {
-        return "http://" + siteName + cxtName + "images";
-    }
-
-    /**
      * Getter for property (velocity) template directory.
      * Absolute URL to directory (velocity) template is found for this site.
      * <b>Does not</b> finish with '/'. Reads nicer in template statements.
