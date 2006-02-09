@@ -59,7 +59,7 @@ public final class VelocityEngineFactory {
             engine.setProperty(Velocity.RESOURCE_LOADER, "url");
             engine.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.result.handler.velocity.URLVelocityTemplateLoader");
             engine.setProperty("url.resource.loader.cache", "true");
-            engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
+            engine.setProperty("url.resource.loader.modificationCheckInterval", "60"); // 1 minute update cycle.
             engine.setProperty("velocimacro.library", site.getTemplateDir()+"/VM_global_library.vm");
             engine.setProperty("url.site", site);
             engine.setProperty("url.site.fallback",Site.DEFAULT);
