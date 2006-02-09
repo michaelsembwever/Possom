@@ -16,11 +16,9 @@
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
-<%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
 
 <%
     final TextMessages text = (TextMessages) request.getAttribute("text");
-    final Site site = (Site) request.getAttribute("site");
 
     String currentC = "d";    //default collection
     currentC = (String) request.getAttribute("c");
@@ -75,8 +73,8 @@
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="<%= site.getCssDir() %>/decorator-style.css" rel="stylesheet" type="text/css" />
-    <link media="print" href="<%= site.getCssDir() %>/print-style.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
+    <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -140,8 +138,8 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
         <div id="frame">
             <div id="header">
                 <% if ("ds".equals(ss)) { %>
-                    <a href="http://www.dinside.no"><img id="sitelogo" src="<%= site.getImageDir() %>/sitesearch/aller/dinside/logo.gif" alt="Dinside logo" /></a>
-                    <a href="../"><img id="xx" src="<%= site.getImageDir() %>/sitesearch/aller/sesam.gif" style="padding-bottom: 11px;" alt="Sesam logo" /></a>
+                    <a href="http://www.dinside.no"><img id="sitelogo" src="../images/sitesearch/aller/dinside/logo.gif" alt="Dinside logo" /></a>
+                    <a href="../"><img id="xx" src="../images/sitesearch/aller/sesam.gif" style="padding-bottom: 11px;" alt="Sesam logo" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.dinside.no/data/">Data</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/reise/">Reise</a><span>|</span></li>
@@ -151,16 +149,16 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.dinside.no/bolig/">Bolig</a></li>
                     </ul>
                 <% } else if ("di".equals(ss)) { %>
-                    <a href="http://www.digi.no"><img id="sitelogo" src="<%= site.getImageDir() %>/sitesearch/aller/digi/logo.gif" alt="Digi logo" /></a>
-                    <a href="../"><img src="<%= site.getImageDir() %>/sitesearch/aller/sesam.gif" style="padding-bottom: 7px;" alt="Sesam logo" /></a>
+                    <a href="http://www.digi.no"><img id="sitelogo" src="../images/sitesearch/aller/digi/logo.gif" alt="Digi logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" style="padding-bottom: 7px;" alt="Sesam logo" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.digi.no/bed_tek/">Bedriftsteknologi</a><span>|</span></li>
                         <li><a href="http://www.digi.no/pers_tek/">Personlig teknologi</a><span>|</span></li>
                         <li><a href="http://www.digi.no/resultater/">Resultater/finans</a></li>
                     </ul>
                 <% } else if ("pr".equals(ss)) { %>
-                    <a href="http://www.propaganda-as.no/"><img id="sitelogo" src="<%= site.getImageDir() %>/sitesearch/aller/propaganda/logo.gif" alt="Propaganda logo" /></a>
-                    <a href="../"><img src="<%= site.getImageDir() %>/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
+                    <a href="http://www.propaganda-as.no/"><img id="sitelogo" src="../images/sitesearch/aller/propaganda/logo.gif" alt="Propaganda logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.propaganda-as.no/emneomrader/">Sist uke</a><span>|</span></li>
                         <li><a href="http://www.propaganda-as.no/emneomrader/reklame/">Reklame</a><span>|</span></li>
@@ -170,8 +168,8 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.propaganda-as.no/emneomrader/design/">Design</a></li>
                     </ul>
                 <% } else if ("im".equals(ss)) { %>
-                    <a href="http://www.imarkedet.no/"><img id="sitelogo" src="<%= site.getImageDir() %>/sitesearch/aller/imarkedet/logo.gif" alt="iMarkedet logo" /></a>
-                    <a href="../"><img src="<%= site.getImageDir() %>/sitesearch/aller/sesam.gif" style="padding-bottom: 13px;" alt="Sesam logo" /></a>
+                    <a href="http://www.imarkedet.no/"><img id="sitelogo" src="../images/sitesearch/aller/imarkedet/logo.gif" alt="iMarkedet logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" style="padding-bottom: 13px;" alt="Sesam logo" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.imarkedet.no/anyhet/">Nyheter</a><span>|</span></li>
                         <li><a href="http://www.imarkedet.no/analyse/">Analyser</a><span>|</span></li>
@@ -180,8 +178,8 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.imarkedet.no/shippingoffshore/">Shipping/offshore</a></li>
                     </ul>
                 <% } else if ("it".equals(ss)) { %>
-                    <a href="http://www.itavisen.no/"><img id="sitelogo" src="<%= site.getImageDir() %>/sitesearch/aller/itavisen/logo.gif" alt="Itavisen logo" /></a>
-                    <a href="../"><img src="<%= site.getImageDir() %>/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
+                    <a href="http://www.itavisen.no/"><img id="sitelogo" src="../images/sitesearch/aller/itavisen/logo.gif" alt="Itavisen logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.itavisen.no/nyheter/">Nyheter</a><span>|</span></li>
                         <li><a href="http://www.itavisen.no/tester/">Tester</a><span>|</span></li>
@@ -189,7 +187,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.itavisen.no/bransjen/">IT-bransjen</a></li>
                     </ul>
                 <% } else if ("nrk".equals(ss)) { %>
-                    <a href="http://www.nrk.no/"><img id="sitelogo" src="<%= site.getImageDir() %>/sitesearch/nrk/logo.gif" alt="Nrk logo" /></a>
+                    <a href="http://www.nrk.no/"><img id="sitelogo" src="../images/sitesearch/nrk/logo.gif" alt="Nrk logo" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.nrk.no/nyheter/">Nyheter</a><span>|</span></li>
                         <li><a href="http://www.nrk.no/sport/">Sport</a><span>|</span></li>
@@ -208,7 +206,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
             </div>
 
             <div id="content_ss">
-                <div id="globalmenu_table"><img src="<%= site.getImageDir() %>/pix.gif" width="1" height="6" alt="" /></div>
+                <div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
                 <div id ="content_top">
                     <dl>
                         <dt>
@@ -227,7 +225,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <dd><decorator:getProperty property="page.greybar_ad"/></dd>
                     </dl>
                 </div>
-                <div class="greybar_line"><img src="<%= site.getImageDir() %>/pix.gif" width="1" height="1" alt="" /></div>
+                <div class="greybar_line"><img src="../images/pix.gif" width="1" height="1" alt="" /></div>
 
                 <!--sesam search in sitesearch modus-->
                 <div id="content_left_ss">
@@ -304,12 +302,12 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
 
     <% } else { %>
 
-<div id="globalmenu_table"><img src="<%= site.getImageDir() %>/pix.gif" width="1" height="6" alt="" /></div>
+<div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
 
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
     <tr>
-        <td width="180"><a href="../"><img src="<%= site.getImageDir() %>/logo.jpg" width="146" height="44" alt="" /></a></td>
-        <td width="24"><img src="<%= site.getImageDir() %>/pix.gif" width="24" height="60" alt="" /></td>
+        <td width="180"><a href="../"><img src="../images/logo.jpg" width="146" height="44" alt="" /></a></td>
+        <td width="24"><img src="../images/pix.gif" width="24" height="60" alt="" /></td>
         <td id="linkback" valign="bottom">
             <%if (currentC.equals("d")) {%>Sesams&#248;k<%} else {%><a href="?c=d&amp;q=<%=qURLEncoded%>" onclick="return strep(this);">Sesams&#248;k</a><% } %>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -333,36 +331,36 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <td colspan="2" class="navbar_menu" id="navbar_menu_y">Bedriftss&#248;k</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
                     </tr>
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?c=d&amp;q=<%=qURLEncoded%>");'>
                         <td class="nav_pad_icon">
-                            <img src="<%= site.getImageDir() %>/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
+                            <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
                             <a href="?c=d&amp;q=<%=qURLEncoded%>" onclick="return strep(this);">Sesams&#248;k</a>
                         </td>
                         <td class="nav_pad" align="right">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                     <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                     Modifier e = (Modifier) iterator.next();
                     %>
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
-                                <img <% if (e.getName().equals("Bedriftssøk")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="<%= site.getImageDir() %>/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                         </tr>
                     <%}%>
                     <% if(int_w_hits > 0) { %>
                     <% }else{ %>
                     <tr>
-                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="25" alt="" /></td>
+                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="../images/pix.gif" width="100%" height="25" alt="" /></td>
                     </tr>
                     <%}%>
                 </table>
@@ -379,36 +377,36 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <td colspan="2" class="navbar_menu" id="navbar_menu_w">Persons&#248;k</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
                     </tr>
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?c=d&amp;q=<%=qURLEncoded%>");'>
                         <td class="nav_pad_icon">
-                            <img src="<%= site.getImageDir() %>/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
+                            <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
                             <a href="?c=d&amp;q=<%=qURLEncoded%>" onclick="return strep(this);">Sesams&#248;k</a>
                         </td>
                         <td class="nav_pad" align="right">&nbsp;</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                     Modifier e = (Modifier) iterator.next();
                     %>
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                         <td class="nav_pad_icon">
-                            <img <% if (e.getName().equals("Bedriftssøk")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="<%= site.getImageDir() %>/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
+                            <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
                             <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                         </td>
                         <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                     </tr>
                     <%}%>
                     <% if(int_y_hits > 0) { %>
                     <% }else{ %>
                     <tr>
-                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="25" alt="" /></td>
+                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="../images/pix.gif" width="100%" height="25" alt="" /></td>
                     </tr>
                     <%}%>
                 </table>
@@ -431,20 +429,20 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                             <td colspan="2" class="navbar_menu" id="navbar_menu_d">Sesams&#248;k</td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" alt="" /></td>
+                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
                         </tr>
                         <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                         Modifier e = (Modifier) iterator.next();
                         %>
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
-                                <img <% if (e.getName().equals("Bedriftssøk")) { %> src="<%= site.getImageDir() %>/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="<%= site.getImageDir() %>/nav_w.gif" <% } else if (e.getName().equals("Bildesøk")) { %> src="<%= site.getImageDir() %>/nav_p.gif" <% } else if (e.getName().startsWith("Nyhetss")) { %> src="<%= site.getImageDir() %>/nav_m.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } else if (e.getName().equals("Bildesøk")) { %> src="../images/nav_p.gif" <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/nav_m.gif" <% } %> class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
                         <tr>
-                            <td colspan="2" class="nopad"><img src="<%= site.getImageDir() %>/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
                         </tr>
                         <%}%>
                 </table>
@@ -464,7 +462,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
             <%}%>
         </td>
 
-            <td class="cell_two" valign="top"><img src="<%= site.getImageDir() %>/pix.gif" width="24" height="1" alt="" class="dash_<%=currentC%>" /></td>
+            <td class="cell_two" valign="top"><img src="../images/pix.gif" width="24" height="1" alt="" class="dash_<%=currentC%>" /></td>
             <%if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")) {%>
             <td class="cell_three" valign="top">
             <% }else{ %>

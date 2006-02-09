@@ -3,10 +3,7 @@
         pageEncoding="UTF-8"
         contentType="text/html;charset=utf-8"%>
 
-<%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
-
-<% final Site site = (Site) request.getAttribute("site"); %>
 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -15,7 +12,7 @@
 <html>
 <head>
     <title>Sesam</title>
-    <link href="<%= site.getCssDir() %>/decorator-style.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/decorator-style.css" rel="stylesheet" type="text/css"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 </head>
 <body>

@@ -61,11 +61,11 @@
     </div>
 </div>
 
-<jsp:include page="indBoxIncl.jsp" />
+<jsp:include page="indBoxIncl.html" />
 
 <div class="index_center">
     <div id="index_enrichment">
-        <jsp:include page="indTextIncl.jsp" />
+        <jsp:include page="indTextIncl.html" />
 
         <div id="footer_space">
             <div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
