@@ -135,7 +135,7 @@
     
     <servlet>
         <servlet-name>Log</servlet-name>
-        <servlet-class>no.schibstedsok.front.searchportal.servlet.log.LoggingServlet</servlet-class>
+        <servlet-class>no.schibstedsok.common.servlet.log.LoggingServlet</servlet-class>
     </servlet>
     
     <servlet-mapping>

@@ -10,8 +10,6 @@ import no.schibstedsok.front.searchportal.query.StopWordRemover;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +21,7 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -37,16 +36,18 @@ import org.w3c.dom.NodeList;
 public final class RegExpEvaluatorFactory {
 
     /**
-     * The context the RegExpEvaluatorFactory must work against. *
+     * The context the RegExpEvaluatorFactory must work against. 
      */
     public interface Context extends ResourceContext, SiteContext {
     }
 
-    private static final Log LOG = LogFactory.getLog(RegExpEvaluatorFactory.class);
+    private static final Logger LOG = Logger.getLogger(RegExpEvaluatorFactory.class);
 
     private static final String ERR_MUST_USE_CONTEXT_CONSTRUCTOR = "Must use constructor that supplies a context!";
     private static final String ERR_DOC_BUILDER_CREATION = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String ERR_COULD_NOT_FIND_TOKEN_PREDICATE = "Failed to find TokenPredicate.";
+    
+    private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
 
     /**
      * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
@@ -115,17 +116,21 @@ public final class RegExpEvaluatorFactory {
                     final NodeList patterns = ((Element) evaluator).getElementsByTagName("pattern");
                     for (int j = 0; j < patterns.getLength(); ++j) {
                         final Element pattern = (Element) patterns.item(j);
-                        LOG.debug(" --->pattern: " + pattern);
-
+                        
                         final String expression = pattern.getFirstChild().getNodeValue();
-                        // FIXE remove \\s* from pattern. It really shouldn't be neccessary.
-                        final Pattern p = Pattern.compile("\\s*" + expression + "\\s*", Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+                        LOG.debug(" --->pattern: " + expression);
+                        
+                        // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
+                        final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
+                        final String suffix = expression.endsWith("$") ? "" : "($|\\s)";
+                        // compile pattern
+                        final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
                         compiled.add(p);
                     }
 
                     final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
-
                     regExpEvaluators.put(token, regExpTokenEvaluator);
+                    
                 }  catch (NoSuchFieldException ex) {
                     LOG.error(ERR_COULD_NOT_FIND_TOKEN_PREDICATE, ex);
                 }  catch (IllegalAccessException ex) {

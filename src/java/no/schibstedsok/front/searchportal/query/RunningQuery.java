@@ -44,8 +44,7 @@ import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.site.Site;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * An object representing a running queryStr.
@@ -61,7 +60,7 @@ public class RunningQuery {
         SearchMode getSearchMode();
     }
 
-    private static final Log LOG = LogFactory.getLog(RunningQuery.class);
+    private static final Logger LOG = Logger.getLogger(RunningQuery.class);
 
 
     private final Context context;
@@ -89,10 +88,10 @@ public class RunningQuery {
      * @param parameters
      */
     public RunningQuery(final Context cxt, final String query, final Map parameters) {
-
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: RunningQuery(): Params: " + parameters);
-        }
+        }//</editor-fold>
 
         context = cxt;
         queryStr = AdvancedQueryBuilder.trimDuplicateSpaces(query);
@@ -249,9 +248,10 @@ public class RunningQuery {
      * @return user tip
      */
     public String getGlobalSearchTips () {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled())  {
             LOG.trace("ENTR: getGlobalSearchTips()");
-        }
+        }//</editor-fold>
         if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
             return TextMessages.valueOf(new TextMessages.Context() {
                 public Site getSite() {
@@ -269,9 +269,10 @@ public class RunningQuery {
 
 
     public Integer getNumberOfHits(final String configName) {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getNumberOfHits()");
-        }
+        }//</editor-fold>
         Integer i = (Integer) hits.get(configName);
         if (i == null) { i = new Integer(0); }
         return i;
@@ -283,9 +284,10 @@ public class RunningQuery {
      * @throws InterruptedException
      */
     public void run() throws InterruptedException {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: run()");
-        }
+        }//</editor-fold>
         try {
 
             final Collection commands = new ArrayList();
@@ -331,9 +333,9 @@ public class RunningQuery {
                             LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
                         }
 
-                        LOG.debug("Scoring old style");
+                        LOG.debug("Scoring old style for " + searchConfiguration.getRule());
                         final int oldScore = rule.evaluate(queryStr, tokenEvaluatorFactory);
-                        LOG.debug("Scoring new style");
+                        LOG.debug("Scoring new style for " + searchConfiguration.getRule());
                         final int newScore = rule.evaluate(queryObj, tokenEvaluatorFactory);
 
                         
@@ -418,9 +420,10 @@ public class RunningQuery {
     }
 
     private String getSingleParameter(final String paramName) {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getSingleParameter()");
-        }
+        }//</editor-fold>
         String[] param = (String[]) parameters.get(paramName);
 
         if (param != null) {
@@ -443,81 +446,92 @@ public class RunningQuery {
     }
 
     public int getNumberOfTerms() {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getNumberOfTerms()");
-        }
+        }//</editor-fold>
         return QueryTokenizer.tokenize(queryStr).size();
     }
 
 
     public String getQueryString() {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getQueryString()");
-        }
+        }//</editor-fold>
         return queryStr;
     }
 
     public int getOffset() {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getOffset(): " + offset);
-        }
+        }//</editor-fold>
         return offset;
     }
 
     public void setOffset(final int offset) {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: setOffset():" + offset);
-        }
+        }//</editor-fold>
         this.offset = offset;
     }
 
     public Locale getLocale() {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getLocale()");
-        }
+        }//</editor-fold>
         return locale;
     }
 
     public SearchMode getSearchMode() {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getSearchMode()");
-        }
+        }//</editor-fold>
         return context.getSearchMode();
     }
 
     public List getSources() {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getSources()");
-        }
+        }//</editor-fold>
         return sources;
     }
 
     public void addSource(final Modifier modifier) {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: addSource()");
-        }
+        }//</editor-fold>
         sources.add(modifier);
     }
 
     public List getEnrichments() {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getEnrichments()");
-        }
+        }//</editor-fold>
         return enrichments;
     }
 
     public TokenEvaluatorFactory getTokenEvaluatorFactory() {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getTokenEvaluatorFactory()");
-        }
+        }//</editor-fold>
         return tokenEvaluatorFactory;
     }
 
-    // Find some other way to do this. Really do!
+    // TODO Find some other way to do this. Really do!
     public String getSourceParameters(final String source) {
+        // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
             LOG.trace("ENTR: getSourceParameters() Source=" + source);
-        }
+        }//</editor-fold>
 
         if (source.equals("Norske nettsider")) {
             return "c=n";
