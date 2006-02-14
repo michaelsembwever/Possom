@@ -384,6 +384,8 @@ public class RunningQuery {
 
             final List results = context.getSearchMode().getExecutor().invokeAll(commands, 30000);
 
+            // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
+            //  spent in task.isDone()
             for (Iterator iterator = results.iterator(); iterator.hasNext();) {
                 final SearchTask task = (SearchTask) iterator.next();
 

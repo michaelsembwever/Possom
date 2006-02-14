@@ -14,10 +14,9 @@ import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.front.searchportal.util.TradeDoubler;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Category;
+import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -40,7 +39,7 @@ import java.net.URLEncoder;
  */
 public final class VelocityResultHandler implements ResultHandler {
 
-    private static Log log = LogFactory.getLog(VelocityResultHandler.class);
+    private static Logger LOG = Logger.getLogger(VelocityResultHandler.class);
 
     public void handleResult(final Context cxt, final Map parameters) {
 
@@ -50,9 +49,7 @@ public final class VelocityResultHandler implements ResultHandler {
             return;
         }
 
-        if (log.isTraceEnabled()) {
-            log.trace("ENTR: handleResult()");
-        }
+        LOG.trace("handleResult()");
         final SearchResult result = cxt.getSearchResult();
 
         // This requirement of the users of this class to send the web stuff
@@ -69,8 +66,8 @@ public final class VelocityResultHandler implements ResultHandler {
         final SearchConfiguration searchConfiguration = result.getSearchCommand().getSearchConfiguration();
         
         try {
-            if (log.isDebugEnabled()) {
-                log.debug("handleResult: Looking for template: " + searchConfiguration + searchConfiguration.getName() + ".vm");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("handleResult: Looking for template: " + searchConfiguration + searchConfiguration.getName() + ".vm");
             }
 
             final Site site = cxt.getSite();
@@ -84,8 +81,8 @@ public final class VelocityResultHandler implements ResultHandler {
 
             final Template template = engine.getTemplate(templateUrl);
 
-            if (log.isDebugEnabled()) {
-                log.debug("handleResult: Created Template=" + template.getName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("handleResult: Created Template=" + template.getName());
             }
             
             final VelocityContext context = new VelocityContext();
@@ -103,9 +100,8 @@ public final class VelocityResultHandler implements ResultHandler {
                                            final HttpServletRequest request,
                                            final HttpServletResponse response) {
 
-        if (log.isTraceEnabled()) {
-            log.trace("ENTR: populateVelocityContext()");
-        }
+        LOG.trace("populateVelocityContext()");
+
         final SearchResult result = cxt.getSearchResult();
         String queryString = result.getSearchCommand().getQuery().getQueryString();
 
@@ -141,7 +137,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("runningQuery", result.getSearchCommand().getQuery());
         context.put("math", new MathTool());
         context.put("site", cxt.getSite());
-	context.put("tradedoubler", new TradeDoubler(request));
+        context.put("tradedoubler", new TradeDoubler(request));
 
         final SearchConfiguration config = result.getSearchCommand().getSearchConfiguration();
 

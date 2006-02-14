@@ -24,8 +24,7 @@ import java.net.URLConnection;
 import java.io.InputStream;
 import java.util.Vector;
 import no.schibstedsok.front.searchportal.site.Site;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ResourceLoader;
@@ -54,7 +53,7 @@ import org.apache.commons.collections.ExtendedProperties;
  */
 public final class URLVelocityTemplateLoader extends ResourceLoader {
 
-    private static final Log LOG = LogFactory.getLog(URLVelocityTemplateLoader.class);
+    private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
     
     private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
     private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";

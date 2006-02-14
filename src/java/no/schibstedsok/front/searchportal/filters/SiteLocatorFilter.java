@@ -55,7 +55,7 @@ public final class SiteLocatorFilter implements Filter {
     private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)
             throws IOException, ServletException {
 
-        LOG.debug("doBeforeProcessing");
+        LOG.trace("doBeforeProcessing()");
 
         request.setAttribute(Site.NAME_KEY, getSite(request));
 
@@ -64,7 +64,7 @@ public final class SiteLocatorFilter implements Filter {
     private void doAfterProcessing(final ServletRequest request, final ServletResponse response)
             throws IOException, ServletException {
 
-        LOG.debug("doAfterProcessing");
+        LOG.trace("doAfterProcessing()");
         //
         // Write code here to process the request and/or response after
         // the rest of the filter chain is invoked.
@@ -87,7 +87,7 @@ public final class SiteLocatorFilter implements Filter {
             final FilterChain chain)
                 throws IOException, ServletException {
 
-        LOG.debug("doFilter()");
+        LOG.trace("doFilter()");
 
         try  {
 

@@ -44,9 +44,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
     public AbstractSearchCommand(final SearchCommand.Context cxt,
                                  final Map parameters) {
         
-        if(LOG.isDebugEnabled()){
-            LOG.debug("ENTR: AbstractSearchCommand()");
-        }
+        LOG.trace("AbstractSearchCommand()");
         context = cxt;
         this.parameters = parameters;
     }
@@ -57,9 +55,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      * @return The Query.
      */
     public final RunningQuery getQuery() {
-        if(LOG.isDebugEnabled()){
-            LOG.debug("ENTR: getQuery()");
-        }
+        LOG.trace("getQuery()");
         return context.getQuery();
     }
 
@@ -76,9 +72,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             LOG.info("STATISTICS: " + getSearchConfiguration().getStatisticsName());
         } 
         
-        if( LOG.isDebugEnabled()){
-            LOG.debug("ENTR: call()");
-        }
+        LOG.trace("call()");
         String queryToUse;
 
         if (getSearchConfiguration().getUseParameterAsQuery() != null) {
