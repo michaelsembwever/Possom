@@ -20,8 +20,8 @@
     <description>This is the project for Schibsted Søk's search-front application.</description>
     <url>https://dev.schibstedsok.no/maven/sites/search-front-html/</url>
     <issueTrackingUrl>https://dev.schibstedsok.no/jira/secure/BrowseProject.jspa?id=10000</issueTrackingUrl>
-    <siteAddress>login.osl.basefarm.net</siteAddress>
-    <siteDirectory>/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/admin/front/search-front-html</siteDirectory>
+    <siteAddress>https://dev.schibstedsok.no/maven/sites/search-front-html/</siteAddress>
+    <siteDirectory>/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html</siteDirectory>
     <repository>
         <connection>scm:svn:https://dev.schibstedsok.no/svn/search-front-html/trunk/</connection>
     </repository>
