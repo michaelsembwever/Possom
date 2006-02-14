@@ -1,6 +1,8 @@
 package no.schibstedsok.front.searchportal.result;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Created by IntelliJ IDEA.
@@ -61,5 +63,13 @@ public class Decoder {
             return true;
 
         return false;
+    }
+
+    //to be inserted in link to olympic tv-program
+    public String dayOfMonth() {
+        Calendar cal = Calendar.getInstance();
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+
+        return Integer.toString(day);
     }
 }

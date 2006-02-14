@@ -132,6 +132,8 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
             currentC.equals("d") && "pr".equals(ss) ||
             currentC.equals("d") && "im".equals(ss) ||
             currentC.equals("d") && "nrk".equals(ss) ||
+            currentC.equals("d") && "af".equals(ss) ||
+            currentC.equals("d") && "fv".equals(ss) ||
             currentC.equals("d") && "it".equals(ss)) { %>
 
 
@@ -139,7 +141,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
             <div id="header">
                 <% if ("ds".equals(ss)) { %>
                     <a href="http://www.dinside.no"><img id="sitelogo" src="../images/sitesearch/aller/dinside/logo.gif" alt="Dinside logo" /></a>
-                    <a href="../"><img id="xx" src="../images/sitesearch/aller/sesam.gif" style="padding-bottom: 11px;" alt="Sesam logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" style="padding-bottom: 11px;" alt="Sesam logo" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.dinside.no/data/">Data</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/reise/">Reise</a><span>|</span></li>
@@ -200,6 +202,30 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www7.nrk.no/nrkplayer/default.aspx?Hovedkategori_id=2">Nett-TV</a><span>|</span></li>
                         <li><a href="http://www.nrk.no/tjenester/nrk_nettradio/3220264.html?kanal=p1">Nettradio</a></li>
                     </ul>
+                <% } else if ("af".equals(ss)) { %>
+                    <a href="http://www.aftenposten.no/"><img id="sitelogo" src="../images/sitesearch/aftenposten/logo.gif" alt="Aftenposten logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
+                    <ul id="sitelinks">
+                        <li><a href="http://www.aftenposten.no/nyheter/iriks/">Innenriks</a><span>|</span></li>
+                        <li><a href="http://www.aftenposten.no/nyheter/uriks/">Utenriks</a><span>|</span></li>
+                        <li><a href="http://www.aftenposten.no/nyheter/okonomi/">&#216;konomi</a><span>|</span></li>
+                        <li><a href="http://debatt.aftenposten.no/Group.asp">Meninger & Debatt</a><span>|</span></li>
+                        <li><a href="http://www.aftenposten.no/nyheter/sport/">Sport</a><span>|</span></li>
+                        <li><a href="http://forbruker.no/">Forbruker.no</a></li>
+                    </ul>
+                <% } else if ("fv".equals(ss)) { %>
+                    <a href="http://www.fedrelandsvennen.no/"><img id="sitelogo" src="../images/sitesearch/fevennen/logo.gif" alt="Aftenposten logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
+                    <ul id="sitelinks">
+                        <li><a href="http://www.fedrelandsvennen.no/">Hovedsiden</a><span>|</span></li>
+                        <li><a href="http://www.fedrelandsvennen.no/nyheter/">Nyheter</a><span>|</span></li>
+                        <li><a href="http://www.fedrelandsvennen.no/sport/">Sport</a><span>|</span></li>
+                        <li><a href="http://fotball.fvn.no/">Fotball</a><span>|</span></li>
+                        <li><a href="http://www.fedrelandsvennen.no/kulturpuls/">Kulturpuls</a><span>|</span></li>
+                        <li><a href="http://www.fedrelandsvennen.no/vi_og_vart/">Vi & v&#229;rt</a><span>|</span></li>
+                        <li><a href="http://www.fedrelandsvennen.no/meninger/">Meninger</a><span>|</span></li>
+                        <li><a href="http://www.fedrelandsvennen.no/nyttig/varet/">V&#230;ret</a></li>
+                    </ul>
                 <% } %>
                 <decorator:getProperty property="page.search-bar"/>
 
@@ -217,6 +243,8 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                                 <% } else if ("it".equals(ssr)) { %> Itavisen:
                                 <% } else if ("im".equals(ssr)) { %> iMarkedet:
                                 <% } else if ("nrk".equals(ssr)) { %> NRK:
+                                <% } else if ("af".equals(ssr)) { %> Aftenposten:
+                                <% } else if ("af".equals(ssr)) { %> F&#230;drelandsvennen:
                                 <% } else if ("d".equals(ssr)) { %> Nettet:
                                 <% } %>
                             </span>

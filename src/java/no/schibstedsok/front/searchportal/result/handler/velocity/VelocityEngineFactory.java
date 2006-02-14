@@ -64,7 +64,7 @@ public final class VelocityEngineFactory {
             engine.setProperty("url.site", site);
             engine.setProperty("url.site.fallback",Site.DEFAULT);
             engine.setProperty("input.encoding", "UTF-8");
-            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective");
+            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.velocity.CapitalizeWordsDirective");
             engine.init();
             
         } catch (Exception e) {

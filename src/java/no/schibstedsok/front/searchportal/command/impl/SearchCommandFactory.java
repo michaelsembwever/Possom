@@ -12,12 +12,14 @@ import java.util.Map;
 
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.MathExpressionCommand;
+import no.schibstedsok.front.searchportal.command.OlympicSearchCommand;
 import no.schibstedsok.front.searchportal.command.OverturePPCCommand;
 import no.schibstedsok.front.searchportal.command.PicSearchCommand;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowSearchCommand;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration;
+import no.schibstedsok.front.searchportal.configuration.OlympicSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration;
 import no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
@@ -57,6 +59,8 @@ public final class SearchCommandFactory {
             return new FastSearchCommand(cxt, parameters);
         }else if( config instanceof YellowSearchConfiguration ){
             return new YellowSearchCommand(cxt, parameters);
+        }else if( config instanceof OlympicSearchConfiguration ){
+            return new OlympicSearchCommand(cxt, parameters);
         }
         throw new UnsupportedOperationException("Cannot find suitable command for "+config.getName());
     }

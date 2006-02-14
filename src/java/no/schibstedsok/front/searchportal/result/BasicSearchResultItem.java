@@ -93,4 +93,13 @@ public class BasicSearchResultItem implements SearchResultItem {
             return super.hashCode();
         }
     }
+
+    public void addNestedSearchResult(String field, SearchResult nestedResult) {
+       fields.put(field, nestedResult);
+        
+    }
+
+    public SearchResult getNestedSearchResult(String field) {
+       return (SearchResult) fields.get(field);
+    }
 }

@@ -16,6 +16,7 @@ import no.schibstedsok.front.searchportal.command.AbstractSearchCommand;
  *
  * @author <a href="mailto:thomas.kjerstad@schibsted.no">Thomas Kjaerstad</a>.
  * @version <tt>$Revision$</tt>
+ * 
  */
 public class RetrieverLogServlet extends HttpServlet {
 
@@ -24,10 +25,22 @@ public class RetrieverLogServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-        String paper = req.getParameter("paper");
-        Log log = LogFactory.getLog(AbstractSearchCommand.class);
-        log.info("STATISTICS: papiraviser - " + paper);
-        res.setHeader("Cache-Control", "no-cache");
+        String type = req.getParameter("type");
+
+        //logs click on homepage link from yellow resultpage and from infopage
+        if ("homepage".equals(type)) {
+            String ypos = "";
+            if ("y".equals(req.getParameter("c")))
+                ypos = " ypos: " + req.getParameter("ypos");
+            Log log = LogFactory.getLog(AbstractSearchCommand.class);
+            log.info("STATISTICS: " + req.getParameter("c") + "_hp company: " + req.getParameter("name") + " q: " + req.getParameter("q") + ypos);
+            res.setHeader("Cache-Control", "no-cache");
+        } else {
+            String paper = req.getParameter("paper");
+            Log log = LogFactory.getLog(AbstractSearchCommand.class);
+            log.info("STATISTICS: papiraviser - " + paper);
+            res.setHeader("Cache-Control", "no-cache");
+        }
 
     }
 }

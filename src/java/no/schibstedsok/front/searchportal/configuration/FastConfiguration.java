@@ -44,7 +44,7 @@ public class FastConfiguration extends AbstractSearchConfiguration {
         return collections;
     }
 
-    public void addColletion(final String collectionName) {
+    public void addCollection(final String collectionName) {
         collections.add(collectionName);
     }
 

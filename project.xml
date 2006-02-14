@@ -372,6 +372,8 @@
                 <includes>
                     <include>*.xml</include>
                     <include>*.properties</include>
+                    <include>*.csv</include>
+                    <include>*.txt</include>
                 </includes>
             </resource>
             <resource>
@@ -379,6 +381,13 @@
                 <includes>
                     <include>*.vm</include>
                     <include>*.html</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/data</directory>
+                <includes>
+                    <include>*.csv</include>
+                    <include>*.txt</include>
                 </includes>
             </resource>
         </resources>

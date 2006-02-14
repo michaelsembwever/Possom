@@ -29,7 +29,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * #urlencode('&q=hej', 'iso-8859-1')
  * </code>
  *
- * The default encoding is utf-8.
+ * The default charset is utf-8.
  *
  * @author magnuse
  */
@@ -69,7 +69,7 @@ public class UrlEncodeDirective extends Directive {
      * @throws org.apache.velocity.exception.ResourceNotFoundException
      * @throws org.apache.velocity.exception.ParseErrorException
      * @throws org.apache.velocity.exception.MethodInvocationException
-     * @return
+     * @return the encoded string.
      */
     public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
         if (node.jjtGetNumChildren() < 1) {

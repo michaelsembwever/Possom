@@ -34,9 +34,9 @@ public class SearchModeTest extends TestCase {
         final FastConfiguration webCrawl = new FastConfiguration();
 
         webCrawl.setQueryServerURL("http://localhost:15100");
-        webCrawl.addColletion("webcrawlno1");
-        webCrawl.addColletion("webcrawlno1deep1");
-        webCrawl.addColletion("webcrawlno2");
+        webCrawl.addCollection("webcrawlno1");
+        webCrawl.addCollection("webcrawlno1deep1");
+        webCrawl.addCollection("webcrawlno2");
         webCrawl.addResultHandler(new TextOutputResultHandler());
         webCrawl.addResultField("url");
         webCrawl.addResultField("title");

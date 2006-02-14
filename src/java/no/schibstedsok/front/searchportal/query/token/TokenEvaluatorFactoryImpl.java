@@ -6,6 +6,7 @@ package no.schibstedsok.front.searchportal.query.token;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
+import no.schibstedsok.front.searchportal.analyzer.OlympicTokenEvaluator;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
@@ -29,7 +30,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new AlwaysTrueTokenEvaluator();
 
     private volatile TokenEvaluator fastEvaluator;
-
+    private OlympicTokenEvaluator olympicEvaluator = new OlympicTokenEvaluator();
+    
     private static final Log LOG = LogFactory.getLog(TokenEvaluatorFactoryImpl.class);
 
     private final Context context;
@@ -66,6 +68,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
             return getFastEvaluator();
         }  else if ( token instanceof TokenPredicate.RegExpTokenPredicate ) {
             return RegExpEvaluatorFactory.valueOf(context).getEvaluator(token);
+        } else if ( token instanceof TokenPredicate.OlympicTokenPredicate ) {
+            return olympicEvaluator;
         }
 
 //        } else if (token == TokenPredicate.GEO ) { // shouldn't be called as it's a OrPredicate from AnalysisRules

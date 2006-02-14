@@ -8,6 +8,8 @@ import java.util.Collection;
  */
 public interface SearchResultItem {
     void addField(String field, String value);
+    void addNestedSearchResult(String field, SearchResult nestedResult);
+    SearchResult getNestedSearchResult(String field);
     String getField(String field);
     Object getFieldAsObject(String field);
     Collection getFieldNames();
