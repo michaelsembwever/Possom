@@ -57,24 +57,24 @@ public abstract class AbstractQuery implements Query {
             return firstLeaf;
         }
 
-        public void visitImpl(final AndClause clause) {
+        public void visitImpl(final AndClauseImpl clause) {
             if (searching) { // still looking
                 clause.getFirstClause().accept(this);
             }
         }
 
-        public void visitImpl(final OrClause clause) {
+        public void visitImpl(final OrClauseImpl clause) {
             if (searching) { // still looking
                 clause.getFirstClause().accept(this);
             }
         }
 
-        public void visitImpl(final NotClause clause) {
+        public void visitImpl(final NotClauseImpl clause) {
             // this cancels the search for a firstLeafClause...
             searching = false;
         }
 
-        public void visitImpl(final AndNotClause clause) {
+        public void visitImpl(final AndNotClauseImpl clause) {
             // this cancels the search for a firstLeafClause...
             searching = false;
         }

@@ -12,49 +12,50 @@ import java.util.Set;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
-/** Nine digit organisation clause.
- * May contain spaces.
- *
- *<b>Objects of this class are immutable</b>
- *
+/**
+ * IntegerClauseImpl. Contains only digits.
+ * 
+ * <b>Objects of this class are immutable</b>
+ * 
+ * @author <a hrefIntegerClauseImpl@wever.org">Michael Semb Wever</a>
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public class OrganisationNumberClause extends WordClause {
+public class IntegerClauseImpl extends WordClauseImpl {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
     private static final Map/*<Long,WeakReference<AbstractClause>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AbstractClause>>*/();
 
-    /* A IntegerClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE; // TokenPredicate.getTokenPredicates();
+    /* A IntegerClauseImpl specific collection of TokenPredicates that *could* apply to this Clause type. */
+    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
 
     static {
         final Collection/*<Predicate>*/ predicates = new ArrayList();
         predicates.add(TokenPredicate.ALWAYSTRUE);
         // Predicates from RegExpEvaluators
-        predicates.add(TokenPredicate.ORGNR);
+
         // Add all FastTokenPredicates
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 
     /**
-     * Creator method for OrganisationNumberClause objects. By avoiding the constructors,
-     * and assuming all OrganisationNumberClause objects are immutable, we can keep track
+     * Creator method for IntegerClauseImpl objects. By avoiding the constructors,
+     * and assuming all IntegerClauseImpl objects are immutable, we can keep track
      * (via a weak reference map) of instances already in use in this JVM and reuse
      * them.
-     * The methods also allow a chunk of creation logic for the OrganisationNumberClause to be moved
+     * The methods also allow a chunk of creation logic for the IntegerClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
+     * 
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @return returns a OrganisationNumberClause instance matching the term, left and right child clauses.
+     * @return returns a IntIntegerClauseImplstance matching the term, left and right child clauses.
      * May be either newly created or reused.
      */
-    public static OrganisationNumberClause createOrganisationNumberClause(
+    public static IntegerClauseImpl createIntegerClause(
         final String term,
         final String field,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
@@ -62,8 +63,8 @@ public class OrganisationNumberClause extends WordClause {
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
         // use helper method from AbstractLeafClause
-        return (OrganisationNumberClause) createClause(
-                OrganisationNumberClause.class,
+        return (IntegerClauseImpl) createClause(
+                IntegerClauseImpl.class,
                 term,
                 field,
                 predicate2evaluatorFactory,
@@ -77,7 +78,7 @@ public class OrganisationNumberClause extends WordClause {
      * @param knownPredicates the set of known predicates for this clause.
      * @param possiblePredicates the set of possible predicates for this clause.
      */
-    protected OrganisationNumberClause(
+    protected IntegerClauseImpl(
             final String term,
             final String field,
             final Set/*<Predicate>*/ knownPredicates,

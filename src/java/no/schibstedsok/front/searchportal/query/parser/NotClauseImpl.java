@@ -12,20 +12,20 @@ import java.util.Set;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
-/**The AndNotClause represents a joining not clause between two terms in the query.
- * For example: "term1 ANDNOT term2".
- *<b>Objects of this class are immutable</b>
- *
+/**
+ * The NotClauseImpl represents a not clause between prefixing another term in the query.
+ * For example: "NOT term1".
+ * <b>Objects of this class are immutable</b>
+ * 
+ * @author <a hrefNotClauseImplmick@wever.org">Michael Semb Wever</a>
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class AndNotClause extends AbstractOperationClause {
+public final class NotClauseImpl extends AbstractOperationClause {
 
-    /** Values are WeakReference object to AndNotClause.
+    /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
-     * An overlap of creation is non-critical.
      */
-    private static final Map/*<Long,WeakReference<AndNotClause>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AndNotClause>>*/();
+    private static final Map/*<Long,WeakReference<NotClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<NotClauseImpl>>*/();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
@@ -33,69 +33,62 @@ public final class AndNotClause extends AbstractOperationClause {
     static {
         final Collection/*<Predicate>*/ predicates = new ArrayList();
         predicates.add(TokenPredicate.ALWAYSTRUE);
-        // Predicates from RegExpEvaluators
 
-        // Add all FastTokenPredicates
-        predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 
-    private final Clause firstClause;
-    private final Clause secondClause;
+    private final Clause clause;
 
     /**
-     * Creator method for AndNotClause objects. By avoiding the constructors,
-     * and assuming all AndNotClause objects are immutable, we can keep track
+     * Creator method for NotClauseImpl objects. By avoiding the constructors,
+     * and assuming all NotClauseImpl objects are immutable, we can keep track
      * (via a weak reference map) of instances already in use in this JVM and reuse
      * them.
-     * The methods also allow a chunk of creation logic for the AndNotClause to be moved
+     * The methods also allow a chunk of creation logic for the NotClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
+     * 
      * @param first the left child clause of the operation clause we are about to create (or find).
      * The current implementation always creates a right-leaning query heirarchy.
      * Therefore the left child clause to any operation clause must be a LeafClause.
-     * @param second the right child clause of the operation clause we are about to create (or find).
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @return returns a AndNotClause instance matching the term, left and right child clauses.
+     * @return returns a NoNotClauseImplnstance matching the term, and left child clauses.
      * May be either newly created or reused.
      */
-    public static AndNotClause createAndNotClause(
+    public static NotClauseImpl createNotClause(
         final LeafClause first,
-        final Clause second,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
-        final String term = (first.getField() != null ? first.getField() + ":" : "")
-                + first.getTerm()
-                + " ANDNOT "
-                + (second instanceof LeafClause && ((LeafClause) second).getField() != null
-                    ?  ((LeafClause) second).getField() + ":"
-                    : "")
-                + second.getTerm();
+        final String term = "NOT "
+                + (first.getField() != null ? first.getField() + ":" : "")
+                + first.getTerm();
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
 
         // use helper method from AbstractLeafClause
-        return (AndNotClause) createClause(
-                AndNotClause.class,
+        return (NotClauseImpl) createClause(
+                NotClauseImpl.class,
                 term,
                 first,
-                second,
+                null,
                 predicate2evaluatorFactory,
                 PREDICATES_APPLICABLE, WEAK_CACHE);
     }
 
     /**
-     * Create the AndNotClause with the given term, left and right child clauses, and known and possible predicate sets.
-     * @param term the term for this AndClause.
+     * Create the NotClauseImpl with the given term, and left child clauses, and known and possible predicate sets.
+     * 
+     * @param term the term for this OrClause.
      * @param knownPredicates set of known predicates.
      * @param possiblePredicates set of possible predicates.
      * @param first the left child clause.
      * @param second the right child clause.
+     * NOT USED but required to utilitise the createClause method in createNotClause.
      */
-    protected AndNotClause(
+    protected NotClauseImpl(
             final String term,
             final Clause first,  // really is a LeafClause
             final Clause second,
@@ -103,25 +96,16 @@ public final class AndNotClause extends AbstractOperationClause {
             final Set/*<Predicate>*/ possiblePredicates) {
 
         super(term, knownPredicates, possiblePredicates);
-        this.firstClause = first;
-        this.secondClause = second;
-    }
-    /**
-     * Get the firstClause.
-     *
-     * @return the firstClause.
-     */
-    public Clause getFirstClause() {
-        return firstClause;
+        this.clause = first;
+        //this.secondClause = second; // this parameter not used! On purpose. See {@link createClause}.
     }
 
-    /**
-     * Get the secondClause.
+    /** Get the clause.
      *
-     * @return the secondClause.
+     * @return the clause.
      */
-    public Clause getSecondClause() {
-        return secondClause;
+    public Clause getClause() {
+        return clause;
     }
 
 }

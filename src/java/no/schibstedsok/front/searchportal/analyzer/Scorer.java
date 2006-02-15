@@ -13,11 +13,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
-import no.schibstedsok.front.searchportal.query.parser.AndClause;
-import no.schibstedsok.front.searchportal.query.parser.AndNotClause;
+import no.schibstedsok.front.searchportal.query.parser.AndClauseImpl;
+import no.schibstedsok.front.searchportal.query.parser.AndNotClauseImpl;
 import no.schibstedsok.front.searchportal.query.parser.Clause;
-import no.schibstedsok.front.searchportal.query.parser.NotClause;
-import no.schibstedsok.front.searchportal.query.parser.OrClause;
+import no.schibstedsok.front.searchportal.query.parser.NotClauseImpl;
+import no.schibstedsok.front.searchportal.query.parser.OrClauseImpl;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
@@ -71,25 +71,25 @@ public final class Scorer extends AbstractReflectionVisitor {
         return score;
     }
 
-    public void visitImpl(final AndClause clause) {
+    public void visitImpl(final AndClauseImpl clause) {
         clause.getFirstClause().accept(this);
         scoreClause(clause, true);
         clause.getSecondClause().accept(this);
     }
 
-    public void visitImpl(final OrClause clause) {
+    public void visitImpl(final OrClauseImpl clause) {
         clause.getFirstClause().accept(this);
         scoreClause(clause, true);
         clause.getSecondClause().accept(this);
     }
 
-    public void visitImpl(final NotClause clause) {
+    public void visitImpl(final NotClauseImpl clause) {
         clause.getClause().accept(this);
         scoreClause(clause, false); //  reverse this scoring
 
     }
 
-    public void visitImpl(final AndNotClause clause) {
+    public void visitImpl(final AndNotClauseImpl clause) {
         clause.getFirstClause().accept(this);
         scoreClause(clause, false); //  reverse this scoring
         clause.getSecondClause().accept(this);

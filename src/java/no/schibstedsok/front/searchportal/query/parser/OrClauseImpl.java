@@ -13,19 +13,19 @@ import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
 /**
- * The AndClause represents a joining clause between two terms in the query.
- * For example: "term1 AND term2".
- *<b>Objects of this class are immutable</b>
- *
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ * The OrClauseImpl represents a joining clause between two terms in the query.
+ * For example: "term1 OR term2".
+ * <b>Objects of this class are immutable</b>
+ * 
+ * @author <a hrefOrClauseImpl:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class AndClause extends AbstractOperationClause {
+public final class OrClauseImpl extends AbstractOperationClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map/*<Long,WeakReference<AndClause>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AndClause>>*/();
+    private static final Map/*<Long,WeakReference<OrClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<OrClauseImpl>>*/();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
@@ -41,27 +41,27 @@ public final class AndClause extends AbstractOperationClause {
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 
-
     private final Clause firstClause;
     private final Clause secondClause;
 
     /**
-     * Creator method for AndClause objects. By avoiding the constructors,
-     * and assuming all AndClause objects are immutable, we can keep track
+     * Creator method for OrClauseImpl objects. By avoiding the constructors,
+     * and assuming all OrClauseImpl objects are immutable, we can keep track
      * (via a weak reference map) of instances already in use in this JVM and reuse
      * them.
-     * The methods also allow a chunk of creation logic for the AndClause to be moved
+     * The methods also allow a chunk of creation logic for the OrClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
+     * 
      * @param first the left child clause of the operation clause we are about to create (or find).
      * The current implementation always creates a right-leaning query heirarchy.
      * Therefore the left child clause to any operation clause must be a LeafClause.
      * @param second the right child clause of the operation clause we are about to create (or find).
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @return returns a AndClause instance matching the term, left and right child clauses.
+     * @return returns a OrCOrClauseImplstance matching the term, left and right child clauses.
      * May be either newly created or reused.
      */
-    public static AndClause createAndClause(
+    public static OrClauseImpl createOrClause(
         final LeafClause first,
         final Clause second,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
@@ -70,7 +70,7 @@ public final class AndClause extends AbstractOperationClause {
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
         final String term = (first.getField() != null ? first.getField() + ":" : "")
                 + first.getTerm()
-                + " AND "
+                + " OR "
                 + (second instanceof LeafClause && ((LeafClause) second).getField() != null
                     ?  ((LeafClause) second).getField() + ":"
                     : "")
@@ -80,8 +80,8 @@ public final class AndClause extends AbstractOperationClause {
         predicate2evaluatorFactory.setCurrentTerm(term);
 
         // use helper method from AbstractLeafClause
-        return (AndClause) createClause(
-                AndClause.class,
+        return (OrClauseImpl) createClause(
+                OrClauseImpl.class,
                 term,
                 first,
                 second,
@@ -90,14 +90,15 @@ public final class AndClause extends AbstractOperationClause {
     }
 
     /**
-     * Create clause with the given term, field, known and possible predicates.
-     * @param term the term (query string) for this clause.
-     * @param first the leaf child clause
-     * @param second the right child clause
-     * @param knownPredicates the set of known predicates for this clause.
-     * @param possiblePredicates the set of possible predicates for this clause.
+     * Create the OrClauseImpl with the given term, left and right child clauses, and known and possible predicate sets.
+     * 
+     * @param term the term for this OrClauseImpl.
+     * @param knownPredicates set of known predicates.
+     * @param possiblePredicates set of possible predicates.
+     * @param first the left child clause.
+     * @param second the right child clause.
      */
-    protected AndClause(
+    protected OrClauseImpl(
             final String term,
             final Clause first,  // really is a LeafClause
             final Clause second,
@@ -126,5 +127,4 @@ public final class AndClause extends AbstractOperationClause {
     public Clause getSecondClause() {
         return secondClause;
     }
-
 }

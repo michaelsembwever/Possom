@@ -13,10 +13,15 @@ import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
 /**
+ * Nine digit organisation clause.
+ * May contain spaces.
+ * 
+ * <b>Objects of this class are immutable</b>
+ * 
+ * @author <a hrefOrganisationNumberClauseImpl>Michael Semb Wever</a>
  * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public class PhoneNumberClause extends WordClause {
+public class OrganisationNumberClauseImpl extends WordClauseImpl {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
@@ -30,28 +35,28 @@ public class PhoneNumberClause extends WordClause {
         final Collection/*<Predicate>*/ predicates = new ArrayList();
         predicates.add(TokenPredicate.ALWAYSTRUE);
         // Predicates from RegExpEvaluators
-        predicates.add(TokenPredicate.PHONENUMBER);
+        predicates.add(TokenPredicate.ORGNR);
         // Add all FastTokenPredicates
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 
-
     /**
-     * Creator method for PhoneNumberClause objects. By avoiding the constructors,
-     * and assuming all PhoneNumberClause objects are immutable, we can keep track
+     * Creator method for OrganisationNumberClauseImpl objects. By avoiding the constructors,
+     * and assuming all OrganisationNumberClauseImpl objects are immutable, we can keep track
      * (via a weak reference map) of instances already in use in this JVM and reuse
      * them.
-     * The methods also allow a chunk of creation logic for the PhoneNumberClause to be moved
+     * The methods also allow a chunk of creation logic for the OrganisationNumberClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
+     * 
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @return returns a PhoneNumberClause instance matching the term, left and right child clauses.
+     * @return returns a OrgOrganisationNumberClauseImplstance matching the term, left and right child clauses.
      * May be either newly created or reused.
      */
-    public static PhoneNumberClause createPhoneNumberClause(
+    public static OrganisationNumberClauseImpl createOrganisationNumberClause(
         final String term,
         final String field,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
@@ -59,8 +64,8 @@ public class PhoneNumberClause extends WordClause {
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
         // use helper method from AbstractLeafClause
-        return (PhoneNumberClause) createClause(
-                PhoneNumberClause.class,
+        return (OrganisationNumberClauseImpl) createClause(
+                OrganisationNumberClauseImpl.class,
                 term,
                 field,
                 predicate2evaluatorFactory,
@@ -74,7 +79,7 @@ public class PhoneNumberClause extends WordClause {
      * @param knownPredicates the set of known predicates for this clause.
      * @param possiblePredicates the set of possible predicates for this clause.
      */
-    protected PhoneNumberClause(
+    protected OrganisationNumberClauseImpl(
             final String term,
             final String field,
             final Set/*<Predicate>*/ knownPredicates,

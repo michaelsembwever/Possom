@@ -11,66 +11,59 @@ import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
-/** Represent a word in the query. May contain the optional field (field:word).
- * May contain both character and digits but cannot contain only digits
- * (a IntegerClause will be used instead then).
- *
- *
- * @version $Id$
+
+/**
+ * 
+ * 
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ * @version $Id$
  */
-public class WordClause extends AbstractLeafClause {
+public class PhoneNumberClauseImpl extends WordClauseImpl {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
     private static final Map/*<Long,WeakReference<AbstractClause>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AbstractClause>>*/();
 
-    /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
+    /* A IntegerClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE; // TokenPredicate.getTokenPredicates();
 
     static {
         final Collection/*<Predicate>*/ predicates = new ArrayList();
         predicates.add(TokenPredicate.ALWAYSTRUE);
         // Predicates from RegExpEvaluators
-        predicates.add(TokenPredicate.PICTUREPREFIX);
-        predicates.add(TokenPredicate.NEWSPREFIX);
-        predicates.add(TokenPredicate.WIKIPEDIAPREFIX);
-        predicates.add(TokenPredicate.TVPREFIX);
-        predicates.add(TokenPredicate.COMPANYSUFFIX);
-        predicates.add(TokenPredicate.WEATHERPREFIX);
-        predicates.add(TokenPredicate.MATHPREDICATE);
+        predicates.add(TokenPredicate.PHONENUMBER);
         // Add all FastTokenPredicates
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 
-    private final String field;
 
     /**
-     * Creator method for WordClause objects. By avoiding the constructors,
-     * and assuming all WordClause objects are immutable, we can keep track
+     * Creator method for PhoneNumberClauseImpl objects. By avoiding the constructors,
+     * and assuming all PhoneNumberClauseImpl objects are immutable, we can keep track
      * (via a weak reference map) of instances already in use in this JVM and reuse
      * them.
-     * The methods also allow a chunk of creation logic for the WordClause to be moved
+     * The methods also allow a chunk of creation logic for the PhoneNumberClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
+     * 
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @return returns a WordClause instance matching the term, left and right child clauses.
+     * @return returns a PhoneNumberClauseImpl instance matching the term, left and right child clauses.
      * May be either newly created or reused.
      */
-    public static WordClause createWordClause(
-            final String term,
-            final String field,
-            final TokenEvaluatorFactory predicate2evaluatorFactory) {
+    public static PhoneNumberClauseImpl createPhoneNumberClause(
+        final String term,
+        final String field,
+        final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
         // use helper method from AbstractLeafClause
-        return (WordClause) createClause(
-                WordClause.class,
+        return (PhoneNumberClauseImpl) createClause(
+                PhoneNumberClauseImpl.class,
                 term,
                 field,
                 predicate2evaluatorFactory,
@@ -84,25 +77,13 @@ public class WordClause extends AbstractLeafClause {
      * @param knownPredicates the set of known predicates for this clause.
      * @param possiblePredicates the set of possible predicates for this clause.
      */
-    protected WordClause(
+    protected PhoneNumberClauseImpl(
             final String term,
             final String field,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
-        super(term, knownPredicates, possiblePredicates);
-
-        this.field = field;
-
-    }
-
-    /**
-     * Get the field.
-     *
-     * @return the field.
-     */
-    public String getField() {
-        return field;
+        super(term, field, knownPredicates, possiblePredicates);
     }
 
 }

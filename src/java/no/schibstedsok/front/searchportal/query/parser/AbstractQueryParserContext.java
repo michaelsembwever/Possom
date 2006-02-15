@@ -31,37 +31,37 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public AndClause createAndClause(
+    public AndClauseImpl createAndClause(
         final LeafClause first,
         final Clause second) {
 
-        return AndClause.createAndClause(first, second, getTokenEvaluatorFactory());
+        return AndClauseImpl.createAndClause(first, second, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
-    public OrClause createOrClause(
+    public OrClauseImpl createOrClause(
         final LeafClause first,
         final Clause second) {
 
-        return OrClause.createOrClause(first, second, getTokenEvaluatorFactory());
+        return OrClauseImpl.createOrClause(first, second, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
-    public AndNotClause createAndNotClause(
+    public AndNotClauseImpl createAndNotClause(
         final LeafClause first,
         final Clause second) {
 
-        return AndNotClause.createAndNotClause(first, second, getTokenEvaluatorFactory());
+        return AndNotClauseImpl.createAndNotClause(first, second, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
-    public NotClause createNotClause(
+    public NotClauseImpl createNotClause(
         final LeafClause first) {
 
-        return NotClause.createNotClause(first, getTokenEvaluatorFactory());
+        return NotClauseImpl.createNotClause(first, getTokenEvaluatorFactory());
     }
 
 
@@ -69,47 +69,47 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public WordClause createWordClause(
+    public WordClauseImpl createWordClause(
         final String term,
         final String field) {
 
-        return WordClause.createWordClause(term, field, getTokenEvaluatorFactory());
+        return WordClauseImpl.createWordClause(term, field, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
-    public PhraseClause createPhraseClause(
+    public PhraseClauseImpl createPhraseClause(
         final String term,
         final String field) {
 
-        return PhraseClause.createPhraseClause(term, field, getTokenEvaluatorFactory());
+        return PhraseClauseImpl.createPhraseClause(term, field, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
-    public IntegerClause createIntegerClause(
+    public IntegerClauseImpl createIntegerClause(
         final String term,
         final String field) {
 
-        return IntegerClause.createIntegerClause(term, field, getTokenEvaluatorFactory());
+        return IntegerClauseImpl.createIntegerClause(term, field, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
-    public PhoneNumberClause createPhoneNumberClause(
+    public PhoneNumberClauseImpl createPhoneNumberClause(
         final String term,
         final String field) {
 
-        return PhoneNumberClause.createPhoneNumberClause(term, field, getTokenEvaluatorFactory());
+        return PhoneNumberClauseImpl.createPhoneNumberClause(term, field, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
-    public OrganisationNumberClause createOrganisationNumberClause(
+    public OrganisationNumberClauseImpl createOrganisationNumberClause(
         final String term,
         final String field) {
 
-        return OrganisationNumberClause.createOrganisationNumberClause(term, field, getTokenEvaluatorFactory());
+        return OrganisationNumberClauseImpl.createOrganisationNumberClause(term, field, getTokenEvaluatorFactory());
     }
 
 }

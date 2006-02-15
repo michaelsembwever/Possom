@@ -62,13 +62,13 @@ public final class TestVisitor extends TestCase {
 
                 });
 
-        final LeafClause magnus = WordClause.createWordClause("magnus", "firstName", tokenEvaluatorFactory);
-        final LeafClause eklund = WordClause.createWordClause("eklund", null, tokenEvaluatorFactory);
-        final LeafClause ss = PhraseClause.createPhraseClause("\"schibsted sok\"", null, tokenEvaluatorFactory);
+        final LeafClause magnus = WordClauseImpl.createWordClause("magnus", "firstName", tokenEvaluatorFactory);
+        final LeafClause eklund = WordClauseImpl.createWordClause("eklund", null, tokenEvaluatorFactory);
+        final LeafClause ss = PhraseClauseImpl.createPhraseClause("\"schibsted sok\"", null, tokenEvaluatorFactory);
 
         // build right-leaning tree. requirement of current Clause/QueryParser implementation.
-        final Clause a = AndClause.createAndClause(eklund, ss, tokenEvaluatorFactory);
-        final Clause andClause = AndClause.createAndClause(magnus, a, tokenEvaluatorFactory);
+        final Clause a = AndClauseImpl.createAndClause(eklund, ss, tokenEvaluatorFactory);
+        final Clause andClause = AndClauseImpl.createAndClause(magnus, a, tokenEvaluatorFactory);
 
 
         visitor.visit(andClause);
@@ -161,12 +161,12 @@ public final class TestVisitor extends TestCase {
             return sb.toString();
         }
 
-        public void visitImpl(final NotClause clause) {
+        public void visitImpl(final NotClauseImpl clause) {
             sb.append("-");
             clause.getClause().accept(this);
         }
 
-        public void visitImpl(final WordClause clause) {
+        public void visitImpl(final WordClauseImpl clause) {
             if (clause.getField() != null) {
                 sb.append(clause.getField());
                 sb.append(":");
@@ -175,19 +175,19 @@ public final class TestVisitor extends TestCase {
             sb.append(clause.getTerm());
         }
 
-        public void visitImpl(final AndClause clause) {
+        public void visitImpl(final AndClauseImpl clause) {
             clause.getFirstClause().accept(this);
             sb.append(" AND ");
             clause.getSecondClause().accept(this);
         }
 
-        public void visitImpl(final OrClause clause) {
+        public void visitImpl(final OrClauseImpl clause) {
             clause.getFirstClause().accept(this);
             sb.append(" OR ");
             clause.getSecondClause().accept(this);
         }
 
-        public void visitImpl(final PhraseClause clause) {
+        public void visitImpl(final PhraseClauseImpl clause) {
             if (clause.getField() != null) {
                 sb.append(clause.getField());
                 sb.append(":");
