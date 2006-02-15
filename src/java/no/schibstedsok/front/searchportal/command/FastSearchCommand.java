@@ -47,15 +47,14 @@ import no.schibstedsok.front.searchportal.spell.RelevantQuery;
 import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class FastSearchCommand extends AbstractSearchCommand implements SearchCommand {
-    private static Log log = LogFactory.getLog(FastSearchCommand.class);
+    private static Logger LOG = Logger.getLogger(FastSearchCommand.class);
     private static HashMap searchEngines = new HashMap();
     private static IFastSearchEngineFactory engineFactory;
     
@@ -100,36 +99,36 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             IQuery fastQuery = createQuery();
             
             
-            if (log.isDebugEnabled()) {
-                log.debug(getSearchConfiguration().getName() + " call: " + fastQuery);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(getSearchConfiguration().getName() + " call: " + fastQuery);
             }
             
             IQueryResult result = null;
             try {
-                if (log.isDebugEnabled()) {
-                    log.debug("engine.search()");
-                    log.debug("execute().configuration: QueryServerURL=" + getFastConfiguration().getQueryServerURL());
-                    log.debug("execute().configuration: Collections=" + getFastConfiguration().getCollections());
-                    log.debug("execute().configuration: Name=" + getFastConfiguration().getName());
-                    log.debug("execute().configuration: Query=" + fastQuery.getQueryString());
-                    log.debug("execute().configuration: Filter=" + getFastConfiguration().getCollectionFilterString());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("engine.search()");
+                    LOG.debug("execute().configuration: QueryServerURL=" + getFastConfiguration().getQueryServerURL());
+                    LOG.debug("execute().configuration: Collections=" + getFastConfiguration().getCollections());
+                    LOG.debug("execute().configuration: Name=" + getFastConfiguration().getName());
+                    LOG.debug("execute().configuration: Query=" + fastQuery.getQueryString());
+                    LOG.debug("execute().configuration: Filter=" + getFastConfiguration().getCollectionFilterString());
                     
                 }
                 
                 result = engine.search(fastQuery);
                 
-                if (log.isDebugEnabled()) {
-                    log.debug("Hits is " + getFastConfiguration().getName() + ":" + result.getDocCount());
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Hits is " + getFastConfiguration().getName() + ":" + result.getDocCount());
                 }
             } catch (Exception fastException) {
-                log.error("An error occured in FAST code " + fastException.getClass().getName());
-                log.error("Configuration is " + getFastConfiguration().getName());
+                LOG.error("An error occured in FAST code " + fastException.getClass().getName());
+                LOG.error("Configuration is " + getFastConfiguration().getName());
                 return new FastSearchResult(this);
             }
             
             
-            if (log.isDebugEnabled()) {
-                log.debug("QUERY DUMPT: " + fastQuery);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("QUERY DUMPT: " + fastQuery);
                 String filter = null;
                 String query = null;
                 
@@ -139,7 +138,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
                 } catch (NoSuchParameterException e) {
                     
                 }
-                log.debug("execute:  Filter: " + filter
+                LOG.debug("execute:  Filter: " + filter
                         + " , query=" + query
                         + ", doc.count= "
                         + result.getDocCount());
@@ -164,16 +163,16 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             
             long stop = System.currentTimeMillis();
             
-            if (log.isDebugEnabled()) {
-                log.debug(getFastConfiguration().getName() + " Retrieved all wanted results in " + (stop - start) + "ms");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(getFastConfiguration().getName() + " Retrieved all wanted results in " + (stop - start) + "ms");
             }
             
             return searchResult;
         } catch (ConfigurationException e) {
-            log.error("execute", e);
+            LOG.error("execute", e);
             throw new InfrastructureException(e);
         } catch (MalformedURLException e) {
-            log.error("execute", e);
+            LOG.error("execute", e);
             throw new InfrastructureException(e);
         }
     }
@@ -219,8 +218,8 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         int suggestionIndex = custom.indexOf("->");
         int qualityIndex = custom.indexOf("Quality:");
         
-        if (log.isDebugEnabled()) {
-            log.debug("Custom is " + custom);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Custom is " + custom);
         }
         
         String orig = custom.substring(0, suggestionIndex);
@@ -234,10 +233,10 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
     
     private FastSearchResult collectResults(IQueryResult result) {
         
-        if (log.isDebugEnabled()) {
+        if (LOG.isDebugEnabled()) {
 
-            log.debug(getFastConfiguration().getName() + " Collecting results. There are " + result.getDocCount());
-            log.debug(getFastConfiguration().getName() + " Number of results to collect: " + getFastConfiguration().getResultsToReturn());
+            LOG.debug(getFastConfiguration().getName() + " Collecting results. There are " + result.getDocCount());
+            LOG.debug(getFastConfiguration().getName() + " Number of results to collect: " + getFastConfiguration().getResultsToReturn());
 
         }
         
@@ -255,7 +254,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
                 SearchResultItem item = createResultItem(document);
                 searchResult.addResult(item);
             } catch (NullPointerException e) {
-                if (log.isDebugEnabled()) log.debug("Error finding document " + e);
+                if (LOG.isDebugEnabled()) LOG.debug("Error finding document " + e);
                 return searchResult;
             }
         }
@@ -366,8 +365,8 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             superFilter = "";
         }
         
-        if (log.isDebugEnabled()) {
-            log.debug("createQuery: superFilter=" + superFilter);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("createQuery: superFilter=" + superFilter);
         }
         params.setParameter(new SearchParameter("filtertype", dynamicFilterType));
         
@@ -402,11 +401,11 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         }
         
         // TODO: Refactor
-          if (getParameters().containsKey("userSortBy")) {
+        if (getParameters().containsKey("userSortBy")) {
             
             String sortBy[] = (String[]) getParameters().get("userSortBy");
-            if (log.isDebugEnabled()) {
-                log.debug("createQuery: SortBY " + sortBy[0]);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("createQuery: SortBY " + sortBy[0]);
             }
             if ("datetime".equals(sortBy[0])) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard"));
@@ -417,9 +416,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         
         IQuery query = new Query(params);
         
-        if (log.isDebugEnabled()) {
-            log.debug("Constructed query: " + query);
-        }
+        LOG.debug("Constructed query: " + query);
         
         return query;
     }
@@ -432,11 +429,9 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         return getFastConfiguration().getSortBy();
     }
     
-    private String getDynamicParams(Map map, String key, String defaultValue) {
-        if (log.isDebugEnabled()) {
-            log.debug("ENTR: getDynamicParams(): key=" + key +
-                    ", defaultValue=" + defaultValue);
-        }
+    private String getDynamicParams(final Map map, final String key, final String defaultValue) {
+        LOG.trace("getDynamicParams(map," + key +  "," + defaultValue + ")");
+
         String value = null;
         
         Object o = map.get(key);
@@ -453,9 +448,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         if (value == null || "null".equals(value) || "".equals(value)) {
             value = defaultValue;
         }
-        if (log.isDebugEnabled()) {
-            log.debug("getDynamicParams: Return " + defaultValue);
-        }
+        LOG.trace("getDynamicParams returning " + value);
         return value;
     }
     
@@ -697,8 +690,8 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         
         if (a != null) {
             
-            log.debug(navigator.getName());
-            log.debug(a[0]);
+            LOG.debug(navigator.getName());
+            LOG.debug(a[0]);
             
             if (!(navigator.getName().equals("ywfylkesnavigator") && a[0].equals("Oslo"))) {
                 if (!(navigator.getName().equals("ywkommunenavigator") && a[0].equals("Oslo"))) {
@@ -744,8 +737,8 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
     private SpellingSuggestion createProperNameSuggestion(String custom) {
         int suggestionIndex = custom.indexOf("->");
         
-        if (log.isDebugEnabled()) {
-            log.debug("Custom is " + custom);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Custom is " + custom);
         }
         
         String orig = custom.substring(0, suggestionIndex);

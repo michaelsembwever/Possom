@@ -28,10 +28,9 @@ public final class VelocityEngineFactory {
     private static final String VELOCITY_LOG_CATEGORY = "org.apache.velocity";
     
     /**
-     * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
-     * time. But only one will persist in the map.
-     *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
-     * the resources to improve the performance. But I doubt this would gain much, if anything at all.
+     * Synchronisation occurs through method signature to "VelocityEngine valueOf(Context)".
+     *  While synchronsation is not ciritical without it in this case we were getting 10+ identical
+     *   velocityEngines being created one the first request.
      */
     private static final Map/*<Site,VelocityEngine>*/ INSTANCES = new HashMap/*<Site,VelocityEngine>*/();
 
@@ -83,11 +82,11 @@ public final class VelocityEngineFactory {
      * @param cxt the contextual needs the VelocityEngine must use to operate.
      * @return VelocityEngine for this site.
      */
-    public static VelocityEngine valueOf(final Context cxt) {
+    public synchronized static VelocityEngine valueOf(final Context cxt) {
         final Site site = cxt.getSite();
         VelocityEngineFactory instance = (VelocityEngineFactory) INSTANCES.get(site);
         if ( instance == null ) {
-                instance = new VelocityEngineFactory(cxt);
+            instance = new VelocityEngineFactory(cxt);
 
         }
         return instance.getVelocityEngine();

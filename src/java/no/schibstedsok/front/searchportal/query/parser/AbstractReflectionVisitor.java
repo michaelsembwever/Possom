@@ -10,8 +10,8 @@ package no.schibstedsok.front.searchportal.query.parser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
+
 
 /** A helper implementation of the Visitor pattern using java's reflection.
  * This results in not having to add overloaded methods for each subclass of clause as this implementation will
@@ -30,7 +30,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     /** String specifying name of method used to overload by any class extending this. **/
     public static final String VISIT_METHOD_IMPL = "visitImpl";
 
-    private static final Log LOG = LogFactory.getLog(AbstractReflectionVisitor.class);
+    private static final Logger LOG = Logger.getLogger(AbstractReflectionVisitor.class);
 
     private static final String ERR_CLAUSE_SUBTYPE_NOT_FOUND = "Current visitor implementation does not handle visiting "
             + "non clause subtypes. Tried to visit object ";
@@ -38,7 +38,8 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     private static final String ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT = "Failed to find method that exists in this class!!"
             + "Was trying to visit object ";
     private static final String DEBUG_LOOKING_AT = "Looking for method "
-            + VISIT_METHOD_IMPL + " with parameter ";
+            + VISIT_METHOD_IMPL + "(";
+    private static final String RB = ")";
 
 
 
@@ -79,12 +80,12 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         final Class me = getClass();
         Method method = null;
 
-        LOG.debug("start getMethod");
+        LOG.trace("getMethod(" + clauseClass.getName() + ")");
 
         // Try the superclasses
         Class currClauseClass = clauseClass;
         while (method == null && currClauseClass != Object.class) {
-            LOG.debug(DEBUG_LOOKING_AT + currClauseClass.getName());
+            LOG.debug(DEBUG_LOOKING_AT + currClauseClass.getName() + RB);
             try {
                 method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {currClauseClass});
 
@@ -115,7 +116,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
             }
 
         }
-        LOG.debug("end getMethod");
+        LOG.trace("end getMethod(" + clauseClass.getName() + ")");
         return method;
     }
 
@@ -127,12 +128,12 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         final Class me = getClass();
         Method method = null;
 
-        LOG.debug("start getMethodFromInterface " + clauseClass.getName());
+        LOG.trace("getMethodFromInterface(" + clauseClass.getName() + ")");
 
         final Class[] interfaces = clauseClass.getInterfaces();
         for (int i = 0; i < interfaces.length && method == null; i++) {
 
-            LOG.debug(DEBUG_LOOKING_AT + interfaces[i].getName());
+            LOG.debug(DEBUG_LOOKING_AT + interfaces[i].getName() + RB);
 
             try {
                 method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {interfaces[i]});
@@ -145,7 +146,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
             }
         }
 
-        LOG.debug("end getMethodFromInterface " + clauseClass.getName());
+        LOG.trace("end getMethodFromInterface(" + clauseClass.getName() + ")");
         return method;
     }
 

@@ -57,8 +57,9 @@ public final class SiteLocatorFilter implements Filter {
 
         LOG.trace("doBeforeProcessing()");
 
-        request.setAttribute(Site.NAME_KEY, getSite(request));
-
+        final Site site = getSite(request);
+        request.setAttribute(Site.NAME_KEY, site);
+        MDC.put(Site.NAME_KEY, site.getName());
     }
 
     private void doAfterProcessing(final ServletRequest request, final ServletResponse response)
@@ -107,7 +108,7 @@ public final class SiteLocatorFilter implements Filter {
                     // search-front-config is responsible for this.
                         // But first we must find which layer will serve it.
                     final Site site = (Site) req.getAttribute(Site.NAME_KEY);
-                    MDC.put(Site.NAME_KEY, site.getName());
+                    
 
                     String url = HTTP + site.getName() + site.getConfigContext() + resource;
                     if (!urlExists(url)) {

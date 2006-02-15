@@ -2,8 +2,7 @@
 package no.schibstedsok.front.searchportal.query.token;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -45,7 +44,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     /* String representing Category */
     public static final String CATEGORY = "category";
 
-    private static final Log LOG = LogFactory.getLog(VeryFastTokenEvaluator.class);
+    private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
     private final Map/*<String>,<String>*/ analysisResult = new HashMap/*<String>,<String>*/();
 
     private HTTPClient httpClient = null;
@@ -99,7 +98,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     }
 
     public List reportToken(String token, String query) {
-        LOG.debug("SALE called");
+        
+        LOG.trace("reportToken(" + token + "," + query + ")");
+        
         if (evaluateToken(token, null, query)) {
             String realTokenFQ = "FastQT_" + token +"QM";
             List matches = (List) analysisResult.get(realTokenFQ);
@@ -115,9 +116,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
      */
     private void queryFast(final String query) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: queryFast( " + query + " )");
-        }
+        LOG.trace("queryFast( " + query + " )");
 
         if (query == null || query.equals("")) {
             return;

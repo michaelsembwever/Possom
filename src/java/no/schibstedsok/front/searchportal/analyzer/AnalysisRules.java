@@ -13,8 +13,6 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +25,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -48,7 +47,7 @@ public final class AnalysisRules {
     public interface Context extends ResourceContext, SiteContext {
     }
 
-    private static final Log LOG = LogFactory.getLog(AnalysisRules.class);
+    private static final Logger LOG = Logger.getLogger(AnalysisRules.class);
 
     private static final String ERR_DOC_BUILDER_CREATION = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String ERR_UNABLE_TO_FIND_PREDICATE = "Unable to find predicate with id ";
@@ -285,9 +284,8 @@ public final class AnalysisRules {
      * @return  the rule.
      */
     public AnalysisRule getRule(final String ruleName) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: getRule()" + ruleName);
-        }
+        LOG.trace("getRule(" + ruleName + ")");
+
         init();
         final AnalysisRule rule = (AnalysisRule) rules.get(ruleName);
 
