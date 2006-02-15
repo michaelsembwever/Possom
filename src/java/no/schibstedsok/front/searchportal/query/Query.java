@@ -3,7 +3,6 @@
  */
 package no.schibstedsok.front.searchportal.query;
 
-import no.schibstedsok.front.searchportal.query.parser.*;
 
 /** A Query represents a users inputted query string.
  * The query contains an heirarchy of Clause objects implemented against a visitor pattern

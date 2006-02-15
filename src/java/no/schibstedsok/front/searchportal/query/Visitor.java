@@ -1,7 +1,7 @@
 /*
  * Copyright (2005-2006) Schibsted Søk AS
  */
-package no.schibstedsok.front.searchportal.query.parser;
+package no.schibstedsok.front.searchportal.query;
 
 /** Interface for Classes that will implement the Visitor pattern.
  * See complimentary Visitable interface.

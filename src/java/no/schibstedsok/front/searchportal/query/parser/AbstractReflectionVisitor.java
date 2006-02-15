@@ -10,6 +10,7 @@ package no.schibstedsok.front.searchportal.query.parser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import no.schibstedsok.front.searchportal.query.Visitor;
 import org.apache.log4j.Logger;
 
 

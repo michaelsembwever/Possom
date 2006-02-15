@@ -4,7 +4,6 @@
 package no.schibstedsok.front.searchportal.query;
 
 import java.util.Set;
-import no.schibstedsok.front.searchportal.query.parser.*;
 
 /** A Clause in this project represents a single term or operation on or between terms in a Query string.
  * A heirarchy of Clause objects will therefore represent a Query and avoid unneccessary string manipulations.

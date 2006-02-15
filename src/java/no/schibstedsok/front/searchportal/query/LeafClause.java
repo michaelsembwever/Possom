@@ -9,7 +9,6 @@
 
 package no.schibstedsok.front.searchportal.query;
 
-import no.schibstedsok.front.searchportal.query.parser.*;
 
 /** A clause representing a leaf. That is, a term or word in the query string.
  *

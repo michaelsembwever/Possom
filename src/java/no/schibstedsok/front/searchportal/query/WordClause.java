@@ -9,8 +9,6 @@
 
 package no.schibstedsok.front.searchportal.query;
 
-import no.schibstedsok.front.searchportal.query.parser.*;
-
 /**
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
