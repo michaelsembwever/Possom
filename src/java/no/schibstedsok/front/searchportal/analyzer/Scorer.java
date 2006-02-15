@@ -15,7 +15,7 @@ import java.util.Set;
 import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.front.searchportal.query.parser.AndClauseImpl;
 import no.schibstedsok.front.searchportal.query.parser.AndNotClauseImpl;
-import no.schibstedsok.front.searchportal.query.parser.Clause;
+import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.parser.NotClauseImpl;
 import no.schibstedsok.front.searchportal.query.parser.OrClauseImpl;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;

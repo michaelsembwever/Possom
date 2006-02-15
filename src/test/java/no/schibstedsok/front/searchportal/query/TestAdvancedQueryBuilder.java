@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.query;
 
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.query.run.AdvancedQueryBuilder;
 
 /**
  * TestAdvancedQueryBuilder is part of no.schibstedsok.front.searchportal.query package.

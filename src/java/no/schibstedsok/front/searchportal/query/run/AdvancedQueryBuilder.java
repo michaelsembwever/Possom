@@ -1,5 +1,6 @@
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.run;
 
+import no.schibstedsok.front.searchportal.query.*;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
 

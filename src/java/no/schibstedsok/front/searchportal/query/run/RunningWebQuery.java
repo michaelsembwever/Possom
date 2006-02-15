@@ -1,11 +1,12 @@
 // Copyright (2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.run;
 
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Iterator;
+import no.schibstedsok.front.searchportal.query.*;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;

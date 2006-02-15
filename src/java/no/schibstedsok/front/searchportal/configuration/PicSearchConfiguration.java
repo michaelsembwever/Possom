@@ -2,7 +2,7 @@ package no.schibstedsok.front.searchportal.configuration;
 
 import no.schibstedsok.front.searchportal.command.PicSearchCommand;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
 import java.util.Map;
 

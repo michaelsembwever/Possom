@@ -5,7 +5,7 @@ import com.thoughtworks.xstream.XStream;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.result.TextOutputResultHandler;
 

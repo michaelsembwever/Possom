@@ -8,7 +8,7 @@ import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.handler.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;

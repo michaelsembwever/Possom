@@ -7,7 +7,9 @@
  * and open the template in the editor.
  */
 
-package no.schibstedsok.front.searchportal.query.parser;
+package no.schibstedsok.front.searchportal.query;
+
+import no.schibstedsok.front.searchportal.query.parser.*;
 
 /** Interface for Classes that will implement the Visitor pattern.
  * See complimentary Visitor interface.

@@ -25,7 +25,7 @@ import no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SensisSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
 
 /** This factory creates the appropriate command for a given 

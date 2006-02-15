@@ -6,7 +6,7 @@ package no.schibstedsok.front.searchportal.configuration;
 
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;

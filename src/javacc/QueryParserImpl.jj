@@ -11,9 +11,8 @@ package no.schibstedsok.front.searchportal.query.parser;
 import java.io.StringReader;
 import java.util.List;
 import java.util.ArrayList;
+import no.schibstedsok.front.searchportal.query.*;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /** This class is NOT synchronized. You must use a separate instance for each query. 
  *
@@ -157,8 +156,8 @@ Clause operation() :
                     for(int i = 0; i < numbers.length; ++i){
                         final String number = numbers[i];
                         final LeafClause leafClause = number.indexOf("+") <0
-                                ? context.createIntegerClause(number,null)
-                                : context.createWordClause(number,null);
+                                ? (LeafClause)context.createIntegerClause(number,null)
+                                : (LeafClause)context.createWordClause(number,null);
                         if( prevClause != null ){
                             final OrClause orClause = context.createOrClause(leafClause,prevClause);
                             prevClause = orClause;

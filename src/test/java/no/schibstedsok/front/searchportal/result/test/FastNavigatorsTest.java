@@ -18,7 +18,7 @@ import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.fast.searchengine.test.MockupFastSearchEngineFactory;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.Modifier;

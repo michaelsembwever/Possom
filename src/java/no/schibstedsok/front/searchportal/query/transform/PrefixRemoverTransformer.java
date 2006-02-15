@@ -1,6 +1,7 @@
 package no.schibstedsok.front.searchportal.query.transform;
 
 import no.schibstedsok.front.searchportal.query.*;
+import no.schibstedsok.front.searchportal.query.run.StopWordRemover;
 import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 
 import java.util.Collection;

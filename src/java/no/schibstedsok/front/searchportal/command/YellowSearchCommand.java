@@ -14,7 +14,7 @@ import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
 /**
  * A YellowSearchCommand.

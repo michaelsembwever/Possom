@@ -12,8 +12,8 @@ import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
-import no.schibstedsok.front.searchportal.query.QueryFactory;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.QueryFactory;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import org.apache.commons.lang.time.StopWatch;
 

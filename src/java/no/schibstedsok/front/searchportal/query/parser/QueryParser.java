@@ -9,6 +9,8 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
+import no.schibstedsok.front.searchportal.query.Query;
+
 
 /** Parser responsible for building the Query and its clause heirarchy.
  * This interface does not define the behaviour as to how the QueryParser will get the query string.

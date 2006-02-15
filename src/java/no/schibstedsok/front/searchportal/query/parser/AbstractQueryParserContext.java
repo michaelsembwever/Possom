@@ -8,6 +8,18 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
+import no.schibstedsok.front.searchportal.query.AndClause;
+import no.schibstedsok.front.searchportal.query.AndNotClause;
+import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.IntegerClause;
+import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.NotClause;
+import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
+import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
+import no.schibstedsok.front.searchportal.query.PhraseClause;
+import no.schibstedsok.front.searchportal.query.WordClause;
+
 /** Default implementation of QueryParser.Context's createXxxClause methods.
  *
  * @version $Id$
@@ -31,7 +43,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public AndClauseImpl createAndClause(
+    public AndClause createAndClause(
         final LeafClause first,
         final Clause second) {
 
@@ -40,7 +52,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public OrClauseImpl createOrClause(
+    public OrClause createOrClause(
         final LeafClause first,
         final Clause second) {
 
@@ -49,7 +61,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public AndNotClauseImpl createAndNotClause(
+    public AndNotClause createAndNotClause(
         final LeafClause first,
         final Clause second) {
 
@@ -58,7 +70,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public NotClauseImpl createNotClause(
+    public NotClause createNotClause(
         final LeafClause first) {
 
         return NotClauseImpl.createNotClause(first, getTokenEvaluatorFactory());
@@ -69,7 +81,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public WordClauseImpl createWordClause(
+    public WordClause createWordClause(
         final String term,
         final String field) {
 
@@ -78,7 +90,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public PhraseClauseImpl createPhraseClause(
+    public PhraseClause createPhraseClause(
         final String term,
         final String field) {
 
@@ -87,7 +99,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public IntegerClauseImpl createIntegerClause(
+    public IntegerClause createIntegerClause(
         final String term,
         final String field) {
 
@@ -96,7 +108,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public PhoneNumberClauseImpl createPhoneNumberClause(
+    public PhoneNumberClause createPhoneNumberClause(
         final String term,
         final String field) {
 
@@ -105,7 +117,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public OrganisationNumberClauseImpl createOrganisationNumberClause(
+    public OrganisationNumberClause createOrganisationNumberClause(
         final String term,
         final String field) {
 

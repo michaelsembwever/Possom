@@ -13,6 +13,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

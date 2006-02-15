@@ -10,7 +10,7 @@ import org.apache.commons.logging.LogFactory;
 
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowSearchCommand;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
 /**
  *

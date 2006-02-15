@@ -6,7 +6,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
-import no.schibstedsok.front.searchportal.query.StopWordRemover;
+import no.schibstedsok.front.searchportal.query.run.StopWordRemover;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.util.SearchConstants;

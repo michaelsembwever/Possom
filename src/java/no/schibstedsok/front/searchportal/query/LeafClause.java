@@ -7,7 +7,9 @@
  * and open the template in the editor.
  */
 
-package no.schibstedsok.front.searchportal.query.parser;
+package no.schibstedsok.front.searchportal.query;
+
+import no.schibstedsok.front.searchportal.query.parser.*;
 
 /** A clause representing a leaf. That is, a term or word in the query string.
  *

@@ -2,7 +2,7 @@
  * Copyright (2005-2006) Schibsted Søk AS
  *
  */
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.run;
 
 import com.thoughtworks.xstream.XStream;
 import edu.emory.mathcs.backport.java.util.concurrent.CancellationException;
@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRules;
+import no.schibstedsok.front.searchportal.query.*;
 import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.ReportingTokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
@@ -36,7 +37,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.executor.SearchTask;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContext;
-import no.schibstedsok.front.searchportal.query.parser.Query;
+import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.front.searchportal.query.parser.ParseException;

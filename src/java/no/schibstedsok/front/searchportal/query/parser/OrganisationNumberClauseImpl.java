@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
@@ -21,7 +22,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @author <a hrefOrganisationNumberClauseImpl>Michael Semb Wever</a>
  * @version $Id$
  */
-public class OrganisationNumberClauseImpl extends WordClauseImpl {
+public class OrganisationNumberClauseImpl extends WordClauseImpl implements OrganisationNumberClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.

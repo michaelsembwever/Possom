@@ -8,7 +8,19 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
+import no.schibstedsok.front.searchportal.query.AndClause;
+import no.schibstedsok.front.searchportal.query.AndNotClause;
+import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.IntegerClause;
+import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.NotClause;
+import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
+import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
+import no.schibstedsok.front.searchportal.query.PhraseClause;
+import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
+import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,20 +53,20 @@ public abstract class AbstractQueryParser implements QueryParser {
         //// Operation creators
 
         /**
-         * Creator wrapper method for AndClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the AndClauseImpl to be moved
+         * Creator wrapper method for AndClause objects.
+         * The methods also allow a chunk of creation logic for the AndClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param first the left child clause of the operation clause we are about to create (or find).
          * The current implementation always creates a right-leaning query heirarchy.
          * Therefore the left child clause to any operation clause must be a LeafClause.
          * @param second the right child clause of the operation clause we are about to create (or find).
-         * @return returns a AnAndClauseImplnstance matching the term, left and right child clauses.
+         * @return returns a AndClause instance matching the term, left and right child clauses.
          */
-        AndClauseImpl createAndClause(final LeafClause first, final Clause second);
+        AndClause createAndClause(final LeafClause first, final Clause second);
         /**
-         * Creator wrapper method for OrClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the OrClauseImpl to be moved
+         * Creator wrapper method for OrClause objects.
+         * The methods also allow a chunk of creation logic for the OrClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param first the left child clause of the operation clause we are about to create (or find).
@@ -63,10 +75,10 @@ public abstract class AbstractQueryParser implements QueryParser {
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a OrOrClauseImplnstance matching the term, left and right child clauses.
          */
-        OrClauseImpl createOrClause(final LeafClause first, final Clause second);
+        OrClause createOrClause(final LeafClause first, final Clause second);
         /**
-         * Creator wrapper method for AndNotClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the AndNotClauseImpl to be moved
+         * Creator wrapper method for AndNotClause objects.
+         * The methods also allow a chunk of creation logic for the AndNotClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param first the left child clause of the operation clause we are about to create (or find).
@@ -75,10 +87,10 @@ public abstract class AbstractQueryParser implements QueryParser {
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a AnAndNotClauseImplnstance matching the term, left and right child clauses.
          */
-        AndNotClauseImpl createAndNotClause(final LeafClause first, final Clause second);
+        AndNotClause createAndNotClause(final LeafClause first, final Clause second);
         /**
-         * Creator wrapper method for NotClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the NotClauseImpl to be moved
+         * Creator wrapper method for NotClause objects.
+         * The methods also allow a chunk of creation logic for the NotClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param first the left child clause of the operation clause we are about to create (or find).
@@ -86,60 +98,60 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Therefore the left child clause to any operation clause must be a LeafClause.
          * @return returns a NNotClauseImplinstance matching the term, left and right child clauses.
          */
-        NotClauseImpl createNotClause(final LeafClause first);
+        NotClause createNotClause(final LeafClause first);
 
         //// Leaf creators
 
         /**
-         * Creator wrapper method for WordClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the WordClauseImpl to be moved
+         * Creator wrapper method for WordClause objects.
+         * The methods also allow a chunk of creation logic for the WordClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a WoWordClauseImplnstance matching the term, left and right child clauses.
          */
-        WordClauseImpl createWordClause(final String term, final String field);
+        WordClause createWordClause(final String term, final String field);
         /**
-         * Creator wrapper method for PhraseClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the PhraseClauseImpl to be moved
+         * Creator wrapper method for PhraseClause objects.
+         * The methods also allow a chunk of creation logic for the PhraseClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a PhPhraseClauseImplnstance matching the term, left and right child clauses.
          */
-        PhraseClauseImpl createPhraseClause(final String term, final String field);
+        PhraseClause createPhraseClause(final String term, final String field);
         /**
-         * Creator wrapper method for IntegerClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the IntegerClauseImpl to be moved
+         * Creator wrapper method for IntegerClause objects.
+         * The methods also allow a chunk of creation logic for the IntegerClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a InIntegerClauseImplnstance matching the term, left and right child clauses.
          */
-        IntegerClauseImpl createIntegerClause(final String term, final String field);
+        IntegerClause createIntegerClause(final String term, final String field);
         /**
-         * Creator wrapper method for PhoneNumberClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the PhoneNumberClauseImpl to be moved
+         * Creator wrapper method for PhoneNumberClause objects.
+         * The methods also allow a chunk of creation logic for the PhoneNumberClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a PhPhoneNumberClauseImplnstance matching the term, left and right child clauses.
          */
-        PhoneNumberClauseImpl createPhoneNumberClause(final String term, final String field);
+        PhoneNumberClause createPhoneNumberClause(final String term, final String field);
         /**
-         * Creator wrapper method for OrganisationNumberClauseImpl objects.
-         * The methods also allow a chunk of creation logic for the OrganisationNumberClauseImpl to be moved
+         * Creator wrapper method for OrganisationNumberClause objects.
+         * The methods also allow a chunk of creation logic for the OrganisationNumberClause to be moved
          * out of the QueryParserImpl.jj file to here.
          * 
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a OrOrganisationNumberClauseImplnstance matching the term, left and right child clauses.
          */
-        OrganisationNumberClauseImpl createOrganisationNumberClause(final String term, final String field);
+        OrganisationNumberClause createOrganisationNumberClause(final String term, final String field);
 
     }
 

@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.front.searchportal.query.AndNotClause;
+import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
@@ -20,7 +23,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @author <a hrefAndNotClauseImplk@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class AndNotClauseImpl extends AbstractOperationClause {
+public final class AndNotClauseImpl extends AbstractOperationClause implements AndNotClause {
 
     /**
      * Values are WeakReference object to AndNotClauseImpl.

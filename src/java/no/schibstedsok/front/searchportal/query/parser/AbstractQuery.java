@@ -8,6 +8,10 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
+import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.Query;
+
 
 /** Abstract helper for implementing a Query class.
  * Handles input of the query string and finding the first leaf clause (term) in the clause heirarchy.

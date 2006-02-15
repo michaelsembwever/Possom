@@ -7,7 +7,7 @@ package no.schibstedsok.front.searchportal.command;
 import edu.emory.mathcs.backport.java.util.concurrent.Callable;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
 /**

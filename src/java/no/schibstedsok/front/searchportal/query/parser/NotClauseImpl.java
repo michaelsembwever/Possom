@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
@@ -20,7 +23,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @author <a hrefNotClauseImplmick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class NotClauseImpl extends AbstractOperationClause {
+public final class NotClauseImpl extends AbstractOperationClause implements NotClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.

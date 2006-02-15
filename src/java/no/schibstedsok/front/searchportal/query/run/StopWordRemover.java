@@ -1,4 +1,6 @@
-package no.schibstedsok.front.searchportal.query;
+package no.schibstedsok.front.searchportal.query.run;
+
+import no.schibstedsok.front.searchportal.query.*;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>

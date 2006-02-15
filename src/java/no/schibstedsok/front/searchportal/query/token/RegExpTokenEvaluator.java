@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import no.schibstedsok.front.searchportal.query.StopWordRemover;
+import no.schibstedsok.front.searchportal.query.run.StopWordRemover;
 
 /**
  * An implementation of TokenEvaluator which uses a set of {@link Pattern} to

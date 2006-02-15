@@ -1,7 +1,7 @@
 package no.schibstedsok.front.searchportal.command;
 
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;

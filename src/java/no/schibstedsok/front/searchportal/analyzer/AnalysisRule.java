@@ -7,7 +7,7 @@ package no.schibstedsok.front.searchportal.analyzer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import no.schibstedsok.front.searchportal.query.parser.Query;
+import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;

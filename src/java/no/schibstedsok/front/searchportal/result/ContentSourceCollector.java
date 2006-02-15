@@ -1,6 +1,6 @@
 package no.schibstedsok.front.searchportal.result;
 
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
 import java.util.*;
 

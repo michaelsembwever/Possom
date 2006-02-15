@@ -12,7 +12,7 @@ import org.apache.commons.logging.LogFactory;
 
 import no.schibstedsok.front.searchportal.query.token.TokenMatch;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
-import no.schibstedsok.front.searchportal.query.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.YellowSearchResult;
