@@ -350,7 +350,6 @@ public final class FastNavigatorsTest extends TestCase {
 
         for (Iterator iterator = result.getModifiers("geographic").iterator(); iterator.hasNext();) {
             Modifier modifier = (Modifier) iterator.next();
-            System.out.println(nav.getField() + "=" + modifier.getName());
         }
     }
 

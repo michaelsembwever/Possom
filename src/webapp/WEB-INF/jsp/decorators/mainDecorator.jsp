@@ -5,7 +5,7 @@
         %>
 
 <%@ page import="no.schibstedsok.front.searchportal.i18n.TextMessages"%>
-<%@ page import="no.schibstedsok.front.searchportal.query.RunningQuery"%>
+<%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.util.List"%>

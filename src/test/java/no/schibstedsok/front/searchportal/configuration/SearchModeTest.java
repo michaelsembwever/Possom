@@ -37,7 +37,7 @@ public class SearchModeTest extends TestCase {
         webCrawl.addCollection("webcrawlno1");
         webCrawl.addCollection("webcrawlno1deep1");
         webCrawl.addCollection("webcrawlno2");
-        webCrawl.addResultHandler(new TextOutputResultHandler());
+//        webCrawl.addResultHandler(new TextOutputResultHandler());
         webCrawl.addResultField("url");
         webCrawl.addResultField("title");
         webCrawl.addResultField("body");

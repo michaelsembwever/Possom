@@ -1,0 +1,87 @@
+<profiles>
+  
+    <!-- DEVELOPMENT PROFILE -->
+  
+    <profile>
+        <id>development</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+    
+        <properties>
+      
+            <!-- QR Servers -->
+
+            <queryServerURL.1>http://localhost:15100</queryServerURL.1>
+            <queryServerURL.2>http://localhost:15200</queryServerURL.2>
+            <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
+
+            <!-- Log4j -->
+
+            <log.directory>./logs</log.directory>
+            <log.file>sesam.develop</log.file>
+            <log.level>DEBUG</log.level>
+
+            <!-- Token Evaluator -->
+
+            <tokenevaluator.host>localhost</tokenevaluator.host>
+            <tokenevaluator.port>15400</tokenevaluator.port>
+      
+            <!-- Linkpulse -->
+
+            <tokenevaluator.linkpulse>false</tokenevaluator.linkpulse>
+            <tokenevaluator.linkpulseToUrl>http://go.sesam.no/</tokenevaluator.linkpulseToUrl>
+            <tokenevaluator.linkpulseSesam>http://localhost:8080/search-front-html/search/</tokenevaluator.linkpulseSesam>
+
+            <!-- Mail -->
+
+            <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+        </properties>
+    </profile>
+
+    <!-- PRODUCTION PROFILE -->
+
+    <profile>
+        <id>production</id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+            <property>
+                <name>target</name>
+                <value>production</value>
+            </property>
+        </activation>
+        <properties>
+            <!-- QR Servers -->
+
+            <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
+            <queryServerURL.2>http://10.16.195.249:15300</queryServerURL.2>
+            <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
+
+            <!-- Log4j -->
+
+            <log.directory>/var/log/tomcat/www.sesam.no</log.directory>
+            <log.file>sesam</log.file>
+            <log.level>INFO</log.level>
+
+            <!-- Token Evaluator -->
+
+            <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+            <tokenevaluator.port>15200</tokenevaluator.port>
+      
+            <!-- Linkpulse -->
+
+            <tokenevaluator.linkpulse>true</tokenevaluator.linkpulse>
+            <tokenevaluator.linkpulseToUrl>http://go.sesam.no/</tokenevaluator.linkpulseToUrl>
+
+            <!-- Mail -->
+
+            <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+
+            <!-- Trade doubler -->
+            
+            <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+            <tradedoubler.form.action>$$url</tradedoubler.form.action>
+        
+        </properties>
+    </profile>
+</profiles>
