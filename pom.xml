@@ -1,5 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ - Copyright (2005-2006) Schibsted Søk AS
+ - $Id$ 
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
     <groupId>schibstedsok</groupId> 
     <artifactId>search-front-html</artifactId>
     <modelVersion>4.0.0</modelVersion>
@@ -263,10 +269,12 @@
         </dependency>
 
         <dependency>
+            <!-- TODO: Why tomcat and not sun's API ? -->
             <groupId>tomcat</groupId>
             <artifactId>servlet-api</artifactId>
             <version>5.0.18</version>
         </dependency>	
+        
         <dependency>
             <groupId>axis</groupId>
             <artifactId>axis</artifactId>
@@ -290,6 +298,7 @@
             <artifactId>axis-jaxrpc</artifactId>
             <version>1.2.1</version>
         </dependency>
+        
         <dependency>
             <groupId>jep</groupId>
             <artifactId>jep</artifactId>
