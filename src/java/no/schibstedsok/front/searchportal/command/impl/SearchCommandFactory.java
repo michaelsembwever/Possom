@@ -16,6 +16,7 @@ import no.schibstedsok.front.searchportal.command.OlympicSearchCommand;
 import no.schibstedsok.front.searchportal.command.OverturePPCCommand;
 import no.schibstedsok.front.searchportal.command.PicSearchCommand;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
+import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
 import no.schibstedsok.front.searchportal.command.YellowSearchCommand;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration;
@@ -28,7 +29,7 @@ import no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguratio
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
 
-/** This factory creates the appropriate command for a given 
+/** This factory creates the appropriate command for a given
  *
  * @author mick
  * @version $Id$
@@ -47,7 +48,9 @@ public final class SearchCommandFactory {
         // It is also not as performance savvy as the original implementation.
         // Possibilities are 1) move association to xml (tabs.xml?) or 2) use class naming scheme.
         // An example of possibility (2) would be XXXSearchConfiguration --> XXXSearchCommand
-        if( config instanceof FastConfiguration ){
+        if (config instanceof YellowSearchConfiguration){
+            return new YellowGeoSearch(cxt, parameters);
+        } else if( config instanceof FastConfiguration ){
             return new FastSearchCommand(cxt, parameters);
         }else if( config instanceof MathExpressionConfiguration ){
             return new MathExpressionCommand(cxt, parameters);
@@ -57,8 +60,6 @@ public final class SearchCommandFactory {
             return new PicSearchCommand(cxt, parameters);
         }else if( config instanceof SensisSearchConfiguration ){
             return new FastSearchCommand(cxt, parameters);
-        }else if( config instanceof YellowSearchConfiguration ){
-            return new YellowSearchCommand(cxt, parameters);
         }else if( config instanceof OlympicSearchConfiguration ){
             return new OlympicSearchCommand(cxt, parameters);
         }

@@ -28,7 +28,7 @@ public class YellowGeoSearch extends FastSearchCommand {
 
     private boolean ypkeywordsgeo = false;
     
-    public YellowGeoSearch(final SearchCommand.Context cxt, final Map parameters) {
+    public YellowGeoSearch(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 
@@ -38,7 +38,6 @@ public class YellowGeoSearch extends FastSearchCommand {
             Map m = new HashMap();
             m.putAll(super.getNavigators());
             m.remove("geographic");
-            log.debug("XYZ" + m.size());
             return m;
         }
       
@@ -54,7 +53,6 @@ public class YellowGeoSearch extends FastSearchCommand {
         }
 
         if (isLocalSearch() && !viewAll) {
-            log.debug("Search is local");    
             
             // The search containing all hits. Including non-local.
             ignoreGeoNav = true;
@@ -105,7 +103,6 @@ public class YellowGeoSearch extends FastSearchCommand {
             isLocal = false;
             ypkeywordsgeo = true;
             FastSearchResult nationalHits = (FastSearchResult) super.execute();
-            log.debug("ASD " + nationalHits.getHitCount());
             ypkeywordsgeo = false;
 
             

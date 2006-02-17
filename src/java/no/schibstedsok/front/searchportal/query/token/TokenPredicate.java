@@ -62,7 +62,7 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final FastTokenPredicate EXACTWIKI = new FastTokenPredicate("exact_wikino");
     public static final FastTokenPredicate WIKIPEDIA = new FastTokenPredicate("wikino");
     public static final FastTokenPredicate ENGLISHWORDS = new FastTokenPredicate("international");
-    public static final FastTokenPredicate TOP3EXACT = new FastTokenPredicate("top3boosts_exact");
+    public static final FastTokenPredicate TOP3EXACT = new FastTokenPredicate("exact_top3boosts");
     
     // RegExp TokenPredicates
     public static final RegExpTokenPredicate CATALOGUEPREFIX = new RegExpTokenPredicate("cataloguePrefix");
