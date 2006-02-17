@@ -9,7 +9,7 @@
     <groupId>schibstedsok</groupId> 
     <artifactId>search-front-html</artifactId>
     <modelVersion>4.0.0</modelVersion>
-    <name>Schibsted Søk Search-front</name>
+    <name>Schibsted Søk Engine</name>
     <version>2-0-SNAPSHOT</version>
     <packaging>war</packaging>
 
