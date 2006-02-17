@@ -6,7 +6,7 @@
  *
  */
 
-package no.schibstedsok.front.searchportal.result.handler.velocity;
+package no.schibstedsok.front.searchportal.velocity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,7 @@ public final class VelocityEngineFactory {
             engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
             engine.setProperty("runtime.log.logsystem.log4j.category", logger.getName());
             engine.setProperty(Velocity.RESOURCE_LOADER, "url");
-            engine.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.result.handler.velocity.URLVelocityTemplateLoader");
+            engine.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.velocity.URLVelocityTemplateLoader");
             engine.setProperty("url.resource.loader.cache", "true");
             engine.setProperty("url.resource.loader.modificationCheckInterval", "60"); // 1 minute update cycle.
             engine.setProperty("velocimacro.library", site.getTemplateDir()+"/VM_global_library.vm");

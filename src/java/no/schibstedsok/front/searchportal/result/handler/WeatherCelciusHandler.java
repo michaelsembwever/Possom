@@ -1,10 +1,13 @@
-package no.schibstedsok.front.searchportal.result;
+// Copyright (2006) Schibsted Søk AS
+package no.schibstedsok.front.searchportal.result.handler;
 
 
 import java.util.Map;
 import java.util.Iterator;
 import java.text.ParseException;
 import java.text.DecimalFormat;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
+
 
 /**
  * WeatherCelciusHandler is part of no.schibstedsok.front.searchportal.result
@@ -22,11 +25,11 @@ public class WeatherCelciusHandler implements ResultHandler  {
         return targetField;
     }
 
-    public void setTargetField(String targetField) {
+    public void setTargetField(final String targetField) {
         this.targetField = targetField;
     }
 
-    public void handleResult(Context cxt, Map parameters) {
+    public void handleResult(final Context cxt, final Map parameters) {
 
 
         for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
@@ -39,7 +42,7 @@ public class WeatherCelciusHandler implements ResultHandler  {
             } catch (ParseException e) {
                 newVal = celcius;
             }
-            if("-0".equals(newVal)){ newVal = "0"; }
+            if ("-0".equals(newVal)) { newVal = "0"; }
             searchResultItem.addField(targetField, newVal);
         }
     }

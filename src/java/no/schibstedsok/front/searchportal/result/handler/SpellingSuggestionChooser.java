@@ -1,4 +1,4 @@
-package no.schibstedsok.front.searchportal.result;
+package no.schibstedsok.front.searchportal.result.handler;
 
 import no.schibstedsok.front.searchportal.spell.QuerySuggestion;
 import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
+import no.schibstedsok.front.searchportal.result.SearchResult;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -42,7 +43,7 @@ public class SpellingSuggestionChooser implements ResultHandler {
             log.debug("Number of corrected terms are " + numberOfCorrectedTerms(result.getSpellingSuggestions()));
         }
 
-        int numberOfTermsInQuery = result.getSearchCommand().getQuery().getNumberOfTerms();
+        int numberOfTermsInQuery = result.getSearchCommand().getRunningQuery().getNumberOfTerms();
 
         if (numberOfTermsInQuery >= veryLongQuery && numberOfCorrectedTerms(result.getSpellingSuggestions()) > 1) {
             result.getSpellingSuggestions().clear();
@@ -74,7 +75,7 @@ public class SpellingSuggestionChooser implements ResultHandler {
 
         int numberOfCorrections = numberOfCorrectedTerms(result.getSpellingSuggestions());
 
-        String newQuery = result.getSearchCommand().getQuery().getQueryString().toLowerCase(result.getSearchCommand().getQuery().getLocale());
+        String newQuery = result.getSearchCommand().getRunningQuery().getQueryString().toLowerCase(result.getSearchCommand().getRunningQuery().getLocale());
 
         if (numberOfCorrections == 1) {
 

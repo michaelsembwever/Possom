@@ -1,7 +1,7 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005-2006) Schibsted Søk AS
  */
-package no.schibstedsok.front.searchportal.result;
+package no.schibstedsok.front.searchportal.output;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,8 +19,9 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
-
-import no.schibstedsok.front.searchportal.command.FastSearchCommand;
+import no.schibstedsok.front.searchportal.result.SearchResult;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
+import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,10 +36,10 @@ public class XmlOutputResultHandler implements ResultHandler {
     public XmlOutputResultHandler() {
     }
 
-    public void handleResult(Context cxt, Map parameters) {
-        
+    public void handleResult(final Context cxt, final Map parameters) {
+
         final SearchResult result = cxt.getSearchResult();
-        
+
         String[] xmlParam = (String[]) parameters.get("xml");
 
         if (xmlParam != null && xmlParam[0].equals("yes")) {
@@ -69,11 +70,11 @@ public class XmlOutputResultHandler implements ResultHandler {
                 AttributesImpl atts = new AttributesImpl();
 
                 atts.addAttribute("", "hits", "hits", "", String.valueOf(result.getHitCount()));
-                
+
                 hd.startElement("", "", "searchResult", atts);
 
                 Attributes emptyAtts = new AttributesImpl();
-                
+
                  for (Iterator iter = result.getResults().iterator(); iter.hasNext();) {
                     SearchResultItem item = (SearchResultItem) iter.next();
                     hd.startElement("", "", "resultItem", emptyAtts);
@@ -81,32 +82,32 @@ public class XmlOutputResultHandler implements ResultHandler {
                         String field = (String) iterator.next();
 
                         log.debug("field name is " + field);
-                        
+
                         Object fieldValue = item.getFieldAsObject(field);
-                        
-                        
+
+
                         if (fieldValue != null) {
 
                             hd.startElement("", "", field, emptyAtts);
-                            if (!(fieldValue instanceof ArrayList)) { 
+                            if (!(fieldValue instanceof ArrayList)) {
                                 hd.characters(fieldValue.toString().toCharArray(), 0, fieldValue.toString().length());
                             } else {
                                 Collection valueArray = (Collection) fieldValue;
-                                
+
                                 for (Iterator valueIterator = valueArray.iterator(); valueIterator.hasNext();) {
                                     String singleValue = (String) valueIterator.next();
                                     hd.startElement("", "", "value", emptyAtts);
                                     hd.characters(singleValue.toCharArray(), 0, singleValue.length());
                                     hd.endElement("", "", "value");
                                 }
-                                
+
                             }
                             hd.endElement("", "", field);
                         }
                     }
                     hd.endElement("", "", "resultItem");
                  }
-                
+
                 hd.endElement("", "", "searchResult");
                 hd.endDocument();
 
@@ -129,4 +130,4 @@ public class XmlOutputResultHandler implements ResultHandler {
             }
         }
 
-    }}
+        }}

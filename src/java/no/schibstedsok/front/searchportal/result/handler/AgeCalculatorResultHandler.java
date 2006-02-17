@@ -1,15 +1,16 @@
-package no.schibstedsok.front.searchportal.result;
+// Copyright (2006) Schibsted Søk AS
+package no.schibstedsok.front.searchportal.result.handler;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
 import no.schibstedsok.front.searchportal.site.Site;
 
 import org.apache.commons.logging.Log;
@@ -26,7 +27,7 @@ public class AgeCalculatorResultHandler implements ResultHandler {
     private String dateFormat;
     private boolean asDate = false;
     private String ageMessageFormat;
-    
+
     private transient static Log log = LogFactory.getLog(AgeCalculatorResultHandler.class);
 
     public void handleResult(final Context cxt, final Map parameters) {
@@ -41,7 +42,7 @@ public class AgeCalculatorResultHandler implements ResultHandler {
             String docTime = searchResultItem.getField(sourceField);
 
             if (docTime != null) {
-                
+
                 try {
                     long stamp = df.parse(docTime).getTime();
                     long age = System.currentTimeMillis() - stamp;
@@ -58,19 +59,19 @@ public class AgeCalculatorResultHandler implements ResultHandler {
 
                     String ageString = ""; // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
                     String[] s = (String[]) parameters.get("contentsource");
-                    
-                    final TextMessages txtMsgs = TextMessages.valueOf(new TextMessages.Context(){
-                        public Site getSite(){
+
+                    final TextMessages txtMsgs = TextMessages.valueOf(new TextMessages.Context() {
+                        public Site getSite() {
                             return cxt.getSite();
                         }
-                        public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props){
+                        public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props) {
                             return cxt.newPropertiesLoader(rsc, props);
                         }
                     });
 
                     //older than 3 days or source is Mediearkivet, show dd.mm.yyyy
                     if (dateParts[0].longValue() > 3 || s != null && s[0].equals("Mediearkivet") || asDate == true)
-                        ageString = docTime.substring(8,10) + "." + docTime.substring(5,7) + "." + docTime.substring(0,4);
+                        ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
                     //more than 1 day, show days
                     else if (dateParts[0].longValue() > 0) {
                         dateParts[1] = new Long(0);
@@ -79,14 +80,14 @@ public class AgeCalculatorResultHandler implements ResultHandler {
                     //more than 1 hour, show hours
                     } else if (dateParts[1].longValue() > 0) {
                         dateParts[2] = new Long(0);
-                        ageString = txtMsgs.getMessage( ageFormatKey, dateParts);
+                        ageString = txtMsgs.getMessage(ageFormatKey, dateParts);
                     //if less than 1 hour, show minutes
                     } else if (dateParts[2].longValue() > 0) {
                         dateParts[0] = new Long(0);
                         dateParts[1] = new Long(0);
-                        ageString = txtMsgs.getMessage( ageFormatKey, dateParts);
+                        ageString = txtMsgs.getMessage(ageFormatKey, dateParts);
                     } else
-                        ageString = docTime.substring(8,10) + "." + docTime.substring(5,7) + "." + docTime.substring(0,4);
+                        ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
 
                     if (log.isDebugEnabled()) {
                         log.debug("Resulting age string is " + ageString);
@@ -107,7 +108,7 @@ public class AgeCalculatorResultHandler implements ResultHandler {
         return targetField;
     }
 
-    public void setTargetField(String targetField) {
+    public void setTargetField(final String targetField) {
         this.targetField = targetField;
     }
 }

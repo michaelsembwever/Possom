@@ -107,7 +107,7 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
      *
      * @return the clause.
      */
-    public Clause getClause() {
+    public Clause getFirstClause() {
         return clause;
     }
 

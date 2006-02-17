@@ -1,6 +1,6 @@
 package no.schibstedsok.front.searchportal.result.test;
 
-import no.schibstedsok.front.searchportal.result.ResultHandler;
+import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 
 import java.util.Map;

@@ -30,5 +30,10 @@ public interface Query {
      * @return the first leaf clause.
      */
     Clause getFirstLeafClause();
+    
+    /** Return the number of terms in this query.
+     * Terms are represented by LeafClauses.
+     **/
+    int getTermCount();
 
 }

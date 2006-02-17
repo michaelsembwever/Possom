@@ -115,12 +115,12 @@ public class YellowGeoSearch extends FastSearchCommand {
     }
 
     private boolean isLocalSearch() {
-        return getQuery().getGeographicMatches().size() > 0;
+        return context.getRunningQuery().getGeographicMatches().size() > 0;
     }
 
     
     private TokenMatch getLastGeoMatch() {
-        List matches = getQuery().getGeographicMatches();
+        List matches = context.getRunningQuery().getGeographicMatches();
 
         if (matches.size() > 0) {
             return (TokenMatch) matches.get(matches.size() - 1);

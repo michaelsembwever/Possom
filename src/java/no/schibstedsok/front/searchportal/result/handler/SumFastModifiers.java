@@ -1,9 +1,17 @@
-package no.schibstedsok.front.searchportal.result;
+// Copyright (2006) Schibsted Søk AS
+package no.schibstedsok.front.searchportal.result.handler;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
+import no.schibstedsok.front.searchportal.result.FastSearchResult;
+import no.schibstedsok.front.searchportal.result.Modifier;
+import no.schibstedsok.front.searchportal.result.SearchResult;
 
-import java.util.*;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -15,19 +23,19 @@ public class SumFastModifiers implements ResultHandler {
     private String navigatorName;
     private Collection modifierNames = new ArrayList();
 
-    public SumFastModifiers(String targetModifier, String navigatorName) {
+    public SumFastModifiers(final String targetModifier, final String navigatorName) {
         this.targetModifier = targetModifier;
         this.navigatorName = navigatorName;
     }
 
-    public void addModifierName(String modifierName) {
+    public void addModifierName(final String modifierName) {
         modifierNames.add(modifierName);
     }
 
-    public void handleResult(Context cxt, Map parameters) {
+    public void handleResult(final Context cxt, final Map parameters) {
 
         final SearchResult result = cxt.getSearchResult();
-        if (result.getHitCount() > 0 ) {
+        if (result.getHitCount() > 0) {
 
             FastSearchResult fastResult = (FastSearchResult) result;
 

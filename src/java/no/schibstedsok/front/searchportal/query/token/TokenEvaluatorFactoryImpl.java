@@ -6,7 +6,7 @@ package no.schibstedsok.front.searchportal.query.token;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
-import no.schibstedsok.front.searchportal.analyzer.OlympicTokenEvaluator;
+import no.schibstedsok.front.searchportal.query.token.OlympicTokenEvaluator;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;

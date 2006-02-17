@@ -7,10 +7,9 @@
  * and open the template in the editor.
  */
 
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.Locale;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluator;
 import no.schibstedsok.front.searchportal.util.OlympicData;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

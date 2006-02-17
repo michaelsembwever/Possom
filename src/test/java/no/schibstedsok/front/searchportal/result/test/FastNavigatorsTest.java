@@ -18,8 +18,10 @@ import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.fast.searchengine.test.MockupFastSearchEngineFactory;
+import no.schibstedsok.front.searchportal.query.run.RunningQueryImpl;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.Modifier;
 
@@ -530,14 +532,14 @@ public final class FastNavigatorsTest extends TestCase {
 
         };
 
-        final RunningQuery rq = new RunningQuery(rqCxt, query, new HashMap());
+        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());
         
         final SearchCommand.Context searchCmdCxt = new SearchCommand.Context() {
             public SearchConfiguration getSearchConfiguration() {
                 return config;
             }
 
-            public RunningQuery getQuery() {
+            public RunningQuery getRunningQuery() {
                 return rq;
             }
             
@@ -557,6 +559,9 @@ public final class FastNavigatorsTest extends TestCase {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }            
 
+            public Query getQuery(){
+                return rq.getQuery();
+            }
         };
         
         return searchCmdCxt;

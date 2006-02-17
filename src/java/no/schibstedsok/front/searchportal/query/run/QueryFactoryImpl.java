@@ -46,14 +46,14 @@ public final class QueryFactoryImpl extends QueryFactory {
             LOG.debug("ENTR: createQuery() Type=" + request.getParameter("t"));
         }
 
-        RunningQuery query;
+        RunningQueryImpl query;
 
         if ("adv".equals(request.getParameter("t"))) {
 
             final AdvancedQueryBuilder builder = new AdvancedQueryBuilder(request);
             final Map param = new HashMap();
             param.put("type", "adv");
-            query = new RunningQuery(cxt, builder.getQuery(), param);
+            query = new RunningQueryImpl(cxt, builder.getQuery(), param);
 
             query.addParameter("request", request);
             query.addParameter("response", response);

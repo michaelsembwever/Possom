@@ -1,7 +1,7 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
-import no.schibstedsok.front.searchportal.result.ResultHandler;
+import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 
 import java.util.ArrayList;

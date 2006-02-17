@@ -144,6 +144,7 @@ Clause operation() :
     | 
     (<PHONE_NUMBER>) 
             { 
+                // Create a "Possibility" OrClause
                 // it might not be a phone number... // XXX Could this be done with parser logic...
                 
                 final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, null);
@@ -171,6 +172,7 @@ Clause operation() :
     | 
     (<ORGANISATION_NUMBER>) 
             { 
+                // Create a a "Possibility" OrClause
                 // it might not be a Organisation number... // XXX Could this be done with parser logic...
                 
                 final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(token.image, null);

@@ -1,10 +1,12 @@
-package no.schibstedsok.front.searchportal.result;
+// Copyright (2006) Schibsted Søk AS
+package no.schibstedsok.front.searchportal.result.handler;
 
 import java.util.Map;
 import java.util.Iterator;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
 /**
  * WeatherDateHandler is part of no.schibstedsok.front.searchportal.result
@@ -26,11 +28,11 @@ public class WeatherDateHandler implements ResultHandler  {
         return targetField;
     }
 
-    public void setTargetField(String targetField) {
+    public void setTargetField(final String targetField) {
         this.targetField = targetField;
     }
 
-    public void handleResult(Context cxt, Map parameters) {
+    public void handleResult(final Context cxt, final Map parameters) {
 
         for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();

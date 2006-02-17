@@ -1,9 +1,8 @@
 /*
  * Copyright (2005) Schibsted Søk AS
  */
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.token;
 
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.collections.Predicate;
 
 public class QueryEqualsPredicate implements Predicate {

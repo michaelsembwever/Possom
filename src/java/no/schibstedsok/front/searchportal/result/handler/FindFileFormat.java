@@ -1,7 +1,8 @@
-package no.schibstedsok.front.searchportal.result;
+package no.schibstedsok.front.searchportal.result.handler;
 
 import java.util.Map;
 import java.util.Iterator;
+import no.schibstedsok.front.searchportal.result.*;
 
 /**
  * Created by IntelliJ IDEA.

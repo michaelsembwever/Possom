@@ -1,10 +1,12 @@
-package no.schibstedsok.front.searchportal.result;
+// Copyright (2006) Schibsted Søk AS
+package no.schibstedsok.front.searchportal.result.handler;
 
 import org.apache.commons.lang.StringUtils;
 
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -14,8 +16,8 @@ public class MultiValuedFieldCollector implements ResultHandler {
 
     private Map fieldMap = new HashMap();
 
-    public void handleResult(Context cxt, Map parameters) {
-        
+    public void handleResult(final Context cxt, final Map parameters) {
+
         for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
@@ -32,7 +34,7 @@ public class MultiValuedFieldCollector implements ResultHandler {
                         String value = values[i];
 
                         if (value.length() == 8) {
-                            format = value.substring(0,2) + " " + value.substring(2,4) + " " + value.substring(4,6) + " " + value.substring(6,8);
+                            format = value.substring(0, 2) + " " + value.substring(2, 4) + " " + value.substring(4, 6) + " " + value.substring(6, 8);
                         } else
                             format = value;
 

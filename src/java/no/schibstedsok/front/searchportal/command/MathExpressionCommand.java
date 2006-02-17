@@ -40,7 +40,7 @@ public class MathExpressionCommand extends AbstractSearchCommand {
         parser.addStandardFunctions();
         parser.addComplex();
 
-        String queryString = getQuery().getQueryString();
+        String queryString = context.getRunningQuery().getQueryString();
 
         parser.parseExpression(queryString);
 

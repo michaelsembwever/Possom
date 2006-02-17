@@ -1,9 +1,11 @@
-package no.schibstedsok.front.searchportal.result;
+// Copyright (2006) Schibsted Søk AS
+package no.schibstedsok.front.searchportal.result.handler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Map;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
 /**
  * TvEnrichmentDateFormatHandler is part of no.schibstedsok.front.searchportal.result
@@ -23,13 +25,13 @@ public class TvEnrichmentDateFormatHandler implements ResultHandler {
         return targetField;
     }
 
-    public void setTargetField(String targetField) {
+    public void setTargetField(final String targetField) {
         this.targetField = targetField;
     }
 
-    public void handleResult(Context cxt, Map parameters) {
+    public void handleResult(final Context cxt, final Map parameters) {
     	// TODO: for performance reasons, is SimpleDateFormat usage avoidable?
-    	SimpleDateFormat inputDF=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    	SimpleDateFormat inputDF= new  SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         SimpleDateFormat outputDF = new SimpleDateFormat("HH:mm");
 
         for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {

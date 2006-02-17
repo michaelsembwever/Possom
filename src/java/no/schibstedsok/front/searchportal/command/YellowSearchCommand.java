@@ -13,8 +13,6 @@ import no.fast.ds.search.SearchParameter;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
 /**
  * A YellowSearchCommand.
@@ -64,9 +62,9 @@ public final class YellowSearchCommand extends FastSearchCommand {
         AnalysisRule rule = new AnalysisRule();
         rule.addPredicateScore(eitherCompany, MATCH_SCORE);
 
-        TokenEvaluatorFactory factory = getQuery().getTokenEvaluatorFactory();
+        TokenEvaluatorFactory factory = context.getRunningQuery().getTokenEvaluatorFactory();
 
-        int score = rule.evaluate(getQuery().getQueryString(), factory);
+        int score = rule.evaluate(context.getRunningQuery().getQueryString(), factory);
 
         if (score > 0) {
             return new SearchParameter(BaseParameter.SORT_BY,

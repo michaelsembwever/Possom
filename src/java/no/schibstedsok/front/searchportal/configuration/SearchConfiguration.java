@@ -7,7 +7,7 @@ package no.schibstedsok.front.searchportal.configuration;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
-import no.schibstedsok.front.searchportal.result.ResultHandler;
+import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 
 import java.util.Collection;
 import java.util.List;

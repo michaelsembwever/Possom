@@ -1,9 +1,12 @@
-package no.schibstedsok.front.searchportal.result;
+// Copyright (2006) Schibsted Søk AS
+package no.schibstedsok.front.searchportal.result.handler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
+
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -14,8 +17,8 @@ public class FieldChooser implements ResultHandler {
     private List fields = new ArrayList();
     private String targetField;
 
-    public void handleResult(Context cxt, Map parameters) {
-        
+    public void handleResult(final Context cxt, final Map parameters) {
+
         for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem item = (SearchResultItem) iterator.next();
 
@@ -29,11 +32,11 @@ public class FieldChooser implements ResultHandler {
         }
     }
 
-    public void addField(String fieldName) {
+    public void addField(final String fieldName) {
         fields.add(fieldName);
     }
 
-    public void setTargetField(String fieldName) {
+    public void setTargetField(final String fieldName) {
         targetField = fieldName;
     }
 }

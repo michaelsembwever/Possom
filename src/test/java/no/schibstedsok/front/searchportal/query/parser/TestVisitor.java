@@ -166,7 +166,7 @@ public final class TestVisitor extends TestCase {
 
         public void visitImpl(final NotClauseImpl clause) {
             sb.append("-");
-            clause.getClause().accept(this);
+            clause.getFirstClause().accept(this);
         }
 
         public void visitImpl(final WordClauseImpl clause) {

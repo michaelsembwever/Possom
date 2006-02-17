@@ -1,16 +1,18 @@
-package no.schibstedsok.front.searchportal.result;
+// Copyright (2006) Schibsted Søk AS
+package no.schibstedsok.front.searchportal.result.handler;
 
 import java.util.Iterator;
 import java.util.Map;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class PhoneNumberChooser implements ResultHandler {
-    
-    public void handleResult(Context cxt, Map parameters) {
-        
+
+    public void handleResult(final Context cxt, final Map parameters) {
+
         for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 

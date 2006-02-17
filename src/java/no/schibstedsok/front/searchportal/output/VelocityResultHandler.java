@@ -1,5 +1,5 @@
 // Copyright (2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.result;
+package no.schibstedsok.front.searchportal.output;
 
 import java.util.Properties;
 import no.geodata.maputil.CoordHelper;
@@ -9,18 +9,19 @@ import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
-import no.schibstedsok.front.searchportal.result.handler.velocity.VelocityEngineFactory;
+import no.schibstedsok.front.searchportal.result.Decoder;
+import no.schibstedsok.front.searchportal.result.Linkpulse;
+import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
+import no.schibstedsok.front.searchportal.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.front.searchportal.util.TradeDoubler;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Category;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.generic.MathTool;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +40,7 @@ import java.net.URLEncoder;
  */
 public final class VelocityResultHandler implements ResultHandler {
 
-    private static Logger LOG = Logger.getLogger(VelocityResultHandler.class);
+    private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
 
     public void handleResult(final Context cxt, final Map parameters) {
 
@@ -50,7 +51,6 @@ public final class VelocityResultHandler implements ResultHandler {
         }
 
         LOG.trace("handleResult()");
-        final SearchResult result = cxt.getSearchResult();
 
         // This requirement of the users of this class to send the web stuff
         // as parameters is a bit too implicit...
@@ -61,10 +61,10 @@ public final class VelocityResultHandler implements ResultHandler {
         if (request == null || response == null) {
             throw new IllegalStateException("Both request and response must be set in the parameters");
         }
-        
+
         final Writer w = new StringWriter();
-        final SearchConfiguration searchConfiguration = result.getSearchCommand().getSearchConfiguration();
-        
+        final SearchConfiguration searchConfiguration = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+
         try {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("handleResult: Looking for template: " + searchConfiguration + searchConfiguration.getName() + ".vm");
@@ -72,10 +72,10 @@ public final class VelocityResultHandler implements ResultHandler {
 
             final Site site = cxt.getSite();
             final String templateUrl = site.getTemplateDir() + "/" + searchConfiguration.getName() + ".vm";
-            
-            final VelocityEngine engine = VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context(){
-                public Site getSite(){
-                    return cxt.getSite();
+
+            final VelocityEngine engine = VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context() {
+                public Site getSite() {
+                    return site;
                 }
             });
 
@@ -84,12 +84,12 @@ public final class VelocityResultHandler implements ResultHandler {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("handleResult: Created Template=" + template.getName());
             }
-            
+
             final VelocityContext context = new VelocityContext();
             populateVelocityContext(context, cxt, request, response);
             template.merge(context, w);
             response.getWriter().write(w.toString());
-            
+
         } catch (Exception e) {
             throw new InfrastructureException(e);
         }
@@ -102,8 +102,7 @@ public final class VelocityResultHandler implements ResultHandler {
 
         LOG.trace("populateVelocityContext()");
 
-        final SearchResult result = cxt.getSearchResult();
-        String queryString = result.getSearchCommand().getQuery().getQueryString();
+        String queryString = cxt.getQueryString();
 
         String queryStringURLEncoded = null;
 
@@ -114,36 +113,36 @@ public final class VelocityResultHandler implements ResultHandler {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        context.put("result", result);
+        context.put("result", cxt.getSearchResult());
         context.put("request", request);
         context.put("response", response);
         context.put("query", queryStringURLEncoded);
         context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
-        context.put("command", result.getSearchCommand());
+        context.put("command", cxt.getSearchResult().getSearchCommand());
         context.put("queryHTMLEscaped", queryString);
         context.put("locale", cxt.getSite().getLocale());
-        context.put("text", TextMessages.valueOf(new TextMessages.Context(){
-            public Site getSite(){
+        context.put("text", TextMessages.valueOf(new TextMessages.Context() {
+            public Site getSite() {
                 return cxt.getSite();
             }
-            public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props){
+            public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props) {
                 return cxt.newPropertiesLoader(rsc, props);
             }
         }));
-        context.put("currentTab", result.getSearchCommand().getQuery().getSearchMode());
+        context.put("currentTab", cxt.getSearchResult().getSearchCommand().getRunningQuery().getSearchMode());
         context.put("coordHelper", new CoordHelper());
         context.put("contextPath", request.getContextPath());
         context.put("hashGenerator", request.getAttribute("hashGenerator"));
-        context.put("runningQuery", result.getSearchCommand().getQuery());
+        context.put("runningQuery", cxt.getSearchResult().getSearchCommand().getRunningQuery());
         context.put("math", new MathTool());
         context.put("site", cxt.getSite());
         context.put("tradedoubler", new TradeDoubler(request));
 
-        final SearchConfiguration config = result.getSearchCommand().getSearchConfiguration();
+        final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
         if (config.isPagingEnabled()) {
-            PagingDisplayHelper pager = new PagingDisplayHelper(result.getHitCount(), config.getResultsToReturn(), 10);
-            pager.setCurrentOffset(result.getSearchCommand().getQuery().getOffset());
+            PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), config.getResultsToReturn(), 10);
+            pager.setCurrentOffset(cxt.getSearchResult().getSearchCommand().getRunningQuery().getOffset());
             context.put("pager", pager);
         }
 

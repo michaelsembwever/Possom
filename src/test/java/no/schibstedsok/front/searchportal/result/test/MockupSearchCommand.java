@@ -7,6 +7,7 @@ import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
+import no.schibstedsok.front.searchportal.query.run.RunningQueryImpl;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 
 import java.util.HashMap;
@@ -50,22 +51,21 @@ public class MockupSearchCommand implements SearchCommand {
 
     };
 
-    private RunningQuery query = new RunningQuery(rqCxt, "", new HashMap());
+    private RunningQuery query;
 
     public MockupSearchCommand() {
+        query = new RunningQueryImpl(rqCxt, "", new HashMap());
     }
 
     public MockupSearchCommand(final String queryString) {
-
-
-        query = new RunningQuery(rqCxt, queryString, new HashMap());
+        query = new RunningQueryImpl(rqCxt, queryString, new HashMap());
     }
 
     public SearchConfiguration getSearchConfiguration() {
         return null;
     }
 
-    public RunningQuery getQuery() {
+    public RunningQuery getRunningQuery() {
         return query;
     }
 

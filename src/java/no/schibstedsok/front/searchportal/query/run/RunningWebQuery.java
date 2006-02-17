@@ -14,9 +14,10 @@ import org.apache.commons.logging.Log;
 /*
  * @version <tt>$Revision$</tt>
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- *
+ * TODO move common code out of RunningQueryImpl and into AbstractRunningQuery, '
+ *  and change extension to AbstractRunningQuery.
  */
-public class RunningWebQuery extends RunningQuery {
+public class RunningWebQuery extends RunningQueryImpl {
 
     private static final Log LOG = LogFactory.getLog(RunningWebQuery.class);
 

@@ -7,7 +7,8 @@ import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
-import no.schibstedsok.front.searchportal.result.TextOutputResultHandler;
+import no.schibstedsok.front.searchportal.query.run.RunningQueryImpl;
+import no.schibstedsok.front.searchportal.output.TextOutputResultHandler;
 
 import java.util.HashMap;
 import java.util.Properties;
@@ -68,7 +69,7 @@ public class SearchModeTest extends TestCase {
 
         };
 
-        final RunningQuery query = new RunningQuery(rqCxt, "aetat.no", new HashMap());
+        final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no", new HashMap());
 
         try {
             query.run();
@@ -111,7 +112,7 @@ public class SearchModeTest extends TestCase {
             
         };
         
-        final RunningQuery runningQuery = new RunningQuery(rqCxt, query, new HashMap());
+        final RunningQuery runningQuery = new RunningQueryImpl(rqCxt, query, new HashMap());
 
         runningQuery.run();
 

@@ -1,4 +1,4 @@
-package no.schibstedsok.front.searchportal.result.handler.velocity;
+package no.schibstedsok.front.searchportal.velocity;
 
 /*
  * Copyright 2001-2004 The Apache Software Foundation.

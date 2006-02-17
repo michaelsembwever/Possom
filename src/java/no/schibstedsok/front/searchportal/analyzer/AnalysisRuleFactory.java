@@ -39,15 +39,15 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version <tt>$Revision$</tt>
  */
-public final class AnalysisRules {
+public final class AnalysisRuleFactory {
 
     /**
-     * The context the AnalysisRules must work against. *
+     * The context the AnalysisRuleFactory must work against. *
      */
     public interface Context extends ResourceContext, SiteContext {
     }
 
-    private static final Logger LOG = Logger.getLogger(AnalysisRules.class);
+    private static final Logger LOG = Logger.getLogger(AnalysisRuleFactory.class);
 
     private static final String ERR_DOC_BUILDER_CREATION = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String ERR_UNABLE_TO_FIND_PREDICATE = "Unable to find predicate with id ";
@@ -66,7 +66,7 @@ public final class AnalysisRules {
      *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
      * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
-    private static final Map/*<Site,AnalysisRules>*/ INSTANCES = new HashMap/*<Site,AnalysisRules>*/();
+    private static final Map/*<Site,AnalysisRuleFactory>*/ INSTANCES = new HashMap/*<Site,AnalysisRuleFactory>*/();
 
 
     private final Map rules = new HashMap();
@@ -77,7 +77,7 @@ public final class AnalysisRules {
 
 
 
-    private AnalysisRules(final Context cxt)
+    private AnalysisRuleFactory(final Context cxt)
             throws ParserConfigurationException {
 
         context = cxt;
@@ -292,17 +292,19 @@ public final class AnalysisRules {
         return rule;
     }
 
-    /** Main method to retrieve the correct AnalysisRules to further obtain
+    /**
+     * Main method to retrieve the correct AnalysisRuleFactory to further obtain
      * AnalysisRule.
+     * 
      * @param cxt the contextual needs this factory must use to operate.
-     * @return AnalysisRules for this site.
+     * @return AnalysisRuleFactory for this site.
      */
-    public static AnalysisRules valueOf(final Context cxt) {
+    public static AnalysisRuleFactory valueOf(final Context cxt) {
         final Site site = cxt.getSite();
-        AnalysisRules instance = (AnalysisRules) INSTANCES.get(site);
+        AnalysisRuleFactory instance = (AnalysisRuleFactory) INSTANCES.get(site);
         if (instance == null) {
             try {
-                instance = new AnalysisRules(cxt);
+                instance = new AnalysisRuleFactory(cxt);
 
             } catch (ParserConfigurationException ex) {
                 LOG.error(ERR_DOC_BUILDER_CREATION, ex);
@@ -314,13 +316,14 @@ public final class AnalysisRules {
     /**
      * Utility wrapper to the valueOf(Context).
      * <b>Makes the presumption we will be using the UrlResourceLoader to load all resources.</b>
-     * @param site the site this AnalysisRules will work for.
-     * @return AnalysisRules for this site.
+     * 
+     * @param site the site this AnalysisRuleFactory will work for.
+     * @return AnalysisRuleFactory for this site.
      */
-    public static AnalysisRules valueOf(final Site site) {
+    public static AnalysisRuleFactory valueOf(final Site site) {
 
         // RegExpEvaluatorFactory.Context for this site & UrlResourceLoader.
-        final AnalysisRules instance = AnalysisRules.valueOf(new AnalysisRules.Context() {
+        final AnalysisRuleFactory instance = AnalysisRuleFactory.valueOf(new AnalysisRuleFactory.Context() {
             public Site getSite() {
                 return site;
             }

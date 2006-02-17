@@ -203,12 +203,12 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             }
         }
         
-        if (getQuery().getQueryString().equals("42")) {
+        if (context.getRunningQuery().getQueryString().equals("42")) {
             SpellingSuggestion egg = new SpellingSuggestion("42", "Meningen med livet", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
         
-        if (getQuery().getQueryString().equalsIgnoreCase("meningen med livet")) {
+        if (context.getRunningQuery().getQueryString().equalsIgnoreCase("meningen med livet")) {
             SpellingSuggestion egg = new SpellingSuggestion("meningen med livet", "42", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
@@ -771,7 +771,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
                             
                             String[] suggAndWeight = forOneWord[j].split("@");
                             
-                            if (! this.getQuery().getQueryString().equalsIgnoreCase(suggAndWeight[0])) {
+                            if (! context.getRunningQuery().getQueryString().equalsIgnoreCase(suggAndWeight[0])) {
                                 
                                 RelevantQuery rq = new RelevantQuery(suggAndWeight[0], new Integer(suggAndWeight[1]));
                                 searchResult.addRelevantQuery(rq);

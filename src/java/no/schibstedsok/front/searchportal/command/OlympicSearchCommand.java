@@ -23,6 +23,7 @@ import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
+import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.transform.AbstractQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.ExactTitleMatchTransformer;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
@@ -38,12 +39,10 @@ import org.apache.commons.logging.LogFactory;
 public class OlympicSearchCommand extends AbstractSearchCommand {
     
     private OlympicSearchConfiguration configuration;
-    private final SearchCommand.Context cxt;
     
     
     public OlympicSearchCommand(final SearchCommand.Context cxt, Map parameters) {
         super(cxt, parameters);
-        this.cxt = cxt;
     }
     
     public SearchResult execute() {
@@ -53,7 +52,7 @@ public class OlympicSearchCommand extends AbstractSearchCommand {
         
         result.setHitCount(0);
         
-        if (data.getParticipants().containsKey(getQuery().getQueryString().toLowerCase(getQuery().getLocale()))) {
+        if (data.getParticipants().containsKey(context.getRunningQuery().getQueryString().toLowerCase(getRunningQuery().getLocale()))) {
             SearchResultItem resultItem = getParticipantItem(data, result);
             result.setHitCount(1);
             SearchResult picSearchResult = doPicSearch(null);
@@ -75,7 +74,7 @@ public class OlympicSearchCommand extends AbstractSearchCommand {
             }
 
             result.addResult(resultItem);
-        } else if (data.getDiciplines().containsKey(getQuery().getQueryString().toLowerCase(getQuery().getLocale()))) {
+        } else if (data.getDiciplines().containsKey(context.getRunningQuery().getQueryString().toLowerCase(getRunningQuery().getLocale()))) {
             result.setHitCount(1);
             SearchResultItem resultItem = getDiciplineItem(data, result);
             
@@ -90,7 +89,7 @@ public class OlympicSearchCommand extends AbstractSearchCommand {
                 resultItem.addField("wikiUrl", wikiItem.getField("url"));
             }
             
-            List participants = (List) data.getParticipantsPerDicipline().get(getQuery().getQueryString().toLowerCase(getQuery().getLocale()));
+            List participants = (List) data.getParticipantsPerDicipline().get(context.getRunningQuery().getQueryString().toLowerCase(getRunningQuery().getLocale()));
             
             if (participants != null) {
                 for (Iterator it = participants.iterator(); it.hasNext();) {
@@ -112,7 +111,7 @@ public class OlympicSearchCommand extends AbstractSearchCommand {
         
         
         FastConfiguration wikiConf = new FastConfiguration();
-        wikiConf.setQueryServerURL(((OlympicSearchConfiguration)cxt.getSearchConfiguration()).getWikiQrServer());
+        wikiConf.setQueryServerURL(((OlympicSearchConfiguration)context.getSearchConfiguration()).getWikiQrServer());
         wikiConf.setSortBy("standard");
         wikiConf.addCollection("wikipedia2");
         wikiConf.setResultsToReturn(1);
@@ -162,37 +161,40 @@ public class OlympicSearchCommand extends AbstractSearchCommand {
     private SearchCommand.Context getCommandContext(final SearchConfiguration c) {
         SearchCommand.Context picSearchCxt = new SearchCommand.Context() {
             public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
-                return cxt.newPropertiesLoader(resource, properties);
+                return context.newPropertiesLoader(resource, properties);
             }
 
             public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
-                return cxt.newXStreamLoader(resource, xstream);
+                return context.newXStreamLoader(resource, xstream);
             }
 
             public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
-                return cxt.newDocumentLoader(resource, builder);
+                return context.newDocumentLoader(resource, builder);
             }
 
             public Site getSite() {
-                return cxt.getSite();
+                return context.getSite();
             }
 
             public SearchConfiguration getSearchConfiguration() {
                 return c;
             }
 
-            public RunningQuery getQuery() {
-                return cxt.getQuery();
+            public RunningQuery getRunningQuery() {
+                return context.getRunningQuery();
+            }
+            public Query getQuery(){
+                return context.getQuery();
             }
         };
         return picSearchCxt;
     }
     
     private SearchResultItem getParticipantItem(final OlympicData data, final SearchResult result) {
-        Map participant = (Map) data.getParticipants().get(getQuery().getQueryString().toLowerCase(getQuery().getLocale()));
+        Map participant = (Map) data.getParticipants().get(context.getRunningQuery().getQueryString().toLowerCase(context.getRunningQuery().getLocale()));
         
         SearchResultItem resultItem = new BasicSearchResultItem();
-        resultItem.addField("participantName", getQuery().getQueryString());
+        resultItem.addField("participantName", context.getRunningQuery().getQueryString());
         resultItem.addField("diciplineName", (String) participant.get("diciplineName"));
         
         if (participant.containsKey("infoLink1")) {
@@ -220,11 +222,11 @@ public class OlympicSearchCommand extends AbstractSearchCommand {
     }
     
     private SearchResultItem getDiciplineItem(OlympicData data, SearchResult result) {
-        Map dicipline = (Map) data.getDiciplines().get(getQuery().getQueryString().toLowerCase(getQuery().getLocale()));
+        Map dicipline = (Map) data.getDiciplines().get(context.getRunningQuery().getQueryString().toLowerCase(context.getRunningQuery().getLocale()));
         
         SearchResultItem resultItem = new BasicSearchResultItem();
         
-        resultItem.addField("diciplineName", getQuery().getQueryString());
+        resultItem.addField("diciplineName", context.getRunningQuery().getQueryString());
         resultItem.addField("tvLink", (String) dicipline.get("tvLink"));
         resultItem.addField("programLink", (String) dicipline.get("programLink"));
         resultItem.addField("alternativePicSearch", (String) dicipline.get("alternativePicSearch"));
