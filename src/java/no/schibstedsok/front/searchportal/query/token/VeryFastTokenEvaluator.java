@@ -90,7 +90,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                 final List/*<TokenMatch>*/ occurances = (List/*<TokenMatch>*/)analysisResult.get(realTokenFQ);
                 for( Iterator it = occurances.iterator(); !evaluation && it.hasNext(); ){
                     final TokenMatch occurance = (TokenMatch)it.next();
-                    evaluation = occurance.getMatch().equals(term);
+                    evaluation = occurance.getMatch().equalsIgnoreCase(term);
                 }
             }
         }

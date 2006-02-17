@@ -73,7 +73,8 @@ public final class OrClauseImpl extends AbstractOperationClause implements OrCla
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
         final String term = (first.getField() != null ? first.getField() + ":" : "")
                 + first.getTerm()
-                + " OR "
+                //+ " OR "
+                + " "
                 + (second instanceof LeafClause && ((LeafClause) second).getField() != null
                     ?  ((LeafClause) second).getField() + ":"
                     : "")

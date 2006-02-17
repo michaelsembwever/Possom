@@ -134,11 +134,11 @@ public final class TestVisitor extends TestCase {
 
             visitor.visit(q.getRootClause());
 
-            final String goldenResult = "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123";
+            final String goldenResult = "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123";
             LOG.info("Visitor built: " + visitor.getQueryAsString());
             // assert test
             assertNotNull(visitor.getQueryAsString());
-            assertEquals(goldenResult, visitor.getQueryAsString());
+            assertEquals(queryInput, visitor.getQueryAsString());
             assertEquals(goldenResult, q.getRootClause().getTerm());
 
         }  catch (ParseException ex) {
