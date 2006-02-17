@@ -9,7 +9,9 @@
         </activation>
     
         <properties>
-      
+            <!-- The default Site -->
+            <sesam.site.default>localhost:8080</sesam.site.default>
+            
             <!-- QR Servers -->
 
             <queryServerURL.1>http://localhost:15100</queryServerURL.1>
@@ -51,6 +53,9 @@
             </property>
         </activation>
         <properties>
+            <!-- The default Site -->
+            <sesam.site.default>searchdev.schibstedsok.no</sesam.site.default>
+            
             <!-- QR Servers -->
 
             <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
@@ -97,6 +102,9 @@
             </property>
         </activation>
         <properties>
+            <!-- The default Site -->
+            <sesam.site.default>sesam.no</sesam.site.default>
+            
             <!-- QR Servers -->
 
             <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
