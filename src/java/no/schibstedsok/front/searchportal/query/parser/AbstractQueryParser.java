@@ -8,6 +8,8 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.util.Iterator;
+import java.util.Stack;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
@@ -157,6 +159,8 @@ public abstract class AbstractQueryParser implements QueryParser {
     /** Protected so an .jj file implementing this class can reuse.
      **/
     protected static final Logger LOG = Logger.getLogger(AbstractQueryParser.class);
+    private static final Stack/*<String>*/ methodStack = new Stack/*<String>*/();
+    
     /** Error message when the parser tries to parse an empty query string.
      ***/
     protected static final String ERR_CANNOT_PARSE_EMPTY_QUERY
@@ -199,6 +203,25 @@ public abstract class AbstractQueryParser implements QueryParser {
             };
         }
         return query;
+    }
+    
+    
+    protected final void enterMethod(final String method){
+        if( LOG.isTraceEnabled() ){
+            methodStack.push(method);
+            final StringBuffer sb = new StringBuffer();
+            for( Iterator it = methodStack.iterator(); it.hasNext(); ){
+                final String m = (String)it.next();
+                sb.append("." + m );
+            }
+            LOG.trace(sb.toString());
+        }
+    }
+    
+    protected final void exitMethod(){
+        if( LOG.isTraceEnabled() ){
+            methodStack.pop();
+        }
     }
 
 }

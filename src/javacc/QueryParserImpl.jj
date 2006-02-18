@@ -83,227 +83,188 @@ TOKEN : {
   >
 }
 
-Clause parse() : 
-{ 
+Clause parse() : { 
   Clause clause;
   LOG.info("parsing: "+context.getQueryString());
-}
-{
-        (clause = clause()) {return clause;}
-}
-
-Clause clause() : 
-{ 
-  Clause clause;
-  LOG.trace("clause()");
-}
-{
-    LOOKAHEAD(3)
-    (clause = rootPrecedence()) {return clause;}
-    | 
-    (clause = leaf()) { return clause; }
+}{
+        (clause = rootPrecedence()) {return clause;}
 }
 
 /** PRECEDENCES **/
 
-Clause rootPrecedence() :
-{
+Clause rootPrecedence() :{
     Clause clause;
-    LOG.trace("rootPrecedence()");
-}
-{
-    (clause = noPrecedence()) { return clause; }
+    enterMethod("rootPrecedence()");
+}{
+    (clause = noPrecedence()) { try{return clause;}finally{exitMethod();} }
 }
 
-Clause noPrecedence() :
-{
+Clause noPrecedence() :{
     Clause clause;
-    LOG.trace("noPrecedence()");
-}
-{
+    enterMethod("noPrecedence()");
+}{
+        // I'm completely baffled why looseJoinPrecedence must come before hiddenOrOperation
+        //  when in every other Precedence() the operation always comes first!
+        //  I'll buy the explainer a beer. really.
+
     LOOKAHEAD(3)
-    (clause = looseJoinPrecedence()) { return clause; }
+    (clause = looseJoinPrecedence()) { try{return clause;}finally{exitMethod();} }
     |
-    (clause = hiddenOrOperation()) { return clause; }
+    (clause = hiddenOrOperation()) { try{return clause;}finally{exitMethod();} }
 }
 
-Clause looseJoinPrecedence() :
-{
+Clause looseJoinPrecedence() :{
     Clause clause;
-    LOG.trace("looseJoinPrecedence()");
-}
-{
+    enterMethod("looseJoinPrecedence()");
+}{
     LOOKAHEAD(3)
-    (clause = strongJoinPrecedence()) { return clause; }
+    (clause = orOperation()) { try{return clause;}finally{exitMethod();} }  
     |
-    (clause = orOperation()) { return clause; }    
+    (clause = strongJoinPrecedence()) { try{return clause;}finally{exitMethod();} } 
 }
 
-Clause strongJoinPrecedence() :
-{
+Clause strongJoinPrecedence() :{
     Clause clause;
-    LOG.trace("strongJoinPrecedence()");
-}
-{
+    enterMethod("strongJoinPrecedence()");
+}{
     LOOKAHEAD(3)
-    (clause = prefixPrecedence()) { return clause; }
+    (clause = andOperation()) { try{return clause;}finally{exitMethod();} }
     |
-    (clause = andOperation()) { return clause; }
+    (clause = prefixPrecedence()) { try{return clause;}finally{exitMethod();} }
+    
 
 }
 
-Clause prefixPrecedence() :
-{
+Clause prefixPrecedence() :{
     Clause clause;
-    LOG.trace("prefixPrecedence()");
-}
-{
-    (clause = notOperation()) { return clause; }
+    enterMethod("prefixPrecedence()");
+}{
+    (clause = notOperation()) { try{return clause;}finally{exitMethod();} }
     |
-    (clause = andNotOperation()) { return clause; }
+    (clause = andNotOperation()) { try{return clause;}finally{exitMethod();} }
+    | 
+    (clause = leaf()) { try{return clause;}finally{exitMethod();} }
 }
 
 /** OPERATIONS **/
 
+OrClause hiddenOrOperation() :{
+    Clause left,right;
+    enterMethod("hiddenOrOperation()");
+}{
+    ((left = looseJoinPrecedence())(right = noPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
+} 
 
-NotClause notOperation() :
-{
+OrClause orOperation() :{
+    Clause left,right;
+    enterMethod("orOperation()");
+}{
+    ((left = strongJoinPrecedence())<OR>(right = looseJoinPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
+}
+
+AndClause andOperation() :{
+    Clause left,right;
+    enterMethod("andOperation()");
+}{
+    ((left = prefixPrecedence())<AND>(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+}
+
+NotClause notOperation() :{
     Clause left;
-    LOG.trace("notOperation()");
-}
-{
-        (<NOT>(left = leaf()))  { return context.createNotClause(left); }
-}
-
-AndClause andOperation() :
-{
-    Clause left,right;
-    LOG.trace("andOperation()");
-}
-{
-        ((left = prefixPrecedence())<AND>(right = clause())) { return context.createAndClause(left,right); }
-        |
-        ((left = leaf())<AND>(right = clause())) { return context.createAndClause(left,right); }
+    enterMethod("notOperation()");
+}{
+    (<NOT>(left = leaf()))  { try{return context.createNotClause(left);}finally{exitMethod();} }
 }
 
-OrClause orOperation() :
-{
+AndNotClause andNotOperation() :{
     Clause left,right;
-    LOG.trace("orOperation()");
-}
-{
-    LOOKAHEAD(3)
-    ((left = strongJoinPrecedence())<OR>(right = clause())) { return context.createOrClause(left,right); }
-    |
-    ((left = leaf())<OR>(right = clause())) { return context.createOrClause(left,right); }
-}
-
-AndNotClause andNotOperation() :
-{
-    Clause left,right;
-    LOG.trace("andNotOperation()");
-}
-{
-        //((left = andPrecedence())<ANDNOT>(right = clause())) { return context.createAndNotClause(left,right); }
-        (<ANDNOT>(left = clause())) { return context.createAndNotClause(left,null); }
+    enterMethod("andNotOperation()");
+}{
+    (<ANDNOT>(left = noPrecedence())) { try{return context.createAndNotClause(left,null);}finally{exitMethod();} }
 } 
 
-OrClause hiddenOrOperation() :
-{
-    Clause left,right;
-    LOG.trace("hiddenOrOperation()");
-}
-{
-    LOOKAHEAD(3)
-    ((left = looseJoinPrecedence())(right = clause())) { return context.createOrClause(left,right); }
-    |
-    ((left = leaf())(right = clause())) { return context.createOrClause(left,right); }
-} 
 
 /** LEAVES **/
 
-Clause leaf() :
-{
+Clause leaf() :{
     Token field = null;
     Clause clause = null;
-    LOG.trace("leaf()");
-}
-{
+    enterMethod("leaf()");
+}{
     LOOKAHEAD(2)
-    (field=<WORD>":")(clause = fieldedLeaf(field)) {return clause;}
+    (field=<WORD>":")(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
     |
-    (clause = fieldedLeaf(null)) {return clause;}
+    (clause = fieldedLeaf(null)) {try{return clause;}finally{exitMethod();}}
 }
     
 
-Clause fieldedLeaf(final Token field) :
-{
-    LOG.trace("fieldedLeaf()");
-}
-{
+Clause fieldedLeaf(final Token field) :{
+    enterMethod("fieldedLeaf()");
+}{
     (<PHONE_NUMBER>) 
             { 
                 // Create a "Possibility" OrClause
                 // it might not be a phone number... // XXX Could this be done with parser logic...
-                
-                final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, field == null ? null : field.image);
-                if( token.image.indexOf("+") >=0 || token.image.indexOf(" ")<0 ){ 
-                    // it's definitely a phone number
-                    return phClause;
-                }else{
-                    Clause prevClause = null;
-                    final String[] numbers = token.image.split(" ");
-                    for(int i = 0; i < numbers.length; ++i){
-                        final String number = numbers[i];
-                        final LeafClause leafClause = number.indexOf("+") <0
-                                ? (LeafClause)context.createIntegerClause(number, field == null ? null : field.image)
-                                : (LeafClause)context.createWordClause(number, field == null ? null : field.image);
-                        if( prevClause != null ){
-                            final OrClause orClause = context.createOrClause(leafClause,prevClause);
-                            prevClause = orClause;
-                        }else{
-                            prevClause = leafClause;
+                try{
+                    final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, field == null ? null : field.image);
+                    if( token.image.indexOf("+") >=0 || token.image.indexOf(" ")<0 ){ 
+                        // it's definitely a phone number
+                        return phClause;
+                    }else{
+                        Clause prevClause = null;
+                        final String[] numbers = token.image.split(" ");
+                        for(int i = 0; i < numbers.length; ++i){
+                            final String number = numbers[i];
+                            final LeafClause leafClause = number.indexOf("+") <0
+                                    ? (LeafClause)context.createIntegerClause(number, field == null ? null : field.image)
+                                    : (LeafClause)context.createWordClause(number, field == null ? null : field.image);
+                            if( prevClause != null ){
+                                final OrClause orClause = context.createOrClause(leafClause,prevClause);
+                                prevClause = orClause;
+                            }else{
+                                prevClause = leafClause;
+                            }
                         }
+                        return context.createOrClause(phClause, prevClause);
                     }
-                    return context.createOrClause(phClause, prevClause);
-                }
+                }finally{exitMethod();}
             }
     | 
     (<ORGANISATION_NUMBER>) 
             { 
                 // Create a a "Possibility" OrClause
                 // it might not be a Organisation number... // XXX Could this be done with parser logic...
-                
-                final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(token.image, field == null ? null : field.image);
-                
-                Clause prevClause = null;
-                final String[] numbers = token.image.split(" ");
-                for(int i = 0; i < numbers.length; ++i){
-                    final String number = numbers[i];
-                    final IntegerClause intClause = context.createIntegerClause(number, field == null ? null : field.image);
-                    if( prevClause != null ){
-                        final OrClause orClause = context.createOrClause(intClause, prevClause);
-                        prevClause = orClause;
-                    }else{
-                        prevClause = intClause;
+                try{
+                    final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(token.image, field == null ? null : field.image);
+                    Clause prevClause = null;
+                    final String[] numbers = token.image.split(" ");
+                    for(int i = 0; i < numbers.length; ++i){
+                        final String number = numbers[i];
+                        final IntegerClause intClause = context.createIntegerClause(number, field == null ? null : field.image);
+                        if( prevClause != null ){
+                            final OrClause orClause = context.createOrClause(intClause, prevClause);
+                            prevClause = orClause;
+                        }else{
+                            prevClause = intClause;
+                        }
                     }
-                }
-                return context.createOrClause(orgClause, prevClause);
+                    return context.createOrClause(orgClause, prevClause);
+                }finally{exitMethod();}
             }
     |
     <WORD>
         { 
-            return context.createWordClause( token.image, field == null ? null : field.image );
+            try{return context.createWordClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
         }
     | 
     <INTEGER>
         { 
-            return context.createIntegerClause( token.image, field == null ? null : field.image );
+            try{return context.createIntegerClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
         }
     | 
     <QUOTED_WORD>
         { 
-            return context.createPhraseClause( token.image, field == null ? null : field.image );
+            try{return context.createPhraseClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
         }
 
 }
