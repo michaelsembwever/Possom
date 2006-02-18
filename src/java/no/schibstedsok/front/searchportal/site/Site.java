@@ -150,6 +150,7 @@ public final class Site {
      */
     public static Site valueOf(final String siteName, final Locale locale) {
 
+        // Strip www. from siteName
         final String shortSiteName = siteName.endsWith("/")
             ? siteName.replaceAll("www.","")
             : siteName.replaceAll("www.","") + '/';

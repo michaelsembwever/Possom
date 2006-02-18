@@ -223,6 +223,9 @@ public final class SiteLocatorFilter implements Filter {
 
     }
 
+    /** The method to obtain the correct Site from the request.
+     *
+     **/
     public static Site getSite(final ServletRequest servletRequest) {
         // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
         // httpd.conf needs:
@@ -233,7 +236,13 @@ public final class SiteLocatorFilter implements Filter {
             // falls back to this when not behind Apache. (Development machine).
             : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
 
-        final Locale locale = servletRequest.getLocale();
+        // Just because many norwegians have their computers installed in english mode
+        //  we can't presume they want their webpages in english.
+        //  Therefore we must always initially replace english locales with norwegian.
+        final Locale requestLocale = servletRequest.getLocale();
+        final Locale locale = "en".equals( requestLocale.getLanguage() )
+                ? Locale.getDefault()
+                : requestLocale;
 
         LOG.debug(DEBUG_REQUESTED_VHOST + vhost);
 
