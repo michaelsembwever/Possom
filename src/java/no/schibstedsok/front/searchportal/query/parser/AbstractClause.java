@@ -186,7 +186,8 @@ public abstract class AbstractClause implements Clause {
     /** {@inheritDoc}
      */
     public String toString() {
-        return getClass().getSimpleName() + "[" + getTerm() + "]";
+        //return getClass().getSimpleName() + "[" + getTerm() + "]"; // JDK1.5
+        return getClass().getName() + "[" + getTerm() + "]";
     }
 
     /**

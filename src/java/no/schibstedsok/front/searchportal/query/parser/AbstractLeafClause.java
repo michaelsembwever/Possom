@@ -140,6 +140,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
     /** {@inheritDoc}
      */
     public String toString() {
-        return getClass().getSimpleName() + "[" + getTerm() + "," + getField() + "]";
-    }
+        //return getClass().getSimpleName() + "[" + getTerm() + "," + getField() + "]"; // JDK1.5
+        return getClass().getName() + "[" + getTerm() + "," + getField() + "]";
+     }
 }
