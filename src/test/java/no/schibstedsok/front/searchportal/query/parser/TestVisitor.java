@@ -18,6 +18,11 @@ import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
+import no.schibstedsok.front.searchportal.query.AndClause;
+import no.schibstedsok.front.searchportal.query.NotClause;
+import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.PhraseClause;
+import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,12 +169,12 @@ public final class TestVisitor extends TestCase {
             return sb.toString();
         }
 
-        public void visitImpl(final NotClauseImpl clause) {
+        public void visitImpl(final NotClause clause) {
             sb.append("-");
             clause.getFirstClause().accept(this);
         }
 
-        public void visitImpl(final WordClauseImpl clause) {
+        public void visitImpl(final WordClause clause) {
             if (clause.getField() != null) {
                 sb.append(clause.getField());
                 sb.append(":");
@@ -178,19 +183,19 @@ public final class TestVisitor extends TestCase {
             sb.append(clause.getTerm());
         }
 
-        public void visitImpl(final AndClauseImpl clause) {
+        public void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
             sb.append(" AND ");
             clause.getSecondClause().accept(this);
         }
 
-        public void visitImpl(final OrClauseImpl clause) {
+        public void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
             sb.append(" OR ");
             clause.getSecondClause().accept(this);
         }
 
-        public void visitImpl(final PhraseClauseImpl clause) {
+        public void visitImpl(final PhraseClause clause) {
             if (clause.getField() != null) {
                 sb.append(clause.getField());
                 sb.append(":");

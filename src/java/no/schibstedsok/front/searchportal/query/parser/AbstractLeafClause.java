@@ -116,9 +116,30 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
      */
     protected AbstractLeafClause(
             final String term,
+            final String field,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
         super(term, knownPredicates, possiblePredicates);
+        this.field = field;
+    }
+
+
+    protected final String field;
+
+
+    /**
+     * Get the field.
+     *
+     * @return the field.
+     */
+    public String getField() {
+        return field;
+    }
+    
+    /** {@inheritDoc}
+     */
+    public String toString() {
+        return getClass().getSimpleName() + "[" + getTerm() + "," + getField() + "]";
     }
 }

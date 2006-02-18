@@ -14,6 +14,6 @@ package no.schibstedsok.front.searchportal.query;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface IntegerClause extends LeafClause {
+public interface IntegerClause extends WordClause {
     
 }

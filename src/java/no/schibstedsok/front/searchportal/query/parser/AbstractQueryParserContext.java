@@ -19,6 +19,7 @@ import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.WordClause;
+import org.apache.log4j.Logger;
 
 /** Default implementation of QueryParser.Context's createXxxClause methods.
  *
@@ -26,6 +27,8 @@ import no.schibstedsok.front.searchportal.query.WordClause;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public abstract class AbstractQueryParserContext implements AbstractQueryParser.Context {
+    
+    private static final Logger LOG = Logger.getLogger(AbstractQueryParserContext.class);
 
     /** Creates a new instance of AbstractQueryParserContext.
      */
@@ -44,35 +47,39 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
     /** {@inheritDoc}
      */
     public AndClause createAndClause(
-        final LeafClause first,
+        final Clause first,
         final Clause second) {
 
+        LOG.trace("createAndClause("+first+","+second+")");
         return AndClauseImpl.createAndClause(first, second, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
     public OrClause createOrClause(
-        final LeafClause first,
+        final Clause first,
         final Clause second) {
 
+        LOG.trace("createOrClause("+first+","+second+")");
         return OrClauseImpl.createOrClause(first, second, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
     public AndNotClause createAndNotClause(
-        final LeafClause first,
+        final Clause first,
         final Clause second) {
 
+        LOG.trace("createOrClause("+first+","+second+")");
         return AndNotClauseImpl.createAndNotClause(first, second, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}
      */
     public NotClause createNotClause(
-        final LeafClause first) {
+        final Clause first) {
 
+        LOG.trace("createNotClause("+first+")");
         return NotClauseImpl.createNotClause(first, getTokenEvaluatorFactory());
     }
 
@@ -85,6 +92,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String term,
         final String field) {
 
+        LOG.trace("createWordClause("+term+","+field+")");
         return WordClauseImpl.createWordClause(term, field, getTokenEvaluatorFactory());
     }
 
@@ -94,6 +102,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String term,
         final String field) {
 
+        LOG.trace("createPhraseClause("+term+","+field+")");
         return PhraseClauseImpl.createPhraseClause(term, field, getTokenEvaluatorFactory());
     }
 
@@ -103,6 +112,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String term,
         final String field) {
 
+        LOG.trace("createIntegerClause("+term+","+field+")");
         return IntegerClauseImpl.createIntegerClause(term, field, getTokenEvaluatorFactory());
     }
 
@@ -112,6 +122,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String term,
         final String field) {
 
+        LOG.trace("createPhoneNumberClause("+term+","+field+")");
         return PhoneNumberClauseImpl.createPhoneNumberClause(term, field, getTokenEvaluatorFactory());
     }
 
@@ -121,6 +132,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String term,
         final String field) {
 
+        LOG.trace("createOrganisationNumberClause("+term+","+field+")");
         return OrganisationNumberClauseImpl.createOrganisationNumberClause(term, field, getTokenEvaluatorFactory());
     }
 

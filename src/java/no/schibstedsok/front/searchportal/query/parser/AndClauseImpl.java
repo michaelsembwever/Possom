@@ -66,13 +66,16 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
      * May be either newly created or reused.
      */
     public static AndClauseImpl createAndClause(
-        final LeafClause first,
+        final Clause first,
         final Clause second,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
-        final String term = (first.getField() != null ? first.getField() + ":" : "")
+        final String term = 
+                (first instanceof LeafClause && ((LeafClause) first).getField() != null
+                    ?  ((LeafClause) first).getField() + ":"
+                    : "")
                 + first.getTerm()
                 + " AND "
                 + (second instanceof LeafClause && ((LeafClause) second).getField() != null

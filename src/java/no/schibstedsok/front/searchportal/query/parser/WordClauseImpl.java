@@ -20,7 +20,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public class WordClauseImpl extends AbstractLeafClause implements WordClause {
+public final class WordClauseImpl extends AbstractLeafClause implements WordClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
@@ -45,8 +45,6 @@ public class WordClauseImpl extends AbstractLeafClause implements WordClause {
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
-
-    private final String field;
 
     /**
      * Creator method for WordClauseImpl objects. By avoiding the constructors,
@@ -92,19 +90,9 @@ public class WordClauseImpl extends AbstractLeafClause implements WordClause {
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
-        super(term, knownPredicates, possiblePredicates);
-
-        this.field = field;
+        super(term, field, knownPredicates, possiblePredicates);
 
     }
 
-    /**
-     * Get the field.
-     *
-     * @return the field.
-     */
-    public String getField() {
-        return field;
-    }
 
 }

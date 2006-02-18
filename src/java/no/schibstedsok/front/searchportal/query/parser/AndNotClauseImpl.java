@@ -66,13 +66,16 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      * May be either newly created or reused.
      */
     public static AndNotClauseImpl createAndNotClause(
-        final LeafClause first,
+        final Clause first,
         final Clause second,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
-        final String term = (first.getField() != null ? first.getField() + ":" : "")
+        final String term = 
+                (first instanceof LeafClause && ((LeafClause) first).getField() != null
+                    ?  ((LeafClause) first).getField() + ":"
+                    : "")
                 + first.getTerm()
                 + " ANDNOT "
                 + (second instanceof LeafClause && ((LeafClause) second).getField() != null

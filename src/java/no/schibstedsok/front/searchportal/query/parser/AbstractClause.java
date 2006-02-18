@@ -182,6 +182,12 @@ public abstract class AbstractClause implements Clause {
     public void accept(final Visitor visitor) {
         visitor.visit(this);
     }
+    
+    /** {@inheritDoc}
+     */
+    public String toString() {
+        return getClass().getSimpleName() + "[" + getTerm() + "]";
+    }
 
     /**
      * Error message when reflection cannot find the required constructor.
@@ -195,4 +201,6 @@ public abstract class AbstractClause implements Clause {
     private static final String DEBUG_FOUND_PREDICATE_PREFIX = "Found (for \"";
     private static final String DEBUG_FOUND_PREDICATE_KNOWN = "\") known ";
     private static final String DEBUG_FOUND_PREDICATE_POSSIBLE = "\") possible ";
+
+
 }

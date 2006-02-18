@@ -19,7 +19,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public class PhoneNumberClauseImpl extends WordClauseImpl implements PhoneNumberClause {
+public final class PhoneNumberClauseImpl extends AbstractLeafClause implements PhoneNumberClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.

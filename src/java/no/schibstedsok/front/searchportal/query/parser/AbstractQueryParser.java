@@ -22,8 +22,7 @@ import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** Abstract helper for implementing a QueryParser
  * Provides default implementation to get the query object.
@@ -63,7 +62,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a AndClause instance matching the term, left and right child clauses.
          */
-        AndClause createAndClause(final LeafClause first, final Clause second);
+        AndClause createAndClause(final Clause first, final Clause second);
         /**
          * Creator wrapper method for OrClause objects.
          * The methods also allow a chunk of creation logic for the OrClause to be moved
@@ -75,7 +74,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a OrOrClauseImplnstance matching the term, left and right child clauses.
          */
-        OrClause createOrClause(final LeafClause first, final Clause second);
+        OrClause createOrClause(final Clause first, final Clause second);
         /**
          * Creator wrapper method for AndNotClause objects.
          * The methods also allow a chunk of creation logic for the AndNotClause to be moved
@@ -87,7 +86,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a AnAndNotClauseImplnstance matching the term, left and right child clauses.
          */
-        AndNotClause createAndNotClause(final LeafClause first, final Clause second);
+        AndNotClause createAndNotClause(final Clause first, final Clause second);
         /**
          * Creator wrapper method for NotClause objects.
          * The methods also allow a chunk of creation logic for the NotClause to be moved
@@ -98,7 +97,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Therefore the left child clause to any operation clause must be a LeafClause.
          * @return returns a NNotClauseImplinstance matching the term, left and right child clauses.
          */
-        NotClause createNotClause(final LeafClause first);
+        NotClause createNotClause(final Clause first);
 
         //// Leaf creators
 
@@ -157,7 +156,7 @@ public abstract class AbstractQueryParser implements QueryParser {
 
     /** Protected so an .jj file implementing this class can reuse.
      **/
-    protected static final Log LOG = LogFactory.getLog(AbstractQueryParser.class);
+    protected static final Logger LOG = Logger.getLogger(AbstractQueryParser.class);
     /** Error message when the parser tries to parse an empty query string.
      ***/
     protected static final String ERR_CANNOT_PARSE_EMPTY_QUERY

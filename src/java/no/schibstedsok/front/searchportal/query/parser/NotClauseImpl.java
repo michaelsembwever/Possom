@@ -59,13 +59,15 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
      * May be either newly created or reused.
      */
     public static NotClauseImpl createNotClause(
-        final LeafClause first,
+        final Clause first,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
         final String term = "NOT "
-                + (first.getField() != null ? first.getField() + ":" : "")
+                + (first instanceof LeafClause && ((LeafClause) first).getField() != null
+                    ?  ((LeafClause) first).getField() + ":"
+                    : "")
                 + first.getTerm();
 
         // update the factory with what the current term is

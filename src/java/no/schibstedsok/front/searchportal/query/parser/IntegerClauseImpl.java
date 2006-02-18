@@ -21,7 +21,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @author <a hrefIntegerClauseImpl@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public class IntegerClauseImpl extends WordClauseImpl implements IntegerClause {
+public final class IntegerClauseImpl extends AbstractLeafClause implements IntegerClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.

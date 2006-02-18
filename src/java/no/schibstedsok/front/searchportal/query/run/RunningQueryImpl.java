@@ -56,6 +56,8 @@ import org.apache.log4j.Logger;
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
+    
+    private static final String ERR_PARSING = "Unable to create RunningQuery due to ParseException";
 
     private final AnalysisRuleFactory rules;
     private String queryStr = "";
@@ -162,7 +164,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             try  {
                 queryObj = parser.getQuery();
             } catch (ParseException ex)  {
-                LOG.error(ex);
+                LOG.error(ERR_PARSING,ex);
             }
         }
         rules = AnalysisRuleFactory.valueOf(new AnalysisRuleFactory.Context() {
