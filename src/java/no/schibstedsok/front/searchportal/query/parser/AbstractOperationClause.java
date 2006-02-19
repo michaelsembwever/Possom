@@ -124,9 +124,25 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
      */
     protected AbstractOperationClause(
             final String term,
+            final Clause first,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
         super(term, knownPredicates, possiblePredicates);
+        firstClause = first;
+    }
+
+
+
+    protected final Clause firstClause;
+
+
+    /**
+     * Get the firstClause.
+     *
+     * @return the firstClause.
+     */
+    public Clause getFirstClause() {
+        return firstClause;
     }
 }

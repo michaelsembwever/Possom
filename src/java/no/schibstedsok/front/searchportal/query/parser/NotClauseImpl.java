@@ -19,7 +19,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * The NotClauseImpl represents a not clause between prefixing another term in the query.
  * For example: "NOT term1".
  * <b>Objects of this class are immutable</b>
- * 
+ *
  * @author <a hrefNotClauseImplmick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
@@ -40,8 +40,6 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 
-    private final Clause clause;
-
     /**
      * Creator method for NotClauseImpl objects. By avoiding the constructors,
      * and assuming all NotClauseImpl objects are immutable, we can keep track
@@ -49,7 +47,7 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
      * them.
      * The methods also allow a chunk of creation logic for the NotClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
+     *
      * @param first the left child clause of the operation clause we are about to create (or find).
      * The current implementation always creates a right-leaning query heirarchy.
      * Therefore the left child clause to any operation clause must be a LeafClause.
@@ -85,7 +83,7 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
 
     /**
      * Create the NotClauseImpl with the given term, and left child clauses, and known and possible predicate sets.
-     * 
+     *
      * @param term the term for this OrClause.
      * @param knownPredicates set of known predicates.
      * @param possiblePredicates set of possible predicates.
@@ -95,22 +93,12 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
      */
     protected NotClauseImpl(
             final String term,
-            final Clause first,  // really is a LeafClause
+            final Clause first,
             final Clause second,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
-        super(term, knownPredicates, possiblePredicates);
-        this.clause = first;
-        //this.secondClause = second; // this parameter not used! On purpose. See {@link createClause}.
-    }
-
-    /** Get the clause.
-     *
-     * @return the clause.
-     */
-    public Clause getFirstClause() {
-        return clause;
+        super(term, first, knownPredicates, possiblePredicates);
     }
 
 }

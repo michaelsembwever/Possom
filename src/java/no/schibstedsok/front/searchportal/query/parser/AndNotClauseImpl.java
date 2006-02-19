@@ -45,9 +45,6 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 
-    private final Clause firstClause;
-    private final Clause secondClause;
-
     /**
      * Creator method for AndNotClauseImpl objects. By avoiding the constructors,
      * and assuming all AndNotClauseImpl objects are immutable, we can keep track
@@ -67,21 +64,15 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      */
     public static AndNotClauseImpl createAndNotClause(
         final Clause first,
-        final Clause second,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
-        final String term = 
-                (first instanceof LeafClause && ((LeafClause) first).getField() != null
+        final String term = "ANDNOT "
+                + (first instanceof LeafClause && ((LeafClause) first).getField() != null
                     ?  ((LeafClause) first).getField() + ":"
                     : "")
-                + first.getTerm()
-                + " ANDNOT "
-                + (second instanceof LeafClause && ((LeafClause) second).getField() != null
-                    ?  ((LeafClause) second).getField() + ":"
-                    : "")
-                + second.getTerm();
+                + first.getTerm();
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
@@ -91,7 +82,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
                 AndNotClauseImpl.class,
                 term,
                 first,
-                second,
+                null,
                 predicate2evaluatorFactory,
                 PREDICATES_APPLICABLE, WEAK_CACHE);
     }
@@ -107,31 +98,12 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      */
     protected AndNotClauseImpl(
             final String term,
-            final Clause first,  // really is a LeafClause
+            final Clause first,  
             final Clause second,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
-        super(term, knownPredicates, possiblePredicates);
-        this.firstClause = first;
-        this.secondClause = second;
-    }
-    /**
-     * Get the firstClause.
-     *
-     * @return the firstClause.
-     */
-    public Clause getFirstClause() {
-        return firstClause;
-    }
+        super(term, first, knownPredicates, possiblePredicates);
 
-    /**
-     * Get the secondClause.
-     *
-     * @return the secondClause.
-     */
-    public Clause getSecondClause() {
-        return secondClause;
     }
-
 }

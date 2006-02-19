@@ -62,6 +62,8 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
         final String field,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
+        // remove all embedded whitespace
+        final String t = term.replaceAll(" ","");
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
         // use helper method from AbstractLeafClause

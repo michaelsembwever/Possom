@@ -57,7 +57,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Creator wrapper method for AndClause objects.
          * The methods also allow a chunk of creation logic for the AndClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param first the left child clause of the operation clause we are about to create (or find).
          * The current implementation always creates a right-leaning query heirarchy.
          * Therefore the left child clause to any operation clause must be a LeafClause.
@@ -69,7 +69,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Creator wrapper method for OrClause objects.
          * The methods also allow a chunk of creation logic for the OrClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param first the left child clause of the operation clause we are about to create (or find).
          * The current implementation always creates a right-leaning query heirarchy.
          * Therefore the left child clause to any operation clause must be a LeafClause.
@@ -81,19 +81,19 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Creator wrapper method for AndNotClause objects.
          * The methods also allow a chunk of creation logic for the AndNotClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param first the left child clause of the operation clause we are about to create (or find).
          * The current implementation always creates a right-leaning query heirarchy.
          * Therefore the left child clause to any operation clause must be a LeafClause.
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a AnAndNotClauseImplnstance matching the term, left and right child clauses.
          */
-        AndNotClause createAndNotClause(final Clause first, final Clause second);
+        AndNotClause createAndNotClause(final Clause first);
         /**
          * Creator wrapper method for NotClause objects.
          * The methods also allow a chunk of creation logic for the NotClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param first the left child clause of the operation clause we are about to create (or find).
          * The current implementation always creates a right-leaning query heirarchy.
          * Therefore the left child clause to any operation clause must be a LeafClause.
@@ -107,7 +107,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Creator wrapper method for WordClause objects.
          * The methods also allow a chunk of creation logic for the WordClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a WoWordClauseImplnstance matching the term, left and right child clauses.
@@ -117,7 +117,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Creator wrapper method for PhraseClause objects.
          * The methods also allow a chunk of creation logic for the PhraseClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a PhPhraseClauseImplnstance matching the term, left and right child clauses.
@@ -127,7 +127,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Creator wrapper method for IntegerClause objects.
          * The methods also allow a chunk of creation logic for the IntegerClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a InIntegerClauseImplnstance matching the term, left and right child clauses.
@@ -137,7 +137,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Creator wrapper method for PhoneNumberClause objects.
          * The methods also allow a chunk of creation logic for the PhoneNumberClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a PhPhoneNumberClauseImplnstance matching the term, left and right child clauses.
@@ -147,7 +147,7 @@ public abstract class AbstractQueryParser implements QueryParser {
          * Creator wrapper method for OrganisationNumberClause objects.
          * The methods also allow a chunk of creation logic for the OrganisationNumberClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         * 
+         *
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a OrOrganisationNumberClauseImplnstance matching the term, left and right child clauses.
@@ -159,8 +159,8 @@ public abstract class AbstractQueryParser implements QueryParser {
     /** Protected so an .jj file implementing this class can reuse.
      **/
     protected static final Logger LOG = Logger.getLogger(AbstractQueryParser.class);
-    private static final Stack/*<String>*/ methodStack = new Stack/*<String>*/();
-    
+    private static final Stack/*<String>*/ METHOD_STACK = new Stack/*<String>*/();
+
     /** Error message when the parser tries to parse an empty query string.
      ***/
     protected static final String ERR_CANNOT_PARSE_EMPTY_QUERY
@@ -204,23 +204,23 @@ public abstract class AbstractQueryParser implements QueryParser {
         }
         return query;
     }
-    
-    
+
+
     protected final void enterMethod(final String method){
         if( LOG.isTraceEnabled() ){
-            methodStack.push(method);
+            METHOD_STACK.push(method);
             final StringBuffer sb = new StringBuffer();
-            for( Iterator it = methodStack.iterator(); it.hasNext(); ){
+            for( Iterator it = METHOD_STACK.iterator(); it.hasNext(); ){
                 final String m = (String)it.next();
                 sb.append("." + m );
             }
             LOG.trace(sb.toString());
         }
     }
-    
+
     protected final void exitMethod(){
         if( LOG.isTraceEnabled() ){
-            methodStack.pop();
+            METHOD_STACK.pop();
         }
     }
 

@@ -53,6 +53,7 @@ public final class Scorer extends AbstractReflectionVisitor {
     private static final Log LOG = LogFactory.getLog(Scorer.class);
 
     private int score = 0;
+    private boolean additivity = true;
     private Context context;
     private Set/*<Predicate>*/ touchedPredicates = new HashSet/*<Predicate>*/();
 
@@ -73,30 +74,34 @@ public final class Scorer extends AbstractReflectionVisitor {
 
     public void visitImpl(final AndClause clause) {
         clause.getFirstClause().accept(this);
-        scoreClause(clause, true);
+        scoreClause(clause);
         clause.getSecondClause().accept(this);
     }
 
     public void visitImpl(final OrClause clause) {
         clause.getFirstClause().accept(this);
-        scoreClause(clause, true);
+        scoreClause(clause);
         clause.getSecondClause().accept(this);
     }
 
     public void visitImpl(final NotClause clause) {
+        final boolean originalAdditivity = additivity;
+        additivity = false;
         clause.getFirstClause().accept(this);
-        scoreClause(clause, false); //  reverse this scoring
-
+        scoreClause(clause); 
+        additivity = originalAdditivity;
     }
 
     public void visitImpl(final AndNotClause clause) {
+        final boolean originalAdditivity = additivity;
+        additivity = false;
+        scoreClause(clause);
         clause.getFirstClause().accept(this);
-        scoreClause(clause, false); //  reverse this scoring
-        clause.getSecondClause().accept(this);
+        additivity = originalAdditivity;
     }
 
     public void visitImpl(final Clause clause) {
-        scoreClause(clause, true);
+        scoreClause(clause);
     }
     
     /** Find if this clause contains (either known, possible, or custom joined) predicates correspondng to
@@ -105,7 +110,7 @@ public final class Scorer extends AbstractReflectionVisitor {
      * @param the clause we are scoring.
      * @param addition whether the score will be added or subtracted.
      */
-    private void scoreClause(final Clause clause, final boolean addition) {
+    private void scoreClause(final Clause clause) {
         final Set/*<Predicate>*/ knownPredicates = clause.getKnownPredicates();
         final Set/*<Predicate>*/ possiblePredicates = clause.getPossiblePredicates();
 
@@ -130,7 +135,7 @@ public final class Scorer extends AbstractReflectionVisitor {
                         || ( ( possiblePredicates.contains(predicate) || !(predicate instanceof TokenPredicate) )
                                 && predicate.evaluate(factory) ) ){
                     
-                    if( addition ){
+                    if( additivity ){
                         addScore(predicateScore);
                     }else{
                         minusScore(predicateScore);

@@ -15,12 +15,5 @@ package no.schibstedsok.front.searchportal.query;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface AndNotClause extends OperationClause {
-
-    /**
-     * Get the secondClause.
-     * 
-     * @return the secondClause.
-     */
-    Clause getSecondClause();
     
 }

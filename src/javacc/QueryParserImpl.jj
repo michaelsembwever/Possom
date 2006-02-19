@@ -2,6 +2,7 @@
 options {
   STATIC=false;
   JAVA_UNICODE_ESCAPE=true;
+  LOOKAHEAD=2147483647;
 }
 
 PARSER_BEGIN(QueryParserImpl)
@@ -103,21 +104,16 @@ Clause noPrecedence() :{
     Clause clause;
     enterMethod("noPrecedence()");
 }{
-        // I'm completely baffled why looseJoinPrecedence must come before hiddenOrOperation
-        //  when in every other Precedence() the operation always comes first!
-        //  I'll buy the explainer a beer. really.
-
-    LOOKAHEAD(3)
-    (clause = looseJoinPrecedence()) { try{return clause;}finally{exitMethod();} }
-    |
     (clause = hiddenOrOperation()) { try{return clause;}finally{exitMethod();} }
+    |
+    (clause = looseJoinPrecedence()) { try{return clause;}finally{exitMethod();} }
+    
 }
 
 Clause looseJoinPrecedence() :{
     Clause clause;
     enterMethod("looseJoinPrecedence()");
 }{
-    LOOKAHEAD(3)
     (clause = orOperation()) { try{return clause;}finally{exitMethod();} }  
     |
     (clause = strongJoinPrecedence()) { try{return clause;}finally{exitMethod();} } 
@@ -127,17 +123,16 @@ Clause strongJoinPrecedence() :{
     Clause clause;
     enterMethod("strongJoinPrecedence()");
 }{
-    LOOKAHEAD(3)
     (clause = andOperation()) { try{return clause;}finally{exitMethod();} }
     |
-    (clause = prefixPrecedence()) { try{return clause;}finally{exitMethod();} }
+    (clause = leafPrecedence()) { try{return clause;}finally{exitMethod();} }
     
 
 }
 
-Clause prefixPrecedence() :{
+Clause leafPrecedence() :{
     Clause clause;
-    enterMethod("prefixPrecedence()");
+    enterMethod("leafPrecedence()");
 }{
     (clause = notOperation()) { try{return clause;}finally{exitMethod();} }
     |
@@ -153,7 +148,15 @@ OrClause hiddenOrOperation() :{
     enterMethod("hiddenOrOperation()");
 }{
     ((left = looseJoinPrecedence())(right = noPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
-} 
+}
+
+
+AndNotClause andNotOperation() :{
+    Clause left,right;
+    enterMethod("andNotOperation()");
+}{
+    (<ANDNOT>(left = looseJoinPrecedence())) { try{return context.createAndNotClause(left);}finally{exitMethod();} }
+}  
 
 OrClause orOperation() :{
     Clause left,right;
@@ -166,7 +169,7 @@ AndClause andOperation() :{
     Clause left,right;
     enterMethod("andOperation()");
 }{
-    ((left = prefixPrecedence())<AND>(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+    ((left = leafPrecedence())<AND>(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
 NotClause notOperation() :{
@@ -176,13 +179,6 @@ NotClause notOperation() :{
     (<NOT>(left = leaf()))  { try{return context.createNotClause(left);}finally{exitMethod();} }
 }
 
-AndNotClause andNotOperation() :{
-    Clause left,right;
-    enterMethod("andNotOperation()");
-}{
-    (<ANDNOT>(left = noPrecedence())) { try{return context.createAndNotClause(left,null);}finally{exitMethod();} }
-} 
-
 
 /** LEAVES **/
 
@@ -191,7 +187,7 @@ Clause leaf() :{
     Clause clause = null;
     enterMethod("leaf()");
 }{
-    LOOKAHEAD(2)
+
     (field=<WORD>":")(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
     |
     (clause = fieldedLeaf(null)) {try{return clause;}finally{exitMethod();}}
@@ -207,26 +203,21 @@ Clause fieldedLeaf(final Token field) :{
                 // it might not be a phone number... // XXX Could this be done with parser logic...
                 try{
                     final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, field == null ? null : field.image);
-                    if( token.image.indexOf("+") >=0 || token.image.indexOf(" ")<0 ){ 
-                        // it's definitely a phone number
-                        return phClause;
-                    }else{
-                        Clause prevClause = null;
-                        final String[] numbers = token.image.split(" ");
-                        for(int i = 0; i < numbers.length; ++i){
-                            final String number = numbers[i];
-                            final LeafClause leafClause = number.indexOf("+") <0
-                                    ? (LeafClause)context.createIntegerClause(number, field == null ? null : field.image)
-                                    : (LeafClause)context.createWordClause(number, field == null ? null : field.image);
-                            if( prevClause != null ){
-                                final OrClause orClause = context.createOrClause(leafClause,prevClause);
-                                prevClause = orClause;
-                            }else{
-                                prevClause = leafClause;
-                            }
+                    Clause prevClause = null;
+                    final String[] numbers = token.image.split(" ");
+                    for(int i = 0; i < numbers.length; ++i){
+                        final String number = numbers[i];
+                        final LeafClause leafClause = number.indexOf("+") <0
+                                ? (LeafClause)context.createIntegerClause(number, field == null ? null : field.image)
+                                : (LeafClause)context.createWordClause(number, field == null ? null : field.image);
+                        if( prevClause != null ){
+                            final OrClause orClause = context.createOrClause(prevClause,leafClause);
+                            prevClause = orClause;
+                        }else{
+                            prevClause = leafClause;
                         }
-                        return context.createOrClause(phClause, prevClause);
                     }
+                    return context.createOrClause(phClause, prevClause);
                 }finally{exitMethod();}
             }
     | 
@@ -242,7 +233,7 @@ Clause fieldedLeaf(final Token field) :{
                         final String number = numbers[i];
                         final IntegerClause intClause = context.createIntegerClause(number, field == null ? null : field.image);
                         if( prevClause != null ){
-                            final OrClause orClause = context.createOrClause(intClause, prevClause);
+                            final OrClause orClause = context.createOrClause(prevClause,intClause);
                             prevClause = orClause;
                         }else{
                             prevClause = intClause;

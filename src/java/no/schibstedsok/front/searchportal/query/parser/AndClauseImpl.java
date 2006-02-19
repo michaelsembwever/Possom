@@ -43,9 +43,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
-
-
-    private final Clause firstClause;
+    
     private final Clause secondClause;
 
     /**
@@ -106,23 +104,13 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
      */
     protected AndClauseImpl(
             final String term,
-            final Clause first,  // really is a LeafClause
+            final Clause first, 
             final Clause second,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
-        super(term, knownPredicates, possiblePredicates);
-        this.firstClause = first;
+        super(term, first, knownPredicates, possiblePredicates);
         this.secondClause = second;
-    }
-
-    /**
-     * Get the firstClause.
-     *
-     * @return the firstClause.
-     */
-    public Clause getFirstClause() {
-        return firstClause;
     }
 
     /**

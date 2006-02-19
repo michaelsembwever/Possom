@@ -1,8 +1,8 @@
 // Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.token;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
+
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
  */
 public final class AlwaysTrueTokenEvaluator implements TokenEvaluator {
 
-    private static final Log LOG = LogFactory.getLog(AlwaysTrueTokenEvaluator.class);
+    private static final Logger LOG = Logger.getLogger(AlwaysTrueTokenEvaluator.class);
 
     /**
      * Evaluates to true.
@@ -23,7 +23,7 @@ public final class AlwaysTrueTokenEvaluator implements TokenEvaluator {
      */
     public boolean evaluateToken(final String token, final String term, final String query) {
 
-        if (LOG.isDebugEnabled()) { LOG.debug("ENTR: evaluateToken()");  }
+        LOG.trace("evaluateToken()");
 
         return true;
     }

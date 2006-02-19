@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.Query;
@@ -82,18 +83,119 @@ public final class TestVisitor extends TestCase {
         visitor.visit(andClause);
 
         final String goldenResult = "firstName:magnus AND eklund AND \"schibsted sok\"";
-        LOG.info("Visitor built: " + visitor.getQueryAsString());
+        LOG.info("Visitor built: " + visitor.getParsedQueryString());
         // assert test
-        assertNotNull(visitor.getQueryAsString());
-        assertEquals(goldenResult, visitor.getQueryAsString());
+        assertNotNull(visitor.getParsedQueryString());
+        assertEquals(goldenResult, visitor.getParsedQueryString());
         assertEquals(goldenResult, andClause.getTerm());
     }
 
     /** test a visitor on a QuerParser built clause heirarchy.
      **/
-    public void testBasicQueryParserWithTestVisitorImpl() {
+    public void testAndOrAgainstQueryParser1() {
+        basicQueryParserWithTestVisitorImpl(
+                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123",
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123");
+    }
+    
+    public void testAndOrAgainstQueryParser2() {
+        basicQueryParserWithTestVisitorImpl(
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123");
+    }
+    
+    public void testAndOrNotAgainstQueryParser1() {
+        basicQueryParserWithTestVisitorImpl(
+                "firstname:magnus eklund oslo magnus AND eklund NOT 123",
+                "firstname:magnus eklund oslo magnus AND eklund NOT 123",
+                "firstname:magnus eklund oslo magnus AND eklund NOT 123");
+    }
+    
+    public void testOrAgainstQueryParser() {
+        basicQueryParserWithTestVisitorImpl(
+                "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
+                "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
+                "Hansen Inderøy Marte Elden gausen oldervoll nordlys");
+    }
+    
+    public void testNotOrAgainstQueryParser() {
+        basicQueryParserWithTestVisitorImpl(
+                "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
+                "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
+                "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys");
+    }
+    
+    public void testAndNotOrAgainstQueryParser1() {
+        basicQueryParserWithTestVisitorImpl(
+                "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys",
+                "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys",
+                "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys");
+    }
+    
+    public void testAndNotOrAgainstQueryParser2() {
+        basicQueryParserWithTestVisitorImpl(
+                "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
+                "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
+                "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys");
+    }
+    
+    public void testAndnotOrAgainstQueryParser1() {
+        basicQueryParserWithTestVisitorImpl(
+                "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys",
+                "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys",
+                "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys");
+    }
+    
+    public void testAndAndnotOrAgainstQueryParser1() {
+        basicQueryParserWithTestVisitorImpl(
+                "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys",
+                "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys",
+                "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys");
+    }
+    
+    public void testAndAndnotNotOrAgainstQueryParser1() {
+        basicQueryParserWithTestVisitorImpl(
+                "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys",
+                "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys",
+                "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys");
+    }
+    
+    public void testAndAndnotNotOrAgainstQueryParser2() {
+        basicQueryParserWithTestVisitorImpl(
+                "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys",
+                "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys",
+                "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys");
+    }
+    
+    public void testPhoneNumberAgainstQueryParser1() {
+        basicQueryParserWithTestVisitorImpl(
+                "92221689",
+                "92221689 92221689",
+                "92221689 92221689");
+    }
+    
+    public void testPhoneNumberAgainstQueryParser2() {
+        basicQueryParserWithTestVisitorImpl(
+                "9222 1689",
+                "92221689 9222 1689",
+                "92221689 9222 1689");
+    }
+    
+    public void testPhoneNumberAgainstQueryParser3() {
+        basicQueryParserWithTestVisitorImpl(
+                "+47 9222 1689",
+                "+4792221689 +47 9222 1689",
+                "+4792221689 +47 9222 1689");
+    }
 
-        final String queryInput = "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123";
+    private void basicQueryParserWithTestVisitorImpl(
+            final String queryInput,
+            final String visitorResult,
+            final String rootTerm){
+        
+    
         LOG.info("Starting testBasicQueryParser with input: " + queryInput);
 
         final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
@@ -139,12 +241,12 @@ public final class TestVisitor extends TestCase {
 
             visitor.visit(q.getRootClause());
 
-            final String goldenResult = "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123";
-            LOG.info("Visitor built: " + visitor.getQueryAsString());
+            LOG.info("Visitor built: " + visitor.getParsedQueryString());
+            LOG.info("Root clause's term: " + q.getRootClause().getTerm());
             // assert test
-            assertNotNull(visitor.getQueryAsString());
-            assertEquals(queryInput, visitor.getQueryAsString());
-            assertEquals(goldenResult, q.getRootClause().getTerm());
+            assertNotNull(visitor.getParsedQueryString());
+            assertEquals(visitorResult, visitor.getParsedQueryString());
+            assertEquals(rootTerm, q.getRootClause().getTerm());
 
         }  catch (ParseException ex) {
             LOG.error(ex);
@@ -165,12 +267,17 @@ public final class TestVisitor extends TestCase {
             sb = new StringBuffer();
         }
 
-        public String getQueryAsString() {
+        public String getParsedQueryString() {
             return sb.toString();
         }
 
         public void visitImpl(final NotClause clause) {
-            sb.append("-");
+            sb.append("NOT ");
+            clause.getFirstClause().accept(this);
+        }
+        
+        public void visitImpl(final AndNotClause clause) {
+            sb.append("ANDNOT ");
             clause.getFirstClause().accept(this);
         }
 
@@ -191,7 +298,7 @@ public final class TestVisitor extends TestCase {
 
         public void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
-            sb.append(" OR ");
+            sb.append(" ");
             clause.getSecondClause().accept(this);
         }
 
@@ -201,9 +308,7 @@ public final class TestVisitor extends TestCase {
                 sb.append(":");
             }
 
-            //sb.append("\"");
             sb.append(clause.getTerm());
-            //sb.append("\"");
         }
 
         public void visitImpl(final Clause clause) {

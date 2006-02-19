@@ -60,12 +60,14 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
         final String field,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
+        // remove all embedded whitespace
+        final String t = term.replaceAll(" ","");
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
         // use helper method from AbstractLeafClause
         return (PhoneNumberClauseImpl) createClause(
                 PhoneNumberClauseImpl.class,
-                term,
+                t,
                 field,
                 predicate2evaluatorFactory,
                 PREDICATES_APPLICABLE, WEAK_CACHE);

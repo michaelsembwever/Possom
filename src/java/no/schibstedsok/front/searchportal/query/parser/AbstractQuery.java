@@ -135,7 +135,6 @@ public abstract class AbstractQuery implements Query {
 
         public void visitImpl(final AndNotClause clause) {
             clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
         }
 
         public void visitImpl(final AndClause clause) {
