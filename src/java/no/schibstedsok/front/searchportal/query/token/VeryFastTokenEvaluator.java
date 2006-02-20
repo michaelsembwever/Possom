@@ -52,6 +52,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
     private static final String REAL_TOKEN_SUFFIX = "QM";
+    
+    //private static final List EMPTY_LIST = Collections.emptyList(); //JDK1.5
+    private static final List EMPTY_LIST = Collections.unmodifiableList(new ArrayList());
 
     private HTTPClient httpClient = null;
     private Locale locale;
@@ -116,7 +119,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             List matches = (List) analysisResult.get(realTokenFQ);
             return matches;
         } else {
-            return Collections.emptyList();
+            return EMPTY_LIST;
         }
     }
 
