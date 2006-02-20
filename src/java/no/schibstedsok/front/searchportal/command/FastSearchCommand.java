@@ -342,7 +342,7 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
         }
         
         if (getFastConfiguration().getOffensiveScoreLimit() > 0) {
-            filter.append(" ").append("+ocfscore:<").append(getFastConfiguration().getOffensiveScoreLimit());
+            filter.append(" ").append("-ocfscore:>").append(getFastConfiguration().getOffensiveScoreLimit());
 
         }
         
