@@ -164,7 +164,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     /** Error message when the parser tries to parse an empty query string.
      ***/
     protected static final String ERR_CANNOT_PARSE_EMPTY_QUERY
-        = "QueryParser can not parse an empty query. (The \"QueryParser(QueryParser.Context)\" constructor must be used!)";
+        = "The \"QueryParser(QueryParser.Context)\" constructor must be used!";
 
     /** the context this query parser implementation must work against.
      ***/
@@ -184,21 +184,23 @@ public abstract class AbstractQueryParser implements QueryParser {
     /**
      * Get the query object.
      * A call to this method initates the parse() method if the query hasn't already been built.
-     * A call to this when the queryStr (passed in the constructor) is null or zero length results in a
-     * IllegalStateException being thrown.
      * @return the Query object, ready to use.
      * @throws ParseException  when parsing the inputted query string.
      */
     public Query getQuery() throws ParseException{
         if( query == null ){
             final String queryStr = context.getQueryString();
-            if( context == null || queryStr == null || queryStr.trim().length()==0 ){
+            if( context == null ){
                 throw new IllegalStateException(ERR_CANNOT_PARSE_EMPTY_QUERY);
             }
-            final Clause clause = parse();
+            
+            final Clause root = ( queryStr == null || queryStr.trim().length()==0 )
+                ? context.createWordClause("",null)
+                : parse();
+            
             query = new AbstractQuery(context.getQueryString()){
                 public Clause getRootClause(){
-                    return clause;
+                    return root;
                 }
             };
         }

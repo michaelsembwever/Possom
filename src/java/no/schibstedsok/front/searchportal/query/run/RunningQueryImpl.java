@@ -21,6 +21,7 @@ import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRuleFactory;
 import no.schibstedsok.front.searchportal.configuration.SearchTabsCreator;
+import no.schibstedsok.front.searchportal.query.parser.TokenMgrError;
 import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.ReportingTokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
@@ -59,7 +60,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     
-    private static final String ERR_PARSING = "Unable to create RunningQuery due to ParseException";
+    private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
 
     private final AnalysisRuleFactory rules;
     private String queryStr = "";
@@ -108,67 +109,68 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         // This will among other things perform the initial fast search
         // for textual analysis.
         tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(
-                new TokenEvaluatorFactoryImpl.Context() {
-                    // <editor-fold defaultstate="collapsed" desc=" TokenEvaluatorFactoryImpl.Context ">
-                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                        return context.newPropertiesLoader(resource, properties);
-                    }
-
-                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                        return context.newXStreamLoader(resource, xstream);
-                    }
-
-                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                        return context.newDocumentLoader(resource, builder);
-                    }
-
-                    public Site getSite() {
-                        return context.getSite();
-                    }
-
-                    public String getQueryString()  {
-                        return RunningQueryImpl.this.getQueryString();
-                    }
-
-                    public Properties getApplicationProperties() {
-                        return XMLSearchTabsCreator.valueOf(new SearchTabsCreator.Context() {
-                            // <editor-fold defaultstate="collapsed" desc=" SearchTabsCreator.Context ">
-                            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                                return context.newPropertiesLoader(resource, properties);
-                            }
-
-                            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                                return context.newXStreamLoader(resource, xstream);
-                            }
-
-                            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                                return context.newDocumentLoader(resource, builder);
-                            }
-
-                            public Site getSite() {
-                                return context.getSite();
-                            }
-                            //</editor-fold>
-                        }).getProperties();
-                    }
-                    //</editor-fold>
-                });
-
-        // queryStr parser, avoid parsing an empty queryStr.
-        if (queryStr != null && queryStr.length() > 0) {
-            final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-
-                public TokenEvaluatorFactory getTokenEvaluatorFactory() {
-                    return tokenEvaluatorFactory;
+            new TokenEvaluatorFactoryImpl.Context() {
+                // <editor-fold defaultstate="collapsed" desc=" TokenEvaluatorFactoryImpl.Context ">
+                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                    return context.newPropertiesLoader(resource, properties);
                 }
+
+                public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                    return context.newXStreamLoader(resource, xstream);
+                }
+
+                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                    return context.newDocumentLoader(resource, builder);
+                }
+
+                public Site getSite() {
+                    return context.getSite();
+                }
+
+                public String getQueryString()  {
+                    return RunningQueryImpl.this.getQueryString();
+                }
+
+                public Properties getApplicationProperties() {
+                    return XMLSearchTabsCreator.valueOf(new SearchTabsCreator.Context() {
+                        // <editor-fold defaultstate="collapsed" desc=" SearchTabsCreator.Context ">
+                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                            return context.newPropertiesLoader(resource, properties);
+                        }
+
+                        public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                            return context.newXStreamLoader(resource, xstream);
+                        }
+
+                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                            return context.newDocumentLoader(resource, builder);
+                        }
+
+                        public Site getSite() {
+                            return context.getSite();
+                        }
+                        //</editor-fold>
+                    }).getProperties();
+                }
+                //</editor-fold>
             });
 
-            try  {
-                queryObj = parser.getQuery();
-            } catch (ParseException ex)  {
-                LOG.error(ERR_PARSING,ex);
+        // queryStr parser
+        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
+            public TokenEvaluatorFactory getTokenEvaluatorFactory() {
+                return tokenEvaluatorFactory;
             }
+        });
+
+        try  {
+            queryObj = parser.getQuery();
+        } catch (ParseException ex)  {
+            LOG.error(ERR_PARSING,ex);
+        } catch (TokenMgrError ex)  {
+            // Errors (as opposed to exceptions) are fatal.
+            LOG.fatal(ERR_PARSING,ex);
         }
+
         rules = AnalysisRuleFactory.valueOf(new AnalysisRuleFactory.Context() {
             // <editor-fold defaultstate="collapsed" desc=" AnalysisRuleFactory.Context ">
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {

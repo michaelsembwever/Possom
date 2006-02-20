@@ -38,21 +38,27 @@ SKIP : {
     | "\t"
     | "\r"
     | "\n"
+    | "[" | "]"
+    | "{" | "}"
+    | "!"
 }
 
 TOKEN : {
+
 /** Find operators first **/
   <AND: ("AND"|"+")>
 | <OR:  ("OR"|"|")>
-| <NOT: "NOT">              // choosing to identify "-" as the ANDNOT operator instead of the NOT operator.
-| <ANDNOT: ("ANDNOT"|"-")>
+| <NOT: "NOT"|"-">              // choosing to identify "-" as the ANDNOT operator instead of the NOT operator.
+| <ANDNOT: ("ANDNOT")>
+
 /** then leaves **/
 | <PHONE_NUMBER: (("+"|"00")"47"(" ")*){0,1}(<DIGIT>(" "){0,1}){8}>
 | <ORGANISATION_NUMBER: (<DIGIT>){9}>
 | <INTEGER: ((<DIGIT>)+)>
-| <WORD: ((<LETTER>|<DIGIT>)+)>
 | <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\"">
+| <WORD: ((<LETTER>|<DIGIT>)+)("*")?>
 | <#LETTER:
+
 /** UNICODE Characters **/
     [
         "\u0041"-"\u005a",
@@ -63,7 +69,7 @@ TOKEN : {
         "\u0100"-"\u1fff"
     ]
     >
-| < #DIGIT:                                       // unicode digits
+| < #DIGIT:                      // unicode digits
       [
        "\u0030"-"\u0039",
        "\u0660"-"\u0669",
@@ -169,6 +175,8 @@ AndClause andOperation() :{
     Clause left,right;
     enterMethod("andOperation()");
 }{
+    ("("(left = leafPrecedence())(right = strongJoinPrecedence())")") { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+    |
     ((left = leafPrecedence())<AND>(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
