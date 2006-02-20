@@ -1,8 +1,10 @@
 /*
- * Copyright (2005) Schibsted S�k AS
+ * Copyright (2005-2006) Schibsted Søk AS
  */
 package no.schibstedsok.front.searchportal.query.token;
 
+/**
+ **/
 public class TokenMatch
  implements Comparable {
 
@@ -10,6 +12,10 @@ public class TokenMatch
     private String match;
     private Integer start;
     private Integer end;
+    /**
+     * Holds value of property _touched.
+     */
+    private boolean touched = false;
 
     public TokenMatch(String token, String match, int start, int end) {
         this.token = token;
@@ -58,5 +64,21 @@ public class TokenMatch
      */
     public Integer getEnd() {
         return end;
+    }
+
+    /**
+     * Getter for property touched.
+     * @return Value of property touched.
+     */
+    public boolean isTouched() {
+        return touched;
+    }
+
+    /**
+     * Setter for property touched.
+     * @param touched New value of property touched.
+     */
+    public void setTouched(final boolean touched) {
+        this.touched = touched;
     }
 }

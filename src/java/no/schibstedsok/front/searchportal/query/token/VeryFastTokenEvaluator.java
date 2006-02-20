@@ -1,6 +1,9 @@
 // Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.token;
 
+import java.util.Collection;
+import java.util.Set;
+import java.util.TreeSet;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -46,6 +49,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
     private final Map/*<String>,<String>*/ analysisResult = new HashMap/*<String>,<String>*/();
+    
+    private static final String REAL_TOKEN_PREFIX = "FastQT_";
+    private static final String REAL_TOKEN_SUFFIX = "QM";
 
     private HTTPClient httpClient = null;
     private Locale locale;
@@ -56,7 +62,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
      * Search fast and initialize analyzis result
      * @param query
      */
-    public VeryFastTokenEvaluator(final HTTPClient client, final String query) {
+    VeryFastTokenEvaluator(final HTTPClient client, final String query) {
         // pre-condition check
         if ( client == null ) {
             throw new IllegalArgumentException("Not allowed to use null HTTPClient!");
@@ -81,7 +87,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     public boolean evaluateToken(final String token, final String term, final String query) {
         
         boolean evaluation = false;
-        final String realTokenFQ = "FastQT_" + token + "QM";
+        final String realTokenFQ = REAL_TOKEN_PREFIX + token + REAL_TOKEN_SUFFIX;
         
         if( analysisResult.containsKey(realTokenFQ) ){
             if( term == null ){
@@ -91,6 +97,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                 for( Iterator it = occurances.iterator(); !evaluation && it.hasNext(); ){
                     final TokenMatch occurance = (TokenMatch)it.next();
                     evaluation = occurance.getMatch().equalsIgnoreCase(term);
+                    // keep track of which TokenMatch's we've used.
+                    if( evaluation ){
+                        occurance.setTouched(true);
+                    }
                 }
             }
         }
@@ -102,11 +112,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         LOG.trace("reportToken(" + token + "," + query + ")");
         
         if (evaluateToken(token, null, query)) {
-            String realTokenFQ = "FastQT_" + token +"QM";
+            String realTokenFQ = REAL_TOKEN_PREFIX + token + REAL_TOKEN_SUFFIX;
             List matches = (List) analysisResult.get(realTokenFQ);
             return matches;
         } else {
-            return new ArrayList();
+            return Collections.emptyList();
         }
     }
 
@@ -203,4 +213,20 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         }
     }
 
+    /** Method used just for debugging. See RunningQueryImpl.run().
+     * Allows controlling code to debug which VeryFast tokens were not used in the scoring process.
+     **/
+    public Set/*<String>*/ getUntouchedTokens(){
+        final Set/*<String>*/ untouchedTokens = new TreeSet/*<String>*/();
+        for (Iterator it = analysisResult.values().iterator(); it.hasNext(); ){
+            final List/*<TokenMatch>*/ tokenMatches = (List) it.next();
+            for( Iterator it2 = tokenMatches.iterator(); it2.hasNext(); ){
+                final TokenMatch tm = (TokenMatch)it2.next();
+                if( !tm.isTouched() && tm.getToken().startsWith(REAL_TOKEN_PREFIX) ){
+                    untouchedTokens.add(tm.getToken());
+                }
+            }
+        }
+        return untouchedTokens;
+    }
 }

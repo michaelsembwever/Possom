@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
@@ -40,6 +41,7 @@ import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.front.searchportal.query.parser.ParseException;
+import no.schibstedsok.front.searchportal.query.token.VeryFastTokenEvaluator;
 import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -404,6 +406,19 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
 
             if (LOG.isDebugEnabled()) {
+                // [HACK] we using the assumption that EXACTFIRST is a FastTokenPredicate so we can directly access
+                //  the VeryFastTokenEvaluator for debugging purposes.
+                final VeryFastTokenEvaluator vfte = 
+                        (VeryFastTokenEvaluator)tokenEvaluatorFactory.getEvaluator(TokenPredicate.EXACTFIRST);
+                final Set/*<String>*/ untouchedFastTokens = vfte.getUntouchedTokens();
+                if( untouchedFastTokens.size() > 0 ){
+                    LOG.debug("Listing untouched VeryFast Tokens...");
+                    for( Iterator it = untouchedFastTokens.iterator(); it.hasNext(); ){
+                        LOG.debug("Untouched VeryFast Token -> " + it.next());
+                    }
+                }
+                
+                // Number of commands about to execute.
                 LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
             }
 
@@ -429,7 +444,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                             if (score != null && configuration.getRule() != null && score.intValue() >= task.getCommand().getSearchConfiguration().getRuleThreshold()) {
                                 if (searchResult.getResults().size() > 0 && score.intValue() > 15) {
-                                    Enrichment e = new Enrichment(score.intValue(), configuration.getName());
+                                    final Enrichment e = new Enrichment(score.intValue(), configuration.getName());
                                     enrichments.add(e);
                                 }
                             }

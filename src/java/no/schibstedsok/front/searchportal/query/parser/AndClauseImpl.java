@@ -55,8 +55,6 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
      * out of the QueryParserImpl.jj file to here.
      * 
      * @param first the left child clause of the operation clause we are about to create (or find).
-     * The current implementation always creates a right-leaning query heirarchy.
-     * Therefore the left child clause to any operation clause must be a LeafClause.
      * @param second the right child clause of the operation clause we are about to create (or find).
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
@@ -97,7 +95,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
     /**
      * Create clause with the given term, field, known and possible predicates.
      * @param term the term (query string) for this clause.
-     * @param first the leaf child clause
+     * @param first the left child clause
      * @param second the right child clause
      * @param knownPredicates the set of known predicates for this clause.
      * @param possiblePredicates the set of possible predicates for this clause.

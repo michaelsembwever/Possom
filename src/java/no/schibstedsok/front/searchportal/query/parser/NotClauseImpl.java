@@ -49,8 +49,6 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
      * out of the QueryParserImpl.jj file to here.
      *
      * @param first the left child clause of the operation clause we are about to create (or find).
-     * The current implementation always creates a right-leaning query heirarchy.
-     * Therefore the left child clause to any operation clause must be a LeafClause.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @return returns a NoNotClauseImplnstance matching the term, and left child clauses.
