@@ -22,7 +22,7 @@
 
             <log.directory>./logs</log.directory>
             <log.file>sesam.develop</log.file>
-            <log.level>ALL</log.level>
+            <log.level>DEBUG</log.level>
 
             <!-- Token Evaluator -->
 

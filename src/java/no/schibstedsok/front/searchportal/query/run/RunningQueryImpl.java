@@ -273,7 +273,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public String getGlobalSearchTips () {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled())  {
-            LOG.trace("ENTR: getGlobalSearchTips()");
+            LOG.trace("getGlobalSearchTips()");
         } //</editor-fold>
         if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
             return TextMessages.valueOf(new TextMessages.Context() {
@@ -295,7 +295,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public Integer getNumberOfHits(final String configName) {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getNumberOfHits()");
+            LOG.trace("getNumberOfHits()");
         } //</editor-fold>
         Integer i = (Integer) hits.get(configName);
         if (i == null) { i = new Integer(0); }
@@ -310,7 +310,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public void run() throws InterruptedException {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: run()");
+            LOG.trace("run()");
         } //</editor-fold>
         try {
 
@@ -414,7 +414,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         (VeryFastTokenEvaluator)tokenEvaluatorFactory.getEvaluator(TokenPredicate.EXACTFIRST);
                 final Set/*<String>*/ untouchedFastTokens = vfte.getUntouchedTokens();
                 if( untouchedFastTokens.size() > 0 ){
-                    LOG.debug("Listing untouched VeryFast Tokens...");
+                    LOG.debug("Listing untouched VeryFast Tokens... (All VeryFast Tokens remain untouched if clauses are WeakReference cached)");
                     for( Iterator it = untouchedFastTokens.iterator(); it.hasNext(); ){
                         LOG.debug("Untouched VeryFast Token -> " + it.next());
                     }
@@ -466,7 +466,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private String getSingleParameter(final String paramName) {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getSingleParameter()");
+            LOG.trace("getSingleParameter()");
         } //</editor-fold>
         String[] param = (String[]) parameters.get(paramName);
 
@@ -492,7 +492,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public int getNumberOfTerms() {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getNumberOfTerms()");
+            LOG.trace("getNumberOfTerms()");
         } //</editor-fold>
         return QueryTokenizer.tokenize(queryStr).size();
     }
@@ -501,7 +501,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public String getQueryString() {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getQueryString()");
+            LOG.trace("getQueryString()");
         } //</editor-fold>
         return queryStr;
     }
@@ -509,7 +509,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public int getOffset() {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getOffset(): " + offset);
+            LOG.trace("getOffset(): " + offset);
         } //</editor-fold>
         return offset;
     }
@@ -517,7 +517,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public void setOffset(final int offset) {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: setOffset():" + offset);
+            LOG.trace("setOffset():" + offset);
         } //</editor-fold>
         this.offset = offset;
     }
@@ -525,7 +525,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public Locale getLocale() {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getLocale()");
+            LOG.trace("getLocale()");
         } //</editor-fold>
         return locale;
     }
@@ -533,7 +533,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public SearchMode getSearchMode() {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getSearchMode()");
+            LOG.trace("getSearchMode()");
         } //</editor-fold>
         return context.getSearchMode();
     }
@@ -541,7 +541,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public List getSources() {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getSources()");
+            LOG.trace("getSources()");
         } //</editor-fold>
         return sources;
     }
@@ -549,7 +549,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public void addSource(final Modifier modifier) {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: addSource()");
+            LOG.trace("addSource()");
         } //</editor-fold>
         sources.add(modifier);
     }
@@ -557,7 +557,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public List getEnrichments() {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getEnrichments()");
+            LOG.trace("getEnrichments()");
         } //</editor-fold>
         return enrichments;
     }
@@ -565,7 +565,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public TokenEvaluatorFactory getTokenEvaluatorFactory() {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getTokenEvaluatorFactory()");
+            LOG.trace("getTokenEvaluatorFactory()");
         } //</editor-fold>
         return tokenEvaluatorFactory;
     }
@@ -574,7 +574,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public String getSourceParameters(final String source) {
         // <editor-fold defaultstate="collapsed" desc=" Trace ">
         if (LOG.isTraceEnabled()) {
-            LOG.trace("ENTR: getSourceParameters() Source=" + source);
+            LOG.trace("getSourceParameters() Source=" + source);
         } //</editor-fold>
 
         if (source.equals("Norske nettsider")) {

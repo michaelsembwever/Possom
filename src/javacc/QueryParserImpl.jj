@@ -173,11 +173,21 @@ OrClause orOperation() :{
 
 AndClause andOperation() :{
     Clause left,right;
+    AndClause clause;
     enterMethod("andOperation()");
 }{
-    ("("(left = leafPrecedence())(right = strongJoinPrecedence())")") { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+    ("("(clause = hiddenAndOperation())")") { try{return clause;}finally{exitMethod();} }
     |
     ((left = leafPrecedence())<AND>(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+}
+
+AndClause hiddenAndOperation() :{
+    Clause left,right;
+    enterMethod("hiddenAndOperation()");
+}{
+    ((left = leafPrecedence())(right = hiddenAndOperation())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+    |
+    ((left = leafPrecedence())(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
 NotClause notOperation() :{

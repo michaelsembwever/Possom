@@ -3,30 +3,36 @@
  */
 package no.schibstedsok.front.searchportal.query.token;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  **/
-public class TokenMatch
+public final class TokenMatch
  implements Comparable {
 
-    private String token;
-    private String match;
-    private Integer start;
-    private Integer end;
+    private final String token;
+    private final String match;
+    private final Integer start;
+    private final Integer end;
+    private final Pattern matcher;
     /**
      * Holds value of property _touched.
      */
     private boolean touched = false;
 
-    public TokenMatch(String token, String match, int start, int end) {
+    public TokenMatch(final String token, final String match, final int start, final int end) {
         this.token = token;
         this.match = match;
         this.start = new Integer(start);
         this.end = new Integer(end);
+        // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
+        matcher = Pattern.compile("(^|\\s)" + match + "($|\\s)", RegExpEvaluatorFactory.REG_EXP_OPTIONS);
     }
 
-    public int compareTo(Object o) {
+    public int compareTo(final Object o) {
         TokenMatch other = (TokenMatch) o;
-        
+
         return start.compareTo(other.getStart());
     }
 
@@ -46,6 +52,15 @@ public class TokenMatch
      */
     public String getMatch() {
         return match;
+    }
+
+    /**
+     * Get the regular expression Matcher to use to find a sub-match.
+     *
+     * @return the match.
+     */
+    public Matcher getMatcher(final String string) {
+        return matcher.matcher(string);
     }
 
     /**
