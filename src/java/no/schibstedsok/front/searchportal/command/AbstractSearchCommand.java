@@ -219,6 +219,12 @@ public abstract class AbstractSearchCommand implements SearchCommand {
                 } else if (transformer.getFilter(qtCxt, parameters) != null) {
                     filter += transformer.getFilter(qtCxt, parameters) + " ";
                 }
+
+                if (filter == null) {
+                    filter = transformer.getFilter(qtCxt);
+                } else if (transformer.getFilter(qtCxt) != null) {
+                    filter += transformer.getFilter(qtCxt) + " ";
+                }
 		
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("applyQueryTransformers: TransformedQuery=" + transformedQuery);
