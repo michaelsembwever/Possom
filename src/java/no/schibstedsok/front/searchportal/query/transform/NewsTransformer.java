@@ -45,22 +45,9 @@ public class NewsTransformer extends AbstractQueryTransformer implements QueryTr
         }
 
         if("".equals(origQuery.trim())){
-            System.out.println("Transformer: set filter..");
             return " +size:>0 ";
         }
 
-        // FOR FUTURE USE
-        /*
-        if("Siste Norske Nyheter".equals(origQuery)){
-            return "+contentsource:Norske Nyheter";
-        }else if("Siste Nordiske Nyheter".equals(origQuery)){
-            return "+contentsource:Nordiske Nyheter";
-        }else if("Siste Internasjonale Nyheter".equals(origQuery)){
-            return "+contentsource:Internasjonale Nyheter";
-        }else if("Siste Mediearkivet Nyheter".equals(origQuery)){
-            return "+contentsource:Mediearkivet";
-        }
-        */
         return null;
     }
 
