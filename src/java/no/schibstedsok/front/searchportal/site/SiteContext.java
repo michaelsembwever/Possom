@@ -9,12 +9,14 @@
 
 package no.schibstedsok.front.searchportal.site;
 
+import no.schibstedsok.common.ioc.BaseContext;
+
 /** Defines the context for consumers of Site objects.
  *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface SiteContext {
+public interface SiteContext extends BaseContext {
     /** What is the site to use.
      * @return the site.
      **/

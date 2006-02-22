@@ -10,6 +10,7 @@ package no.schibstedsok.front.searchportal.query.parser;
 
 import java.util.Iterator;
 import java.util.Stack;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
@@ -41,7 +42,7 @@ public abstract class AbstractQueryParser implements QueryParser {
      *  - holding the tokenEvalautorFactory responsible for tokenPredicate to evaluator mappings,
      *  - creation of Clause subtypes.
      **/
-    public interface Context extends QueryStringContext {
+    public interface Context extends BaseContext, QueryStringContext {
 
         /** Get the tokenEvalautorFactory.
          * Responsible for  handing out evaluators against TokenPredicates.

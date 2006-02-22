@@ -11,6 +11,7 @@ package no.schibstedsok.front.searchportal.query.run;
 
 import java.util.List;
 import java.util.Locale;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.query.Query;
@@ -26,7 +27,7 @@ import no.schibstedsok.front.searchportal.site.SiteContext;
  */
 public interface RunningQuery {
 
-    public interface Context extends ResourceContext, SiteContext {
+    public interface Context extends BaseContext, ResourceContext, SiteContext {
         SearchMode getSearchMode();
     }
 

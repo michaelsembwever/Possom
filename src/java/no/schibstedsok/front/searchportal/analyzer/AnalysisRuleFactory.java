@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
@@ -44,7 +45,7 @@ public final class AnalysisRuleFactory {
     /**
      * The context the AnalysisRuleFactory must work against. *
      */
-    public interface Context extends ResourceContext, SiteContext {
+    public interface Context extends BaseContext, ResourceContext, SiteContext {
     }
 
     private static final Logger LOG = Logger.getLogger(AnalysisRuleFactory.class);

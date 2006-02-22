@@ -17,6 +17,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRuleFactory;
@@ -59,7 +61,7 @@ import org.apache.log4j.Logger;
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
-    
+
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
 
     private final AnalysisRuleFactory rules;
@@ -132,27 +134,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 }
 
                 public Properties getApplicationProperties() {
-                    return XMLSearchTabsCreator.valueOf(new SearchTabsCreator.Context() {
-                        // <editor-fold defaultstate="collapsed" desc=" SearchTabsCreator.Context ">
-                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                            return context.newPropertiesLoader(resource, properties);
-                        }
-
-                        public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                            return context.newXStreamLoader(resource, xstream);
-                        }
-
-                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                            return context.newDocumentLoader(resource, builder);
-                        }
-
-                        public Site getSite() {
-                            return context.getSite();
-                        }
-                        //</editor-fold>
-                    }).getProperties();
+return XMLSearchTabsCreator.valueOf(
+                            (SearchTabsCreator.Context) ContextWrapper.wrap(
+                                SearchTabsCreator.Context.class,
+                                new BaseContext[]{context})).getProperties();
                 }
-                //</editor-fold>
             });
 
         // queryStr parser
@@ -165,31 +151,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         try  {
             queryObj = parser.getQuery();
         } catch (ParseException ex)  {
-            LOG.error(ERR_PARSING,ex);
+            LOG.error(ERR_PARSING, ex);
         } catch (TokenMgrError ex)  {
             // Errors (as opposed to exceptions) are fatal.
-            LOG.fatal(ERR_PARSING,ex);
+            LOG.fatal(ERR_PARSING, ex);
         }
 
-        rules = AnalysisRuleFactory.valueOf(new AnalysisRuleFactory.Context() {
-            // <editor-fold defaultstate="collapsed" desc=" AnalysisRuleFactory.Context ">
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return context.newPropertiesLoader(resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return context.newXStreamLoader(resource, xstream);
-            }
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return context.newDocumentLoader(resource, builder);
-            }
-
-            public Site getSite() {
-                return context.getSite();
-            }
-            //</editor-fold>
-        });
+        rules = AnalysisRuleFactory.valueOf(
+                (AnalysisRuleFactory.Context) ContextWrapper.wrap(
+                    AnalysisRuleFactory.Context.class,
+                    new BaseContext[]{context}));
 
     }
 
@@ -223,25 +194,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         };
         Collection stopWordRemovers = new ArrayList();
 
-        final RegExpEvaluatorFactory factory = RegExpEvaluatorFactory.valueOf(new RegExpEvaluatorFactory.Context() {
-            // <editor-fold defaultstate="collapsed" desc=" RegExpEvaluatorFactory.Context ">
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return context.newPropertiesLoader(resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return context.newXStreamLoader(resource, xstream);
-            }
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return context.newDocumentLoader(resource, builder);
-            }
-
-            public Site getSite() {
-                return context.getSite();
-            }
-            //</editor-fold>
-        });
+        final RegExpEvaluatorFactory factory = RegExpEvaluatorFactory.valueOf(
+                (RegExpEvaluatorFactory.Context) ContextWrapper.wrap(
+                    RegExpEvaluatorFactory.Context.class,
+                    new BaseContext[]{context}));
 
         for (int i = 0; i < prefixes.length; i++) {
             final StopWordRemover remover = factory.getStopWordRemover(prefixes[i]);
@@ -276,16 +232,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             LOG.trace("getGlobalSearchTips()");
         } //</editor-fold>
         if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
-            return TextMessages.valueOf(new TextMessages.Context() {
-                // <editor-fold defaultstate="collapsed" desc=" TextMessages.Context ">
-                public Site getSite() {
-                    return context.getSite();
-                }
-                public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props) {
-                    return context.newPropertiesLoader(rsc, props);
-                }
-                // </editor-fold>
-            }).getMessage("searchtip.use+-");
+            return TextMessages.valueOf(
+                (TextMessages.Context) ContextWrapper.wrap(
+                    TextMessages.Context.class,
+                    new BaseContext[]{context})).getMessage("searchtip.use+-");
         } else {
             return null;
         }
@@ -344,8 +294,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                         return context.newDocumentLoader(resource, builder);
                     }
-                    
-                    public Query getQuery(){
+
+                    public Query getQuery() {
                         return queryObj;
                     }
                     // </editor-fold>
@@ -370,7 +320,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                         assert (oldScore == newScore); // if this fails, goto mick, do not pass go, do not collect $200.
                         if (oldScore != newScore) {
-                            LOG.fatal("\n\n!!! Old score does not match new score !!!\n");
+                            LOG.fatal("\n\n!!! Old score does not match new score !!!\n!!! Query was " + queryStr + "\n");
                             LOG.fatal("OldScore: " + oldScore + "; NewScore: " + newScore + "; for " + searchConfiguration.getRule());
                         }
 
@@ -410,16 +360,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             if (LOG.isDebugEnabled()) {
                 // [HACK] we using the assumption that EXACTFIRST is a FastTokenPredicate so we can directly access
                 //  the VeryFastTokenEvaluator for debugging purposes.
-                final VeryFastTokenEvaluator vfte = 
-                        (VeryFastTokenEvaluator)tokenEvaluatorFactory.getEvaluator(TokenPredicate.EXACTFIRST);
+                final VeryFastTokenEvaluator vfte =
+                        (VeryFastTokenEvaluator) tokenEvaluatorFactory.getEvaluator(TokenPredicate.EXACTFIRST);
                 final Set/*<String>*/ untouchedFastTokens = vfte.getUntouchedTokens();
-                if( untouchedFastTokens.size() > 0 ){
+                if (untouchedFastTokens.size() > 0) {
                     LOG.debug("Listing untouched VeryFast Tokens... (All VeryFast Tokens remain untouched if clauses are WeakReference cached)");
-                    for( Iterator it = untouchedFastTokens.iterator(); it.hasNext(); ){
+                    for (Iterator it = untouchedFastTokens.iterator(); it.hasNext();) {
                         LOG.debug("Untouched VeryFast Token -> " + it.next());
                     }
                 }
-                
+
                 // Number of commands about to execute.
                 LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
             }

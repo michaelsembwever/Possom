@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import java.util.Properties;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
@@ -11,7 +12,7 @@ import no.schibstedsok.front.searchportal.site.SiteContext;
  */
 public interface SearchTabsCreator {
     /** The context any SearchTabsCreator must work against. **/
-    public interface Context extends ResourceContext, SiteContext {
+    public interface Context extends BaseContext, ResourceContext, SiteContext {
     }
 
     SearchTabs getSearchTabs();

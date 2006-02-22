@@ -4,6 +4,7 @@ package no.schibstedsok.front.searchportal.query.token;
 import com.thoughtworks.xstream.XStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.query.run.StopWordRemover;
@@ -38,7 +39,7 @@ public final class RegExpEvaluatorFactory {
     /**
      * The context the RegExpEvaluatorFactory must work against. 
      */
-    public interface Context extends ResourceContext, SiteContext {
+    public interface Context extends BaseContext, ResourceContext, SiteContext {
     }
 
     private static final Logger LOG = Logger.getLogger(RegExpEvaluatorFactory.class);

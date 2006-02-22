@@ -73,9 +73,12 @@ public final class Scorer extends AbstractReflectionVisitor {
     }
 
     public void visitImpl(final AndClause clause) {
+        final boolean originalAdditivity = additivity;
+        additivity = true;
         clause.getFirstClause().accept(this);
         scoreClause(clause);
         clause.getSecondClause().accept(this);
+        additivity = originalAdditivity;
     }
 
     public void visitImpl(final OrClause clause) {

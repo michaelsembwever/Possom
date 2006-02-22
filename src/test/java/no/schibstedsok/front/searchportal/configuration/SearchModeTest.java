@@ -59,7 +59,7 @@ public class SearchModeTest extends TestCase {
                 return FileResourceLoader.newXStreamLoader(this, resource, xstream);
             }
             
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
