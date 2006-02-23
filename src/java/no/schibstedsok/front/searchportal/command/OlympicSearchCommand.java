@@ -15,11 +15,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.OlympicSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.SearchConfigurationContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
@@ -159,35 +162,18 @@ public class OlympicSearchCommand extends AbstractSearchCommand {
     }
 
     private SearchCommand.Context getCommandContext(final SearchConfiguration c) {
-        SearchCommand.Context picSearchCxt = new SearchCommand.Context() {
-            public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
-                return context.newPropertiesLoader(resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
-                return context.newXStreamLoader(resource, xstream);
-            }
-
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
-                return context.newDocumentLoader(resource, builder);
-            }
-
-            public Site getSite() {
-                return context.getSite();
-            }
-
-            public SearchConfiguration getSearchConfiguration() {
-                return c;
-            }
-
-            public RunningQuery getRunningQuery() {
-                return context.getRunningQuery();
-            }
-            public Query getQuery(){
-                return context.getQuery();
-            }
-        };
-        return picSearchCxt;
+        
+        final SearchCommand.Context cxt = (SearchCommand.Context)ContextWrapper.wrap(
+                SearchCommand.Context.class,
+                new BaseContext[]{
+                    context,
+                    new SearchConfigurationContext() {
+                        public SearchConfiguration getSearchConfiguration() {
+                            return c;
+                        }
+                    }
+        });
+        return cxt;
     }
     
     private SearchResultItem getParticipantItem(final OlympicData data, final SearchResult result) {

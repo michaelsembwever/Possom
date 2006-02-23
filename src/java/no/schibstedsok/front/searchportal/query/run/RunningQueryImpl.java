@@ -22,7 +22,11 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRuleFactory;
+import no.schibstedsok.front.searchportal.configuration.SearchConfigurationContext;
+import no.schibstedsok.front.searchportal.configuration.SearchTabs;
 import no.schibstedsok.front.searchportal.configuration.SearchTabsCreator;
+import no.schibstedsok.front.searchportal.query.QueryContext;
+import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.parser.TokenMgrError;
 import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.ReportingTokenEvaluator;
@@ -108,39 +112,22 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         this.locale = new Locale("no", "NO");
 
         this.strippedQueryString = removeAllPrefixes(this.getQueryString());
+
+        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = (TokenEvaluatorFactoryImpl.Context) ContextWrapper.wrap(
+                TokenEvaluatorFactoryImpl.Context.class,
+                new BaseContext[]{
+                    context,
+                    new QueryStringContext() {
+                        public String getQueryString() {
+                            return RunningQueryImpl.this.getQueryString();
+                        }
+                    }
+        });
+        
         // This will among other things perform the initial fast search
         // for textual analysis.
-        tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(
-            new TokenEvaluatorFactoryImpl.Context() {
-                // <editor-fold defaultstate="collapsed" desc=" TokenEvaluatorFactoryImpl.Context ">
-                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                    return context.newPropertiesLoader(resource, properties);
-                }
-
-                public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                    return context.newXStreamLoader(resource, xstream);
-                }
-
-                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                    return context.newDocumentLoader(resource, builder);
-                }
-
-                public Site getSite() {
-                    return context.getSite();
-                }
-
-                public String getQueryString()  {
-                    return RunningQueryImpl.this.getQueryString();
-                }
-
-                public Properties getApplicationProperties() {
-return XMLSearchTabsCreator.valueOf(
-                            (SearchTabsCreator.Context) ContextWrapper.wrap(
-                                SearchTabsCreator.Context.class,
-                                new BaseContext[]{context})).getProperties();
-                }
-            });
-
+        tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
+        
         // queryStr parser
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
             public TokenEvaluatorFactory getTokenEvaluatorFactory() {
@@ -269,37 +256,26 @@ return XMLSearchTabsCreator.valueOf(
             for (Iterator iterator = context.getSearchMode().getSearchConfigurations().iterator(); iterator.hasNext();) {
                 final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
 
-                final SearchCommand.Context searchCmdCxt = new SearchCommand.Context() {
-                    // <editor-fold defaultstate="collapsed" desc=" SearchCommand.Context ">
-                    public SearchConfiguration getSearchConfiguration() {
-                        return searchConfiguration;
-                    }
-
-                    public RunningQuery getRunningQuery() {
-                        return RunningQueryImpl.this;
-                    }
-
-                    public Site getSite() {
-                        return context.getSite();
-                    }
-
-                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                        return context.newPropertiesLoader(resource, properties);
-                    }
-
-                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                        return context.newXStreamLoader(resource, xstream);
-                    }
-
-                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                        return context.newDocumentLoader(resource, builder);
-                    }
-
-                    public Query getQuery() {
-                        return queryObj;
-                    }
-                    // </editor-fold>
-                };
+                final SearchCommand.Context searchCmdCxt = (SearchCommand.Context) ContextWrapper.wrap(
+                        SearchCommand.Context.class,
+                        new BaseContext[]{
+                            context,
+                            new SearchConfigurationContext() {
+                                public SearchConfiguration getSearchConfiguration() {
+                                    return searchConfiguration;
+                                }
+                            },
+                            new RunningQueryContext() {
+                                public RunningQuery getRunningQuery() {
+                                    return RunningQueryImpl.this;
+                                }
+                            },
+                            new QueryContext() {
+                                public Query getQuery() {
+                                    return queryObj;
+                                }
+                            }
+                });
 
                 final AnalysisRule rule = rules.getRule(searchConfiguration.getRule());
 

@@ -6,6 +6,9 @@ package no.schibstedsok.front.searchportal.query.token;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.front.searchportal.configuration.SearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.query.token.OlympicTokenEvaluator;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
@@ -23,8 +26,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
-    public interface Context extends RegExpEvaluatorFactory.Context, QueryStringContext{
-        Properties getApplicationProperties();
+    public interface Context extends BaseContext, QueryStringContext, RegExpEvaluatorFactory.Context, 
+            SearchTabsCreator.Context{
     }
 
     private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new AlwaysTrueTokenEvaluator();
@@ -89,7 +92,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     }
 
     protected Properties getProperties() {
-        return context.getApplicationProperties();
+        return XMLSearchTabsCreator.valueOf(context).getProperties();
     }
 
     private TokenEvaluator getFastEvaluator() {
