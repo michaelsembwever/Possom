@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.configuration;
 
 import java.io.Serializable;

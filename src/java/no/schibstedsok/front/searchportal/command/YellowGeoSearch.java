@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted S�k AS
+ * Copyright (2005-2006) Schibsted S�k AS
  */
 package no.schibstedsok.front.searchportal.command;
 
@@ -11,8 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import no.schibstedsok.front.searchportal.query.token.TokenMatch;
-import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.YellowSearchResult;
@@ -27,7 +25,7 @@ public class YellowGeoSearch extends FastSearchCommand {
     private boolean isTop3 = false;
 
     private boolean ypkeywordsgeo = false;
-    
+
     public YellowGeoSearch(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
@@ -35,12 +33,12 @@ public class YellowGeoSearch extends FastSearchCommand {
     protected Map getNavigators() {
 
         if (ignoreGeoNav && super.getNavigators() != null) {
-            Map m = new HashMap();
+            final Map m = new HashMap();
             m.putAll(super.getNavigators());
             m.remove("geographic");
             return m;
         }
-      
+
         return super.getNavigators();
     }
 
@@ -53,38 +51,38 @@ public class YellowGeoSearch extends FastSearchCommand {
         }
 
         if (isLocalSearch() && !viewAll) {
-            
+
             // The search containing all hits. Including non-local.
             ignoreGeoNav = true;
             isLocal = false;
-            
+
             ypkeywordsgeo = true;
-            FastSearchResult nationalHits = (FastSearchResult) super.execute();
+            final FastSearchResult nationalHits = (FastSearchResult) super.execute();
             ypkeywordsgeo = false;
 
             ignoreGeoNav = false;
             isTop3 = true;
-            FastSearchResult top3 = (FastSearchResult) super.execute(); 
+            FastSearchResult top3 = (FastSearchResult) super.execute();
             isTop3 = false;
 
             // Perform local search.
             ignoreGeoNav = false;
             isLocal = true;
-            FastSearchResult localResult = (FastSearchResult) super.execute();
-            
-            YellowSearchResult result = new YellowSearchResult(this, localResult, nationalHits, top3, isLocalSearch() && !viewAll);
-            return result;    
+            final FastSearchResult localResult = (FastSearchResult) super.execute();
+
+            final YellowSearchResult result = new YellowSearchResult(this, localResult, nationalHits, top3, isLocalSearch() && !viewAll);
+            return result;
         } else if (!viewAll) {
             isLocal = false;
             isTop3 = true;
-            FastSearchResult top3 = (FastSearchResult) super.execute(); 
+            FastSearchResult top3 = (FastSearchResult) super.execute();
             isTop3 = false;
             ypkeywordsgeo = true;
-            FastSearchResult nationalHits = (FastSearchResult) super.execute();
+            final FastSearchResult nationalHits = (FastSearchResult) super.execute();
             ypkeywordsgeo = false;
 
-            YellowSearchResult result = new YellowSearchResult(this, null, nationalHits, top3, false);
-            return result;    
+            final YellowSearchResult result = new YellowSearchResult(this, null, nationalHits, top3, false);
+            return result;
         } else {
 
             log.debug("Search is viewall");
@@ -92,22 +90,22 @@ public class YellowGeoSearch extends FastSearchCommand {
 
 		isLocal = true;
             ignoreGeoNav = true;
-            FastSearchResult localResult = (FastSearchResult) super.execute();
+            final FastSearchResult localResult = (FastSearchResult) super.execute();
             ignoreGeoNav = false;
             isLocal = false;
 
             isTop3 = true;
-            FastSearchResult top3 = (FastSearchResult) super.execute(); 
+            FastSearchResult top3 = (FastSearchResult) super.execute();
             isTop3 = false;
 
             isLocal = false;
             ypkeywordsgeo = true;
-            FastSearchResult nationalHits = (FastSearchResult) super.execute();
+            final FastSearchResult nationalHits = (FastSearchResult) super.execute();
             ypkeywordsgeo = false;
 
-            
-            YellowSearchResult result = new YellowSearchResult(this, localResult, nationalHits, top3, false);
-            return result;    
+
+            final YellowSearchResult result = new YellowSearchResult(this, localResult, nationalHits, top3, false);
+            return result;
         }
     }
 
@@ -115,9 +113,9 @@ public class YellowGeoSearch extends FastSearchCommand {
         return context.getRunningQuery().getGeographicMatches().size() > 0;
     }
 
-    
+
     private TokenMatch getLastGeoMatch() {
-        List matches = context.getRunningQuery().getGeographicMatches();
+        final List matches = context.getRunningQuery().getGeographicMatches();
 
         if (matches.size() > 0) {
             return (TokenMatch) matches.get(matches.size() - 1);
@@ -125,7 +123,7 @@ public class YellowGeoSearch extends FastSearchCommand {
             return null;
         }
     }
-    
+
     protected String getSortBy() {
         if (isLocal) {
             return "yellowpages2 +ypnavn";
@@ -138,7 +136,7 @@ public class YellowGeoSearch extends FastSearchCommand {
         if (isTop3) {
             return super.getTransformedQuery().replaceAll("yellowphon:", "");
         }
-        
+
         if (isLocal) {
             return super.getTransformedQuery();
         } else {

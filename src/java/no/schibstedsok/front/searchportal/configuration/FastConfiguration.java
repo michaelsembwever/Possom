@@ -1,12 +1,9 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005-2006) Schibsted Søk AS
  *
  */
 package no.schibstedsok.front.searchportal.configuration;
 
-import no.schibstedsok.front.searchportal.command.FastSearchCommand;
-import no.schibstedsok.front.searchportal.command.SearchCommand;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -55,7 +52,7 @@ public class FastConfiguration extends AbstractSearchConfiguration {
      **/
     public String getCollectionFilterString() {
         if (collectionString == null) {
-            synchronized(this) {
+            synchronized (this) {
                 if (collectionString == null) {
                     collectionString = generateFilterString();
                 }
@@ -69,15 +66,15 @@ public class FastConfiguration extends AbstractSearchConfiguration {
 
         if (collections != null) {
             if (collections.size() > 1) {
-             Collection invertedCollection = new ArrayList();
+             final Collection invertedCollection = new ArrayList();
                 for (int i = 0; i < SearchConstants.ALL_COLLECTIONS.length; i++) {
-                    String c = SearchConstants.ALL_COLLECTIONS[i];
+                    final String c = SearchConstants.ALL_COLLECTIONS[i];
                     invertedCollection.add(c);
                 }
 
                 invertedCollection.removeAll(collections);
 
-                Object [] coll = prependMetaCollection(invertedCollection);
+                final Object [] coll = prependMetaCollection(invertedCollection);
                 return StringUtils.join(coll, ' ');
             } else if (collections.size() == 1) {
                 return "+meta.collection:" + collections.get(0);
@@ -87,11 +84,11 @@ public class FastConfiguration extends AbstractSearchConfiguration {
     }
 
     private Object[] prependMetaCollection(final Collection collectionStrings) {
-        Object coll[] =  collectionStrings.toArray();
+        final Object coll[] =  collectionStrings.toArray();
 
         for (int i = 0; i < coll.length; i++) {
-            String collectionName = (String) coll[i];
-            String s = "-meta.collection:" + collectionName;
+            final String collectionName = (String) coll[i];
+            final String s = "-meta.collection:" + collectionName;
             coll[i] = s;
         }
         return coll;
@@ -145,7 +142,7 @@ public class FastConfiguration extends AbstractSearchConfiguration {
         return (FastNavigator) navigators.get(navigatorKey);
     }
 
-    public String toString() {                                            
+    public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
 
@@ -153,7 +150,7 @@ public class FastConfiguration extends AbstractSearchConfiguration {
         return sortBy;
     }
 
-    public void setSortBy(String sortBy) {
+    public void setSortBy(final String sortBy) {
         this.sortBy = sortBy;
     }
 

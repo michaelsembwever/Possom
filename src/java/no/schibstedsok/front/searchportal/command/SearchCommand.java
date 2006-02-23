@@ -23,7 +23,7 @@ public interface SearchCommand extends Callable {
     /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it
      * creates.
      */
-    public interface Context extends BaseContext, QueryContext, ResourceContext, RunningQueryContext,  
+    public interface Context extends BaseContext, QueryContext, ResourceContext, RunningQueryContext,
             SearchConfigurationContext, SiteContext {
     }
 

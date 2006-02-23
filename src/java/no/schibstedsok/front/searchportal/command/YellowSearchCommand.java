@@ -56,15 +56,15 @@ public final class YellowSearchCommand extends FastSearchCommand {
      */
     protected SearchParameter getSortByParameter() {
 
-        Predicate eitherCompany =
+        final Predicate eitherCompany =
                 PredicateUtils.orPredicate(TokenPredicate.EXACTCOMPANYNAME, TokenPredicate.PRIOCOMPANYNAME);
 
-        AnalysisRule rule = new AnalysisRule();
+        final AnalysisRule rule = new AnalysisRule();
         rule.addPredicateScore(eitherCompany, MATCH_SCORE);
 
-        TokenEvaluatorFactory factory = context.getRunningQuery().getTokenEvaluatorFactory();
+        final TokenEvaluatorFactory factory = context.getRunningQuery().getTokenEvaluatorFactory();
 
-        int score = rule.evaluate(context.getRunningQuery().getQueryString(), factory);
+        final int score = rule.evaluate(context.getRunningQuery().getQueryString(), factory);
 
         if (score > 0) {
             return new SearchParameter(BaseParameter.SORT_BY,

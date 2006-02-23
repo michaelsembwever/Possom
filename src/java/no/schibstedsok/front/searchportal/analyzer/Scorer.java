@@ -24,7 +24,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Responsible for Visiting the Query and scoring a total according 
+/** Responsible for Visiting the Query and scoring a total according
  *   to the rule's predicateScores listed in the context.
  * This class is not thread-safe.
  *
@@ -37,7 +37,7 @@ public final class Scorer extends AbstractReflectionVisitor {
     public interface Context {
 
         /** The rules list of PredicateScores. In a map with mappings of the PredicateScore to Predicate.
-         * This mapping is the same as predicateScore.getPredicate() but exists so give the possibility of 
+         * This mapping is the same as predicateScore.getPredicate() but exists so give the possibility of
          * set manipulation.
          * @return map of predicateScores to Predicates for all PredicateScores in the rule we are scoring for.
          **/
@@ -59,7 +59,7 @@ public final class Scorer extends AbstractReflectionVisitor {
 
     private static final String DEBUG_UPDATE_SCORE = "Updating Score...";
 
-    /** Create the Scorer with the required context. 
+    /** Create the Scorer with the required context.
      * @param cxt the context this must work against.
      **/
     public Scorer(final Context cxt) {
@@ -91,7 +91,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         final boolean originalAdditivity = additivity;
         additivity = false;
         clause.getFirstClause().accept(this);
-        scoreClause(clause); 
+        scoreClause(clause);
         additivity = originalAdditivity;
     }
 
@@ -106,7 +106,7 @@ public final class Scorer extends AbstractReflectionVisitor {
     public void visitImpl(final Clause clause) {
         scoreClause(clause);
     }
-    
+
     /** Find if this clause contains (either known, possible, or custom joined) predicates correspondng to
      * PredicateScores listed in the context.
      * Avoid scoring predicates already matched.
@@ -119,47 +119,47 @@ public final class Scorer extends AbstractReflectionVisitor {
 
         // XXX Couldn't find the set algorythm for joining two set in Core Java or Commons Collections :-/
         final Iterator/*<PredicateScore>*/ it = context.getPredicates().keySet().iterator();
-        while ( it.hasNext() ) {
+        while (it.hasNext()) {
 
             final PredicateScore predicateScore = (PredicateScore) it.next();
             final Predicate predicate = predicateScore.getPredicate();
 
             // check we haven't already scored with this predicate.
-            if ( !touchedPredicates.contains(predicate) ) {
-                
+            if (!touchedPredicates.contains(predicate)) {
+
                 // update the factory with the predicate sets that can be used to improve evaluation performance.
                 final TokenEvaluatorFactory factory = context.getTokenEvaluatorFactory();
                 factory.setClausesKnownPredicates(clause.getKnownPredicates());
                 factory.setClausesPossiblePredicates(clause.getPossiblePredicates());
-                
-                if ( knownPredicates.contains(predicate) 
+
+                if (knownPredicates.contains(predicate)
                         // OR if this is a possiblePredicate or a all|any|none|not predicate
                         //  find out if it is now applicable...
-                        || ( ( possiblePredicates.contains(predicate) || !(predicate instanceof TokenPredicate) )
-                                && predicate.evaluate(factory) ) ){
-                    
-                    if( additivity ){
+                        || ((possiblePredicates.contains(predicate) || !(predicate instanceof TokenPredicate))
+                                && predicate.evaluate(factory))) {
+
+                    if (additivity) {
                         addScore(predicateScore);
-                    }else{
+                    }  else  {
                         minusScore(predicateScore);
                     }
                 }
             }
         }
     }
-    
-    
+
+
     private void addScore(final PredicateScore predicateScore) {
         score += predicateScore.getScore();
         touchedPredicates.add(predicateScore.getPredicate());
-        
+
         LOG.debug(DEBUG_UPDATE_SCORE + predicateScore.getPredicate() + " adds " + predicateScore.getScore());
     }
-    
+
     private void minusScore(final PredicateScore predicateScore) {
         score -= predicateScore.getScore();
         touchedPredicates.add(predicateScore.getPredicate());
-        
+
         LOG.debug(DEBUG_UPDATE_SCORE + predicateScore.getPredicate() + " minus " + predicateScore.getScore());
     }
 }

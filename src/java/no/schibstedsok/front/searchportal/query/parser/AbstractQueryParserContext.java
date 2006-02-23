@@ -36,7 +36,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public String getQueryString() {
+    public final String getQueryString() {
         return getTokenEvaluatorFactory().getQueryString();
     }
 
@@ -45,7 +45,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public AndClause createAndClause(
+    public final AndClause createAndClause(
         final Clause first,
         final Clause second) {
 
@@ -55,7 +55,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public OrClause createOrClause(
+    public final OrClause createOrClause(
         final Clause first,
         final Clause second) {
 
@@ -65,7 +65,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public AndNotClause createAndNotClause(
+    public final AndNotClause createAndNotClause(
         final Clause first) {
 
         LOG.trace("createOrClause(" + first + ")");
@@ -74,7 +74,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public NotClause createNotClause(
+    public final NotClause createNotClause(
         final Clause first) {
 
         LOG.trace("createNotClause(" + first + ")");
@@ -86,7 +86,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public WordClause createWordClause(
+    public final WordClause createWordClause(
         final String term,
         final String field) {
 
@@ -96,7 +96,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public PhraseClause createPhraseClause(
+    public final PhraseClause createPhraseClause(
         final String term,
         final String field) {
 
@@ -106,7 +106,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public IntegerClause createIntegerClause(
+    public final IntegerClause createIntegerClause(
         final String term,
         final String field) {
 
@@ -116,7 +116,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public PhoneNumberClause createPhoneNumberClause(
+    public final PhoneNumberClause createPhoneNumberClause(
         final String term,
         final String field) {
 
@@ -126,7 +126,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public OrganisationNumberClause createOrganisationNumberClause(
+    public final OrganisationNumberClause createOrganisationNumberClause(
         final String term,
         final String field) {
 

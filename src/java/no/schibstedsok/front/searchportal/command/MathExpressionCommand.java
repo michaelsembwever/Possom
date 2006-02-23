@@ -1,7 +1,6 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.command;
 
-import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
@@ -28,26 +27,26 @@ public class MathExpressionCommand extends AbstractSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public MathExpressionCommand(final Context cxt, Map parameters) {
+    public MathExpressionCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 
 
     public SearchResult execute() {
-        JEP parser = new JEP();
+        final JEP parser = new JEP();
 
         parser.addStandardConstants();
         parser.addStandardFunctions();
         parser.addComplex();
 
-        String queryString = context.getRunningQuery().getQueryString();
+        final String queryString = context.getRunningQuery().getQueryString();
 
         parser.parseExpression(queryString);
 
-        Complex result = parser.getComplexValue();
-        NumberFormat f = NumberFormat.getInstance();
+        final Complex result = parser.getComplexValue();
+        final NumberFormat f = NumberFormat.getInstance();
 
-        BasicSearchResult searchResult = new BasicSearchResult(this);
+        final BasicSearchResult searchResult = new BasicSearchResult(this);
 
 
         if (result != null) {
@@ -64,9 +63,9 @@ public class MathExpressionCommand extends AbstractSearchCommand {
                 }
             }
 
-            SearchResultItem item = new BasicSearchResultItem();
+            final SearchResultItem item = new BasicSearchResultItem();
 
-            String r = queryString + " = " + s;
+            final String r = queryString + " = " + s;
 
             if (log.isDebugEnabled()) {
                 log.debug("Adding result " + r);

@@ -1,14 +1,9 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.command;
 
-import com.thoughtworks.xstream.XStream;
-import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration;
-import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.configuration.SearchMode;
-import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
+
+
 import no.schibstedsok.front.searchportal.http.HTTPClient;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -23,14 +18,8 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.Map;
 import java.net.URLEncoder;
-import java.util.Properties;
-import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
-import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * @author <a href="mailto:lars@conduct.no">Lars Johansson</a>
@@ -47,7 +36,7 @@ public class OverturePPCCommand extends AbstractSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public OverturePPCCommand(final Context cxt, Map parameters) {
+    public OverturePPCCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 
@@ -56,7 +45,7 @@ public class OverturePPCCommand extends AbstractSearchCommand {
 
         query = query.replace(' ', '+');
 
-        StringBuffer url = new StringBuffer("/d/search/p/schibstedsok/xml/no/");
+        final StringBuffer url = new StringBuffer("/d/search/p/schibstedsok/xml/no/");
 
         try {
             url.append("?mkt=no&adultFilter=clean&Partner=schibstedsok_xml_no_searchbox_imp1");
@@ -77,27 +66,27 @@ public class OverturePPCCommand extends AbstractSearchCommand {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        BasicSearchResult searchResult = new BasicSearchResult(this);
+        final BasicSearchResult searchResult = new BasicSearchResult(this);
 
         if (doc != null) {
-            Element resultElement = doc.getDocumentElement();
+            final Element resultElement = doc.getDocumentElement();
 
-            NodeList list = resultElement.getElementsByTagName(SearchConstants.OVERTURE_PPC_ELEMENT);
+            final NodeList list = resultElement.getElementsByTagName(SearchConstants.OVERTURE_PPC_ELEMENT);
 
             log.debug("Found " + list.getLength() + " of " + SearchConstants.OVERTURE_PPC_ELEMENT);
 
             for (int i = 0; i < list.getLength(); i++) {
 
-                Element ppcListing = (Element) list.item(i);
+                final Element ppcListing = (Element) list.item(i);
 
 
-                BasicSearchResultItem item = new BasicSearchResultItem();
+                final BasicSearchResultItem item = new BasicSearchResultItem();
 
                 item.addField("title", ppcListing.getAttribute("title"));
                 item.addField("description", ppcListing.getAttribute("description"));
                 item.addField("siteHost", ppcListing.getAttribute("siteHost"));
 
-                NodeList click = ppcListing.getElementsByTagName("ClickUrl");
+                final NodeList click = ppcListing.getElementsByTagName("ClickUrl");
 
                 if (click.getLength() > 0) {
                     item.addField("clickURL", click.item(0).getChildNodes().item(0).getNodeValue());

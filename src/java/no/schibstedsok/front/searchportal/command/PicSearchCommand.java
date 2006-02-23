@@ -1,8 +1,8 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.command;
 
-import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
+
 import no.schibstedsok.front.searchportal.http.HTTPClient;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -36,7 +36,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public PicSearchCommand(final SearchCommand.Context cxt, Map parameters) {
+    public PicSearchCommand(final SearchCommand.Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 
@@ -52,30 +52,30 @@ public class PicSearchCommand extends AbstractSearchCommand {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        String url = "/query?ie=UTF-8&tldb=no&custid=558735&version=2.6&thumbs=" + getSearchConfiguration().getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
+        final String url = "/query?ie=UTF-8&tldb=no&custid=558735&version=2.6&thumbs=" + getSearchConfiguration().getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
 
         if (log.isDebugEnabled()) {
             log.debug("Using url " + url);
         }
 
-        Document doc = doSearch(url);
+        final Document doc = doSearch(url);
 
-        BasicSearchResult searchResult = new BasicSearchResult(this);
-        Element resultElement = doc.getDocumentElement();
+        final BasicSearchResult searchResult = new BasicSearchResult(this);
+        final Element resultElement = doc.getDocumentElement();
 
         if (doc != null) {
 
             searchResult.setHitCount(Integer.parseInt(resultElement.getAttribute("hits")));
 
-            NodeList list = resultElement.getElementsByTagName("image");
+            final NodeList list = resultElement.getElementsByTagName("image");
             for (int i = 0; i < list.getLength(); i++) {
 
-                Element picture = (Element) list.item(i);
+                final Element picture = (Element) list.item(i);
 
-                BasicSearchResultItem item = new BasicSearchResultItem();
+                final BasicSearchResultItem item = new BasicSearchResultItem();
 
                 for (Iterator iterator = getSearchConfiguration().getResultFields().iterator(); iterator.hasNext();) {
-                    String fieldName = (String) iterator.next();
+                    final String fieldName = (String) iterator.next();
 
                     item.addField(fieldName, picture.getAttribute(fieldName));
                 }
@@ -86,7 +86,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
         return searchResult;
     }
 
-    private Document doSearch(String url) {
+    private Document doSearch(final String url) {
         try {
             return client.getXmlDocument("picture_search", url);
         } catch (HttpException e) {

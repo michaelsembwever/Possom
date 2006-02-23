@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * OlympicSearchConfiguration.java
  *
@@ -9,10 +10,7 @@
 
 package no.schibstedsok.front.searchportal.configuration;
 
-import java.util.Map;
-import no.schibstedsok.front.searchportal.command.OlympicSearchCommand;
-import no.schibstedsok.front.searchportal.command.SearchCommand;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
+
 
 /**
  *

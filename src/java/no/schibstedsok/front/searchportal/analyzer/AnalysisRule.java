@@ -89,7 +89,7 @@ public final class AnalysisRule {
      * @return the score of this rule when applied to query.
      */
     public int evaluate(final Query query, final TokenEvaluatorFactory evalFactory) {
-        int score = 0;
+        final int score = 0;
 
         // we're done with parsing individual terms.
         //  we need to do this to ensure possible predicates are now checked against the whole query string.
@@ -106,7 +106,7 @@ public final class AnalysisRule {
             }
 
         });
-  
+
         if (query != null) {
             scorer.visit(query.getRootClause());
             return scorer.getScore();

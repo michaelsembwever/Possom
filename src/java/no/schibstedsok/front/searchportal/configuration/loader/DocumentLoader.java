@@ -9,7 +9,6 @@
 
 package no.schibstedsok.front.searchportal.configuration.loader;
 
-import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import org.w3c.dom.Document;
 

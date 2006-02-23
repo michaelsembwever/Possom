@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.configuration;
 
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
@@ -76,7 +77,7 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
         return name;
     }
 
-    public final void setName(String name) {
+    public final void setName(final String name) {
         this.name = name;
     }
 
@@ -128,7 +129,7 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
         return isAlwaysRunEnabled;
     }
 
-    public void setUseParameterAsQuery(String useParameterAsQuery) {
+    public void setUseParameterAsQuery(final String useParameterAsQuery) {
         this.useParameterAsQuery = useParameterAsQuery;
     }
 

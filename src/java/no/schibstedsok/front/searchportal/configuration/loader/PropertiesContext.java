@@ -5,9 +5,7 @@
 
 package no.schibstedsok.front.searchportal.configuration.loader;
 
-import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.BaseContext;
 
 /** Defines the context for consumers of PropertiesLoaders.

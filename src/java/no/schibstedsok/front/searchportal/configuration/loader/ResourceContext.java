@@ -7,9 +7,7 @@
 
 package no.schibstedsok.front.searchportal.configuration.loader;
 
-import com.thoughtworks.xstream.XStream;
-import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
+
 import no.schibstedsok.common.ioc.BaseContext;
 
 /** Defines the utility context for consumers of all types of ResourceLoaders.
@@ -20,5 +18,5 @@ import no.schibstedsok.common.ioc.BaseContext;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface ResourceContext extends BaseContext,DocumentContext,PropertiesContext,XStreamContext{
+public interface ResourceContext extends BaseContext, DocumentContext, PropertiesContext, XStreamContext {
 }

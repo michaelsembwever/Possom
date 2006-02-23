@@ -227,9 +227,6 @@ public final class TestVisitor extends TestCase {
                 });
 
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-                public String getQueryString() {
-                    return queryInput;
-                }
                 public TokenEvaluatorFactory getTokenEvaluatorFactory() {
                     return tokenEvaluatorFactory;
                 }

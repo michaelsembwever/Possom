@@ -5,8 +5,6 @@
 
 package no.schibstedsok.front.searchportal.configuration.loader;
 
-import com.thoughtworks.xstream.XStream;
-import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.BaseContext;
 
@@ -21,5 +19,5 @@ public interface DocumentContext extends BaseContext {
      * @param builder the DocumentBuilder to build the DOM resource with.
      * @return the new DocumentLoader to use.
      **/
-    DocumentLoader newDocumentLoader( String resource, DocumentBuilder builder);
+    DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder);
 }

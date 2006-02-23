@@ -81,7 +81,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         dl.init(resource, builder);
         return dl;
     }
-    
+
     /** {@inheritDoc}
      */
     private UrlResourceLoader(final SiteContext cxt) {
@@ -92,53 +92,53 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
      */
     protected String getResource() {
 
-        return "http://" 
-                + getContext().getSite().getName() 
-                + getContext().getSite().getConfigContext() 
-                + "conf/" 
+        return "http://"
+                + getContext().getSite().getName()
+                + getContext().getSite().getConfigContext()
+                + "conf/"
                 + super.getResource();
     }
-    
+
     /** {@inheritDoc}
      */
     protected String getFallbackResource() {
         final Site fallback = Site.DEFAULT;
-        
-        return "http://" 
-                + fallback.getName() 
-                + fallback.getConfigContext() 
-                + "conf/" 
+
+        return "http://"
+                + fallback.getName()
+                + fallback.getConfigContext()
+                + "conf/"
                 + super.getResource();
     }
 
     /** {@inheritDoc}
      */
     public void run() {
-        if( !loadResource( getResource() )){
-            LOG.warn(WARN_USING_FALLBACK+getResource());
-            if( !loadResource( getFallbackResource() )){
+        if(!loadResource(getResource())) {
+            LOG.warn(WARN_USING_FALLBACK+ getResource());
+            if(!loadResource(getFallbackResource())) {
                 LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
             }
         }
 
     }
 
-    private boolean loadResource(final String resource){
-        
+    private boolean loadResource(final String resource) {
+
         boolean success = false;
         try {
 
-            final URL url = new URL( resource );
+            final URL url = new URL(resource);
 
             if (props != null) {
                 props.load(url.openStream());
             }
             if (xstream != null) {
-                xstreamResult = xstream.fromXML(new InputStreamReader( url.openStream() ));
+                xstreamResult = xstream.fromXML(new InputStreamReader(url.openStream()));
             }
             if (builder != null) {
-                document = builder.parse( 
-                        new InputSource( new InputStreamReader( url.openStream() ) ) );
+document = builder.parse(
+                        new InputSource(new InputStreamReader(url.openStream())));
             }
 
             LOG.info("Read configuration from " + getResource());
@@ -154,7 +154,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             LOG.warn(err, e);
             //throw new InfrastructureException(err, e);
         } catch (SAXParseException e) {
-            final String err = "When Reading Configuration from " + getResource() + 
+            final String err = "When Reading Configuration from " + getResource() +
                     " at " + e.getLineNumber() + ":" + e.getColumnNumber();
             LOG.warn(err, e);
             throw new InfrastructureException(err, e);

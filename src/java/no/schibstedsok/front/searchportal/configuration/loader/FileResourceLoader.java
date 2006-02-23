@@ -60,7 +60,7 @@ public final class FileResourceLoader extends AbstractResourceLoader {
         xl.init(resource, xstream);
         return xl;
     }
-    
+
     /** Create a new DocumentLoader for the given resource name/path and load it with the given DocumentBuilder.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.
      * @param resource the resource name/path.
@@ -101,8 +101,8 @@ public final class FileResourceLoader extends AbstractResourceLoader {
                 xstreamResult = xstream.fromXML(new InputStreamReader(getClass().getResourceAsStream(getResource())));
             }
             if (builder != null) {
-                document = builder.parse( 
-                        new InputSource( new InputStreamReader(getClass().getResourceAsStream(getResource())) ) );
+document = builder.parse(
+                        new InputSource(new InputStreamReader(getClass().getResourceAsStream(getResource()))));
             }
 
             LOG.info("Read configuration from " + getResource());
@@ -116,7 +116,7 @@ public final class FileResourceLoader extends AbstractResourceLoader {
             final String err = "When Reading Configuration from " + getResource();
             LOG.error(err, e);
             throw new InfrastructureException(err, e);
-            
+
         } catch (SAXException e) {
             final String err = "When Reading Configuration from " + getResource();
             LOG.error(err, e);

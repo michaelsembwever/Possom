@@ -23,8 +23,8 @@ import org.w3c.dom.Document;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public abstract class AbstractResourceLoader 
-        extends Thread 
+public abstract class AbstractResourceLoader
+        extends Thread
         implements DocumentLoader, PropertiesLoader, XStreamLoader {
 
     private static final Log LOG = LogFactory.getLog(AbstractResourceLoader.class);
@@ -96,10 +96,10 @@ public abstract class AbstractResourceLoader
         }
         return xstreamResult;
     }
-    
+
     /** {@inheritDoc}
      */
-    public Document getDocument(){
+    public Document getDocument() {
         if (builder == null) {
             throw new IllegalStateException(ERR_MUST_USE_XSTREAM_INITIALISER);
         }
@@ -129,7 +129,7 @@ public abstract class AbstractResourceLoader
         this.xstream = xstream;
         start();
     }
-    
+
     /** {@inheritDoc}
      */
     public void init(final String resource, final DocumentBuilder builder) {
@@ -140,7 +140,7 @@ public abstract class AbstractResourceLoader
         this.builder = builder;
         start();
     }
-    
+
     /** {@inheritDoc}
      */
     public void abut() {

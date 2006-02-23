@@ -296,7 +296,7 @@ public final class AnalysisRuleFactory {
     /**
      * Main method to retrieve the correct AnalysisRuleFactory to further obtain
      * AnalysisRule.
-     * 
+     *
      * @param cxt the contextual needs this factory must use to operate.
      * @return AnalysisRuleFactory for this site.
      */
@@ -317,7 +317,7 @@ public final class AnalysisRuleFactory {
     /**
      * Utility wrapper to the valueOf(Context).
      * <b>Makes the presumption we will be using the UrlResourceLoader to load all resources.</b>
-     * 
+     *
      * @param site the site this AnalysisRuleFactory will work for.
      * @return AnalysisRuleFactory for this site.
      */
