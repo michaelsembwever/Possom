@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
-import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -37,18 +36,16 @@ public class SumFastModifiers implements ResultHandler {
         final SearchResult result = cxt.getSearchResult();
         if (result.getHitCount() > 0) {
 
-            FastSearchResult fastResult = (FastSearchResult) result;
+            final FastSearchResult fastResult = (FastSearchResult) result;
 
-            FastSearchCommand fastCommand = (FastSearchCommand) result.getSearchCommand();
+            final FastNavigator navigator = fastResult.getNavigatedTo(navigatorName);
 
-            FastNavigator navigator = fastCommand.getNavigatedTo(navigatorName);
-
-            Modifier modifier = new Modifier(targetModifier, navigator);
+            final Modifier modifier = new Modifier(targetModifier, navigator);
 
             if (fastResult.getModifiers(navigatorName) != null) {
 
-                for (Iterator iterator = fastResult.getModifiers(navigatorName).iterator(); iterator.hasNext();) {
-                    Modifier mod =  (Modifier) iterator.next();
+                for (final Iterator iterator = fastResult.getModifiers(navigatorName).iterator(); iterator.hasNext();) {
+                    final Modifier mod =  (Modifier) iterator.next();
                     if (modifierNames.contains(mod.getName())) {
                         modifier.addCount(mod.getCount());
                         iterator.remove();

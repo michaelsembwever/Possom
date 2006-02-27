@@ -30,9 +30,9 @@ public class WeatherCelciusHandler2 implements ResultHandler  {
     public void handleResult(final Context cxt, final Map parameters) {
 
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
-            String celcius = searchResultItem.getField(sourceField);
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+            final String celcius = searchResultItem.getField(sourceField);
             String newVal = null;
 
             try {

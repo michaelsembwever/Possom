@@ -19,8 +19,8 @@ public class AddDocCountModifier implements ResultHandler {
     public void handleResult(final Context cxt, final Map parameters) {
 
         final SearchResult result = cxt.getSearchResult();
-        FastNavigator navigator = new FastNavigator();
-        Modifier mod = new Modifier(modifierName, result.getHitCount(), navigator);
+        final FastNavigator navigator = new FastNavigator();
+        final Modifier mod = new Modifier(modifierName, result.getHitCount(), navigator);
         if (mod.getCount() > 0)
             cxt.addSource(mod);
     }

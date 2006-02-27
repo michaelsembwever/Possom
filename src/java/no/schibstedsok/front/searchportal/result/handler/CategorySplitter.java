@@ -18,14 +18,14 @@ public class CategorySplitter implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
-            String ypbransje = searchResultItem.getField("ypbransje");
+            final String ypbransje = searchResultItem.getField("ypbransje");
 
             if (ypbransje != null) {
                 //splits bransje to show categories under YIP page
-                String[] split = ypbransje.split("FASTpbFAST");
+                final String[]  split = ypbransje.split("FASTpbFAST");
                 for (int i = 0; i < split.length; i++)
                     searchResultItem.addToMultivaluedField("manyCategories", split[i].trim());
             }

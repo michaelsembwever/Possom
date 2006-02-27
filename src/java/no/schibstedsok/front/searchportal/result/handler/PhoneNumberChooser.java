@@ -13,12 +13,12 @@ public class PhoneNumberChooser implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
-            String phoneNumber = searchResultItem.getField("yptelefon");
-            String otherNumbers = searchResultItem.getField("ypandretelefoner");
-            String mobileNumber = searchResultItem.getField("ypmobiltelefon");
+            final String phoneNumber = searchResultItem.getField("yptelefon");
+            final String otherNumbers = searchResultItem.getField("ypandretelefoner");
+            final String mobileNumber = searchResultItem.getField("ypmobiltelefon");
 
             String chosenNumber = null;
 
@@ -26,7 +26,7 @@ public class PhoneNumberChooser implements ResultHandler {
                 chosenNumber = phoneNumber;
             } else {
                 if (otherNumbers != null) {
-                    String[] numbers = otherNumbers.split(";");
+                    final String[]  numbers = otherNumbers.split(";");
 
                     if (numbers.length > 0) {
                         chosenNumber = numbers[0];

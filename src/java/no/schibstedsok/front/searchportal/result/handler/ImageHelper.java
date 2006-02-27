@@ -21,30 +21,30 @@ public class ImageHelper implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
-            for (Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {
-                String field = (String) fields.next();
-                String fieldValue = searchResultItem.getField(field);
+            for (final Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {
+                final String field = (String) fields.next();
+                final String fieldValue = searchResultItem.getField(field);
 
                 if (field.equals("ypmastermarks")) {
 
                     if (fieldValue != null) {
-                        String[] values = StringUtils.split(fieldValue, ';');
+                        final String[] values = StringUtils.split(fieldValue, ';');
 
                         for (int i = 0; i < values.length; i++) {
-                            String value = values[i];
+                            final String value = values[i];
                             searchResultItem.addToMultivaluedField((String) fieldMap.get(field), value);
                         }
 
                     }
                 } else {
                     if (fieldValue != null) {
-                        String[] values = StringUtils.split(fieldValue, ';');
+                        final String[] values = StringUtils.split(fieldValue, ';');
 
                         for (int i = 0; i < values.length; i++) {
-                            String value = values[i];
+                            final String value = values[i];
                             searchResultItem.addToMultivaluedField((String) fieldMap.get(field), value);
                         }
 

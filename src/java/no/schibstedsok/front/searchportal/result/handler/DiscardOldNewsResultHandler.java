@@ -24,8 +24,8 @@ public class DiscardOldNewsResultHandler implements ResultHandler {
     public void handleResult(final Context cxt, final Map parameters) {
 
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
             String docTime = searchResultItem.getField(sourceField);
 
@@ -33,7 +33,7 @@ public class DiscardOldNewsResultHandler implements ResultHandler {
 
             if (docTime != null) {
                 try {
-                    long age = System.currentTimeMillis() - df.parse(docTime).getTime();
+                    final long age = System.currentTimeMillis() - df.parse(docTime).getTime();
 
                     if (age > maxAgeInMilliseconds) {
                         iterator.remove();

@@ -19,11 +19,11 @@ public class FieldChooser implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            SearchResultItem item = (SearchResultItem) iterator.next();
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+            final SearchResultItem item = (SearchResultItem) iterator.next();
 
-            for (Iterator iterator1 = fields.iterator(); iterator1.hasNext();) {
-                String fieldName = (String) iterator1.next();
+            for (final Iterator iterator1 = fields.iterator(); iterator1.hasNext();) {
+                final String fieldName = (String) iterator1.next();
                 if (item.getField(fieldName) != null) {
                     item.addField(targetField, item.getField(fieldName));
                     break;

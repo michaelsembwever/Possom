@@ -32,33 +32,33 @@ public class AgeCalculatorResultHandler implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        String formatString = dateFormat != null ? dateFormat : "yyyy-MM-dd'T'HH:mm:ss'Z'";
-        String ageFormatKey = ageMessageFormat != null ? ageMessageFormat : "age";
+        final String formatString = dateFormat != null ? dateFormat : "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        final String ageFormatKey = ageMessageFormat != null ? ageMessageFormat : "age";
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-        DateFormat df = new SimpleDateFormat(formatString);
-            SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+        final DateFormat df = new SimpleDateFormat(formatString);
+            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
-            String docTime = searchResultItem.getField(sourceField);
+            final String docTime = searchResultItem.getField(sourceField);
 
             if (docTime != null) {
 
                 try {
-                    long stamp = df.parse(docTime).getTime();
-                    long age = System.currentTimeMillis() - stamp;
+                    final long stamp = df.parse(docTime).getTime();
+                    final long age = System.currentTimeMillis() - stamp;
 
                     if (log.isDebugEnabled()) {
                         log.debug("Doctime is " + docTime);
                     }
 
-                    Long dateParts[] = new Long[3];
+                    final Long dateParts[] = new Long[3];
 
                     dateParts[0] = new Long(age / (60 * 60 * 24 * 1000));
                     dateParts[1] = new Long(age / (60 * 60 * 1000) % 24);
                     dateParts[2] = new Long(age / (60 * 1000) % 60);
 
                     String ageString = ""; // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
-                    String[] s = (String[]) parameters.get("contentsource");
+                    final String[]  s = (String[]) parameters.get("contentsource");
 
                     final TextMessages txtMsgs = TextMessages.valueOf(new TextMessages.Context() {
                         public Site getSite() {

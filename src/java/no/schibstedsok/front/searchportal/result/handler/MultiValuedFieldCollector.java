@@ -18,20 +18,20 @@ public class MultiValuedFieldCollector implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
-            for (Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {
-                String field = (String) fields.next();
+            for (final Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {
+                final String field = (String) fields.next();
 
-                String fieldValue = searchResultItem.getField(field);
+                final String fieldValue = searchResultItem.getField(field);
                 String format = "";
 
                 if (fieldValue != null) {
-                    String[] values = StringUtils.split(fieldValue, ' ');
+                    final String[]  values = StringUtils.split(fieldValue, ' ');
 
                     for (int i = 0; i < values.length; i++) {
-                        String value = values[i];
+                        final String value = values[i];
 
                         if (value.length() == 8) {
                             format = value.substring(0, 2) + " " + value.substring(2, 4) + " " + value.substring(4, 6) + " " + value.substring(6, 8);

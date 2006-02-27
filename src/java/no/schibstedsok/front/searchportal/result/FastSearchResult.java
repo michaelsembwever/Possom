@@ -1,11 +1,17 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.spell.RelevantQuery;
-import no.schibstedsok.front.searchportal.util.ScoreKeeper;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 
-import java.util.*;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -16,16 +22,20 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
     private HashMap navigators = new HashMap();
     private Map currentNavigators = new HashMap();
     private List relevantQueries = new ArrayList();
-    
-    public FastSearchResult(SearchCommand command) {
+
+    public FastSearchResult(final SearchCommand command) {
         super(command);
     }
 
-    public void addModifier(String navigatorName, Modifier modifier) {
+    public FastNavigator getNavigatedTo(final String navigatorName) {
+        return ((FastSearchCommand) getSearchCommand()).getNavigatedTo(navigatorName);
+    }
+
+    public void addModifier(final String navigatorName, final Modifier modifier) {
 
         List modifiers;
 
-        if (! navigators.containsKey(navigatorName)) {
+        if (!navigators.containsKey(navigatorName)) {
             modifiers = new ArrayList();
             navigators.put(navigatorName, modifiers);
         } else {
@@ -36,16 +46,16 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
     }
 
 
-    public List getModifiers(String navigatorName) {
+    public List getModifiers(final String navigatorName) {
         return (List) navigators.get(navigatorName);
     }
 
-    public Modifier getModifier(String navigatorName, String modifierName) {
-        List modifiers = getModifiers(navigatorName);
+    public Modifier getModifier(final String navigatorName, final String modifierName) {
+        final List modifiers = getModifiers(navigatorName);
 
         if (modifiers != null) {
-            for (Iterator iterator = modifiers.iterator(); iterator.hasNext();) {
-                Modifier modifier = (Modifier) iterator.next();
+            for (final Iterator iterator = modifiers.iterator(); iterator.hasNext();) {
+                final Modifier modifier = (Modifier) iterator.next();
                 if (modifier.getName().equals(modifierName)) {
                     return modifier;
                 }
@@ -55,8 +65,8 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         return null;
     }
 
-    public int getModifierCount(String navigatorName, String modifierName) {
-        Modifier modifier = getModifier(navigatorName, modifierName);
+    public int getModifierCount(final String navigatorName, final String modifierName) {
+        final Modifier modifier = getModifier(navigatorName, modifierName);
 
         if (modifier != null) {
             return modifier.getCount();
@@ -65,15 +75,15 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         }
     }
 
-    public void addCurrentNavigator(FastNavigator currentNavigator, String navKey) {
+    public void addCurrentNavigator(final FastNavigator currentNavigator, final String navKey) {
         currentNavigators.put(navKey, currentNavigator);
     }
 
-    public FastNavigator getCurrentNavigator(String navigatorName) {
+    public FastNavigator getCurrentNavigator(final String navigatorName) {
         return (FastNavigator) currentNavigators.get(navigatorName);
     }
 
-    public void addRelevantQuery(RelevantQuery query) {
+    public void addRelevantQuery(final RelevantQuery query) {
         relevantQueries.add(query);
     }
 
@@ -83,7 +93,7 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
      * @return the synonyms.
      */
     public List getRelevantQueries() {
-	Collections.sort(relevantQueries);
+        Collections.sort(relevantQueries);
         return relevantQueries;
     }
 }

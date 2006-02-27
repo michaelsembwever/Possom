@@ -13,13 +13,13 @@ public class PhoneNumberFormatter implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
+            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
-            String ypanynumber = searchResultItem.getField("ypanynumber");
-            String wpmobiltelefon = searchResultItem.getField("wpmobiltelefon");
-            String wptelefon = searchResultItem.getField("wptelefon");
-            String yptelefax = searchResultItem.getField("yptelefax");
+            final String ypanynumber = searchResultItem.getField("ypanynumber");
+            final String wpmobiltelefon = searchResultItem.getField("wpmobiltelefon");
+            final String wptelefon = searchResultItem.getField("wptelefon");
+            final String yptelefax = searchResultItem.getField("yptelefax");
             String format = null;
 
             // TODO: put formatting oh white numbers in here too. For now this will be formatted in MultiValueFieldCollector
