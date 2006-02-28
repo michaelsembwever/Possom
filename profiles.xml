@@ -9,6 +9,7 @@
         </activation>
     
         <properties>
+            
             <!-- The default Site -->
             <sesam.site.default>localhost:8080</sesam.site.default>
             
@@ -38,6 +39,11 @@
             <!-- Mail -->
 
             <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+            
+            <!-- Publishing location -->
+
+            <publishing.system.baseURL>http://searchdev.schibstedsok.no/pub</publishing.system.baseURL>
+            
         </properties>
     </profile>
     
@@ -81,6 +87,10 @@
             <!-- Mail -->
 
             <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+            
+            <!-- Publishing location -->
+
+            <publishing.system.baseURL>http://searchdev.schibstedsok.no/pub</publishing.system.baseURL>
 
             <!-- Trade doubler -->
             
@@ -130,6 +140,10 @@
             <!-- Mail -->
 
             <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+            
+            <!-- Publishing location -->
+
+            <publishing.system.baseURL>http://www.sesam.no/pub</publishing.system.baseURL>
 
             <!-- Trade doubler -->
             

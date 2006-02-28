@@ -7,7 +7,10 @@
         contentType="text/html; charset=utf-8"
         pageEncoding="UTF-8"
         %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%  final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+    final Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
     final Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(site).getProperties()); 
 %>
 
@@ -62,11 +65,13 @@
 </div>
 
 <jsp:include page="indBoxIncl.html" />
+<%--c:import url="${props['publishing.system.baseURL']}/indBoxIncl.html" charEncoding="UTF-8"/--%>
 
 <div class="index_center">
     <div id="index_enrichment">
         <jsp:include page="indTextIncl.html" />
-
+        <%--c:import url="${props['publishing.system.baseURL']}/indTextIncl.html" charEncoding="UTF-8"/--%>
+        
         <div id="footer_space">
             <div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
             <div id="footer_help">
