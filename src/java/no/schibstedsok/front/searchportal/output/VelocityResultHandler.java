@@ -31,6 +31,7 @@ import java.io.Writer;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
+import org.apache.velocity.tools.view.tools.ImportTool;
 
 /** Handles the populating the velocity contexts.
  * Strictly view domain.
@@ -41,6 +42,8 @@ import java.net.URLEncoder;
 public final class VelocityResultHandler implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
+    
+    private static final ImportTool IMPORT_TOOL = new ImportTool();
 
     public void handleResult(final Context cxt, final Map parameters) {
 
@@ -137,6 +140,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("math", new MathTool());
         context.put("site", cxt.getSite());
         context.put("tradedoubler", new TradeDoubler(request));
+        context.put("import", IMPORT_TOOL);
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
