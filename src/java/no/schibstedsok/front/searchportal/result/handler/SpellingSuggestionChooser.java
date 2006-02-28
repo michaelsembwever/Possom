@@ -79,7 +79,7 @@ public class SpellingSuggestionChooser implements ResultHandler {
 
         final int numberOfCorrections = numberOfCorrectedTerms(result.getSpellingSuggestions());
 
-        final String newQuery = result.getSearchCommand().getRunningQuery().getQueryString().toLowerCase(result.getSearchCommand().getRunningQuery().getLocale());
+        final String newQuery = cxt.getQueryString().toLowerCase(result.getSearchCommand().getRunningQuery().getLocale());
 
         if (numberOfCorrections == 1) {
 

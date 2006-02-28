@@ -114,9 +114,9 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
     /** {@inheritDoc}
      */
     public void run() {
-        if(!loadResource(getResource())) {
-            LOG.warn(WARN_USING_FALLBACK+ getResource());
-            if(!loadResource(getFallbackResource())) {
+        if (!loadResource(getResource())) {
+            LOG.warn(WARN_USING_FALLBACK + getResource());
+            if (!loadResource(getFallbackResource())) {
                 LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
             }
         }

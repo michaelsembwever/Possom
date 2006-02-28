@@ -12,6 +12,6 @@ import no.schibstedsok.common.ioc.BaseContext;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface SearchConfigurationContext extends BaseContext{
+public interface SearchConfigurationContext extends BaseContext {
     SearchConfiguration getSearchConfiguration();
 }

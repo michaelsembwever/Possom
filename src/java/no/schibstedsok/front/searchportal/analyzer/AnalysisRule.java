@@ -62,7 +62,7 @@ public final class AnalysisRule {
         int score = 0;
 
         // Old (pre-QueryParser) implementation.
-        for (Iterator iterator = predicates.keySet().iterator(); iterator.hasNext();) {
+        for (final Iterator iterator = predicates.keySet().iterator(); iterator.hasNext();) {
             final PredicateScore p = (PredicateScore) iterator.next();
             final boolean match = p.getPredicate().evaluate(evalFactory);
 

@@ -52,8 +52,8 @@ TOKEN : {
 | <ANDNOT: ("ANDNOT")>
 
 /** then leaves **/
-| <PHONE_NUMBER: (("+"|"00")"47"(" ")*){0,1}(<DIGIT>(" "){0,1}){8}>
-| <ORGANISATION_NUMBER: (<DIGIT>){9}>
+| <PHONE_NUMBER: (("+"|"00")"47"(" ")*){0,1}(<DIGIT>(" ")?){8}>
+| <ORGANISATION_NUMBER: (<DIGIT>(" ")?){9}>
 | <INTEGER: ((<DIGIT>)+)>
 | <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\"">
 | <WORD: ((<LETTER>|<DIGIT>)+)("*")?>

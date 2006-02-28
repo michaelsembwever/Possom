@@ -33,8 +33,8 @@ import no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguratio
  */
 public final class SearchCommandFactory {
 
-    private SearchCommandFactory(){}
-    
+    private SearchCommandFactory() {  }
+
     /** Create the appropriate command.
      **/
     public static SearchCommand createSearchCommand(final SearchCommand.Context cxt, final Map parameters) {
