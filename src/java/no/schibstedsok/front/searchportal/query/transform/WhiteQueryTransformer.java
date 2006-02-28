@@ -1,10 +1,10 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005-2006) Schibsted Søk AS
  *
  */
 package no.schibstedsok.front.searchportal.query.transform;
 
-import no.schibstedsok.front.searchportal.query.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,9 +22,9 @@ public class WhiteQueryTransformer extends AbstractQueryTransformer {
     private static Log log = LogFactory.getLog(WhiteQueryTransformer.class);
 
     public String getTransformedQuery(final Context cxt) {
-        
-        final String originalQuery = cxt.getQueryString();
-        String newQuery = prefixTerms("whitephon", "whitepages", originalQuery);
+
+        final String originalQuery = cxt.getTransformedQuery();
+        final String newQuery = prefixTerms("whitephon", "whitepages", originalQuery);
 
         if (log.isDebugEnabled()) {
             log.debug("Rewriting query " + originalQuery + " to " + newQuery);
@@ -35,15 +35,15 @@ public class WhiteQueryTransformer extends AbstractQueryTransformer {
 
     public static String prefixTerms(final String prefix, final String numberPrefix, final String query) {
 
-        String stripped = query.replaceAll("\"", "");
+        final String stripped = query.replaceAll("\"", "");
 
-        String[] tokens = stripped.split("\\s");
+        final String[] tokens = stripped.split("\\s");
 
-        StringBuffer newQuery = new StringBuffer();
+        final StringBuffer newQuery = new StringBuffer();
 
         for (int i = 0; i < tokens.length; i++) {
 
-            Matcher m = numbers.matcher(tokens[i]);
+            final Matcher m = numbers.matcher(tokens[i]);
 
             if (m.find()) {
                 newQuery.append(numberPrefix).append(":");

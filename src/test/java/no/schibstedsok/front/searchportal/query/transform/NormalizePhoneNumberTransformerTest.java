@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * NormalizePhoneNumberTransformerTest.java
  * JUnit based test
@@ -7,31 +8,33 @@
 
 package no.schibstedsok.front.searchportal.query.transform;
 
-import junit.framework.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.site.Site;
 /**
  *
  * @author magnuse
  */
-public class NormalizePhoneNumberTransformerTest extends TestCase {
-    public NormalizePhoneNumberTransformerTest(String testName) {
+public final class NormalizePhoneNumberTransformerTest extends TestCase {
+    public NormalizePhoneNumberTransformerTest(final String testName) {
         super(testName);
     }
-    
+
     protected void setUp() throws Exception {
     }
-    
+
     protected void tearDown() throws Exception {
     }
-    
+
     public static Test suite() {
-        TestSuite suite = new TestSuite(NormalizePhoneNumberTransformerTest.class);
-        
+        final TestSuite suite = new TestSuite(NormalizePhoneNumberTransformerTest.class);
+
         return suite;
     }
-    
+
     /**
      * Test of getTransformedQuery method, of class no.schibstedsok.front.searchportal.query.NormalizePhoneNumberTransformer.
      */
@@ -42,31 +45,34 @@ public class NormalizePhoneNumberTransformerTest extends TestCase {
         final String result = instance.getTransformedQuery(createCtx(originalQuery));
         assertEquals(originalQuery, result);
     }
-    
+
     private QueryTransformer.Context createCtx(final String originalQuery) {
-        final QueryTransformer.Context ctx = new QueryTransformer.Context() {
-            public Site getSite() {
-                return Site.DEFAULT;
-            }
-            
-            public String getQueryString() {
-                return originalQuery;
-            }
-            
-        };
-        return ctx;
+        return createCtx(originalQuery, Site.DEFAULT);
     }
-    
+
     private QueryTransformer.Context createCtx(final String originalQuery, final Site site) {
         final QueryTransformer.Context ctx = new QueryTransformer.Context() {
+
             public Site getSite() {
                 return site;
             }
-            
+
+            public String getTransformedQuery() {
+                return originalQuery;
+            }
+
             public String getQueryString() {
                 return originalQuery;
             }
-            
+
+            public Map/*<Clause,String>*/ getTransformedTerms() {
+                return null;
+            }
+
+            public Query getQuery() {
+                return null;
+            }
+
         };
         return ctx;
     }

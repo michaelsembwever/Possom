@@ -1,11 +1,10 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005-2006) Schibsted Søk AS
  */
 package no.schibstedsok.front.searchportal.query.transform;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import no.schibstedsok.front.searchportal.query.*;
 
 public class TermPrefixTransformer extends AbstractQueryTransformer {
 
@@ -17,27 +16,27 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
     protected String prefixTerms(final String query) {
 
         String stripped = query;
-        
+
         stripped = stripped.replaceAll(",", "");
         stripped = stripped.replaceAll("#", "");
         stripped = stripped.replaceAll("\\s+", " ");
-        
+
         stripped = stripped.replaceAll("\"", "");
 
         if (stripped.length() == 0) {
             return "";
         }
 
-        String[] tokens = stripped.split("\\s+");
+        final String[] tokens = stripped.split("\\s+");
 
-        
-        StringBuffer newQuery = new StringBuffer();
 
-        
+        final StringBuffer newQuery = new StringBuffer();
+
+
         for (int i = 0; i < tokens.length; i++) {
 
             if (numberPrefix != null) {
-                Matcher m = numbers.matcher(tokens[i]);
+                final Matcher m = numbers.matcher(tokens[i]);
 
                 if (m.find()) {
                     newQuery.append(numberPrefix).append(":");
@@ -61,8 +60,8 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
     public TermPrefixTransformer() {
         super();
     }
-    
-    public TermPrefixTransformer(String prefix, String numberPrefix) {
+
+    public TermPrefixTransformer(final String prefix, final String numberPrefix) {
         super();
         this.prefix = prefix;
         this.numberPrefix = numberPrefix;
@@ -86,8 +85,8 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
         return prefix;
     }
 
-    public String getTransformedQuery(Context cxt) {
-        return prefixTerms(cxt.getQueryString());
+    public String getTransformedQuery(final Context cxt) {
+        return prefixTerms(cxt.getTransformedQuery());
     }
 
 
@@ -96,7 +95,7 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
      *
      * @param numberPrefix The numberPrefix to set.
      */
-    public void setNumberPrefix(String numberPrefix) {
+    public void setNumberPrefix(final String numberPrefix) {
         this.numberPrefix = numberPrefix;
     }
 
@@ -105,7 +104,7 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
      *
      * @param prefix The prefix to set.
      */
-    public void setPrefix(String prefix) {
+    public void setPrefix(final String prefix) {
         this.prefix = prefix;
     }
 }

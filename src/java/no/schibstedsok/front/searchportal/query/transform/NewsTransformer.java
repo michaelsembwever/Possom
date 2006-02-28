@@ -1,7 +1,5 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.transform;
-
-import no.schibstedsok.front.searchportal.query.*;
-
 
 
 /**
@@ -22,8 +20,8 @@ public class NewsTransformer extends AbstractQueryTransformer implements QueryTr
      * @return
      */
     public String getTransformedQuery(final Context cxt) {
-        
-        final String originalQuery = cxt.getQueryString();
+
+        final String originalQuery = cxt.getTransformedQuery();
 
        return originalQuery;
     }
@@ -37,14 +35,14 @@ public class NewsTransformer extends AbstractQueryTransformer implements QueryTr
      * @return filterstring
      */
     public String getFilter(final Context cxt) {
-        
-        final String origQuery = cxt.getQueryString();
 
-        if(origQuery == null) {
+        final String origQuery = cxt.getTransformedQuery();
+
+        if (origQuery == null) {
             throw new IllegalArgumentException("setQuery not called with minimum empty query");
         }
 
-        if("".equals(origQuery.trim())){
+        if ("".equals(origQuery.trim())) {
             return " +size:>0 ";
         }
 

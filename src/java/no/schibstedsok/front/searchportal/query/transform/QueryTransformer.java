@@ -1,12 +1,14 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.transform;
 
-import no.schibstedsok.front.searchportal.query.*;
-import no.schibstedsok.front.searchportal.query.QueryStringContext;
-import no.schibstedsok.front.searchportal.site.SiteContext;
+
+
 
 
 import java.util.Map;
-
+import no.schibstedsok.front.searchportal.query.QueryContext;
+import no.schibstedsok.front.searchportal.query.Visitor;
+import no.schibstedsok.front.searchportal.site.SiteContext;
 
 
 /**
@@ -16,14 +18,25 @@ import java.util.Map;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public interface QueryTransformer {
-    
-    public interface Context extends QueryStringContext, SiteContext{}
+public interface QueryTransformer extends Visitor {
+
+    public interface Context extends QueryContext, SiteContext {
+
+        /**
+         * @deprecated use getTransformedTerms() instead
+         **/
+        String getTransformedQuery();
+        /** Get the terms with their current transformed representations.
+         *
+         **/
+        Map/*<Clause,String>*/ getTransformedTerms();
+    }
 
 
     /**
      * Add keywords to query to get better searchresults
      *
+     * @deprecated use the visitor pattern instead via visit(Object)
      * @param originalQuery
      * @return
      */

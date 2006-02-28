@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * SimpleSiteSearchTransformer.java
  *
@@ -8,7 +9,6 @@
 package no.schibstedsok.front.searchportal.query.transform;
 
 import java.util.Map;
-import no.schibstedsok.front.searchportal.query.*;
 
 /**
  * SimpleSiteSearchTransformer
@@ -18,28 +18,28 @@ import no.schibstedsok.front.searchportal.query.*;
  *
  * e.g. ds => dinside.no, it => itavisen.no
  *
- * The key used when looking up is taken from request parameter 
+ * The key used when looking up is taken from request parameter
  * <code>parameterName</code>.
  *
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class SimpleSiteSearchTransformer extends AbstractQueryTransformer implements QueryTransformer {
-    
+
     private Map sites;
     private String parameterName;
     private String filterName;
-    
+
     public SimpleSiteSearchTransformer() {
     }
-    
-    public String getFilter(Context cxt, Map parameters) {
-        String[] paramValue = (String[]) parameters.get(parameterName);
+
+    public String getFilter(final Context cxt, final Map parameters) {
+        final String[] paramValue = (String[]) parameters.get(parameterName);
 
         if (paramValue != null && paramValue.length > 0) {
-            if (! (paramValue[0].equals("") || paramValue[0].equals("d"))) {
+            if (!(paramValue[0].equals("") || paramValue[0].equals("d"))) {
             if (sites.containsKey(paramValue[0])) {
-                StringBuffer filter = new StringBuffer("+");
+                final StringBuffer filter = new StringBuffer("+");
                 filter.append(filterName);
                 filter.append(':');
                 filter.append(sites.get(paramValue[0]));

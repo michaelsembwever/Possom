@@ -137,7 +137,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                 xstreamResult = xstream.fromXML(new InputStreamReader(url.openStream()));
             }
             if (builder != null) {
-document = builder.parse(
+                document = builder.parse(
                         new InputSource(new InputStreamReader(url.openStream())));
             }
 

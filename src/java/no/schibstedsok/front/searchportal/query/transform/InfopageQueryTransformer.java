@@ -1,6 +1,6 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.transform;
 
-import no.schibstedsok.front.searchportal.query.*;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -8,8 +8,8 @@ import no.schibstedsok.front.searchportal.query.*;
  */
 public class InfopageQueryTransformer extends AbstractQueryTransformer {
     public String getTransformedQuery(final Context cxt) {
-        
-        final String originalQuery = cxt.getQueryString();
+
+        final String originalQuery = cxt.getTransformedQuery();
 
         return "recordid:" + originalQuery;
     }

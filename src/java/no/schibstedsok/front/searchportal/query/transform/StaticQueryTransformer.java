@@ -1,6 +1,7 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.transform;
 
-import no.schibstedsok.front.searchportal.query.*;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -21,8 +22,8 @@ public class StaticQueryTransformer extends AbstractQueryTransformer {
      * @param staticAddition the string that is added
      */
     public StaticQueryTransformer(final Context cxt) {
-        
-        final String originalQuery = cxt.getQueryString();
+
+        final String originalQuery = cxt.getTransformedQuery();
 
         this.staticAddition = staticAddition;
     }
@@ -33,10 +34,10 @@ public class StaticQueryTransformer extends AbstractQueryTransformer {
      * @return transformed query
      */
     public String getTransformedQuery(final Context cxt) {
-        
-        final String originalQuery = cxt.getQueryString();
 
-        String newQuery = originalQuery + " " + staticAddition;
+        final String originalQuery = cxt.getTransformedQuery();
+
+        final String newQuery = originalQuery + " " + staticAddition;
 
         if (log.isDebugEnabled()) {
             log.debug("Rewriting query " + originalQuery + " to " + newQuery);
