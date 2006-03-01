@@ -41,6 +41,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
 
+    private static final String COMMAND_NAME_KEY = "command";
     private static final String ERR_TRANSFORMED_QUERY_USED
             = "Cannot use transformedTerms Map once deprecated getTransformedQuery as been used";
 
@@ -81,9 +82,15 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      */
     public Object call() {
         MDC.put(Site.NAME_KEY, context.getSite().getName());
-
+        
+        final String thread = Thread.currentThread().getName();
         if (getSearchConfiguration().getStatisticsName() != null) {
             LOG.info("STATISTICS: " + getSearchConfiguration().getStatisticsName());
+            Thread.currentThread().setName(thread+" ["+getSearchConfiguration().getStatisticsName()+"]");
+        }else{
+            Thread.currentThread().setName(
+                    thread+" ["+getClass().getName().substring( getClass().getName().lastIndexOf('.')+1 )+"]");
+                    //thread+" ["+getClass().getSimpleName()+"]"); //JDK1.5
         }
 
         LOG.trace("call()");
@@ -172,7 +179,8 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             };
             resultHandler.handleResult(resultHandlerContext, parameters);
         }
-
+        
+        MDC.remove(COMMAND_NAME_KEY);
         return result;
     }
 
@@ -213,26 +221,8 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             boolean touchedTransformedQuery = false;
             final Map/*<Clause,String>*/ transformedTerms = new LinkedHashMap/*<Clause,String>*/();
             // initialise map with default values
-            final Visitor mapVisitor = new AbstractReflectionVisitor() {
-                public void visitImpl(final LeafClause clause) {
-                    final String fullTerm =
-                            (clause.getField() == null ? "" : clause.getField() + ": ")
-                            + clause.getTerm();
-                    transformedTerms.put(clause, fullTerm);
-                }
-                public void visitImpl(final OperationClause clause) {
-                    clause.getFirstClause().accept(this);
-                }
-                public void visitImpl(final AndClause clause) {
-                    clause.getFirstClause().accept(this);
-                    clause.getSecondClause().accept(this);
-                }
-                public void visitImpl(final OrClause clause) {
-                    clause.getFirstClause().accept(this);
-                    clause.getSecondClause().accept(this);
-                }
-            };
-            mapVisitor.visit(context.getQuery().getRootClause());
+            final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
+            mapInitialisor.visit(context.getQuery().getRootClause());
 
             for (final Iterator iterator = transformers.iterator(); iterator.hasNext();) {
 
@@ -324,4 +314,33 @@ public abstract class AbstractSearchCommand implements SearchCommand {
     public String getFilter() {
         return filter;
     }
+
+    private static class MapInitialisor extends AbstractReflectionVisitor {
+        
+        private final Map map;
+        
+        public MapInitialisor(final Map m){
+            map = m;
+        }
+        
+        public void visitImpl(final LeafClause clause) {
+            final String fullTerm =
+                    (clause.getField() == null ? "" : clause.getField() + ": ")
+                    + clause.getTerm();
+            
+            map.put(clause, fullTerm);
+        }
+        public void visitImpl(final OperationClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+        public void visitImpl(final AndClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+        public void visitImpl(final OrClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+    }
+            
 }
