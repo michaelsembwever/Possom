@@ -19,9 +19,9 @@ public class SiteFilterTransformer extends AbstractQueryTransformer implements Q
 
 
 
-    public String getFilter(final Context cxt) {
+    public String getFilter() {
         final Pattern sitePattern = Pattern.compile(sourcePrefix + ":([^\\s]*)");
-        final Matcher m = sitePattern.matcher(cxt.getTransformedQuery());
+        final Matcher m = sitePattern.matcher(getContext().getTransformedQuery());
         if (m.find()) {
             return "+" + targetPrefix + ":" + m.group(1);
         } else {

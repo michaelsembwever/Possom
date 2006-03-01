@@ -7,9 +7,9 @@ package no.schibstedsok.front.searchportal.query.transform;
  * @version <tt>$Revision$</tt>
  */
 public class InfopageQueryTransformer extends AbstractQueryTransformer {
-    public String getTransformedQuery(final Context cxt) {
+    public String getTransformedQuery() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
 
         return "recordid:" + originalQuery;
     }

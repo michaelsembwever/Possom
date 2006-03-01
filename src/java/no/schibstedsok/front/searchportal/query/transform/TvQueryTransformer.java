@@ -23,9 +23,9 @@ public class TvQueryTransformer extends AbstractQueryTransformer {
      * @param originalQuery
      * @return
      */
-    public String getTransformedQuery(final Context cxt) {
+    public String getTransformedQuery() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
 
         if (originalQuery.matches("^tv$")) {
             return "";
@@ -43,9 +43,9 @@ public class TvQueryTransformer extends AbstractQueryTransformer {
      * Set docdatetime > current date
      * @return docdatetime:>[FORMATTED DATE]
      */
-    public String getFilter(final Context cxt) {
+    public String getFilter() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
 
         log.debug("TVVVVVV");
 

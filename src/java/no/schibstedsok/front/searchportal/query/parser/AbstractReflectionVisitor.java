@@ -57,6 +57,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     public void visit(final Object clause) {
         final Method method = getMethod(clause.getClass());
         try {
+            method.setAccessible(true);
             method.invoke(this, new Object[] {clause});
 
         } catch (IllegalArgumentException ex) {
@@ -65,6 +66,8 @@ public abstract class AbstractReflectionVisitor implements Visitor {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
         } catch (IllegalAccessException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
+        }finally{
+            method.setAccessible(false);
         }
     }
 
@@ -108,6 +111,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         // fallback to visitImpl(Object)
         if (method == null) {
             try {
+                
                 method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {Object.class});
 
             } catch (SecurityException ex) {

@@ -13,9 +13,9 @@ public class NormalizePhoneNumberTransformer extends AbstractQueryTransformer {
     private transient static Pattern countryPrefix = Pattern.compile("^(\\+|00)47");
     private transient static Pattern phoneNumber = Pattern.compile("(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*(\\d)\\s*");
 
-    public String getTransformedQuery(final Context cxt) {
+    public String getTransformedQuery() {
 
-        String originalQuery = cxt.getTransformedQuery();
+        String originalQuery = getContext().getTransformedQuery();
 
         Matcher m = countryPrefix.matcher(originalQuery);
 

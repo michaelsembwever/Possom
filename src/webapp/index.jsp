@@ -10,7 +10,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%  final Site site = (Site) request.getAttribute(Site.NAME_KEY);
-    final Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
+    final java.util.Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
     final Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(site).getProperties()); 
 %>
 
@@ -51,7 +51,7 @@
     </script>
 </head>
 
-<body onload="document.forms[0].q.focus();">
+<body>
 
 <div class="index_center">
     <img src="images/index/logo.jpg" id="logo_index" alt="logo" />

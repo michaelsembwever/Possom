@@ -16,9 +16,9 @@ public class YellowQueryTransformer extends AbstractQueryTransformer {
 
     private static Log log = LogFactory.getLog(YellowQueryTransformer.class);
 
-    public String getTransformedQuery(final Context cxt) {
+    public String getTransformedQuery() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
 
 
         final String newQuery = WhiteQueryTransformer.prefixTerms("yellowphon", "yellowpages", originalQuery);

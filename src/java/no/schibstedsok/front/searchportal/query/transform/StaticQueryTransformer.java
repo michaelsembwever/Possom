@@ -21,9 +21,9 @@ public class StaticQueryTransformer extends AbstractQueryTransformer {
      * The string that is to be appended to the query
      * @param staticAddition the string that is added
      */
-    public StaticQueryTransformer(final Context cxt) {
+    public StaticQueryTransformer() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
 
         this.staticAddition = staticAddition;
     }
@@ -33,9 +33,9 @@ public class StaticQueryTransformer extends AbstractQueryTransformer {
      * @param originalQuery that should be appended to
      * @return transformed query
      */
-    public String getTransformedQuery(final Context cxt) {
+    public String getTransformedQuery() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
 
         final String newQuery = originalQuery + " " + staticAddition;
 

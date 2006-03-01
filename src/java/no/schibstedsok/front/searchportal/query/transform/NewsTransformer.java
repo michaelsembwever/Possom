@@ -19,9 +19,9 @@ public class NewsTransformer extends AbstractQueryTransformer implements QueryTr
      * @param originalQuery
      * @return
      */
-    public String getTransformedQuery(final Context cxt) {
+    public String getTransformedQuery() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
 
        return originalQuery;
     }
@@ -34,9 +34,9 @@ public class NewsTransformer extends AbstractQueryTransformer implements QueryTr
      *
      * @return filterstring
      */
-    public String getFilter(final Context cxt) {
+    public String getFilter() {
 
-        final String origQuery = cxt.getTransformedQuery();
+        final String origQuery = getContext().getTransformedQuery();
 
         if (origQuery == null) {
             throw new IllegalArgumentException("setQuery not called with minimum empty query");

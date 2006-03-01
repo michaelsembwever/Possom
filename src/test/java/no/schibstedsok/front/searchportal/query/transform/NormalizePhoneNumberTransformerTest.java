@@ -42,7 +42,8 @@ public final class NormalizePhoneNumberTransformerTest extends TestCase {
         // https://jira.sesam.no/jira/browse/CAT-328
         final String originalQuery = "37020047";
         final NormalizePhoneNumberTransformer instance = new NormalizePhoneNumberTransformer();
-        final String result = instance.getTransformedQuery(createCtx(originalQuery));
+        instance.setContext(createCtx(originalQuery));
+        final String result = instance.getTransformedQuery();
         assertEquals(originalQuery, result);
     }
 

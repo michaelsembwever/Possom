@@ -32,6 +32,7 @@ public interface QueryTransformer extends Visitor {
         Map/*<Clause,String>*/ getTransformedTerms();
     }
 
+    void setContext(final Context cxt);
 
     /**
      * Add keywords to query to get better searchresults
@@ -40,7 +41,7 @@ public interface QueryTransformer extends Visitor {
      * @param originalQuery
      * @return
      */
-    String getTransformedQuery(Context cxt);
+    String getTransformedQuery();
 
     /**
      * Set filter for this query. By analizing the query we can
@@ -52,7 +53,7 @@ public interface QueryTransformer extends Visitor {
      *
      * @return filterstring
      */
-    String getFilter(Context cxt, Map parameters);
+    String getFilter(Map parameters);
 
     /**
      * Set filter for this query. By analizing the query we can
@@ -64,5 +65,5 @@ public interface QueryTransformer extends Visitor {
      *
      * @return filterstring
      */
-    String getFilter(Context cxt);
+    String getFilter();
 }

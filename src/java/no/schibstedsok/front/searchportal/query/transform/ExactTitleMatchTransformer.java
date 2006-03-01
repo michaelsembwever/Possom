@@ -8,9 +8,9 @@ package no.schibstedsok.front.searchportal.query.transform;
  */
 public class ExactTitleMatchTransformer extends AbstractQueryTransformer {
 
-    public String getTransformedQuery(final Context cxt) {
+    public String getTransformedQuery() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
 
         return "topics:^\"" + originalQuery + "\"$";
     }

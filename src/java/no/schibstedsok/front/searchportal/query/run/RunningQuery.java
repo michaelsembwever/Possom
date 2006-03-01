@@ -63,13 +63,6 @@ public interface RunningQuery {
 
     List getSources();
 
-    /**
-     * Get the strippedQueryString.
-     *
-     * @return the strippedQueryString.
-     */
-    String getStrippedQueryString();
-
     TokenEvaluatorFactory getTokenEvaluatorFactory();
 
     /**

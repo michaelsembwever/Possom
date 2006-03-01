@@ -79,9 +79,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final List enrichments = new ArrayList();
     private final Map hits = new HashMap();
     private Map scores = new HashMap();
-    private String strippedQueryString;
-
-    private final Collection removers;
 
 
     /**
@@ -102,7 +99,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
 
         queryStr = AdvancedQueryBuilder.trimDuplicateSpaces(query);
-        removers = getStopWordRemovers();
 
         if (queryStr != null) {
             queryStr = queryStr.trim();
@@ -110,8 +106,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         this.parameters = parameters;
         this.locale = new Locale("no", "NO");
-
-        this.strippedQueryString = removeAllPrefixes(this.getQueryString());
 
         final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = (TokenEvaluatorFactoryImpl.Context) ContextWrapper.wrap(
                 TokenEvaluatorFactoryImpl.Context.class,
@@ -166,45 +160,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         Collections.sort(matches);
 
         return matches;
-    }
-
-    private Collection getStopWordRemovers() {
-
-        final TokenPredicate[] prefixes = {
-            TokenPredicate.SITEPREFIX,
-            TokenPredicate.CATALOGUEPREFIX,
-            TokenPredicate.PICTUREPREFIX,
-            TokenPredicate.NEWSPREFIX,
-            TokenPredicate.WIKIPEDIAPREFIX,
-            TokenPredicate.TVPREFIX,
-            TokenPredicate.WEATHERPREFIX
-        };
-        Collection stopWordRemovers = new ArrayList();
-
-        final RegExpEvaluatorFactory factory = RegExpEvaluatorFactory.valueOf(
-                (RegExpEvaluatorFactory.Context) ContextWrapper.wrap(
-                    RegExpEvaluatorFactory.Context.class,
-                    new BaseContext[]{context}));
-
-        for (int i = 0; i < prefixes.length; i++) {
-            final StopWordRemover remover = factory.getStopWordRemover(prefixes[i]);
-            if (remover == null) {
-                LOG.error("Failed to add " + prefixes[i]);
-            }
-            stopWordRemovers.add(remover);
-        }
-        return stopWordRemovers;
-    }
-
-
-    private String removeAllPrefixes(final String queryString) {
-        String qStr = queryString;
-        for (Iterator iter = removers.iterator(); iter.hasNext();) {
-            final StopWordRemover remover = (StopWordRemover) iter.next();
-            qStr = remover.removeStopWords(queryString);
-        }
-
-        return qStr.trim();
     }
 
     /**
@@ -518,17 +473,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         } else {
             return "c=d";
         }
-    }
-
-
-
-    /**
-     * Get the strippedQueryString.
-     *
-     * @return the strippedQueryString.
-     */
-    public String getStrippedQueryString() {
-        return strippedQueryString;
     }
 
     public Query getQuery() {

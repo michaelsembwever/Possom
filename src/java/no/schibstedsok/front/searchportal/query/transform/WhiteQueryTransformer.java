@@ -21,9 +21,9 @@ public class WhiteQueryTransformer extends AbstractQueryTransformer {
 
     private static Log log = LogFactory.getLog(WhiteQueryTransformer.class);
 
-    public String getTransformedQuery(final Context cxt) {
+    public String getTransformedQuery() {
 
-        final String originalQuery = cxt.getTransformedQuery();
+        final String originalQuery = getContext().getTransformedQuery();
         final String newQuery = prefixTerms("whitephon", "whitepages", originalQuery);
 
         if (log.isDebugEnabled()) {

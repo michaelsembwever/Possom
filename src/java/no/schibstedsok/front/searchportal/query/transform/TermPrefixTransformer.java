@@ -85,8 +85,8 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
         return prefix;
     }
 
-    public String getTransformedQuery(final Context cxt) {
-        return prefixTerms(cxt.getTransformedQuery());
+    public String getTransformedQuery() {
+        return prefixTerms(getContext().getTransformedQuery());
     }
 
 

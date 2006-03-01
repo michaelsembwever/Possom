@@ -9,7 +9,10 @@ import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
+import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.OperationClause;
+import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.Visitor;
 import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
@@ -89,7 +92,7 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         if (getSearchConfiguration().getUseParameterAsQuery() != null) {
             queryToUse = getSingleParameter(getSearchConfiguration().getUseParameterAsQuery());
         } else {
-            queryToUse = context.getRunningQuery().getStrippedQueryString();
+            queryToUse = context.getQuery().getQueryString();
         }
         transformedQuery = queryToUse;
         applyQueryTransformers(getSearchConfiguration().getQueryTransformers());
@@ -213,11 +216,23 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             final Visitor mapVisitor = new AbstractReflectionVisitor() {
                 public void visitImpl(final LeafClause clause) {
                     final String fullTerm =
-                            clause.getField() == null ? "" : clause.getField() + ": "
+                            (clause.getField() == null ? "" : clause.getField() + ": ")
                             + clause.getTerm();
                     transformedTerms.put(clause, fullTerm);
                 }
+                public void visitImpl(final OperationClause clause) {
+                    clause.getFirstClause().accept(this);
+                }
+                public void visitImpl(final AndClause clause) {
+                    clause.getFirstClause().accept(this);
+                    clause.getSecondClause().accept(this);
+                }
+                public void visitImpl(final OrClause clause) {
+                    clause.getFirstClause().accept(this);
+                    clause.getSecondClause().accept(this);
+                }
             };
+            mapVisitor.visit(context.getQuery().getRootClause());
 
             for (final Iterator iterator = transformers.iterator(); iterator.hasNext();) {
 
@@ -246,11 +261,13 @@ public abstract class AbstractSearchCommand implements SearchCommand {
                     }
 
                 };
+                transformer.setContext(qtCxt);
 
-                touchedTransformedQuery |= (!transformedQuery.equals(transformer.getTransformedQuery(qtCxt)));
+                final String newTransformedQuery = transformer.getTransformedQuery();
+                touchedTransformedQuery |= (!transformedQuery.equals(newTransformedQuery));
 
                 if (touchedTransformedQuery) {
-                    transformedQuery = transformer.getTransformedQuery(qtCxt);
+                    transformedQuery = newTransformedQuery;
                 }  else  {
 
                     transformer.visit(context.getQuery().getRootClause());
@@ -268,15 +285,15 @@ public abstract class AbstractSearchCommand implements SearchCommand {
 
 
                 if (filter == null) {
-                    filter = transformer.getFilter(qtCxt, parameters);
-                } else if (transformer.getFilter(qtCxt, parameters) != null) {
-                    filter += transformer.getFilter(qtCxt, parameters) + " ";
+                    filter = transformer.getFilter( parameters);
+                } else if (transformer.getFilter( parameters) != null) {
+                    filter += transformer.getFilter( parameters) + " ";
                 }
 
                 if (filter == null) {
-                    filter = transformer.getFilter(qtCxt);
-                } else if (transformer.getFilter(qtCxt) != null) {
-                    filter += transformer.getFilter(qtCxt) + " ";
+                    filter = transformer.getFilter();
+                } else if (transformer.getFilter() != null) {
+                    filter += transformer.getFilter() + " ";
                 }
 		
                 if (LOG.isDebugEnabled()) {
