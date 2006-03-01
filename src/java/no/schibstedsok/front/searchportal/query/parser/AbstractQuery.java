@@ -25,10 +25,10 @@ import no.schibstedsok.front.searchportal.query.Query;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public abstract class AbstractQuery implements Query {
-    
+
     private final FirstLeafFinder finder = new FirstLeafFinder();
     private final Counter counter = new Counter();
-    
+
     private final String queryStr;
 
     /** Creates a new instance of AbstractQuery .
@@ -53,8 +53,8 @@ public abstract class AbstractQuery implements Query {
         finder.visit(root);
         return finder.getFirstLeaf();
     }
-    
-    public int getTermCount(){
+
+    public int getTermCount() {
         final Clause root = getRootClause();
         counter.visit(root);
         return counter.getTermCount();
@@ -103,7 +103,7 @@ public abstract class AbstractQuery implements Query {
         }
 
     }
-    
+
     private static final class Counter extends AbstractReflectionVisitor {
         private boolean searching = true;
         private int termCount;
@@ -117,7 +117,7 @@ public abstract class AbstractQuery implements Query {
             }
             return termCount;
         }
-        
+
 
         public void visitImpl(final OperationClause clause) {
             clause.getFirstClause().accept(this);
@@ -125,9 +125,9 @@ public abstract class AbstractQuery implements Query {
 
         public void visitImpl(final OrClause clause) {
             // Avoid counting the first term in a "Possibility" OrClause
-            //  A "Possibility" OrClause is something that the QueryParser 
+            //  A "Possibility" OrClause is something that the QueryParser
             //   generates when it detects a possible subclause type, eg PhoneNumberClause or OrganisationNumberClause.
-            if( !clause.getFirstClause().getTerm().equals(clause.getSecondClause().getTerm()) ){
+            if (!clause.getFirstClause().getTerm().equals(clause.getSecondClause().getTerm())) {
                 clause.getSecondClause().accept(this);
             }
             clause.getSecondClause().accept(this);
@@ -155,4 +155,5 @@ public abstract class AbstractQuery implements Query {
         }
 
     }
+
 }

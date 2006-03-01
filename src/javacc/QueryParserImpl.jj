@@ -235,7 +235,7 @@ Clause fieldedLeaf(final Token field) :{
                             prevClause = leafClause;
                         }
                     }
-                    return context.createOrClause(phClause, prevClause);
+                    return context.createXorClause(phClause, prevClause);
                 }finally{exitMethod();}
             }
     | 
@@ -257,7 +257,7 @@ Clause fieldedLeaf(final Token field) :{
                             prevClause = intClause;
                         }
                     }
-                    return context.createOrClause(orgClause, prevClause);
+                    return context.createXorClause(orgClause, prevClause);
                 }finally{exitMethod();}
             }
     |

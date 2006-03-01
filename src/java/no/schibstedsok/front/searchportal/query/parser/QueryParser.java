@@ -22,6 +22,7 @@ import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.WordClause;
+import no.schibstedsok.front.searchportal.query.XorClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 
 
@@ -75,6 +76,18 @@ public interface QueryParser {
          * @return returns a OrOrClauseImplnstance matching the term, left and right child clauses.
          */
         OrClause createOrClause(final Clause first, final Clause second);
+        /**
+         * Creator wrapper method for XorClause objects.
+         * The methods also allow a chunk of creation logic for the XorClause to be moved
+         * out of the QueryParserImpl.jj file to here.
+         *
+         * @param first the left child clause of the operation clause we are about to create (or find).
+         * The current implementation always creates a right-leaning query heirarchy.
+         * Therefore the left child clause to any operation clause must be a LeafClause.
+         * @param second the right child clause of the operation clause we are about to create (or find).
+         * @return returns a OrOrClauseImplnstance matching the term, left and right child clauses.
+         */
+        XorClause createXorClause(final Clause first, final Clause second);
         /**
          * Creator wrapper method for AndNotClause objects.
          * The methods also allow a chunk of creation logic for the AndNotClause to be moved

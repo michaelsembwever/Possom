@@ -10,11 +10,14 @@ import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.AndClause;
+import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.Visitor;
+import no.schibstedsok.front.searchportal.query.XorClause;
 import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
@@ -41,7 +44,6 @@ public abstract class AbstractSearchCommand implements SearchCommand {
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
 
-    private static final String COMMAND_NAME_KEY = "command";
     private static final String ERR_TRANSFORMED_QUERY_USED
             = "Cannot use transformedTerms Map once deprecated getTransformedQuery as been used";
 
@@ -82,14 +84,14 @@ public abstract class AbstractSearchCommand implements SearchCommand {
      */
     public Object call() {
         MDC.put(Site.NAME_KEY, context.getSite().getName());
-        
+
         final String thread = Thread.currentThread().getName();
         if (getSearchConfiguration().getStatisticsName() != null) {
             LOG.info("STATISTICS: " + getSearchConfiguration().getStatisticsName());
-            Thread.currentThread().setName(thread+" ["+getSearchConfiguration().getStatisticsName()+"]");
-        }else{
+            Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticsName() + "]");
+        }  else  {
             Thread.currentThread().setName(
-                    thread+" ["+getClass().getName().substring( getClass().getName().lastIndexOf('.')+1 )+"]");
+                    thread + " [" + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1) + "]");
                     //thread+" ["+getClass().getSimpleName()+"]"); //JDK1.5
         }
 
@@ -179,8 +181,9 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             };
             resultHandler.handleResult(resultHandlerContext, parameters);
         }
-        
-        MDC.remove(COMMAND_NAME_KEY);
+
+        // restore thread name
+        Thread.currentThread().setName(thread);
         return result;
     }
 
@@ -223,6 +226,9 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             // initialise map with default values
             final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
             mapInitialisor.visit(context.getQuery().getRootClause());
+            final QueryBuilder queryBuilder = new QueryBuilder(context.getQuery(), transformedTerms);
+
+            final StringBuffer/*Builder*/ filterBuilder = new StringBuffer/*Buffer*/();
 
             for (final Iterator iterator = transformers.iterator(); iterator.hasNext();) {
 
@@ -261,38 +267,23 @@ public abstract class AbstractSearchCommand implements SearchCommand {
                 }  else  {
 
                     transformer.visit(context.getQuery().getRootClause());
-
-                    final StringBuffer sb = new StringBuffer();
-                    final Iterator it = transformedTerms.values().iterator();
-                    while (it.hasNext()) {
-                        sb.append(it.next());
-                        if (it.hasNext()) {
-                            sb.append(' ');
-                        }
-                    }
-                    transformedQuery = sb.toString();
+                    transformedQuery = queryBuilder.getQueryString();
                 }
 
+                filterBuilder.append(transformer.getFilter(parameters));
+                filterBuilder.append(' ');
 
-                if (filter == null) {
-                    filter = transformer.getFilter( parameters);
-                } else if (transformer.getFilter( parameters) != null) {
-                    filter += transformer.getFilter( parameters) + " ";
-                }
-
-                if (filter == null) {
-                    filter = transformer.getFilter();
-                } else if (transformer.getFilter() != null) {
-                    filter += transformer.getFilter() + " ";
-                }
+                filterBuilder.append(transformer.getFilter());
+                filterBuilder.append(' ');
 		
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("applyQueryTransformers: TransformedQuery=" + transformedQuery);
                     LOG.debug("applyQueryTransformers: Filter=" + filter);
                 }
             }
-        }
 
+            filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)); // avoid the trailing space.
+        }
     }
 
     public SearchConfiguration getSearchConfiguration() {
@@ -316,18 +307,18 @@ public abstract class AbstractSearchCommand implements SearchCommand {
     }
 
     private static class MapInitialisor extends AbstractReflectionVisitor {
-        
+
         private final Map map;
-        
-        public MapInitialisor(final Map m){
+
+        public MapInitialisor(final Map m) {
             map = m;
         }
-        
+
         public void visitImpl(final LeafClause clause) {
             final String fullTerm =
                     (clause.getField() == null ? "" : clause.getField() + ": ")
                     + clause.getTerm();
-            
+
             map.put(clause, fullTerm);
         }
         public void visitImpl(final OperationClause clause) {
@@ -342,5 +333,63 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             clause.getSecondClause().accept(this);
         }
     }
-            
+
+    public static final class QueryBuilder extends AbstractReflectionVisitor {
+
+        private final Query query;
+        private final Map map;
+        private final StringBuffer sb = new StringBuffer();
+
+        public QueryBuilder(final Query q, final Map m) {
+            query = q;
+            map = m;
+        }
+
+        public synchronized String getQueryString() {
+            sb.setLength(0);
+            visit(query.getRootClause());
+            return sb.toString();
+        }
+
+        public void visitImpl(final LeafClause clause) {
+            final String fullTerm =
+                    (clause.getField() == null ? "" : clause.getField() + ": ")
+                    + clause.getTerm();
+
+            sb.append(map.get(clause));
+        }
+        public void visitImpl(final OperationClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+        public void visitImpl(final AndClause clause) {
+            clause.getFirstClause().accept(this);
+            sb.append(" AND ");
+            clause.getSecondClause().accept(this);
+        }
+        public void visitImpl(final OrClause clause) {
+            clause.getFirstClause().accept(this);
+            sb.append(' ');
+            clause.getSecondClause().accept(this);
+        }
+        public void visitImpl(final NotClause clause) {
+            final String childsTerm = (String) map.get(clause.getFirstClause());
+            if (childsTerm != null && childsTerm.length() > 0) {
+                sb.append("NOT ");
+                clause.getFirstClause().accept(this);
+            }
+        }
+        public void visitImpl(final AndNotClause clause) {
+            final String childsTerm = (String) map.get(clause.getFirstClause());
+            if (childsTerm != null && childsTerm.length() > 0) {
+                sb.append("ANDNOT ");
+                clause.getFirstClause().accept(this);
+            }
+        }
+        public void visitImpl(final XorClause clause) {
+            // [TODO] we need to determine which branch in the query-tree we want to use.
+            //  Both branches to a XorClause should never be used.
+            clause.getFirstClause().accept(this);
+            // clause.getSecondClause().accept(this);
+        }
+    }
 }

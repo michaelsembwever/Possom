@@ -69,7 +69,7 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
         // use helper method from AbstractLeafClause
         return (OrganisationNumberClauseImpl) createClause(
                 OrganisationNumberClauseImpl.class,
-                term,
+                t,
                 field,
                 predicate2evaluatorFactory,
                 PREDICATES_APPLICABLE, WEAK_CACHE);

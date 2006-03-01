@@ -19,9 +19,11 @@ public interface Query {
      */
     Clause getRootClause();
 
-    /** The schibstedsøk style string formatted representation of this query.
+    /** The original string the user entered for the search.
+     * This string should never be used programmatically or passed to search indexes.
+     * It is only intended for display and feedback.
      *
-     * @return schibstedsøk style string formatted representation of this query.
+     * @return the original user's query.
      */
     String getQueryString();
 
@@ -30,7 +32,7 @@ public interface Query {
      * @return the first leaf clause.
      */
     Clause getFirstLeafClause();
-    
+
     /** Return the number of terms in this query.
      * Terms are represented by LeafClauses.
      **/

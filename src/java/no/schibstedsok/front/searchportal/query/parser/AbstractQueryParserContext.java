@@ -18,6 +18,7 @@ import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.WordClause;
+import no.schibstedsok.front.searchportal.query.XorClause;
 import org.apache.log4j.Logger;
 
 /** Default implementation of QueryParser.Context's createXxxClause methods.
@@ -61,6 +62,16 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
         LOG.debug("createOrClause(" + first + "," + second + ")");
         return OrClauseImpl.createOrClause(first, second, getTokenEvaluatorFactory());
+    }
+    
+    /** {@inheritDoc}
+     */
+    public final XorClause createXorClause(
+        final Clause first,
+        final Clause second) {
+
+        LOG.debug("createXorClause(" + first + "," + second + ")");
+        return XorClauseImpl.createXorClause(first, second, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}

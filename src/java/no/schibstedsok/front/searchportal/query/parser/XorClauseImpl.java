@@ -12,6 +12,7 @@ import java.util.Set;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.XorClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
@@ -21,47 +22,38 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * <b>Objects of this class are immutable</b>
  * 
  * @author <a hrefOrClauseImpl:mick@wever.org">Michael Semb Wever</a>
- * @version $Id$
+ * @version $Id: OrClauseImpl.java 2344 2006-02-20 20:07:12Z mickw $
  */
-public class OrClauseImpl extends AbstractOperationClause implements OrClause {
+public final class XorClauseImpl extends OrClauseImpl implements XorClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map/*<Long,WeakReference<OrClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<OrClauseImpl>>*/();
+    private static final Map/*<Long,WeakReference<XorClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<XorClauseImpl>>*/();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
 
     static {
-        final Collection/*<Predicate>*/ predicates = new ArrayList();
-        predicates.add(TokenPredicate.ALWAYSTRUE);
-        // Predicates from RegExpEvaluators
-        predicates.add(TokenPredicate.CATALOGUEPREFIX);
-        predicates.add(TokenPredicate.MATHPREDICATE);
-        // Add all FastTokenPredicates
-        predicates.addAll(TokenPredicate.getFastTokenPredicates());
-        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
+        PREDICATES_APPLICABLE = Collections.unmodifiableCollection(new ArrayList());
     }
 
-    private final Clause secondClause;
-
     /**
-     * Creator method for OrClauseImpl objects. By avoiding the constructors,
-     * and assuming all OrClauseImpl objects are immutable, we can keep track
+     * Creator method for XorClauseImpl objects. By avoiding the constructors,
+     * and assuming all XorClauseImpl objects are immutable, we can keep track
      * (via a weak reference map) of instances already in use in this JVM and reuse
      * them.
-     * The methods also allow a chunk of creation logic for the OrClauseImpl to be moved
+     * The methods also allow a chunk of creation logic for the XorClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
      * 
      * @param first the left child clause of the operation clause we are about to create (or find).
      * @param second the right child clause of the operation clause we are about to create (or find).
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @return returns a OrCOrClauseImplstance matching the term, left and right child clauses.
+     * @return returns a XorClauseImpl matching the term, left and right child clauses.
      * May be either newly created or reused.
      */
-    public static OrClauseImpl createOrClause(
+    public static XorClauseImpl createXorClause(
         final Clause first,
         final Clause second,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
@@ -83,8 +75,8 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
         predicate2evaluatorFactory.setCurrentTerm(term);
 
         // use helper method from AbstractLeafClause
-        return (OrClauseImpl) createClause(
-                OrClauseImpl.class,
+        return (XorClauseImpl) createClause(
+                XorClauseImpl.class,
                 term,
                 first,
                 second,
@@ -93,7 +85,7 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
     }
 
     /**
-     * Create the OrClauseImpl with the given term, left and right child clauses, and known and possible predicate sets.
+     * Create the XorClauseImpl with the given term, left and right child clauses, and known and possible predicate sets.
      * 
      * @param term the term for this OrClauseImpl.
      * @param knownPredicates set of known predicates.
@@ -101,23 +93,13 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
      * @param first the left child clause.
      * @param second the right child clause.
      */
-    protected OrClauseImpl(
+    protected XorClauseImpl(
             final String term,
             final Clause first,  
             final Clause second,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
-        super(term, first, knownPredicates, possiblePredicates);
-        this.secondClause = second;
-    }
-
-    /**
-     * Get the secondClause.
-     *
-     * @return the secondClause.
-     */
-    public Clause getSecondClause() {
-        return secondClause;
+        super(term, first, second, knownPredicates, possiblePredicates);
     }
 }
