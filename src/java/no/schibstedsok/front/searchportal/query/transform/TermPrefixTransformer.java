@@ -35,18 +35,20 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
 
         for (int i = 0; i < tokens.length; i++) {
 
-            if (numberPrefix != null) {
-                final Matcher m = numbers.matcher(tokens[i]);
-
-                if (m.find()) {
-                    newQuery.append(numberPrefix).append(":");
+            if (! tokens[i].equals("")) {
+                if (numberPrefix != null) {
+                    final Matcher m = numbers.matcher(tokens[i]);
+                    
+                    if (m.find()) {
+                        newQuery.append(numberPrefix).append(":");
+                    } else {
+                        newQuery.append(prefix).append(":");
+                    }
                 } else {
                     newQuery.append(prefix).append(":");
                 }
-            } else {
-                newQuery.append(prefix).append(":");
+                
             }
-
             newQuery.append(tokens[i]);
 
             if (i < tokens.length - 1) {
