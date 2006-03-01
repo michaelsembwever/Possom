@@ -140,7 +140,10 @@ public final class SiteLocatorFilter implements Filter {
         }  catch (RuntimeException e) {
             // Don't let anything through without logging it.
             //  Otherwise it ends in a different logfile.
-            LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION , e);
+            LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION);
+            for( Throwable t = e; t != null; t = e.getCause() ){
+                LOG.error("",t);
+            }
             throw e;
         }
 
