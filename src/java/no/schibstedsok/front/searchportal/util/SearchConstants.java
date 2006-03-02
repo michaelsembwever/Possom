@@ -68,6 +68,7 @@ public final class SearchConstants {
     public static final Object REQUEST_PARAM_PICTURE_SEARCH = "p";
     public static final String CONFIGURATION_FILE = "configuration.properties";
     public static final Object PARAMETER_OFFSET = "offset";
+    public static final String PUBLISH_SYSTEM_URL = "publishing.system.baseURL";
 
     public static final String[] ALL_COLLECTIONS = {"tv",
                                                     "webcrawlno1",

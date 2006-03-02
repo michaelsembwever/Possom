@@ -98,7 +98,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         } //</editor-fold>
 
 
-        queryStr = AdvancedQueryBuilder.trimDuplicateSpaces(query);
+        queryStr = trimDuplicateSpaces(query);
 
         if (queryStr != null) {
             queryStr = queryStr.trim();
@@ -173,14 +173,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         if (LOG.isTraceEnabled())  {
             LOG.trace("getGlobalSearchTips()");
         } //</editor-fold>
-        if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
-            return TextMessages.valueOf(
-                (TextMessages.Context) ContextWrapper.wrap(
-                    TextMessages.Context.class,
-                    new BaseContext[]{context})).getMessage("searchtip.use+-");
-        } else {
+//        if (AdvancedQueryBuilder.isAdvancedQuery(queryStr)) {
+//            return TextMessages.valueOf(
+//                (TextMessages.Context) ContextWrapper.wrap(
+//                    TextMessages.Context.class,
+//                    new BaseContext[]{context})).getMessage("searchtip.use+-");
+//        } else {
             return null;
-        }
+//        }
     }
 
 

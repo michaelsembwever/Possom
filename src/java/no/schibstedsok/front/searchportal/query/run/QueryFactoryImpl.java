@@ -48,20 +48,7 @@ public final class QueryFactoryImpl extends QueryFactory {
 
         RunningQueryImpl query;
 
-        if ("adv".equals(request.getParameter("t"))) {
-
-            final AdvancedQueryBuilder builder = new AdvancedQueryBuilder(request);
-            final Map param = new HashMap();
-            param.put("type", "adv");
-            query = new RunningQueryImpl(cxt, builder.getQuery(), param);
-
-            query.addParameter("request", request);
-            query.addParameter("response", response);
-            query.addParameter("filtertype", builder.getFilterType());
-            query.addParameter("type", builder.getType());
-            query.addParameter("language", builder.getFilterLanguage());
-
-        } else if ("adv_urls".equals(request.getParameter("t"))) {
+        if ("adv_urls".equals(request.getParameter("t"))) {
             // Search for similar urls
             final String q = "urls:" + request.getParameter("q_urls");
             if (LOG.isDebugEnabled()) {
