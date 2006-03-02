@@ -5,12 +5,12 @@ package no.schibstedsok.front.searchportal.query.transform;
 
 import java.util.Map;
 import no.schibstedsok.front.searchportal.query.AndClause;
-import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
-import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
+import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.WordClause;
 import org.apache.log4j.Logger;
@@ -24,15 +24,20 @@ import org.apache.log4j.Logger;
  */
 public class TermPrefixTransformer extends AbstractQueryTransformer {
     
+    private static final Logger LOG = Logger.getLogger(TermPrefixTransformer.class);
+    
+    private static final String DEBUG_ADDING_PREFIX = "Adding prefix to term ";
+    
     private String numberPrefix;
     private String prefix;
     
     /**
-     * Add Prefix to a word clause.
+     * This is th default fallback. Adds the prefix in the <code>prefix</code>
+     * property
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final WordClause clause) {
+    public void visitImpl(final LeafClause clause) {
         addPrefix(clause, getPrefix());
     }
     
@@ -57,13 +62,21 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
     }
     
     /**
-     * Prefix a phrase clause.
+     * Prefix a phone number clause with the number prefix.
      *
-     * @todo this does not work with fast yellow and white searches. phrases need to be ignored for these types of searches.
      * @param clause  The clause to prefix.
      */
-    public void visitImpl(final PhraseClause clause) {
-        addPrefix(clause, getPrefix());
+    public void visitImpl(final PhoneNumberClause clause) {
+        addPrefix(clause, getNumberPrefix());
+    }
+    
+    /**
+     * Prefix a org. number clause with the number prefix.
+     *
+     * @param clause  The clause to prefix.
+     */
+    public void visitImpl(final OrganisationNumberClause clause) {
+        addPrefix(clause, getNumberPrefix());
     }
     
     /**
@@ -104,9 +117,13 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
     private void addPrefix(final Clause clause, final String prefix) {
         final String term = (String) getTransformedTerms().get(clause);
         
-        if (! term.equals("")) {
+        if (! (term.equals("") || isAlreadyPrefixed(term))) {
             getTransformedTerms().put(clause, prefix + ":" + term);
         }
+    }
+    
+    private static boolean isAlreadyPrefixed(String term) {
+        return term.indexOf(":") > -1;
     }
     
     private Map getTransformedTerms() {
