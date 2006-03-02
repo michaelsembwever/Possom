@@ -5,6 +5,8 @@ import com.thoughtworks.xstream.XStream;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
@@ -17,9 +19,17 @@ import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.Query;
+import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.Visitor;
 import no.schibstedsok.front.searchportal.query.XorClause;
+import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
+import no.schibstedsok.front.searchportal.query.parser.ParseException;
+import no.schibstedsok.front.searchportal.query.parser.QueryParser;
+import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
+import no.schibstedsok.front.searchportal.query.parser.TokenMgrError;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.Modifier;
@@ -47,6 +57,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
 
+    private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_TRANSFORMED_QUERY_USED
             = "Cannot use transformedTerms Map once deprecated getTransformedQuery as been used";
 
@@ -73,6 +84,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
         this.parameters = parameters;
+        transformedQuery = context.getQuery().getQueryString();
         final Clause root = context.getQuery().getRootClause();
         final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
         mapInitialisor.visit(root);
@@ -137,15 +149,26 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         LOG.trace("call()");
-        String queryToUse;
+        final String queryToUse = getSearchConfiguration().getUseParameterAsQuery() != null
+                ? getSingleParameter(getSearchConfiguration().getUseParameterAsQuery())
+                : context.getQuery().getQueryString();
+
+
 
         if (getSearchConfiguration().getUseParameterAsQuery() != null) {
-            queryToUse = getSingleParameter(getSearchConfiguration().getUseParameterAsQuery());
-        } else {
-            queryToUse = context.getQuery().getQueryString();
+            // OOBS. It's not the query we are looking for but a string held
+            // in a different parameter.
+            transformedQuery = queryToUse;
+            final Query query = createQuery(queryToUse);
+            transformedTerms.clear();
+            // re-initialise map with new query's terms.
+            final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
+            mapInitialisor.visit(query.getRootClause());
+            applyQueryTransformers(query, getSearchConfiguration().getQueryTransformers());
+        }  else  {
+            applyQueryTransformers(context.getQuery(), getSearchConfiguration().getQueryTransformers());
         }
-        transformedQuery = queryToUse;
-        applyQueryTransformers(getSearchConfiguration().getQueryTransformers());
+
         StopWatch watch = null;
 
         if (LOG.isDebugEnabled()) {
@@ -296,9 +319,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return parameters;
     }
 
-    protected final synchronized String getQueryRepresentation() {
+    protected final synchronized String getQueryRepresentation(final Query query) {
 
-        final Clause root = context.getQuery().getRootClause();
+        final Clause root = query.getRootClause();
         sb.setLength(0);
         visit(root);
         return sb.toString();
@@ -310,7 +333,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @param transformers
      */
-    private void applyQueryTransformers(final List transformers) {
+    private void applyQueryTransformers(final Query query, final List transformers) {
         if (transformers != null) {
 
 
@@ -344,7 +367,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     }
 
                     public Query getQuery() {
-                        return context.getQuery();
+                        return query;
                     }
 
                 };
@@ -357,8 +380,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     transformedQuery = newTransformedQuery;
                 }  else  {
 
-                    transformer.visit(context.getQuery().getRootClause());
-                    transformedQuery = getQueryRepresentation();
+                    transformer.visit(query.getRootClause());
+                    transformedQuery = getQueryRepresentation(query);
                 }
 
                 final String fp = transformer.getFilter(parameters);
@@ -380,6 +403,43 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     private String getSingleParameter(final String paramName) {
         return ((String[]) parameters.get(paramName))[0];
+    }
+
+    private Query createQuery(final String queryString) {
+
+
+        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = (TokenEvaluatorFactoryImpl.Context) ContextWrapper.wrap(
+                TokenEvaluatorFactoryImpl.Context.class,
+                new BaseContext[]{
+                    context,
+                    new QueryStringContext() {
+                        public String getQueryString() {
+                            return queryString;
+                        }
+                    }
+        });
+
+        // This will among other things perform the initial fast search
+        // for textual analysis.
+        final TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
+
+        // queryStr parser
+        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
+            public TokenEvaluatorFactory getTokenEvaluatorFactory() {
+                return tokenEvaluatorFactory;
+            }
+        });
+
+        try  {
+            return parser.getQuery();
+
+        } catch (ParseException ex)  {
+            LOG.error(ERR_PARSING, ex);
+        } catch (TokenMgrError ex)  {
+            // Errors (as opposed to exceptions) are fatal.
+            LOG.fatal(ERR_PARSING, ex);
+        }
+        return null;
     }
 
    // Inner classes -------------------------------------------------
