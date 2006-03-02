@@ -3,110 +3,113 @@
  */
 package no.schibstedsok.front.searchportal.query.transform;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Map;
+import no.schibstedsok.front.searchportal.query.AndClause;
+import no.schibstedsok.front.searchportal.query.AndNotClause;
+import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.IntegerClause;
+import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.NotClause;
+import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.PhraseClause;
+import no.schibstedsok.front.searchportal.query.WordClause;
+import org.apache.log4j.Logger;
 
+/**
+ * A transformer to prefix the the terms in a query.
+ *
+ * @version $Id$
+ * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ *
+ */
 public class TermPrefixTransformer extends AbstractQueryTransformer {
-
-    private static Pattern numbers = Pattern.compile("^\\d+$");
-
+    
     private String numberPrefix;
     private String prefix;
-
-    protected String prefixTerms(final String query) {
-
-        String stripped = query;
-
-        stripped = stripped.replaceAll(",", "");
-        stripped = stripped.replaceAll("#", "");
-        stripped = stripped.replaceAll("\\s+", " ");
-
-        stripped = stripped.replaceAll("\"", "");
-
-        if (stripped.length() == 0) {
-            return "";
-        }
-
-        final String[] tokens = stripped.split("\\s+");
-
-
-        final StringBuffer newQuery = new StringBuffer();
-
-
-        for (int i = 0; i < tokens.length; i++) {
-
-            if (! tokens[i].equals("")) {
-                if (numberPrefix != null) {
-                    final Matcher m = numbers.matcher(tokens[i]);
-                    
-                    if (m.find()) {
-                        newQuery.append(numberPrefix).append(":");
-                    } else {
-                        newQuery.append(prefix).append(":");
-                    }
-                } else {
-                    newQuery.append(prefix).append(":");
-                }
-                
-            }
-            newQuery.append(tokens[i]);
-
-            if (i < tokens.length - 1) {
-                newQuery.append(" ");
-            }
-        }
-
-        return newQuery.toString();
-    }
-
-    public TermPrefixTransformer() {
-        super();
-    }
-
-    public TermPrefixTransformer(final String prefix, final String numberPrefix) {
-        super();
-        this.prefix = prefix;
-        this.numberPrefix = numberPrefix;
-    }
-
+    
     /**
-     * Get the numberPrefix.
+     * Add Prefix to a word clause.
      *
-     * @return the numberPrefix.
+     * @param clause The clause to prefix.
      */
-    public String getNumberPrefix() {
-        return numberPrefix;
+    public void visitImpl(final WordClause clause) {
+        addPrefix(clause, getPrefix());
     }
-
+    
     /**
-     * Get the prefix.
+     * Add prefix to an integer clause.
+     *
+     * @param clause The clause to prefix.
+     */
+    public void visitImpl(final IntegerClause clause) {
+        addPrefix(clause, getNumberPrefix());
+    }
+    
+    /**
+     * Add prefixes to an or clause. The two operand clauses are prefixed
+     * individually.
+     *
+     * @param clause The clause to prefix.
+     */
+    public void visitImpl(final OrClause clause) {
+        clause.getFirstClause().accept(this);
+        clause.getSecondClause().accept(this);
+    }
+    
+    /**
+     * Prefix a phrase clause.
+     *
+     * @todo this does not work with fast yellow and white searches. phrases need to be ignored for these types of searches.
+     * @param clause  The clause to prefix.
+     */
+    public void visitImpl(final PhraseClause clause) {
+        addPrefix(clause, getPrefix());
+    }
+    
+    /**
+     * Get the prefix to be used for words.
      *
      * @return the prefix.
      */
     public String getPrefix() {
         return prefix;
     }
-
-    public String getTransformedQuery() {
-        return prefixTerms(getContext().getTransformedQuery());
-    }
-
-
+    
     /**
-     * Set the numberPrefix.
+     * Get the prefix to be used for integers.
      *
-     * @param numberPrefix The numberPrefix to set.
+     * @return the numberPrefix.
+     */
+    public String getNumberPrefix() {
+        return numberPrefix;
+    }
+    
+    /**
+     * Set the prefix to used for numbers.
+     *
+     * @param numberPrefix The prefix.
      */
     public void setNumberPrefix(final String numberPrefix) {
         this.numberPrefix = numberPrefix;
     }
-
+    
     /**
-     * Set the prefix.
-     *
+     * Set the prefix to be used for words.
      * @param prefix The prefix to set.
      */
     public void setPrefix(final String prefix) {
         this.prefix = prefix;
+    }
+    
+    private void addPrefix(final Clause clause, final String prefix) {
+        final String term = (String) getTransformedTerms().get(clause);
+        
+        if (! term.equals("")) {
+            getTransformedTerms().put(clause, prefix + ":" + term);
+        }
+    }
+    
+    private Map getTransformedTerms() {
+        return getContext().getTransformedTerms();
     }
 }
