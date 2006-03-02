@@ -21,7 +21,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -103,29 +105,39 @@ public final class SiteLocatorFilter implements Filter {
                 if (resource != null && (
                         resource.startsWith("css/")
                         || resource.startsWith("images/")
-                        || resource.startsWith("javascript/"))) {
+                        || resource.startsWith("javascript/")
+                        || resource.startsWith("publish/"))) {
 
                     // search-front-config is responsible for this.
                         // But first we must find which layer will serve it.
                     final Site site = (Site) req.getAttribute(Site.NAME_KEY);
+                    String url = "";
                     
+                    if( resource.startsWith("publish/") ){
+                        
+                        url = XMLSearchTabsCreator.valueOf(site).getProperties()
+                            .getProperty(SearchConstants.PUBLISH_SYSTEM_URL) 
+                            + resource;
+                        
+                    }else{
 
-                    String url = HTTP + site.getName() + site.getConfigContext() + resource;
-                    if (!urlExists(url)) {
-                        url = HTTP + Site.DEFAULT.getName() + Site.DEFAULT.getConfigContext() + resource;
+                        url = HTTP + site.getName() + site.getConfigContext() + resource;
                         if (!urlExists(url)) {
-                            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                            url = null;
-                            LOG.error(ERR_NOT_FOUND + resource);
+                            url = HTTP + Site.DEFAULT.getName() + Site.DEFAULT.getConfigContext() + resource;
+                            if (!urlExists(url)) {
+                                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                                url = null;
+                                LOG.error(ERR_NOT_FOUND + resource);
+                            }
                         }
                     }
-
+                    
                     if (url != null) {
                         res.sendRedirect(url);
                         LOG.debug(resource + DEBUG_REDIRECTING_TO + url);
-                    }
+                    }                    
 
-                }  else  {
+                } else  {
                     // request will be processed by search-front-html
                     chain.doFilter(request, response);
                 }
