@@ -66,7 +66,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
         } catch (IllegalAccessException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
-        }finally{
+        }  finally  {
             method.setAccessible(false);
         }
     }
@@ -76,12 +76,12 @@ public abstract class AbstractReflectionVisitor implements Visitor {
      * This behaviour is not intendedly supported and this implementation throws an IllegalArgumentException!
      * @param clause the clause we're visiting (that's not acutally a clause subtype ;)
      */
-    public void visitImpl(final Object clause) {
+    protected void visitImpl(final Object clause) {
         throw new IllegalArgumentException(ERR_CLAUSE_SUBTYPE_NOT_FOUND + clause.getClass().getName());
     }
 
     private Method getMethod(final Class clauseClass) {
-        final Class me = getClass();
+
         Method method = null;
 
         LOG.trace("getMethod(" + clauseClass.getName() + ")");
@@ -90,10 +90,10 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         Class currClauseClass = clauseClass;
         while (method == null && currClauseClass != Object.class) {
             LOG.debug(DEBUG_LOOKING_AT + currClauseClass.getName() + RB);
-            try {
-                method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {currClauseClass});
 
-            } catch (NoSuchMethodException e) {
+                method = getDeclaredMethod(currClauseClass);
+
+            if (method == null) {
                 currClauseClass = currClauseClass.getSuperclass();
             }
         }
@@ -110,14 +110,11 @@ public abstract class AbstractReflectionVisitor implements Visitor {
 
         // fallback to visitImpl(Object)
         if (method == null) {
-            try {
-                
-                method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {Object.class});
 
-            } catch (SecurityException ex) {
-                LOG.error(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT + clauseClass.getName(), ex);
-            } catch (NoSuchMethodException ex) {
-                LOG.fatal(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT + clauseClass.getName(), ex);
+                method = getDeclaredMethod(Object.class);
+
+            if (method == null) {
+                LOG.fatal(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT + clauseClass.getName());
             }
 
         }
@@ -130,7 +127,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         implements(/extends) definition of the Clause subclass.
      **/
     private Method getMethodFromInterface(final Class clauseClass) {
-        final Class me = getClass();
+
         Method method = null;
 
         LOG.trace("getMethodFromInterface(" + clauseClass.getName() + ")");
@@ -140,19 +137,41 @@ public abstract class AbstractReflectionVisitor implements Visitor {
 
             LOG.debug(DEBUG_LOOKING_AT + interfaces[i].getName() + RB);
 
-            try {
-                method = me.getMethod(VISIT_METHOD_IMPL, new Class[] {interfaces[i]});
-                LOG.debug("Found <" + method + ">");
 
-            } catch (NoSuchMethodException e) {
+            method = getDeclaredMethod(interfaces[i]);
+
+
+            if (method == null) {
                 // [RECURSION] Look for super interfaces
                 method = getMethodFromInterface(interfaces[i]);
-                // still null? look at next interface
+            }  else  {
+                LOG.debug("Found <" + method + ">");
             }
         }
 
         LOG.trace("end getMethodFromInterface(" + clauseClass.getName() + ")");
         return method;
+    }
+
+    /** Because Class.getDeclaredMethod(..) behaves differently to getMethod(..) in
+     * that it does not look into superclasses we must manually look through the superclass
+     * heirarchy. We don't want to use getMethod(..) either because it will only return public methods,
+     * and we would like our visitImpl methods to remain private/protected.
+     **/
+    private Method getDeclaredMethod(final Class clauseClass) {
+
+        for (Class cls = getClass();; cls = cls.getSuperclass()) {
+            if (cls != null) {
+                try {
+                    return cls.getDeclaredMethod(VISIT_METHOD_IMPL, new Class[] {clauseClass});
+
+                } catch (NoSuchMethodException e) {
+                    // acceptable. keep looking.
+                }
+            }  else  {
+                return null;
+            }
+        }
     }
 
 }

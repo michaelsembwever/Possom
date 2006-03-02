@@ -72,7 +72,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         return score;
     }
 
-    public void visitImpl(final AndClause clause) {
+    protected void visitImpl(final AndClause clause) {
         final boolean originalAdditivity = additivity;
         additivity = true;
         clause.getFirstClause().accept(this);
@@ -81,13 +81,13 @@ public final class Scorer extends AbstractReflectionVisitor {
         additivity = originalAdditivity;
     }
 
-    public void visitImpl(final OrClause clause) {
+    protected void visitImpl(final OrClause clause) {
         clause.getFirstClause().accept(this);
         scoreClause(clause);
         clause.getSecondClause().accept(this);
     }
 
-    public void visitImpl(final NotClause clause) {
+    protected void visitImpl(final NotClause clause) {
         final boolean originalAdditivity = additivity;
         additivity = false;
         clause.getFirstClause().accept(this);
@@ -95,7 +95,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         additivity = originalAdditivity;
     }
 
-    public void visitImpl(final AndNotClause clause) {
+    protected void visitImpl(final AndNotClause clause) {
         final boolean originalAdditivity = additivity;
         additivity = false;
         scoreClause(clause);
@@ -103,7 +103,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         additivity = originalAdditivity;
     }
 
-    public void visitImpl(final Clause clause) {
+    protected void visitImpl(final Clause clause) {
         scoreClause(clause);
     }
 

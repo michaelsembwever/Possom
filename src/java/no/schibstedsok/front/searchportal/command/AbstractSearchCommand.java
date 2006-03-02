@@ -11,6 +11,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
+import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
@@ -40,17 +41,25 @@ import org.apache.log4j.MDC;
  *
  * @version <tt>$Revision$</tt>
  */
-public abstract class AbstractSearchCommand implements SearchCommand {
+public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand {
+
+   // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
 
     private static final String ERR_TRANSFORMED_QUERY_USED
             = "Cannot use transformedTerms Map once deprecated getTransformedQuery as been used";
 
+   // Attributes ----------------------------------------------------
+
     protected final Context context;
-    private String filter;
+    private String filter = "";
+    private final Map/*<Clause,String>*/ transformedTerms = new LinkedHashMap/*<Clause,String>*/();
     private String transformedQuery;
     private Map parameters;
+
+
+   // Constructors --------------------------------------------------
 
     /**
      * @param query         The query to act on.
@@ -64,6 +73,40 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
         this.parameters = parameters;
+        final Clause root = context.getQuery().getRootClause();
+        final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
+        mapInitialisor.visit(root);
+    }
+
+   // Public --------------------------------------------------------
+
+    public abstract SearchResult execute();
+
+    /**
+     * Returns the query as it is after the query transformers have been
+     * applied to it.
+     *
+     * @return The transformed query.
+     */
+    public String getTransformedQuery() {
+        return transformedQuery;
+    }
+
+
+
+    public String toString() {
+        return getSearchConfiguration().getName() + " " + context.getRunningQuery().getQueryString();
+    }
+
+    public String getFilter() {
+        return filter;
+    }
+
+
+   // SearchCommand overrides ---------------------------------------------------
+
+    public SearchConfiguration getSearchConfiguration() {
+        return context.getSearchConfiguration();
     }
 
     /**
@@ -75,8 +118,6 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         LOG.trace("getQuery()");
         return context.getRunningQuery();
     }
-
-    public abstract SearchResult execute();
 
     /**
      * Called by thread executor
@@ -187,6 +228,54 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         return result;
     }
 
+   // AbstractReflectionVisitor overrides ----------------------------------------------
+
+    private final StringBuffer sb = new StringBuffer();
+
+    protected void visitImpl(final LeafClause clause) {
+        final String fullTerm =
+                (clause.getField() == null ? "" : clause.getField() + ": ")
+                + clause.getTerm();
+
+        sb.append(transformedTerms.get(clause));
+    }
+    protected void visitImpl(final OperationClause clause) {
+        clause.getFirstClause().accept(this);
+    }
+    protected void visitImpl(final AndClause clause) {
+        clause.getFirstClause().accept(this);
+        sb.append(" + ");
+        clause.getSecondClause().accept(this);
+    }
+    protected void visitImpl(final OrClause clause) {
+        clause.getFirstClause().accept(this);
+        sb.append(' ');
+        clause.getSecondClause().accept(this);
+    }
+    protected void visitImpl(final NotClause clause) {
+        final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
+        if (childsTerm != null && childsTerm.length() > 0) {
+            sb.append("- ");
+            clause.getFirstClause().accept(this);
+        }
+    }
+    protected void visitImpl(final AndNotClause clause) {
+        final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
+        if (childsTerm != null && childsTerm.length() > 0) {
+            sb.append("- ");
+            clause.getFirstClause().accept(this);
+        }
+    }
+    protected void visitImpl(final XorClause clause) {
+        // [TODO] we need to determine which branch in the query-tree we want to use.
+        //  Both branches to a XorClause should never be used.
+        clause.getFirstClause().accept(this);
+        // clause.getSecondClause().accept(this);
+    }
+
+
+   // Protected -----------------------------------------------------
+
     /**
      * Returns the offset in the result set. If paging is enabled for the
      * current search configuration the offset to the current page will be
@@ -203,15 +292,19 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         }
     }
 
-    /**
-     * Returns the query as it is after the query transformers have been
-     * applied to it.
-     *
-     * @return The transformed query.
-     */
-    public String getTransformedQuery() {
-        return transformedQuery;
+    protected Map getParameters() {
+        return parameters;
     }
+
+    protected final synchronized String getQueryRepresentation() {
+
+        final Clause root = context.getQuery().getRootClause();
+        sb.setLength(0);
+        visit(root);
+        return sb.toString();
+    }
+
+   // Private -------------------------------------------------------
 
     /**
      *
@@ -222,11 +315,9 @@ public abstract class AbstractSearchCommand implements SearchCommand {
 
 
             boolean touchedTransformedQuery = false;
-            final Map/*<Clause,String>*/ transformedTerms = new LinkedHashMap/*<Clause,String>*/();
+
             // initialise map with default values
-            final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
-            mapInitialisor.visit(context.getQuery().getRootClause());
-            final QueryBuilder queryBuilder = new QueryBuilder(context.getQuery(), transformedTerms);
+
 
             final StringBuffer/*Builder*/ filterBuilder = new StringBuffer/*Buffer*/();
 
@@ -267,13 +358,14 @@ public abstract class AbstractSearchCommand implements SearchCommand {
                 }  else  {
 
                     transformer.visit(context.getQuery().getRootClause());
-                    transformedQuery = queryBuilder.getQueryString();
+                    transformedQuery = getQueryRepresentation();
                 }
 
-                filterBuilder.append(transformer.getFilter(parameters));
+                final String fp = transformer.getFilter(parameters);
+                filterBuilder.append(fp == null ? "" : fp);
                 filterBuilder.append(' ');
-
-                filterBuilder.append(transformer.getFilter());
+                final String f = transformer.getFilter();
+                filterBuilder.append(f == null ? "" : f);
                 filterBuilder.append(' ');
 		
                 if (LOG.isDebugEnabled()) {
@@ -286,25 +378,12 @@ public abstract class AbstractSearchCommand implements SearchCommand {
         }
     }
 
-    public SearchConfiguration getSearchConfiguration() {
-        return context.getSearchConfiguration();
-    }
-
-    protected Map getParameters() {
-        return parameters;
-    }
-
     private String getSingleParameter(final String paramName) {
         return ((String[]) parameters.get(paramName))[0];
     }
 
-    public String toString() {
-        return getSearchConfiguration().getName() + " " + context.getRunningQuery().getQueryString();
-    }
+   // Inner classes -------------------------------------------------
 
-    public String getFilter() {
-        return filter;
-    }
 
     private static class MapInitialisor extends AbstractReflectionVisitor {
 
@@ -314,82 +393,23 @@ public abstract class AbstractSearchCommand implements SearchCommand {
             map = m;
         }
 
-        public void visitImpl(final LeafClause clause) {
+        protected void visitImpl(final LeafClause clause) {
             final String fullTerm =
                     (clause.getField() == null ? "" : clause.getField() + ": ")
                     + clause.getTerm();
 
             map.put(clause, fullTerm);
         }
-        public void visitImpl(final OperationClause clause) {
+        protected void visitImpl(final OperationClause clause) {
             clause.getFirstClause().accept(this);
         }
-        public void visitImpl(final AndClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-        public void visitImpl(final OrClause clause) {
+        protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-    }
-
-    public static final class QueryBuilder extends AbstractReflectionVisitor {
-
-        private final Query query;
-        private final Map map;
-        private final StringBuffer sb = new StringBuffer();
-
-        public QueryBuilder(final Query q, final Map m) {
-            query = q;
-            map = m;
-        }
-
-        public synchronized String getQueryString() {
-            sb.setLength(0);
-            visit(query.getRootClause());
-            return sb.toString();
-        }
-
-        public void visitImpl(final LeafClause clause) {
-            final String fullTerm =
-                    (clause.getField() == null ? "" : clause.getField() + ": ")
-                    + clause.getTerm();
-
-            sb.append(map.get(clause));
-        }
-        public void visitImpl(final OperationClause clause) {
+        protected void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
-        }
-        public void visitImpl(final AndClause clause) {
-            clause.getFirstClause().accept(this);
-            sb.append(" AND ");
             clause.getSecondClause().accept(this);
-        }
-        public void visitImpl(final OrClause clause) {
-            clause.getFirstClause().accept(this);
-            sb.append(' ');
-            clause.getSecondClause().accept(this);
-        }
-        public void visitImpl(final NotClause clause) {
-            final String childsTerm = (String) map.get(clause.getFirstClause());
-            if (childsTerm != null && childsTerm.length() > 0) {
-                sb.append("NOT ");
-                clause.getFirstClause().accept(this);
-            }
-        }
-        public void visitImpl(final AndNotClause clause) {
-            final String childsTerm = (String) map.get(clause.getFirstClause());
-            if (childsTerm != null && childsTerm.length() > 0) {
-                sb.append("ANDNOT ");
-                clause.getFirstClause().accept(this);
-            }
-        }
-        public void visitImpl(final XorClause clause) {
-            // [TODO] we need to determine which branch in the query-tree we want to use.
-            //  Both branches to a XorClause should never be used.
-            clause.getFirstClause().accept(this);
-            // clause.getSecondClause().accept(this);
         }
     }
 }

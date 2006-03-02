@@ -268,17 +268,17 @@ public final class TestVisitor extends TestCase {
             return sb.toString();
         }
 
-        public void visitImpl(final NotClause clause) {
+        protected void visitImpl(final NotClause clause) {
             sb.append("NOT ");
             clause.getFirstClause().accept(this);
         }
         
-        public void visitImpl(final AndNotClause clause) {
+        protected void visitImpl(final AndNotClause clause) {
             sb.append("ANDNOT ");
             clause.getFirstClause().accept(this);
         }
 
-        public void visitImpl(final WordClause clause) {
+        protected void visitImpl(final WordClause clause) {
             if (clause.getField() != null) {
                 sb.append(clause.getField());
                 sb.append(":");
@@ -287,19 +287,19 @@ public final class TestVisitor extends TestCase {
             sb.append(clause.getTerm());
         }
 
-        public void visitImpl(final AndClause clause) {
+        protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
             sb.append(" AND ");
             clause.getSecondClause().accept(this);
         }
 
-        public void visitImpl(final OrClause clause) {
+        protected void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
             sb.append(" ");
             clause.getSecondClause().accept(this);
         }
 
-        public void visitImpl(final PhraseClause clause) {
+        protected void visitImpl(final PhraseClause clause) {
             if (clause.getField() != null) {
                 sb.append(clause.getField());
                 sb.append(":");
@@ -308,7 +308,7 @@ public final class TestVisitor extends TestCase {
             sb.append(clause.getTerm());
         }
 
-        public void visitImpl(final Clause clause) {
+        protected void visitImpl(final Clause clause) {
             // [FIXME] implement me!
         }
     }

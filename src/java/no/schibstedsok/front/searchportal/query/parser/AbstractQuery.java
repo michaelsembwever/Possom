@@ -74,29 +74,29 @@ public abstract class AbstractQuery implements Query {
             return firstLeaf;
         }
 
-        public void visitImpl(final AndClause clause) {
+        protected void visitImpl(final AndClause clause) {
             if (searching) { // still looking
                 clause.getFirstClause().accept(this);
             }
         }
 
-        public void visitImpl(final OrClause clause) {
+        protected void visitImpl(final OrClause clause) {
             if (searching) { // still looking
                 clause.getFirstClause().accept(this);
             }
         }
 
-        public void visitImpl(final NotClause clause) {
+        protected void visitImpl(final NotClause clause) {
             // this cancels the search for a firstLeafClause...
             searching = false;
         }
 
-        public void visitImpl(final AndNotClause clause) {
+        protected void visitImpl(final AndNotClause clause) {
             // this cancels the search for a firstLeafClause...
             searching = false;
         }
 
-        public void visitImpl(final LeafClause clause) {
+        protected void visitImpl(final LeafClause clause) {
             // Bingo! Goto "Go". Collect $200.
             firstLeaf = clause;
             searching = false;
@@ -119,11 +119,11 @@ public abstract class AbstractQuery implements Query {
         }
 
 
-        public void visitImpl(final OperationClause clause) {
+        protected void visitImpl(final OperationClause clause) {
             clause.getFirstClause().accept(this);
         }
 
-        public void visitImpl(final OrClause clause) {
+        protected void visitImpl(final OrClause clause) {
             // Avoid counting the first term in a "Possibility" OrClause
             //  A "Possibility" OrClause is something that the QueryParser
             //   generates when it detects a possible subclause type, eg PhoneNumberClause or OrganisationNumberClause.
@@ -133,16 +133,16 @@ public abstract class AbstractQuery implements Query {
             clause.getSecondClause().accept(this);
         }
 
-        public void visitImpl(final AndNotClause clause) {
+        protected void visitImpl(final AndNotClause clause) {
             clause.getFirstClause().accept(this);
         }
 
-        public void visitImpl(final AndClause clause) {
+        protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
 
-        public void visitImpl(final LeafClause clause) {
+        protected void visitImpl(final LeafClause clause) {
             ++termCount;
         }
 
@@ -150,6 +150,7 @@ public abstract class AbstractQuery implements Query {
          * {@inheritDoc}
          */
         public void visit(final Object clause) {
+            searching = true;
             super.visit(clause);
             searching = false;
         }

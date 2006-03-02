@@ -36,15 +36,15 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
     private static final String BLANK = "";
 
-    public void visitImpl(final OperationClause clause) {
+    protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
     
-    public void visitImpl(final PhraseClause clause) {
+    protected void visitImpl(final PhraseClause clause) {
         // don't remove prefix if it is infact a phrase.
     }
     
-    public void visitImpl(final LeafClause clause) {
+    protected void visitImpl(final LeafClause clause) {
         if (clause == getContext().getQuery().getFirstLeafClause()) {
             for (final Iterator iterator = getPrefixesIterator(); iterator.hasNext();) {
                 final TokenPredicate predicate = (TokenPredicate) iterator.next();
