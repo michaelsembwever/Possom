@@ -17,7 +17,6 @@ import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 
 /** This class is NOT synchronized. You must use a separate instance for each query. 
  *
- * @todo the LOOKAHEAD's can be reduced to one. but how?...
  **/
 public final class QueryParserImpl extends AbstractQueryParser{
 
@@ -32,7 +31,6 @@ PARSER_END(QueryParserImpl)
 /** Skip these characters, they are considered "white space" **/
 SKIP : {
     ","
-    | "."    
     | "#"
     | " "
     | "\t"
@@ -52,11 +50,13 @@ TOKEN : {
 | <ANDNOT: ("ANDNOT")>
 
 /** then leaves **/
+| <URL: "http://"<WORD>>
+| <EMAIL: <WORD>"@"<WORD>>
 | <PHONE_NUMBER: (("+"|"00")"47"(" ")*){0,1}(<DIGIT>(" ")?){8}>
 | <ORGANISATION_NUMBER: (<DIGIT>(" ")?){9}>
 | <INTEGER: ((<DIGIT>)+)>
 | <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\"">
-| <WORD: ((<LETTER>|<DIGIT>)+)("*")?>
+| <WORD: ((<LETTER>|<DIGIT>)|("."))+("*")?>
 | <#LETTER:
 
 /** UNICODE Characters **/
@@ -274,6 +274,16 @@ Clause fieldedLeaf(final Token field) :{
     <QUOTED_WORD>
         { 
             try{return context.createPhraseClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
+        }
+    | 
+    <URL>
+        { 
+            try{return context.createUrlClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
+        }
+    | 
+    <EMAIL>
+        { 
+            try{return context.createEmailClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
         }
 
 }

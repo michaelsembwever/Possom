@@ -11,12 +11,14 @@ package no.schibstedsok.front.searchportal.query.parser;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.EmailClause;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
+import no.schibstedsok.front.searchportal.query.UrlClause;
 import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.query.XorClause;
 import org.apache.log4j.Logger;
@@ -145,4 +147,18 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         return OrganisationNumberClauseImpl.createOrganisationNumberClause(term, field, getTokenEvaluatorFactory());
     }
 
+    /** {@inheritDoc}
+     */
+    public final UrlClause createUrlClause(final String term, final String field){
+
+        LOG.debug("createUrlClause(" + term + "," + field + ")");
+        return UrlClauseImpl.createUrlClause(term, field, getTokenEvaluatorFactory());        
+    }
+    /** {@inheritDoc}
+     */
+    public final EmailClause createEmailClause(final String term, final String field){
+
+        LOG.debug("createEmailClause(" + term + "," + field + ")");
+        return EmailClauseImpl.createEmailClause(term, field, getTokenEvaluatorFactory());        
+    }   
 }

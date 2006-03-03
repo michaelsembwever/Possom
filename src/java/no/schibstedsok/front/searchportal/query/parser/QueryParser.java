@@ -13,6 +13,7 @@ import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.EmailClause;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
@@ -21,6 +22,7 @@ import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
+import no.schibstedsok.front.searchportal.query.UrlClause;
 import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.query.XorClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
@@ -164,7 +166,26 @@ public interface QueryParser {
          * @return returns a OrOrganisationNumberClauseImplnstance matching the term, left and right child clauses.
          */
         OrganisationNumberClause createOrganisationNumberClause(final String term, final String field);
-
+        /**
+         * Creator wrapper method for UrlClause objects.
+         * The methods also allow a chunk of creation logic for the UrlClause to be moved
+         * out of the QueryParserImpl.jj file to here.
+         *
+         * @param term the term this clause represents.
+         * @param field any field this clause was specified against.
+         * @return returns a UrlClause matching the term, left and right child clauses.
+         */
+        UrlClause createUrlClause(final String term, final String field);
+        /**
+         * Creator wrapper method for EmailClause objects.
+         * The methods also allow a chunk of creation logic for the EmailClause to be moved
+         * out of the QueryParserImpl.jj file to here.
+         *
+         * @param term the term this clause represents.
+         * @param field any field this clause was specified against.
+         * @return returns a EmailClause matching the term, left and right child clauses.
+         */
+        EmailClause createEmailClause(final String term, final String field);
     }
 
     
