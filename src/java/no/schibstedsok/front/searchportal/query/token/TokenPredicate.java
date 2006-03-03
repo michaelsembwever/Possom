@@ -29,12 +29,7 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
             super(token);
         }
     }
-    public static final class OlympicTokenPredicate extends TokenPredicate {
-        public  OlympicTokenPredicate(final String token) {
-            super(token);
-        }
-    }
-    
+
     private static final Map/*<String>,<TokenPredicate>*/ TOKEN_MAP = new Hashtable/*<String>,<TokenPredicate>*/();
     private static final Set/*<TokenPredicate>*/ FAST_TOKENS = new HashSet/*<TokenPredicate>*/();
 
@@ -80,11 +75,6 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final RegExpTokenPredicate SKIINFOPREFIX = new RegExpTokenPredicate("skiInfoPrefix");
     public static final RegExpTokenPredicate EMPTYQUERY = new RegExpTokenPredicate("emptyQuery");
 
-    // Olympic
-    public static final OlympicTokenPredicate OLYMPICTERM = new OlympicTokenPredicate("olympicTerm");
-    public static final OlympicTokenPredicate OLYMPICPARTICIPANT = new OlympicTokenPredicate("olympicParticipant");
-    public static final OlympicTokenPredicate OLYMPICDICIPLINE = new OlympicTokenPredicate("olympicDicipline");
-    
     // instance fields
     private final String token;
 

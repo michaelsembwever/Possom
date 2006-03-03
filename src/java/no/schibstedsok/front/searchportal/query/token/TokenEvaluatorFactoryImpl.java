@@ -9,7 +9,6 @@ import java.util.Set;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.SearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
-import no.schibstedsok.front.searchportal.query.token.OlympicTokenEvaluator;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
@@ -33,7 +32,6 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new AlwaysTrueTokenEvaluator();
 
     private volatile TokenEvaluator fastEvaluator;
-    private OlympicTokenEvaluator olympicEvaluator = new OlympicTokenEvaluator();
     
     private static final Log LOG = LogFactory.getLog(TokenEvaluatorFactoryImpl.class);
 
@@ -71,10 +69,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
             return getFastEvaluator();
         }  else if ( token instanceof TokenPredicate.RegExpTokenPredicate ) {
             return RegExpEvaluatorFactory.valueOf(context).getEvaluator(token);
-        } else if ( token instanceof TokenPredicate.OlympicTokenPredicate ) {
-            return olympicEvaluator;
-        }
-
+        } 
 //        } else if (token == TokenPredicate.GEO ) { // shouldn't be called as it's a OrPredicate from AnalysisRules
 //            return getFastEvaluator();
 //        } else if (token == TokenPredicate.NAMELONGERTHANWIKIPEDIA ) { // FIXME where the hell is this used?
