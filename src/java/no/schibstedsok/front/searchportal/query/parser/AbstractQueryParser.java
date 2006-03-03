@@ -11,6 +11,7 @@ package no.schibstedsok.front.searchportal.query.parser;
 import java.util.Iterator;
 import java.util.Stack;
 import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
@@ -87,6 +88,20 @@ public abstract class AbstractQueryParser implements QueryParser {
         return query;
     }
 
+    protected final Context createContext(final String input){
+        return (QueryParser.Context) ContextWrapper.wrap(
+            QueryParser.Context.class,
+            new BaseContext[]{
+                new QueryStringContext(){
+                    public String getQueryString(){
+                        return input;
+                    }
+                },
+                context
+            }
+        );
+        
+    }
 
     protected final void enterMethod(final String method){
         if( LOG.isTraceEnabled() ){

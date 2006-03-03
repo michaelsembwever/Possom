@@ -23,13 +23,20 @@ public final class QueryParserImpl extends AbstractQueryParser{
     public QueryParserImpl(final Context cxt){
         this(new StringReader(cxt.getQueryString()));
         context = cxt;
+        token_source.SwitchTo(DEFAULT);
+    }
+
+    public QueryParserImpl(final Context cxt, final int lexicalState){
+        this(new StringReader(cxt.getQueryString()));
+        context = cxt;
+        token_source.SwitchTo(lexicalState);
     }
 }
 
 PARSER_END(QueryParserImpl)
 
 /** Skip these characters, they are considered "white space" **/
-SKIP : {
+<*>SKIP : {
     ","
     | "#"
     | " "
@@ -41,53 +48,59 @@ SKIP : {
     | "!"
 }
 
-TOKEN : {
+<DEFAULT,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,ORGANISATION_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
+TOKEN : { <URL: "http://"<WORD>> }
 
-/** Find operators first **/
-  <AND: ("AND"|"+")>
-| <OR:  ("OR"|"|")>
-| <NOT: "NOT"|"-">              // choosing to identify "-" as the ANDNOT operator instead of the NOT operator.
-| <ANDNOT: ("ANDNOT")>
+<DEFAULT,URL_DISABLED,PHONE_NUMBER_DISABLED,ORGANISATION_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
+TOKEN : { <EMAIL: <WORD>"@"<WORD>> }
 
-/** then leaves **/
-| <URL: "http://"<WORD>>
-| <EMAIL: <WORD>"@"<WORD>>
-| <PHONE_NUMBER: (("+"|"00")"47"(" ")*){0,1}(<DIGIT>(" ")?){8}>
-| <ORGANISATION_NUMBER: (<DIGIT>(" ")?){9}>
-| <INTEGER: ((<DIGIT>)+)>
-| <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\"">
-| <WORD: ((<LETTER>|<DIGIT>)|("."))+("*")?>
-| <#LETTER:
+<DEFAULT,URL_DISABLED,EMAIL_DISABLED,ORGANISATION_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
+TOKEN : { <PHONE_NUMBER: (("+"|"00")(" ")*"47"(" ")*)?(<DIGIT>(" ")?){8}> }
 
-/** UNICODE Characters **/
-    [
-        "\u0041"-"\u005a",
-        "\u0061"-"\u007a",
-        "\u00c0"-"\u00d6",
-        "\u00d8"-"\u00f6",
-        "\u00f8"-"\u00ff",
-        "\u0100"-"\u1fff"
-    ]
-    >
-| < #DIGIT:                      // unicode digits
-      [
-       "\u0030"-"\u0039",
-       "\u0660"-"\u0669",
-       "\u06f0"-"\u06f9",
-       "\u0966"-"\u096f",
-       "\u09e6"-"\u09ef",
-       "\u0a66"-"\u0a6f",
-       "\u0ae6"-"\u0aef",
-       "\u0b66"-"\u0b6f",
-       "\u0be7"-"\u0bef",
-       "\u0c66"-"\u0c6f",
-       "\u0ce6"-"\u0cef",
-       "\u0d66"-"\u0d6f",
-       "\u0e50"-"\u0e59",
-       "\u0ed0"-"\u0ed9",
-       "\u1040"-"\u1049"
-      ]
-  >
+<DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
+TOKEN : { <ORGANISATION_NUMBER: (<DIGIT>(" ")*){9}> }
+
+<DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,ORGANISATION_NUMBER_DISABLED>
+TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\""> }
+
+
+<*>TOKEN : {
+      <AND: ("AND"|"+")>
+    | <OR:  ("OR"|"|")>
+    | <NOT: "NOT"|"-">              // choosing to identify "-" as the ANDNOT operator instead of the NOT operator.
+    | <ANDNOT: ("ANDNOT")>
+    | <INTEGER: ((<DIGIT>)+)>
+    | <WORD: ((<LETTER>|<DIGIT>)|("."))+("*")?>
+    | <#LETTER:
+    /** UNICODE Characters **/
+        [
+            "\u0041"-"\u005a",
+            "\u0061"-"\u007a",
+            "\u00c0"-"\u00d6",
+            "\u00d8"-"\u00f6",
+            "\u00f8"-"\u00ff",
+            "\u0100"-"\u1fff"
+        ]
+        >
+    | < #DIGIT:                      // unicode digits
+          [
+           "\u0030"-"\u0039",
+           "\u0660"-"\u0669",
+           "\u06f0"-"\u06f9",
+           "\u0966"-"\u096f",
+           "\u09e6"-"\u09ef",
+           "\u0a66"-"\u0a6f",
+           "\u0ae6"-"\u0aef",
+           "\u0b66"-"\u0b6f",
+           "\u0be7"-"\u0bef",
+           "\u0c66"-"\u0c6f",
+           "\u0ce6"-"\u0cef",
+           "\u0d66"-"\u0d6f",
+           "\u0e50"-"\u0e59",
+           "\u0ed0"-"\u0ed9",
+           "\u1040"-"\u1049"
+          ]
+      >
 }
 
 Clause parse() : { 
@@ -216,51 +229,42 @@ Clause fieldedLeaf(final Token field) :{
     enterMethod("fieldedLeaf()");
 }{
     (<PHONE_NUMBER>) 
-            { 
-                // Create a "Possibility" OrClause
-                // it might not be a phone number... // XXX Could this be done with parser logic...
-                try{
-                    final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, field == null ? null : field.image);
-                    Clause prevClause = null;
-                    final String[] numbers = token.image.split(" ");
-                    for(int i = 0; i < numbers.length; ++i){
-                        final String number = numbers[i];
-                        final LeafClause leafClause = number.indexOf("+") <0
-                                ? (LeafClause)context.createIntegerClause(number, field == null ? null : field.image)
-                                : (LeafClause)context.createWordClause(number, field == null ? null : field.image);
-                        if( prevClause != null ){
-                            final OrClause orClause = context.createOrClause(prevClause,leafClause);
-                            prevClause = orClause;
-                        }else{
-                            prevClause = leafClause;
-                        }
-                    }
-                    return context.createXorClause(phClause, prevClause);
-                }finally{exitMethod();}
-            }
+        { 
+            try{
+                final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, field == null ? null : field.image);
+                if( token.image.startsWith("+47") || token.image.indexOf(' ') <0 ){ // definitely a phone number.
+                    return phClause;
+                }else{ // could be individual numbers as well.
+                    // Create a XorClause
+                    final QueryParserImpl parser = new QueryParserImpl(createContext(token.image),PHONE_NUMBER_DISABLED);
+                    final Clause altClause = parser.parse();
+                    return context.createXorClause(phClause, altClause);
+                }
+            }finally{exitMethod();}
+        }
     | 
     (<ORGANISATION_NUMBER>) 
-            { 
-                // Create a a "Possibility" OrClause
-                // it might not be a Organisation number... // XXX Could this be done with parser logic...
-                try{
-                    final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(token.image, field == null ? null : field.image);
-                    Clause prevClause = null;
-                    final String[] numbers = token.image.split(" ");
-                    for(int i = 0; i < numbers.length; ++i){
-                        final String number = numbers[i];
-                        final IntegerClause intClause = context.createIntegerClause(number, field == null ? null : field.image);
-                        if( prevClause != null ){
-                            final OrClause orClause = context.createOrClause(prevClause,intClause);
-                            prevClause = orClause;
-                        }else{
-                            prevClause = intClause;
-                        }
-                    }
-                    return context.createXorClause(orgClause, prevClause);
-                }finally{exitMethod();}
-            }
+        { 
+            try{
+                // Create a XorClause
+                final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(token.image, field == null ? null : field.image);
+                final QueryParserImpl parser = new QueryParserImpl(createContext(token.image),ORGANISATION_NUMBER_DISABLED);
+                final Clause altClause = parser.parse();
+                return context.createXorClause(orgClause, altClause);
+            }finally{exitMethod();}
+        }
     |
+    <QUOTED_WORD>
+        { 
+            try{
+                // Create a XorClause
+                final PhraseClause phClause = context.createPhraseClause( token.image, field == null ? null : field.image );
+                final QueryParserImpl parser = new QueryParserImpl(createContext(token.image.replaceAll("\"","")),QUOTED_WORD_DISABLED);
+                final Clause altClause = parser.parse();
+                return context.createXorClause(phClause, altClause);
+            }finally{exitMethod();}
+        }
+    | 
     <WORD>
         { 
             try{return context.createWordClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
@@ -270,12 +274,7 @@ Clause fieldedLeaf(final Token field) :{
         { 
             try{return context.createIntegerClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
         }
-    | 
-    <QUOTED_WORD>
-        { 
-            try{return context.createPhraseClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
-        }
-    | 
+    |
     <URL>
         { 
             try{return context.createUrlClause( token.image, field == null ? null : field.image );}finally{exitMethod();}

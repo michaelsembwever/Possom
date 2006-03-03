@@ -28,7 +28,7 @@ import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** Test the QueryParser's visitor pattern.
+/** Test the QueryParser and it's generated visitor pattern.
  *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -95,15 +95,15 @@ public final class TestVisitor extends TestCase {
     public void testAndOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123");
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123",
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123");
     }
     
     public void testAndOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123");
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123",
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123");
     }
     
     public void testAndOrNotAgainstQueryParser1() {
@@ -172,8 +172,8 @@ public final class TestVisitor extends TestCase {
     public void testPhoneNumberAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "92221689",
-                "92221689 92221689",
-                "92221689 92221689");
+                "92221689",
+                "92221689");
     }
     
     public void testPhoneNumberAgainstQueryParser2() {
@@ -186,8 +186,8 @@ public final class TestVisitor extends TestCase {
     public void testPhoneNumberAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "+47 9222 1689",
-                "+4792221689 +47 9222 1689",
-                "+4792221689 +47 9222 1689");
+                "+4792221689",
+                "+4792221689");
     }
 
     private void basicQueryParserWithTestVisitorImpl(
