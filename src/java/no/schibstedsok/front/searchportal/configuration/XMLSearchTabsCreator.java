@@ -92,6 +92,9 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
                         "YellowSearch",
                         no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration.class);
         xstream.alias(
+                        "WhiteSearch",
+                        no.schibstedsok.front.searchportal.configuration.WhiteSearchConfiguration.class);
+        xstream.alias(
                         "PicSearch",
                         no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration.class);
         xstream.alias(
