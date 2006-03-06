@@ -128,8 +128,9 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         
         try{
         
-            URL u = new URL( url );
+            URL u = new URL( getURL(url) );
             URLConnection conn = u.openConnection();
+            conn.addRequestProperty("host",getHostHeader(url));
             
             // test it exists otherwise fallback to default site
             try{
@@ -139,7 +140,9 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
                 LOG.warn(WARN_USING_FALLBACK+url);
                 u = new URL( getFallbackURL( url ));
                 conn = u.openConnection();
+                conn.addRequestProperty("host",getHostHeader(url));
             }
+            
             
             return conn;
             
@@ -157,5 +160,15 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         
         return url.replaceFirst(oldUrl, newUrl);
     }
+
+    private String getHostHeader(final String resource){
+        return resource.substring(7,resource.indexOf('/',8));
+    }
+    
+    private String getURL(final String resource){
+        return "http://localhost"+
+                resource.substring( resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
+    }
+    
 }
 

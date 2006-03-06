@@ -12,6 +12,7 @@ import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.InfrastructureException;
@@ -98,6 +99,15 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                 + "conf/"
                 + super.getResource();
     }
+    
+    private String getHostHeader(final String resource){
+        return resource.substring(7,resource.indexOf('/',8));
+    }
+    
+    private String getURL(final String resource){
+        return "http://localhost"+
+                resource.substring( resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
+    }
 
     /** {@inheritDoc}
      */
@@ -128,38 +138,40 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         boolean success = false;
         try {
 
-            final URL url = new URL(resource);
+            final URLConnection urlConn = new URL(getURL(resource)).openConnection();
+            urlConn.addRequestProperty("host", getHostHeader(resource));
+            
 
             if (props != null) {
-                props.load(url.openStream());
+                props.load(urlConn.getInputStream());
             }
             if (xstream != null) {
-                xstreamResult = xstream.fromXML(new InputStreamReader(url.openStream()));
+                xstreamResult = xstream.fromXML(new InputStreamReader(urlConn.getInputStream()));
             }
             if (builder != null) {
                 document = builder.parse(
-                        new InputSource(new InputStreamReader(url.openStream())));
+                        new InputSource(new InputStreamReader(urlConn.getInputStream())));
             }
 
-            LOG.info("Read configuration from " + getResource());
+            LOG.info("Read configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]");
             success = true;
 
         } catch (NullPointerException e) {
-            final String err = "When Reading Configuration from " + getResource();
+            final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
             LOG.warn(err, e);
             //throw new InfrastructureException(err, e);
 
         } catch (IOException e) {
-            final String err = "When Reading Configuration from " + getResource();
+            final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
             LOG.warn(err, e);
             //throw new InfrastructureException(err, e);
         } catch (SAXParseException e) {
-            final String err = "When Reading Configuration from " + getResource() +
+            final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]" +
                     " at " + e.getLineNumber() + ":" + e.getColumnNumber();
             LOG.warn(err, e);
             throw new InfrastructureException(err, e);
         } catch (SAXException e) {
-            final String err = "When Reading Configuration from " + getResource();
+            final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
             LOG.warn(err, e);
             throw new InfrastructureException(err, e);
         }
