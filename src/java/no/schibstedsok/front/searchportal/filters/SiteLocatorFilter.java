@@ -22,6 +22,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Logger;
@@ -167,11 +168,12 @@ public final class SiteLocatorFilter implements Filter {
         HttpURLConnection con = null;
         try {
 
-            final URL u = new URL(url);
+            final URL u = new URL(UrlResourceLoader.getURL(url));
 
             con = (HttpURLConnection) u.openConnection();
             con.setInstanceFollowRedirects(false);
             con.setRequestMethod("HEAD");
+            con.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
             success = (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 
         } catch (NullPointerException e) {

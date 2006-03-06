@@ -23,6 +23,7 @@ import java.net.URLConnection;
 
 import java.io.InputStream;
 import java.util.Vector;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.log4j.Logger;
 
@@ -128,9 +129,9 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         
         try{
         
-            URL u = new URL( getURL(url) );
+            URL u = new URL( UrlResourceLoader.getURL(url) );
             URLConnection conn = u.openConnection();
-            conn.addRequestProperty("host",getHostHeader(url));
+            conn.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
             
             // test it exists otherwise fallback to default site
             try{
@@ -140,7 +141,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
                 LOG.warn(WARN_USING_FALLBACK+url);
                 u = new URL( getFallbackURL( url ));
                 conn = u.openConnection();
-                conn.addRequestProperty("host",getHostHeader(url));
+                conn.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
             }
             
             
@@ -159,15 +160,6 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         final String newUrl = fallbackSite.getName() + fallbackSite.getConfigContext();
         
         return url.replaceFirst(oldUrl, newUrl);
-    }
-
-    private String getHostHeader(final String resource){
-        return resource.substring(7,resource.indexOf('/',8));
-    }
-    
-    private String getURL(final String resource){
-        return "http://localhost"+
-                resource.substring( resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
     }
     
 }

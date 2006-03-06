@@ -100,11 +100,11 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                 + super.getResource();
     }
     
-    private String getHostHeader(final String resource){
+    public static String getHostHeader(final String resource){
         return resource.substring(7,resource.indexOf('/',8));
     }
     
-    private String getURL(final String resource){
+    public static String getURL(final String resource){
         return "http://localhost"+
                 resource.substring( resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
     }
