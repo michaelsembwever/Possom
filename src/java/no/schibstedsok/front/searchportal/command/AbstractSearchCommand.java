@@ -327,7 +327,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return sb.toString();
     }
 
-   // Private -------------------------------------------------------
+    protected final void appendToQueryRepresentation(final String addition) {
+        sb.append(addition);
+    }
+    
+    protected final String getTransformedTerm(final Clause clause) {
+        return (String) transformedTerms.get(clause);
+    }
+
+    // Private -------------------------------------------------------
 
     /**
      *
