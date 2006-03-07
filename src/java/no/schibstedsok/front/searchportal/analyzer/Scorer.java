@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
+import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.NotClause;
@@ -82,6 +83,15 @@ public final class Scorer extends AbstractReflectionVisitor {
     }
 
     protected void visitImpl(final OrClause clause) {
+        final boolean originalAdditivity = additivity;
+        additivity = true;
+        clause.getFirstClause().accept(this);
+        scoreClause(clause);
+        clause.getSecondClause().accept(this);
+        additivity = originalAdditivity;
+    }
+
+    protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
         scoreClause(clause);
         clause.getSecondClause().accept(this);

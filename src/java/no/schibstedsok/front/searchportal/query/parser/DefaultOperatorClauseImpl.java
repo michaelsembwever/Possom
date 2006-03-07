@@ -10,8 +10,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
-import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
@@ -21,14 +21,14 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * <b>Objects of this class are immutable</b>
  *
  * @author <a hrefOrClauseImpl:mick@wever.org">Michael Semb Wever</a>
- * @version $Id$
+ * @version $Id: OrClauseImpl.java 2399 2006-03-01 21:01:02Z mickw $
  */
-public class OrClauseImpl extends AbstractOperationClause implements OrClause {
+public class DefaultOperatorClauseImpl extends AbstractOperationClause implements DefaultOperatorClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map/*<Long,WeakReference<OrClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<OrClauseImpl>>*/();
+    private static final Map/*<Long,WeakReference<DefaultOperatorClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<DefaultOperatorClauseImpl>>*/();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
@@ -61,7 +61,7 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
      * @return returns a OrCOrClauseImplstance matching the term, left and right child clauses.
      * May be either newly created or reused.
      */
-    public static OrClauseImpl createOrClause(
+    public static DefaultOperatorClauseImpl createDefaultOperatorClause(
         final Clause first,
         final Clause second,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
@@ -73,7 +73,7 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
                     ?  ((LeafClause) first).getField() + ":"
                     : "")
                 + first.getTerm()
-                + " OR "
+                + " "
                 + (second instanceof LeafClause && ((LeafClause) second).getField() != null
                     ?  ((LeafClause) second).getField() + ":"
                     : "")
@@ -83,8 +83,8 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
         predicate2evaluatorFactory.setCurrentTerm(term);
 
         // use helper method from AbstractLeafClause
-        return (OrClauseImpl) createClause(
-                OrClauseImpl.class,
+        return (DefaultOperatorClauseImpl) createClause(
+                DefaultOperatorClauseImpl.class,
                 term,
                 first,
                 second,
@@ -101,7 +101,7 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
      * @param first the left child clause.
      * @param second the right child clause.
      */
-    protected OrClauseImpl(
+    protected DefaultOperatorClauseImpl(
             final String term,
             final Clause first,
             final Clause second,

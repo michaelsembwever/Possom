@@ -11,6 +11,7 @@ package no.schibstedsok.front.searchportal.query.parser;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
@@ -74,13 +75,7 @@ public abstract class AbstractQuery implements Query {
             return firstLeaf;
         }
 
-        protected void visitImpl(final AndClause clause) {
-            if (searching) { // still looking
-                clause.getFirstClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final OrClause clause) {
+        protected void visitImpl(final OperationClause clause) {
             if (searching) { // still looking
                 clause.getFirstClause().accept(this);
             }
@@ -138,6 +133,11 @@ public abstract class AbstractQuery implements Query {
         }
 
         protected void visitImpl(final AndClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final DefaultOperatorClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }

@@ -11,6 +11,7 @@ package no.schibstedsok.front.searchportal.query.parser;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.EmailClause;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
@@ -45,6 +46,13 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
 
     //// Operator creators
+    /** {@inheritDoc}
+     */
+    public DefaultOperatorClause createDefaultOperatorClause(final Clause first, final Clause second){
+        
+        LOG.debug("createDefaultOperatorClause(" + first + "," + second + ")");
+        return DefaultOperatorClauseImpl.createDefaultOperatorClause(first, second, getTokenEvaluatorFactory());
+    }
 
     /** {@inheritDoc}
      */

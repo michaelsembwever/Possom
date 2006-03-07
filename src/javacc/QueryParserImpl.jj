@@ -70,7 +70,9 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\""> }
     | <NOT: "NOT"|"-">              // choosing to identify "-" as the ANDNOT operator instead of the NOT operator.
     | <ANDNOT: ("ANDNOT")>
     | <INTEGER: ((<DIGIT>)+)>
-    | <WORD: ((<LETTER>|<DIGIT>)|("."))+("*")?>
+    | <WORD: (<LETTER>|<DIGIT>|<WORD_SYMBOL_PREFIX>)(<LETTER>|<DIGIT>|<WORD_SYMBOL_MIDDLE>)*("*")?>
+    | <#WORD_SYMBOL_PREFIX: (".")>
+    | <#WORD_SYMBOL_MIDDLE: (".")|("-")|("_")>
     | <#LETTER:
     /** UNICODE Characters **/
         [
@@ -123,7 +125,7 @@ Clause noPrecedence() :{
     Clause clause;
     enterMethod("noPrecedence()");
 }{
-    (clause = hiddenOrOperation()) { try{return clause;}finally{exitMethod();} }
+    (clause = hiddenDefaultOperation()) { try{return clause;}finally{exitMethod();} }
     |
     (clause = looseJoinPrecedence()) { try{return clause;}finally{exitMethod();} }
     
@@ -162,11 +164,11 @@ Clause leafPrecedence() :{
 
 /** OPERATIONS **/
 
-OrClause hiddenOrOperation() :{
+DefaultOperatorClause hiddenDefaultOperation() :{
     Clause left,right;
-    enterMethod("hiddenOrOperation()");
+    enterMethod("hiddenDefaultOperation()");
 }{
-    ((left = looseJoinPrecedence())(right = noPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
+    ((left = looseJoinPrecedence())(right = noPrecedence())) { try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();} }
 }
 
 
@@ -179,18 +181,18 @@ AndNotClause andNotOperation() :{
 
 OrClause orOperation() :{
     Clause left,right;
+    OrClause clause;
     enterMethod("orOperation()");
 }{
+    ("("(clause = hiddenOrOperation())")") { try{return clause;}finally{exitMethod();} }
+    |
     ((left = strongJoinPrecedence())<OR>(right = looseJoinPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
 }
 
 AndClause andOperation() :{
     Clause left,right;
-    AndClause clause;
     enterMethod("andOperation()");
 }{
-    ("("(clause = hiddenAndOperation())")") { try{return clause;}finally{exitMethod();} }
-    |
     ((left = leafPrecedence())<AND>(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
@@ -201,6 +203,15 @@ AndClause hiddenAndOperation() :{
     ((left = leafPrecedence())(right = hiddenAndOperation())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
     |
     ((left = leafPrecedence())(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+}
+
+OrClause hiddenOrOperation() :{
+    Clause left,right;
+    enterMethod("hiddenOrOperation()");
+}{
+    ((left = leafPrecedence())(right = hiddenOrOperation())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
+    |
+    ((left = strongJoinPrecedence())(right = looseJoinPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
 }
 
 NotClause notOperation() :{

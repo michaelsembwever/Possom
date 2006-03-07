@@ -13,6 +13,7 @@ import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.EmailClause;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
@@ -35,7 +36,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface QueryParser {
-    
+
     /** The Context an QueryParser implementation needs to work off.
      * The QueryParser is not responsible for
      *  - holding the user's orginal inputted query string,
@@ -55,13 +56,21 @@ public interface QueryParser {
         //// Operation creators
 
         /**
+         * Creator wrapper method for DefaultOperatorClause objects.
+         * The methods also allow a chunk of creation logic for the DefaultOperatorClause to be moved
+         * out of the QueryParserImpl.jj file to here.
+         *
+         * @param first the left child clause of the operation clause we are about to create (or find).
+         * @param second the right child clause of the operation clause we are about to create (or find).
+         * @return returns a DefaultOperatorClause matching the term, left and right child clauses.
+         */
+        DefaultOperatorClause createDefaultOperatorClause(final Clause first, final Clause second);
+        /**
          * Creator wrapper method for AndClause objects.
          * The methods also allow a chunk of creation logic for the AndClause to be moved
          * out of the QueryParserImpl.jj file to here.
          *
          * @param first the left child clause of the operation clause we are about to create (or find).
-         * The current implementation always creates a right-leaning query heirarchy.
-         * Therefore the left child clause to any operation clause must be a LeafClause.
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a AndClause instance matching the term, left and right child clauses.
          */
@@ -72,8 +81,6 @@ public interface QueryParser {
          * out of the QueryParserImpl.jj file to here.
          *
          * @param first the left child clause of the operation clause we are about to create (or find).
-         * The current implementation always creates a right-leaning query heirarchy.
-         * Therefore the left child clause to any operation clause must be a LeafClause.
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a OrOrClauseImplnstance matching the term, left and right child clauses.
          */
@@ -84,8 +91,6 @@ public interface QueryParser {
          * out of the QueryParserImpl.jj file to here.
          *
          * @param first the left child clause of the operation clause we are about to create (or find).
-         * The current implementation always creates a right-leaning query heirarchy.
-         * Therefore the left child clause to any operation clause must be a LeafClause.
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a OrOrClauseImplnstance matching the term, left and right child clauses.
          */
@@ -96,9 +101,6 @@ public interface QueryParser {
          * out of the QueryParserImpl.jj file to here.
          *
          * @param first the left child clause of the operation clause we are about to create (or find).
-         * The current implementation always creates a right-leaning query heirarchy.
-         * Therefore the left child clause to any operation clause must be a LeafClause.
-         * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a AnAndNotClauseImplnstance matching the term, left and right child clauses.
          */
         AndNotClause createAndNotClause(final Clause first);
@@ -108,8 +110,6 @@ public interface QueryParser {
          * out of the QueryParserImpl.jj file to here.
          *
          * @param first the left child clause of the operation clause we are about to create (or find).
-         * The current implementation always creates a right-leaning query heirarchy.
-         * Therefore the left child clause to any operation clause must be a LeafClause.
          * @return returns a NNotClauseImplinstance matching the term, left and right child clauses.
          */
         NotClause createNotClause(final Clause first);
@@ -188,7 +188,7 @@ public interface QueryParser {
         EmailClause createEmailClause(final String term, final String field);
     }
 
-    
+
     /** Get the Query.
      *
      *@return the Query object.

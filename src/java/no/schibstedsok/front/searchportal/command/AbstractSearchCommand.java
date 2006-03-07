@@ -14,6 +14,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
@@ -272,6 +273,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
     protected void visitImpl(final OrClause clause) {
         clause.getFirstClause().accept(this);
+        sb.append(" OR ");
+        clause.getSecondClause().accept(this);
+    }
+    protected void visitImpl(final DefaultOperatorClause clause) {
+        clause.getFirstClause().accept(this);
         sb.append(' ');
         clause.getSecondClause().accept(this);
     }
@@ -470,6 +476,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
         protected void visitImpl(final OperationClause clause) {
             clause.getFirstClause().accept(this);
+        }
+        protected void visitImpl(final DefaultOperatorClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
         }
         protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);

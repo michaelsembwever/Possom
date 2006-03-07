@@ -10,6 +10,7 @@ import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
+import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
@@ -52,7 +53,7 @@ public final class TestVisitor extends TestCase {
                     public Properties getApplicationProperties() {
                         return FileResourcesSearchTabsCreatorTest.valueOf(Site.DEFAULT).getProperties();
                     }
-                    
+
                     public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                         return FileResourceLoader.newPropertiesLoader(this, resource, properties);
                     }
@@ -61,10 +62,10 @@ public final class TestVisitor extends TestCase {
                         return FileResourceLoader.newXStreamLoader(this, resource, xstream);
                     }
 
-                    public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                         return FileResourceLoader.newDocumentLoader(this, resource, builder);
                     }
-                    
+
                     public Site getSite()  {
                         return Site.DEFAULT;
                     }
@@ -95,94 +96,94 @@ public final class TestVisitor extends TestCase {
     public void testAndOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123");
+                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR magnus eklund OR 123",
+                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" magnus eklund OR 123");
     }
-    
+
     public void testAndOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123",
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" OR magnus eklund 123",
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123");
     }
-    
+
     public void testAndOrNotAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus eklund oslo magnus AND eklund NOT 123",
                 "firstname:magnus eklund oslo magnus AND eklund NOT 123",
                 "firstname:magnus eklund oslo magnus AND eklund NOT 123");
     }
-    
+
     public void testOrAgainstQueryParser() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys");
     }
-    
+
     public void testNotOrAgainstQueryParser() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys");
     }
-    
+
     public void testAndNotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys",
                 "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys",
                 "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys");
     }
-    
+
     public void testAndNotOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys");
     }
-    
+
     public void testAndnotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys",
                 "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys",
                 "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys");
     }
-    
+
     public void testAndAndnotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys",
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys",
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys");
     }
-    
+
     public void testAndAndnotNotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys",
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys",
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys");
     }
-    
+
     public void testAndAndnotNotOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys",
                 "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys",
                 "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys");
     }
-    
+
     public void testPhoneNumberAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "92221689",
                 "92221689",
                 "92221689");
     }
-    
+
     public void testPhoneNumberAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "9222 1689",
-                "92221689 9222 1689",
+                "92221689 OR 9222 1689",
                 "92221689 9222 1689");
     }
-    
+
     public void testPhoneNumberAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "+47 9222 1689",
@@ -193,9 +194,9 @@ public final class TestVisitor extends TestCase {
     private void basicQueryParserWithTestVisitorImpl(
             final String queryInput,
             final String visitorResult,
-            final String rootTerm){
-        
-    
+            final String rootTerm) {
+
+
         LOG.info("Starting testBasicQueryParser with input: " + queryInput);
 
         final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
@@ -207,7 +208,7 @@ public final class TestVisitor extends TestCase {
                     public Properties getApplicationProperties() {
                         return FileResourcesSearchTabsCreatorTest.valueOf(Site.DEFAULT).getProperties();
                     }
-                    
+
                     public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                         return FileResourceLoader.newPropertiesLoader(this, resource, properties);
                     }
@@ -216,10 +217,10 @@ public final class TestVisitor extends TestCase {
                         return FileResourceLoader.newXStreamLoader(this, resource, xstream);
                     }
 
-                    public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                         return FileResourceLoader.newDocumentLoader(this, resource, builder);
                     }
-                    
+
                     public Site getSite()  {
                         return Site.DEFAULT;
                     }
@@ -272,7 +273,7 @@ public final class TestVisitor extends TestCase {
             sb.append("NOT ");
             clause.getFirstClause().accept(this);
         }
-        
+
         protected void visitImpl(final AndNotClause clause) {
             sb.append("ANDNOT ");
             clause.getFirstClause().accept(this);
@@ -294,6 +295,12 @@ public final class TestVisitor extends TestCase {
         }
 
         protected void visitImpl(final OrClause clause) {
+            clause.getFirstClause().accept(this);
+            sb.append(" OR ");
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final DefaultOperatorClause clause) {
             clause.getFirstClause().accept(this);
             sb.append(" ");
             clause.getSecondClause().accept(this);

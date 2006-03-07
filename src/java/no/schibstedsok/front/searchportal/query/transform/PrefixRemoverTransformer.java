@@ -18,9 +18,9 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @version <tt>$Revision$</tt>
  */
 public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
-    
+
    private static final Collection defaultPrefixes = Collections.unmodifiableCollection(
-           Arrays.asList( 
+Arrays.asList(
                new TokenPredicate[] {
                 TokenPredicate.SITEPREFIX,
                 TokenPredicate.CATALOGUEPREFIX,
@@ -32,18 +32,18 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
         }));
 
     private Collection/*<String>*/ prefixes = new ArrayList/*<String>*/();
-    private Collection/*<TokenPredicate>*/ customPrefixes ;
+    private Collection/*<TokenPredicate>*/ customPrefixes;
 
     private static final String BLANK = "";
 
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
-    
+
     protected void visitImpl(final PhraseClause clause) {
         // don't remove prefix if it is infact a phrase.
     }
-    
+
     protected void visitImpl(final LeafClause clause) {
         if (clause == getContext().getQuery().getFirstLeafClause()) {
             for (final Iterator iterator = getPrefixesIterator(); iterator.hasNext();) {
@@ -58,18 +58,18 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
         }
     }
-    
-    private Iterator getPrefixesIterator(){
-        synchronized( this ){
-            if( customPrefixes == null && prefixes != null && prefixes.size() >0 ){
+
+    private Iterator getPrefixesIterator() {
+        synchronized (this) {
+            if (customPrefixes == null && prefixes != null && prefixes.size() > 0) {
                 final Collection/*<TokenPredicate>*/ cp = new ArrayList();
                 for (final Iterator iterator = prefixes.iterator(); iterator.hasNext();) {
-                    cp.add( TokenPredicate.valueOf( (String) iterator.next() ) );
+                    cp.add(TokenPredicate.valueOf((String) iterator.next()));
                 }
                 customPrefixes = Collections.unmodifiableCollection(cp);
             }
         }
-        return (prefixes != null && prefixes.size() >0
+        return (prefixes != null && prefixes.size() > 0
                 ? customPrefixes
                 : defaultPrefixes).iterator();
     }
