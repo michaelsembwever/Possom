@@ -12,6 +12,9 @@ package no.schibstedsok.front.searchportal.filters;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -46,6 +49,13 @@ public final class SiteLocatorFilter implements Filter {
     private static final String DEBUG_REDIRECTING_TO = " redirect to ";
 
     private static final String HTTP = "http://";
+
+    private static final String PUBLISH_DIR = "img/";
+
+    private static final Collection/*<String>*/ EXTERNAL_DIRS =
+            Collections.unmodifiableCollection(Arrays.asList(new String[]{
+                PUBLISH_DIR, "css/", "images/", "javascript/"
+    }));
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
@@ -91,7 +101,7 @@ public final class SiteLocatorFilter implements Filter {
             final FilterChain chain)
                 throws IOException, ServletException {
 
-        LOG.trace("doFilter()");
+        LOG.trace("doFilter(..)");
 
         try  {
 
@@ -102,26 +112,25 @@ public final class SiteLocatorFilter implements Filter {
                 final HttpServletResponse res = (HttpServletResponse) response;
                 final String uri = req.getRequestURI();
                 final String resource = uri.substring(uri.indexOf('/', 1) + 1);
+                final String rscDir = resource != null && resource.indexOf('/') >= 0
+                        ? resource.substring(0, resource.indexOf('/')+1)
+                        : null;
 
-                if (resource != null && (
-                        resource.startsWith("css/")
-                        || resource.startsWith("images/")
-                        || resource.startsWith("javascript/")
-                        || resource.startsWith("publish/"))) {
+                if (rscDir != null && EXTERNAL_DIRS.contains(rscDir) ) {
 
-                    // search-front-config is responsible for this.
-                        // But first we must find which layer will serve it.
+                    // This URL does not belong to search-front-html
                     final Site site = (Site) req.getAttribute(Site.NAME_KEY);
                     String url = "";
-                    
-                    if( resource.startsWith("publish/") ){
-                        
-                        url = XMLSearchTabsCreator.valueOf(site).getProperties()
-                            .getProperty(SearchConstants.PUBLISH_SYSTEM_URL) 
-                            + resource;
-                        
-                    }else{
 
+                    if (resource.startsWith(PUBLISH_DIR)) { // publishing system
+                        // the publishing system is responsible for this.
+                        url = XMLSearchTabsCreator.valueOf(site).getProperties()
+                            .getProperty(SearchConstants.PUBLISH_SYSTEM_URL)
+                            + resource;
+
+                    }  else  {
+                        // search-front-config is responsible for this.
+                        // But first we must find which layer will serve it.
                         url = HTTP + site.getName() + site.getConfigContext() + resource;
                         if (!urlExists(url)) {
                             url = HTTP + Site.DEFAULT.getName() + Site.DEFAULT.getConfigContext() + resource;
@@ -132,11 +141,11 @@ public final class SiteLocatorFilter implements Filter {
                             }
                         }
                     }
-                    
+
                     if (url != null) {
                         res.sendRedirect(url);
                         LOG.debug(resource + DEBUG_REDIRECTING_TO + url);
-                    }                    
+                    }
 
                 } else  {
                     // request will be processed by search-front-html
@@ -154,8 +163,8 @@ public final class SiteLocatorFilter implements Filter {
             // Don't let anything through without logging it.
             //  Otherwise it ends in a different logfile.
             LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION);
-            for( Throwable t = e; t != null; t = e.getCause() ){
-                LOG.error("",t);
+            for (Throwable t = e; t != null; t = e.getCause()) {
+                LOG.error("", t);
             }
             throw e;
         }
@@ -257,7 +266,7 @@ public final class SiteLocatorFilter implements Filter {
         //  we can't presume they want their webpages in english.
         //  Therefore we must always initially replace english locales with norwegian.
         final Locale requestLocale = servletRequest.getLocale();
-        final Locale locale = "en".equals( requestLocale.getLanguage() )
+        final Locale locale = "en".equals(requestLocale.getLanguage())
                 ? Locale.getDefault()
                 : requestLocale;
 
