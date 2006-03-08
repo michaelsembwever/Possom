@@ -11,7 +11,7 @@
 
 <%  final Site site = (Site) request.getAttribute(Site.NAME_KEY);
     final java.util.Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
-    final Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(site).getProperties()); 
+    final Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(site).getProperties());
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -56,7 +56,7 @@
 <div class="index_center">
     <img src="images/index/logo.jpg" id="logo_index" alt="logo" />
     <div id="index_searchlinks">
-        Sesams&#248;k
+        Netts&#248;k
         <a href="<%=linkpulse.getUrl("?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske Nyheter&amp;userSortBy=datetime&amp;q=", "category:topmenuFront_m", "sgo", "true") %>" onclick="return strep(this);">Nyhetss&#248;k</a>
         <a href="<%=linkpulse.getUrl("?c=y", "category:topmenuFront_y", "sgo", "true") %>" onclick="return strep(this);">Bedriftss&#248;k</a>
         <a href="<%=linkpulse.getUrl("?c=w", "category:topmenuFront_w", "sgo", "true") %>" onclick="return strep(this);">Persons&#248;k</a>
@@ -71,11 +71,11 @@
     <div id="index_enrichment">
         <jsp:include page="indTextIncl.html" />
         <%--c:import url="${props['publishing.system.baseURL']}/indTextIncl.html" charEncoding="UTF-8"/--%>
-        
+
         <div id="footer_space">
             <div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
-            <div id="footer_help">
-                <span class="copy">&copy;2005</span> &nbsp;&nbsp;
+            <div id="footer_index">
+                <span class="copy">&copy;2006</span> &nbsp;&nbsp;
                 <script type="text/javascript" language="JavaScript">
                     if(document.all){
                         document.write(link);
@@ -89,7 +89,7 @@
                 &nbsp;&nbsp;|&nbsp;&nbsp;
                 <a href='<%=linkpulse.getUrl("?c=d&amp;ads_help=true&amp;pg=1&amp;q=", "category:footer_adshelp", "sgo", "true") %>'>Bli annons&#248;r</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href='<%=linkpulse.getUrl("?c=d&amp;q=&amp;about=true&amp;pg=1", "category:footer_aboutUs", "sgo", "true") %>'>Om oss</a>
+                <a href='<%=linkpulse.getUrl("?c=d&amp;q=&amp;about=true&amp;pg=1", "category:footer_aboutUs", "sgo", "true") %>'>Om Sesam</a>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
                 <a href='<%=linkpulse.getUrl("?c=d&amp;q=&amp;help=true&amp;pg=1", "category:footer_help", "sgo", "true") %>'>Hjelp</a>
             </div>
