@@ -42,7 +42,7 @@
             
             <!-- Publishing location -->
 
-            <publishing.system.baseURL>http://searchdev.schibstedsok.no/pub</publishing.system.baseURL>
+            <publishing.system.baseURL>http://loj:foobar@bleedingsearch.schibstedsok.no/pub</publishing.system.baseURL>
             
         </properties>
     </profile>
@@ -70,7 +70,7 @@
 
             <!-- Log4j -->
 
-            <log.directory>/var/log/tomcat/bleedingsearch.sesam.no</log.directory>
+            <log.directory>/var/log/tomcat/bleedingsearch</log.directory>
             <log.file>sesam</log.file>
             <log.level>DEBUG</log.level>
 
