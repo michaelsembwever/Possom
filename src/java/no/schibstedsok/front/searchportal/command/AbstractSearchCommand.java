@@ -57,6 +57,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
    // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
+    private static final Logger STATISTICS_LOG = Logger.getLogger("no.schibstedsok.Statistics");
 
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_TRANSFORMED_QUERY_USED
@@ -141,7 +142,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         final String thread = Thread.currentThread().getName();
         if (getSearchConfiguration().getStatisticsName() != null) {
-            LOG.info("STATISTICS: " + getSearchConfiguration().getStatisticsName());
+            //LOG.info("STATISTICS: " + getSearchConfiguration().getStatisticsName());
             Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticsName() + "]");
         }  else  {
             Thread.currentThread().setName(
@@ -206,6 +207,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             LOG.debug("Hits is " + getSearchConfiguration().getName() + ":" + result.getHitCount());
             LOG.debug("Search " + getSearchConfiguration().getName() + " took " + watch);
         }
+        STATISTICS_LOG.info(
+                "<search-command name=\"" + getSearchConfiguration().getStatisticsName() + "\">"
+                    + "<query>" + context.getQuery().getQueryString() + "</query>"
+                    + "<search-name>"
+                        + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1)
+                        //+getClass().getSimpleName() //JDK1.5
+                    + "</search-name>"
+                    + "<hits>" + result.getHitCount() + "</hits>"
+                + "</search-command>");
 
         for (final Iterator handlerIterator = getSearchConfiguration().getResultHandlers().iterator(); handlerIterator.hasNext();) {
             final ResultHandler resultHandler = (ResultHandler) handlerIterator.next();
@@ -336,7 +346,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final void appendToQueryRepresentation(final String addition) {
         sb.append(addition);
     }
-    
+
     protected final String getTransformedTerm(final Clause clause) {
         return (String) transformedTerms.get(clause);
     }

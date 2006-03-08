@@ -10,8 +10,7 @@ import java.util.Map;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -23,7 +22,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class AnalysisRule {
 
-     private static final Log LOG = LogFactory.getLog(AnalysisRule.class);
+    private static final Logger LOG = Logger.getLogger(AnalysisRule.class);
 
     /** Although we have access to the Predicates through the PredicateScore object it is possible to do set arithmetic
      * when we can access the predicate collection wihtout looping them out first.
@@ -89,7 +88,7 @@ public final class AnalysisRule {
      * @return the score of this rule when applied to query.
      */
     public int evaluate(final Query query, final TokenEvaluatorFactory evalFactory) {
-        final int score = 0;
+        int score = 0;
 
         // we're done with parsing individual terms.
         //  we need to do this to ensure possible predicates are now checked against the whole query string.
@@ -109,9 +108,9 @@ public final class AnalysisRule {
 
         if (query != null) {
             scorer.visit(query.getRootClause());
-            return scorer.getScore();
-        } else {
-            return 0;
+            score = scorer.getScore();
         }
+
+        return score;
     }
 }

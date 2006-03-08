@@ -4,7 +4,7 @@
  */
 package no.schibstedsok.front.searchportal.query.run;
 
-import com.thoughtworks.xstream.XStream;
+
 import edu.emory.mathcs.backport.java.util.concurrent.CancellationException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,21 +14,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
-import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import no.schibstedsok.front.searchportal.analyzer.AnalysisRuleFactory;
 import no.schibstedsok.front.searchportal.configuration.SearchConfigurationContext;
-import no.schibstedsok.front.searchportal.configuration.SearchTabs;
-import no.schibstedsok.front.searchportal.configuration.SearchTabsCreator;
 import no.schibstedsok.front.searchportal.query.QueryContext;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.parser.TokenMgrError;
-import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.ReportingTokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
@@ -37,12 +32,7 @@ import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
-import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
-import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.executor.SearchTask;
-import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
@@ -52,7 +42,6 @@ import no.schibstedsok.front.searchportal.query.token.VeryFastTokenEvaluator;
 import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
-import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.log4j.Logger;
 
 /**
@@ -65,6 +54,7 @@ import org.apache.log4j.Logger;
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
+    private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.front.searchportal.analyzer.Analysis");
 
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
 
@@ -117,11 +107,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         }
                     }
         });
-        
+
         // This will among other things perform the initial fast search
         // for textual analysis.
         tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
-        
+
         // queryStr parser
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
             public TokenEvaluatorFactory getTokenEvaluatorFactory() {
@@ -152,7 +142,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     public List getGeographicMatches() {
-        List matches = new ArrayList();
+        final List matches = new ArrayList();
 
         matches.addAll(getTokenMatches("geolocal"));
         matches.addAll(getTokenMatches("geoglobal"));
@@ -208,7 +198,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             final Collection commands = new ArrayList();
 
-            for (Iterator iterator = context.getSearchMode().getSearchConfigurations().iterator(); iterator.hasNext();) {
+            ANALYSIS_LOG.info("<analyse><query>" + queryStr + "</query>");
+
+            for (final Iterator iterator = context.getSearchMode().getSearchConfigurations().iterator(); iterator.hasNext();) {
                 final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
 
                 final SearchCommand.Context searchCmdCxt = (SearchCommand.Context) ContextWrapper.wrap(
@@ -258,6 +250,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Score for " + searchConfiguration.getName() + " is " + newScore);
                         }
+                        ANALYSIS_LOG.info(
+                                "<analysis name=\"" + searchConfiguration.getRule() + "\">"
+                                    + "<score>" + newScore + "</score>"
+                                + "</analysis>");
 
                         scores.put(searchConfiguration.getName(), new Integer(newScore));
 
@@ -288,6 +284,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 }
             }
 
+            ANALYSIS_LOG.info("</analyse>");
+
             if (LOG.isDebugEnabled()) {
                 // [HACK] we using the assumption that EXACTFIRST is a FastTokenPredicate so we can directly access
                 //  the VeryFastTokenEvaluator for debugging purposes.
@@ -296,7 +294,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 final Set/*<String>*/ untouchedFastTokens = vfte.getUntouchedTokens();
                 if (untouchedFastTokens.size() > 0) {
                     LOG.debug("Listing untouched VeryFast Tokens... (All VeryFast Tokens remain untouched if clauses are WeakReference cached)");
-                    for (Iterator it = untouchedFastTokens.iterator(); it.hasNext();) {
+                    for (final Iterator it = untouchedFastTokens.iterator(); it.hasNext();) {
                         LOG.debug("Untouched VeryFast Token -> " + it.next());
                     }
                 }
@@ -309,7 +307,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()
-            for (Iterator iterator = results.iterator(); iterator.hasNext();) {
+            for (final Iterator iterator = results.iterator(); iterator.hasNext();) {
                 final SearchTask task = (SearchTask) iterator.next();
 
                 final SearchCommand command = task.getCommand();
@@ -349,7 +347,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         if (LOG.isTraceEnabled()) {
             LOG.trace("getSingleParameter()");
         } //</editor-fold>
-        String[] param = (String[]) parameters.get(paramName);
+        final String[] param = (String[]) parameters.get(paramName);
 
         if (param != null) {
             return param[0];
