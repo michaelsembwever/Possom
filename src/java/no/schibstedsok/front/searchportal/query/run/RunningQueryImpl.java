@@ -234,6 +234,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
                         }
+                        
+                        ANALYSIS_LOG.info(
+                                " <analysis name=\"" + searchConfiguration.getRule() + "\">");
 
                         LOG.debug("Scoring old style for " + searchConfiguration.getRule());
                         final int oldScore = rule.evaluate(queryStr, tokenEvaluatorFactory);
@@ -250,10 +253,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Score for " + searchConfiguration.getName() + " is " + newScore);
                         }
-                        ANALYSIS_LOG.info(
-                                "<analysis name=\"" + searchConfiguration.getRule() + "\">"
-                                    + "<score>" + newScore + "</score>"
-                                + "</analysis>");
+                        ANALYSIS_LOG.info("  <score>" + newScore + "</score>");
+                        ANALYSIS_LOG.info(" </analysis>");
 
                         scores.put(searchConfiguration.getName(), new Integer(newScore));
 

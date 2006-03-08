@@ -22,8 +22,7 @@ import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** Responsible for Visiting the Query and scoring a total according
  *   to the rule's predicateScores listed in the context.
@@ -51,7 +50,8 @@ public final class Scorer extends AbstractReflectionVisitor {
 
     }
 
-    private static final Log LOG = LogFactory.getLog(Scorer.class);
+    private static final Logger LOG = Logger.getLogger(Scorer.class);
+    private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.front.searchportal.analyzer.Analysis");    
 
     private int score = 0;
     private boolean additivity = true;
@@ -164,6 +164,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         touchedPredicates.add(predicateScore.getPredicate());
 
         LOG.debug(DEBUG_UPDATE_SCORE + predicateScore.getPredicate() + " adds " + predicateScore.getScore());
+        ANALYSIS_LOG.info("  <predicate-add name=\"" + predicateScore.getPredicate() +"\">"+predicateScore.getScore()+"</predicate>");
     }
 
     private void minusScore(final PredicateScore predicateScore) {
@@ -171,5 +172,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         touchedPredicates.add(predicateScore.getPredicate());
 
         LOG.debug(DEBUG_UPDATE_SCORE + predicateScore.getPredicate() + " minus " + predicateScore.getScore());
+        ANALYSIS_LOG.info("  <predicate-minus name=\"" + predicateScore.getPredicate() +"\">"+predicateScore.getScore()+"</predicate>");
+
     }
 }
