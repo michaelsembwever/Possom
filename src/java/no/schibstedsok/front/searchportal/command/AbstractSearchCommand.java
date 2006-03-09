@@ -149,117 +149,121 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     thread + " [" + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1) + "]");
                     //thread+" ["+getClass().getSimpleName()+"]"); //JDK1.5
         }
+        try{
+            
 
-        LOG.trace("call()");
-        final String queryToUse = getSearchConfiguration().getUseParameterAsQuery() != null
-                ? getSingleParameter(getSearchConfiguration().getUseParameterAsQuery())
-                : context.getQuery().getQueryString();
+            LOG.trace("call()");
+            final String queryToUse = getSearchConfiguration().getUseParameterAsQuery() != null
+                    ? getSingleParameter(getSearchConfiguration().getUseParameterAsQuery())
+                    : context.getQuery().getQueryString();
 
 
 
-        if (getSearchConfiguration().getUseParameterAsQuery() != null) {
-            // OOBS. It's not the query we are looking for but a string held
-            // in a different parameter.
-            transformedQuery = queryToUse;
-            final Query query = createQuery(queryToUse);
-            transformedTerms.clear();
-            // re-initialise map with new query's terms.
-            final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
-            mapInitialisor.visit(query.getRootClause());
-            applyQueryTransformers(query, getSearchConfiguration().getQueryTransformers());
-        }  else  {
-            applyQueryTransformers(context.getQuery(), getSearchConfiguration().getQueryTransformers());
-        }
-
-        StopWatch watch = null;
-
-        if (LOG.isDebugEnabled()) {
-            watch = new StopWatch();
-            watch.start();
-        }
-        //SearchResult result = null;
-
-        //TODO: Hide this in QueryRule.execute(some parameters)
-        boolean executeQuery = false;
-
-        if (queryToUse.length() > 0) {
-            executeQuery = true;
-        }
-        if (parameters.get("contentsource") != null) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("call: Got contentsource, executeQuery=true");
+            if (getSearchConfiguration().getUseParameterAsQuery() != null) {
+                // OOBS. It's not the query we are looking for but a string held
+                // in a different parameter.
+                transformedQuery = queryToUse;
+                final Query query = createQuery(queryToUse);
+                transformedTerms.clear();
+                // re-initialise map with new query's terms.
+                final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
+                mapInitialisor.visit(query.getRootClause());
+                applyQueryTransformers(query, getSearchConfiguration().getQueryTransformers());
+            }  else  {
+                applyQueryTransformers(context.getQuery(), getSearchConfiguration().getQueryTransformers());
             }
-            executeQuery = true;
+
+            StopWatch watch = null;
+
+            if (LOG.isDebugEnabled()) {
+                watch = new StopWatch();
+                watch.start();
+            }
+            //SearchResult result = null;
+
+            //TODO: Hide this in QueryRule.execute(some parameters)
+            boolean executeQuery = false;
+
+            if (queryToUse.length() > 0) {
+                executeQuery = true;
+            }
+            if (parameters.get("contentsource") != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("call: Got contentsource, executeQuery=true");
+                }
+                executeQuery = true;
+            }
+
+            if (filter != null) {
+                executeQuery = true;
+            }
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("call(): ExecuteQuery?" + executeQuery);
+            }
+            final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
+
+            if (LOG.isDebugEnabled()) {
+                watch.stop();
+
+                LOG.debug("Hits is " + getSearchConfiguration().getName() + ":" + result.getHitCount());
+                LOG.debug("Search " + getSearchConfiguration().getName() + " took " + watch);
+            }
+            STATISTICS_LOG.info(
+                    "<search-command name=\"" + getSearchConfiguration().getStatisticsName() + "\">"
+                        + "<query>" + context.getQuery().getQueryString() + "</query>"
+                        + "<search-name>"
+                            + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1)
+                            //+getClass().getSimpleName() //JDK1.5
+                        + "</search-name>"
+                        + "<hits>" + result.getHitCount() + "</hits>"
+                    + "</search-command>");
+
+            for (final Iterator handlerIterator = getSearchConfiguration().getResultHandlers().iterator(); handlerIterator.hasNext();) {
+                final ResultHandler resultHandler = (ResultHandler) handlerIterator.next();
+                final ResultHandler.Context resultHandlerContext = new ResultHandler.Context() {
+                    // <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
+                    public SearchResult getSearchResult() {
+                        return result;
+                    }
+
+                    public Site getSite() {
+                        return context.getSite();
+                    }
+
+                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                        return context.newPropertiesLoader(resource, properties);
+                    }
+
+                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                        return context.newXStreamLoader(resource, xstream);
+                    }
+
+                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                        return context.newDocumentLoader(resource, builder);
+                    }
+
+                    public Query getQuery() {
+                        return context.getQuery();
+                    }
+                    /** @deprecated implementations should be using the QueryContext instead! */
+                    public String getQueryString() {
+                        return context.getRunningQuery().getQueryString();
+                    }
+
+                    public void addSource(final Modifier modifier) {
+                        context.getRunningQuery().addSource(modifier);
+                    }
+                    // </editor-fold>
+                };
+                resultHandler.handleResult(resultHandlerContext, parameters);
+            }
+            return result;
+            
+        }finally{
+            // restore thread name
+            Thread.currentThread().setName(thread);
         }
-
-        if (filter != null) {
-            executeQuery = true;
-        }
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("call(): ExecuteQuery?" + executeQuery);
-        }
-        final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
-
-        if (LOG.isDebugEnabled()) {
-            watch.stop();
-
-            LOG.debug("Hits is " + getSearchConfiguration().getName() + ":" + result.getHitCount());
-            LOG.debug("Search " + getSearchConfiguration().getName() + " took " + watch);
-        }
-        STATISTICS_LOG.info(
-                "<search-command name=\"" + getSearchConfiguration().getStatisticsName() + "\">"
-                    + "<query>" + context.getQuery().getQueryString() + "</query>"
-                    + "<search-name>"
-                        + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1)
-                        //+getClass().getSimpleName() //JDK1.5
-                    + "</search-name>"
-                    + "<hits>" + result.getHitCount() + "</hits>"
-                + "</search-command>");
-
-        for (final Iterator handlerIterator = getSearchConfiguration().getResultHandlers().iterator(); handlerIterator.hasNext();) {
-            final ResultHandler resultHandler = (ResultHandler) handlerIterator.next();
-            final ResultHandler.Context resultHandlerContext = new ResultHandler.Context() {
-                // <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
-                public SearchResult getSearchResult() {
-                    return result;
-                }
-
-                public Site getSite() {
-                    return context.getSite();
-                }
-
-                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                    return context.newPropertiesLoader(resource, properties);
-                }
-
-                public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                    return context.newXStreamLoader(resource, xstream);
-                }
-
-                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                    return context.newDocumentLoader(resource, builder);
-                }
-
-                public Query getQuery() {
-                    return context.getQuery();
-                }
-                /** @deprecated implementations should be using the QueryContext instead! */
-                public String getQueryString() {
-                    return context.getRunningQuery().getQueryString();
-                }
-
-                public void addSource(final Modifier modifier) {
-                    context.getRunningQuery().addSource(modifier);
-                }
-                // </editor-fold>
-            };
-            resultHandler.handleResult(resultHandlerContext, parameters);
-        }
-
-        // restore thread name
-        Thread.currentThread().setName(thread);
-        return result;
     }
 
    // AbstractReflectionVisitor overrides ----------------------------------------------

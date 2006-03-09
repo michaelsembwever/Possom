@@ -343,11 +343,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 Collections.sort(sources);    
             }else{
                 // maybe we can modify the query to broaden the search
-                // if (queryStr contains DefaultClause)
                 // replace all DefaultClause with an OrClause 
                 //  [simply done with wrapping the query string inside ()'s ]
                 // create and run a new RunningQueryImpl
-                    // similar code to the latter half of SearchServlet.
+                if( !queryStr.startsWith("(") && !queryStr.endsWith(")") ){
+                    new RunningQueryImpl(context,'('+queryStr+')', parameters).run();
+                }
             }
             
         } catch (Exception e) {
