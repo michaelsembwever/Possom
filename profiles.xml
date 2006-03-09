@@ -39,11 +39,7 @@
             <!-- Mail -->
 
             <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-            
-            <!-- Publishing location -->
 
-            <publishing.system.baseURL>http://loj:foobar@bleedingsearch.schibstedsok.no/pub</publishing.system.baseURL>
-            
         </properties>
     </profile>
     
@@ -88,10 +84,6 @@
 
             <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
             
-            <!-- Publishing location -->
-
-            <publishing.system.baseURL>http://searchdev.schibstedsok.no/pub</publishing.system.baseURL>
-
             <!-- Trade doubler -->
             
             <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -140,10 +132,6 @@
             <!-- Mail -->
 
             <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-            
-            <!-- Publishing location -->
-
-            <publishing.system.baseURL>http://www.sesam.no/pub</publishing.system.baseURL>
 
             <!-- Trade doubler -->
             

@@ -126,7 +126,7 @@ public final class SiteLocatorFilter implements Filter {
                         // the publishing system is responsible for this.
                         url = XMLSearchTabsCreator.valueOf(site).getProperties()
                             .getProperty(SearchConstants.PUBLISH_SYSTEM_URL)
-                            + resource;
+                            + '/' + resource;
 
                     }  else  {
                         // search-front-config is responsible for this.

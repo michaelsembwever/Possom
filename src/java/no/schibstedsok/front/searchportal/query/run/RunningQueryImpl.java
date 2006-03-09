@@ -253,7 +253,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         if (LOG.isDebugEnabled()) {
                             LOG.debug("Score for " + searchConfiguration.getName() + " is " + newScore);
                         }
-                        ANALYSIS_LOG.info("  <score>" + newScore + "</score>");
+                        if(newScore != 0 ){ ANALYSIS_LOG.info("  <score>" + newScore + "</score>"); }
                         ANALYSIS_LOG.info(" </analysis>");
 
                         scores.put(searchConfiguration.getName(), new Integer(newScore));
@@ -308,6 +308,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()
+            boolean hitsToShow = false;
             for (final Iterator iterator = results.iterator(); iterator.hasNext();) {
                 final SearchTask task = (SearchTask) iterator.next();
 
@@ -319,7 +320,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         final SearchResult searchResult = (SearchResult) task.get();
 
                         if (searchResult != null) {
-
+                            hitsToShow |= searchResult.getHitCount()>0;
+                            
                             hits.put(configuration.getName(), new Integer(searchResult.getHitCount()));
 
                             final Integer score = (Integer) scores.get(task.getCommand().getSearchConfiguration().getName());
@@ -336,8 +338,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     }
                 }
             }
-            Collections.sort(enrichments);
-            Collections.sort(sources);
+            if( hitsToShow ){
+                Collections.sort(enrichments);
+                Collections.sort(sources);    
+            }else{
+                // maybe we can modify the query to broaden the search
+                // if (queryStr contains DefaultClause)
+                // replace all DefaultClause with an OrClause 
+                //  [simply done with wrapping the query string inside ()'s ]
+                // create and run a new RunningQueryImpl
+                    // similar code to the latter half of SearchServlet.
+            }
+            
         } catch (Exception e) {
             LOG.error("Failure to run query.", e);
         }

@@ -27,6 +27,7 @@
     String contentsource = (String) request.getParameter("contentsource");
     String qURLEncoded = URLEncoder.encode(q, "utf-8");
     q = StringEscapeUtils.escapeHtml(q);
+    boolean publish = null != request.getParameter("page");
     String help = request.getParameter("help");
     String about = request.getParameter("about");
     String ads_help = request.getParameter("ads_help");
@@ -523,7 +524,9 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
 
 
                          <%--  Sok smart  --%>
-                         <% if ("true".equals(smart)) { %>
+                         <% if ( publish ) { %>
+                            <decorator:getProperty property="page.publishing_page"/>
+                         <% } else if ("true".equals(smart)) { %>
                             <decorator:getProperty property="page.smart"/>
                          <% } else if ("true".equals(help)) { %>
                              <decorator:getProperty property="page.help"/>

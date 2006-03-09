@@ -11,6 +11,7 @@ package no.schibstedsok.front.searchportal.velocity;
 import java.util.HashMap;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.InfrastructureException;
+import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
@@ -53,6 +54,7 @@ public final class VelocityEngineFactory {
         
         try{
             final Logger logger = Logger.getLogger(VELOCITY_LOG_CATEGORY);
+            final java.util.Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
             engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
             engine.setProperty("runtime.log.logsystem.log4j.category", logger.getName());
             engine.setProperty(Velocity.RESOURCE_LOADER, "url");
@@ -62,8 +64,10 @@ public final class VelocityEngineFactory {
             engine.setProperty("velocimacro.library", site.getTemplateDir()+"/VM_global_library.vm");
             engine.setProperty("url.site", site);
             engine.setProperty("url.site.fallback",Site.DEFAULT);
+            engine.setProperty("publishing.system.baseURL", props.getProperty("publishing.system.baseURL"));
+            engine.setProperty("publishing.system.host-header", props.getProperty("publishing.system.host-header"));
             engine.setProperty("input.encoding", "UTF-8");
-            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.velocity.CapitalizeWordsDirective");
+            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.velocity.PublishDirective");
             engine.init();
             
         } catch (Exception e) {
