@@ -67,6 +67,10 @@
     if (hits_y_int != null) {
         int_y_hits = hits_y_int.intValue();
     }
+
+    String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
+    if (currentC.equals("y")) searchButton = "../tradedoubler/searchbox/button-company.png";
+    else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-person.png";
 %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -135,6 +139,8 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
             currentC.equals("d") && "nrk".equals(ss) ||
             currentC.equals("d") && "af".equals(ss) ||
             currentC.equals("d") && "fv".equals(ss) ||
+            currentC.equals("d") && "aa".equals(ss) ||
+            currentC.equals("d") && "bt".equals(ss) ||
             currentC.equals("d") && "it".equals(ss)) { %>
 
 
@@ -147,7 +153,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.dinside.no/data/">Data</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/reise/">Reise</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/motor/">Motor</a><span>|</span></li>
-                        <li><a href="http://www.dinside.no/okonomi/">Økonomi</a><span>|</span></li>
+                        <li><a href="http://www.dinside.no/okonomi/">�konomi</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/jobb/">Jobb</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/bolig/">Bolig</a></li>
                     </ul>
@@ -190,7 +196,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.itavisen.no/bransjen/">IT-bransjen</a></li>
                     </ul>
                 <% } else if ("nrk".equals(ss)) { %>
-                    <a href="http://www.nrk.no/"><img id="sitelogo" src="../images/sitesearch/nrk/logo.gif" alt="Nrk logo" /></a>
+                    <a href="http://www.nrk.no/"><img id="sitelogo" src="../images/sitesearch/nrk/logo.gif" alt="Nrk logo" title="Til forsida p� NRK.no" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.nrk.no/nyheter/">Nyheter</a><span>|</span></li>
                         <li><a href="http://www.nrk.no/sport/">Sport</a><span>|</span></li>
@@ -227,6 +233,35 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.fedrelandsvennen.no/meninger/">Meninger</a><span>|</span></li>
                         <li><a href="http://www.fedrelandsvennen.no/nyttig/varet/">V&#230;ret</a></li>
                     </ul>
+                <% } else if ("aa".equals(ss)) { %>
+                    <a href="http://www.adressa.no/"><img id="sitelogo" src="../images/sitesearch/adresseavisen/logo.gif" alt="Adresseavisen logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
+                    <ul id="sitelinks">
+                        <li><a href="http://www.adressa.no/nyheter/">Nyheter</a><span>|</span></li>
+                        <li><a href="http://www.adressa.no/nyheter/trondheim/">Trondheim</a><span>|</span></li>
+                        <li><a href="http://www.adressa.no/kultur/">Kultur</a><span>|</span></li>
+                        <li><a href="http://www.adressa.no/sport/">Sport</a><span>|</span></li>
+                        <li><a href="http://fotball.adressa.no/">Fotball</a><span>|</span></li>
+                        <li><a href="http://www.adressa.no/forbruker/">Forbruker</a><span>|</span></li>
+                        <li><a href="http://www.adressa.no/forbruker/sexogsamliv/">Sex og samliv</a><span>|</span></li>
+                        <li><a href="http://www.adressa.no/forbruker/reiseliv/">Reiseliv</a><span>|</span></li>
+                        <li><a href="ttp://www.adressa.no/forbruker/bil/">Bil</a><span>|</span></li>
+                        <li><a href="http://www.adressa.no/forbruker/digital/">Teknologi</a></li>
+                    </ul>
+                <% } else if ("bt".equals(ss)) { %>
+                    <a href="http://www.bt.no/"><img id="sitelogo" src="../images/sitesearch/bt/logo.png" alt="Bergens Tidende logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
+                    <ul id="sitelinks">
+                        <li><a href="http://www.bt.no/lokalt">Lokalt</a><span>|</span></li>
+                        <li><a href="http://www.bt.no/innenriks">Innenriks</a><span>|</span></li>
+                        <li><a href="http://www.bt.no/utenriks">Utenriks</a><span>|</span></li>
+                        <li><a href="http://www.bt.no/sport">Sport</a><span>|</span></li>
+                        <li><a href="http://www.bt.no/kultur">Kultur</a><span>|</span></li>
+                        <li><a href="http://www.bt.no/okonomi">&#216;konomi</a><span>|</span></li>
+                        <li><a href="http://www.bt.no/bergenpuls">Bergenpuls</a><span>|</span></li>
+                        <li><a href="http://www.bt.no/forbruker">Forbruker</a><span>|</span></li>
+                        <li><a href="http://www.bt.no/kamera">Webkamera</a></li>
+                    </ul>
                 <% } %>
                 <decorator:getProperty property="page.search-bar"/>
 
@@ -245,7 +280,9 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                                 <% } else if ("im".equals(ssr)) { %> iMarkedet:
                                 <% } else if ("nrk".equals(ssr)) { %> NRK:
                                 <% } else if ("af".equals(ssr)) { %> Aftenposten:
-                                <% } else if ("af".equals(ssr)) { %> F&#230;drelandsvennen:
+                                <% } else if ("fv".equals(ssr)) { %> F&#230;drelandsvennen:
+                                <% } else if ("aa".equals(ssr)) { %> Addresseavisen:
+                                <% } else if ("bt".equals(ssr)) { %> Bergens Tidende:
                                 <% } else if ("d".equals(ssr)) { %> Nettet:
                                 <% } %>
                             </span>
@@ -331,111 +368,79 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
 
     <% } else { %>
 
-<div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
+<decorator:getProperty property="page.search-bar"/>
 
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
+    <%if (q.trim().equals("") && !currentC.equals("m")) {%>
     <tr>
-        <td width="180"><a href="../"><img src="../images/logo.jpg" width="146" height="44" alt="" /></a></td>
-        <td width="24"><img src="../images/pix.gif" width="24" height="60" alt="" /></td>
-        <td id="linkback" valign="bottom">
-            <%if (currentC.equals("d")) {%>Sesams&#248;k<%} else {%><a href="?c=d&amp;q=<%=qURLEncoded%>" onclick="return strep(this);">Sesams&#248;k</a><% } %>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <%if (currentC.equals("m")) {%>Nyhetss&#248;k<%} else { %><a href="?nav_sources=contentsourcenavigator&amp;c=m&amp;q=<%=qURLEncoded%>"  onclick="return strep(this);">Nyhetss&#248;k</a><% } %>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <%if (currentC.equals("y") || currentC.equals("yip")) {%>Bedriftss&#248;k<%} else {%><a href="?c=y&amp;q=<%=qURLEncoded%>"  onclick="return strep(this);">Bedriftss&#248;k</a><% } %>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <%if (currentC.equals("w") || currentC.equals("wip")) {%>Persons&#248;k<%} else {%><a href="?c=w&amp;q=<%=qURLEncoded%>"  onclick="return strep(this);">Persons&#248;k</a><% } %>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <%if (currentC.equals("p")) {%>Bildes&#248;k<%} else {%><a href="?c=p&amp;q=<%=qURLEncoded%>"  onclick="return strep(this);">Bildes&#248;k</a><% } %>
-        </td>
-        <td>&nbsp;</td>
+        <td class="cell_one">&nbsp;</td>
+        <td class="cell_three">&nbsp;</td>
+        <td class="cell_four">&nbsp;</td>
     </tr>
+    <% }else{ %>
+    <tr>
+        <td class="cell_one"><span class="pad_5l">Sorter treffene dine</span></td>
+        <td class="cell_three"><decorator:getProperty property="page.middle-bar"/></td>
+        <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
+    </tr>
+    <tr>
+	<td colspan="3"><img src="../images/pix.gif" width="100%" height="1" class="lightdots" alt="" /></td>
+    </tr>
+    <tr>
+	<td><img src="../images/pix.gif" border="0" width="204" height="12" /></td>
+	<td><img src="../images/pix.gif" border="0" width="100%" height="12" /></td>
+	<td><img src="../images/pix.gif" border="0" width="204" height="12" /></td>
+    </tr>
+    <% } %>
 
     <tr>
+	<%if (currentC.equals("m") || currentC.equals("d") || !q.trim().equals("")) {%>
         <td class="cell_one" valign="top">
 
             <%if (currentC.equals("y") || currentC.equals("yip")) {%>
-                <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
-                    <tr>
-                        <td colspan="2" class="navbar_menu" id="navbar_menu_y">Bedriftss&#248;k</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
-                    </tr>
-                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?c=d&amp;q=<%=qURLEncoded%>");'>
-                        <td class="nav_pad_icon">
-                            <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
-                            <a href="?c=d&amp;q=<%=qURLEncoded%>" onclick="return strep(this);">Sesams&#248;k</a>
-                        </td>
-                        <td class="nav_pad" align="right">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
-                    </tr>
+                <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
+        		    <% int i=0; %>
                     <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
-                    Modifier e = (Modifier) iterator.next();
+                        Modifier e = (Modifier) iterator.next();
+                        ++i;
                     %>
-                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
+                    <% if(i!=1) {%>
+                            <tr>
+                                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
+                            </tr>
+                    <% } %>
+                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
-                                <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                <img <% if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
-                        <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
-                        </tr>
-                    <%}%>
-                    <% if(int_w_hits > 0) { %>
-                    <% }else{ %>
-                    <tr>
-                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="../images/pix.gif" width="100%" height="25" alt="" /></td>
-                    </tr>
                     <%}%>
                 </table>
-
                 <% if (currentC.equals("yip")) {%>
                     <decorator:getProperty property="page.infopage-nav"/>
                 <% } else { %>
                     <decorator:getProperty property="page.companies-nav"/>
                 <% } %>
-
             <%}else if (currentC.equals("w") || currentC.equals("wip")) {%>
-                <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
-                    <tr>
-                        <td colspan="2" class="navbar_menu" id="navbar_menu_w">Persons&#248;k</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
-                    </tr>
-                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?c=d&amp;q=<%=qURLEncoded%>");'>
-                        <td class="nav_pad_icon">
-                            <img src="../images/nav_d.gif" class="nav_icon" align="left" alt="sesam_icon" />
-                            <a href="?c=d&amp;q=<%=qURLEncoded%>" onclick="return strep(this);">Sesams&#248;k</a>
-                        </td>
-                        <td class="nav_pad" align="right">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
-                    </tr>
-                   <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
-                    Modifier e = (Modifier) iterator.next();
+                <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
+		            <% int i=0; %>
+                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
+                        Modifier e = (Modifier) iterator.next();
+		                ++i;
                     %>
-                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
+                    <% if(i!=1) {%>
+                            <tr>
+                                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
+                            </tr>
+                    <% } %>
+                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                         <td class="nav_pad_icon">
-                            <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } %> class="nav_icon" align="left" alt="" />
+                            <img <% if (e.getName().startsWith("Bedriftss")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
                             <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                         </td>
                         <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
-                    </tr>
-                    <%}%>
-                    <% if(int_y_hits > 0) { %>
-                    <% }else{ %>
-                    <tr>
-                        <td colspan="2" style="padding: 0px; background: #FFFFFF;"><img src="../images/pix.gif" width="100%" height="25" alt="" /></td>
                     </tr>
                     <%}%>
                 </table>
@@ -444,36 +449,53 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                 <% } else { %>
                     <decorator:getProperty property="page.persons-nav"/>
                 <% } %>
-
-            <%}else if (currentC.equals("p")) {%>
-                <decorator:getProperty property="page.picture-nav"/>
-
             <%}else if (currentC.equals("m")) {%>
-                <decorator:getProperty property="page.newsSearchNavigator" />
-                <decorator:getProperty property="page.media-collection-nav"/>
-            <% }else{ %>
-
-                <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
-                        <tr>
-                            <td colspan="2" class="navbar_menu" id="navbar_menu_d">Sesams&#248;k</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
-                        </tr>
-                        <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
+                <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
+		            <% int i=0; %>
+                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                         Modifier e = (Modifier) iterator.next();
-                        %>
-                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#FAFAFA';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
+                        ++i;
+                                %>
+                        <% if(i!=1) {%>
+                                <tr>
+                                    <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
+                                </tr>
+                        <% } %>
+                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
-                                <img <% if (e.getName().equals("Bedriftssøk")) { %> src="../images/nav_y.gif" <% } else if (e.getName().equals("Personsøk")) { %> src="../images/nav_w.gif" <% } else if (e.getName().equals("Bildesøk")) { %> src="../images/nav_p.gif" <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/nav_m.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                <img src="../images/menu/nettsok.gif" class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
                         </tr>
-                        <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
-                        </tr>
+                    <%}%>
+                </table>
+                <decorator:getProperty property="page.newsSearchNavigator" />
+                <decorator:getProperty property="page.media-collection-nav"/>
+            <% }else{ %>
+
+                <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
+		            <% int i = 0; %>
+                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
+                        Modifier e = (Modifier) iterator.next();
+                        if ( (currentC.equals("d") && !e.getName().equals("Netts�k")) || (currentC.equals("d") && searchType != null && searchType.equals("g")) || currentC.equals("p")) {
+                            ++i;
+                    %>
+
+                            <% if(i!=1) {%>
+                                <tr>
+                                    <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
+                                </tr>
+                            <% } %>
+                            <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
+                                <td class="nav_pad_icon">
+                                    <img <% if (e.getName().startsWith("Bedrifts")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Bildes")) { %> src="../images/menu/bilde.gif" <% } else if (e.getName().equals("Verden")) { %> src="../images/menu/nettsok.gif"  <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/menu/nyheter.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                    <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
+                                </td>
+                                <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
+                            </tr>
                         <%}%>
+                    <%}%>
                 </table>
 
                 <decorator:getProperty property="page.relevantQueries" />
@@ -490,14 +512,17 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
 
             <%}%>
         </td>
+	<% } %>
 
-            <td class="cell_two" valign="top"><img src="../images/pix.gif" width="24" height="1" alt="" class="dash_<%=currentC%>" /></td>
-            <%if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")) {%>
+            <!--<td class="cell_two" valign="top"><img src="../images/pix.gif" width="24" height="1" alt="" class="dash_<%=currentC%>" /></td>-->
+	    <%if (currentC.equals("y") && q.trim().equals("")) {%>
+            <td valign="top" colspan="3">
+            <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")) {%>
             <td class="cell_three" valign="top">
             <% }else{ %>
             <td class="cell_three" valign="top" colspan="2">
             <%}%>
-                <decorator:getProperty property="page.search-bar"/>
+                <%--<decorator:getProperty property="page.search-bar"/>--%>
                 <!-- Magic -->
                 <%if (currentC.equals("d")) {%>
 
@@ -507,20 +532,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                             <decorator:getProperty property="page.greybar_smart"/>
                         <% } else if ("true".equals(help)) { %>
                             <decorator:getProperty property="page.greybar_help"/>
-                        <%}else{%>
-                            <% if ("g".equals(searchType)) { %>
-                                <decorator:getProperty property="page.global_greybar"/>
-                             <% } else { %>
-                                 <% if (no_hits > 0) { %>
-                                    <%--  shows the result as usual if 1 or less enrichments  --%>
-                                    <decorator:getProperty property="page.greybar_magic"/>
-                                 <%  } else { %>
-                                    <% if (!q.trim().equals(""))  { %>
-                                        <decorator:getProperty property="page.greybar_magic_enrichment"/>
-                                    <% } %>
-                                 <% } %>
-                             <% } %>
-                         <% } %>  <%--  Help header  --%>
+                        <% } %>  <%--  Help header  --%>
 
 
                          <%--  Sok smart  --%>
@@ -542,7 +554,9 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                          	<decorator:getProperty property="page.tradedoubler"/>
                          <% } else { %>
 
-                         <div id="result_container">
+			<table>
+			<tr>
+                         <td id="result_container">
                              <% if ("n".equals(searchType)) { %>
                                     <% if (no_hits > 0) { %>
                                         <decorator:getProperty property="page.fast-results"/>
@@ -550,13 +564,10 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                                         <decorator:getProperty property="page.noHits"/>
                                     <% } %>
                              <% } else if ("g".equals(searchType)) { %>
-                                    <% if (int_hits > 0) { %>
-                                        <decorator:getProperty property="page.global-results"/>
-                                    <%  } else if(!q.trim().equals("")){ %>
-                                        <decorator:getProperty property="page.noHits"/>
-                                    <% } %>
+                                    <decorator:getProperty property="page.global-results"/>
                              <%  } else { %>
 
+                                <decorator:getProperty property="page.main_ads"/>
                              <!--
                                   Enrichments debugging:
 
@@ -643,16 +654,16 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                                     <% } %>
 
                             <% } %>
-                        </div>
+                        </td>
+			</tr>
+			</table>
                         <% } %>  <%-- Sok smart --%>
                 <%}%>
 
 
 
-                <!-- Media -->
                 <%if (currentC.equals("m")) {%>
-                    <!-- Moreover -->
-                    <%-- <decorator:getProperty property="page.globalNewsEnrichment"/> --%>
+                    <decorator:getProperty property="page.main_ads"/>
                     <decorator:getProperty property="page.media-collection-results"/>
                 <%}%>
 
@@ -682,11 +693,6 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                 <decorator:getProperty property="page.picture-results"/>
                 <%}%>
 
-                <%--  footer  --%>
-                <%if (q==null||!q.trim().equals("")||"m".equals(currentC)) {%>
-                    <decorator:getProperty property="page.verbosePager"/>
-                <%}%>
-
             </td>
 
             <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g")) {%>
@@ -701,6 +707,13 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
 
     </tr>
 </table>
+
+<%--  footer  --%>
+<%if (q==null||!q.trim().equals("")||"m".equals(currentC)) {%>
+<decorator:getProperty property="page.verbosePager"/>
+<%}%>
+
+<decorator:getProperty property="page.footer"/>
 
 <%}%>
 
