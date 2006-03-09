@@ -34,7 +34,7 @@ public class SumFastModifiers implements ResultHandler {
     public void handleResult(final Context cxt, final Map parameters) {
 
         final SearchResult result = cxt.getSearchResult();
-        if (result.getHitCount() > 0) {
+        if (result.getHitCount() >= 0) {
 
             final FastSearchResult fastResult = (FastSearchResult) result;
 
@@ -51,12 +51,10 @@ public class SumFastModifiers implements ResultHandler {
                         iterator.remove();
                     }
                 }
-
-                if (modifier.getCount() > 0) {
-                    fastResult.addModifier(navigatorName, modifier);
-                    Collections.sort(fastResult.getModifiers(navigatorName));
-                }
             }
+            fastResult.addModifier(navigatorName, modifier);
+            Collections.sort(fastResult.getModifiers(navigatorName));
+
         }
     }
 }

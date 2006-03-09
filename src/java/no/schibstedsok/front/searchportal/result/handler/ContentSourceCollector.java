@@ -15,7 +15,7 @@ public class ContentSourceCollector implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        if (cxt.getSearchResult().getHitCount() > 0) {
+        if (cxt.getSearchResult().getHitCount() >= 0) {
 
             final FastSearchResult fastResult = (FastSearchResult) cxt.getSearchResult();
 
