@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.Clause;
@@ -33,6 +34,8 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
+    
+    private final Hint hint;
 
     static {
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(new ArrayList());
@@ -56,6 +59,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
     public static XorClauseImpl createXorClause(
         final Clause first,
         final Clause second,
+        final Hint hint,
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
@@ -74,14 +78,40 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
 
-        // use helper method from AbstractLeafClause
-        return (XorClauseImpl) createClause(
-                XorClauseImpl.class,
-                term,
-                first,
-                second,
-                predicate2evaluatorFactory,
-                PREDICATES_APPLICABLE, WEAK_CACHE);
+        // we can't use the helper method because of the extra Hint argument to the XorClauseImpl constructor        
+
+        // check weak reference cache of immutable wordClauses here.
+        // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
+        //  into the cache, compared to the performance lost of trying to synchronise this.
+        XorClauseImpl clause = (XorClauseImpl) findClauseInUse(term, WEAK_CACHE);
+
+        if (clause == null) {
+            // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
+            
+            // create predicate sets
+            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet/*<Predicate>*/());
+            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet/*<Predicate>*/());
+            // find the applicale predicates now
+            findPredicates(predicate2evaluatorFactory, PREDICATES_APPLICABLE);
+
+            // create it...
+            clause = new XorClauseImpl(
+                term, 
+                first, 
+                second, 
+                hint,
+                predicate2evaluatorFactory.getClausesKnownPredicates(), 
+                predicate2evaluatorFactory.getClausesPossiblePredicates()
+            );
+
+            addClauseInUse(term, clause, WEAK_CACHE);
+        }
+
+        return clause;        
+    }
+
+    public XorClause.Hint getHint() {
+        return hint;
     }
 
     /**
@@ -97,9 +127,11 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
             final String term,
             final Clause first,  
             final Clause second,
+            final Hint hint,
             final Set/*<Predicate>*/ knownPredicates,
             final Set/*<Predicate>*/ possiblePredicates) {
 
         super(term, first, second, knownPredicates, possiblePredicates);
+        this.hint = hint;
     }
 }

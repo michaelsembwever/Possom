@@ -15,5 +15,12 @@ package no.schibstedsok.front.searchportal.query;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface XorClause extends OrClause {
-
+    Hint getHint();
+    
+    Hint PHRASE_ON_LEFT = new Hint(){};
+    Hint PHONE_NUMBER_ON_LEFT = new Hint(){};
+    Hint ORGANISATION_NUMBER_ON_LEFT = new Hint(){};
+    Hint ROTATION_ALTERNATION = new Hint(){};
+    
+    interface Hint{}
 }

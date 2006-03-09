@@ -94,7 +94,7 @@ public interface QueryParser {
          * @param second the right child clause of the operation clause we are about to create (or find).
          * @return returns a OrOrClauseImplnstance matching the term, left and right child clauses.
          */
-        XorClause createXorClause(final Clause first, final Clause second);
+        XorClause createXorClause(final Clause first, final Clause second, final XorClause.Hint hint);
         /**
          * Creator wrapper method for AndNotClause objects.
          * The methods also allow a chunk of creation logic for the AndNotClause to be moved

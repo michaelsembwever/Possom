@@ -78,10 +78,11 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
      */
     public final XorClause createXorClause(
         final Clause first,
-        final Clause second) {
+        final Clause second,
+        final XorClause.Hint hint) {
 
-        LOG.debug("createXorClause(" + first + "," + second + ")");
-        return XorClauseImpl.createXorClause(first, second, getTokenEvaluatorFactory());
+        LOG.debug("createXorClause(" + first + "," + second + "," + hint + ")");
+        return XorClauseImpl.createXorClause(first, second, hint, getTokenEvaluatorFactory());
     }
 
     /** {@inheritDoc}

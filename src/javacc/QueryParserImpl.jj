@@ -249,7 +249,7 @@ Clause fieldedLeaf(final Token field) :{
                     // Create a XorClause
                     final QueryParserImpl parser = new QueryParserImpl(createContext(token.image),PHONE_NUMBER_DISABLED);
                     final Clause altClause = parser.parse();
-                    return context.createXorClause(phClause, altClause);
+                    return context.createXorClause(phClause, altClause, XorClause.PHONE_NUMBER_ON_LEFT);
                 }
             }finally{exitMethod();}
         }
@@ -261,7 +261,7 @@ Clause fieldedLeaf(final Token field) :{
                 final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(token.image, field == null ? null : field.image);
                 final QueryParserImpl parser = new QueryParserImpl(createContext(token.image),ORGANISATION_NUMBER_DISABLED);
                 final Clause altClause = parser.parse();
-                return context.createXorClause(orgClause, altClause);
+                return context.createXorClause(orgClause, altClause, XorClause.ORGANISATION_NUMBER_ON_LEFT);
             }finally{exitMethod();}
         }
     |
@@ -272,7 +272,7 @@ Clause fieldedLeaf(final Token field) :{
                 final PhraseClause phClause = context.createPhraseClause( token.image, field == null ? null : field.image );
                 final QueryParserImpl parser = new QueryParserImpl(createContext(token.image.replaceAll("\"","")),QUOTED_WORD_DISABLED);
                 final Clause altClause = parser.parse();
-                return context.createXorClause(phClause, altClause);
+                return context.createXorClause(phClause, altClause, XorClause.PHRASE_ON_LEFT);
             }finally{exitMethod();}
         }
     | 
