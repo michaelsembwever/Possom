@@ -24,10 +24,10 @@ import org.apache.velocity.runtime.RuntimeConstants;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public final class VelocityEngineFactory {
-    
+
     private static final Logger LOG = Logger.getLogger(VelocityEngineFactory.class);
     private static final String VELOCITY_LOG_CATEGORY = "org.apache.velocity";
-    
+
     /**
      * Synchronisation occurs through method signature to "VelocityEngine valueOf(Context)".
      *  While synchronsation is not ciritical without it in this case we were getting 10+ identical
@@ -36,22 +36,22 @@ public final class VelocityEngineFactory {
     private static final Map/*<Site,VelocityEngine>*/ INSTANCES = new HashMap/*<Site,VelocityEngine>*/();
 
     private final VelocityEngine engine;
-    
+
     /**
      * The context the AnalysisRules must work against. *
      */
     public interface Context extends SiteContext {
     }
-    
+
     private final Context context;
-    
+
     /** Creates a new instance of VelocityEngineFactory */
     private VelocityEngineFactory(final Context cxt) {
         context = cxt;
         final Site site = cxt.getSite();
-        
+
         engine = new VelocityEngine();
-        
+
         try{
             final Logger logger = Logger.getLogger(VELOCITY_LOG_CATEGORY);
             final java.util.Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
