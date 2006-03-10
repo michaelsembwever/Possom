@@ -168,7 +168,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         Integer i = (Integer) hits.get(configName);
         if (i == null) { 
-            i = Integer.valueOf(0); 
+            //i = Integer.valueOf(0);  //jdk1.5
+            i = new Integer(0);
         }
         return i;
     }
