@@ -461,8 +461,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         try  {
             return parser.getQuery();
 
-        } catch (ParseException ex)  {
-            LOG.error(ERR_PARSING, ex);
         } catch (TokenMgrError ex)  {
             // Errors (as opposed to exceptions) are fatal.
             LOG.fatal(ERR_PARSING, ex);

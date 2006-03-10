@@ -233,23 +233,17 @@ public final class TestVisitor extends TestCase {
                 }
             });
 
-        try  {
-            final Query q = parser.getQuery();
-            final TestVisitorImpl visitor = new TestVisitorImpl();
+        final Query q = parser.getQuery();
+        final TestVisitorImpl visitor = new TestVisitorImpl();
 
-            visitor.visit(q.getRootClause());
+        visitor.visit(q.getRootClause());
 
-            LOG.info("Visitor built: " + visitor.getParsedQueryString());
-            LOG.info("Root clause's term: " + q.getRootClause().getTerm());
-            // assert test
-            assertNotNull(visitor.getParsedQueryString());
-            assertEquals(visitorResult, visitor.getParsedQueryString());
-            assertEquals(rootTerm, q.getRootClause().getTerm());
-
-        }  catch (ParseException ex) {
-            LOG.error(ex);
-            fail(ex.getLocalizedMessage());
-        }
+        LOG.info("Visitor built: " + visitor.getParsedQueryString());
+        LOG.info("Root clause's term: " + q.getRootClause().getTerm());
+        // assert test
+        assertNotNull(visitor.getParsedQueryString());
+        assertEquals(visitorResult, visitor.getParsedQueryString());
+        assertEquals(rootTerm, q.getRootClause().getTerm());
 
     }
 

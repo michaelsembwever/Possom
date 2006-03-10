@@ -44,8 +44,9 @@ public abstract class AbstractQueryParser implements QueryParser {
 
     /** Error message when the parser tries to parse an empty query string.
      ***/
-    protected static final String ERR_CANNOT_PARSE_EMPTY_QUERY
+    protected static final String ERR_EMPTY_CONTEXT
         = "The \"QueryParser(QueryParser.Context)\" constructor must be used!";
+    private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
 
     /** the context this query parser implementation must work against.
      ***/
@@ -68,22 +69,31 @@ public abstract class AbstractQueryParser implements QueryParser {
      * @return the Query object, ready to use.
      * @throws ParseException  when parsing the inputted query string.
      */
-    public Query getQuery() throws ParseException{
+    public Query getQuery(){
         if( query == null ){
             final String queryStr = context.getQueryString();
             if( context == null ){
-                throw new IllegalStateException(ERR_CANNOT_PARSE_EMPTY_QUERY);
+                throw new IllegalStateException(ERR_EMPTY_CONTEXT);
             }
-            
-            final Clause root = ( queryStr == null || queryStr.trim().length()==0 )
-                ? context.createWordClause("",null)
-                : parse();
-            
-            query = new AbstractQuery(context.getQueryString()){
-                public Clause getRootClause(){
-                    return root;
-                }
-            };
+            try{
+                final Clause root = ( queryStr == null || queryStr.trim().length()==0 )
+                    ? context.createWordClause("",null)
+                    : parse();
+
+                query = new AbstractQuery(context.getQueryString()){
+                    public Clause getRootClause(){
+                        return root;
+                    }
+                };
+                
+            }catch(ParseException pe){
+                LOG.warn(ERR_PARSING, pe);
+                query = new AbstractQuery(context.getQueryString()){
+                    public Clause getRootClause(){
+                        return context.createWordClause("",null);
+                    }
+                };
+            }
         }
         return query;
     }

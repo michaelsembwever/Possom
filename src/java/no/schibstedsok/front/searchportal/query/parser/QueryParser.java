@@ -192,9 +192,8 @@ public interface QueryParser {
     /** Get the Query.
      *
      *@return the Query object.
-     *@throws ParseException when parsing the inputted query string.
      **/
-    Query getQuery() throws ParseException;
+    Query getQuery();
 
 
 }
