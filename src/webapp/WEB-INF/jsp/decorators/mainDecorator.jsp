@@ -3,7 +3,6 @@
         pageEncoding="UTF-8"
         contentType="text/html;charset=utf-8"
         %>
-
 <%@ page import="no.schibstedsok.front.searchportal.i18n.TextMessages"%>
 <%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
@@ -16,7 +15,6 @@
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
-
 <%
     final TextMessages text = (TextMessages) request.getAttribute("text");
 
@@ -72,7 +70,6 @@
     if (currentC.equals("y")) searchButton = "../tradedoubler/searchbox/button-company.png";
     else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-person.png";
 %>
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -82,56 +79,14 @@
     <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
+    <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-<script type="text/javascript" language="JavaScript">
-<!--
-function strep(qtag) {
-    if (window.RegExp && window.encodeURIComponent) {
-        var qlink=qtag.href;
-        var qenc=encodeURIComponent(document.sf.q.value);
-        if(qlink.indexOf("q=")!=-1){
-            qtag.href=qlink.replace(new RegExp("q=[^&$]*"),"q="+qenc);
-        }else{
-            qtag.href=qlink+"&amp;q="+qenc;
-        }
-    }
-    return 1;
-}
-
-function strepRollover(qtag) {
-    var qenc=encodeURIComponent(document.sf.q.value);
-    if(qtag.indexOf("q=")!=-1){
-        ref=qtag.replace(new RegExp("q=[^&$]*"),"q="+qenc);
-    }else{
-        ref=qtag+"&amp;q="+qenc;
-    }
-    window.location = ref;
-}
-
-function ml(ar, na, s) {
-  str = eval('String.fromCharCode(' + ar + ')');
-  ss = '';
-  if (na == '') na = str;
-  if (s != '') ss = '?subject=' + s;
-  document.write('<a href="mailto:' + str + ss + '">' + na + '<\/a>');
-}
-
-function setfocus() {
-    if(document.forms[0].q.value == ""){
-        document.forms[0].q.focus();
-    }
-}
-
-var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://www.sesam.no/\');">Sett som startside</a> &nbsp;&nbsp;|&nbsp;&nbsp;';
-// -->
-</script>
 </head>
 
 
-<body onload="setfocus();<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
+<body onload="<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
 
-    <!-- sitesearch -->
+    <%-- sitesearch --%>
     <% if (currentC.equals("d") && "ds".equals(ss) ||
             currentC.equals("d") && "di".equals(ss) ||
             currentC.equals("d") && "pr".equals(ss) ||
@@ -153,7 +108,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.dinside.no/data/">Data</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/reise/">Reise</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/motor/">Motor</a><span>|</span></li>
-                        <li><a href="http://www.dinside.no/okonomi/">Økonomi</a><span>|</span></li>
+                        <li><a href="http://www.dinside.no/okonomi/">ï¿½konomi</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/jobb/">Jobb</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/bolig/">Bolig</a></li>
                     </ul>
@@ -196,7 +151,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                         <li><a href="http://www.itavisen.no/bransjen/">IT-bransjen</a></li>
                     </ul>
                 <% } else if ("nrk".equals(ss)) { %>
-                    <a href="http://www.nrk.no/"><img id="sitelogo" src="../images/sitesearch/nrk/logo.gif" alt="Nrk logo" title="Til forsida på NRK.no" /></a>
+                    <a href="http://www.nrk.no/"><img id="sitelogo" src="../images/sitesearch/nrk/logo.gif" alt="Nrk logo" title="Til forsida pï¿½ NRK.no" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.nrk.no/nyheter/">Nyheter</a><span>|</span></li>
                         <li><a href="http://www.nrk.no/sport/">Sport</a><span>|</span></li>
@@ -293,7 +248,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
                 </div>
                 <div class="greybar_line"><img src="../images/pix.gif" width="1" height="1" alt="" /></div>
 
-                <!--sesam search in sitesearch modus-->
+                <%--sesam search in sitesearch modus--%>
                 <div id="content_left_ss">
                     <% if (!"d".equals(ssr)) {%>
                         <decorator:getProperty property="page.fast-results"/>
@@ -478,7 +433,7 @@ var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#h
 		            <% int i = 0; %>
                     <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                         Modifier e = (Modifier) iterator.next();
-                        if ( (currentC.equals("d") && !e.getName().equals("Nettsøk")) || (currentC.equals("d") && searchType != null && searchType.equals("g")) || currentC.equals("p")) {
+                        if ( (currentC.equals("d") && !e.getName().equals("Nettsï¿½k")) || (currentC.equals("d") && searchType != null && searchType.equals("g")) || currentC.equals("p")) {
                             ++i;
                     %>
 
