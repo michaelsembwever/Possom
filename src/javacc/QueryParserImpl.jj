@@ -35,7 +35,9 @@ public final class QueryParserImpl extends AbstractQueryParser{
 
 PARSER_END(QueryParserImpl)
 
-/** Skip these characters, they are considered "white space" **/
+/** Skip these characters, they are considered "white space" 
+ * See http://www.unicode.org/charts/ for unicode charts.
+**/
 <*>SKIP : {
       " " | "!" 
     | < [ "\u0023"-"\u0027" ] >
