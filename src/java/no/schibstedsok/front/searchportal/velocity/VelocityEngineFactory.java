@@ -14,6 +14,7 @@ import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
@@ -64,8 +65,8 @@ public final class VelocityEngineFactory {
             engine.setProperty("velocimacro.library", site.getTemplateDir()+"/VM_global_library.vm");
             engine.setProperty("url.site", site);
             engine.setProperty("url.site.fallback",Site.DEFAULT);
-            engine.setProperty("publishing.system.baseURL", props.getProperty("publishing.system.baseURL"));
-            engine.setProperty("publishing.system.host-header", props.getProperty("publishing.system.host-header"));
+            engine.setProperty("publishing.system.baseURL", props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
+            engine.setProperty("publishing.system.host-header", props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
             engine.setProperty("input.encoding", "UTF-8");
             engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.velocity.PublishDirective");
             engine.init();

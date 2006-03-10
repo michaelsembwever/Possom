@@ -69,6 +69,7 @@ public final class SearchConstants {
     public static final String CONFIGURATION_FILE = "configuration.properties";
     public static final Object PARAMETER_OFFSET = "offset";
     public static final String PUBLISH_SYSTEM_URL = "publishing.system.baseURL";
+    public static final String PUBLISH_SYSTEM_HOST = "publishing.system.host-header";
 
     public static final String[] ALL_COLLECTIONS = {"tv",
                                                     "webcrawlno1",

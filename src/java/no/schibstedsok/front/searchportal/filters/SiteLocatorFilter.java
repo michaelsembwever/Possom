@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
+import java.util.Properties;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -124,8 +125,9 @@ public final class SiteLocatorFilter implements Filter {
 
                     if (resource.startsWith(PUBLISH_DIR)) { // publishing system
                         // the publishing system is responsible for this.
-                        url = XMLSearchTabsCreator.valueOf(site).getProperties()
-                            .getProperty(SearchConstants.PUBLISH_SYSTEM_URL)
+                        final Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
+                        url = props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL)
+                        .replaceFirst("localhost",props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST))
                             + '/' + resource;
 
                     }  else  {
