@@ -68,6 +68,7 @@ public final class VelocityEngineFactory {
             engine.setProperty(SearchConstants.PUBLISH_SYSTEM_URL, props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
             engine.setProperty(SearchConstants.PUBLISH_SYSTEM_HOST, props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
             engine.setProperty("input.encoding", "UTF-8");
+            engine.setProperty("output.encoding", "UTF-8");
             engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.velocity.PublishDirective");
             engine.init();
 

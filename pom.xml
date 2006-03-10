@@ -268,12 +268,6 @@
             <artifactId>velocity-tools-generic</artifactId>
             <version>1.2</version>
         </dependency>
-        
-        <dependency>
-            <groupId>velocity-tools</groupId>
-            <artifactId>velocity-tools-view</artifactId>
-            <version>1.2</version>
-        </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>

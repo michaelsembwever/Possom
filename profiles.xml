@@ -56,7 +56,7 @@
         </activation>
         <properties>
             <!-- The default Site -->
-            <sesam.site.default>searchdev.schibstedsok.no</sesam.site.default>
+            <sesam.site.default>bleedingsearch.schibstedsok.no</sesam.site.default>
             
             <!-- QR Servers -->
 
