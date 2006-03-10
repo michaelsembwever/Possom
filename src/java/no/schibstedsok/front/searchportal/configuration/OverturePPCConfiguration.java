@@ -7,5 +7,15 @@ package no.schibstedsok.front.searchportal.configuration;
  * @version <tt>$Revision$</tt>
  */
 public class OverturePPCConfiguration extends AbstractSearchConfiguration {
+    
+    private int resultsOnTop;
 
+    public int getResultsOnTop() {
+        return resultsOnTop;
+    }
+
+    public void setResultsOnTop(int resultsOnTop) {
+        this.resultsOnTop = resultsOnTop;
+    }
+    
 }
