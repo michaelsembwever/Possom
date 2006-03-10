@@ -53,7 +53,7 @@ public final class VelocityEngineFactory {
 
         engine = new VelocityEngine();
 
-        try{
+        try  {
             final Logger logger = Logger.getLogger(VELOCITY_LOG_CATEGORY);
             final java.util.Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
             engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
@@ -62,26 +62,26 @@ public final class VelocityEngineFactory {
             engine.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.velocity.URLVelocityTemplateLoader");
             engine.setProperty("url.resource.loader.cache", "true");
             engine.setProperty("url.resource.loader.modificationCheckInterval", "60"); // 1 minute update cycle.
-            engine.setProperty("velocimacro.library", site.getTemplateDir()+"/VM_global_library.vm");
+            engine.setProperty("velocimacro.library", site.getTemplateDir() + "/VM_global_library.vm");
             engine.setProperty("url.site", site);
-            engine.setProperty("url.site.fallback",Site.DEFAULT);
+            engine.setProperty("url.site.fallback", Site.DEFAULT);
             engine.setProperty(SearchConstants.PUBLISH_SYSTEM_URL, props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
             engine.setProperty(SearchConstants.PUBLISH_SYSTEM_HOST, props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
             engine.setProperty("input.encoding", "UTF-8");
             engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.velocity.PublishDirective");
             engine.init();
-            
+
         } catch (Exception e) {
             throw new InfrastructureException(e);
         }
-        
-        INSTANCES.put(site,this);
+
+        INSTANCES.put(site, this);
     }
-    
-    public VelocityEngine getVelocityEngine(){
+
+    public VelocityEngine getVelocityEngine() {
         return engine;
     }
-    
+
     /** Main method to retrieve the correct VelocityEngine to further obtain
      * AnalysisRule.
      * @param cxt the contextual needs the VelocityEngine must use to operate.
@@ -90,7 +90,7 @@ public final class VelocityEngineFactory {
     public synchronized static VelocityEngine valueOf(final Context cxt) {
         final Site site = cxt.getSite();
         VelocityEngineFactory instance = (VelocityEngineFactory) INSTANCES.get(site);
-        if ( instance == null ) {
+        if (instance == null) {
             instance = new VelocityEngineFactory(cxt);
 
         }
@@ -113,6 +113,6 @@ public final class VelocityEngineFactory {
 
         });
         return instance;
-    }    
-    
+    }
+
 }

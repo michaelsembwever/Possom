@@ -12,6 +12,7 @@ import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.Decoder;
 import no.schibstedsok.front.searchportal.result.Linkpulse;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
+import no.schibstedsok.front.searchportal.util.SearchConstants;
 import no.schibstedsok.front.searchportal.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
@@ -42,13 +43,13 @@ import org.apache.velocity.tools.view.tools.ImportTool;
 public final class VelocityResultHandler implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
-    
+
     private static final ImportTool IMPORT_TOOL = new ImportTool();
 
     public void handleResult(final Context cxt, final Map parameters) {
 
         // Skip this result handler if xml is wanted.
-        String[] xmlParam = (String[]) parameters.get("xml");
+        final String[] xmlParam = (String[]) parameters.get("xml");
         if (xmlParam != null && xmlParam[0].equals("yes")) {
             return;
         }
@@ -90,6 +91,8 @@ public final class VelocityResultHandler implements ResultHandler {
 
             final VelocityContext context = new VelocityContext();
             populateVelocityContext(context, cxt, request, response);
+            context.put(SearchConstants.PUBLISH_SYSTEM_URL, engine.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
+            context.put(SearchConstants.PUBLISH_SYSTEM_HOST, engine.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
             template.merge(context, w);
             response.getWriter().write(w.toString());
 
@@ -142,10 +145,11 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("tradedoubler", new TradeDoubler(request));
         context.put("import", IMPORT_TOOL);
 
+
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
         if (config.isPagingEnabled()) {
-            PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), config.getResultsToReturn(), 10);
+            final PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), config.getResultsToReturn(), 10);
             pager.setCurrentOffset(cxt.getSearchResult().getSearchCommand().getRunningQuery().getOffset());
             context.put("pager", pager);
         }
