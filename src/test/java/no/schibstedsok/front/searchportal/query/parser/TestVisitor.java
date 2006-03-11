@@ -190,6 +190,13 @@ public final class TestVisitor extends TestCase {
                 "+4792221689",
                 "+4792221689");
     }
+    
+    public void testUnicodeAgainstQueryParser3() {
+        basicQueryParserWithTestVisitorImpl(
+                "सिद्धार्थ गौतम",
+                "सिद्धार्थ गौतम",
+                "सिद्धार्थ गौतम");
+    }
 
     private void basicQueryParserWithTestVisitorImpl(
             final String queryInput,
