@@ -37,7 +37,6 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContex
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
-import no.schibstedsok.front.searchportal.query.parser.ParseException;
 import no.schibstedsok.front.searchportal.query.token.VeryFastTokenEvaluator;
 import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.result.Modifier;
@@ -94,7 +93,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         this.parameters = parameters;
         this.locale = new Locale("no", "NO");
 
-        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = 
+        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt =
                 (TokenEvaluatorFactoryImpl.Context) ContextWrapper.wrap(
                     TokenEvaluatorFactoryImpl.Context.class,
                     new BaseContext[]{
@@ -103,7 +102,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             public String getQueryString() {
                                 return RunningQueryImpl.this.getQueryString();
                             }
-                        }});
+                        } });
 
         // This will among other things perform the initial fast search
         // for textual analysis.
@@ -118,7 +117,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         try  {
             queryObj = parser.getQuery();
-            
+
         } catch (TokenMgrError ex)  {
             // Errors (as opposed to exceptions) are fatal.
             LOG.fatal(ERR_PARSING, ex);
@@ -155,18 +154,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      * @return user tip
      */
     public String getGlobalSearchTips () {
-        
+
         LOG.trace("getGlobalSearchTips()");
         return null;
     }
 
 
     public Integer getNumberOfHits(final String configName) {
-        
+
         LOG.trace("getNumberOfHits()");
 
         Integer i = (Integer) hits.get(configName);
-        if (i == null) { 
+        if (i == null) {
             //i = Integer.valueOf(0);  //jdk1.5
             i = new Integer(0);
         }
@@ -179,7 +178,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      * @throws InterruptedException
      */
     public void run() throws InterruptedException {
-        
+
         LOG.trace("run()");
 
         try {
@@ -219,7 +218,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     if (context.getSearchMode().isQueryAnalysisEnabled() && offset == 0) {
 
                         LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
-                        
+
                         ANALYSIS_LOG.info(" <analysis name=\"" + searchConfiguration.getRule() + "\">");
 
                         LOG.debug("Scoring old style for " + searchConfiguration.getRule());
@@ -236,8 +235,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                         LOG.debug("Score for " + searchConfiguration.getName() + " is " + newScore);
 
-                        if(newScore != 0 ){ 
-                            ANALYSIS_LOG.info("  <score>" + newScore + "</score>"); 
+                        if(newScore != 0 ){
+                            ANALYSIS_LOG.info("  <score>" + newScore + "</score>");
                         }
                         ANALYSIS_LOG.info(" </analysis>");
 
@@ -251,9 +250,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     } else if (searchConfiguration.isAlwaysRunEnabled()) {
                         commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                     }
-                    
+
                 } else {
-                    
+
                     // Optimisation. Alternate between the two web searches.
                     if (isNorwegian(searchConfiguration) || isInternational(searchConfiguration)) {
                         final String searchType = getSingleParameter("s");
@@ -305,8 +304,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         final SearchResult searchResult = (SearchResult) task.get();
 
                         if (searchResult != null) {
-                            hitsToShow |= searchResult.getHitCount()>0;
-                            
+                            hitsToShow |= searchResult.getHitCount() > 0;
+
                             hits.put(configuration.getName(), new Integer(searchResult.getHitCount()));
 
                             final Integer score = (Integer) scores.get(task.getCommand().getSearchConfiguration().getName());
@@ -323,31 +322,42 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     }
                 }
             }
-            if( hitsToShow ){
-                Collections.sort(enrichments);
-                Collections.sort(sources);    
-            }else{
-                // maybe we can modify the query to broaden the search
-                // replace all DefaultClause with an OrClause 
-                //  [simply done with wrapping the query string inside ()'s ]
-                // create and run a new RunningQueryImpl
-                if( !queryStr.startsWith("(") && !queryStr.endsWith(")") && queryObj.getTermCount()>1 ){
-                    new RunningQueryImpl(context,'('+queryStr+')', parameters).run();
+
+            Collections.sort(sources);
+
+            if (!hitsToShow) {
+                int sourceHits = 0;
+                for (final Iterator it = sources.iterator(); it.hasNext();) {
+                    sourceHits += ((Modifier) it.next()).getCount();
                 }
+                if (sourceHits == 0) {
+                    // there were no hits for any of the search tabs!
+                    // maybe we can modify the query to broaden the search
+                    // replace all DefaultClause with an OrClause
+                    //  [simply done with wrapping the query string inside ()'s ]
+                    if (!queryStr.startsWith("(") && !queryStr.endsWith(")") && queryObj.getTermCount() > 1) {
+                        // create and run a new RunningQueryImpl
+                        new RunningQueryImpl(context, '(' + queryStr + ')', parameters).run();
+                    }
+                }
+            }  else  {
+
+                Collections.sort(enrichments);
             }
-            
+
+
         } catch (Exception e) {
             LOG.error(ERR_RUN_QUERY, e);
         }
     }
 
     private String getSingleParameter(final String paramName) {
-        
+
         LOG.trace("getSingleParameter()");
 
         final String[] param = (String[]) parameters.get(paramName);
 
-        return (param != null) ?param[0] : null;
+        return (param != null) ? param[0] : null;
     }
 
     private boolean isInternational(final SearchConfiguration searchConfiguration) {
@@ -363,7 +373,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     public int getNumberOfTerms() {
-        
+
         LOG.trace("getNumberOfTerms()");
 
         return QueryTokenizer.tokenize(queryStr).size();
@@ -371,14 +381,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
 
     public String getQueryString() {
-        
+
         LOG.trace("getQueryString()");
 
         return queryStr;
     }
 
     public int getOffset() {
-        
+
         LOG.trace("getOffset(): " + offset);
 
         return offset;
@@ -391,42 +401,42 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     public Locale getLocale() {
-        
+
         LOG.trace("getLocale()");
 
         return locale;
     }
 
     public SearchMode getSearchMode() {
-        
+
         LOG.trace("getSearchMode()");
 
         return context.getSearchMode();
     }
 
     public List getSources() {
-        
+
         LOG.trace("getSources()");
 
         return sources;
     }
 
     public void addSource(final Modifier modifier) {
-        
+
         LOG.trace("addSource()");
 
         sources.add(modifier);
     }
 
     public List getEnrichments() {
-        
+
         LOG.trace("getEnrichments()");
 
         return enrichments;
     }
 
     public TokenEvaluatorFactory getTokenEvaluatorFactory() {
-        
+
         LOG.trace("getTokenEvaluatorFactory()");
 
         return tokenEvaluatorFactory;
@@ -434,7 +444,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     // TODO Find some other way to do this. Really do!
     public String getSourceParameters(final String source) {
-        
+
         LOG.trace("getSourceParameters() Source=" + source);
 
         if (source.equals("Norske nettsider")) {
