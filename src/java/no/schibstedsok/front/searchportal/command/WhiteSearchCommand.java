@@ -57,7 +57,8 @@ public class WhiteSearchCommand extends FastSearchCommand {
         super.visitImpl(clause);
     }
     /**
-     * Adds phonetic prefix to a leaf clause. Default fallback.
+     * Adds phonetic prefix to a leaf clause. 
+     * Remove dots from words. (people, street, suburb, or city names do not have dots.)
      *
      * @param clause The clause to prefix.
      */
@@ -65,7 +66,12 @@ public class WhiteSearchCommand extends FastSearchCommand {
         if (! getTransformedTerm(clause).equals("")) {
             appendToQueryRepresentation(PREFIX_PHONETIC);
         }
-        super.visitImpl(clause);
+        
+        final String fullTerm =
+                (clause.getField() == null ? "" : clause.getField() + ": ")
+                + clause.getTerm();
+
+        appendToQueryRepresentation( getTransformedTerm(clause).replaceAll("\\.","") );
     }
     
     /**
@@ -78,7 +84,8 @@ public class WhiteSearchCommand extends FastSearchCommand {
      *
      */
     protected void visitImpl(final XorClause clause) {
-       if (clause.getFirstClause() instanceof PhraseClause) {
+        
+       if ( clause.getHint() == XorClause.PHRASE_ON_LEFT ) {
            clause.getSecondClause().accept(this);
        } else {
            clause.getFirstClause().accept(this);
