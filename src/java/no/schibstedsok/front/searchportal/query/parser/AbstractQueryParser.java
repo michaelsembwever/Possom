@@ -88,6 +88,12 @@ public abstract class AbstractQueryParser implements QueryParser {
                 
             }catch(ParseException pe){
                 LOG.warn(ERR_PARSING, pe);
+            } catch (TokenMgrError tme)  {
+                LOG.error(ERR_PARSING, tme);
+            }
+            
+            if( query == null ){
+                // common post-exception handling
                 query = new AbstractQuery(context.getQueryString()){
                     public Clause getRootClause(){
                         return context.createWordClause("",null);

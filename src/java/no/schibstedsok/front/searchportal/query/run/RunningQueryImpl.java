@@ -115,13 +115,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
         });
 
-        try  {
-            queryObj = parser.getQuery();
-
-        } catch (TokenMgrError ex)  {
-            // Errors (as opposed to exceptions) are fatal.
-            LOG.fatal(ERR_PARSING, ex);
-        }
+        queryObj = parser.getQuery();
 
         rules = AnalysisRuleFactory.valueOf(
                 (AnalysisRuleFactory.Context) ContextWrapper.wrap(
