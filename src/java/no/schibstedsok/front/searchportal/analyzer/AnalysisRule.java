@@ -29,6 +29,9 @@ public final class AnalysisRule {
      **/
     private final Map/*<PredicateScore,Predicate>*/ predicates = new HashMap/*<PredicateScore,Predicate>*/();
 
+    private Map/*<Predicate,String>*/ predicateNames;
+
+
     /**
      * Adds a {@link Predicate} and an accompanying score. The predicate will at
      * evaluation time be evaluated with a {@link TokenEvaluatorFactory} as
@@ -104,6 +107,10 @@ public final class AnalysisRule {
                 return predicates;
             }
 
+            public String getNameForAnonymousPredicate(final Predicate predicate) {
+                return (String) predicateNames.get(predicate);
+            }
+
         });
 
         if (query != null) {
@@ -112,5 +119,9 @@ public final class AnalysisRule {
         }
 
         return score;
+    }
+
+    void setPredicateNameMap(final Map predicateNames) {
+        this.predicateNames = predicateNames;
     }
 }

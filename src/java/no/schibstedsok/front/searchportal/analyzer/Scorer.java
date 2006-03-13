@@ -48,10 +48,12 @@ public final class Scorer extends AbstractReflectionVisitor {
          **/
         TokenEvaluatorFactory getTokenEvaluatorFactory();
 
+        String getNameForAnonymousPredicate(Predicate predicate);
+
     }
 
     private static final Logger LOG = Logger.getLogger(Scorer.class);
-    private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.front.searchportal.analyzer.Analysis");    
+    private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.front.searchportal.analyzer.Analysis");
 
     private int score = 0;
     private boolean additivity = true;
@@ -160,19 +162,36 @@ public final class Scorer extends AbstractReflectionVisitor {
 
 
     private void addScore(final PredicateScore predicateScore) {
-        score += predicateScore.getScore();
-        touchedPredicates.add(predicateScore.getPredicate());
 
-        LOG.debug(DEBUG_UPDATE_SCORE + predicateScore.getPredicate() + " adds " + predicateScore.getScore());
-        ANALYSIS_LOG.info("  <predicate-add name=\"" + predicateScore.getPredicate() +"\">"+predicateScore.getScore()+"</predicate>");
+        final Predicate predicate = predicateScore.getPredicate();
+        score += predicateScore.getScore();
+        touchedPredicates.add(predicate);
+
+        LOG.debug(DEBUG_UPDATE_SCORE + predicate + " adds " + predicateScore.getScore());
+
+        ANALYSIS_LOG.info("  <predicate-add name=\""
+                + (predicate instanceof TokenPredicate
+                    ? predicate.toString()
+                    : context.getNameForAnonymousPredicate(predicate))
+                + "\">"+predicateScore.getScore()
+                + "</predicate>");
     }
 
     private void minusScore(final PredicateScore predicateScore) {
-        score -= predicateScore.getScore();
-        touchedPredicates.add(predicateScore.getPredicate());
 
-        LOG.debug(DEBUG_UPDATE_SCORE + predicateScore.getPredicate() + " minus " + predicateScore.getScore());
-        ANALYSIS_LOG.info("  <predicate-minus name=\"" + predicateScore.getPredicate() +"\">"+predicateScore.getScore()+"</predicate>");
+        final Predicate predicate = predicateScore.getPredicate();
+        score -= predicateScore.getScore();
+        touchedPredicates.add(predicate);
+
+        LOG.debug(DEBUG_UPDATE_SCORE + predicate + " minus " + predicateScore.getScore());
+
+        ANALYSIS_LOG.info("  <predicate-minus name=\""
+                + (predicate instanceof TokenPredicate
+                    ? predicate.toString()
+                    : context.getNameForAnonymousPredicate(predicate))
+                + "\">"
+                + predicateScore.getScore()
+                + "</predicate>");
 
     }
 }

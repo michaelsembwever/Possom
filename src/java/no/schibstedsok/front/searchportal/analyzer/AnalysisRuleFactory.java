@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.XStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -69,6 +70,8 @@ public final class AnalysisRuleFactory {
      */
     private static final Map/*<Site,AnalysisRuleFactory>*/ INSTANCES = new HashMap/*<Site,AnalysisRuleFactory>*/();
 
+    private final Map predicateIds = new HashMap();
+
 
     private final Map rules = new HashMap();
 
@@ -121,6 +124,7 @@ public final class AnalysisRuleFactory {
                     final int scoreValue = Integer.parseInt(score.getFirstChild().getNodeValue());
 
                     analysisRule.addPredicateScore(predicate, scoreValue);
+                    analysisRule.setPredicateNameMap(Collections.unmodifiableMap(predicateIds));
                 }
                 rules.put(id, analysisRule);
                 LOG.debug(DEBUG_FINISHED_RULE + id + " " + analysisRule);
@@ -173,6 +177,7 @@ public final class AnalysisRuleFactory {
                 // its got an ID so we must remember it.
                 final String id = element.getAttribute("id");
                 predicateMap.put(id, result);
+                predicateIds.put(result, id);
                 LOG.debug(DEBUG_CREATED_PREDICATE + id + " " + result);
             }
         }
