@@ -89,7 +89,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         // Try the superclasses
         Class currClauseClass = clauseClass;
         while (method == null && currClauseClass != Object.class) {
-            LOG.debug(DEBUG_LOOKING_AT + currClauseClass.getName() + RB);
+            LOG.trace(DEBUG_LOOKING_AT + currClauseClass.getName() + RB);
 
                 method = getDeclaredMethod(currClauseClass);
 
@@ -135,7 +135,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         final Class[] interfaces = clauseClass.getInterfaces();
         for (int i = 0; i < interfaces.length && method == null; i++) {
 
-            LOG.debug(DEBUG_LOOKING_AT + interfaces[i].getName() + RB);
+            LOG.trace(DEBUG_LOOKING_AT + interfaces[i].getName() + RB);
 
 
             method = getDeclaredMethod(interfaces[i]);
