@@ -373,11 +373,7 @@
                         </tr>
                     <%}%>
                 </table>
-                <% if (currentC.equals("yip")) {%>
-                    <decorator:getProperty property="page.infopage-nav"/>
-                <% } else { %>
-                    <decorator:getProperty property="page.companies-nav"/>
-                <% } %>
+                <decorator:getProperty property="page.companies-nav"/>
             <%}else if (currentC.equals("w") || currentC.equals("wip")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
 		            <% int i=0; %>
