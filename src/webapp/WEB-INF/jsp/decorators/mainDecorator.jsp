@@ -349,7 +349,9 @@
     <% } %>
 
     <tr>
-	<%if (currentC.equals("m") || currentC.equals("d") || !q.trim().equals("")) {%>
+	<%if (currentC.equals("d") && q.trim().equals("")) {%>
+
+	<%}else if (currentC.equals("m") || currentC.equals("d") || !q.trim().equals("")) {%>
         <td class="cell_one" valign="top">
 
             <%if (currentC.equals("y") || currentC.equals("yip")) {%>
@@ -466,7 +468,7 @@
 	<% } %>
 
             <!--<td class="cell_two" valign="top"><img src="../images/pix.gif" width="24" height="1" alt="" class="dash_<%=currentC%>" /></td>-->
-	    <%if (currentC.equals("y") && q.trim().equals("")) {%>
+	    <%if ((currentC.equals("y") || currentC.equals("d")) && q.trim().equals("")) {%>
             <td valign="top" colspan="3">
             <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")) {%>
             <td class="cell_three" valign="top">
@@ -646,7 +648,9 @@
 
             </td>
 
-            <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g")) {%>
+	    <%if (currentC.equals("d") && q.trim().equals("")) {%>
+
+            <%}else if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g")) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
                 </td>
@@ -664,7 +668,10 @@
 <decorator:getProperty property="page.verbosePager"/>
 <%}%>
 
+<%if (currentC.equals("d") && q.trim().equals("")) {%>
+<%}else{%>
 <decorator:getProperty property="page.footer"/>
+<%}%>
 
 <%}%>
 
