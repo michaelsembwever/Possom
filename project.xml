@@ -272,9 +272,9 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>fastdsapi</groupId>
-            <artifactId>fastdsapi</artifactId>
-            <version>4.1</version>
+            <groupId>fast</groupId>
+            <artifactId>dsapi</artifactId>
+            <version>2.0.45</version>
             <type>jar</type>
             <properties>
                 <war.bundle>true</war.bundle>
