@@ -19,6 +19,7 @@ import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.Visitor;
@@ -316,7 +317,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         // clause.getSecondClause().accept(this);
     }
 
-
    // Protected -----------------------------------------------------
 
     /**
@@ -480,11 +480,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         protected void visitImpl(final LeafClause clause) {
-            final String fullTerm =
-                    (clause.getField() == null ? "" : clause.getField() + ": ")
-                    + clause.getTerm();
-
-            map.put(clause, fullTerm);
+            map.put(clause, clause.getTerm());
         }
         protected void visitImpl(final OperationClause clause) {
             clause.getFirstClause().accept(this);

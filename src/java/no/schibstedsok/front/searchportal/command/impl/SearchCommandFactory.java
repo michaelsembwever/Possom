@@ -11,17 +11,21 @@ package no.schibstedsok.front.searchportal.command.impl;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.MathExpressionCommand;
+import no.schibstedsok.front.searchportal.command.NewsSearchCommand;
 import no.schibstedsok.front.searchportal.command.OverturePPCCommand;
 import no.schibstedsok.front.searchportal.command.PicSearchCommand;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
+import no.schibstedsok.front.searchportal.command.WebSearchCommand;
 import no.schibstedsok.front.searchportal.command.WhiteSearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration;
+import no.schibstedsok.front.searchportal.configuration.NewsSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration;
 import no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SensisSearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.WebSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.WhiteSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration;
 
@@ -51,6 +55,10 @@ public final class SearchCommandFactory {
             return new YellowGeoSearch(cxt, parameters);
         } if (config instanceof WhiteSearchConfiguration) {
             return new WhiteSearchCommand(cxt, parameters);
+        } else if (config instanceof WebSearchConfiguration) {
+            return new WebSearchCommand(cxt, parameters);
+        } else if (config instanceof NewsSearchConfiguration) {
+            return new NewsSearchCommand(cxt, parameters);
         } else if (config instanceof FastConfiguration) {
             return new FastSearchCommand(cxt, parameters);
         }  else if (config instanceof MathExpressionConfiguration) {

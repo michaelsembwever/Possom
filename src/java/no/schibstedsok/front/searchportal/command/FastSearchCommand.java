@@ -407,7 +407,9 @@ public class FastSearchCommand extends AbstractSearchCommand implements SearchCo
             if (LOG.isDebugEnabled()) {
                 LOG.debug("createQuery: SortBY " + sortBy[0]);
             }
-            if ("datetime".equals(sortBy[0])) {
+            if ("standard".equals(sortBy[0])) {
+                params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retrievernews+docdatetime"));
+            } else if ("datetime".equals(sortBy[0])) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard"));
             }
         }

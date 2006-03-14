@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.ResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
@@ -94,6 +93,12 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
         xstream.alias(
                         "WhiteSearch",
                         no.schibstedsok.front.searchportal.configuration.WhiteSearchConfiguration.class);
+        xstream.alias(
+                        "WebSearch",
+                        no.schibstedsok.front.searchportal.configuration.WebSearchConfiguration.class);
+        xstream.alias(
+                        "NewsSearch",
+                        no.schibstedsok.front.searchportal.configuration.NewsSearchConfiguration.class);
         xstream.alias(
                         "PicSearch",
                         no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration.class);
