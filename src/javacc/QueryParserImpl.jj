@@ -173,10 +173,10 @@ DefaultOperatorClause hiddenDefaultOperation() :{
 
 
 AndNotClause andNotOperation() :{
-    Clause left,right;
+    Clause right;
     enterMethod("andNotOperation()");
 }{
-    (<ANDNOT>(left = looseJoinPrecedence())) { try{return context.createAndNotClause(left);}finally{exitMethod();} }
+    (<ANDNOT>(right = noPrecedence())) { try{return context.createAndNotClause(right);}finally{exitMethod();} }
 }  
 
 OrClause orOperation() :{

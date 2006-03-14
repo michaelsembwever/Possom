@@ -90,7 +90,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
     public final AndNotClause createAndNotClause(
         final Clause first) {
 
-        LOG.debug("createOrClause(" + first + ")");
+        LOG.debug("createAndNotClause(" + first + ")");
         return AndNotClauseImpl.createAndNotClause(first, getTokenEvaluatorFactory());
     }
 
