@@ -265,22 +265,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             ANALYSIS_LOG.info("</analyse>");
 
-            if (LOG.isDebugEnabled()) {
-                // [HACK] we using the assumption that EXACTFIRST is a FastTokenPredicate so we can directly access
-                //  the VeryFastTokenEvaluator for debugging purposes.
-                final VeryFastTokenEvaluator vfte =
-                        (VeryFastTokenEvaluator) tokenEvaluatorFactory.getEvaluator(TokenPredicate.EXACTFIRST);
-                final Set/*<String>*/ untouchedFastTokens = vfte.getUntouchedTokens();
-                if (untouchedFastTokens.size() > 0) {
-                    LOG.debug("Listing untouched VeryFast Tokens... (All VeryFast Tokens remain untouched if clauses are WeakReference cached)");
-                    for (final Iterator it = untouchedFastTokens.iterator(); it.hasNext();) {
-                        LOG.debug("Untouched VeryFast Token -> " + it.next());
-                    }
-                }
-
-                // Number of commands about to execute.
-                LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
-            }
+            LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
 
             final List results = context.getSearchMode().getExecutor().invokeAll(commands, 30000);
 
