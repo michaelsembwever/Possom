@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * NewsSearchCommand.java
  *
@@ -22,10 +23,10 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor
  * @author magnuse
  */
 public class NewsSearchCommand extends FastSearchCommand {
-    
+
     private static final String FAST_SOURCE_FILTER_PREFIX = "newssource";
     private static final String SESAM_SITE_PREFIX = "nyhetskilde";
-    
+
     /** Creates a new instance of NewsSearchCommand
      *
      * @param cxt Search command context.
@@ -34,15 +35,15 @@ public class NewsSearchCommand extends FastSearchCommand {
     public NewsSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
-    
+
     private StringBuffer filterBuilder = null;
-    
+
     /**
      *
      * @param clause The clause to examine.
      */
     protected void visitImpl(final XorClause clause) {
-        if (clause.getFirstClause() instanceof PhraseClause) {
+        if (clause.getHint() == XorClause.PHRASE_ON_LEFT) {
             // News searches should use phrases over separate words.
             clause.getFirstClause().accept(this);
         } else {
@@ -50,7 +51,7 @@ public class NewsSearchCommand extends FastSearchCommand {
             clause.getSecondClause().accept(this);
         }
     }
-    
+
     /**
      * LeafClause
      *
@@ -58,11 +59,11 @@ public class NewsSearchCommand extends FastSearchCommand {
      *
      */
     protected void visitImpl(final LeafClause clause) {
-        if (! hasSourceField(clause)) {
+        if (!hasSourceField(clause)) {
             super.visitImpl(clause);
         }
     }
-    
+
     /**
      * PhraseClause
      *
@@ -70,13 +71,13 @@ public class NewsSearchCommand extends FastSearchCommand {
      *
      */
     protected void visitImpl(final PhraseClause clause) {
-        if (! hasSourceField(clause)) {
+        if (!hasSourceField(clause)) {
             super.visitImpl(clause);
         }
     }
-    
+
     protected String getAdditionalFilter() {
-        synchronized(this) {
+        synchronized (this) {
             if (filterBuilder == null) {
                 filterBuilder = new StringBuffer();
                 new FilterVisitor().visit(context.getQuery().getRootClause());
@@ -84,12 +85,12 @@ public class NewsSearchCommand extends FastSearchCommand {
             return filterBuilder.toString();
         }
     }
-    
+
     private final boolean hasSourceField(final LeafClause clause) {
         return clause.getField() != null
                 && clause.getField().equals(SESAM_SITE_PREFIX);
     }
-    
+
     /**
      *
      * Visitor to create the FAST filter string. Handles the nyhetskilde: syntax.
@@ -99,38 +100,38 @@ public class NewsSearchCommand extends FastSearchCommand {
      *
      */
     private final class FilterVisitor extends AbstractReflectionVisitor {
-        
+
         protected void visitImpl(final LeafClause clause) {
             if (hasSourceField(clause)) {
                 appendSiteFilter(clause);
             }
         }
-        
+
         protected void visitImpl(final PhraseClause clause) {
             if (hasSourceField(clause)) {
                 appendSiteFilter(clause);
             }
         }
-        
+
         protected void visitImpl(final DefaultOperatorClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-        
+
         protected void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-        
+
         protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-        
+
         protected void visitImpl(final XorClause clause) {
             clause.getFirstClause().accept(this);
         }
-        
+
         private final void appendSiteFilter(final LeafClause clause) {
             filterBuilder.append("+");
             filterBuilder.append(FAST_SOURCE_FILTER_PREFIX);

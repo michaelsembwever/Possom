@@ -19,14 +19,12 @@ import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
-import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.Visitor;
 import no.schibstedsok.front.searchportal.query.XorClause;
 import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
-import no.schibstedsok.front.searchportal.query.parser.ParseException;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.front.searchportal.query.parser.TokenMgrError;
@@ -150,8 +148,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     thread + " [" + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1) + "]");
                     //thread+" ["+getClass().getSimpleName()+"]"); //JDK1.5
         }
-        try{
-            
+        try  {
+
 
             LOG.trace("call()");
             final String queryToUse = getSearchConfiguration().getUseParameterAsQuery() != null
@@ -260,8 +258,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 resultHandler.handleResult(resultHandlerContext, parameters);
             }
             return result;
-            
-        }finally{
+
+        }  finally  {
             // restore thread name
             Thread.currentThread().setName(thread);
         }
@@ -283,7 +281,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
     protected void visitImpl(final AndClause clause) {
         clause.getFirstClause().accept(this);
-        sb.append(" + ");
+        sb.append(" AND ");
         clause.getSecondClause().accept(this);
     }
     protected void visitImpl(final OrClause clause) {
@@ -299,14 +297,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected void visitImpl(final NotClause clause) {
         final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
-            sb.append("- ");
+            sb.append("NOT ");
             clause.getFirstClause().accept(this);
         }
     }
     protected void visitImpl(final AndNotClause clause) {
         final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
-            sb.append("- ");
+            sb.append("ANDNOT ");
             clause.getFirstClause().accept(this);
         }
     }
@@ -347,7 +345,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return sb.toString();
     }
 
-    protected final void appendToQueryRepresentation(final String addition) {
+    protected final void appendToQueryRepresentation(final CharSequence addition) {
         sb.append(addition);
     }
 
