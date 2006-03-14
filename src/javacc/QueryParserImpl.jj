@@ -62,18 +62,28 @@ TOKEN : { <PHONE_NUMBER: (("+"|"00")(" ")*"47"(" ")*)?(<DIGIT>(" ")?){8}> }
 TOKEN : { <ORGANISATION_NUMBER: (<DIGIT>(" ")*){9}> }
 
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,ORGANISATION_NUMBER_DISABLED>
-TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\""> }
+TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
 
 
 <*>TOKEN : {
       <AND: ("AND"|"+")>
     | <OR:  ("OR"|"|")>
-    | <NOT: "NOT"|"-">              // choosing to identify "-" as the ANDNOT operator instead of the NOT operator.
+    | <NOT: "NOT"|"-">              
     | <ANDNOT: ("ANDNOT")>
     | <INTEGER: ((<DIGIT>)+)>
     | <WORD: (<LETTER>|<DIGIT>|<WORD_SYMBOL_PREFIX>)(<LETTER>|<DIGIT>|<WORD_SYMBOL_MIDDLE>)*("*")?>
     | <#WORD_SYMBOL_PREFIX: (".")>
     | <#WORD_SYMBOL_MIDDLE: (".")|("-")|("_")>
+    | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration.
+            " ", "!", 
+            "\u0023"-"\u0027",
+            "*" , ",", "/",
+            "\u003b"-"\u0040",
+            "\u005b"-"\u0060",
+            "\u007b"-"\u00bf",
+            "\u00d7",
+            "\u00f7"
+        ]>
     | <#LETTER:
     /** UNICODE Characters **/
         [
@@ -82,8 +92,7 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\""> }
             "\u00c0"-"\u00d6",
             "\u00d8"-"\u00f6",
             "\u00f8"-"\uffff"
-        ]
-        >
+        ]>
     | < #DIGIT:                      // unicode digits
           [
            "\u0030"-"\u0039",
@@ -101,8 +110,7 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(" ")+)* "\""> }
            "\u0e50"-"\u0e59",
            "\u0ed0"-"\u0ed9",
            "\u1040"-"\u1049"
-          ]
-      >
+          ]>
 }
 
 Clause parse() : { 
