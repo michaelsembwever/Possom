@@ -29,6 +29,11 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
             super(token);
         }
     }
+    public static final class JedTokenPredicate extends TokenPredicate {
+        public  JedTokenPredicate(final String token) {
+            super(token);
+        }
+    }
 
     private static final Map/*<String>,<TokenPredicate>*/ TOKEN_MAP = new Hashtable/*<String>,<TokenPredicate>*/();
     private static final Set/*<TokenPredicate>*/ FAST_TOKENS = new HashSet/*<TokenPredicate>*/();
@@ -64,7 +69,6 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     // RegExp TokenPredicates
     public static final RegExpTokenPredicate CATALOGUEPREFIX = new RegExpTokenPredicate("cataloguePrefix");
     public static final RegExpTokenPredicate COMPANYSUFFIX = new RegExpTokenPredicate("companySuffix");
-    public static final RegExpTokenPredicate MATHPREDICATE = new RegExpTokenPredicate("mathExpression");
     public static final RegExpTokenPredicate NEWSPREFIX = new RegExpTokenPredicate("newsPrefix");
     public static final RegExpTokenPredicate ORGNR = new RegExpTokenPredicate("orgNr");
     public static final RegExpTokenPredicate PICTUREPREFIX = new RegExpTokenPredicate("picturePrefix");
@@ -76,6 +80,9 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final RegExpTokenPredicate ONLYSKIINFOPREFIX = new RegExpTokenPredicate("onlySkiInfoPrefix");
     public static final RegExpTokenPredicate SKIINFOPREFIX = new RegExpTokenPredicate("skiInfoPrefix");
     public static final RegExpTokenPredicate EMPTYQUERY = new RegExpTokenPredicate("emptyQuery");
+    
+    // JedTokenPredicate
+    public static final JedTokenPredicate MATHPREDICATE = new JedTokenPredicate("mathExpression");
 
     // instance fields
     private final String token;

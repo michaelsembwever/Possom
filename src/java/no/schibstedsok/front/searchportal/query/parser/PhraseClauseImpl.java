@@ -39,7 +39,6 @@ public final class PhraseClauseImpl extends AbstractLeafClause implements Phrase
         predicates.add(TokenPredicate.TVPREFIX);
         predicates.add(TokenPredicate.COMPANYSUFFIX);
         predicates.add(TokenPredicate.WEATHERPREFIX);
-        predicates.add(TokenPredicate.MATHPREDICATE);
         predicates.add(TokenPredicate.CATALOGUEPREFIX);
         predicates.add(TokenPredicate.ORGNR);
         // Add all FastTokenPredicates
