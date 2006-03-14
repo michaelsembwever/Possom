@@ -272,7 +272,7 @@ public final class SiteLocatorFilter implements Filter {
                 ? Locale.getDefault()
                 : requestLocale;
 
-        LOG.debug(DEBUG_REQUESTED_VHOST + vhost);
+        LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
 
         return Site.valueOf(vhost, locale);
     }
