@@ -34,8 +34,11 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     private volatile TokenEvaluator fastEvaluator;
     
     private static final Log LOG = LogFactory.getLog(TokenEvaluatorFactoryImpl.class);
+    private static final String ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED = 
+            "Interrupted waiting for FastEvaluatorCreator. Analysis on this query will fail.";
 
     private final Context context;
+    private final Thread fastEvaluatorCreator;
 
     /** The current term the parser is on **/
     private String currTerm = null;
@@ -54,6 +57,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
      */
     public TokenEvaluatorFactoryImpl(final Context cxt) {
         context = cxt;
+        fastEvaluatorCreator = new FastEvaluatorCreator();
+        fastEvaluatorCreator.start();
     }
 
     /** Find or create the TokenEvaluator that will evaluate if given (Token)Predicate is true.
@@ -91,19 +96,10 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     }
 
     private TokenEvaluator getFastEvaluator() {
-        if (fastEvaluator == null) {
-            synchronized (this) {
-                // Sonmeone else might have reached this point, so check for null
-                // again.
-                // XXX This double-checked locking idiom ONLY works in Java5!
-                if (fastEvaluator == null) {
-                    final String host = getProperties().getProperty("tokenevaluator.host");
-                    final int port = Integer.parseInt(getProperties().getProperty("tokenevaluator.port"));
-
-                    fastEvaluator = new VeryFastTokenEvaluator(
-                            HTTPClient.instance("token_evaluator", host, port), getQueryString());
-                }
-            }
+        try {
+            fastEvaluatorCreator.join();
+        } catch (InterruptedException ex) {
+            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex );
         }
         return fastEvaluator;
     }
@@ -131,4 +127,16 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     public Set getClausesPossiblePredicates() {
         return possiblePredicates;
     }
+
+    private final class FastEvaluatorCreator extends Thread{
+        public void run() {
+            final String host = getProperties().getProperty("tokenevaluator.host");
+            final int port = Integer.parseInt(getProperties().getProperty("tokenevaluator.port"));
+
+            fastEvaluator = new VeryFastTokenEvaluator(
+                    HTTPClient.instance("token_evaluator", host, port), getQueryString());
+        }
+        
+    }
+
 }
