@@ -218,24 +218,4 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         }
     }
 
-    /** Method used just for debugging. See RunningQueryImpl.run().
-     * Allows controlling code to debug which VeryFast tokens were not used in the scoring process.
-     * <b> ONLY WORKS FIRST TIME FOR EACH QUERY due to the WeakReference caching of Clauses!</b>
-     **/
-    public Set/*<String>*/ getUntouchedTokens() {
-        final Set/*<String>*/ untouchedTokens = new TreeSet/*<String>*/();
-        for (Iterator it = analysisResult.values().iterator(); it.hasNext();) {
-            final List/*<TokenMatch>*/ tokenMatches = (List) it.next();
-            for (Iterator it2 = tokenMatches.iterator(); it2.hasNext();) {
-                final TokenMatch tm = (TokenMatch) it2.next();
-                if (!tm.isTouched() && tm.getToken().startsWith(REAL_TOKEN_PREFIX)) {
-                    untouchedTokens.add(tm.getToken()+"("+tm.getMatch()+")");
-                }
-                if( tm.isTouched() ){
-                    LOG.debug("touched "+tm.getToken()+"("+tm.getMatch()+")");
-                }
-            }
-        }
-        return untouchedTokens;
-    }
 }
