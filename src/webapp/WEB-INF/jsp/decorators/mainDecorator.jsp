@@ -509,6 +509,7 @@
 
 			<table>
 			<tr>
+                        <decorator:getProperty property="page.greybar_magic"/>
                          <td id="result_container">
                              <% if ("n".equals(searchType)) { %>
                                     <% if (no_hits > 0) { %>
