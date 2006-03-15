@@ -231,7 +231,7 @@
                         <li><a href="http://aftenbladet.no/sport/">Sport</a><span>|</span></li>
                         <li><a href="http://aftenbladet.no/kultur/">Kultur</a><span>|</span></li>
                         <li><a href="http://kundesenter.aftenbladet.no/">Kundesenter</a></li>
-                    </ul>                
+                    </ul>
                 <% } %>
                 <decorator:getProperty property="page.search-bar"/>
 
@@ -524,7 +524,7 @@
 
 			<table>
 			<tr>
-                        <decorator:getProperty property="page.greybar_magic"/>
+                        <decorator:getProperty property="page.spellcheck"/>
                          <td id="result_container">
                              <% if ("n".equals(searchType)) { %>
                                     <% if (no_hits > 0) { %>
