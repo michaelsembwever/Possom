@@ -105,12 +105,12 @@ public abstract class AbstractClause implements Clause {
 
         final Set/*<Predicate>*/ knownPredicates = predicate2evaluatorFactory.getClausesKnownPredicates();
         final Set/*<Predicate>*/ possiblePredicates = predicate2evaluatorFactory.getClausesPossiblePredicates();
+        final String currTerm = predicate2evaluatorFactory.getCurrentTerm();
         
         for (Iterator it = predicates2check.iterator(); it.hasNext();) {
             final TokenPredicate token = (TokenPredicate) it.next(); 
             // check it hasn't already been added
             if( !(knownPredicates.contains(token) || possiblePredicates.contains(token)) ){
-                final String currTerm = predicate2evaluatorFactory.getCurrentTerm();
 
                 if (token.evaluate(predicate2evaluatorFactory)) {
                     final TokenEvaluator evaluator = predicate2evaluatorFactory.getEvaluator(token);

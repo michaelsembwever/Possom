@@ -1,6 +1,6 @@
 /* Copyright (2005-2006) Schibsted Søk AS
  *
- * JedTokenEvaluator.java
+ * JepTokenEvaluator.java
  *
  * Created on 14 March 2006, 23:14
  *
@@ -16,11 +16,11 @@ import org.nfunk.jep.type.Complex;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class JedTokenEvaluator implements TokenEvaluator {
+public final class JepTokenEvaluator implements TokenEvaluator {
 
     // Constants -----------------------------------------------------
 
-    private static final Logger LOG = Logger.getLogger(JedTokenEvaluator.class);
+    private static final Logger LOG = Logger.getLogger(JepTokenEvaluator.class);
     private static final String DEBUG_NOT_INTEGER = "Was not an integer ";
 
     // Attributes ----------------------------------------------------
@@ -31,8 +31,10 @@ public final class JedTokenEvaluator implements TokenEvaluator {
 
     // Constructors --------------------------------------------------
 
-    /** Creates a new instance of JedTokenEvaluator */
-    public JedTokenEvaluator(final String query) {
+    /**
+     * Creates a new instance of JepTokenEvaluator
+     */
+    public JepTokenEvaluator(final String query) {
 
         final JEP parser = new JEP();
 

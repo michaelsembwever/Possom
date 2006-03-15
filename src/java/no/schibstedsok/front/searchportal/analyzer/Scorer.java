@@ -128,6 +128,11 @@ public final class Scorer extends AbstractReflectionVisitor {
     private void scoreClause(final Clause clause) {
         final Set/*<Predicate>*/ knownPredicates = clause.getKnownPredicates();
         final Set/*<Predicate>*/ possiblePredicates = clause.getPossiblePredicates();
+        
+        // update the factory with the predicate sets that can be used to improve evaluation performance.
+        final TokenEvaluatorFactory factory = context.getTokenEvaluatorFactory();
+        factory.setClausesKnownPredicates(knownPredicates);
+        factory.setClausesPossiblePredicates(possiblePredicates);
 
         // XXX Couldn't find the set algorythm for joining two set in Core Java or Commons Collections :-/
         final Iterator/*<PredicateScore>*/ it = context.getPredicates().keySet().iterator();
@@ -138,11 +143,6 @@ public final class Scorer extends AbstractReflectionVisitor {
 
             // check we haven't already scored with this predicate.
             if (!touchedPredicates.contains(predicate)) {
-
-                // update the factory with the predicate sets that can be used to improve evaluation performance.
-                final TokenEvaluatorFactory factory = context.getTokenEvaluatorFactory();
-                factory.setClausesKnownPredicates(clause.getKnownPredicates());
-                factory.setClausesPossiblePredicates(clause.getPossiblePredicates());
 
                 if (knownPredicates.contains(predicate)
                         // OR if this is a possiblePredicate or a all|any|none|not predicate

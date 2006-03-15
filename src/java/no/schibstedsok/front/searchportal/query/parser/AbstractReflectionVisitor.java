@@ -81,6 +81,9 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     }
 
     private Method getMethod(final Class clauseClass) {
+        
+        // XXX This is one of the applications performance hotspots.
+        //  It could be benefit to keep a weak reference map to remember what method to use.
 
         Method method = null;
 
@@ -111,7 +114,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
         // fallback to visitImpl(Object)
         if (method == null) {
 
-                method = getDeclaredMethod(Object.class);
+            method = getDeclaredMethod(Object.class);
 
             if (method == null) {
                 LOG.fatal(ERR_FAILED_TO_FIND_VISIT_IMPL_OBJECT + clauseClass.getName());

@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.command;
 
-import no.schibstedsok.front.searchportal.query.token.JedTokenEvaluator;
+import no.schibstedsok.front.searchportal.query.token.JepTokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -36,7 +36,7 @@ public class MathExpressionCommand extends AbstractSearchCommand {
 
     public SearchResult execute() {
 
-        final Complex result = ((JedTokenEvaluator)context.getRunningQuery()
+        final Complex result = ((JepTokenEvaluator)context.getRunningQuery()
                 .getTokenEvaluatorFactory()
                 .getEvaluator(TokenPredicate.MATHPREDICATE))
                 .getComplex();

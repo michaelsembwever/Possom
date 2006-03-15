@@ -29,8 +29,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
             super(token);
         }
     }
-    public static final class JedTokenPredicate extends TokenPredicate {
-        public  JedTokenPredicate(final String token) {
+    public static final class JepTokenPredicate extends TokenPredicate {
+        public  JepTokenPredicate(final String token) {
             super(token);
         }
     }
@@ -81,8 +81,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     public static final RegExpTokenPredicate SKIINFOPREFIX = new RegExpTokenPredicate("skiInfoPrefix");
     public static final RegExpTokenPredicate EMPTYQUERY = new RegExpTokenPredicate("emptyQuery");
     
-    // JedTokenPredicate
-    public static final JedTokenPredicate MATHPREDICATE = new JedTokenPredicate("mathExpression");
+    // JepTokenPredicate
+    public static final JepTokenPredicate MATHPREDICATE = new JepTokenPredicate("mathExpression");
 
     // instance fields
     private final String token;

@@ -32,7 +32,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new AlwaysTrueTokenEvaluator();
 
     private volatile TokenEvaluator fastEvaluator;
-    private final JedTokenEvaluator jedEvaluator;
+    private final JepTokenEvaluator jedEvaluator;
     
     private static final Log LOG = LogFactory.getLog(TokenEvaluatorFactoryImpl.class);
     private static final String ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED = 
@@ -60,7 +60,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         context = cxt;
         fastEvaluatorCreator = new FastEvaluatorCreator();
         fastEvaluatorCreator.start();
-        jedEvaluator = new JedTokenEvaluator(context.getQueryString());
+        jedEvaluator = new JepTokenEvaluator(context.getQueryString());
     }
 
     /** Find or create the TokenEvaluator that will evaluate if given (Token)Predicate is true.
@@ -76,7 +76,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
             return getFastEvaluator();
         }  else if ( token instanceof TokenPredicate.RegExpTokenPredicate ) {
             return RegExpEvaluatorFactory.valueOf(context).getEvaluator(token);
-        } else if ( token instanceof TokenPredicate.JedTokenPredicate ){
+        } else if ( token instanceof TokenPredicate.JepTokenPredicate ){
             return jedEvaluator;
         }
 //        } else if (token == TokenPredicate.GEO ) { // shouldn't be called as it's a OrPredicate from AnalysisRules
