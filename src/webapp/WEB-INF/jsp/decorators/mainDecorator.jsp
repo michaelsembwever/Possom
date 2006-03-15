@@ -217,6 +217,21 @@
                         <li><a href="http://www.bt.no/forbruker">Forbruker</a><span>|</span></li>
                         <li><a href="http://www.bt.no/kamera">Webkamera</a></li>
                     </ul>
+                <% } else if ("sa".equals(ss)) { %>
+                    <a href="http://aftenbladet.no/"><img id="sitelogo" src="../images/sitesearch/sa/logo.gif" alt="Stavanger Aftenblad logo" /></a>
+                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
+                    <ul id="sitelinks">
+                        <li><a href="http://aftenbladet.no/">Hovedsiden</a><span>|</span></li>
+                        <li><a href="http://aftenbladet.no/lokalt/">Lokalt</a><span>|</span></li>
+                        <li><a href="http://aftenbladet.no/innenriks/">Innenriks</a><span>|</span></li>
+                        <li><a href="http://aftenbladet.no/utenriks/">Utenriks</a><span>|</span></li>
+                        <li><a href="http://aftenbladet.no/debatt/">Debatt</a><span>|</span></li>
+                        <li><a href="http://aftenbladet.no/vaeret/">Været</a><span>|</span></li>
+                        <li><a href="http://fotball.aftenbladet.no/">Fotball</a><span>|</span></li>
+                        <li><a href="http://aftenbladet.no/sport/">Sport</a><span>|</span></li>
+                        <li><a href="http://aftenbladet.no/kultur/">Kultur</a><span>|</span></li>
+                        <li><a href="http://kundesenter.aftenbladet.no/">Kundesenter</a></li>
+                    </ul>                
                 <% } %>
                 <decorator:getProperty property="page.search-bar"/>
 
