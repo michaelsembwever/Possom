@@ -39,6 +39,7 @@ public final class JedTokenEvaluator implements TokenEvaluator {
         parser.addStandardConstants();
         parser.addStandardFunctions();
         parser.addComplex();
+        parser.setImplicitMul(true);
 
 
         parser.parseExpression(query);
