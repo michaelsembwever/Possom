@@ -684,10 +684,7 @@
 <decorator:getProperty property="page.verbosePager"/>
 <%}%>
 
-<%if (currentC.equals("d") && q.trim().equals("")) {%>
-<%}else{%>
 <decorator:getProperty property="page.footer"/>
-<%}%>
 
 <%}%>
 
