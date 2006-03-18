@@ -302,20 +302,21 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             Collections.sort(sources);
 
             if (!hitsToShow) {
-                int sourceHits = 0;
-                for (final Iterator it = sources.iterator(); it.hasNext();) {
-                    sourceHits += ((Modifier) it.next()).getCount();
-                }
-                if (sourceHits == 0) {
-                    // there were no hits for any of the search tabs!
-                    // maybe we can modify the query to broaden the search
-                    // replace all DefaultClause with an OrClause
-                    //  [simply done with wrapping the query string inside ()'s ]
-                    if (!queryStr.startsWith("(") && !queryStr.endsWith(")") && queryObj.getTermCount() > 1) {
-                        // create and run a new RunningQueryImpl
-                        new RunningQueryImpl(context, '(' + queryStr + ')', parameters).run();
-                    }
-                }
+// FIXME: i do not know how to reset/clean the sitemesh's outputStream so the result from the new RunningQuery are used.                
+//                int sourceHits = 0;
+//                for (final Iterator it = sources.iterator(); it.hasNext();) {
+//                    sourceHits += ((Modifier) it.next()).getCount();
+//                }
+//                if (sourceHits == 0) {
+//                    // there were no hits for any of the search tabs!
+//                    // maybe we can modify the query to broaden the search
+//                    // replace all DefaultClause with an OrClause
+//                    //  [simply done with wrapping the query string inside ()'s ]
+//                    if (!queryStr.startsWith("(") && !queryStr.endsWith(")") && queryObj.getTermCount() > 1) {
+//                        // create and run a new RunningQueryImpl
+//                        new RunningQueryImpl(context, '(' + queryStr + ')', parameters).run();
+//                    }
+//                }
             }  else  {
 
                 Collections.sort(enrichments);
