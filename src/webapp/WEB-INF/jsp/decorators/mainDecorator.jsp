@@ -414,6 +414,7 @@
                 </table>
                 <% if (currentC.equals("wip")) {%>
                     <decorator:getProperty property="page.infopage-nav"/>
+                    <decorator:getProperty property="page.persons-nav"/>
                 <% } else { %>
                     <decorator:getProperty property="page.persons-nav"/>
                 <% } %>
