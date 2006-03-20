@@ -33,7 +33,8 @@ public class SimpleSiteSearchTransformer extends AbstractQueryTransformer implem
     public SimpleSiteSearchTransformer() {
     }
 
-    public String getFilter(final Context cxt, final Map parameters) {
+    public String getFilter(final Map parameters) {
+      
         final String[] paramValue = (String[]) parameters.get(parameterName);
 
         if (paramValue != null && paramValue.length > 0) {
