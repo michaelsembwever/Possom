@@ -19,6 +19,7 @@ import no.schibstedsok.front.searchportal.query.Visitor;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -37,8 +38,8 @@ public abstract class AbstractClause implements Clause {
     private static final String DEBUG_REFERENCE_REUSED = "Gjenbruk weakReference. Size nå ";
 
     private final String term;
-    private final Set/*<Predicate>*/ knownPredicates;
-    private final Set/*<Predicate>*/ possiblePredicates;
+    private final Set<TokenPredicate> knownPredicates;
+    private final Set<TokenPredicate> possiblePredicates;
 
 
 
@@ -50,15 +51,15 @@ public abstract class AbstractClause implements Clause {
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
      * @return the AbstractClause in use already, matching the key. <B>May be <CODE>null</CODE></B>.
      */
-    protected static final AbstractClause findClauseInUse(
+    protected static final <T extends AbstractClause> T findClauseInUse(
             final String key,
-            final Map/*<String,WeakReference<? extends AbstractClause>>*/ weakCache) {
+            final Map<String,WeakReference<T>> weakCache) {
 
-        AbstractClause result = null;
+        T result = null;
 
-        final WeakReference/*<AbstractClause>*/ weakRef = (WeakReference) weakCache.get(key);
+        final WeakReference<T> weakRef = weakCache.get(key);
         if (weakRef != null) {
-            result = (AbstractClause) weakRef.get();
+            result = weakRef.get();
         }
         if (result != null && LOG.isDebugEnabled()) {
             LOG.debug(DEBUG_REFERENCE_REUSED + weakCache.size());
@@ -73,12 +74,12 @@ public abstract class AbstractClause implements Clause {
      * @param clause the Clause we are about to add to the mappings.
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
      */
-    protected static final void addClauseInUse(
+    protected static final <T extends AbstractClause> void addClauseInUse(
             final String key,
-            final AbstractClause clause,
-            final Map/*<Long,WeakReference<? extends AbstractClause>>*/ weakCache) {
+            final T clause,
+            final Map<String,WeakReference<T>> weakCache) {
 
-        weakCache.put(key, new WeakReference/*<AbstractClause>*/(clause) {
+        weakCache.put(key, new WeakReference<T>(clause) {
             public void clear() {
                 // clear the hashmap entry too!
                 weakCache.remove(key);
@@ -101,14 +102,15 @@ public abstract class AbstractClause implements Clause {
      */
     protected static final void findPredicates(
             final TokenEvaluatorFactory predicate2evaluatorFactory,
-            final Collection/*<Predicate>*/ predicates2check) {
+            final Collection<TokenPredicate> predicates2check) {
 
-        final Set/*<Predicate>*/ knownPredicates = predicate2evaluatorFactory.getClausesKnownPredicates();
-        final Set/*<Predicate>*/ possiblePredicates = predicate2evaluatorFactory.getClausesPossiblePredicates();
+        final Set<TokenPredicate> knownPredicates = predicate2evaluatorFactory.getClausesKnownPredicates();
+        final Set<TokenPredicate> possiblePredicates = predicate2evaluatorFactory.getClausesPossiblePredicates();
         final String currTerm = predicate2evaluatorFactory.getCurrentTerm();
         
-        for (Iterator it = predicates2check.iterator(); it.hasNext();) {
-            final TokenPredicate token = (TokenPredicate) it.next(); 
+        
+        for (TokenPredicate token : predicates2check) {
+
             // check it hasn't already been added
             if( !(knownPredicates.contains(token) || possiblePredicates.contains(token)) ){
 
@@ -141,8 +143,8 @@ public abstract class AbstractClause implements Clause {
      */
     protected AbstractClause(
             final String term,
-            final Set/*<Predicate>*/ knownPredicates,
-            final Set/*<Predicate>*/ possiblePredicates) {
+            final Set<TokenPredicate> knownPredicates,
+            final Set<TokenPredicate> possiblePredicates) {
 
         this.term = term;
         this.knownPredicates = Collections.unmodifiableSet(knownPredicates);
@@ -163,7 +165,7 @@ public abstract class AbstractClause implements Clause {
      * The set is unmodifiable.
      * @return set of knownPredicates.
      */
-    public Set/*<Predicate>*/ getKnownPredicates() {
+    public Set<TokenPredicate> getKnownPredicates() {
         return knownPredicates;
     }
 
@@ -172,7 +174,7 @@ public abstract class AbstractClause implements Clause {
      * The set is unmodifiable.
      * @return set of possiblePredicates.
      */
-    public Set/*<Predicate>*/ getPossiblePredicates() {
+    public Set<TokenPredicate> getPossiblePredicates() {
         return possiblePredicates;
     }
 
@@ -186,8 +188,7 @@ public abstract class AbstractClause implements Clause {
     /** {@inheritDoc}
      */
     public String toString() {
-        //return getClass().getSimpleName() + "[" + getTerm() + "]"; // JDK1.5
-        return getClass().getName() + "[" + getTerm() + "]";
+        return getClass().getSimpleName() + "[" + getTerm() + "]";
     }
 
     /**

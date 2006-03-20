@@ -6,6 +6,7 @@ package no.schibstedsok.front.searchportal.query.transform;
 
 
 import java.util.Map;
+import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.QueryContext;
 import no.schibstedsok.front.searchportal.query.Visitor;
 import no.schibstedsok.front.searchportal.site.SiteContext;
@@ -29,7 +30,7 @@ public interface QueryTransformer extends Visitor {
         /** Get the terms with their current transformed representations.
          *
          **/
-        Map/*<Clause,String>*/ getTransformedTerms();
+        Map<Clause,String> getTransformedTerms();
     }
 
     void setContext(final Context cxt);

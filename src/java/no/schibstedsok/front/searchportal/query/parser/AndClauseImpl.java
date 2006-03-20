@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,13 +29,13 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map/*<Long,WeakReference<AndClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AndClauseImpl>>*/();
+    private static final Map<String,WeakReference<AndClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<AndClauseImpl>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
+    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
     static {
-        final Collection/*<Predicate>*/ predicates = new ArrayList();
+        final Collection<TokenPredicate> predicates = new ArrayList();
         predicates.add(TokenPredicate.ALWAYSTRUE);
         // Predicates from RegExpEvaluators
         predicates.add(TokenPredicate.CATALOGUEPREFIX);
@@ -83,7 +84,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
         predicate2evaluatorFactory.setCurrentTerm(term);
 
         // use helper method from AbstractLeafClause
-        return (AndClauseImpl) createClause(
+        return createClause(
                 AndClauseImpl.class,
                 term,
                 first,
@@ -104,8 +105,8 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
             final String term,
             final Clause first, 
             final Clause second,
-            final Set/*<Predicate>*/ knownPredicates,
-            final Set/*<Predicate>*/ possiblePredicates) {
+            final Set<TokenPredicate> knownPredicates,
+            final Set<TokenPredicate> possiblePredicates) {
 
         super(term, first, knownPredicates, possiblePredicates);
         this.secondClause = second;

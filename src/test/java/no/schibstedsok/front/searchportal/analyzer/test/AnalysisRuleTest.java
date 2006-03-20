@@ -1,5 +1,5 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005-2006) Schibsted Søk AS
  */
 package no.schibstedsok.front.searchportal.analyzer.test;
 
@@ -37,27 +37,4 @@ public class AnalysisRuleTest extends TestCase {
         rule.addPredicateScore(truePredicate, 0);
     }
 
-    /**
-     * Test method for 'no.schibstedsok.front.searchportal.analyzer.AnalysisRule.evaluate(String, TokenEvaluatorFactory)'.
-     */
-    public void testEvaluate() {
-        // Empty rule should eval to zero.
-        int score = rule.evaluate("", null);
-        assertEquals(0, score);
-
-        // One true predicate.
-        rule.addPredicateScore(truePredicate, 10);
-        score = rule.evaluate("", null);
-        assertEquals(10 , score);
-
-        // Two true predicates. Contributes to the score.
-        rule.addPredicateScore(truePredicate, -5);
-        score = rule.evaluate("", null);
-        assertEquals(5, score);
-        
-        // False predicate. Does not contribute to the score.
-        rule.addPredicateScore(falsePredicate, -200);
-        score = rule.evaluate("", null);
-        assertEquals(5, score);
-    }
 }

@@ -37,7 +37,7 @@ public final class TextMessages {
      *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
      * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
-    private static final Map/*<Site,TextMessages>*/ INSTANCES = new HashMap/*<Site,TextMessages>*/();
+    private static final Map<Site,TextMessages> INSTANCES = new HashMap<Site,TextMessages>();
 
     private static final String DEBUG_LOADING_WITH_LOCALE = "Looking for "+MESSAGE_RESOURCE+"_";
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
@@ -46,7 +46,7 @@ public final class TextMessages {
      **/
     public static TextMessages valueOf(final Context cxt) {
         final Site site = cxt.getSite();
-        TextMessages instance = (TextMessages) INSTANCES.get(site);
+        TextMessages instance = INSTANCES.get(site);
         if (instance == null) {
             instance = new TextMessages(cxt);
         }
@@ -111,14 +111,6 @@ public final class TextMessages {
         return keys.size() > 0;
     }
 
-    //// JDK1.4 methods
-
-    public String getMessage(final String key, final Object[] args) {
-        // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
-        final MessageFormat format = new MessageFormat(keys.getProperty(key), context.getSite().getLocale());
-        return format.format(args);
-    }
-
     public String getMessage(final String key) {
         return getMessage(key, new Object[]{});
     }
@@ -139,11 +131,10 @@ public final class TextMessages {
         return getMessage(key, new Object[]{arg0, arg1, arg3});
     }
 
-    //// JDK1.5 method
-//    public String getMessage(final String key, final Object... arguments){
-//        // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
-//        final MessageFormat format = new MessageFormat(keys.getProperty(key),context.getSite().getLocale());
-//        return format.format(arguments);
-//    }
+    public String getMessage(final String key, final Object... arguments){
+        // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
+        final MessageFormat format = new MessageFormat(keys.getProperty(key),context.getSite().getLocale());
+        return format.format(arguments);
+    }
 
 }

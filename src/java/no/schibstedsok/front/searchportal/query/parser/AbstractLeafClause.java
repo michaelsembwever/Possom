@@ -6,6 +6,7 @@
 
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -14,6 +15,8 @@ import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,13 +49,13 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
      * @return Either a clause already in use that matches this term and field, or a newly created cluase for this term and field.
      */
-    public static AbstractLeafClause createClause(
-            final Class/*<? extends LeafClause>*/ clauseClass,
+    public static <T extends AbstractLeafClause> T createClause(
+            final Class<T> clauseClass,
             final String term,
             final String field,
             final TokenEvaluatorFactory predicate2evaluatorFactory,
-            final Collection/*<Predicate>*/ predicates2check,
-            final Map/*<Long,WeakReference<AbstractClause>>*/ weakCache) {
+            final Collection<TokenPredicate> predicates2check,
+            final Map<String,WeakReference<T>> weakCache) {
 
 
         final String key = field + ":" + term; // important that the key argument is unique to this object.
@@ -60,26 +63,26 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
         // check weak reference cache of immutable wordClauses here.
         // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
         //  into the cache, compared to the performance lost of trying to synchronise this.
-        AbstractLeafClause clause = (AbstractLeafClause) findClauseInUse(key, weakCache);
+        T clause = findClauseInUse(key, weakCache);
 
         if (clause == null) {
             // create predicate sets
-            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet/*<Predicate>*/());
-            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet/*<Predicate>*/());
+            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet<TokenPredicate>());
+            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet<TokenPredicate>());
             // find the applicale predicates now
             findPredicates(predicate2evaluatorFactory, predicates2check);
             try {
                 // find the constructor...
-                final Constructor constructor = clauseClass.getDeclaredConstructor(new Class[]{
+                final Constructor<T> constructor = clauseClass.getDeclaredConstructor(
                     String.class, String.class, Set.class, Set.class
-                });
+                );
                 // use the constructor...
-                clause = (AbstractLeafClause) constructor.newInstance(new Object[]{
+                clause = constructor.newInstance(
                     term, 
                     field, 
                     predicate2evaluatorFactory.getClausesKnownPredicates(), 
                     predicate2evaluatorFactory.getClausesPossiblePredicates()
-                });
+                );
 
             } catch (SecurityException ex) {
                 LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
@@ -117,8 +120,8 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
     protected AbstractLeafClause(
             final String term,
             final String field,
-            final Set/*<Predicate>*/ knownPredicates,
-            final Set/*<Predicate>*/ possiblePredicates) {
+            final Set<TokenPredicate> knownPredicates,
+            final Set<TokenPredicate> possiblePredicates) {
 
         super(term, knownPredicates, possiblePredicates);
         this.field = field;
@@ -140,7 +143,6 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
     /** {@inheritDoc}
      */
     public String toString() {
-        //return getClass().getSimpleName() + "[" + getTerm() + "," + getField() + "]"; // JDK1.5
-        return getClass().getName() + "[" + getTerm() + "," + getField() + "]";
+        return getClass().getSimpleName() + "[" + getTerm() + "," + getField() + "]";
      }
 }

@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,13 +31,13 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      * An overlap of creation is non-critical.
      */
-    private static final Map/*<Long,WeakReference<AndNotClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AndNotClauseImpl>>*/();
+    private static final Map<String,WeakReference<AndNotClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<AndNotClauseImpl>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
+    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
     static {
-        final Collection/*<Predicate>*/ predicates = new ArrayList();
+        final Collection<TokenPredicate> predicates = new ArrayList();
         predicates.add(TokenPredicate.ALWAYSTRUE);
         // Predicates from RegExpEvaluators
 
@@ -76,7 +77,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
         predicate2evaluatorFactory.setCurrentTerm(term);
 
         // use helper method from AbstractLeafClause
-        return (AndNotClauseImpl) createClause(
+        return createClause(
                 AndNotClauseImpl.class,
                 term,
                 first,
@@ -98,8 +99,8 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
             final String term,
             final Clause first,  
             final Clause second,
-            final Set/*<Predicate>*/ knownPredicates,
-            final Set/*<Predicate>*/ possiblePredicates) {
+            final Set<TokenPredicate> knownPredicates,
+            final Set<TokenPredicate> possiblePredicates) {
 
         super(term, first, knownPredicates, possiblePredicates);
 

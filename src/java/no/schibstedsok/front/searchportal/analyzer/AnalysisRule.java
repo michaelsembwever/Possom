@@ -27,9 +27,9 @@ public final class AnalysisRule {
     /** Although we have access to the Predicates through the PredicateScore object it is possible to do set arithmetic
      * when we can access the predicate collection wihtout looping them out first.
      **/
-    private final Map/*<PredicateScore,Predicate>*/ predicates = new HashMap/*<PredicateScore,Predicate>*/();
+    private final Map<PredicateScore,Predicate> predicates = new HashMap<PredicateScore,Predicate>();
 
-    private Map/*<Predicate,String>*/ predicateNames;
+    private Map<Predicate,String> predicateNames;
 
 
     /**
@@ -45,36 +45,6 @@ public final class AnalysisRule {
     public void addPredicateScore(final Predicate predicate, final int score) {
         final PredicateScore pScore = new PredicateScore(predicate, score);
         predicates.put(pScore, predicate);
-    }
-
-    /**
-     * Evaluates this rule. All added predicates are evaluated using evalFactory
-     * as input. The score of those predicates that are true are added to the
-     * final score (output of this method).
-     *
-     * @deprecated not used by the new QueryParser and Scorer.
-     * @param query
-     *            the query to apply the rule to.
-     * @param evalFactory
-     *            the {@link TokenEvaluatorFactoryImpl} used as input to the
-     *            predicates.
-     * @return the score of this rule when applied to query.
-     */
-    public int evaluate(final String query, final TokenEvaluatorFactory evalFactory) {
-        int score = 0;
-
-        // Old (pre-QueryParser) implementation.
-        for (final Iterator iterator = predicates.keySet().iterator(); iterator.hasNext();) {
-            final PredicateScore p = (PredicateScore) iterator.next();
-            final boolean match = p.getPredicate().evaluate(evalFactory);
-
-            if (match) {
-                score += p.getScore();
-                LOG.debug("Adding Score: " + p.getScore() + "; from " + p.getPredicate());
-            }
-        }
-
-        return score;
     }
 
     /**
@@ -103,12 +73,12 @@ public final class AnalysisRule {
                 return evalFactory;
             }
 
-            public Map/*<PredicateScore,? extends Predicate>*/ getPredicates() {
+            public Map<PredicateScore,Predicate> getPredicates() {
                 return predicates;
             }
 
             public String getNameForAnonymousPredicate(final Predicate predicate) {
-                return (String) predicateNames.get(predicate);
+                return predicateNames.get(predicate);
             }
 
         });
@@ -121,7 +91,7 @@ public final class AnalysisRule {
         return score;
     }
 
-    void setPredicateNameMap(final Map predicateNames) {
+    void setPredicateNameMap(final Map<Predicate,String> predicateNames) {
         this.predicateNames = predicateNames;
     }
 }

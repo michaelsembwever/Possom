@@ -46,13 +46,12 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     public static final String CATEGORY = "category";
 
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
-    private final Map/*<String>,<String>*/ analysisResult = new HashMap/*<String>,<String>*/();
+    private final Map<String,List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
     private static final String REAL_TOKEN_SUFFIX = "QM";
 
-    //private static final List EMPTY_LIST = Collections.emptyList(); //JDK1.5
-    private static final List EMPTY_LIST = Collections.unmodifiableList(new ArrayList());
+    private static final List EMPTY_LIST = Collections.emptyList();
 
     private HTTPClient httpClient = null;
     private Locale locale;
@@ -96,15 +95,14 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
             }  else  {
 
-                final List/*<TokenMatch>*/ occurances = (List/*<TokenMatch>*/) analysisResult.get(realTokenFQ);
-                for (Iterator it = occurances.iterator(); !evaluation && it.hasNext();) {
+                for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
 
-                    final TokenMatch occurance = (TokenMatch) it.next();
                     evaluation = occurance.getMatcher(term).find();
 
                     // keep track of which TokenMatch's we've used.
                     if (evaluation) {
                         occurance.setTouched(true);
+                        break;
                     }
                 }
             }
@@ -183,7 +181,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             // [FIXME] wikiMatch will never be assigned!
             if (wikiMatch != null && fullNameMatch != null) {
                 if (fullNameMatch.length() > wikiMatch.length()) {
-                    analysisResult.put("FastQT_nameLongerThanWikipediaQM", fullNameMatch);
+
                     addMatch("FastQT_nameLongerThanWikipediaQM", fullNameMatch, query);
 
                 }

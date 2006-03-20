@@ -34,7 +34,7 @@ public final class VelocityEngineFactory {
      *  While synchronsation is not ciritical without it in this case we were getting 10+ identical
      *   velocityEngines being created one the first request.
      */
-    private static final Map/*<Site,VelocityEngine>*/ INSTANCES = new HashMap/*<Site,VelocityEngine>*/();
+    private static final Map<Site,VelocityEngineFactory> INSTANCES = new HashMap<Site,VelocityEngineFactory>();
 
     private final VelocityEngine engine;
 
@@ -90,7 +90,7 @@ public final class VelocityEngineFactory {
      */
     public synchronized static VelocityEngine valueOf(final Context cxt) {
         final Site site = cxt.getSite();
-        VelocityEngineFactory instance = (VelocityEngineFactory) INSTANCES.get(site);
+        VelocityEngineFactory instance = INSTANCES.get(site);
         if (instance == null) {
             instance = new VelocityEngineFactory(cxt);
 

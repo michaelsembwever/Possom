@@ -16,7 +16,7 @@ import org.apache.commons.collections.Predicate;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/ {
+public class TokenPredicate implements Predicate, Comparable<TokenPredicate> {
 
     public static final class FastTokenPredicate extends TokenPredicate {
         public  FastTokenPredicate(final String token) {
@@ -35,8 +35,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
         }
     }
 
-    private static final Map/*<String>,<TokenPredicate>*/ TOKEN_MAP = new Hashtable/*<String>,<TokenPredicate>*/();
-    private static final Set/*<TokenPredicate>*/ FAST_TOKENS = new HashSet/*<TokenPredicate>*/();
+    private static final Map<String,TokenPredicate> TOKEN_MAP = new Hashtable<String,TokenPredicate>();
+    private static final Set<TokenPredicate> FAST_TOKENS = new HashSet<TokenPredicate>();
 
     // Common predicates.
     // [TODO] TokenPredicate should be turned into a Java5 enum object with this list.
@@ -105,18 +105,18 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
     /** Public method to find the correct TokenPredicate given the Token's string.
      */
     public static TokenPredicate valueOf(final String token) {
-        return (TokenPredicate) TOKEN_MAP.get(token);
+        return TOKEN_MAP.get(token);
     }
 
     /** Utility method to use all TokenPredicates in existance.
      */
-    public static Collection/*<TokenPredicate>*/ getTokenPredicates() {
+    public static Collection<TokenPredicate> getTokenPredicates() {
         return Collections.unmodifiableCollection(TOKEN_MAP.values());
     }
 
     /** Utility method to use all FastTokenPredicates in existance.
      */
-    public static Set/*<TokenPredicate>*/ getFastTokenPredicates() {
+    public static Set<TokenPredicate> getFastTokenPredicates() {
         return Collections.unmodifiableSet(FAST_TOKENS);
     }
 
@@ -144,7 +144,7 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
         //  the evaluation is for the building of the known and possible predicate list (during query parsing)(in which
         //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
         //  applicable now (in the context of the whole query).
-        final Set/*<Predicate>*/ knownPredicates = factory.getClausesKnownPredicates();
+        final Set<TokenPredicate> knownPredicates = factory.getClausesKnownPredicates();
         if( null != knownPredicates && knownPredicates.contains(this) ){
             return true;
         }
@@ -156,13 +156,8 @@ public class TokenPredicate implements Predicate, Comparable/*<TokenPredicate>*/
 
     /** {@inheritDoc}
      */
-    public int compareTo(final Object/*TokenPredicate*/ obj) {
-        // pre-condition check
-        if ( !(obj instanceof TokenPredicate) ) {
-            throw new IllegalArgumentException("Will not compare against object of type " + obj.getClass().getName());
-        }
-        // compare
-        final TokenPredicate tp = (TokenPredicate) obj;
+    public int compareTo(final TokenPredicate tp) {
+
         return token.compareTo(tp.token);
     }
 

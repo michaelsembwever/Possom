@@ -53,7 +53,7 @@ public final class SiteLocatorFilter implements Filter {
 
     private static final String PUBLISH_DIR = "img/";
 
-    private static final Collection/*<String>*/ EXTERNAL_DIRS =
+    private static final Collection<String> EXTERNAL_DIRS =
             Collections.unmodifiableCollection(Arrays.asList(new String[]{
                 PUBLISH_DIR, "css/", "images/", "javascript/"
     }));

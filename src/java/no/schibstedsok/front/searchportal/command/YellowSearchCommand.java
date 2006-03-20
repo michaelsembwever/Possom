@@ -64,7 +64,7 @@ public final class YellowSearchCommand extends FastSearchCommand {
 
         final TokenEvaluatorFactory factory = context.getRunningQuery().getTokenEvaluatorFactory();
 
-        final int score = rule.evaluate(context.getRunningQuery().getQueryString(), factory);
+        final int score = rule.evaluate(context.getRunningQuery().getQuery(), factory);
 
         if (score > 0) {
             return new SearchParameter(BaseParameter.SORT_BY,

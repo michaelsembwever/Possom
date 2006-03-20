@@ -44,7 +44,7 @@ public final class Site {
      *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
      * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
-    private static final Map/*<String,Site>*/ INSTANCES = new HashMap/*<String,Site>*/();
+    private static final Map<String,Site> INSTANCES = new HashMap<String,Site>();
 
      /**
      * Holds value of property siteName.
@@ -155,7 +155,7 @@ public final class Site {
             ? siteName.replaceAll("www.","")
             : siteName.replaceAll("www.","") + '/';
                 
-        Site site = (Site) INSTANCES.get(getUniqueName(shortSiteName,locale));
+        Site site = INSTANCES.get(getUniqueName(shortSiteName,locale));
         if (site == null) {
             site = new Site(shortSiteName, locale);
         }

@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,13 +17,14 @@ import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.XorClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import org.apache.commons.collections.Predicate;
 
 /**
- * The OrClauseImpl represents a joining clause between two terms in the query.
+ * The XorClauseImpl represents a joining clause between two terms in the query.
  * For example: "term1 OR term2".
  * <b>Objects of this class are immutable</b>
  * 
- * @author <a hrefOrClauseImpl:mick@wever.org">Michael Semb Wever</a>
+ * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id: OrClauseImpl.java 2344 2006-02-20 20:07:12Z mickw $
  */
 public final class XorClauseImpl extends OrClauseImpl implements XorClause {
@@ -30,10 +32,10 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map/*<Long,WeakReference<XorClauseImpl>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<XorClauseImpl>>*/();
+    private static final Map<String,WeakReference<XorClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<XorClauseImpl>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE;
+    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
     
     private final Hint hint;
 
@@ -83,14 +85,14 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
         // check weak reference cache of immutable wordClauses here.
         // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
         //  into the cache, compared to the performance lost of trying to synchronise this.
-        XorClauseImpl clause = (XorClauseImpl) findClauseInUse(term, WEAK_CACHE);
+        XorClauseImpl clause = findClauseInUse(term, WEAK_CACHE);
 
         if (clause == null) {
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
             
             // create predicate sets
-            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet/*<Predicate>*/());
-            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet/*<Predicate>*/());
+            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet<TokenPredicate>());
+            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet<TokenPredicate>());
             // find the applicale predicates now
             findPredicates(predicate2evaluatorFactory, PREDICATES_APPLICABLE);
 
@@ -128,8 +130,8 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
             final Clause first,  
             final Clause second,
             final Hint hint,
-            final Set/*<Predicate>*/ knownPredicates,
-            final Set/*<Predicate>*/ possiblePredicates) {
+            final Set<TokenPredicate> knownPredicates,
+            final Set<TokenPredicate> possiblePredicates) {
 
         super(term, first, second, knownPredicates, possiblePredicates);
         this.hint = hint;

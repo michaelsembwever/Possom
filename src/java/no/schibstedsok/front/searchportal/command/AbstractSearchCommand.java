@@ -66,7 +66,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     protected final Context context;
     private String filter = "";
-    private final Map/*<Clause,String>*/ transformedTerms = new LinkedHashMap/*<Clause,String>*/();
+    private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
     private Map parameters;
 
@@ -145,8 +145,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticsName() + "]");
         }  else  {
             Thread.currentThread().setName(
-                    thread + " [" + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1) + "]");
-                    //thread+" ["+getClass().getSimpleName()+"]"); //JDK1.5
+                    thread+" ["+getClass().getSimpleName()+"]");
         }
         try  {
 
@@ -212,8 +211,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     "<search-command name=\"" + getSearchConfiguration().getStatisticsName() + "\">"
                         + "<query>" + context.getQuery().getQueryString() + "</query>"
                         + "<search-name>"
-                            + getClass().getName().substring(getClass().getName().lastIndexOf('.') + 1)
-                            //+getClass().getSimpleName() //JDK1.5
+                        + getClass().getSimpleName()
                         + "</search-name>"
                         + "<hits>" + result.getHitCount() + "</hits>"
                     + "</search-command>");
@@ -368,7 +366,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             // initialise map with default values
 
 
-            final StringBuffer/*Builder*/ filterBuilder = new StringBuffer/*Buffer*/();
+            final StringBuilder filterBuilder = new StringBuilder();
 
             for (final Iterator iterator = transformers.iterator(); iterator.hasNext();) {
 
@@ -381,7 +379,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         return transformedQuery;
                     }
 
-                    public Map/*<Clause,String>*/ getTransformedTerms() {
+                    public Map<Clause,String> getTransformedTerms() {
                         if (ttq) {
                             throw new IllegalStateException(ERR_TRANSFORMED_QUERY_USED);
                         }
@@ -434,7 +432,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private Query createQuery(final String queryString) {
 
 
-        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = (TokenEvaluatorFactoryImpl.Context) ContextWrapper.wrap(
+        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
                 TokenEvaluatorFactoryImpl.Context.class,
                 new BaseContext[]{
                     context,

@@ -40,7 +40,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     /** Protected so an .jj file implementing this class can reuse.
      **/
     protected static final Logger LOG = Logger.getLogger(AbstractQueryParser.class);
-    private static final Stack/*<String>*/ METHOD_STACK = new Stack/*<String>*/();
+    private static final Stack<String> METHOD_STACK = new Stack<String>();
 
     /** Error message when the parser tries to parse an empty query string.
      ***/
@@ -105,7 +105,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     }
 
     protected final Context createContext(final String input){
-        return (QueryParser.Context) ContextWrapper.wrap(
+        return ContextWrapper.wrap(
             QueryParser.Context.class,
             new BaseContext[]{
                 new QueryStringContext(){

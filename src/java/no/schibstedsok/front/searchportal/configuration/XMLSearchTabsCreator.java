@@ -39,7 +39,7 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
      *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
      * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
-    private static final Map/*<Site,XMLSearchTabsCreator>*/ INSTANCES = new HashMap/*<Site,XMLSearchTabsCreator>*/();
+    private static final Map<Site,XMLSearchTabsCreator> INSTANCES = new HashMap<Site,XMLSearchTabsCreator>();
 
     private static final Log LOG = LogFactory.getLog(XMLSearchTabsCreator.class);
 
@@ -124,7 +124,7 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
      **/
     public static SearchTabsCreator valueOf(final Context cxt) {
         final Site site = cxt.getSite();
-        SearchTabsCreator instance = (SearchTabsCreator) INSTANCES.get(site);
+        SearchTabsCreator instance = INSTANCES.get(site);
         if (instance == null) {
             instance = new XMLSearchTabsCreator(cxt);
         }

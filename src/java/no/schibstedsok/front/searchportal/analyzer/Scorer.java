@@ -41,7 +41,7 @@ public final class Scorer extends AbstractReflectionVisitor {
          * set manipulation.
          * @return map of predicateScores to Predicates for all PredicateScores in the rule we are scoring for.
          **/
-        Map/*<PredicateScore,Predicate>*/ getPredicates();
+        Map<PredicateScore,Predicate> getPredicates();
 
         /** The TokenEvaluatorFactory we will use to obtain evaluators for each Predicate.
          * @return the tokenEvaluatorFactory.
@@ -58,7 +58,7 @@ public final class Scorer extends AbstractReflectionVisitor {
     private int score = 0;
     private boolean additivity = true;
     private Context context;
-    private Set/*<Predicate>*/ touchedPredicates = new HashSet/*<Predicate>*/();
+    private Set<Predicate> touchedPredicates = new HashSet<Predicate>();
 
     private static final String DEBUG_UPDATE_SCORE = "Updating Score...";
 
@@ -126,8 +126,8 @@ public final class Scorer extends AbstractReflectionVisitor {
      * @param addition whether the score will be added or subtracted.
      */
     private void scoreClause(final Clause clause) {
-        final Set/*<Predicate>*/ knownPredicates = clause.getKnownPredicates();
-        final Set/*<Predicate>*/ possiblePredicates = clause.getPossiblePredicates();
+        final Set<TokenPredicate> knownPredicates = clause.getKnownPredicates();
+        final Set<TokenPredicate> possiblePredicates = clause.getPossiblePredicates();
         
         // update the factory with the predicate sets that can be used to improve evaluation performance.
         final TokenEvaluatorFactory factory = context.getTokenEvaluatorFactory();
@@ -135,10 +135,8 @@ public final class Scorer extends AbstractReflectionVisitor {
         factory.setClausesPossiblePredicates(possiblePredicates);
 
         // XXX Couldn't find the set algorythm for joining two set in Core Java or Commons Collections :-/
-        final Iterator/*<PredicateScore>*/ it = context.getPredicates().keySet().iterator();
-        while (it.hasNext()) {
+        for (PredicateScore predicateScore : context.getPredicates().keySet()) {
 
-            final PredicateScore predicateScore = (PredicateScore) it.next();
             final Predicate predicate = predicateScore.getPredicate();
 
             // check we haven't already scored with this predicate.

@@ -12,7 +12,7 @@ import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
-
+import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,8 +44,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     /** The current term the parser is on **/
     private String currTerm = null;
     
-    private Set/*<Predicate>*/ knownPredicates;
-    private Set/*<Predicate>*/ possiblePredicates;
+    private Set<TokenPredicate> knownPredicates;
+    private Set<TokenPredicate> possiblePredicates;
 
     private Locale locale;
 
@@ -116,19 +116,19 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         return currTerm;
     }
 
-    public void setClausesKnownPredicates(final Set _knownPredicates) {
+    public void setClausesKnownPredicates(final Set<TokenPredicate> _knownPredicates) {
         knownPredicates = _knownPredicates;
     }
 
-    public Set getClausesKnownPredicates() {
+    public Set<TokenPredicate> getClausesKnownPredicates() {
         return knownPredicates;
     }
 
-    public void setClausesPossiblePredicates(final Set _possiblePredicates) {
+    public void setClausesPossiblePredicates(final Set<TokenPredicate> _possiblePredicates) {
         possiblePredicates = _possiblePredicates;
     }
 
-    public Set getClausesPossiblePredicates() {
+    public Set<TokenPredicate> getClausesPossiblePredicates() {
         return possiblePredicates;
     }
 

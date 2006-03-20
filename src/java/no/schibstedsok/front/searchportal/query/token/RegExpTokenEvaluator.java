@@ -17,7 +17,7 @@ import java.util.regex.Matcher;
  */
 public final class RegExpTokenEvaluator implements TokenEvaluator {
 
-    private final Collection/*<Pattern>*/ expressions = new ArrayList/*<Pattern>*/();
+    private final Collection<Pattern> expressions = new ArrayList<Pattern>();
     private final boolean queryDependant;
 
     /**
@@ -27,7 +27,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
      *            the patterns to use. Elements of collection must be
      *            {@link Pattern}.
      */
-    public RegExpTokenEvaluator(final Collection/*<Pattern>*/ expressions, final boolean queryDependant) {
+    public RegExpTokenEvaluator(final Collection<Pattern> expressions, final boolean queryDependant) {
 
         this.expressions.addAll(expressions);
         this.queryDependant = queryDependant;

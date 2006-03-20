@@ -5,7 +5,6 @@ package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.Set;
 
-
 /**
  * A TokenEvaluateFactory provides knowledge about which implementation of
  * {@link TokenEvaluator} that can handle a particular token.
@@ -38,11 +37,11 @@ public interface TokenEvaluatorFactory {
 
      String getCurrentTerm();
      
-     void setClausesKnownPredicates(Set/*<Predicate>*/ knownPredicates);
+     void setClausesKnownPredicates(Set<TokenPredicate> knownPredicates);
      
-     Set/*<Predicate>*/ getClausesKnownPredicates();
+     Set<TokenPredicate> getClausesKnownPredicates();
      
-     void setClausesPossiblePredicates(Set/*<Predicate>*/ possiblePredicates);
+     void setClausesPossiblePredicates(Set<TokenPredicate> possiblePredicates);
      
-     Set/*<Predicate>*/ getClausesPossiblePredicates();
+     Set<TokenPredicate> getClausesPossiblePredicates();
 }

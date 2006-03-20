@@ -19,8 +19,8 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  */
 public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
-   private static final Collection defaultPrefixes = Collections.unmodifiableCollection(
-Arrays.asList(
+   private static final Collection<TokenPredicate> defaultPrefixes = Collections.unmodifiableCollection(
+        Arrays.asList(
                new TokenPredicate[] {
                 TokenPredicate.SITEPREFIX,
                 TokenPredicate.CATALOGUEPREFIX,
@@ -31,8 +31,8 @@ Arrays.asList(
                 TokenPredicate.WEATHERPREFIX
         }));
 
-    private Collection/*<String>*/ prefixes = new ArrayList/*<String>*/();
-    private Collection/*<TokenPredicate>*/ customPrefixes;
+    private Collection<String> prefixes = new ArrayList<String>();
+    private Collection<TokenPredicate> customPrefixes;
 
     private static final String BLANK = "";
 
@@ -62,9 +62,9 @@ Arrays.asList(
     private Iterator getPrefixesIterator() {
         synchronized (this) {
             if (customPrefixes == null && prefixes != null && prefixes.size() > 0) {
-                final Collection/*<TokenPredicate>*/ cp = new ArrayList();
-                for (final Iterator iterator = prefixes.iterator(); iterator.hasNext();) {
-                    cp.add(TokenPredicate.valueOf((String) iterator.next()));
+                final Collection<TokenPredicate> cp = new ArrayList();
+                for (String tp : prefixes) {
+                    cp.add(TokenPredicate.valueOf(tp));
                 }
                 customPrefixes = Collections.unmodifiableCollection(cp);
             }

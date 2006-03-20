@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.query.parser;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,13 +26,13 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map/*<Long,WeakReference<AbstractClause>>*/ WEAK_CACHE = new HashMap/*<Long,WeakReference<AbstractClause>>*/();
+    private static final Map<String,WeakReference<WordClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<WordClauseImpl>>();
 
     /* A WordClauseImpl specific collection of TokenPredicates that *could* apply to this Clause type. */
-    private static final Collection/*<Predicate>*/ PREDICATES_APPLICABLE; // TokenPredicate.getTokenPredicates();
+    private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
     static {
-        final Collection/*<Predicate>*/ predicates = new ArrayList();
+        final Collection<TokenPredicate> predicates = new ArrayList();
         predicates.add(TokenPredicate.ALWAYSTRUE);
         // Predicates from RegExpEvaluators
         predicates.add(TokenPredicate.PICTUREPREFIX);
@@ -68,7 +69,7 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
         // use helper method from AbstractLeafClause
-        return (WordClauseImpl) createClause(
+        return createClause(
                 WordClauseImpl.class,
                 term,
                 field,
@@ -86,8 +87,8 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
     protected WordClauseImpl(
             final String term,
             final String field,
-            final Set/*<Predicate>*/ knownPredicates,
-            final Set/*<Predicate>*/ possiblePredicates) {
+            final Set<TokenPredicate> knownPredicates,
+            final Set<TokenPredicate> possiblePredicates) {
 
         super(term, field, knownPredicates, possiblePredicates);
 

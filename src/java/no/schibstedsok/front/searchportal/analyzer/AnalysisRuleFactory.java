@@ -68,7 +68,7 @@ public final class AnalysisRuleFactory {
      *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
      * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
-    private static final Map/*<Site,AnalysisRuleFactory>*/ INSTANCES = new HashMap/*<Site,AnalysisRuleFactory>*/();
+    private static final Map<Site,AnalysisRuleFactory> INSTANCES = new HashMap<Site,AnalysisRuleFactory>();
 
     private final Map predicateIds = new HashMap();
 
@@ -307,7 +307,7 @@ public final class AnalysisRuleFactory {
      */
     public static AnalysisRuleFactory valueOf(final Context cxt) {
         final Site site = cxt.getSite();
-        AnalysisRuleFactory instance = (AnalysisRuleFactory) INSTANCES.get(site);
+        AnalysisRuleFactory instance = INSTANCES.get(site);
         if (instance == null) {
             try {
                 instance = new AnalysisRuleFactory(cxt);

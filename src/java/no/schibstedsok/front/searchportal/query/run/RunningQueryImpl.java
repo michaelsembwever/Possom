@@ -91,7 +91,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         this.locale = new Locale("no", "NO");
 
         final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt =
-                (TokenEvaluatorFactoryImpl.Context) ContextWrapper.wrap(
+                ContextWrapper.wrap(
                     TokenEvaluatorFactoryImpl.Context.class,
                     new BaseContext[]{
                         context,
@@ -115,7 +115,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         queryObj = parser.getQuery();
 
         rules = AnalysisRuleFactory.valueOf(
-                (AnalysisRuleFactory.Context) ContextWrapper.wrap(
+                ContextWrapper.wrap(
                     AnalysisRuleFactory.Context.class,
                     new BaseContext[]{context}));
 
@@ -157,8 +157,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         Integer i = (Integer) hits.get(configName);
         if (i == null) {
-            //i = Integer.valueOf(0);  //jdk1.5
-            i = new Integer(0);
+            i = Integer.valueOf(0);
         }
         return i;
     }
@@ -181,7 +180,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             for (final Iterator iterator = context.getSearchMode().getSearchConfigurations().iterator(); iterator.hasNext();) {
                 final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
 
-                final SearchCommand.Context searchCmdCxt = (SearchCommand.Context) ContextWrapper.wrap(
+                final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                         SearchCommand.Context.class,
                         new BaseContext[]{
                             context,
@@ -211,18 +210,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
 
                         ANALYSIS_LOG.info(" <analysis name=\"" + searchConfiguration.getRule() + "\">");
-
-                        LOG.debug("Scoring old style for " + searchConfiguration.getRule());
-                        final int oldScore = rule.evaluate(queryStr, tokenEvaluatorFactory);
                         LOG.debug("Scoring new style for " + searchConfiguration.getRule());
                         final int newScore = rule.evaluate(queryObj, tokenEvaluatorFactory);
-
-
-                        assert (oldScore == newScore); // if this fails, goto mick, do not pass go, do not collect $200.
-                        if (oldScore != newScore) {
-                            LOG.fatal("\n\n!!! Old score does not match new score !!!\n!!! Query was " + queryStr + "\n");
-                            LOG.fatal("OldScore: " + oldScore + "; NewScore: " + newScore + "; for " + searchConfiguration.getRule());
-                        }
 
                         LOG.debug("Score for " + searchConfiguration.getName() + " is " + newScore);
 

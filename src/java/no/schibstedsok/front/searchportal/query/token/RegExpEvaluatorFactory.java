@@ -55,13 +55,13 @@ public final class RegExpEvaluatorFactory {
      *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
      * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
-    private static final Map/*<Site,RegExpEvaluatorFactory>*/ INSTANCES = new HashMap/*<Site,RegExpEvaluatorFactory>*/();
+    private static final Map<Site,RegExpEvaluatorFactory> INSTANCES = new HashMap<Site,RegExpEvaluatorFactory>();
 
     private final Context context;
     private final DocumentLoader loader;
     private volatile boolean init = false;
 
-    private Map/*<TokenPredicate>,<Collection>*/ regExpEvaluators = new HashMap/*<TokenPredicate>,<Collection>*/();
+    private Map<TokenPredicate,RegExpTokenEvaluator> regExpEvaluators = new HashMap<TokenPredicate,RegExpTokenEvaluator>();
 
     /**
      * Illegal Constructor. Must use RegExpEvaluatorFactory(SiteContext).
@@ -107,8 +107,7 @@ public final class RegExpEvaluatorFactory {
                 try  {
                     final TokenPredicate token = (TokenPredicate) TokenPredicate.class.getField(tokenName).get(null);
 
-                    // final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant")); //Java5
-                    final boolean queryDep = Boolean.valueOf(evaluator.getAttribute("query-dependant")).booleanValue();
+                    final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
                     LOG.debug(" ->evaluator@query-dependant: " + queryDep);
 
                     final Collection compiled = new ArrayList();
@@ -149,7 +148,7 @@ public final class RegExpEvaluatorFactory {
      */
     public static RegExpEvaluatorFactory valueOf(final Context cxt) {
         final Site site = cxt.getSite();
-        RegExpEvaluatorFactory instance = (RegExpEvaluatorFactory) INSTANCES.get(site);
+        RegExpEvaluatorFactory instance = INSTANCES.get(site);
         if (instance == null) {
             try {
                 instance = new RegExpEvaluatorFactory(cxt);
@@ -198,7 +197,7 @@ public final class RegExpEvaluatorFactory {
      */
     public RegExpTokenEvaluator getEvaluator(final TokenPredicate token) {
         init();
-        return (RegExpTokenEvaluator) regExpEvaluators.get(token);
+        return regExpEvaluators.get(token);
     }
 
 }
