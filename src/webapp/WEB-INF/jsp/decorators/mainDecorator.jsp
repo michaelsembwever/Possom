@@ -251,7 +251,7 @@
                                 <% } else if ("nrk".equals(ssr)) { %> NRK:
                                 <% } else if ("af".equals(ssr)) { %> Aftenposten:
                                 <% } else if ("fv".equals(ssr)) { %> F&#230;drelandsvennen:
-                                <% } else if ("aa".equals(ssr)) { %> Addresseavisen:
+                                <% } else if ("aa".equals(ssr)) { %> Adresseavisen:
                                 <% } else if ("bt".equals(ssr)) { %> Bergens Tidende:
                                 <% } else if ("d".equals(ssr)) { %> Nettet:
                                 <% } %>
