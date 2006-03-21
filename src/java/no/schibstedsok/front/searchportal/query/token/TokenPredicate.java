@@ -49,8 +49,10 @@ public class TokenPredicate implements Predicate, Comparable<TokenPredicate> {
     public static final FastTokenPredicate TNS = new FastTokenPredicate("tns");
     public static final FastTokenPredicate FIRSTNAME = new FastTokenPredicate("firstname");
     public static final FastTokenPredicate LASTNAME = new FastTokenPredicate("lastname");
-    public static final FastTokenPredicate COMPANYNAME = new FastTokenPredicate("company");
-    public static final FastTokenPredicate EXACTCOMPANYNAME = new FastTokenPredicate("exact_company");
+    public static final FastTokenPredicate COMPANYENRICHMENT = new FastTokenPredicate("companyenrichment");
+    public static final FastTokenPredicate EXACTCOMPANYENRICHMENT = new FastTokenPredicate("exact_companyenrichment");
+    public static final FastTokenPredicate COMPANYRANK = new FastTokenPredicate("companyrank");
+    public static final FastTokenPredicate EXACTCOMPANYRANK = new FastTokenPredicate("exact_companyrank");
     public static final FastTokenPredicate GEOLOCAL = new FastTokenPredicate("geolocal");
     public static final FastTokenPredicate GEOGLOBAL = new FastTokenPredicate("geoglobal");
     public static final FastTokenPredicate GEOLOCALEXACT = new FastTokenPredicate("exact_geolocal");
