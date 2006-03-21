@@ -140,7 +140,7 @@
     
     <servlet-mapping>
         <servlet-name>Log</servlet-name>
-        <url-pattern>/Log</url-pattern>
+        <url-pattern>/servlet/Log</url-pattern>
     </servlet-mapping>
 
     <servlet>
