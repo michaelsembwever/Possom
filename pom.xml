@@ -98,7 +98,7 @@
     </developers>
 
     <build>
-        <finalName>search</finalName>
+        <finalName>ROOT</finalName>
         <sourceDirectory>src/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
 

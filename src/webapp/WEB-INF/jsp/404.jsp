@@ -10,14 +10,14 @@
 
 <body style="margin:0; padding:0;">
 
-    <div style="width:100%; height:6px; background:#A6408E;"><img src="images/pix.gif" width="1" height="6" alt="" /></div>
-    <img src="images/logo.jpg" width="146" height="44" style="padding:20px 0 10px 30px;" alt="logo" />
+    <div style="width:100%; height:6px; background:#A6408E;"><img src="/images/pix.gif" width="1" height="6" alt="" /></div>
+    <img src="/images/logo.jpg" width="146" height="44" style="padding:20px 0 10px 30px;" alt="logo" />
     <div style="padding-left:30px; font-size:12px; font-family: arial, sans-serif;">
         <p>
             Siden du leter etter er enten flyttet eller finnes ikke.
         </p>
         <p>
-            Trykk <a href="http://sesam.no">her</a> for &#229; komme tilbake til forsiden.
+            Trykk <a href="/">her</a> for &#229; komme tilbake til forsiden.
         </p>
     </div>
 

@@ -164,8 +164,8 @@
     </servlet-mapping>
 
     <welcome-file-list>
-        <welcome-file>/index.jsp</welcome-file>
-    </welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        </welcome-file-list>
 
     <session-config>
         <session-timeout>15</session-timeout>
@@ -174,19 +174,21 @@
 
     <error-page>
         <error-code>404</error-code>
-        <location>/404.jsp</location>
+        <location>/WEB-INF/jsp/404.jsp</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/500.jsp</location>
+        <location>/WEB-INF/jsp/500.jsp</location>
     </error-page>
     <error-page>
         <error-code>501</error-code>
-        <location>/501.jsp</location>
+        <location>/WEB-INF/jsp/501.jsp</location>
     </error-page>
     <error-page>
         <error-code>503</error-code>
-        <location>/503.jsp</location>
+        <location>/WEB-INF/jsp/503.jsp</location>
     </error-page>
 
-</web-app>
+    
+
+    </web-app>

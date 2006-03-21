@@ -3,6 +3,7 @@ package no.schibstedsok.front.searchportal.query.transform;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,9 +14,12 @@ import org.apache.commons.logging.LogFactory;
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
  * @vesrion $Revision$, $Author$, $Date$
  */
-public class TvQueryTransformer extends AbstractQueryTransformer {
+public final class TvQueryTransformer extends AbstractQueryTransformer {
 
-    private static Log log = LogFactory.getLog(TvQueryTransformer.class);
+    private static final Log LOG = LogFactory.getLog(TvQueryTransformer.class);
+    
+    private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+    private static final Pattern TV_IDAG = Pattern.compile("på\\s+tv\\s+i\\s*dag$", REG_EXP_OPTIONS);
 
     /**
      * Add keywords to query to get better searchresults
@@ -25,17 +29,8 @@ public class TvQueryTransformer extends AbstractQueryTransformer {
      */
     public String getTransformedQuery() {
 
-        final String originalQuery = getContext().getTransformedQuery();
-
-        if (originalQuery.matches("^tv$")) {
-            return "";
-        }
-
-        if (originalQuery.matches("p.*\\stv\\sidag$")) {
-            return "";
-        }
-
-        return originalQuery;
+        final String transformedQuery = getContext().getTransformedQuery();
+        return TV_IDAG.matcher(transformedQuery).replaceAll("");
     }
 
 
@@ -45,11 +40,12 @@ public class TvQueryTransformer extends AbstractQueryTransformer {
      */
     public String getFilter() {
 
-        final String originalQuery = getContext().getTransformedQuery();
+        final String origQuery = getContext().getQuery().getQueryString();
 
-        log.debug("TVVVVVV");
+        LOG.debug("TVVVVVV");
 
-        final SimpleDateFormat sdf = new SimpleDateFormat ("yyyy-MM-dd'T'HH:mm:ss'Z'");
-        return "+tvendtime:>" + sdf.format(new Date());
+        return origQuery.length() > 0
+                ? "+tvendtime:>" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(new Date())
+                : "";
     }
 }

@@ -110,7 +110,7 @@
         </exec>
         <mkdir dir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/schibstedsok/wars/search-front-html/${target}/${svn.revision}"/>
         <copy 
-            file="${maven.build.dir}/search-front-html.war"
+            file="${maven.build.dir}/ROOT.war"
             todir="/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/schibstedsok/wars/search-front-html/${target}/${svn.revision}"/>
     </goal>
     

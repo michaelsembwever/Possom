@@ -51,11 +51,12 @@ public final class SiteLocatorFilter implements Filter {
 
     private static final String HTTP = "http://";
 
-    private static final String PUBLISH_DIR = "img/";
+    private static final String PUBLISH_DIR = "/img/";
 
+    /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
             Collections.unmodifiableCollection(Arrays.asList(new String[]{
-                PUBLISH_DIR, "css/", "images/", "javascript/"
+                PUBLISH_DIR, "/css/", "/images/", "/javascript/"
     }));
 
     // The filter configuration object we are associated with.  If
@@ -112,9 +113,9 @@ public final class SiteLocatorFilter implements Filter {
                 final HttpServletRequest req = (HttpServletRequest) request;
                 final HttpServletResponse res = (HttpServletResponse) response;
                 final String uri = req.getRequestURI();
-                final String resource = uri.substring(uri.indexOf('/', 1) + 1);
-                final String rscDir = resource != null && resource.indexOf('/') >= 0
-                        ? resource.substring(0, resource.indexOf('/')+1)
+                final String resource = uri;//.substring(uri.indexOf('/', 1) + 1);
+                final String rscDir = resource != null && resource.indexOf('/',1) >= 0
+                        ? resource.substring(0, resource.indexOf('/',1)+1)
                         : null;
 
                 if (rscDir != null && EXTERNAL_DIRS.contains(rscDir) ) {

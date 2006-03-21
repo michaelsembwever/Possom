@@ -141,23 +141,22 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         final String thread = Thread.currentThread().getName();
         if (getSearchConfiguration().getStatisticsName() != null) {
-            //LOG.info("STATISTICS: " + getSearchConfiguration().getStatisticsName());
             Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticsName() + "]");
         }  else  {
-            Thread.currentThread().setName(
-                    thread+" ["+getClass().getSimpleName()+"]");
+            Thread.currentThread().setName(thread+" ["+getClass().getSimpleName()+"]");
         }
         try  {
 
 
             LOG.trace("call()");
-            final String queryToUse = getSearchConfiguration().getUseParameterAsQuery() != null
+            final boolean useParameterAsQuery = getSearchConfiguration().getUseParameterAsQuery() != null;
+            final String queryToUse = useParameterAsQuery
                     ? getSingleParameter(getSearchConfiguration().getUseParameterAsQuery())
                     : context.getQuery().getQueryString();
 
 
 
-            if (getSearchConfiguration().getUseParameterAsQuery() != null) {
+            if (useParameterAsQuery) {
                 // OOBS. It's not the query we are looking for but a string held
                 // in a different parameter.
                 transformedQuery = queryToUse;
@@ -177,28 +176,20 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 watch = new StopWatch();
                 watch.start();
             }
-            //SearchResult result = null;
 
             //TODO: Hide this in QueryRule.execute(some parameters)
-            boolean executeQuery = false;
+            boolean executeQuery = queryToUse.length() > 0;
 
-            if (queryToUse.length() > 0) {
-                executeQuery = true;
-            }
             if (parameters.get("contentsource") != null) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("call: Got contentsource, executeQuery=true");
-                }
+                LOG.debug("call: Got contentsource, executeQuery=true");
+
                 executeQuery = true;
             }
 
-            if (filter != null) {
-                executeQuery = true;
-            }
+            executeQuery |= filter != null && filter.length() > 0;
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("call(): ExecuteQuery?" + executeQuery);
-            }
+            LOG.debug("executeQuery==" + executeQuery + " ; queryToUse:" + queryToUse + "; filter:" + filter + ";");
+            
             final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
 
             if (LOG.isDebugEnabled()) {
@@ -207,6 +198,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 LOG.debug("Hits is " + getSearchConfiguration().getName() + ":" + result.getHitCount());
                 LOG.debug("Search " + getSearchConfiguration().getName() + " took " + watch);
             }
+            
             STATISTICS_LOG.info(
                     "<search-command name=\"" + getSearchConfiguration().getStatisticsName() + "\">"
                         + "<query>" + context.getQuery().getQueryString() + "</query>"
@@ -420,8 +412,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     LOG.debug("applyQueryTransformers: Filter=" + filter);
                 }
             }
-
-            filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)); // avoid the trailing space.
+            // avoid the trailing space.
+            filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)).trim(); 
         }
     }
 

@@ -275,7 +275,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                             final Integer score = (Integer) scores.get(task.getCommand().getSearchConfiguration().getName());
 
-                            if (score != null && configuration.getRule() != null && score.intValue() >= task.getCommand().getSearchConfiguration().getRuleThreshold()) {
+                            if (score != null && configuration.getRule() != null && score.intValue() >= configuration.getRuleThreshold()) {
                                 if (searchResult.getResults().size() > 0 && score.intValue() > 15) {
                                     final Enrichment e = new Enrichment(score.intValue(), configuration.getName());
                                     enrichments.add(e);
