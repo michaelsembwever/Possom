@@ -8,10 +8,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import no.schibstedsok.front.searchportal.command.SearchCommand;
-import no.schibstedsok.front.searchportal.command.YellowSearchCommand;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
-
 /**
  *
  * An implementation of Search Configuration for yellow searches.
