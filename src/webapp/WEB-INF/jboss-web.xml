@@ -5,5 +5,5 @@
        login modules used to authentication users.
        <security-domain>java:/jaas/jua</security-domain>
     -->
-  <context-root>/search</context-root>
+  <context-root>/</context-root>
 </jboss-web>
