@@ -9,8 +9,7 @@ package no.schibstedsok.front.searchportal.query.transform;
  * @version 0.1
  * @vesrion $Revision$, $Author$, $Date$
  */
-public class NewsTransformer extends AbstractQueryTransformer implements QueryTransformer {
-
+public final class NewsTransformer extends AbstractQueryTransformer implements QueryTransformer {
 
 
     /**

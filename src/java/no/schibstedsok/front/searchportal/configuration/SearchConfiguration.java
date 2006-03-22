@@ -20,12 +20,12 @@ import java.util.Map;
 public interface SearchConfiguration {
 
     /**
-     * Returns a list of {@link no.schibstedsok.front.searchportal.query.QueryTransformer} that should be applied to
+     * Returns a (defensive copy) list of {@link no.schibstedsok.front.searchportal.query.QueryTransformer} that should be applied to
      * the query before the query is sent to search indices.
      *
      * @return The list of query.
      */
-    List getQueryTransformers();
+    List<QueryTransformer> getQueryTransformers();
 
     /**
      * Adds a {@link no.schibstedsok.front.searchportal.query.QueryTransformer} to the list of transformeres.
@@ -40,7 +40,7 @@ public interface SearchConfiguration {
      *
      * @return The list of handlers.
      */
-    List getResultHandlers();
+    List<ResultHandler> getResultHandlers();
 
     /**
      * Adds a {@link no.schibstedsok.front.searchportal.result.ResultHandler} to the list of handlers.
@@ -76,7 +76,7 @@ public interface SearchConfiguration {
      * @return
      */
 
-    Collection getResultFields();
+    Collection<String> getResultFields();
 
     /**
      * @param resultField

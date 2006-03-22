@@ -1,6 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.configuration;
 
+import java.util.Collections;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
@@ -20,13 +21,15 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractSearchConfiguration implements SearchConfiguration {
 
-    Log log = LogFactory.getLog(AbstractSearchConfiguration.class);
+    private static final Log LOG = LogFactory.getLog(AbstractSearchConfiguration.class);
+    
+    private static final String ERR_FAILED_QUERYTRANSFORMERS_COPY = "Failed to defensively clone QueryTransformers";
 
     private String name;
-    private List queryTransformers = new ArrayList();
-    private List resultHandlers = new ArrayList();
+    private final List<QueryTransformer> queryTransformers = new ArrayList<QueryTransformer>();
+    private final List<ResultHandler> resultHandlers = new ArrayList<ResultHandler>();
     private int pageSize = SearchConstants.DEFAULT_DOCUMENTS_TO_RETURN;
-    private Collection resultFields = new ArrayList();
+    private final Collection<String> resultFields = new ArrayList<String>();
     private int resultsToReturn;
     private boolean isPagingEnabled = false;
     private boolean child = false;
@@ -45,27 +48,37 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
      * @param pagingEnabled
      */
     public final void setPagingEnabled(final boolean pagingEnabled) {
-        if (log.isDebugEnabled()) {
-            log.debug("setPagingEnabled() " + pagingEnabled);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("setPagingEnabled() " + pagingEnabled);
         }
         this.isPagingEnabled = pagingEnabled;
     }
 
     /**
-     * Returns a list of {@link QueryTransformer} that should be applied
+     * Returns a (defensive copy) list of {@link QueryTransformer} that should be applied
      * to the query before it is sent to the search command.
+     * The list is also unmodifiable.
      *
      * @return queryTransfomer
      */
-    public final List getQueryTransformers() {
-        return queryTransformers;
+    public final List<QueryTransformer> getQueryTransformers() {
+        
+        final List<QueryTransformer> copy = new ArrayList<QueryTransformer>();
+        try {
+            for( QueryTransformer qt : queryTransformers){
+                    copy.add( (QueryTransformer)qt.clone() );
+            }
+        } catch (CloneNotSupportedException ex) {
+            LOG.error(ERR_FAILED_QUERYTRANSFORMERS_COPY, ex);
+        }
+        return Collections.unmodifiableList( copy );
     }
 
     public final void addQueryTransformer(final QueryTransformer queryTransformer) {
         queryTransformers.add(queryTransformer);
     }
 
-    public final List getResultHandlers() {
+    public final List<ResultHandler> getResultHandlers() {
         return resultHandlers;
     }
 
@@ -97,7 +110,7 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
         resultFields.add(fieldName);
     }
 
-    public final Collection getResultFields() {
+    public final Collection<String> getResultFields() {
         return resultFields;
     }
 

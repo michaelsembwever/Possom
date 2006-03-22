@@ -19,7 +19,7 @@ import no.schibstedsok.front.searchportal.site.SiteContext;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public interface QueryTransformer extends Visitor {
+public interface QueryTransformer extends Visitor, Cloneable{
 
     public interface Context extends QueryContext, SiteContext {
 
@@ -67,4 +67,7 @@ public interface QueryTransformer extends Visitor {
      * @return filterstring
      */
     String getFilter();
+    
+    /** Force public implementation of Clonable. **/
+    Object clone() throws CloneNotSupportedException ;
 }

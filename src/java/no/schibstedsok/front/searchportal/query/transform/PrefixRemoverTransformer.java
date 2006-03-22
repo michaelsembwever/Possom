@@ -6,12 +6,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.ArrayList;
-import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
-import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -32,7 +30,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
         TokenPredicate.WEATHERPREFIX
     }));
     
-    private Collection<String> prefixes = new ArrayList<String>();
+    private final Collection<String> prefixes = new ArrayList<String>();
     private Collection<TokenPredicate> customPrefixes;
     
     private static final String BLANK = "";
@@ -72,5 +70,11 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
         return (prefixes != null && prefixes.size() > 0
                 ? customPrefixes
                 : defaultPrefixes).iterator();
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        final PrefixRemoverTransformer retValue = (PrefixRemoverTransformer)super.clone();
+        retValue.customPrefixes = customPrefixes;
+        return retValue;
     }
 }

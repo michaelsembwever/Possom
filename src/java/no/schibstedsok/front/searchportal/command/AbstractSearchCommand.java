@@ -426,14 +426,13 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
                 TokenEvaluatorFactoryImpl.Context.class,
-                new BaseContext[]{
                     context,
                     new QueryStringContext() {
                         public String getQueryString() {
                             return queryString;
                         }
                     }
-        });
+        );
 
         // This will among other things perform the initial fast search
         // for textual analysis.

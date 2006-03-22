@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
  *
  */
-public class TermPrefixTransformer extends AbstractQueryTransformer {
+public final class TermPrefixTransformer extends AbstractQueryTransformer {
 
     private static final Logger LOG = Logger.getLogger(TermPrefixTransformer.class);
 
@@ -30,7 +30,10 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
 
     private String numberPrefix;
     private String prefix;
-
+    
+    /** Just for tests **/
+    TermPrefixTransformer(){}
+    
     /**
      * This is th default fallback. Adds the prefix in the <code>prefix</code>
      * property
@@ -150,15 +153,22 @@ public class TermPrefixTransformer extends AbstractQueryTransformer {
         final String term = (String) getTransformedTerms().get(clause);
 
         if (!(term.equals("") || isAlreadyPrefixed(term))) {
-            getTransformedTerms().put(clause, prefix + ":" + term);
+            getTransformedTerms().put(clause, prefix + ':' + term);
         }
     }
 
     private static boolean isAlreadyPrefixed(final String term) {
-        return term.indexOf(":") > -1;
+        return term.indexOf(':') > -1;
     }
 
     private Map getTransformedTerms() {
         return getContext().getTransformedTerms();
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        final TermPrefixTransformer retValue = (TermPrefixTransformer)super.clone();
+        retValue.numberPrefix = numberPrefix;
+        retValue.prefix = prefix;
+        return retValue;
     }
 }

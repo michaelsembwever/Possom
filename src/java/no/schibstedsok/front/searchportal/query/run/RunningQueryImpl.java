@@ -93,13 +93,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt =
                 ContextWrapper.wrap(
                     TokenEvaluatorFactoryImpl.Context.class,
-                    new BaseContext[]{
                         context,
                         new QueryStringContext() {
                             public String getQueryString() {
                                 return RunningQueryImpl.this.getQueryString();
                             }
-                        } });
+                        });
 
         // This will among other things perform the initial fast search
         // for textual analysis.
@@ -114,10 +113,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         queryObj = parser.getQuery();
 
-        rules = AnalysisRuleFactory.valueOf(
-                ContextWrapper.wrap(
-                    AnalysisRuleFactory.Context.class,
-                    new BaseContext[]{context}));
+        rules = AnalysisRuleFactory.valueOf( ContextWrapper.wrap( AnalysisRuleFactory.Context.class, context ) );
 
     }
 
@@ -182,7 +178,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                         SearchCommand.Context.class,
-                        new BaseContext[]{
                             context,
                             new SearchConfigurationContext() {
                                 public SearchConfiguration getSearchConfiguration() {
@@ -199,7 +194,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                     return queryObj;
                                 }
                             }
-                });
+                );
 
                 final AnalysisRule rule = rules.getRule(searchConfiguration.getRule());
 

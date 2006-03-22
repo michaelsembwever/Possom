@@ -24,14 +24,11 @@ import java.util.Map;
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class SimpleSiteSearchTransformer extends AbstractQueryTransformer implements QueryTransformer {
+public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer implements QueryTransformer {
 
-    private Map sites;
+    private Map<String,String> sites;
     private String parameterName;
     private String filterName;
-
-    public SimpleSiteSearchTransformer() {
-    }
 
     public String getFilter(final Map parameters) {
       
@@ -39,15 +36,23 @@ public class SimpleSiteSearchTransformer extends AbstractQueryTransformer implem
 
         if (paramValue != null && paramValue.length > 0) {
             if (!(paramValue[0].equals("") || paramValue[0].equals("d"))) {
-            if (sites.containsKey(paramValue[0])) {
-                final StringBuffer filter = new StringBuffer("+");
-                filter.append(filterName);
-                filter.append(':');
-                filter.append(sites.get(paramValue[0]));
-                return filter.toString();
-            }
+                if (sites.containsKey(paramValue[0])) {
+                    final StringBuffer filter = new StringBuffer("+");
+                    filter.append(filterName);
+                    filter.append(':');
+                    filter.append(sites.get(paramValue[0]));
+                    return filter.toString();
+                }
             }
         }
         return null;
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        final SimpleSiteSearchTransformer retValue = (SimpleSiteSearchTransformer)super.clone();
+        retValue.parameterName = parameterName;
+        retValue.filterName = filterName;
+        retValue.sites = sites;
+        return retValue;
     }
 }

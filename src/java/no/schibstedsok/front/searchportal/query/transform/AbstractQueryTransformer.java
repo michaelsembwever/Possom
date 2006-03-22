@@ -20,6 +20,10 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
             = "QueryTransformer has not been adapted to Visitor pattern -> ";
 
     private Context context;
+    
+    /** Only to be used by XStream and tests **/
+    protected AbstractQueryTransformer(){
+    }
 
     public void setContext(final Context cxt) {
         context = cxt;
@@ -44,6 +48,12 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
 
     protected void visitImpl(final Object clause) {
         LOG.info(INFO_OLD_IMPLEMENTATION_STILL + getClass().getName());
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        final AbstractQueryTransformer retValue = (AbstractQueryTransformer)super.clone();
+        retValue.context = context;
+        return retValue;
     }
 
 
