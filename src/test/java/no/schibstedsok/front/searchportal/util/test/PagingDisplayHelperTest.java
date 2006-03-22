@@ -49,8 +49,8 @@ public class PagingDisplayHelperTest extends TestCase {
         pager.setCurrentOffset(pager.getOffsetOfNextPage());
         pager.setCurrentOffset(pager.getOffsetOfNextPage());
 
-        assertEquals(11, pager.getFirstVisiblePage());
-        assertEquals(20, pager.getLastVisiblePage());
+        assertEquals(6, pager.getFirstVisiblePage());
+        assertEquals(15, pager.getLastVisiblePage());
 
         pager.setNumberOfResults(93);
         pager.setCurrentOffset(0);
@@ -117,19 +117,19 @@ public class PagingDisplayHelperTest extends TestCase {
         pager.setNumberOfResults(2000);
         pager.setCurrentOffset(120);
 
-        assertEquals(11, pager.getFirstVisiblePage());
+        assertEquals(6, pager.getFirstVisiblePage());
 
         pager.setCurrentOffset(0);
         assertEquals(1, pager.getFirstVisiblePage());
 
         pager.setCurrentOffset(108);
-        assertEquals(1, pager.getFirstVisiblePage());
+        assertEquals(5, pager.getFirstVisiblePage());
 
         pager.setCurrentOffset(30);
         assertEquals(1, pager.getFirstVisiblePage());
 
         pager.setCurrentOffset(240);
-        assertEquals(21, pager.getFirstVisiblePage());
+        assertEquals(16, pager.getFirstVisiblePage());
     }
 
     protected void tearDown() throws Exception {
