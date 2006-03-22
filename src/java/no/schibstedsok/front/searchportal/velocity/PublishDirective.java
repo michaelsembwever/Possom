@@ -90,12 +90,13 @@ public final class PublishDirective extends Directive {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
         for(String line = reader.readLine();line!=null;line=reader.readLine()){
             writer.write(line);
+            writer.write('\n');
         }
 
         final Token lastToken = node.getLastToken();
 
         if (lastToken.image.endsWith("\n")) {
-            writer.write("\n");
+            writer.write('\n');
         }
 
         return true;
