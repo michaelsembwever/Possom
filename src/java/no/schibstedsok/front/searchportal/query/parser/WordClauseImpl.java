@@ -41,6 +41,8 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
         predicates.add(TokenPredicate.TVPREFIX);
         predicates.add(TokenPredicate.COMPANYSUFFIX);
         predicates.add(TokenPredicate.WEATHERPREFIX);
+        predicates.add(TokenPredicate.SKIINFOPREFIX);
+        predicates.add(TokenPredicate.ONLYSKIINFOPREFIX);
         // Add all FastTokenPredicates
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
