@@ -52,7 +52,7 @@
 <body>
 
 <div class="index_center">
-    <img src="images/index/logo.jpg" id="logo_index" alt="logo" />
+    <img src="images/index/logo.png" id="logo_index" alt="logo" />
     <div id="index_searchlinks">
         Sesams&#248;k
         <a href="<%=linkpulse.getUrl("?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske Nyheter&amp;userSortBy=datetime&amp;q=", "category:topmenuFront_m", "sgo", "true") %>" onclick="return strep(this);">Nyhetss&#248;k</a>

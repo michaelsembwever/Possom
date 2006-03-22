@@ -13,7 +13,7 @@
         <name>Schibsted Søk AS</name>
         <url>http://www.sesam.no/</url>
     </organization>
-    <logo>http://sesam.no/images/index/logo.jpg</logo>
+    <logo>http://sesam.no/images/index/logo.png</logo>
     <inceptionYear>2005</inceptionYear>
     <package>no.schibstedsok.front</package>
     <shortDescription>Search-front application for Schibsted Søk.</shortDescription>
