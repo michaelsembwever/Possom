@@ -1,0 +1,11 @@
+document.write('<form name="tipsform" method="get" action="http://www.sesam.no/psearch/">');
+document.write('<input name="lan" value="en" type="hidden" />');
+document.write('<input name="c" value="d" type="hidden" />');
+document.write('<table border="0" cellpadding="0" cellspacing="0" style="width: 158px; height:58px; margin:5px 0px; background: #F3F3F3; border: 1px solid #A63F83;">');
+document.write('<tr><td valign="middle" style="padding-left:5px;"><img src="http://www.sesam.no/export/js/logo.gif" alt="logo" /></td></tr>');
+document.write('<tr>');
+document.write('<td width="102"><input type="text" name="q" size="11" style="margin:0px 5px" /></td>');
+document.write('<td width="56"><input type="image" src="http://www.sesam.no/export/js/s_button.gif" /></td>');
+document.write('</tr>');
+document.write('</table>');
+document.write('</form>');
