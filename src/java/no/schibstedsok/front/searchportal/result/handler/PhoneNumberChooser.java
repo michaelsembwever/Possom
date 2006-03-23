@@ -16,7 +16,7 @@ public class PhoneNumberChooser implements ResultHandler {
         for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
             final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
-            final String phoneNumber = searchResultItem.getField("yptelefon");
+            final String phoneNumber = searchResultItem.getField("yphovedtelefon");
             final String otherNumbers = searchResultItem.getField("ypandretelefoner");
             final String mobileNumber = searchResultItem.getField("ypmobiltelefon");
 
