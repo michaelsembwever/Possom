@@ -17,16 +17,20 @@ import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.XorClause;
 import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 
 /**
  *
  * @author magnuse
  */
 public class NewsSearchCommand extends FastSearchCommand {
-
+    
     private static final String FAST_SOURCE_FILTER_PREFIX = "newssource";
     private static final String SESAM_SITE_PREFIX = "nyhetskilde";
-
+    
+    // Filter used to get all articles.
+    private static final String FAST_SIZE_HACK = " +size:>0";
+    
     /** Creates a new instance of NewsSearchCommand
      *
      * @param cxt Search command context.
@@ -35,9 +39,9 @@ public class NewsSearchCommand extends FastSearchCommand {
     public NewsSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
-
+    
     private StringBuffer filterBuilder = null;
-
+    
     /**
      *
      * @param clause The clause to examine.
@@ -51,19 +55,20 @@ public class NewsSearchCommand extends FastSearchCommand {
             clause.getSecondClause().accept(this);
         }
     }
-
+    
     /**
      * LeafClause
      *
-     * A leaf clause with a site field does not add anything to the query.
+     * A leaf clause with a site field does not add anything to the query. Also
+     * if the query just contains the prefix do not output anything.
      *
      */
     protected void visitImpl(final LeafClause clause) {
-        if (!hasSourceField(clause)) {
+        if (! (hasSourceField(clause) || containsJustThePrefix())) {
             super.visitImpl(clause);
         }
     }
-
+    
     /**
      * PhraseClause
      *
@@ -75,22 +80,35 @@ public class NewsSearchCommand extends FastSearchCommand {
             super.visitImpl(clause);
         }
     }
-
+    
     protected String getAdditionalFilter() {
         synchronized (this) {
             if (filterBuilder == null) {
                 filterBuilder = new StringBuffer();
                 new FilterVisitor().visit(context.getQuery().getRootClause());
             }
+            
+            // Add filter to retrieve all documents.
+            if (containsJustThePrefix()) {
+                filterBuilder.append(FAST_SIZE_HACK);
+            }
+            
             return filterBuilder.toString();
         }
     }
-
-    private final boolean hasSourceField(final LeafClause clause) {
+    
+    private boolean hasSourceField(final LeafClause clause) {
         return clause.getField() != null
                 && clause.getField().equals(SESAM_SITE_PREFIX);
     }
-
+    
+    private boolean containsJustThePrefix() {
+        return context.getQuery().getRootClause() == context.getQuery().getFirstLeafClause() 
+          && (context.getQuery().getFirstLeafClause().getKnownPredicates().contains(TokenPredicate.NEWSPREFIX) 
+              || context.getQuery().getFirstLeafClause().getPossiblePredicates().contains(TokenPredicate.NEWSPREFIX));
+    }
+    
+    
     /**
      *
      * Visitor to create the FAST filter string. Handles the nyhetskilde: syntax.
@@ -100,38 +118,38 @@ public class NewsSearchCommand extends FastSearchCommand {
      *
      */
     private final class FilterVisitor extends AbstractReflectionVisitor {
-
+        
         protected void visitImpl(final LeafClause clause) {
             if (hasSourceField(clause)) {
                 appendSiteFilter(clause);
             }
         }
-
+        
         protected void visitImpl(final PhraseClause clause) {
             if (hasSourceField(clause)) {
                 appendSiteFilter(clause);
             }
         }
-
+        
         protected void visitImpl(final DefaultOperatorClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-
+        
         protected void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-
+        
         protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-
+        
         protected void visitImpl(final XorClause clause) {
             clause.getFirstClause().accept(this);
         }
-
+        
         private final void appendSiteFilter(final LeafClause clause) {
             filterBuilder.append("+");
             filterBuilder.append(FAST_SOURCE_FILTER_PREFIX);

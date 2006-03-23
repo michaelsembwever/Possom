@@ -24,6 +24,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
         TokenPredicate.CATALOGUEPREFIX,
         TokenPredicate.PICTUREPREFIX,
         TokenPredicate.SKIINFOPREFIX,
+        TokenPredicate.NEWSPREFIX,
         //TokenPredicate.NEWSPREFIX,
         TokenPredicate.WIKIPEDIAPREFIX,
         //TokenPredicate.TVPREFIX,
@@ -44,14 +45,16 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     }
     
     protected void visitImpl(final LeafClause clause) {
-        if (clause == getContext().getQuery().getFirstLeafClause()) {
-            
-            for (final Iterator iterator = getPrefixesIterator(); iterator.hasNext();) {
-                final TokenPredicate predicate = (TokenPredicate) iterator.next();
-                if (clause.getPossiblePredicates().contains(predicate)
-                || clause.getKnownPredicates().contains(predicate)) {
-                    getContext().getTransformedTerms().put(clause, BLANK);
-                    return;
+        // Do not remove if the query is just prefix.
+        if (getContext().getQuery().getRootClause() != clause) {
+            if (clause == getContext().getQuery().getFirstLeafClause()) {
+                for (final Iterator iterator = getPrefixesIterator(); iterator.hasNext();) {
+                    final TokenPredicate predicate = (TokenPredicate) iterator.next();
+                    if (clause.getPossiblePredicates().contains(predicate)
+                    || clause.getKnownPredicates().contains(predicate)) {
+                        getContext().getTransformedTerms().put(clause, BLANK);
+                        return;
+                    }
                 }
             }
         }
