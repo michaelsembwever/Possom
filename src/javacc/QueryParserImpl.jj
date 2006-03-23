@@ -23,7 +23,19 @@ public final class QueryParserImpl extends AbstractQueryParser{
     public QueryParserImpl(final Context cxt){
         this(new StringReader(cxt.getQueryString()));
         context = cxt;
+        final String qs = cxt.getQueryString();
+        int lp = 0, rp = 0;
+        final char[] chars = qs.toCharArray();
+        for( int i = 0; i < chars.length; ++i ){ 
+            if( chars[i] == '(' ){ ++lp; }
+            if( chars[i] == ')' ){ ++rp; }
+        }
+        if( lp != rp ){
+            // uneven amount of (). Ignore all of them then.
+            ReInit(new StringReader(qs.replaceAll("\\(","").replaceAll("\\)","")));
+        }
         token_source.SwitchTo(DEFAULT);
+        LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
 
     public QueryParserImpl(final Context cxt, final int lexicalState){
@@ -40,7 +52,8 @@ PARSER_END(QueryParserImpl)
 **/
 <*>SKIP : {
       " " | "!" 
-    | < [ "\u0023"-"\u002F" ] >
+    | < [ "\u0023"-"\u0027" ] >
+    | < [ "\u002a"-"\u002f" ] >
     | < [ "\u003b"-"\u0040" ] >
     | < [ "\u005b"-"\u0060" ] >
     | < [ "\u007b"-"\u00bf" ] >
@@ -186,9 +199,9 @@ AndNotClause andNotOperation() :{
     (<ANDNOT>(right = noPrecedence())) { try{return context.createAndNotClause(right);}finally{exitMethod();} }
 }  
 
-OrClause orOperation() :{
+Clause orOperation() :{
     Clause left,right;
-    OrClause clause;
+    Clause clause;
     enterMethod("orOperation()");
 }{
     ("("(clause = hiddenOrOperation())")") { try{return clause;}finally{exitMethod();} }
@@ -212,13 +225,19 @@ AndClause hiddenAndOperation() :{
     ((left = leafPrecedence())(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
-OrClause hiddenOrOperation() :{
+Clause hiddenOrOperation() :{
     Clause left,right;
     enterMethod("hiddenOrOperation()");
 }{
+    
+    // These are the real hidden or operands
     ((left = leafPrecedence())(right = hiddenOrOperation())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
     |
     ((left = strongJoinPrecedence())(right = looseJoinPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
+    |
+    // Not really an OR clause. Just () wrapped around something else. Therefore ignore the ()'s
+    (left = leafPrecedence()) { try{return left;}finally{exitMethod();} }
+    
 }
 
 NotClause notOperation() :{
