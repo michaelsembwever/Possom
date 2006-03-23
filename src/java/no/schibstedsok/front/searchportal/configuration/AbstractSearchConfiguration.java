@@ -64,18 +64,22 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
     public final List<QueryTransformer> getQueryTransformers() {
         
         final List<QueryTransformer> copy = new ArrayList<QueryTransformer>();
-        try {
-            for( QueryTransformer qt : queryTransformers){
-                    copy.add( (QueryTransformer)qt.clone() );
+        if( queryTransformers != null ){
+            try {
+                for( QueryTransformer qt : queryTransformers ){
+                        copy.add( (QueryTransformer)qt.clone() );
+                }
+            } catch (CloneNotSupportedException ex) {
+                LOG.error(ERR_FAILED_QUERYTRANSFORMERS_COPY, ex);
             }
-        } catch (CloneNotSupportedException ex) {
-            LOG.error(ERR_FAILED_QUERYTRANSFORMERS_COPY, ex);
         }
         return Collections.unmodifiableList( copy );
     }
 
     public final void addQueryTransformer(final QueryTransformer queryTransformer) {
-        queryTransformers.add(queryTransformer);
+        if( queryTransformer != null ){
+            queryTransformers.add(queryTransformer);
+        }
     }
 
     public final List<ResultHandler> getResultHandlers() {
