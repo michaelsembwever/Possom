@@ -1,7 +1,5 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.servlet;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -9,38 +7,46 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
-import no.schibstedsok.front.searchportal.command.AbstractSearchCommand;
+import org.apache.log4j.Logger;
 
 /**
  * Logs the viewings for 'papiraviser' and the news source
  *
  * @author <a href="mailto:thomas.kjerstad@schibsted.no">Thomas Kjaerstad</a>.
  * @version <tt>$Revision$</tt>
- * 
+ *
  */
-public class RetrieverLogServlet extends HttpServlet {
+public final class RetrieverLogServlet extends HttpServlet {
 
-    public void destroy() {}
-    public void init() {}
+    private static final Logger LOG = Logger.getLogger("no.schibstedsok.Statistics");
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    public void destroy() {  }
+    public void init() {  }
 
-        String type = req.getParameter("type");
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse res) throws ServletException, IOException {
+
+        final String type = req.getParameter("type");
 
         //logs click on homepage link from yellow resultpage and from infopage
         if ("homepage".equals(type)) {
-            String ypos = "";
-            if ("y".equals(req.getParameter("c")))
-                ypos = " ypos: " + req.getParameter("ypos");
-            Log log = LogFactory.getLog(AbstractSearchCommand.class);
-            log.info("STATISTICS: " + req.getParameter("c") + "_hp company: " + req.getParameter("name") + " q: " + req.getParameter("q") + ypos);
-            res.setHeader("Cache-Control", "no-cache");
+
+            LOG.info(
+                    "<company-info type=\"" + req.getParameter("c") + "_hp\">"
+                        + "<query>" + req.getParameter("q") + "</query>"
+                        + ("y".equals(req.getParameter("c"))
+                            ? "<y-position>" + req.getParameter("ypos") + "</y-position>"
+                            : "")
+                        + "<name>" + req.getParameter("name") + "</name>"
+                    + "</company-info>");
+
         } else {
-            String paper = req.getParameter("paper");
-            Log log = LogFactory.getLog(AbstractSearchCommand.class);
-            log.info("STATISTICS: papiraviser - " + paper);
-            res.setHeader("Cache-Control", "no-cache");
+
+            LOG.info("<retriever-info name=\"papiraviser - " + req.getParameter("paper") + "\"\\>");
         }
+        // clients must not cache these requests
+        res.setHeader("Cache-Control", "no-cache, must-revalidate, post-check=0, pre-check=0");
+        res.setHeader("Pragma", "no-cache"); // for old browsers
+        res.setDateHeader("Expires", 0); // to be double-safe
 
     }
 }
