@@ -341,7 +341,7 @@
 <decorator:getProperty property="page.search-bar"/>
 
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
-    <%if (q.trim().equals("") && !currentC.equals("m")) {%>
+    <%if (q.trim().equals("")) {%>
     <tr>
         <td class="cell_one">&nbsp;</td>
         <td class="cell_three">&nbsp;</td>
@@ -349,7 +349,7 @@
     </tr>
     <% }else{ %>
     <tr>
-        <td class="cell_one"><span class="pad_5l">Sorter treffene dine</span></td>
+        <td class="cell_one"><span class="pad_5l">Sorter trefene dine</span></td>
         <td class="cell_three"><decorator:getProperty property="page.middle-bar"/></td>
         <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
     </tr>
@@ -363,8 +363,16 @@
     </tr>
     <% } %>
 
+    <%if (q.trim().equals("") && currentC.equals("m")) {%>
+	<tr>
+	    <td colspan="3">
+		<decorator:getProperty property="page.media-Intropage"/>	
+	    </td>
+	</tr>
+    <% } %>
+
     <tr>
-	<%if (currentC.equals("d") && q.trim().equals("")) {%>
+	<%if (q.trim().equals("") && !currentC.equals("m")) {%>
 
 	<%}else if (currentC.equals("m") || currentC.equals("d") || !q.trim().equals("")) {%>
         <td class="cell_one" valign="top">
@@ -483,14 +491,13 @@
         </td>
 	<% } %>
 
-            <!--<td class="cell_two" valign="top"><img src="../images/pix.gif" width="24" height="1" alt="" class="dash_<%=currentC%>" /></td>-->
-	    <%if ((currentC.equals("y") || currentC.equals("d")) && q.trim().equals("")) {%>
+        <%if (q.trim().equals("")) {%>
             <td valign="top" colspan="3">
-            <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")) {%>
+        <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")) {%>
             <td class="cell_three" valign="top">
-            <% }else{ %>
+        <% }else{ %>
             <td class="cell_three" valign="top" colspan="2">
-            <%}%>
+        <%}%>
                 <%--<decorator:getProperty property="page.search-bar"/>--%>
                 <!-- Magic -->
                 <%if (currentC.equals("d")) {%>
@@ -665,7 +672,7 @@
 
             </td>
 
-	    <%if (currentC.equals("d") && q.trim().equals("")) {%>
+	    <%if (q.trim().equals("")) {%>
 
             <%}else if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g")) {%>
                 <td class="cell_four" valign="top" width="225">
