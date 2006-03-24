@@ -25,8 +25,8 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  */
 public class NewsSearchCommand extends FastSearchCommand {
     
-    private static final String FAST_SOURCE_FILTER_PREFIX = "newssource";
-    private static final String SESAM_SITE_PREFIX = "nyhetskilde";
+    private static final String FAST_SOURCE_FILTER_FIELD = "newssource";
+    private static final String SESAM_SOURCE_FIELD = "nyhetskilde";
     
     // Filter used to get all articles.
     private static final String FAST_SIZE_HACK = " +size:>0";
@@ -99,7 +99,7 @@ public class NewsSearchCommand extends FastSearchCommand {
     
     private boolean hasSourceField(final LeafClause clause) {
         return clause.getField() != null
-                && clause.getField().equals(SESAM_SITE_PREFIX);
+                && clause.getField().equals(SESAM_SOURCE_FIELD);
     }
     
     private boolean containsJustThePrefix() {
@@ -152,7 +152,7 @@ public class NewsSearchCommand extends FastSearchCommand {
         
         private final void appendSiteFilter(final LeafClause clause) {
             filterBuilder.append("+");
-            filterBuilder.append(FAST_SOURCE_FILTER_PREFIX);
+            filterBuilder.append(FAST_SOURCE_FILTER_FIELD);
             filterBuilder.append(':');
             filterBuilder.append(clause.getTerm().replaceAll("\"", ""));
         }

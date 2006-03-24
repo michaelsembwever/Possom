@@ -152,35 +152,19 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
             l = e.getElementsByTagName("QUERYTRANSFORM");
 
-            String wikiMatch = null;
-            String fullNameMatch = null;
-
             for (int i = 0; i < l.getLength(); ++i) {
 
                 final Element trans = (Element) l.item(i);
                 final String name = trans.getAttribute("NAME");
                 final String custom = trans.getAttribute("CUSTOM").replaceAll("->", "");
-                // basic fast analysis hit
 
                 addMatch(name, custom, query);
-
 
                 if (custom.equalsIgnoreCase(query)) {
 
                     final String key = name.substring(name.indexOf('_') + 1, name.indexOf("QM"));
 
                     addMatch(REAL_TOKEN_PREFIX + "exact_" + key + REAL_TOKEN_SUFFIX, custom, query);
-                }
-                if (name.indexOf("fullname") > -1) {
-                    fullNameMatch = custom;
-                }
-            }
-            // [FIXME] wikiMatch will never be assigned!
-            if (wikiMatch != null && fullNameMatch != null) {
-                if (fullNameMatch.length() > wikiMatch.length()) {
-
-                    addMatch("FastQT_nameLongerThanWikipediaQM", fullNameMatch, query);
-
                 }
             }
         } catch (IOException e1) {

@@ -410,18 +410,16 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private Boolean writeAnd = null;
 
     protected void visitImpl(final LeafClause clause) {
-        final String fullTerm =
-                (clause.getField() == null ? "" : clause.getField() + ": ")
-                + clause.getTerm();
-
-        final String transformedTerm = (String) getTransformedTerm(clause);
-        if (transformedTerm != null && transformedTerm.length() > 0) {
-            if (insideNot) {
-                appendToQueryRepresentation(" -");
-            }  else if (writeAnd != null && writeAnd.booleanValue()) {
-                appendToQueryRepresentation(" +");
+        if (clause.getField() == null) {
+            final String transformedTerm = (String) getTransformedTerm(clause);
+            if (transformedTerm != null && transformedTerm.length() > 0) {
+                if (insideNot) {
+                    appendToQueryRepresentation(" -");
+                }  else if (writeAnd != null && writeAnd.booleanValue()) {
+                    appendToQueryRepresentation(" +");
+                }
+                appendToQueryRepresentation(transformedTerm);
             }
-            appendToQueryRepresentation(transformedTerm);
         }
     }
     protected void visitImpl(final OperationClause clause) {

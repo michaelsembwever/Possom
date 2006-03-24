@@ -68,6 +68,11 @@ public class WhiteSearchCommandTest extends TestCase {
         assertEquals("whitephon:magnus whitephon:eklund whitepages:97403306 whitephon:oslo whitephon:sarsgate whitepages:74", query);
     }
     
+    public void testIgnoreField() {
+        final String query = getParsedQueryAsString("site:vg.no magnus eklund");
+        assertEquals("whitephon:magnus whitephon:eklund", query.trim());
+    }
+    
     private String getParsedQueryAsString(final String query) {
         final SearchCommand.Context cxt = createCommandContext(query);
         final WhiteSearchCommand command = createSearchCommand(cxt);

@@ -63,15 +63,13 @@ public class WhiteSearchCommand extends FastSearchCommand {
      * @param clause The clause to prefix.
      */
     protected void visitImpl(final LeafClause clause) {
-        if (! getTransformedTerm(clause).equals("")) {
-            appendToQueryRepresentation(PREFIX_PHONETIC);
+        if (clause.getField() == null) {
+            if (! getTransformedTerm(clause).equals("")) {
+                appendToQueryRepresentation(PREFIX_PHONETIC);
+            }
+            
+            appendToQueryRepresentation( getTransformedTerm(clause).replaceAll("\\.","") );
         }
-        
-        final String fullTerm =
-                (clause.getField() == null ? "" : clause.getField() + ": ")
-                + clause.getTerm();
-
-        appendToQueryRepresentation( getTransformedTerm(clause).replaceAll("\\.","") );
     }
     
     /**

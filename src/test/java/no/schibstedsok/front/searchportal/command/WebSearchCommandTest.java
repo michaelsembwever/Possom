@@ -66,6 +66,15 @@ public class WebSearchCommandTest extends TestCase {
                 "");
     }
 
+    /** Test that the nyhetskilde prefix is ignored.
+     */
+    public void testIgnoreField() {
+        executeTestOfQuery(
+                "nyhetskilde:vg bil",
+                "bil",
+                "");
+    }
+    
     /**
      *
      *

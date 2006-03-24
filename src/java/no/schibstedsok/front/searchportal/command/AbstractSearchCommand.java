@@ -260,11 +260,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final StringBuffer sb = new StringBuffer();
 
     protected void visitImpl(final LeafClause clause) {
-        final String fullTerm =
-                (clause.getField() == null ? "" : clause.getField() + ": ")
-                + clause.getTerm();
-
-        sb.append(transformedTerms.get(clause));
+        if (clause.getField() == null) {
+            sb.append(transformedTerms.get(clause));
+        }
     }
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
