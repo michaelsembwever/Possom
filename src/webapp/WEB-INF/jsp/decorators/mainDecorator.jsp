@@ -108,7 +108,7 @@
                         <li><a href="http://www.dinside.no/data/">Data</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/reise/">Reise</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/motor/">Motor</a><span>|</span></li>
-                        <li><a href="http://www.dinside.no/okonomi/">�konomi</a><span>|</span></li>
+                        <li><a href="http://www.dinside.no/okonomi/">økonomi</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/jobb/">Jobb</a><span>|</span></li>
                         <li><a href="http://www.dinside.no/bolig/">Bolig</a></li>
                     </ul>
@@ -151,7 +151,7 @@
                         <li><a href="http://www.itavisen.no/bransjen/">IT-bransjen</a></li>
                     </ul>
                 <% } else if ("nrk".equals(ss)) { %>
-                    <a href="http://www.nrk.no/"><img id="sitelogo" src="../images/sitesearch/nrk/logo.gif" alt="Nrk logo" title="Til forsida p� NRK.no" /></a>
+                    <a href="http://www.nrk.no/"><img id="sitelogo" src="../images/sitesearch/nrk/logo.gif" alt="Nrk logo" title="Til forsida på NRK.no" /></a>
                     <ul id="sitelinks">
                         <li><a href="http://www.nrk.no/nyheter/">Nyheter</a><span>|</span></li>
                         <li><a href="http://www.nrk.no/sport/">Sport</a><span>|</span></li>
@@ -226,7 +226,7 @@
                         <li><a href="http://aftenbladet.no/innenriks/">Innenriks</a><span>|</span></li>
                         <li><a href="http://aftenbladet.no/utenriks/">Utenriks</a><span>|</span></li>
                         <li><a href="http://aftenbladet.no/debatt/">Debatt</a><span>|</span></li>
-                        <li><a href="http://aftenbladet.no/vaeret/">V�ret</a><span>|</span></li>
+                        <li><a href="http://aftenbladet.no/vaeret/">Været</a><span>|</span></li>
                         <li><a href="http://fotball.aftenbladet.no/">Fotball</a><span>|</span></li>
                         <li><a href="http://aftenbladet.no/sport/">Sport</a><span>|</span></li>
                         <li><a href="http://aftenbladet.no/kultur/">Kultur</a><span>|</span></li>
@@ -455,7 +455,7 @@
 		            <% int i = 0; %>
                     <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                         Modifier e = (Modifier) iterator.next();
-                        if ( (currentC.equals("d") && !e.getName().equals("Netts�k")) || (currentC.equals("d") && searchType != null && searchType.equals("g")) || currentC.equals("p")) {
+                        if ( (currentC.equals("d") && !e.getName().equals("Nettsøk")) || (currentC.equals("d") && searchType != null && searchType.equals("g")) || currentC.equals("p")) {
                             ++i;
                     %>
 
