@@ -35,7 +35,7 @@ public final class QueryParserImpl extends AbstractQueryParser{
             ReInit(new StringReader(qs.replaceAll("\\(","").replaceAll("\\)","")));
         }
         token_source.SwitchTo(DEFAULT);
-        LOG.setLevel(org.apache.log4j.Level.TRACE);
+        //LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
 
     public QueryParserImpl(final Context cxt, final int lexicalState){
