@@ -77,6 +77,9 @@ public class OverturePPCCommand extends AbstractSearchCommand {
      * @return
      */
     public SearchResult execute() {
+        // Need to rerun the token evaluation stuff on the transformed query
+        // The transformed query does not contain site: and nyhetskilde: which
+        // could have prevented exact matching in the previous evaluation.
         final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
                 TokenEvaluatorFactoryImpl.Context.class,
                     context,
