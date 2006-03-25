@@ -90,8 +90,8 @@ public class OverturePPCCommand extends AbstractSearchCommand {
                     }
         );
 
-        TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
-        
+        final TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
+
         final boolean top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluatorFactory);
         
         final String query = getTransformedQuery().replace(' ', '+');
