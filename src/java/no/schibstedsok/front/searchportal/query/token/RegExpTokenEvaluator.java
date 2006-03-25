@@ -28,7 +28,6 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
      *            {@link Pattern}.
      */
     public RegExpTokenEvaluator(final Collection<Pattern> expressions, final boolean queryDependant) {
-
         this.expressions.addAll(expressions);
         this.queryDependant = queryDependant;
     }
@@ -47,12 +46,9 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
      * @return true if any of the patterns matches.
      */
     public boolean evaluateToken(final String token, final String term, final String query) {
-
-        for (Iterator iterator = expressions.iterator(); iterator.hasNext();) {
-            final Pattern p = (Pattern) iterator.next();
-
+        for (final Pattern p : expressions) {
             final Matcher m = term == null ? p.matcher(query) : p.matcher(term);
-
+            
             if (m.find()) {
                 return true;
             }

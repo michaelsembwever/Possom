@@ -1,5 +1,14 @@
 package no.schibstedsok.front.searchportal.command;
 
+import com.thoughtworks.xstream.XStream;
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
+import no.schibstedsok.front.searchportal.query.QueryStringContext;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
@@ -14,6 +23,7 @@ import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.OvertureSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
+import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import org.apache.commons.collections.Predicate;
@@ -32,7 +42,7 @@ import java.net.URLEncoder;
 
 /**
  *
- * This command gets the overture ads to display. It also does som analysis of
+ * This command gets the overture ads to display. It also does some analysis of
  * the query to decide if it is a query that yields a high click frequency for
  * the ads. This is done by evaluating the predicate "exact_ppctoplist".
  */
@@ -67,13 +77,22 @@ public class OverturePPCCommand extends AbstractSearchCommand {
      * @return
      */
     public SearchResult execute() {
+        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                TokenEvaluatorFactoryImpl.Context.class,
+                    context,
+                    new QueryStringContext() {
+                        public String getQueryString() {
+                            return getTransformedQuery();
+                        }
+                    }
+        );
 
-        final boolean top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(getEvalFactory());
-
+        TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
+        
+        final boolean top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluatorFactory);
+        
         final String query = getTransformedQuery().replace(' ', '+');
         final StringBuffer url = createRequestURL(query, top);
-
-        log.debug("APAAPA " + top);
 
         try {
             final Document doc = getOvertureXmlResult(url);
@@ -81,7 +100,6 @@ public class OverturePPCCommand extends AbstractSearchCommand {
 
             if (doc != null) {
                 final Element elem = doc.getDocumentElement();
-
                 final NodeList list = elem.getElementsByTagName(SearchConstants.OVERTURE_PPC_ELEMENT);
 
                 for (int i = 0; i < list.getLength(); ++i) {
@@ -99,8 +117,7 @@ public class OverturePPCCommand extends AbstractSearchCommand {
     }
 
     private TokenEvaluatorFactory getEvalFactory() {
-        final TokenEvaluatorFactory factory = context.getRunningQuery().getTokenEvaluatorFactory();
-        return factory;
+        return context.getRunningQuery().getTokenEvaluatorFactory();
     }
 
     private StringBuffer createRequestURL(final String query, final boolean top)
@@ -142,8 +159,7 @@ public class OverturePPCCommand extends AbstractSearchCommand {
     }
 
     private Document getOvertureXmlResult(final StringBuffer url) throws IOException, SAXException {
-        final Document doc = client.getXmlDocument("overture_ppc", url.toString());
-        return doc;
+        return client.getXmlDocument("overture_ppc", url.toString());
     }
 }
 

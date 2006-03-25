@@ -28,20 +28,6 @@ import java.util.regex.Pattern;
  * @version $Revision$, $Author$, $Date$
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
-
-    /* Geo data*/
-    public static final String GEO = "geo";
-    /* String representing Firstname */
-    public static final String FIRSTNAME = "firstname";
-    /* String representing Lastname */
-    public static final String LASTNAME = "lastname";
-    /* String representing Company */
-    public static final String COMPANY = "companyname";
-    /* String representing Keywords */
-    public static final String KEYWORDS = "keywords";
-    /* String representing Category */
-    public static final String CATEGORY = "category";
-
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
     private final Map<String,List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
@@ -89,11 +75,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         if (analysisResult.containsKey(realTokenFQ)) {
             if (term == null) {
                 evaluation = true;
-
             }  else  {
-
                 for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
-
                     evaluation = occurance.getMatcher(term).find();
 
                     // keep track of which TokenMatch's we've used.
@@ -160,7 +143,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
                 addMatch(name, custom, query);
 
-                if (custom.equalsIgnoreCase(query)) {
+                if (custom.equalsIgnoreCase(query.trim())) {
 
                     final String key = name.substring(name.indexOf('_') + 1, name.indexOf("QM"));
 

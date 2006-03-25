@@ -40,7 +40,7 @@ public class NewsSearchCommand extends FastSearchCommand {
         super(cxt, parameters);
     }
     
-    private StringBuffer filterBuilder = null;
+    private StringBuilder filterBuilder = null;
     
     /**
      *
@@ -84,7 +84,7 @@ public class NewsSearchCommand extends FastSearchCommand {
     protected String getAdditionalFilter() {
         synchronized (this) {
             if (filterBuilder == null) {
-                filterBuilder = new StringBuffer();
+                filterBuilder = new StringBuilder();
                 new FilterVisitor().visit(context.getQuery().getRootClause());
             }
             
