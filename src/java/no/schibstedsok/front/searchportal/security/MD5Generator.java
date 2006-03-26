@@ -10,14 +10,14 @@ import java.security.NoSuchAlgorithmException;
  * @version <tt>$Revision$</tt>
  */
 public class MD5Generator {
-    private String secret;
+    private final String secret;
 
     public MD5Generator(String secret) {
         this.secret = secret;
     }
 
     public String generateMD5(String s) {
-        MessageDigest digest  = getDigest("MD5");
+        final MessageDigest digest  = getDigest("MD5");
 
         digest.update(s.getBytes());
         digest.update(secret.getBytes());
@@ -44,14 +44,4 @@ public class MD5Generator {
             throw new RuntimeException(e.getMessage());
         }
     }
-
-    public static void main(String[] args) {
-        MD5Generator g = new MD5Generator("secret");
-
-        System.out.println(g.generateMD5("123"));
-        System.out.println(g.generateMD5("1234"));
-        System.out.println(g.validate("123", g.generateMD5("1233")));
-
-    }
-
 }
