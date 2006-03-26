@@ -41,7 +41,7 @@ public final class JepTokenEvaluator implements TokenEvaluator {
         parser.addStandardConstants();
         parser.addStandardFunctions();
         parser.addComplex();
-        parser.setImplicitMul(true);
+//        parser.setImplicitMul(true);
 
 
         parser.parseExpression(query);
