@@ -349,7 +349,7 @@
     </tr>
     <% }else{ %>
     <tr>
-        <td class="cell_one"><span class="pad_5l">Sorter trefene dine</span></td>
+        <td class="cell_one"><span class="pad_5l">Sorter treffene dine</span></td>
         <td class="cell_three"><decorator:getProperty property="page.middle-bar"/></td>
         <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
     </tr>
