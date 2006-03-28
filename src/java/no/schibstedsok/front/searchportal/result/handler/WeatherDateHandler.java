@@ -1,11 +1,11 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result.handler;
 
-import java.util.Map;
-import java.util.Iterator;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Map;
+
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
 /**
@@ -34,9 +34,8 @@ public class WeatherDateHandler implements ResultHandler  {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
-            final String datestring = searchResultItem.getField(sourceField);
+        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+            final String datestring = item.getField(sourceField);
             Date date = null;
 
             try {
@@ -44,10 +43,8 @@ public class WeatherDateHandler implements ResultHandler  {
             } catch (ParseException e) {
                 throw new IllegalArgumentException(e.getMessage());
             }
-            searchResultItem.addField("datePart", datePart.format(date));
-            searchResultItem.addField("timePart", timePart.format(date));
-
-
+            item.addField("datePart", datePart.format(date));
+            item.addField("timePart", timePart.format(date));
         }
     }
 }

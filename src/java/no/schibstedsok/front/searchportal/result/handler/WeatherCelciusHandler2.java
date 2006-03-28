@@ -2,10 +2,10 @@
 package no.schibstedsok.front.searchportal.result.handler;
 
 
-import java.util.Map;
-import java.util.Iterator;
-import java.text.ParseException;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.Map;
+
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
 /**
@@ -29,10 +29,8 @@ public class WeatherCelciusHandler2 implements ResultHandler  {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
-            final String celcius = searchResultItem.getField(sourceField);
+        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+            final String celcius = item.getField(sourceField);
             String newVal = null;
 
             try {
@@ -42,7 +40,7 @@ public class WeatherCelciusHandler2 implements ResultHandler  {
             }
             System.out.println("New Celcisu Val put " + newVal);
             if ("-0".equals(newVal)) { newVal = "0"; }
-            searchResultItem.addField(targetField, newVal);
+            item.addField(targetField, newVal);
         }
     }
 }

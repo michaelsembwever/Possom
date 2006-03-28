@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result.handler;
 
-import java.util.Iterator;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
@@ -13,12 +12,10 @@ public class PhoneNumberChooser implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
-
-            final String phoneNumber = searchResultItem.getField("yphovedtelefon");
-            final String otherNumbers = searchResultItem.getField("ypandretelefoner");
-            final String mobileNumber = searchResultItem.getField("ypmobiltelefon");
+        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+            final String phoneNumber = item.getField("yphovedtelefon");
+            final String otherNumbers = item.getField("ypandretelefoner");
+            final String mobileNumber = item.getField("ypmobiltelefon");
 
             String chosenNumber = null;
 
@@ -36,7 +33,7 @@ public class PhoneNumberChooser implements ResultHandler {
                 }
             }
 
-            searchResultItem.addField("ypanynumber", chosenNumber);
+            item.addField("ypanynumber", chosenNumber);
         }
     }
 }

@@ -34,14 +34,13 @@ public class TvEnrichmentDateFormatHandler implements ResultHandler {
     	final SimpleDateFormat inputDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         final SimpleDateFormat outputDF = new SimpleDateFormat("HH:mm");
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
 
-            final String docDateTime = searchResultItem.getField(sourceField);
+            final String docDateTime = item.getField(sourceField);
 
             try {
                 final String hour = outputDF.format(inputDF.parse(docDateTime));
-                searchResultItem.addField(targetField, hour);
+                item.addField(targetField, hour);
             } catch (ParseException e) {
             }
         }

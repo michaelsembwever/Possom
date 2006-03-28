@@ -1,38 +1,35 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result.handler;
 
-import java.util.Iterator;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
 /**
- * @author <a href="mailto:thomas.kjerstad@aftenposten.no">Thomas Kj�rstad</a>
+ * @author <a href="mailto:thomas.kjerstad@aftenposten.no">Thomas Kjærstad</a>
  * @version <tt>$Revision$</tt>
  */
 public class PhoneNumberFormatter implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
-
-            final String ypanynumber = searchResultItem.getField("ypanynumber");
-            final String wpmobiltelefon = searchResultItem.getField("wpmobiltelefon");
-            final String wptelefon = searchResultItem.getField("wptelefon");
-            final String yptelefax = searchResultItem.getField("yptelefax");
+        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+            final String ypanynumber = item.getField("ypanynumber");
+            final String wpmobiltelefon = item.getField("wpmobiltelefon");
+            final String wptelefon = item.getField("wptelefon");
+            final String yptelefax = item.getField("yptelefax");
             String format = null;
 
             // TODO: put formatting oh white numbers in here too. For now this will be formatted in MultiValueFieldCollector
             //formatting wp mobile numbers in enrichment
             if (wpmobiltelefon != null) {
                 format = wpmobiltelefon.substring(0, 2) + " " + wpmobiltelefon.substring(2, 4) + " " + wpmobiltelefon.substring(4, 6) + " " + wpmobiltelefon.substring(6, 8);
-                searchResultItem.addField("wpmobiltelefon", format);
+                item.addField("wpmobiltelefon", format);
             }
 
             //formatting wptelefon in enrichment
             if (wptelefon != null) {
                 format = wptelefon.substring(0, 2) + " " + wptelefon.substring(2, 4) + " " + wptelefon.substring(4, 6) + " " + wptelefon.substring(6, 8);
-                searchResultItem.addField("wptelefon", format);
+                item.addField("wptelefon", format);
             }
 
             //formatting yp numbers
@@ -47,7 +44,7 @@ public class PhoneNumberFormatter implements ResultHandler {
                 } else
                     format = ypanynumber;
 
-                searchResultItem.addField("ypanynumber", format);
+                item.addField("ypanynumber", format);
             }
 
             //formatting yptelefax in yip
@@ -57,7 +54,7 @@ public class PhoneNumberFormatter implements ResultHandler {
                 else
                     format = yptelefax;
 
-                searchResultItem.addField("yptelefax", format);
+                item.addField("yptelefax", format);
             }
 
 

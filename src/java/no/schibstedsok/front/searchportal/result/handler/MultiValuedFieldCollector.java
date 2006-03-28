@@ -18,13 +18,11 @@ public class MultiValuedFieldCollector implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
-
+        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
             for (final Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {
                 final String field = (String) fields.next();
 
-                final String fieldValue = searchResultItem.getField(field);
+                final String fieldValue = item.getField(field);
                 String format = "";
 
                 if (fieldValue != null) {
@@ -38,7 +36,7 @@ public class MultiValuedFieldCollector implements ResultHandler {
                         } else
                             format = value;
 
-                        searchResultItem.addToMultivaluedField((String) fieldMap.get(field), format);
+                        item.addToMultivaluedField((String) fieldMap.get(field), format);
                     }
 
                 }

@@ -17,21 +17,20 @@ public class FindFileFormat implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
-            final String url = searchResultItem.getField("url");
+        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+            final String url = item.getField("url");
 
             //print out the following fileformats after title
 			if (url.endsWith(".pdf"))
-				searchResultItem.addField("fileformat", "[pdf]");
+				item.addField("fileformat", "[pdf]");
             else if (url.endsWith(".doc"))
-				searchResultItem.addField("fileformat", "[word]");
+				item.addField("fileformat", "[word]");
             else if (url.endsWith(".ppt"))
-				searchResultItem.addField("fileformat", "[power point]");
+				item.addField("fileformat", "[power point]");
             else if (url.endsWith(".xls"))
-				searchResultItem.addField("fileformat", "[excel]");
+				item.addField("fileformat", "[excel]");
             else if (url.endsWith(".txt"))
-				searchResultItem.addField("fileformat", "[txt]");
+				item.addField("fileformat", "[txt]");
 
         }
     }
