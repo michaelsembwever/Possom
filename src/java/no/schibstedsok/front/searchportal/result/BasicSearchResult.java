@@ -1,5 +1,6 @@
 package no.schibstedsok.front.searchportal.result;
 
+import java.util.Map;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
 import no.schibstedsok.front.searchportal.spell.QuerySuggestion;
@@ -19,13 +20,13 @@ public class BasicSearchResult implements SearchResult {
 
     private static Log log = LogFactory.getLog(BasicSearchResult.class);
 
-    private SearchCommand searchCommand;
+    private final SearchCommand searchCommand;
     protected int hitCount = -1;
-    private List results = new ArrayList();
-    private HashMap spellingSuggestions = new HashMap();
-    private List querySuggestions = new ArrayList();
+    private final List<SearchResultItem> results = new ArrayList<SearchResultItem>();
+    private final Map<String, List> spellingSuggestions = new HashMap<String, List>();
+    private final List querySuggestions = new ArrayList();
 
-    public BasicSearchResult(SearchCommand command) {
+    public BasicSearchResult(final SearchCommand command) {
         this.searchCommand = command;
     }
 
@@ -47,8 +48,8 @@ public class BasicSearchResult implements SearchResult {
 
     public void addSpellingSuggestion(SpellingSuggestion suggestion) {
         if (spellingSuggestions.containsKey(suggestion.getOriginal())) {
-            List exisingSuggestions = (List) spellingSuggestions.get(suggestion.getOriginal());
-            exisingSuggestions.add(suggestion);
+            List exising = spellingSuggestions.get(suggestion.getOriginal());
+            exising.add(suggestion);
         } else {
             List existingSuggestions = new ArrayList();
             existingSuggestions.add(suggestion);
@@ -60,7 +61,7 @@ public class BasicSearchResult implements SearchResult {
         }
     }
     
-    public HashMap getSpellingSuggestions() {
+    public Map<String, List> getSpellingSuggestions() {
         return spellingSuggestions;
     }
 
@@ -72,7 +73,7 @@ public class BasicSearchResult implements SearchResult {
         querySuggestions.add(query);
     }
 
-    public List getResults() {
+    public List<SearchResultItem> getResults() {
         return results;
     }
 }

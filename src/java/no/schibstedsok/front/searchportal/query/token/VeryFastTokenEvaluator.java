@@ -2,12 +2,6 @@
 package no.schibstedsok.front.searchportal.query.token;
 
 
-import no.schibstedsok.front.searchportal.http.HTTPClient;
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -20,6 +14,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import no.schibstedsok.front.searchportal.http.HTTPClient;
+
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 /**
  * VeryFastTokenEvaluator is part of no.schibstedsok.front.searchportal.analyzer.
  *
@@ -29,17 +31,15 @@ import java.util.regex.Pattern;
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
-    private final Map<String,List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
+    private final Map<String, List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
     private static final String REAL_TOKEN_SUFFIX = "QM";
-
-    private static final List EMPTY_LIST = Collections.emptyList();
-
-    private HTTPClient httpClient = null;
-    private Locale locale;
-
+    private final static String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
+
+    private final HTTPClient httpClient;
+
 
     /**
      * Search fast and initialize analyzis result.
@@ -90,16 +90,15 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         return evaluation;
     }
 
-    public List reportToken(final String token, final String query) {
+    public List<TokenMatch> reportToken(final String token, final String query) {
 
         LOG.trace("reportToken(" + token + "," + query + ")");
 
         if (evaluateToken(token, null, query)) {
             String realTokenFQ = REAL_TOKEN_PREFIX + token + REAL_TOKEN_SUFFIX;
-            List matches = (List) analysisResult.get(realTokenFQ);
-            return matches;
+            return analysisResult.get(realTokenFQ);
         } else {
-            return EMPTY_LIST;
+            return Collections.EMPTY_LIST;
         }
     }
 
@@ -122,8 +121,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             LOG.warn(ERR_FAILED_TO_ENCODE + query);
         }
 
-        final String url = "/cgi-bin/xsearch?hits=10&offset=0&type=all&query="
-                + token + "&sortby=&rpf_navigation%3Anavigators=&qtpipeline=lookupword&sources=alone";
+        final String url = CGI_PATH + token;
 
         try {
 
@@ -139,15 +137,15 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
                 final Element trans = (Element) l.item(i);
                 final String name = trans.getAttribute("NAME");
-                final String custom = trans.getAttribute("CUSTOM").replaceAll("->", "");
+                final String match = trans.getAttribute("CUSTOM").replaceAll("->", "");
 
-                addMatch(name, custom, query);
+                addMatch(name, match, query);
 
-                if (custom.equalsIgnoreCase(query.trim())) {
+                if (match.equalsIgnoreCase(query.trim())) {
 
                     final String key = name.substring(name.indexOf('_') + 1, name.indexOf("QM"));
 
-                    addMatch(REAL_TOKEN_PREFIX + "exact_" + key + REAL_TOKEN_SUFFIX, custom, query);
+                    addMatch(REAL_TOKEN_PREFIX + "exact_" + key + REAL_TOKEN_SUFFIX, match, query);
                 }
             }
         } catch (IOException e1) {
@@ -161,23 +159,20 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         return false;
     }
 
-    private void addMatch(final String name, final String custom, final String query) {
-        final String expr = "\\b" + custom + "\\b";
+    private void addMatch(final String name, final String match, final String query) {
+        final String expr = "\\b" + match + "\\b";
         final Pattern pattern = Pattern.compile(expr, RegExpEvaluatorFactory.REG_EXP_OPTIONS);
         final Matcher m = pattern.matcher(query);
 
         while (m.find()) {
 
-            final TokenMatch match = new TokenMatch(name, custom, m.start(), m.end());
+            final TokenMatch tknMatch = new TokenMatch(name, match, m.start(), m.end());
 
             if (!analysisResult.containsKey(name)) {
-                final List matches = new ArrayList();
-                analysisResult.put(name, matches);
+                analysisResult.put(name, new ArrayList());
             }
 
-            final List previousMatches = (List) analysisResult.get(name);
-            previousMatches.add(match);
+            analysisResult.get(name).add(tknMatch);
         }
     }
-
 }

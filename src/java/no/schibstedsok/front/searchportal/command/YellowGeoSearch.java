@@ -119,10 +119,10 @@ public class YellowGeoSearch extends FastSearchCommand {
     
     
     private TokenMatch getLastGeoMatch() {
-        List matches = getRunningQuery().getGeographicMatches();
+        List<TokenMatch> matches = getRunningQuery().getGeographicMatches();
         
         if (matches.size() > 0) {
-            return (TokenMatch) matches.get(matches.size() - 1);
+            return matches.get(matches.size() - 1);
         } else {
             return null;
         }

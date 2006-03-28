@@ -2,15 +2,16 @@
 package no.schibstedsok.front.searchportal.result.handler;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.spell.QuerySuggestion;
 import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import no.schibstedsok.front.searchportal.result.SearchResult;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -132,7 +133,7 @@ public class SpellingSuggestionChooser implements ResultHandler {
         }
     }
 
-    private int numberOfCorrectedTerms(final HashMap spellingSuggestions) {
+    private int numberOfCorrectedTerms(final Map<String, List> spellingSuggestions) {
         return spellingSuggestions.keySet().size();
     }
 

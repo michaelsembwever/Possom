@@ -25,6 +25,7 @@ import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.token.ReportingTokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenMatch;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.impl.SearchCommandFactory;
@@ -117,14 +118,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     }
 
-    private List getTokenMatches(final String token) {
+    private List<TokenMatch> getTokenMatches(final String token) {
         final ReportingTokenEvaluator e
                 = (ReportingTokenEvaluator) tokenEvaluatorFactory.getEvaluator(TokenPredicate.valueOf(token));
         return e.reportToken(token, queryStr);
     }
 
-    public List getGeographicMatches() {
-        final List matches = new ArrayList();
+    public List<TokenMatch> getGeographicMatches() {
+        final List<TokenMatch> matches = new ArrayList<TokenMatch>();
 
         matches.addAll(getTokenMatches("geolocal"));
         matches.addAll(getTokenMatches("geoglobal"));

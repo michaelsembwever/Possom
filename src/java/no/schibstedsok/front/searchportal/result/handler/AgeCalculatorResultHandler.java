@@ -4,9 +4,10 @@ package no.schibstedsok.front.searchportal.result.handler;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TimeZone;
+
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
@@ -22,6 +23,8 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AgeCalculatorResultHandler implements ResultHandler {
 
+    private static final String FAST_DATE_FMT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+
     private String targetField;
     private String sourceField;
     private String dateFormat;
@@ -32,14 +35,17 @@ public class AgeCalculatorResultHandler implements ResultHandler {
 
     public void handleResult(final Context cxt, final Map parameters) {
 
-        final String formatString = dateFormat != null ? dateFormat : "yyyy-MM-dd'T'HH:mm:ss'Z'";
+        final String fmt = dateFormat != null ? dateFormat : FAST_DATE_FMT;
         final String ageFormatKey = ageMessageFormat != null ? ageMessageFormat : "age";
+        final DateFormat df = new SimpleDateFormat(fmt);
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-        final DateFormat df = new SimpleDateFormat(formatString);
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        // Zulu time is UTC. But java doesn't know that.
+        if (fmt.endsWith("'Z'")) {
+            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        }
 
-            final String docTime = searchResultItem.getField(sourceField);
+        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+            final String docTime = item.getField(sourceField);
 
             if (docTime != null) {
 
@@ -76,16 +82,16 @@ public class AgeCalculatorResultHandler implements ResultHandler {
                     else if (dateParts[0].longValue() > 0) {
                         dateParts[1] = new Long(0);
                         dateParts[2] = new Long(0);
-                        ageString = txtMsgs.getMessage(ageFormatKey, dateParts);
+                        ageString = txtMsgs.getMessage(ageFormatKey, (Object[])  dateParts);
                     //more than 1 hour, show hours
                     } else if (dateParts[1].longValue() > 0) {
                         dateParts[2] = new Long(0);
-                        ageString = txtMsgs.getMessage(ageFormatKey, dateParts);
+                        ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
                     //if less than 1 hour, show minutes
                     } else if (dateParts[2].longValue() > 0) {
                         dateParts[0] = new Long(0);
                         dateParts[1] = new Long(0);
-                        ageString = txtMsgs.getMessage(ageFormatKey, dateParts);
+                        ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
                     } else
                         ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
 
@@ -93,7 +99,7 @@ public class AgeCalculatorResultHandler implements ResultHandler {
                         log.debug("Resulting age string is " + ageString);
                     }
 
-                    searchResultItem.addField(getTargetField(), ageString);
+                    item.addField(getTargetField(), ageString);
                 } catch (ParseException e) {
                     log.warn("Unparsable date: " + docTime);
                 }
