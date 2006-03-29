@@ -96,6 +96,7 @@
             currentC.equals("d") && "fv".equals(ss) ||
             currentC.equals("d") && "aa".equals(ss) ||
             currentC.equals("d") && "bt".equals(ss) ||
+            currentC.equals("d") && "sa".equals(ss) ||
             currentC.equals("d") && "it".equals(ss)) { %>
 
 
@@ -253,6 +254,7 @@
                                 <% } else if ("fv".equals(ssr)) { %> F&#230;drelandsvennen:
                                 <% } else if ("aa".equals(ssr)) { %> Adresseavisen:
                                 <% } else if ("bt".equals(ssr)) { %> Bergens Tidende:
+                                <% } else if ("bt".equals(ssr)) { %> Stavanger Aftenblad:
                                 <% } else if ("d".equals(ssr)) { %> Nettet:
                                 <% } %>
                             </span>
