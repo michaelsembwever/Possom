@@ -133,7 +133,7 @@ public class YellowGeoSearch extends FastSearchCommand {
         TokenEvaluatorFactory factory = getRunningQuery().getTokenEvaluatorFactory();
         boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(factory);
     
-        if (exactCompany) {
+        if (exactCompany && !isTop3) {
             return super.getTransformedQuery().replaceAll("yellowphon", "yellownamephon");
         }
         
