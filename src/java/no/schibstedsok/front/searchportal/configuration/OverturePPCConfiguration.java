@@ -12,11 +12,11 @@ import java.util.Map;
  */
 public class OverturePPCConfiguration extends AbstractSearchConfiguration {
 
+    private static final String DEFAULT_PARTNER_ID = "schibstedsok_xml_no_searchbox_imp1";
+
     private int resultsOnTop;
 
-//    public SearchCommand createCommand(RunningQuery query, Map parameters) {
-//        return new OverturePPCCommand(SearchCommand.Context ,parameters);
-//    }
+    private String partnerId;
 
     public int getResultsOnTop() {
         return resultsOnTop;
@@ -24,5 +24,9 @@ public class OverturePPCConfiguration extends AbstractSearchConfiguration {
 
     public void setResultsOnTop(int resultsOnTop) {
         this.resultsOnTop = resultsOnTop;
+    }
+
+    public String getPartnerId() {
+        return partnerId == null ? DEFAULT_PARTNER_ID : partnerId;
     }
 }

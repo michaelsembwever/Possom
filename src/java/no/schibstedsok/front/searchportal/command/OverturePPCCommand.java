@@ -50,14 +50,15 @@ public class OverturePPCCommand extends AbstractSearchCommand {
 
     private static final String BASE_PATH = "/d/search/p/schibstedsok/xml/no/" +
             "?mkt=no&" +
-            "adultFilter=clean" + "" +
-            "&Partner=schibstedsok_xml_no_searchbox_imp1";
+            "adultFilter=clean";
     private static final String OVERTURE_PARAMETER_ENCODING = "iso-8859-1";
 
     private static Log log = LogFactory.getLog(OverturePPCCommand.class);
 
     private HTTPClient client = HTTPClient.instance("overture_ppc",
             SearchConstants.OVERTURE_PPC_HOST, 80);
+
+private static final String SITE_SEARCH_PARTNER_ID = "schibstedsok_xml_no_searchbox_sitesearch";
 
     /**
      * Create new overture command.
@@ -97,6 +98,10 @@ public class OverturePPCCommand extends AbstractSearchCommand {
         final String query = getTransformedQuery().replace(' ', '+');
         final StringBuffer url = createRequestURL(query, top);
 
+        if (log.isDebugEnabled()) {
+            log.debug("Using URL " + url);
+        }
+
         try {
             final Document doc = getOvertureXmlResult(url);
             final OvertureSearchResult searchResult = new OvertureSearchResult(this, top);
@@ -129,6 +134,15 @@ public class OverturePPCCommand extends AbstractSearchCommand {
 
         StringBuffer url = new StringBuffer(BASE_PATH);
 
+        // FIXME. When vg and the other site searches have their own context
+        // remove this and use the property partnerId of OverturePPCConfiguration
+        // instead.
+        if (getParameters().containsKey("ss") || isVgSiteSearch()) {
+            url.append("&Partner=" + SITE_SEARCH_PARTNER_ID);
+        } else {
+            url.append("&Partner=" + ppcConfig.getPartnerId());
+        }
+
         int resultsToReturn = context.getSearchConfiguration().getResultsToReturn();
 
         if (top) {
@@ -144,6 +158,10 @@ public class OverturePPCCommand extends AbstractSearchCommand {
             throw new InfrastructureException(e);
         }
         return url;
+    }
+
+    private boolean isVgSiteSearch() {
+        return context.getQuery().getQueryString().contains("site:vg.no");
     }
 
     private BasicSearchResultItem createItem(final Element ppcListing) {
