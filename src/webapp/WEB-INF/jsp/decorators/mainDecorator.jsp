@@ -1,52 +1,56 @@
-<%@ page
-        language="java"
-        pageEncoding="UTF-8"
-        contentType="text/html;charset=utf-8"
-        %>
-<%@ page import="no.schibstedsok.front.searchportal.i18n.TextMessages"%>
-<%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %>
-<%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
+<%@ page import="java.io.StringWriter"%>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Iterator"%>
-<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
-<%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
+<%@ page import="com.opensymphony.module.sitemesh.util.OutputConverter"%>
+<%@ page import="no.schibstedsok.front.searchportal.i18n.TextMessages"%>
+<%@ page import="no.schibstedsok.front.searchportal.output.VelocityResultHandler"%>
+<%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %>
+<%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
+<%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
+<%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
+<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
+<%@ page import="org.apache.velocity.Template"%>
+<%@ page import="org.apache.velocity.VelocityContext"%>
+<%@ page import="org.apache.velocity.app.VelocityEngine"%>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%
     final TextMessages text = (TextMessages) request.getAttribute("text");
+    final Site site = (Site)request.getAttribute(Site.NAME_KEY);
 
     String currentC = "d";    //default collection
     currentC = (String) request.getAttribute("c");
-    String searchType = request.getParameter("s");
+    final String searchType = request.getParameter("s");
     String q = (String) request.getAttribute("q");
-    String contentsource = (String) request.getParameter("contentsource");
-    String qURLEncoded = URLEncoder.encode(q, "utf-8");
+    final String contentsource = (String) request.getParameter("contentsource");
+    final String qURLEncoded = URLEncoder.encode(q, "utf-8");
     q = StringEscapeUtils.escapeHtml(q);
-    boolean publish = null != request.getParameter("page");
-    String help = request.getParameter("help");
-    String about = request.getParameter("about");
-    String ads_help = request.getParameter("ads_help");
-    String smart = request.getParameter("smart");
-    String box = request.getParameter("box");
-    String toolbar = request.getParameter("toolbar");
-    String tradedoubler = request.getParameter("td");
-    String ss = request.getParameter("ss");
-    String ssr = request.getParameter("ssr");
+    final boolean publish = null != request.getParameter("page");
+    final String help = request.getParameter("help");
+    final String about = request.getParameter("about");
+    final String ads_help = request.getParameter("ads_help");
+    final String smart = request.getParameter("smart");
+    final String box = request.getParameter("box");
+    final String toolbar = request.getParameter("toolbar");
+    final String tradedoubler = request.getParameter("td");
+    final String ss = request.getParameter("ss");
+    final String ssr = request.getParameter("ssr");
 
-    List enrichments = (List) request.getAttribute("enrichments");
-    int enrichmentSize = enrichments.size();
+    final List enrichments = (List) request.getAttribute("enrichments");
+    final int enrichmentSize = enrichments.size();
 
-    Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
+    final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
 
-    RunningQuery query = (RunningQuery) request.getAttribute("query");
-    List sources = query.getSources();
-    Integer hits = (Integer) query.getNumberOfHits("defaultSearch");
-    Integer hits_int = (Integer) query.getNumberOfHits("globalSearch");
-    Integer hits_w_int = (Integer) query.getNumberOfHits("whiteYelloweSourceNavigator");
-    Integer hits_y_int = (Integer) query.getNumberOfHits("whiteYelloweSourceNavigator");
+    final RunningQuery query = (RunningQuery) request.getAttribute("query");
+    final List sources = query.getSources();
+    final Integer hits = (Integer) query.getNumberOfHits("defaultSearch");
+    final Integer hits_int = (Integer) query.getNumberOfHits("globalSearch");
+    final Integer hits_w_int = (Integer) query.getNumberOfHits("whiteYelloweSourceNavigator");
+    final Integer hits_y_int = (Integer) query.getNumberOfHits("whiteYelloweSourceNavigator");
 
     int no_hits = 0;
     int int_hits = 0;
@@ -86,8 +90,32 @@
 
 <body onload="<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
 
-    <%-- sitesearch --%>
-    <% if (currentC.equals("d") && "ds".equals(ss) ||
+    <% // sitesearch
+    final VelocityEngine engine = VelocityResultHandler.getEngine(site);
+    final Template template = VelocityResultHandler.getTemplate(engine, site, "/pages/main");
+    if (template != null){
+        // it *is* new-school n we doda-dance
+        final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
+        // populate context with sitemesh stuff
+        context.put("request", request);
+        context.put("response", response);
+        context.put("page", siteMeshPage);
+        context.put("base", request.getContextPath());
+        context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
+        {
+            final StringWriter buffer = new StringWriter();
+            siteMeshPage.writeBody(OutputConverter.getWriter(buffer));
+            context.put("body", buffer.toString());
+        }
+        //{ // missing frm our version of sitemesh
+        //    final StringWriter buffer = new StringWriter();
+        //    siteMeshPage.writeHead(OutputConverter.getWriter(buffer));
+        //    context.put("head", buffer.toString());
+        //}
+        // merge it into the JspWriter
+        template.merge(context, out);%>
+    <%-- old-school sitesearch --%>
+    <% } else if (currentC.equals("d") && "ds".equals(ss) ||
             currentC.equals("d") && "di".equals(ss) ||
             currentC.equals("d") && "pr".equals(ss) ||
             currentC.equals("d") && "im".equals(ss) ||
@@ -688,15 +716,15 @@
                 </td>
             <%}%>
 
-    </tr>
-</table>
+        </tr>
+    </table>
 
-<%--  footer  --%>
-<%if (q==null||!q.trim().equals("")||"m".equals(currentC)) {%>
-<decorator:getProperty property="page.verbosePager"/>
-<%}%>
+    <%--  footer  --%>
+    <%if (q==null||!q.trim().equals("")||"m".equals(currentC)) {%>
+    <decorator:getProperty property="page.verbosePager"/>
+    <%}%>
 
-<decorator:getProperty property="page.footer"/>
+    <decorator:getProperty property="page.footer"/>
 
 <%}%>
 

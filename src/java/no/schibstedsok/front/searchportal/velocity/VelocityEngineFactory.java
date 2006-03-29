@@ -63,8 +63,8 @@ public final class VelocityEngineFactory {
             engine.setProperty("url.resource.loader.cache", "true");
             engine.setProperty("url.resource.loader.modificationCheckInterval", "60"); // 1 minute update cycle.
             engine.setProperty("velocimacro.library", site.getTemplateDir() + "/VM_global_library.vm");
-            engine.setProperty("url.site", site);
-            engine.setProperty("url.site.fallback", Site.DEFAULT);
+            engine.setProperty(Site.NAME_KEY, site);
+            engine.setProperty("site.fallback", Site.DEFAULT);
             engine.setProperty(SearchConstants.PUBLISH_SYSTEM_URL, props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
             engine.setProperty(SearchConstants.PUBLISH_SYSTEM_HOST, props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
             engine.setProperty("input.encoding", "UTF-8");

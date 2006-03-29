@@ -64,9 +64,10 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     /** {@inheritDoc}
      */
-    public void init(final ExtendedProperties configuration) { 
-        site = (Site)configuration.get("url.site");
-        fallbackSite = (Site)configuration.get("url.site.fallback");
+    public void init(final ExtendedProperties configuration) {
+        // the engine's properties actually come from the RuntimeServices *not* the ExtendedProperties
+        site = (Site)rsvc.getProperty(Site.NAME_KEY);
+        fallbackSite = (Site)rsvc.getProperty("site.fallback");
     }
 
     /**

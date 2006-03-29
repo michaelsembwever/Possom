@@ -1,8 +1,10 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.output;
 
+import java.io.IOException;
 import java.util.Properties;
 import no.geodata.maputil.CoordHelper;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
@@ -23,6 +25,9 @@ import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.tools.generic.MathTool;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +46,63 @@ import java.net.URLEncoder;
  */
 public final class VelocityResultHandler implements ResultHandler {
 
+    private static final String PUBLISH_URL = "publishSystemBaseURL";
+    private static final String PUBLISH_HOST = "publishSystemHostHeader";
+
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
+
+    private static final String INFO_TEMPLATE_NOT_FOUND = "Could not find template ";
+    private static final String ERR_IN_TEMPLATE = "Error parsing template ";
+    private static final String ERR_GETTING_TEMPLATE = "Error getting template ";
+
+    public static VelocityEngine getEngine(final Site site){
+
+        return VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context() {
+                public Site getSite() {
+                    return site;
+                }
+            });
+    }
+
+    public static Template getTemplate(
+            final VelocityEngine engine,
+            final Site site,
+            final String templateName){
+
+        final String templateUrl = site.getTemplateDir() + "/" + templateName + ".vm";
+        try {
+            return  engine.getTemplate(templateUrl);
+        } catch (ResourceNotFoundException ex) {
+            LOG.info(INFO_TEMPLATE_NOT_FOUND + templateUrl, ex);
+        } catch (ParseErrorException ex) {
+            LOG.error(ERR_IN_TEMPLATE + templateUrl, ex);
+            throw new InfrastructureException(ex);
+        } catch (Exception ex) {
+            LOG.error(ERR_GETTING_TEMPLATE + templateUrl, ex);
+            throw new InfrastructureException(ex);
+        }
+        return null;
+    }
+
+    public static VelocityContext newContextInstance(final VelocityEngine engine){
+        final VelocityContext context = new VelocityContext();
+        final Site site = (Site) engine.getProperty(Site.NAME_KEY);
+        // site
+        context.put(Site.NAME_KEY, site);
+        context.put("locale", site.getLocale());
+        // publishing system
+        context.put(PUBLISH_URL, engine.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
+        context.put(PUBLISH_HOST, engine.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
+        // coord helper
+        context.put("coordHelper", new CoordHelper());
+        // properties
+        context.put("linkpulse", new Linkpulse(XMLSearchTabsCreator.valueOf(site).getProperties()));
+        // decoder
+        context.put("decoder", new Decoder());
+        // math tool
+        context.put("math", new MathTool());
+        return context;
+    }
 
     public void handleResult(final Context cxt, final Map parameters) {
 
@@ -63,39 +124,48 @@ public final class VelocityResultHandler implements ResultHandler {
             throw new IllegalStateException("Both request and response must be set in the parameters");
         }
 
+        // write to a separate writer first for threading reasons
         final Writer w = new StringWriter();
         final SearchConfiguration searchConfiguration = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
-        try {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("handleResult: Looking for template: " + searchConfiguration + searchConfiguration.getName() + ".vm");
             }
 
             final Site site = cxt.getSite();
-            final String templateUrl = site.getTemplateDir() + "/" + searchConfiguration.getName() + ".vm";
-
-            final VelocityEngine engine = VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context() {
-                public Site getSite() {
-                    return site;
-                }
-            });
-
-            final Template template = engine.getTemplate(templateUrl);
+            final VelocityEngine engine = getEngine(site);
+            final Template template = getTemplate(engine, site, searchConfiguration.getName());
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("handleResult: Created Template=" + template.getName());
             }
 
-            final VelocityContext context = new VelocityContext();
+            final VelocityContext context = newContextInstance(engine);
             populateVelocityContext(context, cxt, request, response);
-            context.put("publishSystemBaseURL", engine.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
-            context.put("publishSystemHostHeader", engine.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
-            template.merge(context, w);
-            response.getWriter().write(w.toString());
 
-        } catch (Exception e) {
-            throw new InfrastructureException(e);
-        }
+            try {
+
+                template.merge(context, w);
+                response.getWriter().write(w.toString());
+
+            } catch (MethodInvocationException ex) {
+                throw new InfrastructureException(ex);
+
+            } catch (ResourceNotFoundException ex) {
+                throw new InfrastructureException(ex);
+
+            } catch (ParseErrorException ex) {
+                throw new InfrastructureException(ex);
+
+            } catch (IOException ex) {
+                throw new InfrastructureException(ex);
+
+            } catch (Exception ex) {
+                throw new InfrastructureException(ex);
+            }
+            
+
+
     }
 
     protected void populateVelocityContext(final VelocityContext context,
@@ -105,7 +175,7 @@ public final class VelocityResultHandler implements ResultHandler {
 
         LOG.trace("populateVelocityContext()");
 
-        String queryString = cxt.getQueryString();
+        String queryString = cxt.getQuery().getQueryString();
 
         String queryStringURLEncoded = null;
 
@@ -123,22 +193,15 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
         context.put("command", cxt.getSearchResult().getSearchCommand());
         context.put("queryHTMLEscaped", queryString);
-        context.put("locale", cxt.getSite().getLocale());
-        context.put("text", TextMessages.valueOf(new TextMessages.Context() {
-            public Site getSite() {
-                return cxt.getSite();
-            }
-            public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props) {
-                return cxt.newPropertiesLoader(rsc, props);
-            }
-        }));
+        
+        context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt)));
         context.put("currentTab", cxt.getSearchResult().getSearchCommand().getRunningQuery().getSearchMode());
-        context.put("coordHelper", new CoordHelper());
+        
         context.put("contextPath", request.getContextPath());
         context.put("hashGenerator", request.getAttribute("hashGenerator"));
         context.put("runningQuery", cxt.getSearchResult().getSearchCommand().getRunningQuery());
-        context.put("math", new MathTool());
-        context.put("site", cxt.getSite());
+        
+        
         context.put("tradedoubler", new TradeDoubler(request));
 
 
@@ -150,10 +213,6 @@ public final class VelocityResultHandler implements ResultHandler {
             context.put("pager", pager);
         }
 
-        final Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(cxt.getSite()).getProperties());
-        context.put("linkpulse", linkpulse);
 
-        final Decoder decoder = new Decoder();
-        context.put("decoder", decoder);
     }
 }
