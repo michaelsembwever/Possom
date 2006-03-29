@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary indentification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/AnalysisRules.dtd
+
+    Author     : <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+    Version    : $Id: AnalysisRules.xml 42 2006-02-07 14:06:46Z magnuse $
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT rules (rule|predicate)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT predicate (not|none|all|any)*>
+<!ATTLIST predicate
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT any (predicate)+>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT all (predicate)+>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT none (predicate,predicate+)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT not (predicate)>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT rule (predicate*,score+)>
+<!ATTLIST rule
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT score (#PCDATA)>
+<!ATTLIST score
+    predicate CDATA #IMPLIED
+  >

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary indentification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/RegularExpressionEvaluators.dtd
+
+    Author     : <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+    Version    : $Id: RegularExpressionEvaluators.xml 41 2006-02-07 13:41:30Z magnuse $
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT evaluators (evaluator)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT evaluator (pattern)*>
+<!ATTLIST evaluator
+    toke CDATA #IMPLIED
+    query-dependant CDATA #IMPLIED
+    token CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT pattern (#PCDATA)>
