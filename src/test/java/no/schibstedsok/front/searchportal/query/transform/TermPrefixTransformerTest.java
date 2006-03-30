@@ -21,6 +21,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
+import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
@@ -119,24 +120,32 @@ public class TermPrefixTransformerTest extends TestCase {
 
     private Map applyTransformer(final TermPrefixTransformer t, final Query query) {
 
-        final Map/*<Clause,String>*/ transformedTerms = new LinkedHashMap/*<Clause,String>*/();
+        final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
 
         final QueryTransformer.Context qtCxt = new QueryTransformer.Context() {
 
-            public Map/*<Clause,String>*/ getTransformedTerms() {
+            public Map<Clause,String> getTransformedTerms() {
                 return transformedTerms;
             }
-
             public Site getSite() {
                 return Site.DEFAULT;
             }
-
             public Query getQuery() {
                 return query;
             }
-
             public String getTransformedQuery() {
                 return query.getQueryString();
+            }
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+            }
+
+            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
+                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
+            }
+
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
         };
 

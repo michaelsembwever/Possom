@@ -36,12 +36,10 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
 
     static {
         final Collection<TokenPredicate> predicates = new ArrayList();
-        predicates.add(TokenPredicate.ALWAYSTRUE);
-        // Predicates from RegExpEvaluators
-        predicates.add(TokenPredicate.CATALOGUEPREFIX);
-        predicates.add(TokenPredicate.MATHPREDICATE);
-        // Add all FastTokenPredicates
-        predicates.addAll(TokenPredicate.getFastTokenPredicates());
+
+        // Add all TokenPredicates. Unfortunately we have now way of globally knowing
+        //  which TokenPredicates can be multi-term (multi-word) matches.
+        predicates.addAll(TokenPredicate.getTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
 

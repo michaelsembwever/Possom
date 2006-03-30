@@ -21,6 +21,7 @@ import no.schibstedsok.front.searchportal.query.Query;
 
 /** Abstract helper for implementing a Query class.
  * Handles input of the query string and finding the first leaf clause (term) in the clause heirarchy.
+ * Is thread safe. No methods return null.
  *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -50,27 +51,21 @@ public abstract class AbstractQuery implements Query {
      * {@inheritDoc}
      */
     public Clause getFirstLeafClause() {
-        final Clause root = getRootClause();
-        finder.visit(root);
         return finder.getFirstLeaf();
     }
 
     public int getTermCount() {
-        final Clause root = getRootClause();
-        counter.visit(root);
         return counter.getTermCount();
     }
 
-    private static final class FirstLeafFinder extends AbstractReflectionVisitor {
+    private final class FirstLeafFinder extends AbstractReflectionVisitor {
         private boolean searching = true;
         private Clause firstLeaf;
 
-        private static final String ERR_CANNOT_CALL_GETFIRSTLEAF_TIL_SEARCH_OVER
-                = "Not allowed to call getFirstLeaf() until search has finished. Start search with visit(Object).";
-
-        public Clause getFirstLeaf() {
-            if (searching) {
-                throw new IllegalStateException(ERR_CANNOT_CALL_GETFIRSTLEAF_TIL_SEARCH_OVER);
+        public synchronized Clause getFirstLeaf() {
+            if( firstLeaf == null ){
+                // hasn't been run yet.
+                visit(getRootClause());
             }
             return firstLeaf;
         }
@@ -99,16 +94,14 @@ public abstract class AbstractQuery implements Query {
 
     }
 
-    private static final class Counter extends AbstractReflectionVisitor {
-        private boolean searching = true;
-        private int termCount;
+    private final class Counter extends AbstractReflectionVisitor {
 
-        private static final String ERR_CANNOT_CALL_GETFIRSTLEAF_TIL_SEARCH_OVER
-                = "Not allowed to call getTermCount() until search has finished. Start search with visit(Object).";
+        private int termCount = 0;
 
-        public int getTermCount() {
-            if (searching) {
-                throw new IllegalStateException(ERR_CANNOT_CALL_GETFIRSTLEAF_TIL_SEARCH_OVER);
+        public synchronized int getTermCount() {
+            if(termCount == 0){
+                // hasn't been run yet.
+                visit(getRootClause());
             }
             return termCount;
         }
@@ -144,15 +137,6 @@ public abstract class AbstractQuery implements Query {
 
         protected void visitImpl(final LeafClause clause) {
             ++termCount;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void visit(final Object clause) {
-            searching = true;
-            super.visit(clause);
-            searching = false;
         }
 
     }

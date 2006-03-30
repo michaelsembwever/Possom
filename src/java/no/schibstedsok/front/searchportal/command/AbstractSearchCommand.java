@@ -49,7 +49,7 @@ import org.apache.log4j.MDC;
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
  *
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand {
 
@@ -61,6 +61,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_TRANSFORMED_QUERY_USED
             = "Cannot use transformedTerms Map once deprecated getTransformedQuery as been used";
+
+    static{
+        System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
+        System.setProperty("sun.net.client.defaultReadTimeout", "3000");
+    }
 
    // Attributes ----------------------------------------------------
 
@@ -363,28 +368,23 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 final QueryTransformer transformer = (QueryTransformer) iterator.next();
                 final boolean ttq = touchedTransformedQuery;
 
-                final QueryTransformer.Context qtCxt = new QueryTransformer.Context() {
-
-                    public String getTransformedQuery() {
-                        return transformedQuery;
-                    }
-
-                    public Map<Clause,String> getTransformedTerms() {
-                        if (ttq) {
-                            throw new IllegalStateException(ERR_TRANSFORMED_QUERY_USED);
-                        }
-                        return transformedTerms;
-                    }
-
-                    public Site getSite() {
-                        return context.getSite();
-                    }
-
-                    public Query getQuery() {
-                        return query;
-                    }
-
-                };
+                final QueryTransformer.Context qtCxt = ContextWrapper.wrap(
+                        QueryTransformer.Context.class,
+                        new BaseContext(){
+                            public String getTransformedQuery() {
+                                return transformedQuery;
+                            }
+                            public Map<Clause,String> getTransformedTerms() {
+                                if (ttq) {
+                                    throw new IllegalStateException(ERR_TRANSFORMED_QUERY_USED);
+                                }
+                                return transformedTerms;
+                            }
+                            public Query getQuery() {
+                                return query;
+                            }
+                        },
+                        context);
                 transformer.setContext(qtCxt);
 
                 final String newTransformedQuery = transformer.getTransformedQuery();

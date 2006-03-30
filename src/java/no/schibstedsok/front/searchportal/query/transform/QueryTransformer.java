@@ -6,6 +6,7 @@ package no.schibstedsok.front.searchportal.query.transform;
 
 
 import java.util.Map;
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.QueryContext;
 import no.schibstedsok.front.searchportal.query.Visitor;
@@ -21,7 +22,7 @@ import no.schibstedsok.front.searchportal.site.SiteContext;
  */
 public interface QueryTransformer extends Visitor, Cloneable{
 
-    public interface Context extends QueryContext, SiteContext {
+    public interface Context extends QueryContext, ResourceContext, SiteContext {
 
         /**
          * @deprecated use getTransformedTerms() instead
