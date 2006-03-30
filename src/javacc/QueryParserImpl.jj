@@ -23,17 +23,9 @@ public final class QueryParserImpl extends AbstractQueryParser{
     public QueryParserImpl(final Context cxt){
         this(new StringReader(cxt.getQueryString()));
         context = cxt;
-        final String qs = cxt.getQueryString();
-        int lp = 0, rp = 0;
-        final char[] chars = qs.toCharArray();
-        for( int i = 0; i < chars.length; ++i ){ 
-            if( chars[i] == '(' ){ ++lp; }
-            if( chars[i] == ')' ){ ++rp; }
-        }
-        if( lp != rp ){
-            // uneven amount of (). Ignore all of them then.
-            ReInit(new StringReader(qs.replaceAll("\\(","").replaceAll("\\)","")));
-        }
+        String qs = cxt.getQueryString();
+        qs = balance(qs, '(', ')');
+        qs = even(qs, '\"');
         token_source.SwitchTo(DEFAULT);
         //LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
@@ -42,6 +34,35 @@ public final class QueryParserImpl extends AbstractQueryParser{
         this(new StringReader(cxt.getQueryString()));
         context = cxt;
         token_source.SwitchTo(lexicalState);
+    }
+
+    private String balance(String query, final char leftChar, final char rightChar){
+        int left = 0, right = 0;
+        final char[] chars = query.toCharArray();
+        for( int i = 0; i < chars.length; ++i ){ 
+            if( chars[i] == leftChar ){ ++left; }
+            if( chars[i] == rightChar ){ ++right; }
+        }
+        if( left != right ){
+            // uneven amount of (). Ignore all of them then.
+            query = query.replaceAll("\\" + leftChar, "").replaceAll("\\" + rightChar, "");
+            ReInit(new StringReader(query));
+        }
+        return query;
+    }
+
+    private String even(String query, final char c){
+        int count = 0;
+        final char[] chars = query.toCharArray();
+        for( int i = 0; i < chars.length; ++i ){ 
+            if( chars[i] == c ){ ++count; }
+        }
+        if( count % 2 >0 ){
+            // uneven amount of (). Ignore all of them then.
+            query = query.replaceAll("\\" + c, "");
+            ReInit(new StringReader(query));
+        }
+        return query;
     }
 }
 
