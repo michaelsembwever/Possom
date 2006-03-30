@@ -54,6 +54,7 @@ public final class VelocityResultHandler implements ResultHandler {
     private static final String INFO_TEMPLATE_NOT_FOUND = "Could not find template ";
     private static final String ERR_IN_TEMPLATE = "Error parsing template ";
     private static final String ERR_GETTING_TEMPLATE = "Error getting template ";
+    private static final String ERR_NP_WRITING_TO_STREAM = "Possible client cancelled request. (NullPointerException writing to response's stream).";
 
     public static VelocityEngine getEngine(final Site site){
 
@@ -72,11 +73,15 @@ public final class VelocityResultHandler implements ResultHandler {
         final String templateUrl = site.getTemplateDir() + "/" + templateName + ".vm";
         try {
             return  engine.getTemplate(templateUrl);
+
         } catch (ResourceNotFoundException ex) {
-            LOG.info(INFO_TEMPLATE_NOT_FOUND + templateUrl, ex);
+            // expected possible behaviour
+            LOG.debug(INFO_TEMPLATE_NOT_FOUND + templateUrl);
+
         } catch (ParseErrorException ex) {
             LOG.error(ERR_IN_TEMPLATE + templateUrl, ex);
             throw new InfrastructureException(ex);
+
         } catch (Exception ex) {
             LOG.error(ERR_GETTING_TEMPLATE + templateUrl, ex);
             throw new InfrastructureException(ex);
@@ -160,11 +165,17 @@ public final class VelocityResultHandler implements ResultHandler {
             } catch (IOException ex) {
                 throw new InfrastructureException(ex);
 
+            } catch (NullPointerException ex) {
+                //  at com.opensymphony.module.sitemesh.filter.RoutablePrintWriter.write(RoutablePrintWriter.java:132)
+
+                // indicates an error in the underlying RoutablePrintWriter stream
+                //  typically the client has closed the connection
+                LOG.warn(ERR_NP_WRITING_TO_STREAM);
+
             } catch (Exception ex) {
                 throw new InfrastructureException(ex);
-            }
-            
 
+            }
 
     }
 

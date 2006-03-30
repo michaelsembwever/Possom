@@ -135,9 +135,9 @@ public final class SiteLocatorFilter implements Filter {
                         // search-front-config is responsible for this.
                         // But first we must find which layer will serve it.
                         url = HTTP + site.getName() + site.getConfigContext() + resource;
-                        if (!urlExists(url)) {
+                        if (!UrlResourceLoader.urlExists(url)) {
                             url = HTTP + Site.DEFAULT.getName() + Site.DEFAULT.getConfigContext() + resource;
-                            if (!urlExists(url)) {
+                            if (!UrlResourceLoader.urlExists(url)) {
                                 res.sendError(HttpServletResponse.SC_NOT_FOUND);
                                 url = null;
                                 LOG.error(ERR_NOT_FOUND + resource);
@@ -172,34 +172,6 @@ public final class SiteLocatorFilter implements Filter {
             throw e;
         }
 
-    }
-
-    private boolean urlExists(final String url) {
-
-        boolean success = false;
-        HttpURLConnection con = null;
-        try {
-
-            final URL u = new URL(UrlResourceLoader.getURL(url));
-
-            con = (HttpURLConnection) u.openConnection();
-            con.setInstanceFollowRedirects(false);
-            con.setRequestMethod("HEAD");
-            con.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
-            success = (con.getResponseCode() == HttpURLConnection.HTTP_OK);
-
-        } catch (NullPointerException e) {
-            LOG.debug(url, e);
-
-        } catch (IOException e) {
-            LOG.warn(url, e);
-        }  finally  {
-            if (con != null) {
-                con.disconnect();
-            }
-        }
-
-        return success;
     }
 
 

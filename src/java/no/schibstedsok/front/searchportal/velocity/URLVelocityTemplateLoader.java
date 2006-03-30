@@ -57,7 +57,6 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
     
     private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
-    private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";
     
     private Site site;
     private Site fallbackSite;
@@ -89,8 +88,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             return conn.getInputStream();
 
         }catch( IOException e ){
-
-            LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
+            LOG.debug( ERR_RESOURCE_NOT_FOUND + url);
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
         
@@ -127,33 +125,27 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     
     private URLConnection getResourceURLConnection( final String url )
         throws ResourceNotFoundException{
-        
+
+        URLConnection conn = null;
+
         try{
-        
-            URL u = new URL( UrlResourceLoader.getURL(url) );
-            URLConnection conn = u.openConnection();
-            conn.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
-            
-            // test it exists otherwise fallback to default site
-            try{
-                conn.getInputStream();
-            }catch(FileNotFoundException fnfe){
-                
-                LOG.warn(WARN_USING_FALLBACK+url);
-                u = new URL( getFallbackURL( url ));
+            if( UrlResourceLoader.urlExists(url) ){
+                final URL u = new URL( UrlResourceLoader.getURL(url) );
+                conn = u.openConnection();
+                conn.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
+
+            }else{
+                final URL u = new URL( getFallbackURL( url ));
                 conn = u.openConnection();
                 conn.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
             }
-            
-            
-            return conn;
             
         }catch( IOException e ){
 
             LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
-
+        return conn;
     }
     
     private String getFallbackURL(final String url){
