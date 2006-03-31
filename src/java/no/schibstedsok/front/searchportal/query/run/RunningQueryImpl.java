@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Vector;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
@@ -52,6 +53,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.front.searchportal.analyzer.Analysis");
+    private static final Logger PRODUCT_LOG = Logger.getLogger("no.schibstedsok.Product");
+
 
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_RUN_QUERY = "Failure to run query";
@@ -62,11 +65,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private Map parameters;
     private int offset;
     private Locale locale;
-    private final List sources = new ArrayList();
+    private final List<Modifier> sources = new Vector<Modifier>();
     private final TokenEvaluatorFactory tokenEvaluatorFactory;
-    private final List enrichments = new ArrayList();
-    private final Map hits = new HashMap();
-    private Map scores = new HashMap();
+    private final List<Enrichment> enrichments = new ArrayList<Enrichment>();
+    private final Map<String,Integer> hits = new HashMap<String,Integer>();
+    private Map<String,Integer> scores = new HashMap<String,Integer>();
 
 
     /**
@@ -152,7 +155,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         LOG.trace("getNumberOfHits()");
 
-        Integer i = (Integer) hits.get(configName);
+        Integer i = hits.get(configName);
         if (i == null) {
             i = Integer.valueOf(0);
         }
@@ -167,12 +170,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public void run() throws InterruptedException {
 
         LOG.trace("run()");
+        ANALYSIS_LOG.info("<analyse><query>" + queryStr + "</query>");
 
         try {
 
-            final Collection commands = new ArrayList();
-
-            ANALYSIS_LOG.info("<analyse><query>" + queryStr + "</query>");
+            final Collection<SearchCommand> commands = new ArrayList<SearchCommand>();
 
             for (final Iterator iterator = context.getSearchMode().getSearchConfigurations().iterator(); iterator.hasNext();) {
                 final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
@@ -216,7 +218,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         }
                         ANALYSIS_LOG.info(" </analysis>");
 
-                        scores.put(searchConfiguration.getName(), new Integer(newScore));
+                        scores.put(searchConfiguration.getName(), Integer.valueOf(newScore));
 
                         if (searchConfiguration.isAlwaysRunEnabled() || newScore >= searchConfiguration.getRuleThreshold()) {
                             LOG.debug("Adding " + searchConfiguration.getName());
@@ -249,13 +251,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
 
-            final List results = context.getSearchMode().getExecutor().invokeAll(commands, 10000);
+            final List<SearchTask> results = context.getSearchMode().getExecutor().invokeAll(commands, 10000);
 
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()
             boolean hitsToShow = false;
-            for (final Iterator iterator = results.iterator(); iterator.hasNext();) {
-                final SearchTask task = (SearchTask) iterator.next();
+            for (SearchTask task : results) {
 
                 final SearchCommand command = task.getCommand();
                 final SearchConfiguration configuration = command.getSearchConfiguration();
@@ -267,9 +268,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         if (searchResult != null) {
                             hitsToShow |= searchResult.getHitCount() > 0;
 
-                            hits.put(configuration.getName(), new Integer(searchResult.getHitCount()));
+                            hits.put(configuration.getName(), Integer.valueOf(searchResult.getHitCount()));
 
-                            final Integer score = (Integer) scores.get(task.getCommand().getSearchConfiguration().getName());
+                            final Integer score = scores.get(task.getCommand().getSearchConfiguration().getName());
 
                             if (score != null && configuration.getRule() != null && score.intValue() >= configuration.getRuleThreshold()) {
                                 if (searchResult.getResults().size() > 0 && score.intValue() > 15) {
@@ -305,9 +306,17 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }  else  {
 
                 Collections.sort(enrichments);
+
+                PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchMode().getKey() + "\">"
+                        + "<query>" + queryStr + "</query>");
+                for( Enrichment e : enrichments){
+                    PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
+                            + "\" score=\"" + e.getAnalysisResult() + "\"/>");
+                }
+                PRODUCT_LOG.info("</enrichments");
             }
 
-
+            
         } catch (Exception e) {
             LOG.error(ERR_RUN_QUERY, e);
         }
@@ -376,7 +385,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return context.getSearchMode();
     }
 
-    public List getSources() {
+    public List<Modifier> getSources() {
 
         LOG.trace("getSources()");
 
@@ -390,7 +399,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         sources.add(modifier);
     }
 
-    public List getEnrichments() {
+    public List<Enrichment> getEnrichments() {
 
         LOG.trace("getEnrichments()");
 
