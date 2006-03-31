@@ -1,4 +1,4 @@
-<%@page import="no.schibstedsok.front.searchportal.util.TradeDoubler,java.net.URLEncoder" %>
+<%@page import="no.schibstedsok.front.searchportal.util.TradeDoubler,no.schibstedsok.front.searchportal.util.QueryStringHelper,java.net.URLEncoder" %>
 <%
 //	session.setAttribute("TDUID", request.getParameter("tduid"));
 	Cookie cookie = new Cookie ("TRADEDOUBLER", request.getParameter("tduid"));
@@ -30,7 +30,7 @@
 		if (lang == null || lang.length() == 0){
 			lang = "en";
 		}
-		String q = URLEncoder.encode(request.getParameter("q"), "UTF-8");
+		String q = URLEncoder.encode(QueryStringHelper.safeGetParameter(request, "q"), "UTF-8");
 		String c = request.getParameter("c");
 		String s = request.getParameter("s");
 		if (s == null || s.length() == 0){
@@ -51,7 +51,7 @@
 <img src="http://tbs.tradedoubler.com/report?organization=<%=organization%>&event=<%=event%>&leadNumber=<%=orderNumber%>&orderValue=<%=value%>&currency=<%=currency%>&checksum=v04<%=checksum%>&tduid=<%=tduid%>" alt="">
 <script type="text/javascript" language="JavaScript">
 	function goSesam() {
-		document.location="http://www.sesam.no/psearch/?c=<%= c %>&lang=<%= lang %>&s=<%= s %>&q=<%= q %>&ss_ss=<%= affId %>&ss_lt=tradedoubler&ss_pid=ad_td&ss_sec=<%= alt %>";
+		document.location="http://www.sesam.no/search/?c=<%= c %>&lang=<%= lang %>&s=<%= s %>&q=<%= q %>&ss_ss=<%= affId %>&ss_lt=tradedoubler&ss_pid=ad_td&ss_sec=<%= alt %>";
 	}
 </script>
 </body>
