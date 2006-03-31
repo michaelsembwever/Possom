@@ -57,6 +57,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
     
     private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
+    private static final String DEBUG_LOOKING_FOR = "Looking for ";
+    private static final String DEBUG_EXISTS = "Positive HEAD on ";
+    private static final String DEBUG_FULL_URL_IS = "Full URL is ";
+    private static final String DEBUG_HOST_HEADER_IS = "URL's host-header is ";
+    private static final String DEBUG_DOESNT_EXIST = "Using fallback URL";
     
     private Site site;
     private Site fallbackSite;
@@ -129,15 +134,27 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         URLConnection conn = null;
 
         try{
+            LOG.trace(DEBUG_LOOKING_FOR + url );
+
             if( UrlResourceLoader.urlExists(url) ){
+
+                LOG.trace(DEBUG_EXISTS + url);
                 final URL u = new URL( UrlResourceLoader.getURL(url) );
+                LOG.trace(DEBUG_FULL_URL_IS + u);
                 conn = u.openConnection();
-                conn.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
+                final String hostHeader = UrlResourceLoader.getHostHeader(url);
+                LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
+                conn.addRequestProperty("host", hostHeader);
 
             }else{
+
+                LOG.trace(DEBUG_DOESNT_EXIST);
                 final URL u = new URL( getFallbackURL( url ));
+                LOG.trace(DEBUG_FULL_URL_IS + u);
                 conn = u.openConnection();
-                conn.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
+                final String hostHeader = UrlResourceLoader.getHostHeader(getFallbackURL( url ));
+                LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
+                conn.addRequestProperty("host", hostHeader);
             }
             
         }catch( IOException e ){
