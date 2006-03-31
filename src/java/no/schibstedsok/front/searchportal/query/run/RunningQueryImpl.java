@@ -120,7 +120,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private List<TokenMatch> getTokenMatches(final String token) {
         final ReportingTokenEvaluator e
-                = (ReportingTokenEvaluator) tokenEvaluatorFactory.getEvaluator(TokenPredicate.valueOf(token));
+                = (ReportingTokenEvaluator) tokenEvaluatorFactory.getEvaluator(TokenPredicate.valueFor(token));
         return e.reportToken(token, queryStr);
     }
 

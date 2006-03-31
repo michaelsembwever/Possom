@@ -37,6 +37,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     private static final Log LOG = LogFactory.getLog(TokenEvaluatorFactoryImpl.class);
     private static final String ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED = 
             "Interrupted waiting for FastEvaluatorCreator. Analysis on this query will fail.";
+    private static final String ERR_TOKENTYPE_WIHOUT_IMPL = "Token type not known or implemented. ";
+    private static final String ERR_GENERIC_TOKENTYPE_WIHOUT_IMPL = "Generic token type not known or implemented. ";
 
     private final Context context;
     private final Thread fastEvaluatorCreator;
@@ -70,25 +72,23 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
      */
     public TokenEvaluator getEvaluator(final TokenPredicate token) {
 
-        if ( token == TokenPredicate.ALWAYSTRUE ) {
-            return ALWAYS_TRUE_EVALUATOR;
-        }  else if ( token instanceof TokenPredicate.FastTokenPredicate ) {
-            return getFastEvaluator();
-        }  else if ( token instanceof TokenPredicate.RegExpTokenPredicate ) {
-            return RegExpEvaluatorFactory.valueOf(context).getEvaluator(token);
-        } else if ( token instanceof TokenPredicate.JepTokenPredicate ){
-            return jedEvaluator;
+        switch( token.getType() ){
+            case GENERIC:
+                switch( token ){
+                    case ALWAYSTRUE:
+                        return ALWAYS_TRUE_EVALUATOR;
+                    default:
+                        throw new IllegalArgumentException(ERR_GENERIC_TOKENTYPE_WIHOUT_IMPL + token);
+                }
+            case FAST:
+                return getFastEvaluator();
+            case REGEX:
+                return RegExpEvaluatorFactory.valueOf(context).getEvaluator(token);
+            case JEP:
+                return jedEvaluator;
+            default:
+                throw new IllegalArgumentException(ERR_TOKENTYPE_WIHOUT_IMPL + token);
         }
-//        } else if (token == TokenPredicate.GEO ) { // shouldn't be called as it's a OrPredicate from AnalysisRules
-//            return getFastEvaluator();
-//        } else if (token == TokenPredicate.NAMELONGERTHANWIKIPEDIA ) { // FIXME where the hell is this used?
-//            return getFastEvaluator();
-//        } else if (token == TokenPredicate.EXACT_ ) { // FIXME where the hell is this used?
-//            return getFastEvaluator();
-//        } else if (token == TokenPredicate.PICTURE ) { // FIXME where the hell is this used?
-//            return getFastEvaluator();
-
-        throw new RuntimeException("Unknown token " + token);
     }
 
     public String getQueryString() {

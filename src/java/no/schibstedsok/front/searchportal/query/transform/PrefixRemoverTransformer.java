@@ -24,7 +24,7 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     
     private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
-            Arrays.asList( (TokenPredicate) // cast the first item in the varargs to force generics
+            Arrays.asList( 
                 TokenPredicate.SITEPREFIX,
                 TokenPredicate.CATALOGUEPREFIX,
                 TokenPredicate.PICTUREPREFIX,

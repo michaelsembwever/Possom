@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.query.token;
 
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,110 +17,138 @@ import org.apache.commons.collections.Predicate;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class TokenPredicate implements Predicate, Comparable<TokenPredicate> {
-
-    public static final class FastTokenPredicate extends TokenPredicate {
-        public  FastTokenPredicate(final String token) {
-            super(token);
-            FAST_TOKENS.add( this );
-        }
-    }
-    public static final class RegExpTokenPredicate extends TokenPredicate {
-        public  RegExpTokenPredicate(final String token) {
-            super(token);
-        }
-    }
-    public static final class JepTokenPredicate extends TokenPredicate {
-        public  JepTokenPredicate(final String token) {
-            super(token);
-        }
-    }
-
-    private static final Map<String,TokenPredicate> TOKEN_MAP = new Hashtable<String,TokenPredicate>();
-    private static final Set<TokenPredicate> FAST_TOKENS = new HashSet<TokenPredicate>();
+public enum TokenPredicate implements Predicate {
 
     // Common predicates.
-    // [TODO] TokenPredicate should be turned into a Java5 enum object with this list.
-
-    public static final TokenPredicate ALWAYSTRUE = new TokenPredicate("alwaysTrue");
+    ALWAYSTRUE (Type.GENERIC),
 
     // Fast TokenPredicates
-    public static final FastTokenPredicate EXACTFIRST = new FastTokenPredicate("exact_firstname");
-    public static final FastTokenPredicate EXACTLAST = new FastTokenPredicate("exact_lastname");
-    public static final FastTokenPredicate TNS = new FastTokenPredicate("tns");
-    public static final FastTokenPredicate FIRSTNAME = new FastTokenPredicate("firstname");
-    public static final FastTokenPredicate LASTNAME = new FastTokenPredicate("lastname");
-    public static final FastTokenPredicate COMPANYENRICHMENT = new FastTokenPredicate("companyenrichment");
-    public static final FastTokenPredicate EXACTCOMPANYENRICHMENT = new FastTokenPredicate("exact_companyenrichment");
-    public static final FastTokenPredicate COMPANYRANK = new FastTokenPredicate("companyrank");
-    public static final FastTokenPredicate EXACTCOMPANYRANK = new FastTokenPredicate("exact_companyrank");
-    public static final FastTokenPredicate GEOLOCAL = new FastTokenPredicate("geolocal");
-    public static final FastTokenPredicate GEOGLOBAL = new FastTokenPredicate("geoglobal");
-    public static final FastTokenPredicate GEOLOCALEXACT = new FastTokenPredicate("exact_geolocal");
-    public static final FastTokenPredicate GEOGLOBALEXACT = new FastTokenPredicate("exact_geoglobal");
-    public static final FastTokenPredicate CATEGORY = new FastTokenPredicate("category");
-    public static final FastTokenPredicate PRIOCOMPANYNAME = new FastTokenPredicate("companypriority");
-    public static final FastTokenPredicate KEYWORD = new FastTokenPredicate("keyword");
-    public static final FastTokenPredicate FULLNAME = new FastTokenPredicate("fullname"); // ?
-    public static final FastTokenPredicate EXACTWIKI = new FastTokenPredicate("exact_wikino");
-    public static final FastTokenPredicate WIKIPEDIA = new FastTokenPredicate("wikino");
-    public static final FastTokenPredicate ENGLISHWORDS = new FastTokenPredicate("international");
-    public static final FastTokenPredicate TOP3EXACT = new FastTokenPredicate("exact_top3boosts");
-    public static final FastTokenPredicate EXACT_PPCTOPLIST = new FastTokenPredicate("exact_ppctoplist");
-
+    EXACTFIRST (Type.FAST, "exact_firstname"),
+    EXACTLAST (Type.FAST, "exact_lastname"),
+    TNS (Type.FAST, "tns"),
+    FIRSTNAME (Type.FAST, "firstname"),
+    LASTNAME (Type.FAST, "lastname"),
+    COMPANYENRICHMENT (Type.FAST, "companyenrichment"),
+    EXACTCOMPANYENRICHMENT (Type.FAST, "exact_companyenrichment"),
+    COMPANYRANK (Type.FAST, "companyrank"),
+    EXACTCOMPANYRANK (Type.FAST, "exact_companyrank"),
+    GEOLOCAL (Type.FAST, "geolocal"),
+    GEOGLOBAL (Type.FAST, "geoglobal"),
+    GEOLOCALEXACT (Type.FAST, "exact_geolocal"),
+    GEOGLOBALEXACT (Type.FAST, "exact_geoglobal"),
+    CATEGORY (Type.FAST, "category"),
+    PRIOCOMPANYNAME (Type.FAST, "companypriority"),
+    KEYWORD (Type.FAST, "keyword"),
+    FULLNAME (Type.FAST, "fullname"), // ?
+    EXACTWIKI (Type.FAST, "exact_wikino"),
+    WIKIPEDIA (Type.FAST, "wikino"),
+    ENGLISHWORDS (Type.FAST, "international"),
+    TOP3EXACT (Type.FAST, "exact_top3boosts"),
+    EXACT_PPCTOPLIST (Type.FAST, "exact_ppctoplist"),
+    CELEBRITY (Type.FAST, "kjendiser"),
+    ANIMAL (Type.FAST, "dyr"),
+    DISEASE (Type.FAST, "sykdommer"),
     
     // RegExp TokenPredicates
-    public static final RegExpTokenPredicate CATALOGUEPREFIX = new RegExpTokenPredicate("cataloguePrefix");
-    public static final RegExpTokenPredicate COMPANYSUFFIX = new RegExpTokenPredicate("companySuffix");
-    public static final RegExpTokenPredicate NEWSPREFIX = new RegExpTokenPredicate("newsPrefix");
-    public static final RegExpTokenPredicate ORGNR = new RegExpTokenPredicate("orgNr");
-    public static final RegExpTokenPredicate PICTUREPREFIX = new RegExpTokenPredicate("picturePrefix");
-    public static final RegExpTokenPredicate PHONENUMBER = new RegExpTokenPredicate("phoneNumber");
-    public static final RegExpTokenPredicate SITEPREFIX = new RegExpTokenPredicate("sitePrefix");
-    public static final RegExpTokenPredicate TVPREFIX = new RegExpTokenPredicate("tvPrefix");
-    public static final RegExpTokenPredicate WEATHERPREFIX = new RegExpTokenPredicate("weatherPrefix");
-    public static final RegExpTokenPredicate WIKIPEDIAPREFIX = new RegExpTokenPredicate("wikipediaPrefix");
-    public static final RegExpTokenPredicate SKIINFOPREFIX = new RegExpTokenPredicate("skiinfoPrefix");
-    public static final RegExpTokenPredicate ONLYSKIINFOPREFIX = new RegExpTokenPredicate("onlyskiinfoPrefix");
-    public static final RegExpTokenPredicate EMPTYQUERY = new RegExpTokenPredicate("emptyQuery");
+    CATALOGUEPREFIX (Type.REGEX),
+    COMPANYSUFFIX (Type.REGEX),
+    NEWSPREFIX (Type.REGEX),
+    ORGNR (Type.REGEX),
+    PICTUREPREFIX (Type.REGEX),
+    PHONENUMBER (Type.REGEX),
+    SITEPREFIX (Type.REGEX),
+    TVPREFIX (Type.REGEX),
+    WEATHERPREFIX (Type.REGEX),
+    WIKIPEDIAPREFIX (Type.REGEX),
+    SKIINFOPREFIX (Type.REGEX),
+    ONLYSKIINFOPREFIX (Type.REGEX),
+    EMPTYQUERY (Type.REGEX),
     
     // JepTokenPredicate
-    public static final JepTokenPredicate MATHPREDICATE = new JepTokenPredicate("mathExpression");
+    MATHPREDICATE (Type.JEP);
+
+    // The types of TokenPredicates that exist
+    public enum Type { GENERIC, FAST, REGEX, JEP }
+
+    /** Some WIERD-ARSE behavour to enum.
+     * Because the enum declarations must come first and they are static,
+     *      their constructor when referencing other static members are referencing them
+     *      before they themselves have been statically initialised.
+     * That is without the wrapping class declaration to FAST_TOKENS it would have a value
+     *      of null when referenced to in the constructor.
+     * By wrapping it inside an inner class because all static initialisors of the inner class are run first
+     *      it ensures FAST_TOKENS will not be null.
+     **/
+    private static final class Sets{
+        public static final Set<TokenPredicate> FAST_TOKENS = new HashSet<TokenPredicate>();
+    }
+    
 
     // instance fields
     private final String token;
+    private final Type type;
 
 
     private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
             = "Argument to evuluate must be an instance of a TokenEvaluatorFactory";
+    private static final String ERR_TOKEN_NOT_FOUND = "Token argument not found ";
+
 
     /**
-     * Create a new TokenPredicate that will return true iff token occurs in the
+     * Create a new TokenPredicate that will return true if token occurs in the
      * query.
      *
+     * @param type     the token type.
+     */
+    TokenPredicate(final Type type) {
+        token = null;
+        this.type = type;
+        if( type == Type.FAST ){
+            Sets.FAST_TOKENS.add(this);
+        }
+    }
+
+    /**
+     * Create a new TokenPredicate that will return true if token occurs in the
+     * query.
+     * Only use for token of type FAST.
+     *
+     * @param type     the token type.
      * @param token     the token.
      */
-    protected TokenPredicate(final String token) {
+    TokenPredicate(final Type type, final String token) {
         this.token = token;
-        TOKEN_MAP.put(token, this);
+        this.type = type;
+        if( type == Type.FAST ){
+            Sets.FAST_TOKENS.add(this);
+        }
+    }
+
+    public Type getType(){
+        return type;
     }
 
     /** Public method to find the correct TokenPredicate given the Token's string.
      */
-    public static TokenPredicate valueOf(final String token) {
-        return TOKEN_MAP.get(token);
+    public static TokenPredicate valueFor(final String token) {
+        for(TokenPredicate tp : values()){
+            if( tp.token.equals(token) ){
+                return tp;
+            }
+        }
+        throw new IllegalArgumentException(ERR_TOKEN_NOT_FOUND + token);
     }
 
     /** Utility method to use all TokenPredicates in existance.
      */
     public static Collection<TokenPredicate> getTokenPredicates() {
-        return Collections.unmodifiableCollection(TOKEN_MAP.values());
+        return Collections.unmodifiableCollection(Arrays.asList(values()));
     }
 
     /** Utility method to use all FastTokenPredicates in existance.
      */
     public static Set<TokenPredicate> getFastTokenPredicates() {
-        return Collections.unmodifiableSet(FAST_TOKENS);
+        return Collections.unmodifiableSet(Sets.FAST_TOKENS);
     }
 
     /**
@@ -155,19 +184,5 @@ public class TokenPredicate implements Predicate, Comparable<TokenPredicate> {
         final TokenEvaluator evaluator = factory.getEvaluator(this);
         return evaluator.evaluateToken(token, factory.getCurrentTerm(), query);
     }
-
-    /** {@inheritDoc}
-     */
-    public int compareTo(final TokenPredicate tp) {
-
-        return token.compareTo(tp.token);
-    }
-
-    /** {@inheritDoc}
-     */
-    public String toString() {
-        return "TokenPredicate: " + token;
-    }
-
 
 }
