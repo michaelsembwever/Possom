@@ -562,7 +562,7 @@
                          	<decorator:getProperty property="page.tradedoubler"/>
                          <% } else { %>
 
-			<table>
+			<table border="0" width="100%">
 			<tr>
                         <decorator:getProperty property="page.spellcheck"/>
                          <td id="result_container">
