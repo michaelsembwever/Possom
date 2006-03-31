@@ -58,7 +58,7 @@ public final class QueryFactoryImpl extends QueryFactory {
             query = new RunningWebQuery(cxt, q, request, response);
 
         } else {
-            final String q = QueryStringHelper.safeGetParameter(request, "q");
+            final String q = request.getParameter("q");  // QueryStringHelper.safeGetParameter(request, "q");
 
             query = new RunningWebQuery(cxt, q, request, response);
 

@@ -158,8 +158,7 @@ public final class SearchServlet extends HttpServlet {
         }
 
         if (httpServletRequest.getParameter("q") != null) {
-            httpServletRequest.setAttribute("q", 
-                QueryStringHelper.safeGetParameter(httpServletRequest, "q"));
+            httpServletRequest.setAttribute("q", httpServletRequest.getParameter("q"));
         }
 
         httpServletRequest.setAttribute("c", searchModeKey);
