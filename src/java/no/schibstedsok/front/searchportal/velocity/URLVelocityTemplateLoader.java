@@ -59,7 +59,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
     private static final String DEBUG_LOOKING_FOR = "Looking for ";
     private static final String DEBUG_EXISTS = "Positive HEAD on ";
-    private static final String DEBUG_FULL_URL_IS = "Full URL is ";
+    private static final String DEBUG_FULL_URL_IS = "Real URL is ";
     private static final String DEBUG_HOST_HEADER_IS = "URL's host-header is ";
     private static final String DEBUG_DOESNT_EXIST = "Using fallback URL";
     
@@ -146,17 +146,17 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
                 LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
                 conn.addRequestProperty("host", hostHeader);
 
-            }else{
+            }else if( UrlResourceLoader.urlExists(getFallbackURL( url )) ){
 
                 LOG.trace(DEBUG_DOESNT_EXIST);
-                final URL u = new URL( getFallbackURL( url ));
+                final URL u = new URL( UrlResourceLoader.getURL(getFallbackURL( url )));
                 LOG.trace(DEBUG_FULL_URL_IS + u);
                 conn = u.openConnection();
                 final String hostHeader = UrlResourceLoader.getHostHeader(getFallbackURL( url ));
                 LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
                 conn.addRequestProperty("host", hostHeader);
             }
-            
+
         }catch( IOException e ){
 
             LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
