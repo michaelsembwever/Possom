@@ -42,6 +42,7 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
         defaultSites.put("af", "aftenposten.no");
         defaultSites.put("fv", "fedrelandsvennen.no");
         defaultSites.put("aa", "adressa.no");
+        defaultSites.put("sa", "aftenbladet.no");
         defaultSites.put("bt", "bt.no");
 
         DEFAULT_SITES = Collections.unmodifiableMap(defaultSites);
