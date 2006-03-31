@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import no.schibstedsok.front.searchportal.query.*;
+import no.schibstedsok.front.searchportal.util.QueryStringHelper;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -57,7 +58,7 @@ public final class QueryFactoryImpl extends QueryFactory {
             query = new RunningWebQuery(cxt, q, request, response);
 
         } else {
-            final String q = request.getParameter("q");
+            final String q = QueryStringHelper.safeGetParameter(request, "q");
 
             query = new RunningWebQuery(cxt, q, request, response);
 

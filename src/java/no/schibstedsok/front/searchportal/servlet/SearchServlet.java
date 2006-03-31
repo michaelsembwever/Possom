@@ -8,6 +8,7 @@ import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchTabs;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.util.QueryStringHelper;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
@@ -157,7 +158,8 @@ public final class SearchServlet extends HttpServlet {
         }
 
         if (httpServletRequest.getParameter("q") != null) {
-            httpServletRequest.setAttribute("q", httpServletRequest.getParameter("q"));
+            httpServletRequest.setAttribute("q", 
+                QueryStringHelper.safeGetParameter(httpServletRequest, "q"));
         }
 
         httpServletRequest.setAttribute("c", searchModeKey);
@@ -172,10 +174,8 @@ public final class SearchServlet extends HttpServlet {
             stopWatch.stop();
             LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
         }
-
-
     }
-
+    
     private SearchTabs loadSearchTabs(final Site site) {
         return XMLSearchTabsCreator.valueOf(site).getSearchTabs();
     }
