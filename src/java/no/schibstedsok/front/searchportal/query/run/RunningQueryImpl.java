@@ -313,7 +313,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
                             + "\" score=\"" + e.getAnalysisResult() + "\"/>");
                 }
-                PRODUCT_LOG.info("</enrichments");
+                PRODUCT_LOG.info("</enrichments>");
             }
 
             
