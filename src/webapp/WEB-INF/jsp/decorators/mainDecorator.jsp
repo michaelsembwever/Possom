@@ -80,6 +80,7 @@
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
     <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/sitesearch.css" rel="stylesheet" type="text/css" />
     <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
@@ -101,6 +102,7 @@
         context.put("response", response);
         context.put("page", siteMeshPage);
         context.put("base", request.getContextPath());
+        context.put("enrichments", enrichments);
         context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
         {
             final StringWriter buffer = new StringWriter();
