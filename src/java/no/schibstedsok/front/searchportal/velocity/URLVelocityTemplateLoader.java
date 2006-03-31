@@ -138,23 +138,15 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
             if( UrlResourceLoader.urlExists(url) ){
 
-                LOG.trace(DEBUG_EXISTS + url);
-                final URL u = new URL( UrlResourceLoader.getURL(url) );
-                LOG.trace(DEBUG_FULL_URL_IS + u);
-                conn = u.openConnection();
-                final String hostHeader = UrlResourceLoader.getHostHeader(url);
-                LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
-                conn.addRequestProperty("host", hostHeader);
+                conn = getURLConnection(url);
 
             }else if( UrlResourceLoader.urlExists(getFallbackURL( url )) ){
 
                 LOG.trace(DEBUG_DOESNT_EXIST);
-                final URL u = new URL( UrlResourceLoader.getURL(getFallbackURL( url )));
-                LOG.trace(DEBUG_FULL_URL_IS + u);
-                conn = u.openConnection();
-                final String hostHeader = UrlResourceLoader.getHostHeader(getFallbackURL( url ));
-                LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
-                conn.addRequestProperty("host", hostHeader);
+                conn = getURLConnection(getFallbackURL( url ));
+
+            }else{
+                throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
             }
 
         }catch( IOException e ){
@@ -171,6 +163,18 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         
         return url.replaceFirst(oldUrl, newUrl);
     }
-    
+
+
+    private URLConnection getURLConnection(final String url) throws IOException{
+        
+        LOG.trace(DEBUG_EXISTS + url);
+        final URL u = new URL( UrlResourceLoader.getURL(url) );
+        LOG.trace(DEBUG_FULL_URL_IS + u);
+        final URLConnection conn = u.openConnection();
+        final String hostHeader = UrlResourceLoader.getHostHeader(url);
+        LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
+        conn.addRequestProperty("host", hostHeader);
+        return conn;
+    }
 }
 
