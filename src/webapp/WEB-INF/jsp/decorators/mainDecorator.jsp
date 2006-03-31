@@ -283,7 +283,7 @@
                                 <% } else if ("fv".equals(ssr)) { %> F&#230;drelandsvennen:
                                 <% } else if ("aa".equals(ssr)) { %> Adresseavisen:
                                 <% } else if ("bt".equals(ssr)) { %> Bergens Tidende:
-                                <% } else if ("bt".equals(ssr)) { %> Stavanger Aftenblad:
+                                <% } else if ("sa".equals(ssr)) { %> Stavanger Aftenblad:
                                 <% } else if ("d".equals(ssr)) { %> Nettet:
                                 <% } %>
                             </span>
