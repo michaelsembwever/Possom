@@ -102,7 +102,6 @@
         context.put("response", response);
         context.put("page", siteMeshPage);
         context.put("base", request.getContextPath());
-        context.put("enrichments", enrichments);
         context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
         {
             final StringWriter buffer = new StringWriter();

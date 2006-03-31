@@ -37,7 +37,7 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
         defaultSites.put("it", "itavisen.no");
         defaultSites.put("di", "digi.no");
         defaultSites.put("pr", "propaganda-as.no");
-        defaultSites.put("im", "imarket.no");
+        defaultSites.put("im", "imarkedet.no");
         defaultSites.put("nrk", "nrk.no");
         defaultSites.put("af", "aftenposten.no");
         defaultSites.put("fv", "fedrelandsvennen.no");
@@ -66,10 +66,10 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
                 }
 
                 if (s.containsKey(paramValue[0])) {
-                    final StringBuffer filter = new StringBuffer("+");
+                    final StringBuilder filter = new StringBuilder("+");
                     filter.append(filterName);
                     filter.append(':');
-                    filter.append(sites.get(paramValue[0]));
+                    filter.append(s.get(paramValue[0]));
                     return filter.toString();
                 }
             }
