@@ -132,7 +132,7 @@ public enum TokenPredicate implements Predicate {
      */
     public static TokenPredicate valueFor(final String token) {
         for(TokenPredicate tp : values()){
-            if( tp.token.equals(token) ){
+            if( token.equals(tp.token) ){
                 return tp;
             }
         }
