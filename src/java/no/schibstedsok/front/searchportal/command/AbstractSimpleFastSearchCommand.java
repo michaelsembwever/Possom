@@ -663,7 +663,13 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             filter.append(getAdditionalFilter());
         }
 
+        if (getFastConfiguration().getFilter() != null) {
+            filter.append(" ");
+            filter.append(getFastConfiguration().getFilter());
+        }
+
         // Init dynamic filters
+        // TODO: Is the following used anywhere?
         String dynamicLanguage = getDynamicParams(getParameters(), "language", "");
         String dynamicFilterType = getDynamicParams(getParameters(), "filtertype", "any");
         String dynamicType = getDynamicParams(getParameters(), "type", "all");
@@ -672,6 +678,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (superFilter == null) {
             superFilter = "";
         }
+
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("createQuery: superFilter=" + superFilter);

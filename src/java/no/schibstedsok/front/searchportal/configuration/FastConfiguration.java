@@ -34,6 +34,7 @@ public class FastConfiguration extends AbstractSearchConfiguration {
     private int offensiveScoreLimit = 0;
     private int spamScoreLimit = 0;
 
+    private String filter;
 
     private boolean synonymsEnabled = false;
 
@@ -212,5 +213,9 @@ public class FastConfiguration extends AbstractSearchConfiguration {
 
     public boolean isSynonymsEnabled() {
         return synonymsEnabled;
+    }
+
+    public String getFilter() {
+        return filter;
     }
 }
