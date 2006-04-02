@@ -2,8 +2,8 @@
 
 <!--
     TODO define vocabulary indentification
-    PUBLIC ID: -//vendor//vocabulary//EN
-    SYSTEM ID: http://server/path/AnalysisRules.dtd
+    PUBLIC ID: -//sesam//Analysis//EN
+    SYSTEM ID: http://sesam.no/dtds/AnalysisRules.dtd
 
     Author     : <a href="mailto:mick@wever.org">Michael Semb Wever</a>
     Version    : $Id: AnalysisRules.xml 42 2006-02-07 14:06:46Z magnuse $

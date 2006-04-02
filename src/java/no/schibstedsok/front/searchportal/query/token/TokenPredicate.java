@@ -1,5 +1,5 @@
 // Copyright (2005-2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.query.token;
+package no.schibstedsok.front.searchportal.query.fastListName;
 
 
 import java.util.Arrays;
@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.collections.Predicate;
 
 /** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
@@ -49,19 +50,38 @@ public enum TokenPredicate implements Predicate {
     ANIMAL (Type.FAST, "dyr"),
     DISEASE (Type.FAST, "sykdommer"),
     
-    // RegExp TokenPredicates
-    CATALOGUEPREFIX (Type.REGEX),
-    COMPANYSUFFIX (Type.REGEX),
-    NEWSPREFIX (Type.REGEX),
-    ORGNR (Type.REGEX),
-    PICTUREPREFIX (Type.REGEX),
-    PHONENUMBER (Type.REGEX),
+    // RegExp TokenPredicates -- magic words
+    BOOK_MAGIC (Type.REGEX),
+    CATALOGUE_MAGIC (Type.REGEX),
+    CULTURE_MAGIC (Type.REGEX),
+    MOVIE_MAGIC (Type.REGEX),
+    NEWS_MAGIC (Type.REGEX),
+    OCEAN_MAGIC (Type.REGEX),
+    PICTURE_MAGIC (Type.REGEX),
+    RECEIPE_MAGIC (Type.REGEX),
+    SKIINFO_MAGIC (Type.REGEX),
+    STOCK_MAGIC (Type.REGEX),
+    TV_MAGIC (Type.REGEX),
+    WEATHER_MAGIC (Type.REGEX),
+    WEBTV_MAGIC (Type.REGEX),
+    WIKIPEDIA_MAGIC (Type.REGEX),
+
+    // RegExp TokenPredicates -- trigger words/phrases
+    CATALOGUE_TRIGGER (Type.REGEX),
+    NEWS_TRIGGER (Type.REGEX),
+    PICTURE_TRIGGER (Type.REGEX),
+    SKIINFO_TRIGGER (Type.REGEX),
+    TV_TRIGGER (Type.REGEX),
+    WEATHER_TRIGGER (Type.REGEX),
+    WIKIPEDIA_TRIGGER (Type.REGEX),
+
+    // RegExp TokenPredicates -- prefixes
     SITEPREFIX (Type.REGEX),
-    TVPREFIX (Type.REGEX),
-    WEATHERPREFIX (Type.REGEX),
-    WIKIPEDIAPREFIX (Type.REGEX),
-    SKIINFOPREFIX (Type.REGEX),
-    ONLYSKIINFOPREFIX (Type.REGEX),
+
+    // RegExp TokenPredicates -- general expression
+    ORGNR (Type.REGEX),
+    PHONENUMBER (Type.REGEX),
+    ONLYSKIINFO (Type.REGEX),
     EMPTYQUERY (Type.REGEX),
     
     // JepTokenPredicate
@@ -83,9 +103,8 @@ public enum TokenPredicate implements Predicate {
         public static final Set<TokenPredicate> FAST_TOKENS = new HashSet<TokenPredicate>();
     }
     
-
     // instance fields
-    private final String token;
+    private final String fastListName;
     private final Type type;
 
 
@@ -95,13 +114,13 @@ public enum TokenPredicate implements Predicate {
 
 
     /**
-     * Create a new TokenPredicate that will return true if token occurs in the
+     * Create a new TokenPredicate that will return true if fastListName occurs in the
      * query.
      *
-     * @param type     the token type.
+     * @param type     the fastListName type.
      */
     TokenPredicate(final Type type) {
-        token = null;
+        fastListName = null;
         this.type = type;
         if( type == Type.FAST ){
             Sets.FAST_TOKENS.add(this);
@@ -109,15 +128,15 @@ public enum TokenPredicate implements Predicate {
     }
 
     /**
-     * Create a new TokenPredicate that will return true if token occurs in the
+     * Create a new TokenPredicate that will return true if fastListName occurs in the
      * query.
-     * Only use for token of type FAST.
+     * Only use for fastListName of type FAST.
      *
-     * @param type     the token type.
-     * @param token     the token.
+     * @param type     the fastListName type.
+     * @param fastListName     the fastListName.
      */
-    TokenPredicate(final Type type, final String token) {
-        this.token = token;
+    TokenPredicate(final Type type, final String fastListName) {
+        this.fastListName = fastListName;
         this.type = type;
         if( type == Type.FAST ){
             Sets.FAST_TOKENS.add(this);
@@ -128,15 +147,15 @@ public enum TokenPredicate implements Predicate {
         return type;
     }
 
-    /** Public method to find the correct TokenPredicate given the Token's string.
+    /** Public method to find the correct FAST TokenPredicate given the Token's string.
      */
-    public static TokenPredicate valueFor(final String token) {
-        for(TokenPredicate tp : values()){
-            if( token.equals(tp.token) ){
+    public static TokenPredicate valueFor(final String fastListName) {
+        for(TokenPredicate tp : Sets.FAST_TOKENS){
+            if( fastListName.equals(tp.fastListName) ){
                 return tp;
             }
         }
-        throw new IllegalArgumentException(ERR_TOKEN_NOT_FOUND + token);
+        throw new IllegalArgumentException(ERR_TOKEN_NOT_FOUND + fastListName);
     }
 
     /** Utility method to use all TokenPredicates in existance.
@@ -152,15 +171,15 @@ public enum TokenPredicate implements Predicate {
     }
 
     /**
-     * Evaluates to true if token occurs in the query. This method uses a
+     * Evaluates to true if fastListName occurs in the query. This method uses a
      * TokenEvaluatorFactory to get a TokenEvaluator
      *
      * @param evalFactory
      *            The TokenEvaluatorFactory used to get a TokenEvaluator for
-     *            this token, AND to get the current term in the query being tokenised.
+     *            this fastListName, AND to get the current term in the query being tokenised.
      *
      * @return true if, according to the TokenEvaluator provided by the
-     *         TokenEvaluatorFactory, token evaluates to true.
+     *         TokenEvaluatorFactory, fastListName evaluates to true.
      */
     public boolean evaluate(final Object evalFactory) {
         // pre-condition check
@@ -182,7 +201,7 @@ public enum TokenPredicate implements Predicate {
         
         final String query = factory.getQueryString();
         final TokenEvaluator evaluator = factory.getEvaluator(this);
-        return evaluator.evaluateToken(token, factory.getCurrentTerm(), query);
+        return evaluator.evaluateToken(fastListName, factory.getCurrentTerm(), query);
     }
 
 }

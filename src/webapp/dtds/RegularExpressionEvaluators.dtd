@@ -2,8 +2,8 @@
 
 <!--
     TODO define vocabulary indentification
-    PUBLIC ID: -//vendor//vocabulary//EN
-    SYSTEM ID: http://server/path/RegularExpressionEvaluators.dtd
+    PUBLIC ID: -//sesam//Analysis//EN
+    SYSTEM ID: http://sesam.no/dtds/RegularExpressionEvaluators.dtd
 
     Author     : <a href="mailto:mick@wever.org">Michael Semb Wever</a>
     Version    : $Id: RegularExpressionEvaluators.xml 41 2006-02-07 13:41:30Z magnuse $

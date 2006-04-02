@@ -105,7 +105,7 @@ public final class RegExpEvaluatorFactory {
                 LOG.debug(" ->evaluator@token: " + tokenName);
 
                 try  {
-                    final TokenPredicate token = (TokenPredicate) TokenPredicate.class.getField(tokenName).get(null);
+                    final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
                     final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
                     LOG.debug(" ->evaluator@query-dependant: " + queryDep);
