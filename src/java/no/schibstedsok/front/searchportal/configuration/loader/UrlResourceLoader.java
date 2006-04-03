@@ -35,6 +35,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
 
     private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";
     private static final String FATAL_RESOURCE_NOT_LOADED = "Resource not found ";
+    private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
 
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.
@@ -97,6 +98,8 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             con.setRequestMethod("HEAD");
             con.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
             success = (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+
+            LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + u + " is " + success);
 
         } catch (NullPointerException e) {
             LOG.debug(url, e);
