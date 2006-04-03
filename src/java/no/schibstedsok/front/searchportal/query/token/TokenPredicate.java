@@ -1,5 +1,5 @@
 // Copyright (2005-2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.query.fastListName;
+package no.schibstedsok.front.searchportal.query.token;
 
 
 import java.util.Arrays;
