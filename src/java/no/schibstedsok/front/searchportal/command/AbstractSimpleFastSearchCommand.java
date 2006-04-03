@@ -663,7 +663,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             filter.append(getAdditionalFilter());
         }
 
-        if (getFastConfiguration().getFilter() != null) {
+        if (getFastConfiguration().getFilter() != null && !ignoreFilter()) {
             filter.append(" ");
             filter.append(getFastConfiguration().getFilter());
         }
@@ -895,6 +895,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
+    private boolean ignoreFilter() {
+        final String[] param = ((String []) getParameters().get("ssr"));
+        return param != null && param.length > 0 && param[0].equals("d");
+    }
+
 
     // Inner classes -------------------------------------------------
+
 }
