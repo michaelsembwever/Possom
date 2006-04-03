@@ -63,20 +63,17 @@ public final class Site {
      */
     private final String uniqueName;
 
-    
-    
-
     /** Creates a new instance of Site. */
-    private Site(final String siteName, final Locale locale) {
+    private Site(final String _siteName, final Locale _locale) {
         
         // siteName must finish with a '\'
-        this.siteName = siteName.endsWith("/")
-            ? siteName
-            : siteName + '/';
-        this.cxtName = siteName.indexOf(':') >= 0
-            ? siteName.substring(0, siteName.indexOf(':')) + "/" // don't include the port in the cxtName.
+        siteName = _siteName.endsWith("/")
+            ? _siteName
+            : _siteName + '/';
+        cxtName = siteName.indexOf(':') >= 0
+            ? siteName.substring(0, siteName.indexOf(':')) + '/' // don't include the port in the cxtName.
             : siteName;
-        this.locale = locale;
+        locale = _locale;
         uniqueName = getUniqueName(siteName, locale);
         // register in global pool.
         INSTANCES.put(uniqueName, this);
