@@ -216,7 +216,7 @@
                         <li><a href="http://www.fedrelandsvennen.no/kulturpuls/">Kulturpuls</a><span>|</span></li>
                         <li><a href="http://www.fedrelandsvennen.no/vi_og_vart/">Vi & v&#229;rt</a><span>|</span></li>
                         <li><a href="http://www.fedrelandsvennen.no/meninger/">Meninger</a><span>|</span></li>
-                        <li><a href="http://www.fedrelandsvennen.no/nyttig/varet/">V&#230;ret</a></li>
+                        <li><a href="http://www.fedrelandsvennen.no/varet/">V&#230;ret</a></li>
                     </ul>
                 <% } else if ("aa".equals(ss)) { %>
                     <a href="http://www.adressa.no/"><img id="sitelogo" src="../images/sitesearch/adresseavisen/logo.gif" alt="Adresseavisen logo" /></a>
