@@ -34,14 +34,12 @@ public final class PhraseClauseImpl extends AbstractLeafClause implements Phrase
         final Collection<TokenPredicate> predicates = new ArrayList();
         predicates.add(TokenPredicate.ALWAYSTRUE);
         // Predicates from RegExpEvaluators
-        predicates.add(TokenPredicate.PICTUREPREFIX);
-        predicates.add(TokenPredicate.NEWSPREFIX);
-        predicates.add(TokenPredicate.WIKIPEDIAPREFIX);
-        predicates.add(TokenPredicate.TVPREFIX);
-        predicates.add(TokenPredicate.COMPANYSUFFIX);
-        predicates.add(TokenPredicate.WEATHERPREFIX);
-        predicates.add(TokenPredicate.CATALOGUEPREFIX);
+        predicates.addAll(TokenPredicate.getTriggerTokenPredicates());
+
         predicates.add(TokenPredicate.ORGNR);
+        predicates.add(TokenPredicate.COMPANYSUFFIX);
+        predicates.add(TokenPredicate.SITEPREFIX);
+        
         // Add all FastTokenPredicates
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);

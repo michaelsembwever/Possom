@@ -104,37 +104,31 @@ public final class RegExpEvaluatorFactory {
                 final String tokenName = evaluator.getAttribute("token");
                 LOG.debug(" ->evaluator@token: " + tokenName);
 
-                try  {
-                    final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+                final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
-                    final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
-                    LOG.debug(" ->evaluator@query-dependant: " + queryDep);
+                final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
+                LOG.debug(" ->evaluator@query-dependant: " + queryDep);
 
-                    final Collection compiled = new ArrayList();
+                final Collection compiled = new ArrayList();
 
-                    final NodeList patterns = ((Element) evaluator).getElementsByTagName("pattern");
-                    for (int j = 0; j < patterns.getLength(); ++j) {
-                        final Element pattern = (Element) patterns.item(j);
-                        
-                        final String expression = pattern.getFirstChild().getNodeValue();
-                        LOG.debug(" --->pattern: " + expression);
-                        
-                        // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
-                        final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
-                        final String suffix = expression.endsWith("$") ? "" : "($|\\s)";
-                        // compile pattern
-                        final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
-                        compiled.add(p);
-                    }
+                final NodeList patterns = ((Element) evaluator).getElementsByTagName("pattern");
+                for (int j = 0; j < patterns.getLength(); ++j) {
+                    final Element pattern = (Element) patterns.item(j);
 
-                    final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
-                    regExpEvaluators.put(token, regExpTokenEvaluator);
-                    
-                }  catch (NoSuchFieldException ex) {
-                    LOG.error(ERR_COULD_NOT_FIND_TOKEN_PREDICATE, ex);
-                }  catch (IllegalAccessException ex) {
-                    LOG.error(ERR_COULD_NOT_FIND_TOKEN_PREDICATE, ex);
+                    final String expression = pattern.getFirstChild().getNodeValue();
+                    LOG.debug(" --->pattern: " + expression);
+
+                    // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
+                    final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
+                    final String suffix = expression.endsWith("$") ? "" : "($|\\s)";
+                    // compile pattern
+                    final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
+                    compiled.add(p);
                 }
+
+                final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
+                regExpEvaluators.put(token, regExpTokenEvaluator);
+                    
             }
             LOG.debug("Parsing " + SearchConstants.REGEXP_EVALUATOR_XMLFILE + " finished");
         }

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.collections.Predicate;
+import org.apache.taglibs.standard.tag.common.core.SetSupport;
 
 /** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
  * Predicates use TokenEvaluators to prove the Predicate's validity to the Query.
@@ -78,6 +79,9 @@ public enum TokenPredicate implements Predicate {
     // RegExp TokenPredicates -- prefixes
     SITEPREFIX (Type.REGEX),
 
+    // RegExp TokenPredicates -- suffixes
+    COMPANYSUFFIX (Type.REGEX),
+
     // RegExp TokenPredicates -- general expression
     ORGNR (Type.REGEX),
     PHONENUMBER (Type.REGEX),
@@ -100,6 +104,8 @@ public enum TokenPredicate implements Predicate {
      *      it ensures FAST_TOKENS will not be null.
      **/
     private static final class Sets{
+        public static final Set<TokenPredicate> MAGIC_TOKENS = new HashSet<TokenPredicate>();
+        public static final Set<TokenPredicate> TRIGGER_TOKENS = new HashSet<TokenPredicate>();
         public static final Set<TokenPredicate> FAST_TOKENS = new HashSet<TokenPredicate>();
     }
     
@@ -122,8 +128,15 @@ public enum TokenPredicate implements Predicate {
     TokenPredicate(final Type type) {
         fastListName = null;
         this.type = type;
-        if( type == Type.FAST ){
-            Sets.FAST_TOKENS.add(this);
+
+        if( type == Type.REGEX ){
+
+            if( name().endsWith("_MAGIC")){
+                Sets.MAGIC_TOKENS.add(this);
+
+            }else if( name().endsWith("_TRIGGER")){
+                Sets.TRIGGER_TOKENS.add(this);
+            }
         }
     }
 
@@ -168,6 +181,18 @@ public enum TokenPredicate implements Predicate {
      */
     public static Set<TokenPredicate> getFastTokenPredicates() {
         return Collections.unmodifiableSet(Sets.FAST_TOKENS);
+    }
+
+    /** Utility method to use all MagicTokenPredicates in existance.
+     */
+    public static Set<TokenPredicate> getMagicTokenPredicates() {
+        return Collections.unmodifiableSet(Sets.MAGIC_TOKENS);
+    }
+
+    /** Utility method to use all TriggerTokenPredicates in existance.
+     */
+    public static Set<TokenPredicate> getTriggerTokenPredicates() {
+        return Collections.unmodifiableSet(Sets.TRIGGER_TOKENS);
     }
 
     /**

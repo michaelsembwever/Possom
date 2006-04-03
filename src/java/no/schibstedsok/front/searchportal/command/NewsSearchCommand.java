@@ -103,9 +103,12 @@ public class NewsSearchCommand extends FastSearchCommand {
     }
     
     private boolean containsJustThePrefix() {
-        return context.getQuery().getRootClause() == context.getQuery().getFirstLeafClause() 
-          && (context.getQuery().getFirstLeafClause().getKnownPredicates().contains(TokenPredicate.NEWSPREFIX) 
-              || context.getQuery().getFirstLeafClause().getPossiblePredicates().contains(TokenPredicate.NEWSPREFIX));
+
+        final LeafClause firstLeaf = context.getQuery().getFirstLeafClause();
+
+        return context.getQuery().getRootClause() == firstLeaf
+          && (firstLeaf.getKnownPredicates().contains(TokenPredicate.NEWS_MAGIC)
+              || firstLeaf.getPossiblePredicates().contains(TokenPredicate.NEWS_MAGIC));
     }
     
     

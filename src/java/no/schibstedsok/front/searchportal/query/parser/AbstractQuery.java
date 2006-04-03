@@ -50,7 +50,7 @@ public abstract class AbstractQuery implements Query {
     /**
      * {@inheritDoc}
      */
-    public Clause getFirstLeafClause() {
+    public LeafClause getFirstLeafClause() {
         return finder.getFirstLeaf();
     }
 
@@ -60,9 +60,9 @@ public abstract class AbstractQuery implements Query {
 
     private final class FirstLeafFinder extends AbstractReflectionVisitor {
         private boolean searching = true;
-        private Clause firstLeaf;
+        private LeafClause firstLeaf;
 
-        public synchronized Clause getFirstLeaf() {
+        public synchronized LeafClause getFirstLeaf() {
             if( firstLeaf == null ){
                 // hasn't been run yet.
                 visit(getRootClause());
