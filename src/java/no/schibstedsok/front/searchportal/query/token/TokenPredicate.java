@@ -50,6 +50,10 @@ public enum TokenPredicate implements Predicate {
     CELEBRITY (Type.FAST, "kjendiser"),
     ANIMAL (Type.FAST, "dyr"),
     DISEASE (Type.FAST, "sykdommer"),
+    STOCKMARKETTICKERS (Type.FAST, "stockmarkettickers"),
+    STOCKMARKEFIRMS (Type.FAST, "stockmarketfirms"),
+    EXACT_STOCKMARKETTICKERS (Type.FAST, "exact_stockmarkettickers"),
+    EXACT_STOCKMARKETFIRMS (Type.FAST, "exact_stockmarketfirms"),
     
     // RegExp TokenPredicates -- magic words
     BOOK_MAGIC (Type.REGEX),
