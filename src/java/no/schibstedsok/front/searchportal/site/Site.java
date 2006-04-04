@@ -167,7 +167,7 @@ public final class Site {
         
         final Properties props = new Properties();
         try  {
-            props.load(Site.class.getResourceAsStream("/" + SearchConstants.CONFIGURATION_FILE));
+            props.load(Site.class.getResourceAsStream('/' + SearchConstants.CONFIGURATION_FILE));
         }  catch (IOException ex) {
             LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
         }

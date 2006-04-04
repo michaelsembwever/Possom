@@ -11,6 +11,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilderFactory;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.LocalEntityResolver;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.collections.Predicate;
@@ -87,7 +88,9 @@ public final class AnalysisRuleFactory {
         context = cxt;
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
-        loader = context.newDocumentLoader(SearchConstants.ANALYSIS_RULES_XMLFILE, factory.newDocumentBuilder());
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+        builder.setEntityResolver(new LocalEntityResolver());
+        loader = context.newDocumentLoader(SearchConstants.ANALYSIS_RULES_XMLFILE, builder);
 
         INSTANCES.put(context.getSite(), this);
     }

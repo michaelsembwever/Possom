@@ -45,6 +45,7 @@ public final class TextMessages {
     /** Find the correct instance handling this Site.
      **/
     public static TextMessages valueOf(final Context cxt) {
+
         final Site site = cxt.getSite();
         TextMessages instance = INSTANCES.get(site);
         if (instance == null) {
@@ -77,38 +78,41 @@ public final class TextMessages {
     private final Properties keys = new Properties();
 
     private TextMessages(final Context cxt) {
+
         context = cxt;
 
-        if (!loadKeys(cxt.getSite().getLocale())) {
-            LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE+Locale.getDefault());
-            loadKeys(Locale.getDefault());
-        }
+        // import browser-applicable text messages
+        loadKeys(cxt.getSite().getLocale());
+
+        // import servers-default text messages [does not override existing values]
+        LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE+Locale.getDefault());
+        loadKeys(Locale.getDefault());
         
         INSTANCES.put(cxt.getSite(),this);
     }
 
-    private boolean loadKeys(final Locale l) {
-        LOG.debug(DEBUG_LOADING_WITH_LOCALE+l.getLanguage()+"_"+l.getCountry()+"_"+l.getVariant());
-        if (!loadKeysFallback(l)) {
-            // ignore variant
-            LOG.debug(DEBUG_LOADING_WITH_LOCALE+l.getLanguage()+"_"+l.getCountry());
-            if (!loadKeysFallback(new Locale(l.getLanguage(), l.getCountry()))) {
-                // ignore country
-                LOG.debug(DEBUG_LOADING_WITH_LOCALE+l.getLanguage());
-                if (!loadKeysFallback(new Locale(l.getLanguage()))) {
-                    return false;
-                }
-            }
-        }
-        return true;
+    private void loadKeys(final Locale l) {
+
+        // import the variant-specific text messages [does not override existing values]
+        LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage() + "_" + l.getCountry() + "_" + l.getVariant());
+        performLoadKeys(l);
+
+        // import the country-specific text messages [does not override existing values]
+        LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage() + "_" + l.getCountry());
+        performLoadKeys(new Locale(l.getLanguage(), l.getCountry()));
+
+        // import the language-specifix text messages [does not override existing values]
+        LOG.debug(DEBUG_LOADING_WITH_LOCALE + l.getLanguage());
+        performLoadKeys(new Locale(l.getLanguage()));
+
     }
 
-    private boolean loadKeysFallback(final Locale locale) {
+    private void performLoadKeys(final Locale locale) {
+
         final PropertiesLoader loader 
-                = context.newPropertiesLoader(MESSAGE_RESOURCE+"_"+locale.toString()+".properties", keys);
+                = context.newPropertiesLoader(MESSAGE_RESOURCE + "_" + locale.toString() + ".properties", keys);
         loader.abut();
         loader.getProperties();
-        return keys.size() > 0;
     }
 
     public String getMessage(final String key) {

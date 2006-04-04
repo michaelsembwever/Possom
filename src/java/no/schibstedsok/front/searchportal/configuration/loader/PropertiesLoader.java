@@ -19,6 +19,8 @@ import java.util.Properties;
  */
 public interface PropertiesLoader extends ResourceLoader {
     /** initialise this resource loader with the resource name/path and the resource it will go into.
+     * existing properties will not be overwritten.
+     *
      *@param resource the name/path of the resource.
      *@param properties the properties that will be used to hold the individual properties.
      **/

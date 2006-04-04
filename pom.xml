@@ -114,10 +114,9 @@
                 </includes>
             </resource>
             <resource>
-                <directory>src/data</directory>
+                <directory>src/webapp/dtds</directory>
                 <includes>
-                    <include>*.csv</include>
-                    <include>*.txt</include>
+                    <include>*.dtd</include>
                 </includes>
             </resource>
         </resources>

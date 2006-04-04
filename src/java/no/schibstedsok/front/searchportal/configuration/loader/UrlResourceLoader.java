@@ -156,13 +156,20 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
     /** {@inheritDoc}
      */
     public void run() {
-        if (!loadResource(getResource())) {
-            LOG.warn(WARN_USING_FALLBACK + getResource());
-            if (!loadResource(getFallbackResource())) {
-                LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
+        if( props != null ){
+            // Properties inherent through the fallback process. Keys are *not* overridden.
+            loadResource(getResource());
+            loadResource(getFallbackResource());
+            
+        }else{
+            // Default behavour: only load first found resource
+            if (!loadResource(getResource())) {
+                LOG.warn(WARN_USING_FALLBACK + getResource());
+                if (!loadResource(getFallbackResource())) {
+                    LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
+                }
             }
         }
-
     }
 
     private boolean loadResource(final String resource) {
@@ -178,7 +185,17 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
 
 
                 if (props != null) {
-                    props.load(urlConn.getInputStream());
+                    // only add properties that don't already exist!
+                    // allows us to inherent back through the fallback process.
+                    final Properties newProps = new Properties();
+                    newProps.load(urlConn.getInputStream());
+                    for(Object p : newProps.keySet()){
+                        
+                        if( !props.containsKey(p) ){
+                            final String prop = (String)p;
+                            props.setProperty(prop, newProps.getProperty(prop));
+                        }
+                    }
                 }
                 if (xstream != null) {
                     xstreamResult = xstream.fromXML(new InputStreamReader(urlConn.getInputStream()));

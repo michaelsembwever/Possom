@@ -15,6 +15,8 @@ import no.schibstedsok.common.ioc.BaseContext;
  */
 public interface PropertiesContext extends BaseContext {
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.
+     * Will not overwrite existing properties.
+     *
      * @param resource the resource name/path.
      * @param properties the properties to hold the individual properties loaded.
      * @return the new PropertiesLoader to use.
