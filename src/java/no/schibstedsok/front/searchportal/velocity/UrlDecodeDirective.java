@@ -27,44 +27,31 @@ import java.net.URLDecoder;
  *
  * @author thomas
  */
-public class UrlDecodeDirective extends Directive {
+public final class UrlDecodeDirective extends Directive {
 
     private static transient Log log = LogFactory.getLog(UrlEncodeDirective.class);
-
 
     private static final String NAME = "urldecode";
     private static final String DEFAULT_CHARSET = "utf-8";
 
-
     /**
-     * @return the name of the directive.
+     * {@inheritDoc}
      */
     public String getName() {
         return NAME;
     }
 
     /**
-     * returns the type of the directive. The type is LINE.
-     * @return The type == LINE
+     * {@inheritDoc}
      */
     public int getType() {
         return LINE;
     }
 
     /**
-     * Renders the urlencoded string.
-     *
-     * @param context
-     * @param writer
-     * @param node
-     *
-     * @throws java.io.IOException
-     * @throws org.apache.velocity.exception.ResourceNotFoundException
-     * @throws org.apache.velocity.exception.ParseErrorException
-     * @throws org.apache.velocity.exception.MethodInvocationException
-     * @return
+     * {@inheritDoc}
      */
-    public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
         if (node.jjtGetNumChildren() < 1) {
             rsvc.error("#" + getName() + " - missing argument");
             return false;
@@ -72,15 +59,15 @@ public class UrlDecodeDirective extends Directive {
 
         String charset = DEFAULT_CHARSET;
 
-        String s = node.jjtGetChild(0).value(context).toString();
+        final String input = node.jjtGetChild(0).value(context).toString();
 
         if (node.jjtGetNumChildren() == 2) {
             charset = node.jjtGetChild(1).value(context).toString();
         }
 
-        writer.write(URLDecoder.decode(s, charset));
+        writer.write(URLDecoder.decode(input, charset));
 
-        Token lastToken = node.getLastToken();
+        final Token lastToken = node.getLastToken();
 
         if (lastToken.image.endsWith("\n")) {
             writer.write("\n");

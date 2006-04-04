@@ -8,6 +8,7 @@ package no.schibstedsok.front.searchportal.velocity;
 
 import java.io.IOException;
 import java.io.Writer;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -27,55 +28,43 @@ import org.apache.velocity.runtime.parser.node.Node;
  *
  * @author magnuse
  */
-public class HtmlEscapeDirective extends Directive {
-    
-    private static String NAME = "htmlescape";
-    
+public final class HtmlEscapeDirective extends Directive {
+
+    private static final String NAME = "htmlescape";
+
     /**
-     * 
-     * @return returns the type of directive. Always returns <code>LINE</code>.
+     * {@inheritDoc}
      */
     public int getType() {
         return LINE;
     }
-    
+
     /**
-     * 
-     * @return returns the name of the directive. Always returns 'htmlescape'.
+     * {@inheritDoc}
      */
     public String getName() {
         return NAME;
     }
-    
+
     /**
-     * 
-     * Renders the html escaped string.
-     *
-     * @param context 
-     * @param writer 
-     * @param node 
-     * @throws java.io.IOException 
-     * @throws org.apache.velocity.exception.ResourceNotFoundException 
-     * @throws org.apache.velocity.exception.ParseErrorException 
-     * @throws org.apache.velocity.exception.MethodInvocationException 
-     * @return 
+     * {@inheritDoc}
      */
-    public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
         if (node.jjtGetNumChildren() != 1) {
             rsvc.error("#" + getName() + " - wrong number of argumants");
             return false;
         }
-        
-        String s = node.jjtGetChild(0).value(context).toString();
-        
-        writer.write(StringEscapeUtils.escapeHtml(s));
-        
-        Token lastToken = node.getLastToken();
-        
+
+        final String input = node.jjtGetChild(0).value(context).toString();
+
+        writer.write(StringEscapeUtils.escapeHtml(input));
+
+        final Token lastToken = node.getLastToken();
+
         if (lastToken.image.endsWith("\n")) {
             writer.write("\n");
         }
-        
+
         return true;
     }
 }

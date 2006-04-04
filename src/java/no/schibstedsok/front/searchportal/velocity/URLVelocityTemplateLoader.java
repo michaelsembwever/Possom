@@ -1,28 +1,10 @@
 package no.schibstedsok.front.searchportal.velocity;
 
-/*
- * Copyright 2001-2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License")
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
 import java.io.InputStream;
-import java.util.Vector;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.log4j.Logger;
@@ -44,9 +26,9 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  *
  * MODIFIED TO SUIT SCHIBSTEDSØK's NEEDS.
- * There was a choice here to implement all the URL handling stuff from scratch or to plug into the existing 
+ * There was a choice here to implement all the URL handling stuff from scratch or to plug into the existing
  * functionality found in no.schibstedsøk.front.searchportal.configuration.loader
- * Since this class is hidden between the velocity API it made more sense to go from scratch to best 
+ * Since this class is hidden between the velocity API it made more sense to go from scratch to best
  * meet velocity's requirements...
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -55,14 +37,14 @@ import org.apache.commons.collections.ExtendedProperties;
 public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
-    
+
     private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
     private static final String DEBUG_LOOKING_FOR = "Looking for ";
     private static final String DEBUG_EXISTS = "Positive HEAD on ";
     private static final String DEBUG_FULL_URL_IS = "Real URL is ";
     private static final String DEBUG_HOST_HEADER_IS = "URL's host-header is ";
     private static final String DEBUG_DOESNT_EXIST = "Using fallback URL";
-    
+
     private Site site;
     private Site fallbackSite;
 
@@ -96,8 +78,8 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             LOG.debug( ERR_RESOURCE_NOT_FOUND + url);
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
-        
-        
+
+
 
     }
 
@@ -113,11 +95,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     /** {@inheritDoc}
      */
     public long getLastModified(Resource resource){
-        
+
         final String url = resource.getName();
         LOG.trace("start getLastModified( "+url+" )");
         try{
-        
+
             final URLConnection conn = getResourceURLConnection(url);
             return conn.getLastModified();
 
@@ -125,9 +107,9 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             LOG.error( ERR_RESOURCE_NOT_FOUND + url );
         }
         return 0;
-        
+
     }
-    
+
     private URLConnection getResourceURLConnection( final String url )
         throws ResourceNotFoundException{
 
@@ -156,17 +138,17 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         }
         return conn;
     }
-    
+
     private String getFallbackURL(final String url){
         final String oldUrl = site.getName() + site.getConfigContext();
         final String newUrl = fallbackSite.getName() + fallbackSite.getConfigContext();
-        
+
         return url.replaceFirst(oldUrl, newUrl);
     }
 
 
     private URLConnection getURLConnection(final String url) throws IOException{
-        
+
         LOG.trace(DEBUG_EXISTS + url);
         final URL u = new URL( UrlResourceLoader.getURL(url) );
         LOG.trace(DEBUG_FULL_URL_IS + u);
