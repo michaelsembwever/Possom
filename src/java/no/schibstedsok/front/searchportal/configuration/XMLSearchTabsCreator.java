@@ -11,6 +11,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
@@ -39,13 +40,8 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
 
     private SearchTabs tabs;
 
-    /**
-     * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
-     * time. But only one will persist in the map.
-     *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
-     * the resources to improve the performance. But I doubt this would gain much, if anything at all.
-     */
     private static final Map<Site,XMLSearchTabsCreator> INSTANCES = new HashMap<Site,XMLSearchTabsCreator>();
+    private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     private static final Log LOG = LogFactory.getLog(XMLSearchTabsCreator.class);
 
@@ -62,7 +58,9 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
         propertyLoader = context.newPropertiesLoader(SearchConstants.CONFIGURATION_FILE, properties);
 
         initialiseXStream();
+        INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
+        INSTANCES_LOCK.writeLock().unlock();
     }
 
     public SearchTabs getSearchTabs() {
@@ -130,7 +128,11 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
      **/
     public static SearchTabsCreator valueOf(final Context cxt) {
         final Site site = cxt.getSite();
+
+        INSTANCES_LOCK.readLock().lock();
         SearchTabsCreator instance = INSTANCES.get(site);
+        INSTANCES_LOCK.readLock().unlock();
+
         if (instance == null) {
             instance = new XMLSearchTabsCreator(cxt);
         }
@@ -165,4 +167,13 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
         return stc;
     }
 
+    public static boolean remove(final Site site){
+
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            return null != INSTANCES.remove(site);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
+    }
 }

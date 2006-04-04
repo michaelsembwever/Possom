@@ -1,20 +1,20 @@
 package no.schibstedsok.front.searchportal.executor;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ExecutionException;
-import edu.emory.mathcs.backport.java.util.concurrent.FutureTask;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
-import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import no.schibstedsok.front.searchportal.result.SearchResult;
+import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class SearchTask extends FutureTask {
+public class SearchTask extends FutureTask<SearchResult> {
 
-    private static Log log = LogFactory.getLog(SearchTaskExecutorService.class);
+    private static final Logger LOG = Logger.getLogger(SearchTaskExecutorService.class);
 
     private SearchCommand command;
 
@@ -29,35 +29,39 @@ public class SearchTask extends FutureTask {
     }
 
     public boolean cancel(boolean mayInterruptIfRunning) {
-        log.debug("Cancel called " + command);
+        LOG.debug("Cancel called " + command);
 
         return super.cancel(mayInterruptIfRunning);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public synchronized Object get() {
+    public synchronized SearchResult get() {
+
         try {
-            log.debug("Calling get on " + command);
+            LOG.debug("Calling get on " + command);
             return super.get();
+
         } catch (InterruptedException e) {
-            log.error("Search was interrupted " + command);
+            LOG.error("Search was interrupted " + command);
             return null;
         } catch (ExecutionException e) {
-            log.error("Search exited with error " + command, e);
+            LOG.error("Search exited with error " + command, e);
             return null;
         }
     }
 
-    public synchronized Object get(long timeout, TimeUnit unit) {
+    public synchronized SearchResult get(final long timeout, final TimeUnit unit) {
+
         try {
             return super.get(timeout, unit);
+
         } catch (InterruptedException e) {
-            log.error("Search was interrupted " + command);
+            LOG.error("Search was interrupted " + command);
             return null;
         } catch (ExecutionException e) {
-            log.error("Search exited with error ", e);
+            LOG.error("Search exited with error ", e);
             return null;
         } catch (TimeoutException e) {
-            log.error("Search timed out " + command);
+            LOG.error("Search timed out " + command);
             return null;
         }
     }

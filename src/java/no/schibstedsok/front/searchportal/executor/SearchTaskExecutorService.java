@@ -1,27 +1,34 @@
 package no.schibstedsok.front.searchportal.executor;
 
-import edu.emory.mathcs.backport.java.util.concurrent.*;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import no.schibstedsok.front.searchportal.result.SearchResult;
+import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class SearchTaskExecutorService extends ThreadPoolExecutor {
+final class SearchTaskExecutorService extends ThreadPoolExecutor {
 
-    private static Log log = LogFactory.getLog(SearchTaskExecutorService.class);
+    private static final Logger LOG = Logger.getLogger(SearchTaskExecutorService.class);
 
     public SearchTaskExecutorService() {
         super(20, 100, 5L, TimeUnit.SECONDS, new SynchronousQueue());
     }
 
-    protected RunnableFuture newTaskFor(Callable callable) {
-        if (log.isDebugEnabled()) {
-            SearchCommand command = (SearchCommand) callable;
-            log.debug("Creating new search task " + command.getSearchConfiguration().getName());
+    protected SearchTask newTaskFor(Callable<SearchResult> callable) {
+
+        final SearchCommand command = (SearchCommand) callable;
+
+        if (LOG.isDebugEnabled()) {    
+            LOG.debug("Creating new search task " + command.getSearchConfiguration().getName());
         }
-        return new SearchTask((SearchCommand)callable);
+
+        return new SearchTask( command );
     }
 }

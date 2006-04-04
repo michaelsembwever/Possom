@@ -73,7 +73,7 @@ public class MockupSearchCommand implements SearchCommand {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public Object call() throws Exception {
+    public SearchResult call() throws Exception {
         return null;
     }
 }

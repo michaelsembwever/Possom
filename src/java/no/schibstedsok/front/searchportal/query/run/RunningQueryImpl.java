@@ -5,7 +5,8 @@
 package no.schibstedsok.front.searchportal.query.run;
 
 
-import edu.emory.mathcs.backport.java.util.concurrent.CancellationException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.Future;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
@@ -174,25 +176,21 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         try {
 
-            final Collection<SearchCommand> commands = new ArrayList<SearchCommand>();
+            final Collection<Callable<SearchResult>> commands = new ArrayList<Callable<SearchResult>>();
 
-            for (final Iterator iterator = context.getSearchMode().getSearchConfigurations().iterator(); iterator.hasNext();) {
-                final SearchConfiguration searchConfiguration = (SearchConfiguration) iterator.next();
+            for (SearchConfiguration searchConfiguration : context.getSearchMode().getSearchConfigurations() ) {
 
+                final SearchConfiguration sc = searchConfiguration;
                 final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                         SearchCommand.Context.class,
                             context,
-                            new SearchConfigurationContext() {
+                            new BaseContext() {
                                 public SearchConfiguration getSearchConfiguration() {
-                                    return searchConfiguration;
+                                    return sc;
                                 }
-                            },
-                            new RunningQueryContext() {
                                 public RunningQuery getRunningQuery() {
                                     return RunningQueryImpl.this;
                                 }
-                            },
-                            new QueryContext() {
                                 public Query getQuery() {
                                     return queryObj;
                                 }
@@ -251,38 +249,37 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
 
-            final List<SearchTask> results = context.getSearchMode().getExecutor().invokeAll(commands, 10000);
+            final List<Future<SearchResult>> results = context.getSearchMode().getExecutor().invokeAll(commands, 10000);
 
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()
             boolean hitsToShow = false;
-            for (SearchTask task : results) {
-
-                final SearchCommand command = task.getCommand();
-                final SearchConfiguration configuration = command.getSearchConfiguration();
-
+            for (Future<SearchResult> task : results) {
+                
                 if (task.isDone()) {
-                    try {
-                        final SearchResult searchResult = (SearchResult) task.get();
 
-                        if (searchResult != null) {
-                            hitsToShow |= searchResult.getHitCount() > 0;
+                    final SearchResult searchResult = task.get();
 
-                            hits.put(configuration.getName(), Integer.valueOf(searchResult.getHitCount()));
+                    if (searchResult != null) {
 
-                            final Integer score = scores.get(task.getCommand().getSearchConfiguration().getName());
+                        final SearchCommand command = searchResult.getSearchCommand();
+                        final SearchConfiguration configuration = command.getSearchConfiguration();
 
-                            if (score != null && configuration.getRule() != null && score.intValue() >= configuration.getRuleThreshold()) {
-                                if (searchResult.getResults().size() > 0 && score.intValue() > 15) {
-                                    final Enrichment e = new Enrichment(score.intValue(), configuration.getName());
-                                    enrichments.add(e);
-                                }
+                        hitsToShow |= searchResult.getHitCount() > 0;
+
+                        hits.put(configuration.getName(), Integer.valueOf(searchResult.getHitCount()));
+
+                        final Integer score = scores.get(configuration.getName());
+
+                        if (score != null && configuration.getRule() != null && score.intValue() >= configuration.getRuleThreshold()) {
+                            if (searchResult.getResults().size() > 0 && score.intValue() > 15) {
+                                final Enrichment e = new Enrichment(score.intValue(), configuration.getName());
+                                enrichments.add(e);
                             }
                         }
-                    } catch (CancellationException e) {
-                        LOG.error("Task was cancelled " + task.getCommand());
                     }
                 }
+
             }
 
             Collections.sort(sources);

@@ -141,7 +141,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * Called by thread executor
      * @return
      */
-    public Object call() {
+    public SearchResult call() {
         MDC.put(Site.NAME_KEY, context.getSite().getName());
 
         final String thread = Thread.currentThread().getName();

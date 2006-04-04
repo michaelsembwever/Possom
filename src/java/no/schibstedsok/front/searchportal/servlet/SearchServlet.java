@@ -37,7 +37,7 @@ public final class SearchServlet extends HttpServlet {
     private static final long serialVersionUID = 3068140845772756438L;
 
     private static final Logger LOG = Logger.getLogger(SearchServlet.class);
-
+    private static final String WARN_TABS_CLEANED = " status on cleaning tabs for ";
 
     private SearchTabs tabs;
 
@@ -82,16 +82,13 @@ public final class SearchServlet extends HttpServlet {
         }
 
         final Site site = (Site) httpServletRequest.getAttribute(Site.NAME_KEY);
+        final boolean forceReload = "tabs".equals(httpServletRequest.getParameter("reload"));
 
-        if (tabs == null
-                || (httpServletRequest.getParameter("reload") != null
-                        && httpServletRequest.getParameter("reload").equals("tabs"))) {
-
-            LOG.info("doGet(): ReLoading tabs");
-
-            tabs = loadSearchTabs(site);
-            LOG.warn("Tabs reloaded");
+        if( forceReload ){
+            final boolean cleaned = XMLSearchTabsCreator.remove(site);
+            LOG.warn(cleaned + WARN_TABS_CLEANED + site);
         }
+        final SearchTabs tabs = XMLSearchTabsCreator.valueOf(site).getSearchTabs();
 
         final String xmlParam = httpServletRequest.getParameter("xml");
 
@@ -174,10 +171,5 @@ public final class SearchServlet extends HttpServlet {
             LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
         }
     }
-    
-    private SearchTabs loadSearchTabs(final Site site) {
-        return XMLSearchTabsCreator.valueOf(site).getSearchTabs();
-    }
-
 
 }

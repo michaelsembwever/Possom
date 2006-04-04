@@ -19,7 +19,7 @@ public class SearchMode {
     private SearchCommandExecutor searchCommandExecutor = new SequentialSearchCommandExecutor();
     private String key;
 
-    private Collection searchConfigurations = new ArrayList();
+    private Collection<SearchConfiguration> searchConfigurations = new ArrayList<SearchConfiguration>();
     private String parentMode;
     private boolean queryAnalysisEnabled = false;
     
@@ -35,7 +35,7 @@ public class SearchMode {
         this.key = key;
     }
 
-    public Collection getSearchConfigurations() {
+    public Collection<SearchConfiguration> getSearchConfigurations() {
         return searchConfigurations;
     }
 

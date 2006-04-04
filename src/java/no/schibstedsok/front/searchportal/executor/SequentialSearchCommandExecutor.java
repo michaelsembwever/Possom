@@ -4,7 +4,11 @@
  */
 package no.schibstedsok.front.searchportal.executor;
 
-import edu.emory.mathcs.backport.java.util.concurrent.Callable;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import no.schibstedsok.front.searchportal.command.SearchCommand;
+import no.schibstedsok.front.searchportal.result.SearchResult;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,29 +23,39 @@ import java.util.List;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class SequentialSearchCommandExecutor implements SearchCommandExecutor {
+public final class SequentialSearchCommandExecutor implements SearchCommandExecutor {
 
     private static Log log = LogFactory.getLog(SequentialSearchCommandExecutor.class);
 
-    public List invokeAll(Collection callables, int timeoutInMillis) {
+    public List<Future<SearchResult>> invokeAll(Collection<Callable<SearchResult>> callables, int timeoutInMillis) {
 
-        List results = new ArrayList();
+        final List<Future<SearchResult>> results = new ArrayList<Future<SearchResult>>();
 
-        for (Iterator iterator = callables.iterator(); iterator.hasNext();) {
+        for (Callable<SearchResult> callable : callables) {
 
-            Callable callable = (Callable) iterator.next();
-
+            final SearchCommand command = (SearchCommand) callable;
             try {
-                results.add(callable.call());
+                final SearchResult result = command.call();
+
+                final SearchTask task = new SearchTask(command){
+                    public SearchResult get(final long timeout, final TimeUnit unit) {
+                        return get();
+                    }
+                    public boolean isDone() {
+                        return true;
+                    }
+                    public SearchResult get() {
+                        return result;
+                    }
+                };
+                results.add(task);
+            
             } catch (Exception e) {
-                log.error("Execution of callable failed", e);
+                log.error("Execution of search command failed", e);
             }
         }
 
         return results;
-    }
-
-    public void start() {
     }
 
     public void stop() {

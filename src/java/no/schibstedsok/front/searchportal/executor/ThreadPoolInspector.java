@@ -1,6 +1,6 @@
 package no.schibstedsok.front.searchportal.executor;
 
-import edu.emory.mathcs.backport.java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ThreadPoolExecutor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -18,17 +18,17 @@ public class ThreadPoolInspector extends TimerTask {
     public ThreadPoolInspector(ThreadPoolExecutor threadPool, int msPeriod) {
         this.threadPool = threadPool;
         Timer t = new Timer();
-        log.info("Scheduling to run every " + msPeriod + "ms");
+        LOG.info("Scheduling to run every " + msPeriod + "ms");
         t.schedule(this, 0, msPeriod);
     }
 
-    private Log log = LogFactory.getLog(ThreadPoolInspector.class);
+    private static final Log LOG = LogFactory.getLog(ThreadPoolInspector.class);
 
     public void run() {
-        log.info("Thread pool size: " + threadPool.getPoolSize());
-        log.info("Largest size: " + threadPool.getLargestPoolSize());
-        log.info("Active threads: " + threadPool.getActiveCount());
-        log.info("Approx. task count: " + threadPool.getTaskCount());
-        log.info("Completed count: " + threadPool.getCompletedTaskCount());
+        LOG.info("Thread pool size: " + threadPool.getPoolSize());
+        LOG.info("Largest size: " + threadPool.getLargestPoolSize());
+        LOG.info("Active threads: " + threadPool.getActiveCount());
+        LOG.info("Approx. task count: " + threadPool.getTaskCount());
+        LOG.info("Completed count: " + threadPool.getCompletedTaskCount());
     }
 }
