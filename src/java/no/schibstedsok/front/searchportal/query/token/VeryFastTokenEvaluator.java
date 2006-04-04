@@ -137,7 +137,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
                 final Element trans = (Element) l.item(i);
                 final String name = trans.getAttribute("NAME");
-                final String match = trans.getAttribute("CUSTOM").replaceAll("->", "");
+                final String custom = trans.getAttribute("CUSTOM");
+                final String match = custom.indexOf("->") >0
+                        ? custom.substring(0, custom.indexOf("->"))
+                        : custom;
 
                 addMatch(name, match, query);
 
