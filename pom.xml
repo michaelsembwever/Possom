@@ -186,7 +186,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
                 <configuration>
-                    <locales>en,no</locales>
+		    <!-- sure fire plugin failes for locale "no" -->
+                    <locales>en</locales>
                 </configuration>
             </plugin>
             
@@ -419,6 +420,19 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jxr-maven-plugin</artifactId>
             </plugin>      
+	     <plugin> 
+	         <groupId>org.codehaus.mojo</groupId> 
+	         <artifactId>surefire-report-maven-plugin</artifactId> 
+	     </plugin> 
+	     <!--
+		 Uncomment when
+		 http://jira.codehaus.org/browse/MEV-362
+		 is resolved
+ 	     <plugin> 
+	         <groupId>org.codehaus.mojo</groupId> 
+	         <artifactId>changelog-maven-plugin</artifactId> 
+	     </plugin> 
+	     -->
         </plugins>
     </reporting>
     
