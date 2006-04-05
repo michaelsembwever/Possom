@@ -254,19 +254,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()
             boolean hitsToShow = false;
+            
             for (Future<SearchResult> task : results) {
                 
-                if (task.isDone()) {
+                if (task.isDone() && !task.isCancelled()) {
 
                     final SearchResult searchResult = task.get();
-
                     if (searchResult != null) {
 
                         final SearchConfiguration configuration
                                 = searchResult.getSearchCommand().getSearchConfiguration();
 
                         hitsToShow |= searchResult.getHitCount() > 0;
-
                         hits.put(configuration.getName(), searchResult.getHitCount());
 
                         final Integer score = scores.get(configuration.getName());
