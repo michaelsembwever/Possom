@@ -24,13 +24,13 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @author magnuse
  */
 public class NewsSearchCommand extends FastSearchCommand {
-    
+
     private static final String FAST_SOURCE_FILTER_FIELD = "newssource";
     private static final String SESAM_SOURCE_FIELD = "nyhetskilde";
-    
+
     // Filter used to get all articles.
     private static final String FAST_SIZE_HACK = " +size:>0";
-    
+
     /** Creates a new instance of NewsSearchCommand
      *
      * @param cxt Search command context.
@@ -39,9 +39,9 @@ public class NewsSearchCommand extends FastSearchCommand {
     public NewsSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
-    
+
     private StringBuilder filterBuilder = null;
-    
+
     /**
      *
      * @param clause The clause to examine.
@@ -55,7 +55,7 @@ public class NewsSearchCommand extends FastSearchCommand {
             clause.getSecondClause().accept(this);
         }
     }
-    
+
     /**
      * LeafClause
      *
@@ -68,7 +68,7 @@ public class NewsSearchCommand extends FastSearchCommand {
             super.visitImpl(clause);
         }
     }
-    
+
     /**
      * PhraseClause
      *
@@ -80,28 +80,28 @@ public class NewsSearchCommand extends FastSearchCommand {
             super.visitImpl(clause);
         }
     }
-    
+
     protected String getAdditionalFilter() {
         synchronized (this) {
             if (filterBuilder == null) {
                 filterBuilder = new StringBuilder();
                 new FilterVisitor().visit(context.getQuery().getRootClause());
             }
-            
+
             // Add filter to retrieve all documents.
             if (containsJustThePrefix()) {
                 filterBuilder.append(FAST_SIZE_HACK);
             }
-            
+
             return filterBuilder.toString();
         }
     }
-    
+
     private boolean hasSourceField(final LeafClause clause) {
         return clause.getField() != null
                 && clause.getField().equals(SESAM_SOURCE_FIELD);
     }
-    
+
     private boolean containsJustThePrefix() {
 
         final LeafClause firstLeaf = context.getQuery().getFirstLeafClause();
@@ -110,8 +110,8 @@ public class NewsSearchCommand extends FastSearchCommand {
           && (firstLeaf.getKnownPredicates().contains(TokenPredicate.NEWS_MAGIC)
               || firstLeaf.getPossiblePredicates().contains(TokenPredicate.NEWS_MAGIC));
     }
-    
-    
+
+
     /**
      *
      * Visitor to create the FAST filter string. Handles the nyhetskilde: syntax.
@@ -121,38 +121,38 @@ public class NewsSearchCommand extends FastSearchCommand {
      *
      */
     private final class FilterVisitor extends AbstractReflectionVisitor {
-        
+
         protected void visitImpl(final LeafClause clause) {
             if (hasSourceField(clause)) {
                 appendSiteFilter(clause);
             }
         }
-        
+
         protected void visitImpl(final PhraseClause clause) {
             if (hasSourceField(clause)) {
                 appendSiteFilter(clause);
             }
         }
-        
+
         protected void visitImpl(final DefaultOperatorClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-        
+
         protected void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-        
+
         protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
-        
+
         protected void visitImpl(final XorClause clause) {
             clause.getFirstClause().accept(this);
         }
-        
+
         private final void appendSiteFilter(final LeafClause clause) {
             filterBuilder.append("+");
             filterBuilder.append(FAST_SOURCE_FILTER_FIELD);
