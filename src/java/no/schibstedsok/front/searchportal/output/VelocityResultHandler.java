@@ -212,9 +212,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("hashGenerator", request.getAttribute("hashGenerator"));
         context.put("runningQuery", cxt.getSearchResult().getSearchCommand().getRunningQuery());
         
-        
         context.put("tradedoubler", new TradeDoubler(request));
-
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
