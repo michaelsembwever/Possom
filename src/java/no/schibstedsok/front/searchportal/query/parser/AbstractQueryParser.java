@@ -105,14 +105,15 @@ public abstract class AbstractQueryParser implements QueryParser {
     }
 
     protected final Context createContext(final String input){
+        
         return ContextWrapper.wrap(
             QueryParser.Context.class,
-                new QueryStringContext(){
-                    public String getQueryString(){
-                        return input;
-                    }
-                },
-                context
+            new QueryStringContext(){
+                public String getQueryString(){
+                    return input;
+                }
+            },
+            context
         );
         
     }

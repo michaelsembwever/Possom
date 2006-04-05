@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
  * @version $Revision$
  */
-public class YellowSearchConfiguration extends FastConfiguration implements
-        SearchConfiguration {
+public class YellowSearchConfiguration extends FastConfiguration {
     
 }

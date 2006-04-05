@@ -262,18 +262,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                     if (searchResult != null) {
 
-                        final SearchCommand command = searchResult.getSearchCommand();
-                        final SearchConfiguration configuration = command.getSearchConfiguration();
+                        final SearchConfiguration configuration
+                                = searchResult.getSearchCommand().getSearchConfiguration();
 
                         hitsToShow |= searchResult.getHitCount() > 0;
 
-                        hits.put(configuration.getName(), Integer.valueOf(searchResult.getHitCount()));
+                        hits.put(configuration.getName(), searchResult.getHitCount());
 
                         final Integer score = scores.get(configuration.getName());
 
-                        if (score != null && configuration.getRule() != null && score.intValue() >= configuration.getRuleThreshold()) {
+                        if (score != null && configuration.getRule() != null && score >= configuration.getRuleThreshold()) {
                             if (searchResult.getResults().size() > 0 && score.intValue() > 15) {
-                                final Enrichment e = new Enrichment(score.intValue(), configuration.getName());
+                                final Enrichment e = new Enrichment(score, configuration.getName());
                                 enrichments.add(e);
                             }
                         }
