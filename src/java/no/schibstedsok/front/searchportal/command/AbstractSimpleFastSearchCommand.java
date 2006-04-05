@@ -373,7 +373,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             }
 
 
-            if (getFastConfiguration().isSynonymsEnabled() && !getParameters().containsKey("qs")) {
+            if (getFastConfiguration().isRelevantQueriesEnabled() && !getParameters().containsKey("qs")) {
                 collectRelevantQueries(result, searchResult);
 
             }

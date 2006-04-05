@@ -88,9 +88,9 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
     }
 
     /**
-     * Get the synonyms.
+     * Get the relevantQueries.
      *
-     * @return the synonyms.
+     * @return the relevantQueries.
      */
     public List getRelevantQueries() {
         Collections.sort(relevantQueries);

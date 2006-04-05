@@ -36,7 +36,7 @@ public class FastConfiguration extends AbstractSearchConfiguration {
 
     private String filter;
 
-    private boolean synonymsEnabled = false;
+    private boolean relevantQueriesEnabled = false;
 
     public List getCollections() {
         return collections;
@@ -211,8 +211,8 @@ public class FastConfiguration extends AbstractSearchConfiguration {
         return spamScoreLimit;
     }
 
-    public boolean isSynonymsEnabled() {
-        return synonymsEnabled;
+    public boolean isRelevantQueriesEnabled() {
+        return relevantQueriesEnabled;
     }
 
     public String getFilter() {
