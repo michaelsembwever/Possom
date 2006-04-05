@@ -272,7 +272,7 @@
                 <div id ="content_top">
                     <dl>
                         <dt>
-                            <span id="sitename">
+                            <span class="sitename">
                                 <% if ("ds".equals(ssr)) { %> Dinside:
                                 <% } else if ("di".equals(ssr)) { %> Digi:
                                 <% } else if ("pr".equals(ssr)) { %> Propaganda:
