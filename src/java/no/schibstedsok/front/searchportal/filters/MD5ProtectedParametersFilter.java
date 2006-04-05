@@ -15,26 +15,26 @@ import java.util.Map;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class MD5ProtectedParametersFilter implements Filter {
+public final class MD5ProtectedParametersFilter implements Filter {
 
     private Map protectedParameters;
     private MD5Generator digestGenerator;
 
-    private static Log log = LogFactory.getLog(MD5ProtectedParametersFilter.class);
+    private static final Log LOG = LogFactory.getLog(MD5ProtectedParametersFilter.class);
 
     public void init(FilterConfig filterConfig) throws ServletException {
 
         protectedParameters = new HashMap();
 
-        String secret = filterConfig.getInitParameter("secret");
-        String parameters = filterConfig.getInitParameter("protectedParameters");
+        final String secret = filterConfig.getInitParameter("secret");
+        final String parameters = filterConfig.getInitParameter("protectedParameters");
 
-        Boolean t = Boolean.TRUE;
+        final Boolean t = Boolean.TRUE;
 
-        String[] p = parameters.split(",");
+        final String[] p = parameters.split(",");
         for (int i = 0; i < p.length; i++) {
-            String parameter = p[i];
-            log.info("Adding " + parameter + " as protected parameter");
+            final String parameter = p[i];
+            LOG.info("Adding " + parameter + " as protected parameter");
             protectedParameters.put(parameter,  t);
         }
 
@@ -42,24 +42,25 @@ public class MD5ProtectedParametersFilter implements Filter {
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        Enumeration e = servletRequest.getParameterNames();
+
+        final Enumeration e = servletRequest.getParameterNames();
 
         while (e.hasMoreElements()) {
-            String parameterName = (String) e.nextElement();
+            final String parameterName = (String) e.nextElement();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Checking to see if " + parameterName + " is protected");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Checking to see if " + parameterName + " is protected");
             }
 
             if (protectedParameters.containsKey(parameterName)) {
 
-                log.debug(parameterName + " is protected");
+                LOG.debug(parameterName + " is protected");
 
-                String md5_parameter = servletRequest.getParameter(parameterName + "_x");
+                final String md5_parameter = servletRequest.getParameter(parameterName + "_x");
 
                 if (md5_parameter == null || !digestGenerator.validate(servletRequest.getParameter(parameterName), md5_parameter)) {
                     HttpServletResponse response = (HttpServletResponse) servletResponse;
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+                    response.sendError(HttpServletResponse.SC_NOT_FOUND);
                     return;
                 }
             }
