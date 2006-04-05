@@ -2,26 +2,24 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.converters.reflection.ReflectionConverter;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import javax.xml.parsers.DocumentBuilder;
+
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import java.util.Properties;
 
 /** SearchTabsCreator when SearchModes are serialised in an XML configuration file.
  *
@@ -45,7 +43,7 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
 
     private static final Log LOG = LogFactory.getLog(XMLSearchTabsCreator.class);
 
-    
+
 
     private XMLSearchTabsCreator(final Context cxt) {
 
@@ -90,31 +88,34 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
 
         xstream.alias(
                         "FastSearch",
-                        no.schibstedsok.front.searchportal.configuration.FastConfiguration.class);
+                        FastConfiguration.class);
         xstream.alias(
                         "YellowSearch",
-                        no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration.class);
+                        YellowSearchConfiguration.class);
         xstream.alias(
                         "WhiteSearch",
-                        no.schibstedsok.front.searchportal.configuration.WhiteSearchConfiguration.class);
+                        WhiteSearchConfiguration.class);
         xstream.alias(
                         "WebSearch",
-                        no.schibstedsok.front.searchportal.configuration.WebSearchConfiguration.class);
+                        WebSearchConfiguration.class);
         xstream.alias(
                         "NewsSearch",
-                        no.schibstedsok.front.searchportal.configuration.NewsSearchConfiguration.class);
+                        NewsSearchConfiguration.class);
         xstream.alias(
                         "PicSearch",
-                        no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration.class);
+                        PicSearchConfiguration.class);
         xstream.alias(
                         "tabs",
-                        no.schibstedsok.front.searchportal.configuration.SearchTabs.class);
+                        SearchTabs.class);
         xstream.alias(
                         "OverturePPCSearch",
-                        no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration.class);
+                        OverturePPCConfiguration.class);
         xstream.alias(
                         "MathExpression",
-                        no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration.class);
+                        MathExpressionConfiguration.class);
+        xstream.alias(
+                        "StockSearch",
+                        StockSearchConfiguration.class);
 
     }
 
@@ -158,7 +159,7 @@ public final class XMLSearchTabsCreator implements SearchTabsCreator {
             public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
                 return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
             }
-            
+
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return UrlResourceLoader.newDocumentLoader(this, resource, builder);
             }

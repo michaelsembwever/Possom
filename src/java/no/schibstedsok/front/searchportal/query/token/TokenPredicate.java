@@ -51,10 +51,10 @@ public enum TokenPredicate implements Predicate {
     ANIMAL (Type.FAST, "dyr"),
     DISEASE (Type.FAST, "sykdommer"),
     STOCKMARKETTICKERS (Type.FAST, "stockmarkettickers"),
-    STOCKMARKEFIRMS (Type.FAST, "stockmarketfirms"),
+    STOCKMARKETFIRMS (Type.FAST, "stockmarketfirms"),
     EXACT_STOCKMARKETTICKERS (Type.FAST, "exact_stockmarkettickers"),
     EXACT_STOCKMARKETFIRMS (Type.FAST, "exact_stockmarketfirms"),
-    
+
     // RegExp TokenPredicates -- magic words
     BOOK_MAGIC (Type.REGEX),
     CATALOGUE_MAGIC (Type.REGEX),
@@ -91,7 +91,7 @@ public enum TokenPredicate implements Predicate {
     PHONENUMBER (Type.REGEX),
     ONLYSKIINFO (Type.REGEX),
     EMPTYQUERY (Type.REGEX),
-    
+
     // JepTokenPredicate
     MATHPREDICATE (Type.JEP);
 
@@ -112,7 +112,7 @@ public enum TokenPredicate implements Predicate {
         public static final Set<TokenPredicate> TRIGGER_TOKENS = new HashSet<TokenPredicate>();
         public static final Set<TokenPredicate> FAST_TOKENS = new HashSet<TokenPredicate>();
     }
-    
+
     // instance fields
     private final String fastListName;
     private final Type type;
@@ -217,9 +217,9 @@ public enum TokenPredicate implements Predicate {
         }
         // process
         final TokenEvaluatorFactory factory = (TokenEvaluatorFactory) evalFactory;
-        
+
         // check that the evaluation hasn't already been done
-        // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether 
+        // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
         //  the evaluation is for the building of the known and possible predicate list (during query parsing)(in which
         //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
         //  applicable now (in the context of the whole query).
@@ -227,7 +227,7 @@ public enum TokenPredicate implements Predicate {
         if( null != knownPredicates && knownPredicates.contains(this) ){
             return true;
         }
-        
+
         final String query = factory.getQueryString();
         final TokenEvaluator evaluator = factory.getEvaluator(this);
         return evaluator.evaluateToken(fastListName, factory.getCurrentTerm(), query);

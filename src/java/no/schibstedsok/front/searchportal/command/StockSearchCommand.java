@@ -6,6 +6,9 @@
 package no.schibstedsok.front.searchportal.command;
 
 import java.util.Map;
+
+import no.schibstedsok.front.searchportal.result.BasicSearchResult;
+import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 
 /**
@@ -19,6 +22,9 @@ public final class StockSearchCommand extends AbstractSearchCommand {
     }
 
     public SearchResult execute() {
-        return null;
+        SearchResult result = new BasicSearchResult(this);
+        result.addResult(new BasicSearchResultItem());
+        result.setHitCount(1);
+        return result;
     }
 }
