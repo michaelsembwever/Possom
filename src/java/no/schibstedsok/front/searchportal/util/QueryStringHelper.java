@@ -41,12 +41,20 @@ public class QueryStringHelper {
         
         try {
 	        String encodedReqValue = URLEncoder.encode(reqValue, "UTF-8");
+            
+            queryStringValue = queryStringValue.replaceAll("[+]", "%20");
+            queryStringValue = queryStringValue.replaceAll("[*]", "%2A");
+            
+            encodedReqValue = encodedReqValue.replaceAll("[+]", "%20");
+            encodedReqValue = encodedReqValue.replaceAll("[*]", "%2A");
+            
 	        if (!queryStringValue.equals(encodedReqValue)){
 	            reqValue = URLDecoder.decode(queryStringValue, "ISO-8859-1");
 	        }
         } catch (UnsupportedEncodingException e) {
             /* IGNORED */
         }
+        System.out.println("incoming(" + req.getParameter("q") + ") outgoing(" + reqValue + ")");
         return reqValue;
     }
 }
