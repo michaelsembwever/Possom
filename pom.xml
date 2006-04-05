@@ -59,7 +59,7 @@
         <site>
             <id>dev443</id>
             <name>Schibsted Søk's Development Websites</name>
-            <url>﻿scp://sch-login01.osl.basefarm.net/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html</url>
+            <url>﻿file://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html</url>
         </site>
     </distributionManagement>
 
