@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
  - Copyright (2005-2006) Schibsted Søk AS
- - $Id$ 
+ - $Id$
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
-    <groupId>schibstedsok</groupId> 
+
+    <groupId>schibstedsok</groupId>
     <artifactId>search-front-html</artifactId>
     <modelVersion>4.0.0</modelVersion>
     <name>Schibsted Søk Engine</name>
@@ -19,8 +19,8 @@
     <issueManagement>
         <system>JIRA</system>
         <url>https://dev.schibstedsok.no/jira/secure/BrowseProject.jspa?id=10000</url>
-    </issueManagement>  
- 
+    </issueManagement>
+
     <ciManagement>
         <system>continuum</system>
         <url>https://dev.schibstedsok.no/continuum/servlet/continuum</url>
@@ -31,7 +31,7 @@
             </notifier>
         </notifiers>
     </ciManagement>
-    
+
     <licenses>
         <license>
             <name>Schibsted Søk Copyright</name>
@@ -39,11 +39,11 @@
             <distribution>manual</distribution>
         </license>
     </licenses>
- 
+
     <scm>
         <connection>scm:svn:https://dev.schibstedsok.no/svn/search-front-html/trunk/</connection>
     </scm>
-    
+
     <organization>
         <name>Schibsted Søk AS</name>
         <url>http://www.sesam.no/</url>
@@ -56,7 +56,7 @@
             <url>scp://sch-login01.osl.basefarm.net/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/maven2</url>
         </repository>
         <site>
-            <id>dev443</id> 
+            <id>dev443</id>
             <name>Schibsted Søk's Development Websites</name>
             <url>﻿scp://sch-login01.osl.basefarm.net/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html</url>
         </site>
@@ -133,7 +133,7 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
-            
+
             <!-- WAR plugin configuration -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -142,7 +142,7 @@
                     <warSourceDirectory>src/webapp</warSourceDirectory>
                 </configuration>
             </plugin>
-            
+
             <!-- Source generation from wsdl files -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -180,7 +180,7 @@
                     </execution>
                 </executions>
             </plugin>
-            
+
             <!-- Site internationalisation -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -190,7 +190,7 @@
                     <locales>en</locales>
                 </configuration>
             </plugin>
-            
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
@@ -230,7 +230,7 @@
             </releases>
         </repository>
     </repositories>
-    
+
     <pluginRepositories>
         <pluginRepository>
             <id>Maven Snapshots</id>
@@ -243,7 +243,7 @@
             </releases>
         </pluginRepository>
     </pluginRepositories>
-    
+
     <dependencies>
         <dependency>
             <groupId>opensymphony</groupId>
@@ -273,26 +273,28 @@
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.4</version>
+            <scope>provided</scope>
         </dependency>
-        
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jsp-api</artifactId>
             <version>2.0</version>
+            <scope>provided</scope>
         </dependency>
-	
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
             <version>1.1.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
         </dependency>
-        
+
         <dependency>
             <groupId>axis</groupId>
             <artifactId>axis</artifactId>
@@ -316,7 +318,7 @@
             <artifactId>axis-jaxrpc</artifactId>
             <version>1.2.1</version>
         </dependency>
-        
+
         <dependency>
             <groupId>jep</groupId>
             <artifactId>jep</artifactId>
@@ -349,7 +351,7 @@
             <version>1.0.4</version>
             <type>jar</type>
         </dependency>
-        
+
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -385,16 +387,16 @@
             <artifactId>junit</artifactId>
             <version>3.8.1</version>
             <type>jar</type>
-        </dependency> 
+        </dependency>
 
         <dependency>
             <groupId>jug</groupId>
             <artifactId>jug</artifactId>
             <version>1.1.2</version>
             <type>jar</type>
-        </dependency> 
+        </dependency>
     </dependencies>
-    
+
     <reporting>
         <plugins>
             <plugin>
@@ -407,7 +409,7 @@
                 <configuration>
                     <configLocation>src/checkstyle/schibstedsok_checks.xml</configLocation>
                 </configuration>
-            </plugin>        
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jdepend-maven-plugin</artifactId>
@@ -419,19 +421,19 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>jxr-maven-plugin</artifactId>
-            </plugin>      
-	     <plugin> 
-	         <groupId>org.codehaus.mojo</groupId> 
-	         <artifactId>surefire-report-maven-plugin</artifactId> 
-	     </plugin> 
+            </plugin>
+	     <plugin>
+	         <groupId>org.codehaus.mojo</groupId>
+	         <artifactId>surefire-report-maven-plugin</artifactId>
+	     </plugin>
 	     <!--
 		 Uncomment when
 		 http://jira.codehaus.org/browse/MEV-362
 		 is resolved
- 	     <plugin> 
-	         <groupId>org.codehaus.mojo</groupId> 
-	         <artifactId>changelog-maven-plugin</artifactId> 
-	     </plugin> 
+ 	     <plugin>
+	         <groupId>org.codehaus.mojo</groupId>
+	         <artifactId>changelog-maven-plugin</artifactId>
+	     </plugin>
 	     -->
         </plugins>
     </reporting>
