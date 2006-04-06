@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
@@ -24,15 +25,15 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     
     /** Synonym expansion are only performed for clauses matching the predicates
      * contained in predicateNames */
-    private final Collection<String> predicateNames = new ArrayList<String>();
+    private Collection<String> predicateNames = new ArrayList<String>();
     private Collection<TokenPredicate> predicates = null;
     
-    private final List<LeafClause> leafs = new ArrayList<LeafClause>();
-    private final Set<TokenPredicate> matchingPredicates = new HashSet<TokenPredicate>();
-    private final List<LeafClause> expanded = new ArrayList<LeafClause>();
+    private List<LeafClause> leafs = new ArrayList<LeafClause>();
+    private Set<TokenPredicate> matchingPredicates = new HashSet<TokenPredicate>();
+    private List<LeafClause> expanded = new ArrayList<LeafClause>();
     
-    private final StringBuilder builder = new StringBuilder();
-
+    private StringBuilder builder = new StringBuilder();
+    
     private boolean fromDefault = false;
     
     public void addPredicateName(final String name) {
@@ -63,8 +64,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
                 if (isSynonym(builder.toString() + clause.getTerm())) {
                     builder.append(clause.getTerm());
                     leafs.add(clause);
-                } 
-                else {
+                } else {
                     if (!leafs.isEmpty()) {
                         expandSynonym(leafs, getSynonym(builder.toString()));
                         expanded.addAll(leafs);
@@ -112,8 +112,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
             if (predicates == null) {
                 predicates = new ArrayList<TokenPredicate>();
                 for (final String predicateName : predicateNames) {
-                    final TokenPredicate p = TokenPredicate.valueOf(predicateName);
-                    predicates.add(p);
+                    predicates.add(TokenPredicate.valueOf(predicateName));
                 }
             }
         }
@@ -138,5 +137,16 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         }
         
         return null;
+    }
+    
+    public Object clone() throws CloneNotSupportedException {
+        final SynonymQueryTransformer retValue = (SynonymQueryTransformer)super.clone();
+        
+        retValue.predicateNames = predicateNames;
+        retValue.matchingPredicates = new HashSet<TokenPredicate>();
+        retValue.builder = new StringBuilder();
+        retValue.leafs = new ArrayList<LeafClause>();
+        
+        return retValue;
     }
 }
