@@ -55,7 +55,7 @@
             <id>Sesam</id>
             <name>Schibsted Søk's repository</name>
             <uniqueVersion>true</uniqueVersion>
-            <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/maven2</url>
+            <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2</url>
         </repository>
         <site>
             <id>dev443</id>
