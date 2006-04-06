@@ -79,22 +79,22 @@ public class SynonymQueryTransformerTest extends TestCase {
         assertEquals("oslo (sch schibsted) schibsted", builder.getQueryString());
     }
 
-//    public void testTwoWordsExact() throws ParseException {
-//        // Not Exact match. Don't do expansion.
-//        final Query query = parseQuery("oslo sch schibsted");
-//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "EXACT_STOCKMARKETTICKERS");
-//        final QueryBuilder builder = new QueryBuilder(query, trans);
-//
-//        assertEquals("oslo sch schibsted", builder.getQueryString());
-//    }
-//
-//    public void testMultiWordOriginalWithOtherTermAtEnd() throws ParseException {
-//        final Query query = parseQuery("schibsted asa oslo");
-//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "COMPANYRANK");
-//        final QueryBuilder builder = new QueryBuilder(query, trans);
-//
-//        assertEquals("(schibsted asa schasa) oslo", builder.getQueryString());
-//    }
+    public void testTwoWordsExact() throws ParseException {
+        // Not Exact match. Don't do expansion.
+        final Query query = parseQuery("oslo sch schibsted");
+        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "EXACT_STOCKMARKETTICKERS");
+        final QueryBuilder builder = new QueryBuilder(query, trans);
+
+        assertEquals("oslo sch schibsted", builder.getQueryString());
+    }
+
+    public void testMultiWordOriginalWithOtherTermAtEnd() throws ParseException {
+        final Query query = parseQuery("schibsted asa oslo");
+        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "COMPANYRANK");
+        final QueryBuilder builder = new QueryBuilder(query, trans);
+
+        assertEquals("(schibsted asa schasa) oslo", builder.getQueryString());
+    }
     
     private Map applyTransformer(final SynonymQueryTransformer t, final Query query, final String predicateName) {
         

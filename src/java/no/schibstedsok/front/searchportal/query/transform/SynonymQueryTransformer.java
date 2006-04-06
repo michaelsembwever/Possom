@@ -92,7 +92,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     
     private void expandSynonym(final List<LeafClause> replace, String synonym) {
         final LeafClause first = replace.get(0);
-        final LeafClause last = replace.get(0);
+        final LeafClause last = replace.get(replace.size() - 1);
         
         if (first != last) {
             getContext().getTransformedTerms().put(first, "(" + first.getTerm());
