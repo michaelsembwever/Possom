@@ -22,8 +22,24 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @version <tt>$Id$</tt>
  */
 public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
-    
-    private static final Set<TokenPredicate> DEFAULT_PREFIXES = TokenPredicate.getMagicTokenPredicates();
+
+    private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
+            Arrays.asList(
+                // Special case
+                TokenPredicate.SITEPREFIX,
+                // All magic words
+                TokenPredicate.BOOK_MAGIC,
+                TokenPredicate.CATALOGUE_MAGIC,
+                TokenPredicate.CULTURE_MAGIC,
+                TokenPredicate.MOVIE_MAGIC,
+                TokenPredicate.NEWS_MAGIC,
+                TokenPredicate.OCEAN_MAGIC,
+                TokenPredicate.PICTURE_MAGIC,
+                TokenPredicate.STOCK_MAGIC,
+                TokenPredicate.WEBTV_MAGIC,
+                TokenPredicate.WIKIPEDIA_MAGIC
+            ));
+
 
     private static final String BLANK = "";
     
