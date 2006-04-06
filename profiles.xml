@@ -49,10 +49,6 @@
         <id>test</id>
         <activation>
             <activeByDefault>false</activeByDefault>
-            <property>
-                <name>target</name>
-                <value>test</value>
-            </property>
         </activation>
         <properties>
             <!-- The default Site -->
@@ -98,10 +94,6 @@
         <id>production</id>
         <activation>
             <activeByDefault>false</activeByDefault>
-            <property>
-                <name>target</name>
-                <value>production</value>
-            </property>
         </activation>
         <properties>
             <!-- The default Site -->
