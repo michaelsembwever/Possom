@@ -30,8 +30,8 @@ public class CoordHelper {
     public final static int zoomCount = 7;
 
     public final static int defaultZoom = 2;
-    public static int imgWidth = 363; //bildestørrelse i pixler, bredde
-    public static int imgHeight = 363; //bildestørrelse i pixler, høyde
+    public int imgWidth = 363; //bildestørrelse i pixler, bredde
+    public int imgHeight = 363; //bildestørrelse i pixler, høyde
     public final static int envFactor = 30; //faktor for å lage rom rundt envelope. Angis i pixler
 
     public final static int iconPxSizeHeigth = 32;
@@ -41,8 +41,8 @@ public class CoordHelper {
     public final static int iconOffsetWidth = 14; //plassering av ikon, avvik fra venstre. Positiv verdi
     public final static int iconOverlapOffsetWidth = 12; //hvor mange pixler skal ikonet flyttes for å unngå overlap. Verdi 0 tillater at ikonene kan ha samme plassering
     public final static int iconOverlapOffsetHeigth = 12; //hvor mange pixler skal ikonet flyttes for å unngå overlap. Verdi 0 tillater at ikonene kan ha samme plassering
-    public static int mapCenterPxX = imgWidth / 2; //kartets midtpunkt i pixler, bredde
-    public static int mapCenterPxY = imgHeight / 2; //kartets midtpunkt i pixler - iconets st�rrelse/2, høyde
+    public int mapCenterPxX = imgWidth / 2; //kartets midtpunkt i pixler, bredde
+    public int mapCenterPxY = imgHeight / 2; //kartets midtpunkt i pixler - iconets st�rrelse/2, høyde
     public final static double panFactor = 0.45; //faktor som forteller hvor mye kartsentrum skal flyttet iforhold til kartets deltaX og y ved panning.
     public final static double zoomFactor = 2; //faktor som forteller hvor mye kartextentet skal minskes/utvides ved zoom inn/ut. zoom inn = 1/zoomFactor. Brukes ikke dersom fastezoomlevels benyttes.
     public final static double defaultNoCoord = -9999999;
@@ -59,7 +59,7 @@ public class CoordHelper {
     public static final int DPI = 96;
 
     public static final double pixelSize = METERS_PR_INCH / DPI;
-    public static double imgMeterSize = pixelSize * imgWidth; //st�rrelse på kart på skjermen i meter.
+    public double imgMeterSize = pixelSize * imgWidth; //st�rrelse på kart på skjermen i meter.
 
     /** Creates a new instance of CoordHelper */
     public CoordHelper() {
