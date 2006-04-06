@@ -88,13 +88,13 @@ public class SynonymQueryTransformerTest extends TestCase {
         assertEquals("oslo sch schibsted", builder.getQueryString());
     }
 
-    public void testMultiWordOriginalWithOtherTermAtEnd() throws ParseException {
-        final Query query = parseQuery("schibsted asa oslo");
-        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "COMPANYRANK");
-        final QueryBuilder builder = new QueryBuilder(query, trans);
-
-        assertEquals("(schibsted asa schasa) oslo", builder.getQueryString());
-    }
+//    public void testMultiWordOriginalWithOtherTermAtEnd() throws ParseException {
+//        final Query query = parseQuery("schibsted asa oslo");
+//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "COMPANYRANK");
+//        final QueryBuilder builder = new QueryBuilder(query, trans);
+//
+//        assertEquals("(schibsted asa schasa) oslo", builder.getQueryString());
+//    }
     
     private Map applyTransformer(final SynonymQueryTransformer t, final Query query, final String predicateName) {
         
