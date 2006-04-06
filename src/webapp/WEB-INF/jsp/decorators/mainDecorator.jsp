@@ -89,7 +89,7 @@
 </head>
 
 
-<body onload="<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
+<body onload="<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
 
     <% // sitesearch
     final VelocityEngine engine = VelocityResultHandler.getEngine(site);
@@ -410,7 +410,7 @@
 	<%}else if (currentC.equals("m") || currentC.equals("d") || !q.trim().equals("")) {%>
         <td class="cell_one" valign="top">
 
-            <%if (currentC.equals("y") || currentC.equals("yip")) {%>
+            <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
         		    <% int i=0; %>
                     <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
@@ -678,7 +678,7 @@
                 <%}%>
 
 
-                <%if (currentC.equals("yip")) {%>
+                <%if (currentC.equals("yip") || currentC.equals("yipticker")) {%>
                 <decorator:getProperty property="page.infopage"/>
                 <%}%>
                 <%if (currentC.equals("wip")) {%>
