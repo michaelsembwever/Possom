@@ -310,7 +310,7 @@
                     <id>Sesam-Production</id>
                     <name>Schibsted Søk's Production repository</name>
                     <uniqueVersion>true</uniqueVersion>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/maven2-production</url>
+                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-production</url>
                 </repository>
             </distributionManagement>
             <properties>
