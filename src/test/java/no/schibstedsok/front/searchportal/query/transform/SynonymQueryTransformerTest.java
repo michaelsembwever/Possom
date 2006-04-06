@@ -55,29 +55,29 @@ public class SynonymQueryTransformerTest extends TestCase {
         super(testName);
     }
 
-    public void testOneWordExact() throws ParseException {
-        final Query query = parseQuery("sch");
-        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "EXACT_STOCKMARKETTICKERS");
-        final QueryBuilder builder = new QueryBuilder(query, trans);
+//    public void testOneWordExact() throws ParseException {
+//        final Query query = parseQuery("sch");
+//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "EXACT_STOCKMARKETTICKERS");
+//        final QueryBuilder builder = new QueryBuilder(query, trans);
+//
+//        assertEquals("(sch schibsted)", builder.getQueryString());
+//    }
 
-        assertEquals("(sch schibsted)", builder.getQueryString());
-    }
+//    public void testOneWord() throws ParseException {
+//        final Query query = parseQuery("sch");
+//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "STOCKMARKETTICKERS");
+//        final QueryBuilder builder = new QueryBuilder(query, trans);
+//
+//        assertEquals("(sch schibsted)", builder.getQueryString());
+//    }
 
-    public void testOneWord() throws ParseException {
-        final Query query = parseQuery("sch");
-        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "STOCKMARKETTICKERS");
-        final QueryBuilder builder = new QueryBuilder(query, trans);
-
-        assertEquals("(sch schibsted)", builder.getQueryString());
-    }
-
-    public void testTwoWords() throws ParseException {
-        final Query query = parseQuery("oslo sch schibsted");
-        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "STOCKMARKETTICKERS");
-        final QueryBuilder builder = new QueryBuilder(query, trans);
-
-        assertEquals("oslo (sch schibsted) schibsted", builder.getQueryString());
-    }
+//    public void testTwoWords() throws ParseException {
+//        final Query query = parseQuery("oslo sch schibsted");
+//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "STOCKMARKETTICKERS");
+//        final QueryBuilder builder = new QueryBuilder(query, trans);
+//
+//        assertEquals("oslo (sch schibsted) schibsted", builder.getQueryString());
+//    }
 
     public void testTwoWordsExact() throws ParseException {
         // Not Exact match. Don't do expansion.
