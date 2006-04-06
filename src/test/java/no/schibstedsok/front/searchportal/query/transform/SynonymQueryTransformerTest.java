@@ -265,9 +265,4 @@ public class SynonymQueryTransformerTest extends TestCase {
             clause.getSecondClause().accept(this);
         }
     }
-    public static void main(String args[]) throws ParseException {
-        SynonymQueryTransformerTest test = new SynonymQueryTransformerTest("test");
-        
-        test.testMultiWordOriginalWithOtherTermAtEnd();
-    }
 }
