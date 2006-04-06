@@ -54,7 +54,8 @@
         <repository>
             <id>Sesam</id>
             <name>Schibsted Søk's repository</name>
-            <url>scp://sch-login01.osl.basefarm.net/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/maven2</url>
+            <uniqueVersion>true</uniqueVersion>
+            <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/maven2</url>
         </repository>
         <site>
             <id>dev443</id>
@@ -101,7 +102,7 @@
     <build>
         <sourceDirectory>src/java</sourceDirectory>
         <testSourceDirectory>src/test/java</testSourceDirectory>
-
+        <defaultGoal>package</defaultGoal>
         <resources>
             <resource>
                 <directory>src/conf</directory>
