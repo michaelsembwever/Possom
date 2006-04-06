@@ -7,21 +7,60 @@
 
 package no.schibstedsok.front.searchportal.query.transform;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author maek
  */
 public final class SynonymQueryTransformer extends AbstractQueryTransformer {
+
+    private static final Logger LOG = Logger.getLogger(SynonymQueryTransformer.class);
+    private static final String ERR_FAILED_LOADING_TICKER_MAP = "Failed to load tickers";
+
+    private static final Map<String,String> SYNONYMS;
+    private static final Map<String,String> REVERSE_SYNONYMS;
+
+    static{
+
+        final Map<String,String> synonyms = new HashMap<String,String>();
+        final Map<String,String> reverseSynonyms = new HashMap<String,String>();
+
+        try{
+            final Properties props = new Properties();
+            props.load(SynonymQueryTransformer.class.getResourceAsStream("/tickers.properties"));
+
+            for( Map.Entry<Object,Object> entry : props.entrySet()){
+
+                final String key = ((String)entry.getKey()).toLowerCase();
+                final String value = ((String)entry.getValue()).toLowerCase();
+                synonyms.put( key, value );
+                reverseSynonyms.put( value, key );
+            }
+
+        }catch(IOException ioe){
+            LOG.info(ERR_FAILED_LOADING_TICKER_MAP, ioe);
+        }finally{
+
+            SYNONYMS = Collections.unmodifiableMap(synonyms);
+            REVERSE_SYNONYMS = Collections.unmodifiableMap(reverseSynonyms);
+        }
+    }
     
     /** Synonym expansion are only performed for clauses matching the predicates
      * contained in predicateNames */
@@ -120,23 +159,17 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     }
     
     private boolean isSynonym(String string) {
-        return string.trim().equalsIgnoreCase("sch") || string.trim().equalsIgnoreCase("schibsted") || string.trim().equalsIgnoreCase("schibsted asa");
+
+        final String s = string.toLowerCase();
+        return SYNONYMS.containsKey(s) || REVERSE_SYNONYMS.containsKey(s);
     }
     
-    private String getSynonym(String string) {
-        if (string.trim().equalsIgnoreCase("sch")) {
-            return "schibsted";
-        }
-        
-        if (string.trim().equalsIgnoreCase("schibsted")) {
-            return "sch";
-        }
-        
-        if (string.trim().equalsIgnoreCase("schibsted asa")) {
-            return "schasa";
-        }
-        
-        return null;
+    private String getSynonym(final String string) {
+
+        final String s = string.toLowerCase();
+        return SYNONYMS.containsKey(s)
+                ? SYNONYMS.get(s)
+                : REVERSE_SYNONYMS.get(s);
     }
     
     public Object clone() throws CloneNotSupportedException {
@@ -148,5 +181,9 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         retValue.leafs = new ArrayList<LeafClause>();
         
         return retValue;
+    }
+
+    public StringBuilder getBuilder() {
+        return builder;
     }
 }
