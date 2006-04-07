@@ -26,9 +26,11 @@
         <url>https://dev.schibstedsok.no/continuum/servlet/continuum</url>
         <notifiers>
             <notifier>
-                <type>mail</type>
+              <type>mail</type>
+              <configuration>
                 <address>commits-front@schibstedsok.no</address>
-            </notifier>
+              </configuration>
+            <notifier>
         </notifiers>
     </ciManagement>
 
@@ -94,6 +96,13 @@
             <name>Magnus Eklund</name>
             <id>magnuse</id>
             <email>magnus.eklund@sesam.no</email>
+            <organization>Schibsted Søk AS</organization>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Anders Johan Jamtli</name>
+            <id>anders</id>
+            <email>anders.johan.jamtli@sesam.no</email>
             <organization>Schibsted Søk AS</organization>
             <timezone>+1</timezone>
         </developer>
