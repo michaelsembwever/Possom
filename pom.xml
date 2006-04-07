@@ -30,7 +30,7 @@
               <configuration>
                 <address>commits-front@schibstedsok.no</address>
               </configuration>
-            <notifier>
+            </notifier>
         </notifiers>
     </ciManagement>
 
