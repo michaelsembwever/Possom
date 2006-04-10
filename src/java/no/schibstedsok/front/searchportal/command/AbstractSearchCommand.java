@@ -335,7 +335,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         final Clause root = query.getRootClause();
         sb.setLength(0);
         visit(root);
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     protected final void appendToQueryRepresentation(final CharSequence addition) {
