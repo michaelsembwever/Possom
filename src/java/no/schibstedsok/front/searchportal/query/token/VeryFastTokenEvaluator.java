@@ -30,15 +30,17 @@ import org.xml.sax.SAXException;
  * @version $Revision$, $Author$, $Date$
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
-    private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
-    private final Map<String, List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
+    private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
+    
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
     private static final String REAL_TOKEN_SUFFIX = "QM";
-    private final static String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
+    private static final String EXACT_PREFIX = "exact_";
+    private static final String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
 
     private final HTTPClient httpClient;
+    private final Map<String, List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
 
     /**
@@ -114,19 +116,13 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             return;
         }
 
-        String token = null;
+        String url = null;
         try {
-            token = URLEncoder.encode(query.replaceAll("\"", ""), "utf-8");
-        } catch (UnsupportedEncodingException ignore) {
-            LOG.warn(ERR_FAILED_TO_ENCODE + query);
-        }
+            final String token = URLEncoder.encode(query.replaceAll("\"", ""), "utf-8");
 
-        final String url = CGI_PATH + token;
-
-        try {
+            url = CGI_PATH + token;
 
             final Document doc = httpClient.getXmlDocument("token_evaluator", url);
-
 
             NodeList l = doc.getElementsByTagName("QUERYTRANSFORMS");
             final Element e = (Element) l.item(0);
@@ -148,9 +144,12 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
                     final String key = name.substring(name.indexOf('_') + 1, name.indexOf("QM"));
 
-                    addMatch(REAL_TOKEN_PREFIX + "exact_" + key + REAL_TOKEN_SUFFIX, match, query);
+                    addMatch(REAL_TOKEN_PREFIX + EXACT_PREFIX + key + REAL_TOKEN_SUFFIX, match, query);
                 }
             }
+
+        } catch (UnsupportedEncodingException ignore) {
+            LOG.warn(ERR_FAILED_TO_ENCODE + query);
         } catch (IOException e1) {
             LOG.error("Analysis failed " + url, e1);
         } catch (SAXException e1) {
@@ -158,8 +157,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         }
     }
 
-    public boolean isQueryDependant() {
-        return false;
+    public boolean isQueryDependant(TokenPredicate predicate) {
+        return predicate.getFastListName().startsWith(EXACT_PREFIX);
     }
 
     private void addMatch(final String name, final String match, final String query) {

@@ -383,6 +383,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                             public Query getQuery() {
                                 return query;
                             }
+                            public TokenEvaluatorFactory getTokenEvaluatorFactory(){
+                                return context.getRunningQuery().getTokenEvaluatorFactory();
+                            }
                         },
                         context);
                 transformer.setContext(qtCxt);

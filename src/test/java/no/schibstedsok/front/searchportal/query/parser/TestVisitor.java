@@ -8,6 +8,7 @@ import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryTestContext;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
@@ -206,33 +207,8 @@ public final class TestVisitor extends TestCase {
 
         LOG.info("Starting testBasicQueryParser with input: " + queryInput);
 
-        final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
-                new TokenEvaluatorFactoryImpl.Context() {
-                    public String getQueryString() {
-                        return queryInput;
-                    }
-
-                    public Properties getApplicationProperties() {
-                        return FileResourcesSearchTabsCreatorTest.valueOf(Site.DEFAULT).getProperties();
-                    }
-
-                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                        return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-                    }
-
-                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                        return FileResourceLoader.newXStreamLoader(this, resource, xstream);
-                    }
-
-                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                        return FileResourceLoader.newDocumentLoader(this, resource, builder);
-                    }
-
-                    public Site getSite()  {
-                        return Site.DEFAULT;
-                    }
-
-                });
+        final TokenEvaluatorFactory tokenEvaluatorFactory
+                = new TokenEvaluatorFactoryImpl(new TokenEvaluatorFactoryTestContext(queryInput));
 
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
                 public TokenEvaluatorFactory getTokenEvaluatorFactory() {

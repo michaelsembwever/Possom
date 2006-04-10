@@ -83,7 +83,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
         return false;
     }
 
-    public boolean isQueryDependant() {
+    public boolean isQueryDependant(TokenPredicate predicate) {
         return queryDependant;
     }
 }

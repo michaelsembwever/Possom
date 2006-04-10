@@ -10,6 +10,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.QueryContext;
 import no.schibstedsok.front.searchportal.query.Visitor;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
 
@@ -32,6 +33,10 @@ public interface QueryTransformer extends Visitor, Cloneable{
          *
          **/
         Map<Clause,String> getTransformedTerms();
+
+        /** For evaluation acitions on individual (or the whole query) terms.
+         **/
+        TokenEvaluatorFactory getTokenEvaluatorFactory();
     }
 
     void setContext(final Context cxt);

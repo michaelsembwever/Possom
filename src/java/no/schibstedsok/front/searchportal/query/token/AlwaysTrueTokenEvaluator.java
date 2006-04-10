@@ -28,7 +28,7 @@ public final class AlwaysTrueTokenEvaluator implements TokenEvaluator {
         return true;
     }
 
-    public boolean isQueryDependant() {
+    public boolean isQueryDependant(TokenPredicate predicate) {
         return false;
     }
 }

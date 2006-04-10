@@ -9,6 +9,7 @@ package no.schibstedsok.front.searchportal.query.transform;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,10 +22,12 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.front.searchportal.query.token.VeryFastTokenEvaluator;
 import org.apache.log4j.Logger;
 
-/**
+/** XXX This will get largely rewritten when alternation rotation comes into play.
  *
  * @author maek
  */
@@ -61,11 +64,17 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
             REVERSE_SYNONYMS = Collections.unmodifiableMap(reverseSynonyms);
         }
     }
-    
+
+    private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
+            Arrays.asList(
+                TokenPredicate.STOCKMARKETFIRMS,
+                TokenPredicate.STOCKMARKETTICKERS
+            ));
+
     /** Synonym expansion are only performed for clauses matching the predicates
      * contained in predicateNames */
     private Collection<String> predicateNames = new ArrayList<String>();
-    private Collection<TokenPredicate> predicates = null;
+    private Collection<TokenPredicate> customPredicates;
     
     private List<LeafClause> leafs = new ArrayList<LeafClause>();
     private Set<TokenPredicate> matchingPredicates = new HashSet<TokenPredicate>();
@@ -73,27 +82,34 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     
     private StringBuilder builder = new StringBuilder();
     
-    private boolean fromDefault = false;
-    
-    public void addPredicateName(final String name) {
+    void addPredicateName(final String name) {
         predicateNames.add(name);
     }
     
     protected void visitImpl(final DefaultOperatorClause clause) {
+
+        LOG.trace("visitImpl(" + clause + ")");
+
         for (final TokenPredicate p : getPredicates()) {
             
             if (clause.getKnownPredicates().contains(p)
-            || clause.getPossiblePredicates().contains(p)) {
+                    || clause.getPossiblePredicates().contains(p)) {
+
+                LOG.debug("adding to matchingPredicates " + p);
                 matchingPredicates.add(p);
             }
         }
         
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
+
     }
     
     protected void visitImpl(final LeafClause clause) {
-        if (! matchingPredicates.isEmpty() && !expanded.contains(clause)) {
+
+        LOG.trace("visitImpl(" + clause + ")");
+
+        if (!matchingPredicates.isEmpty() && !expanded.contains(clause)) {
             for (final TokenPredicate p : matchingPredicates) {
                 
                 if (matchingPredicates.size() > 0) {
@@ -101,35 +117,49 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
                 }
                 
                 if (isSynonym(builder.toString() + clause.getTerm())) {
+
+                    LOG.debug("adding to builder " + clause.getTerm());
                     builder.append(clause.getTerm());
                     leafs.add(clause);
                 } else {
-                    if (!leafs.isEmpty()) {
-                        expandSynonym(leafs, getSynonym(builder.toString()));
-                        expanded.addAll(leafs);
-                        leafs.clear();
-                        matchingPredicates.clear();
-                        builder.setLength(0);
-                    }
+//                    if (!leafs.isEmpty()) {
+//
+//                        expandSynonym(leafs, getSynonym(builder.toString()));
+//                        expanded.addAll(leafs);
+//                        leafs.clear();
+//                        matchingPredicates.clear();
+//                        builder.setLength(0);
+//                    }
                 }
             }
         }
         
-        if (clause == getContext().getQuery().getFirstLeafClause()) {
-            for (TokenPredicate predicate : getPredicates()) {
-                if (clause.getPossiblePredicates().contains(predicate)
-                || clause.getKnownPredicates().contains(predicate)) {
-                    if (isSynonym(getContext().getTransformedTerms().get(clause))) {
-                        expandSynonym(clause, getSynonym(getContext().getTransformedTerms().get(clause)));
-                        expanded.add(clause);
-                        return;
-                    }
+        for (TokenPredicate predicate : getPredicates()) {
+
+            boolean applicable = clause.getKnownPredicates().contains(predicate);
+            if( !applicable && clause.getPossiblePredicates().contains(predicate) ){
+                // possible predicates depend on placement of terms within the query.
+                //  this state can't be assigned to the terms as they are immutable and
+                //   re-used across multiple queries at any given time.
+                applicable |= predicate.evaluate(getContext().getTokenEvaluatorFactory());
+            }
+
+            if (applicable) {
+
+                if (isSynonym(getContext().getTransformedTerms().get(clause))) {
+
+                    LOG.debug("expanding because of " + predicate);
+                    expandSynonym(clause, getSynonym(getContext().getTransformedTerms().get(clause)));
+                    expanded.add(clause);
+                    return;
                 }
             }
         }
     }
     
     private void expandSynonym(final List<LeafClause> replace, String synonym) {
+
+        LOG.trace("expandSynonym(" + replace + ", " + synonym + ")");
         final LeafClause first = replace.get(0);
         final LeafClause last = replace.get(replace.size() - 1);
         
@@ -142,29 +172,48 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     }
     
     private void expandSynonym(final LeafClause replace, String synonym) {
+
+        LOG.trace("expandSynonym(" + replace + ", " + synonym + ")");
         final String originalTerm = getContext().getTransformedTerms().get(replace);
         getContext().getTransformedTerms().put(replace, "(" + originalTerm + " " + synonym + ")");
     }
     
     private Collection<TokenPredicate> getPredicates() {
+
         synchronized (this) {
-            if (predicates == null) {
-                predicates = new ArrayList<TokenPredicate>();
-                for (final String predicateName : predicateNames) {
-                    predicates.add(TokenPredicate.valueOf(predicateName));
+            if (customPredicates == null && predicateNames != null && predicateNames.size() > 0) {
+                final Collection<TokenPredicate> cp = new ArrayList<TokenPredicate>();
+                for (String tp : predicateNames) {
+                    cp.add(TokenPredicate.valueOf(tp));
                 }
+                customPredicates = Collections.unmodifiableCollection(cp);
             }
         }
-        return predicates;
+        return predicateNames != null && predicateNames.size() > 0
+                ? customPredicates
+                : DEFAULT_PREFIXES;
     }
-    
-    private boolean isSynonym(String string) {
+
+
+    public static boolean isTicker(final String string){
+
+        final String s = string.toLowerCase();
+        return SYNONYMS.containsKey(s);
+    }
+
+    public static boolean isTickersFullname(final String string){
+
+        final String s = string.toLowerCase();
+        return REVERSE_SYNONYMS.containsKey(s);
+    }
+
+    public static boolean isSynonym(final String string) {
 
         final String s = string.toLowerCase();
         return SYNONYMS.containsKey(s) || REVERSE_SYNONYMS.containsKey(s);
     }
     
-    private String getSynonym(final String string) {
+    public static String getSynonym(final String string) {
 
         final String s = string.toLowerCase();
         return SYNONYMS.containsKey(s)

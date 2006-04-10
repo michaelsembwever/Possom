@@ -98,7 +98,7 @@ public enum TokenPredicate implements Predicate {
     // The types of TokenPredicates that exist
     public enum Type { GENERIC, FAST, REGEX, JEP }
 
-    /** Some WIERD-ARSE behavour to enum.
+    /**
      * Because the enum declarations must come first and they are static,
      *      their constructor when referencing other static members are referencing them
      *      before they themselves have been statically initialised.
@@ -107,10 +107,13 @@ public enum TokenPredicate implements Predicate {
      * By wrapping it inside an inner class because all static initialisors of the inner class are run first
      *      it ensures FAST_TOKENS will not be null.
      **/
-    private static final class Sets{
+    private static final class Static{
         public static final Set<TokenPredicate> MAGIC_TOKENS = new HashSet<TokenPredicate>();
         public static final Set<TokenPredicate> TRIGGER_TOKENS = new HashSet<TokenPredicate>();
         public static final Set<TokenPredicate> FAST_TOKENS = new HashSet<TokenPredicate>();
+
+        public static final String ERR_FAST_TYPES_MUST_SPECIFY_LISTNAME = "Illegal constructor used for Type.FAST";
+        public static final String ERR_FAST_TYPES_ONLY_CONSTRUCTOR = "Constructor used only appropriate for Type.FAST";
     }
 
     // instance fields
@@ -133,14 +136,19 @@ public enum TokenPredicate implements Predicate {
         fastListName = null;
         this.type = type;
 
-        if( type == Type.REGEX ){
+        switch(type){
+            case REGEX:
+                if( name().endsWith("_MAGIC")){
+                    Static.MAGIC_TOKENS.add(this);
 
-            if( name().endsWith("_MAGIC")){
-                Sets.MAGIC_TOKENS.add(this);
-
-            }else if( name().endsWith("_TRIGGER")){
-                Sets.TRIGGER_TOKENS.add(this);
-            }
+                }else if( name().endsWith("_TRIGGER")){
+                    Static.TRIGGER_TOKENS.add(this);
+                }
+                break;
+            case FAST:
+                throw new IllegalArgumentException(Static.ERR_FAST_TYPES_MUST_SPECIFY_LISTNAME);
+            default:
+                break;
         }
     }
 
@@ -155,8 +163,12 @@ public enum TokenPredicate implements Predicate {
     TokenPredicate(final Type type, final String fastListName) {
         this.fastListName = fastListName;
         this.type = type;
-        if( type == Type.FAST ){
-            Sets.FAST_TOKENS.add(this);
+        switch(type){
+            case FAST:
+                Static.FAST_TOKENS.add(this);
+                break;
+            default:
+                throw new IllegalArgumentException(Static.ERR_FAST_TYPES_ONLY_CONSTRUCTOR);
         }
     }
 
@@ -164,10 +176,15 @@ public enum TokenPredicate implements Predicate {
         return type;
     }
 
+    String getFastListName(){
+        return fastListName;
+    }
+
     /** Public method to find the correct FAST TokenPredicate given the Token's string.
      */
     public static TokenPredicate valueFor(final String fastListName) {
-        for(TokenPredicate tp : Sets.FAST_TOKENS){
+        
+        for(TokenPredicate tp : Static.FAST_TOKENS){
             if( fastListName.equals(tp.fastListName) ){
                 return tp;
             }
@@ -184,19 +201,19 @@ public enum TokenPredicate implements Predicate {
     /** Utility method to use all FastTokenPredicates in existance.
      */
     public static Set<TokenPredicate> getFastTokenPredicates() {
-        return Collections.unmodifiableSet(Sets.FAST_TOKENS);
+        return Collections.unmodifiableSet(Static.FAST_TOKENS);
     }
 
     /** Utility method to use all MagicTokenPredicates in existance.
      */
     public static Set<TokenPredicate> getMagicTokenPredicates() {
-        return Collections.unmodifiableSet(Sets.MAGIC_TOKENS);
+        return Collections.unmodifiableSet(Static.MAGIC_TOKENS);
     }
 
     /** Utility method to use all TriggerTokenPredicates in existance.
      */
     public static Set<TokenPredicate> getTriggerTokenPredicates() {
-        return Collections.unmodifiableSet(Sets.TRIGGER_TOKENS);
+        return Collections.unmodifiableSet(Static.TRIGGER_TOKENS);
     }
 
     /**

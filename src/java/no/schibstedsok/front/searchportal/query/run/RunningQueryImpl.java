@@ -183,18 +183,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 final SearchConfiguration sc = searchConfiguration;
                 final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                         SearchCommand.Context.class,
-                            context,
-                            new BaseContext() {
-                                public SearchConfiguration getSearchConfiguration() {
-                                    return sc;
-                                }
-                                public RunningQuery getRunningQuery() {
-                                    return RunningQueryImpl.this;
-                                }
-                                public Query getQuery() {
-                                    return queryObj;
-                                }
+                        context,
+                        new BaseContext() {
+                            public SearchConfiguration getSearchConfiguration() {
+                                return sc;
                             }
+                            public RunningQuery getRunningQuery() {
+                                return RunningQueryImpl.this;
+                            }
+                            public Query getQuery() {
+                                return queryObj;
+                            }
+                        }
                 );
 
                 final AnalysisRule rule = rules.getRule(searchConfiguration.getRule());

@@ -49,6 +49,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     private Set<TokenPredicate> insidePrefixes = new HashSet<TokenPredicate>();
     private StringBuilder prefixBuilder = new StringBuilder();
     private List<LeafClause> leafList = new ArrayList<LeafClause>();
+    private RegExpEvaluatorFactory regExpFactory = null;
     
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
@@ -86,11 +87,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
                 }
                 for(TokenPredicate predicate : insidePrefixes){
 
-                    final RegExpEvaluatorFactory.Context cxt = ContextWrapper.wrap(
-                            RegExpEvaluatorFactory.Context.class, getContext());
-                    final RegExpEvaluatorFactory factory = RegExpEvaluatorFactory.valueOf(cxt);
-
-                    if( factory.getEvaluator(predicate).evaluateToken(null, prefixBuilder.toString(), null, true) ){
+                    if( regExpFactory.getEvaluator(predicate).evaluateToken(null, prefixBuilder.toString(), null, true) ){
                         for(LeafClause c : leafList){
                             getContext().getTransformedTerms().put(c, BLANK);
                         }
@@ -144,5 +141,15 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
         retValue.leafList = new ArrayList<LeafClause>();
         
         return retValue;
+    }
+
+    public void setContext(final QueryTransformer.Context cxt) {
+
+        super.setContext(cxt);
+        
+        final RegExpEvaluatorFactory.Context regExpEvalFactory = ContextWrapper.wrap(
+                RegExpEvaluatorFactory.Context.class, cxt);
+
+        regExpFactory = RegExpEvaluatorFactory.valueOf(regExpEvalFactory);
     }
 }

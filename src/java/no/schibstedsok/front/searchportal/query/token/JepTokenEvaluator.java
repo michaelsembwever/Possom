@@ -75,7 +75,7 @@ public final class JepTokenEvaluator implements TokenEvaluator {
         return term != null || result != null;
     }
 
-    public boolean isQueryDependant() {
+    public boolean isQueryDependant(TokenPredicate predicate) {
         return true;
     }
 

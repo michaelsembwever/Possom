@@ -116,7 +116,7 @@ public abstract class AbstractClause implements Clause {
 
                 if (token.evaluate(predicate2evaluatorFactory)) {
                     final TokenEvaluator evaluator = predicate2evaluatorFactory.getEvaluator(token);
-                    if (evaluator.isQueryDependant()) {
+                    if (evaluator.isQueryDependant(token)) {
                         possiblePredicates.add(token);
                         LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_POSSIBLE + token);
                     }  else  {

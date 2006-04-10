@@ -10,12 +10,18 @@
 package no.schibstedsok.front.searchportal.query.transform;
 
 import com.thoughtworks.xstream.XStream;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
 import javax.xml.parsers.DocumentBuilder;
+
 import junit.framework.TestCase;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
+
 import no.schibstedsok.front.searchportal.configuration.FileResourcesSearchTabsCreatorTest;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
@@ -37,143 +43,128 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor
 import no.schibstedsok.front.searchportal.query.parser.ParseException;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryTestContext;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
+
 import org.apache.log4j.Logger;
 
 /**
  *
  * @author maek
  */
-public class SynonymQueryTransformerTest extends TestCase {
+public final class SynonymQueryTransformerTest extends AbstractTransformerTestCase {
 
     private static final Logger LOG =
             Logger.getLogger(SynonymQueryTransformerTest.class);
 
     public SynonymQueryTransformerTest(final String testName) {
         super(testName);
+        Logger.getLogger(SynonymQueryTransformer.class).setLevel(org.apache.log4j.Level.TRACE);
+        LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
 
-//    public void testOneWordExact() throws ParseException {
-//        final Query query = parseQuery("sch");
-//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "EXACT_STOCKMARKETTICKERS");
-//        final QueryBuilder builder = new QueryBuilder(query, trans);
-//
-//        assertEquals("(sch schibsted)", builder.getQueryString());
-//    }
+    public void testOneWordExact() throws ParseException {
 
-//    public void testOneWord() throws ParseException {
-//        final Query query = parseQuery("sch");
-//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "STOCKMARKETTICKERS");
-//        final QueryBuilder builder = new QueryBuilder(query, trans);
-//
-//        assertEquals("(sch schibsted)", builder.getQueryString());
-//    }
+        final String queryString = "sch";
+        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
+        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
 
-//    public void testTwoWords() throws ParseException {
-//        final Query query = parseQuery("oslo sch schibsted");
-//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "STOCKMARKETTICKERS");
-//        final QueryBuilder builder = new QueryBuilder(query, trans);
-//
-//        assertEquals("oslo (sch schibsted) schibsted", builder.getQueryString());
-//    }
+        final Query query = parseQuery(tef);
+        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+                TokenPredicate.EXACT_STOCKMARKETTICKERS.name(), tefCxt, tef);
 
-    public void testTwoWordsExact() throws ParseException {
-        // Not Exact match. Don't do expansion.
-        final Query query = parseQuery("oslo sch schibsted");
-        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "EXACT_STOCKMARKETTICKERS");
         final QueryBuilder builder = new QueryBuilder(query, trans);
 
-        assertEquals("oslo sch schibsted", builder.getQueryString());
+        final String result = builder.getQueryString();
+        LOG.debug("testOneWordExact builder gave " + result);
+        assertEquals("(sch schibsted)", result);
+    }
+
+    public void testOneWord() throws ParseException {
+
+        final String queryString = "sch";
+        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
+        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+
+        final Query query = parseQuery(tef);
+        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+                TokenPredicate.STOCKMARKETTICKERS.name(), tefCxt, tef);
+
+        final QueryBuilder builder = new QueryBuilder(query, trans);
+
+        final String result = builder.getQueryString();
+        LOG.debug("testOneWord builder gave " + result);
+        assertEquals("(sch schibsted)", result);
+    }
+
+    public void testTwoWords() throws ParseException {
+
+        final String queryString = "oslo sch schibsted";
+        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
+        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+
+        final Query query = parseQuery(tef);
+        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+                TokenPredicate.STOCKMARKETTICKERS.name(), tefCxt, tef);
+
+        final QueryBuilder builder = new QueryBuilder(query, trans);
+
+
+        final String result = builder.getQueryString();
+        LOG.debug("testTwoWords builder gave " + result);
+        assertEquals("(oslo oslo areal) (sch schibsted) schibsted", result);
+    }
+
+    public void testTwoWordsExact() throws ParseException {
+
+        // Not Exact match. Don't do expansion.
+        final String queryString = "oslo sch schibsted";
+        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
+        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+
+        final Query query = parseQuery(tef);
+        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+                TokenPredicate.EXACT_STOCKMARKETTICKERS.name(), tefCxt, tef);
+
+        final QueryBuilder builder = new QueryBuilder(query, trans);
+
+
+        final String result = builder.getQueryString();
+        LOG.debug("testTwoWordsExact builder gave " + result);
+        assertEquals("oslo sch schibsted", result);
     }
 
 //    public void testMultiWordOriginalWithOtherTermAtEnd() throws ParseException {
-//        final Query query = parseQuery("schibsted asa oslo");
-//        final Map trans = applyTransformer(new SynonymQueryTransformer(), query, "COMPANYRANK");
+//
+//        final String queryString = "schibsted asa oslo";
+//        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
+//        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+//
+//        final Query query = parseQuery(tef);
+//        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+//                TokenPredicate.COMPANYRANK.name(), tefCxt, tef);
+//
 //        final QueryBuilder builder = new QueryBuilder(query, trans);
 //
-//        assertEquals("(schibsted asa schasa) oslo", builder.getQueryString());
+//        final String result = builder.getQueryString();
+//        LOG.debug("testMultiWordOriginalWithOtherTermAtEnd builder gave " + result);
+//        assertEquals("(schibsted asa schasa) (oslo oslo areal)", result);
 //    }
     
-    private Map applyTransformer(final SynonymQueryTransformer t, final Query query, final String predicateName) {
+    private Map<Clause,String> applyTransformer(
+            final SynonymQueryTransformer t,
+            final Query query,
+            final String predicateName,
+            final TokenEvaluatorFactoryImpl.Context tefCxt,
+            final TokenEvaluatorFactory tef) {
         
-        final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
-        
-        final QueryTransformer.Context qtCxt = new QueryTransformer.Context() {
-            
-            public Map<Clause,String> getTransformedTerms() {
-                return transformedTerms;
-            }
-            public Site getSite() {
-                return Site.DEFAULT;
-            }
-            public Query getQuery() {
-                return query;
-            }
-            public String getTransformedQuery() {
-                return query.getQueryString();
-            }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-            
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
-            }
-            
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-        };
-
         t.addPredicateName(predicateName);
-        t.setContext(qtCxt);
-        
-        final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
-        mapInitialisor.visit(query.getRootClause());
-        t.visit(query.getRootClause());
-        return transformedTerms;
+        return super.applyTransformer(t,query,tefCxt,tef);
     }
-    
-    private Query parseQuery(final String queryString) throws ParseException {
-        
-        final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
-                new TokenEvaluatorFactoryImpl.Context() {
-            public String getQueryString() {
-                return queryString;
-            }
-            
-            public Properties getApplicationProperties() {
-                return FileResourcesSearchTabsCreatorTest.valueOf(Site.DEFAULT).getProperties();
-            }
-            
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-            
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
-            }
-            
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-            
-            public Site getSite()  {
-                return Site.DEFAULT;
-            }
-        });
-        
-        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-            public TokenEvaluatorFactory getTokenEvaluatorFactory() {
-                return tokenEvaluatorFactory;
-            }
-        });
-        
-        final Query query = parser.getQuery();
-        return query;
-    }
+
     
     public static final class QueryBuilder extends AbstractReflectionVisitor {
         private final Query query;

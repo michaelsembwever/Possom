@@ -54,7 +54,7 @@ public class QueryStringHelper {
         } catch (UnsupportedEncodingException e) {
             /* IGNORED */
         }
-        System.out.println("incoming(" + req.getParameter("q") + ") outgoing(" + reqValue + ")");
+        //System.out.println("incoming(" + req.getParameter("q") + ") outgoing(" + reqValue + ")");
         return reqValue;
     }
 }

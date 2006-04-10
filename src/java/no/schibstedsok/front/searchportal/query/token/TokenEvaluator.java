@@ -23,5 +23,5 @@ public interface TokenEvaluator {
      */
     boolean evaluateToken(String token, String term, String query);
 
-    boolean isQueryDependant();
+    boolean isQueryDependant(TokenPredicate predicate);
 }

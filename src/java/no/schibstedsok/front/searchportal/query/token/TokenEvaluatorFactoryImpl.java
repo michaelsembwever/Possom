@@ -31,7 +31,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
     private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new AlwaysTrueTokenEvaluator();
 
-    private volatile TokenEvaluator fastEvaluator;
+    private TokenEvaluator fastEvaluator;
     private final JepTokenEvaluator jedEvaluator;
     
     private static final Log LOG = LogFactory.getLog(TokenEvaluatorFactoryImpl.class);
