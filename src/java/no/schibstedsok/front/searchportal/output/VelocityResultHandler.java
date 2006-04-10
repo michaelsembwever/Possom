@@ -92,8 +92,10 @@ public final class VelocityResultHandler implements ResultHandler {
     public static VelocityContext newContextInstance(final VelocityEngine engine){
         final VelocityContext context = new VelocityContext();
         final Site site = (Site) engine.getProperty(Site.NAME_KEY);
+        final Site fallbackSite = (Site) engine.getProperty("site.fallback");
         // site
         context.put(Site.NAME_KEY, site);
+        context.put("fallbackSite", fallbackSite);
         context.put("locale", site.getLocale());
         // publishing system
         context.put(PUBLISH_URL, engine.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
