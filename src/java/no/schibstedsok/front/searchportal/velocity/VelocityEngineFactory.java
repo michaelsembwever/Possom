@@ -15,9 +15,13 @@ import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.velocity.Template;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
 
 /**
@@ -27,7 +31,7 @@ import org.apache.velocity.runtime.RuntimeConstants;
 public final class VelocityEngineFactory {
 
     private static final Logger LOG = Logger.getLogger(VelocityEngineFactory.class);
-    private static final String VELOCITY_LOG_CATEGORY = "org.apache.velocity";
+    private static final String VELOCITY_LOGGER = "org.apache.velocity";
 
     /**
      * Synchronisation occurs through method signature to "VelocityEngine valueOf(Context)".
@@ -51,12 +55,29 @@ public final class VelocityEngineFactory {
         context = cxt;
         final Site site = cxt.getSite();
 
-        engine = new VelocityEngine();
+        engine = new VelocityEngine(){
+            /** We override this method to dampen the <ERROR velocity: ResourceManager : unable to find resource ...>
+             * error messages in sesam.error
+             **/
+            public Template getTemplate(String name) throws ResourceNotFoundException, ParseErrorException, Exception {
+
+                final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
+                Logger.getLogger(VELOCITY_LOGGER).setLevel(Level.FATAL);
+
+                final Template retValue = super.getTemplate(name);
+
+                Logger.getLogger(VELOCITY_LOGGER).setLevel(level);
+                return retValue;
+            }
+
+        };
 
         try  {
-            final Logger logger = Logger.getLogger(VELOCITY_LOG_CATEGORY);
+            final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
             final java.util.Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
+            // engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute"); // velocity 1.5
             engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
+            // engine.setProperty("runtime.log.logsystem.log4j.logger", logger.getName()); // velocity 1.5
             engine.setProperty("runtime.log.logsystem.log4j.category", logger.getName());
             engine.setProperty(Velocity.RESOURCE_LOADER, "url");
             engine.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.velocity.URLVelocityTemplateLoader");
