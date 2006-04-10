@@ -24,9 +24,9 @@ public final class ParallelSearchCommandExecutor implements SearchCommandExecuto
 
     private static final int INSPECTOR_PERIOD = 300000;
 
-    private transient static ExecutorService executor = new SearchTaskExecutorService();
-    private transient static Log LOG = LogFactory.getLog(ParallelSearchCommandExecutor.class);
-    private transient static ThreadPoolInspector inspector = new ThreadPoolInspector((ThreadPoolExecutor) executor, INSPECTOR_PERIOD);
+    private transient static final SearchTaskExecutorService executor = new SearchTaskExecutorService();
+    private transient static final Log LOG = LogFactory.getLog(ParallelSearchCommandExecutor.class);
+    private transient static final ThreadPoolInspector inspector = new ThreadPoolInspector( executor, INSPECTOR_PERIOD);
 
     /**
      * Creates a new parallel executor.

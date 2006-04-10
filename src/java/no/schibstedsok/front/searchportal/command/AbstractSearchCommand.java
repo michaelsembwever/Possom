@@ -61,6 +61,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_TRANSFORMED_QUERY_USED
             = "Cannot use transformedTerms Map once deprecated getTransformedQuery as been used";
+    private static final String ERR_HANDLING_CANCELLATION
+            = "Cancellation (and now handling of) occurred to ";
 
     static{
         System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
@@ -74,6 +76,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
     private Map parameters;
+    private volatile boolean completed = false;
 
 
    // Constructors --------------------------------------------------
@@ -142,125 +145,43 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @return
      */
     public SearchResult call() {
+
         MDC.put(Site.NAME_KEY, context.getSite().getName());
 
         final String thread = Thread.currentThread().getName();
         if (getSearchConfiguration().getStatisticsName() != null) {
             Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticsName() + "]");
         }  else  {
-            Thread.currentThread().setName(thread+" ["+getClass().getSimpleName()+"]");
+            Thread.currentThread().setName(thread + " [" + getClass().getSimpleName() + "]");
         }
         try  {
 
-
             LOG.trace("call()");
-            final boolean useParameterAsQuery = getSearchConfiguration().getUseParameterAsQuery() != null;
-            final String queryToUse = useParameterAsQuery
-                    ? getSingleParameter(getSearchConfiguration().getUseParameterAsQuery())
-                    : context.getQuery().getQueryString();
 
-
-
-            if (useParameterAsQuery) {
-                // OOBS. It's not the query we are looking for but a string held
-                // in a different parameter.
-                transformedQuery = queryToUse;
-                final Query query = createQuery(queryToUse);
-                transformedTerms.clear();
-                // re-initialise map with new query's terms.
-                final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
-                mapInitialisor.visit(query.getRootClause());
-                applyQueryTransformers(query, getSearchConfiguration().getQueryTransformers());
-            }  else  {
-                applyQueryTransformers(context.getQuery(), getSearchConfiguration().getQueryTransformers());
-            }
-
-            StopWatch watch = null;
-
-            if (LOG.isDebugEnabled()) {
-                watch = new StopWatch();
-                watch.start();
-            }
-
-            //TODO: Hide this in QueryRule.execute(some parameters)
-            boolean executeQuery = queryToUse.length() > 0;
-
-            if (parameters.get("contentsource") != null) {
-                LOG.debug("call: Got contentsource, executeQuery=true");
-
-                executeQuery = true;
-            }
-
-            executeQuery |= filter != null && filter.length() > 0;
-
-            LOG.debug("executeQuery==" + executeQuery + " ; queryToUse:" + queryToUse + "; filter:" + filter + ";");
-            
-            final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
-
-            if (LOG.isDebugEnabled()) {
-                watch.stop();
-
-                LOG.debug("Hits is " + getSearchConfiguration().getName() + ":" + result.getHitCount());
-                LOG.debug("Search " + getSearchConfiguration().getName() + " took " + watch);
-            }
-            
-            STATISTICS_LOG.info(
-                    "<search-command name=\"" + getSearchConfiguration().getStatisticsName() + "\">"
-                        + "<query>" + context.getQuery().getQueryString() + "</query>"
-                        + "<search-name>"
-                        + getClass().getSimpleName()
-                        + "</search-name>"
-                        + "<hits>" + result.getHitCount() + "</hits>"
-                    + "</search-command>");
-
-            for (final Iterator handlerIterator = getSearchConfiguration().getResultHandlers().iterator(); handlerIterator.hasNext();) {
-                final ResultHandler resultHandler = (ResultHandler) handlerIterator.next();
-                final ResultHandler.Context resultHandlerContext = new ResultHandler.Context() {
-                    // <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
-                    public SearchResult getSearchResult() {
-                        return result;
-                    }
-
-                    public Site getSite() {
-                        return context.getSite();
-                    }
-
-                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                        return context.newPropertiesLoader(resource, properties);
-                    }
-
-                    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                        return context.newXStreamLoader(resource, xstream);
-                    }
-
-                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                        return context.newDocumentLoader(resource, builder);
-                    }
-
-                    public Query getQuery() {
-                        return context.getQuery();
-                    }
-                    /** @deprecated implementations should be using the QueryContext instead! */
-                    public String getQueryString() {
-                        return context.getRunningQuery().getQueryString();
-                    }
-
-                    public void addSource(final Modifier modifier) {
-                        context.getRunningQuery().addSource(modifier);
-                    }
-                    // </editor-fold>
-                };
-                resultHandler.handleResult(resultHandlerContext, parameters);
-            }
+            final String queryToUse = performQueryTransformation();
+            final SearchResult result = performExecution(queryToUse);
+            performResultHandling(result);
             return result;
 
         }  finally  {
             // restore thread name
             Thread.currentThread().setName(thread);
+            completed = true;
         }
     }
 
-   // AbstractReflectionVisitor overrides ----------------------------------------------
+    public void handleCancellation(){
+
+        if( !completed ){
+            LOG.error(ERR_HANDLING_CANCELLATION
+                    + getSearchConfiguration().getName()
+                    + " [" + getClass().getSimpleName() + "]");
+
+            performResultHandling(new BasicSearchResult(this));
+        }
+    }
+
+    // AbstractReflectionVisitor overrides ----------------------------------------------
 
     private final StringBuffer sb = new StringBuffer();
 
@@ -310,6 +231,96 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
    // Protected -----------------------------------------------------
 
+
+    protected final String performQueryTransformation(){
+
+        final boolean useParameterAsQuery = getSearchConfiguration().getUseParameterAsQuery() != null;
+        final String queryToUse = useParameterAsQuery
+                ? getSingleParameter(getSearchConfiguration().getUseParameterAsQuery())
+                : context.getQuery().getQueryString();
+
+        if (useParameterAsQuery) {
+            // OOBS. It's not the query we are looking for but a string held
+            // in a different parameter.
+            transformedQuery = queryToUse;
+            final Query query = createQuery(queryToUse);
+            transformedTerms.clear();
+            // re-initialise map with new query's terms.
+            final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
+            mapInitialisor.visit(query.getRootClause());
+            applyQueryTransformers(query, getSearchConfiguration().getQueryTransformers());
+        }  else  {
+            applyQueryTransformers(context.getQuery(), getSearchConfiguration().getQueryTransformers());
+        }
+        return queryToUse;
+    }
+
+    protected final SearchResult performExecution(final String queryToUse){
+
+        StopWatch watch = null;
+        if (LOG.isDebugEnabled()) {
+            watch = new StopWatch();
+            watch.start();
+        }
+        try{
+
+            //TODO: Hide this in QueryRule.execute(some parameters)
+            boolean executeQuery = queryToUse.length() > 0;
+            if (parameters.get("contentsource") != null) {
+                LOG.debug("call: Got contentsource, executeQuery=true");
+                executeQuery = true;
+            }
+
+            executeQuery |= filter != null && filter.length() > 0;
+            LOG.debug("executeQuery==" + executeQuery + " ; queryToUse:" + queryToUse + "; filter:" + filter + ";");
+
+            final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
+
+            STATISTICS_LOG.info(
+                    "<search-command name=\"" + getSearchConfiguration().getStatisticsName() + "\">"
+                        + "<query>" + context.getQuery().getQueryString() + "</query>"
+                        + "<search-name>"
+                        + getClass().getSimpleName()
+                        + "</search-name>"
+                        + "<hits>" + result.getHitCount() + "</hits>"
+                    + "</search-command>");
+            LOG.debug("Hits is " + getSearchConfiguration().getName() + ":" + result.getHitCount());
+
+            return result;
+
+        }finally{
+            if (LOG.isDebugEnabled()) {
+                watch.stop();
+                LOG.debug("Search " + getSearchConfiguration().getName() + " took " + watch);
+            }
+        }
+    }
+
+    protected final void performResultHandling(final SearchResult result){
+
+        for (ResultHandler resultHandler : getSearchConfiguration().getResultHandlers()) {
+
+            final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
+                    ResultHandler.Context.class,
+                    new BaseContext(){// <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
+                        public SearchResult getSearchResult() {
+                            return result;
+                        }
+                        /** @deprecated implementations should be using the QueryContext instead! */
+                        public String getQueryString() {
+                            return context.getRunningQuery().getQueryString();
+                        }
+                        public void addSource(final Modifier modifier) {
+                            context.getRunningQuery().addSource(modifier);
+                        }
+                    },// </editor-fold>
+                    context
+            );
+            resultHandler.handleResult(resultHandlerContext, parameters);
+        }
+    }
+
+    
     /**
      * Returns the offset in the result set. If paging is enabled for the
      * current search configuration the offset to the current page will be

@@ -76,4 +76,7 @@ public class MockupSearchCommand implements SearchCommand {
     public SearchResult call() throws Exception {
         return null;
     }
+
+    public void handleCancellation() {
+    }
 }

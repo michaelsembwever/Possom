@@ -31,4 +31,5 @@ final class SearchTaskExecutorService extends ThreadPoolExecutor {
 
         return new SearchTask( command );
     }
+
 }
