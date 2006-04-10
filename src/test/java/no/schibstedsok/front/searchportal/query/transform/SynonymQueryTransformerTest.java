@@ -146,6 +146,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         assertEquals("oslo sch schibsted", result);
     }
 
+// leave this functionality broken until the alternation rotation implementation is fixed.
 //    public void testMultiWordOriginalWithOtherTermAtEnd() throws ParseException {
 //
 //        final String queryString = "schibsted asa oslo";
@@ -158,7 +159,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 //
 //        final QueryBuilder builder = new QueryBuilder(query, trans);
 //        final String result = builder.getQueryString();
-//        
+//
 //        LOG.debug("testMultiWordOriginalWithOtherTermAtEnd builder gave " + result);
 //        if( query.getFirstLeafClause().getKnownPredicates().contains(TokenPredicate.COMPANYRANK)){
 //            assertEquals("(schibsted asa schasa) (oslo oslo areal)", result);
