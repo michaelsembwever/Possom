@@ -24,9 +24,9 @@ public class Linkpulse {
         String toUrl = "";
 
         //linkpulse property is set to true only in the production build
-        if (props.getProperty("tokenevaluator.linkpulse").equals("true")) {
+        if (props.getProperty("linkpulse.enable").equals("true")) {
 
-            toUrl = props.getProperty("tokenevaluator.linkpulseToUrl") + script + "/";
+            toUrl = props.getProperty("linkpulse.url") + script + "/";
 
             //click attributes comes as a string seperated by ';'
             String[] paramArr = paramString.split(";");
@@ -42,7 +42,7 @@ public class Linkpulse {
 
             }
             //adds the original url
-            toUrl = toUrl + "/" + props.getProperty("tokenevaluator.linkpulseSesam") + orgUrl;
+            toUrl = toUrl + "/" + props.getProperty("linkpulse.sesam") + orgUrl;
         } else
             if (indexpage.equals("true"))
                 toUrl = "search/" + orgUrl;

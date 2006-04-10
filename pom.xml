@@ -247,9 +247,9 @@
       
                 <!-- Linkpulse -->
 
-                <tokenevaluator.linkpulse>false</tokenevaluator.linkpulse>
-                <tokenevaluator.linkpulseToUrl>http://go.sesam.no/</tokenevaluator.linkpulseToUrl>
-                <tokenevaluator.linkpulseSesam>http://localhost:8080/search/</tokenevaluator.linkpulseSesam>
+                <linkpulse.enable>false</linkpulse.enable>
+                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
+                <linkpulse.sesam>http://localhost:8080/search/</linkpulse.sesam>
 
                 <!-- Mail -->
 
@@ -290,9 +290,9 @@
       
                 <!-- Linkpulse -->
 
-                <tokenevaluator.linkpulse>true</tokenevaluator.linkpulse>
-                <tokenevaluator.linkpulseToUrl>http://go.sesam.no/</tokenevaluator.linkpulseToUrl>
-                <tokenevaluator.linkpulseSesam>http://bleedingsearch.schibstedsok.no/search/</tokenevaluator.linkpulseSesam>
+                <linkpulse.enable>true</linkpulse.enable>
+                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
+                <linkpulse.sesam>http://bleedingsearch.schibstedsok.no/search/</linkpulse.sesam>
 
                 <!-- Mail -->
 
@@ -346,9 +346,9 @@
       
                 <!-- Linkpulse -->
 
-                <tokenevaluator.linkpulse>true</tokenevaluator.linkpulse>
-                <tokenevaluator.linkpulseToUrl>http://go.sesam.no/</tokenevaluator.linkpulseToUrl>
-                <tokenevaluator.linkpulseSesam>http://sesam.no/search/</tokenevaluator.linkpulseSesam>
+                <linkpulse.enable>true</linkpulse.enable>
+                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
+                <linkpulse.sesam>http://sesam.no/search/</linkpulse.sesam>
 
                 <!-- Mail -->
 
