@@ -12,14 +12,16 @@ import org.apache.commons.logging.LogFactory;
  * TvQueryTransformer is part of no.schibstedsok.front.searchportal.query
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @vesrion $Revision$, $Author$, $Date$
+ * @version $Id$
  */
 public final class TvQueryTransformer extends AbstractQueryTransformer {
 
     private static final Log LOG = LogFactory.getLog(TvQueryTransformer.class);
     
     private static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
-    private static final Pattern TV_IDAG = Pattern.compile("på\\s+tv\\s+i\\s*dag$", REG_EXP_OPTIONS);
+    private static final Pattern TV_PATTERNS
+            = Pattern.compile("((p(å|aa?)\\s+)?tv(\\s+i\\s?dag)?|(tv(-|\\s+))?program(oversikt)?|fjernsyn)(\\s*\\:)?",
+                REG_EXP_OPTIONS);
 
     /**
      * Add keywords to query to get better searchresults
@@ -30,7 +32,7 @@ public final class TvQueryTransformer extends AbstractQueryTransformer {
     public String getTransformedQuery() {
 
         final String transformedQuery = getContext().getTransformedQuery();
-        return TV_IDAG.matcher(transformedQuery).replaceAll("");
+        return TV_PATTERNS.matcher(transformedQuery).replaceAll("");
     }
 
 

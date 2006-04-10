@@ -135,7 +135,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
         final PrefixRemoverTransformer retValue = (PrefixRemoverTransformer)super.clone();
         retValue.customPrefixes = customPrefixes;
 
-        retValue.prefixes = new ArrayList<String>();
+        retValue.prefixes = prefixes;
         retValue.insidePrefixes = new HashSet<TokenPredicate>();
         retValue.prefixBuilder = new StringBuilder();
         retValue.leafList = new ArrayList<LeafClause>();

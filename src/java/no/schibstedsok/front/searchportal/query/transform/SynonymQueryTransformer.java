@@ -225,6 +225,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         final SynonymQueryTransformer retValue = (SynonymQueryTransformer)super.clone();
         
         retValue.predicateNames = predicateNames;
+        retValue.customPredicates = customPredicates;
         retValue.matchingPredicates = new HashSet<TokenPredicate>();
         retValue.builder = new StringBuilder();
         retValue.leafs = new ArrayList<LeafClause>();
