@@ -49,7 +49,7 @@ public enum TokenPredicate implements Predicate {
     EXACT_PPCTOPLIST (Type.FAST, "exact_ppctoplist"),
     CELEBRITY (Type.FAST, "kjendiser"),
     ANIMAL (Type.FAST, "dyr"),
-    DISEASE (Type.FAST, "sykdommer"),
+    DISEASE (Type.FAST, "disease"),
     STOCKMARKETTICKERS (Type.FAST, "stockmarkettickers"),
     STOCKMARKETFIRMS (Type.FAST, "stockmarketfirms"),
     EXACT_STOCKMARKETTICKERS (Type.FAST, "exact_stockmarkettickers"),
