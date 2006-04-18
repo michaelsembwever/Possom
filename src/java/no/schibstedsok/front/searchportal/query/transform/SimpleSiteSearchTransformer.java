@@ -33,24 +33,24 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
 
     static{
         final Map<String,String> defaultSites = new HashMap<String,String>();
-        defaultSites.put("ds", "dinside.no");
-        defaultSites.put("it", "itavisen.no");
-        defaultSites.put("di", "digi.no");
-        defaultSites.put("pr", "propaganda-as.no");
-        defaultSites.put("im", "imarkedet.no");
-        defaultSites.put("nrk", "nrk.no");
-        defaultSites.put("af", "aftenposten.no");
-        defaultSites.put("fv", "fedrelandsvennen.no");
-        defaultSites.put("aa", "adressa.no");
-        defaultSites.put("sa", "aftenbladet.no");
-        defaultSites.put("bt", "bt.no");
+
+        defaultSites.put("ds", "+site:dinside.no");
+        defaultSites.put("it", "+site:itavisen.no");
+        defaultSites.put("di", "+site:digi.no");
+        defaultSites.put("pr", "+site:propaganda-as.no");
+        defaultSites.put("im", "+site:imarkedet.no");
+        defaultSites.put("nrk", "+site:nrk.no");
+        defaultSites.put("af", "+site:(aftenposten.no forbruker.no)");
+        defaultSites.put("fv", "+site:(fedrelandsvennen.no fvn.no)");
+        defaultSites.put("aa", "+site:adressa.no");
+        defaultSites.put("sa", "+site:aftenbladet.no");
+        defaultSites.put("bt", "+site:bt.no");
 
         DEFAULT_SITES = Collections.unmodifiableMap(defaultSites);
     }
 
     private Map<String,String> sites;
     private String parameterName;
-    private String filterName;
 
     public String getFilter(final Map parameters) {
 
@@ -67,11 +67,7 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
                 }
 
                 if (s.containsKey(paramValue[0])) {
-                    final StringBuilder filter = new StringBuilder("+");
-                    filter.append(filterName);
-                    filter.append(':');
-                    filter.append(s.get(paramValue[0]));
-                    return filter.toString();
+                    return s.get(paramValue[0]);
                 }
             }
         }
@@ -81,7 +77,6 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
     public Object clone() throws CloneNotSupportedException {
         final SimpleSiteSearchTransformer retValue = (SimpleSiteSearchTransformer)super.clone();
         retValue.parameterName = parameterName;
-        retValue.filterName = filterName;
         retValue.sites = sites;
         return retValue;
     }
