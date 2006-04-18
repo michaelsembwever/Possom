@@ -91,18 +91,27 @@
 
 <body onload="<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
 
+
     <% // sitesearch
     final VelocityEngine engine = VelocityResultHandler.getEngine(site);
     final Template template = VelocityResultHandler.getTemplate(engine, site, "/pages/main");
     if (template != null){
         // it *is* new-school n we doda-dance
         final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
+
+        for (Iterator iter = sources.iterator(); iter.hasNext();) {
+            Modifier mod = (Modifier) iter.next();
+            if ( mod.getName().equals("sesam_hits")) {
+                context.put("sesam_hits", text.getMessage("numberFormat", new Integer(mod.getCount())));
+            }
+        }
         // populate context with sitemesh stuff
         context.put("request", request);
         context.put("response", response);
         context.put("page", siteMeshPage);
         context.put("base", request.getContextPath());
         context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
+        context.put("text", text);
         {
             final StringWriter buffer = new StringWriter();
             siteMeshPage.writeBody(OutputConverter.getWriter(buffer));
@@ -380,7 +389,7 @@
     </tr>
     <% }else{ %>
     <tr>
-        <td class="cell_one"><span class="pad_5l">Sorter treffene dine</span></td>
+        <td class="cell_one"><span class="pad_5l">Naviger</span></td>
         <td class="cell_three"><decorator:getProperty property="page.middle-bar"/></td>
         <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
     </tr>
