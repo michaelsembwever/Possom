@@ -40,8 +40,10 @@ public class Decoder {
                 /* Make sure we are not cutting the string in the middle of a HTML tag. */
                 if (s.indexOf("<",length) > s.indexOf(">", length)){
                     length = s.indexOf(">", length) + 1;
+                    s = s.substring(0, length);
+                } else {
+	                s = s.substring(0, length) + "..";
                 }
-                s = s.substring(0, length) + "..";
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
