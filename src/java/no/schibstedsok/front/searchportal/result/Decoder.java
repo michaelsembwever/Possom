@@ -59,6 +59,14 @@ public class Decoder {
         return s;
     }
 
+    public boolean yip_checknames(String s1, String s2) {
+
+        if (s1.equalsIgnoreCase(s2)) {
+            return true;
+        } else
+	    return false;
+    }
+
     public boolean checkInfoTextLength(String s, int i) {
         try {
             s = java.net.URLDecoder.decode(s, "UTF-8");
