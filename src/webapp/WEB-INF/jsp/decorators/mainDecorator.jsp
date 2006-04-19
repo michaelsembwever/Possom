@@ -312,7 +312,7 @@
 
 <decorator:getProperty property="page.search-bar"/>
 
-<table border="0" cellspacing="0" cellpadding="0" id="body_table">
+<table width="100%" border="0" cellspacing="0" cellpadding="0" id="body_table">
     <%if (q.trim().equals("") && !currentC.equals("m")) {%>
     <tr>
         <td class="cell_one">&nbsp;</td>
