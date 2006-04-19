@@ -48,26 +48,11 @@
     final RunningQuery query = (RunningQuery) request.getAttribute("query");
     final List sources = query.getSources();
     final Integer hits = (Integer) query.getNumberOfHits("defaultSearch");
-    final Integer hits_int = (Integer) query.getNumberOfHits("globalSearch");
-    final Integer hits_w_int = (Integer) query.getNumberOfHits("whiteYelloweSourceNavigator");
-    final Integer hits_y_int = (Integer) query.getNumberOfHits("whiteYelloweSourceNavigator");
 
     int no_hits = 0;
-    int int_hits = 0;
-    int int_w_hits = 0;
-    int int_y_hits = 0;
 
     if (hits != null) {
         no_hits = hits.intValue();
-    }
-    if (hits_int != null) {
-        int_hits = hits_int.intValue();
-    }
-    if (hits_w_int != null) {
-        int_w_hits = hits_w_int.intValue();
-    }
-    if (hits_y_int != null) {
-        int_y_hits = hits_y_int.intValue();
     }
 
     String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
@@ -308,60 +293,7 @@
                     <% if (!"d".equals(ssr)) {%>
                         <decorator:getProperty property="page.fast-results"/>
                     <% } else { %>
-                        <%-- Display enrichments in order --%>
-                        <% if ( enrichmentSize > 1 ) { %>
-                           <%
-                               for (Iterator i = enrichments.iterator(); i.hasNext();) {
-                                   Enrichment ee = (Enrichment) i.next();
-                                   if (ee.getAnalysisResult() >= 85) {
-                                       String el = siteMeshPage.getProperty("page." + ee.getName());
-                           %>
-                           <%= el == null ? "" : el %>
-                           <% } } %>
-                            <%--  Shows the 3 first hits if more than 1 enrichment  --%>
-                              <decorator:getProperty property="page.fast-results-norwegian_part1"/>
-                               <%
-                                   for (Iterator i = enrichments.iterator(); i.hasNext();) {
-                                       Enrichment ee = (Enrichment) i.next();
-
-                                       if (ee.getAnalysisResult() < 85) {
-                                           String el = siteMeshPage.getProperty("page." + ee.getName());
-                               %>
-                               <%= el == null ? "" : el %>
-                               <% } } %>
-                                <%--  Shows the 7 next hits after the second/third enrichments  --%>
-                                  <decorator:getProperty property="page.fast-results-norwegian_part2"/>
-                        <% } else { %>  <%-- one or zero enrichment --%>
-                            <% if (enrichmentSize == 1) { %>
-                                <% if (no_hits > 0) { %>
-                                    <%
-                                          Enrichment enrichment = (Enrichment) enrichments.get(0);
-                                          String enrichment1 = siteMeshPage.getProperty("page." + enrichment.getName());{
-                                      } %>
-                                    <% if (enrichment.getAnalysisResult() >= 85) { %>
-                                            <%= enrichment1 == null ? "" : enrichment1 %>
-                                              <decorator:getProperty property="page.fast-results"/>
-                                    <% } else { %>
-                                             <decorator:getProperty property="page.fast-results-norwegian_part1"/>
-                                           <%= enrichment1 == null ? "" : enrichment1 %>
-                                             <decorator:getProperty property="page.fast-results-norwegian_part2"/>
-                                    <%  } %>
-                                <% } else { %>
-                                    <%
-                                          Enrichment enrichment = (Enrichment) enrichments.get(0);
-                                          String enrichment1 = siteMeshPage.getProperty("page." + enrichment.getName());{
-                                      } %>
-                                    <%= enrichment1 == null ? "" : enrichment1 %>
-                                <% } %>
-                            <% } else { %>  <%-- Display enrichments in order --%>
-                                <% if (no_hits > 0) { %>
-                                    <%--  shows the result as usual if 1 or less enrichments  --%>
-                                      <decorator:getProperty property="page.fast-results"/>
-                                <% } else if(!q.trim().equals("")){%>
-                                      <decorator:getProperty property="page.noHits"/>
-                                <% } %>
-                            <% } %>
-                        <% } %>
+                        <decorator:getProperty property="page.noHits"/>
                     <% } %>
                 </div>
 
@@ -403,15 +335,6 @@
     </tr>
     <% } %>
 
-    <%--
-    <%if (q.trim().equals("") && currentC.equals("m")) {%>
-	<tr>
-	    <td colspan="3">
-		<decorator:getProperty property="page.media-Intropage"/>	
-	    </td>
-	</tr>
-    <% } %>
-    --%>
 
     <tr>
 	<%if (q.trim().equals("") && !currentC.equals("m")) {%>
