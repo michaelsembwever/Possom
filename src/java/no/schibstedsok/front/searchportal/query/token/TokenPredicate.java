@@ -25,6 +25,7 @@ public enum TokenPredicate implements Predicate {
     ANIMAL (Type.FAST, "animal"),
     CATEGORY (Type.FAST, "category"),
     CELEBRITY (Type.FAST, "celebrity"),
+    CHAIN (Type.FAST, "chain"),
     COMPANYENRICHMENT (Type.FAST, "companyenrich"),
     EXACTCOMPANYENRICHMENT (Type.FAST, "exact_companyenrich"),
     COMPANYRANK (Type.FAST, "companyrank"),
