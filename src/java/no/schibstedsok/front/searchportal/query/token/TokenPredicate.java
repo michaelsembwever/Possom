@@ -6,12 +6,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.commons.collections.Predicate;
-import org.apache.taglibs.standard.tag.common.core.SetSupport;
 
 /** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
  * Predicates use TokenEvaluators to prove the Predicate's validity to the Query.
@@ -25,35 +21,37 @@ public enum TokenPredicate implements Predicate {
     ALWAYSTRUE (Type.GENERIC),
 
     // Fast TokenPredicates
-    EXACTFIRST (Type.FAST, "exact_firstname"),
-    EXACTLAST (Type.FAST, "exact_lastname"),
-    TNS (Type.FAST, "tns"),
-    FIRSTNAME (Type.FAST, "firstname"),
-    LASTNAME (Type.FAST, "lastname"),
+    //  full list can be found at sch-login01.osl.basefarm.net:/www/schibstedsok/home/ssmojaco/analyselister
+    ANIMAL (Type.FAST, "animal"),
+    CATEGORY (Type.FAST, "category"),
+    CELEBRITY (Type.FAST, "celebrity"),
     COMPANYENRICHMENT (Type.FAST, "companyenrich"),
     EXACTCOMPANYENRICHMENT (Type.FAST, "exact_companyenrich"),
     COMPANYRANK (Type.FAST, "companyrank"),
     EXACTCOMPANYRANK (Type.FAST, "exact_companyrank"),
+    DISEASE (Type.FAST, "disease"),
+    ENGLISHWORDS (Type.FAST, "international"),
+    KEYWORD (Type.FAST, "keyword"),
     GEOLOCAL (Type.FAST, "geolocal"),
     GEOGLOBAL (Type.FAST, "geoglobal"),
     GEOLOCALEXACT (Type.FAST, "exact_geolocal"),
     GEOGLOBALEXACT (Type.FAST, "exact_geoglobal"),
-    CATEGORY (Type.FAST, "category"),
-    PRIOCOMPANYNAME (Type.FAST, "companypriority"),
-    KEYWORD (Type.FAST, "keyword"),
+    FIRSTNAME (Type.FAST, "firstname"),
+    FOOD (Type.FAST, "food"),
+    EXACTFIRST (Type.FAST, "exact_firstname"),
     FULLNAME (Type.FAST, "fullname"),
-    EXACTWIKI (Type.FAST, "exact_wikino"),
-    WIKIPEDIA (Type.FAST, "wikino"),
-    ENGLISHWORDS (Type.FAST, "international"),
+    LASTNAME (Type.FAST, "lastname"),
+    EXACTLAST (Type.FAST, "exact_lastname"),
+    PRIOCOMPANYNAME (Type.FAST, "companypriority"),
     TOP3EXACT (Type.FAST, "exact_top3boosts"),
     EXACT_PPCTOPLIST (Type.FAST, "exact_ppctoplist"),
-    CELEBRITY (Type.FAST, "kjendiser"),
-    ANIMAL (Type.FAST, "dyr"),
-    DISEASE (Type.FAST, "disease"),
     STOCKMARKETTICKERS (Type.FAST, "stockmarkettickers"),
     STOCKMARKETFIRMS (Type.FAST, "stockmarketfirms"),
     EXACT_STOCKMARKETTICKERS (Type.FAST, "exact_stockmarkettickers"),
     EXACT_STOCKMARKETFIRMS (Type.FAST, "exact_stockmarketfirms"),
+    WIKIPEDIA (Type.FAST, "wikino"),
+    EXACTWIKI (Type.FAST, "exact_wikino"),
+    TNS (Type.FAST, "tns"),
 
     // RegExp TokenPredicates -- magic words
     BOOK_MAGIC (Type.REGEX),
@@ -138,10 +136,10 @@ public enum TokenPredicate implements Predicate {
 
         switch(type){
             case REGEX:
-                if( name().endsWith("_MAGIC")){
+                if(name().endsWith("_MAGIC")){
                     Static.MAGIC_TOKENS.add(this);
 
-                }else if( name().endsWith("_TRIGGER")){
+                }else if(name().endsWith("_TRIGGER")){
                     Static.TRIGGER_TOKENS.add(this);
                 }
                 break;
@@ -183,9 +181,9 @@ public enum TokenPredicate implements Predicate {
     /** Public method to find the correct FAST TokenPredicate given the Token's string.
      */
     public static TokenPredicate valueFor(final String fastListName) {
-        
+
         for(TokenPredicate tp : Static.FAST_TOKENS){
-            if( fastListName.equals(tp.fastListName) ){
+            if(fastListName.equals(tp.fastListName)){
                 return tp;
             }
         }
@@ -229,7 +227,7 @@ public enum TokenPredicate implements Predicate {
      */
     public boolean evaluate(final Object evalFactory) {
         // pre-condition check
-        if ( ! (evalFactory instanceof TokenEvaluatorFactory) ) {
+        if (! (evalFactory instanceof TokenEvaluatorFactory)) {
             throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
         }
         // process
@@ -241,7 +239,7 @@ public enum TokenPredicate implements Predicate {
         //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
         //  applicable now (in the context of the whole query).
         final Set<TokenPredicate> knownPredicates = factory.getClausesKnownPredicates();
-        if( null != knownPredicates && knownPredicates.contains(this) ){
+        if(null != knownPredicates && knownPredicates.contains(this)){
             return true;
         }
 
