@@ -290,11 +290,7 @@
 
                 <%--sesam search in sitesearch modus--%>
                 <div id="content_left_ss">
-                    <% if (!"d".equals(ssr)) {%>
-                        <decorator:getProperty property="page.fast-results"/>
-                    <% } else { %>
-                        <decorator:getProperty property="page.noHits"/>
-                    <% } %>
+                    <decorator:getProperty property="page.fast-results"/>
                 </div>
 
                 <div id="content_right_ss">
@@ -329,9 +325,9 @@
 	<td colspan="3"><img src="../images/pix.gif" width="100%" height="1" class="lightdots" alt="" /></td>
     </tr>
     <tr>
-	<td><img src="../images/pix.gif" border="0" width="204" height="12" /></td>
-	<td><img src="../images/pix.gif" border="0" width="100%" height="12" /></td>
-	<td><img src="../images/pix.gif" border="0" width="204" height="12" /></td>
+	<td><img src="../images/pix.gif" border="0" width="204" height="12" alt="" /></td>
+	<td><img src="../images/pix.gif" border="0" width="100%" height="12" alt="" /></td>
+	<td><img src="../images/pix.gif" border="0" width="204" height="12" alt="" /></td>
     </tr>
     <% } %>
 
