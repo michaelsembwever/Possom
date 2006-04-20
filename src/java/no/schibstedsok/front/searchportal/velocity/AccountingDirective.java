@@ -122,7 +122,7 @@ public class AccountingDirective extends Directive {
                 break;
         }
         html += "</table>";
-        html += "<img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" />";
+        html += "<a href=\"http://www.lindorff.no/\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a>";
 
         writer.write(html);
 
