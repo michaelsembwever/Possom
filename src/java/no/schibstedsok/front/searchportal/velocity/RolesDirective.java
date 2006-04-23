@@ -13,6 +13,7 @@ import org.apache.velocity.exception.MethodInvocationException;
 
 import java.io.Writer;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import no.schibstedsok.front.searchportal.security.MD5Generator;
 
@@ -66,7 +67,7 @@ public class RolesDirective extends Directive {
      * @return the encoded string.
      */
     public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        if (node.jjtGetNumChildren() != 3) {
+        if (node.jjtGetNumChildren() != 2) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
@@ -76,9 +77,6 @@ public class RolesDirective extends Directive {
 
         // Yellow or Person page (used for linking)
         String page = node.jjtGetChild(1).value(context).toString();
-
-        // Needs the query to build up the link
-        String query = node.jjtGetChild(2).value(context).toString();
 
         // New line seperator
         String[] row = s.split("#sepnl#");
@@ -96,6 +94,7 @@ public class RolesDirective extends Directive {
 
         // print rows
         for (int i = 0; i < row.length; i++) {
+            html += "<tr>";
 
             // show 30 first rows
             if (i==30) {
@@ -114,11 +113,20 @@ public class RolesDirective extends Directive {
                     if (recordid.equals(""))
                         text = name;
                     else {
+                        String nameEncode = "";
                         // create link to infopage
-                        if (page.equals("y"))
-                            text = "<a href=\"?c=wip&amp;q=" + query + "&amp;personId=" + recordid + "&amp;personId_x=" + md5.generateMD5(recordid) + "\">" + name + "</a>";
-                        else
-                            text = "<a href=\"?c=yip&amp;q=" + query + "&amp;companyId=" + recordid + "&amp;companyId_x=" + md5.generateMD5(recordid) + "\">" + name + "</a>";
+                        if (page.equals("y")) {
+                            //remove date of birth from string
+                            if (name.lastIndexOf("(") > -1)
+                                nameEncode = URLEncoder.encode(name.substring(0, name.lastIndexOf("(")), "utf-8");
+                            else
+                                nameEncode = URLEncoder.encode(name, "utf-8");
+
+                            text = "<a href=\"?c=wip&amp;q=" + nameEncode + "&amp;personId=" + recordid + "&amp;personId_x=" + md5.generateMD5(recordid) + "\">" + name + "</a>";
+                        }else {
+                            nameEncode = URLEncoder.encode(name, "utf-8");
+                            text = "<a href=\"?c=yip&amp;q=" + nameEncode + "&amp;companyId=" + recordid + "&amp;companyId_x=" + md5.generateMD5(recordid) + "\">" + name + "</a>";
+                        }
                     }
                 } else
                     text = col[k].trim();
