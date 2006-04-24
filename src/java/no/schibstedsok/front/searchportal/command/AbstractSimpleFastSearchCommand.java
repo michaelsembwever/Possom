@@ -29,6 +29,7 @@ import no.fast.ds.search.INavigator;
 import no.fast.ds.search.IQuery;
 import no.fast.ds.search.IQueryResult;
 import no.fast.ds.search.IQueryTransformation;
+import no.fast.ds.search.IQueryTransformations;
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.NoSuchParameterException;
 import no.fast.ds.search.Query;
@@ -68,8 +69,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
 
     // Attributes ----------------------------------------------------
-    private Map navigatedTo = new HashMap();
-    private Map navigatedValues = new HashMap();
+    private Map<String,FastNavigator> navigatedTo = new HashMap<String,FastNavigator>();
+    private Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
 
     // Static --------------------------------------------------------
     private static HashMap searchEngines = new HashMap();
@@ -208,8 +209,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     public String getNavigatorTitle(final String navigatorKey) {
-        final FastNavigator nav = getNavigatedTo(navigatorKey);
 
+        final FastNavigator nav = getNavigatedTo(navigatorKey);
 
         FastNavigator parent = findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), nav.getName());
 
@@ -242,6 +243,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     public String getNavigatorTitle(final FastNavigator navigator) {
+
         final String value = getNavigatedValue(navigator.getField());
 
         if (value == null) {
@@ -252,6 +254,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     public List getNavigatorBackLinks(final String navigatorKey) {
+
         final List backLinks = addNavigatorBackLinks(getFastConfiguration().getNavigator(navigatorKey), new ArrayList(), navigatorKey);
 
         if (backLinks.size() > 0) {
@@ -262,7 +265,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     public List addNavigatorBackLinks(final FastNavigator navigator, final List links, final String navigatorKey) {
-
 
         final String a[] = (String[]) getParameters().get(navigator.getField());
 
@@ -477,15 +479,18 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // Protected -----------------------------------------------------
 
-    protected Map getNavigators() {
+    protected Map<String,FastNavigator> getNavigators() {
+
         return getFastConfiguration().getNavigators();
     }
 
     protected int getResultsToReturn() {
+
         return getFastConfiguration().getResultsToReturn();
     }
 
     protected IFastSearchEngine getSearchEngine() throws ConfigurationException, MalformedURLException {
+
         if (!searchEngines.containsKey(getFastConfiguration().getQueryServerURL())) {
             IFastSearchEngine engine = engineFactory.createSearchEngine(getFastConfiguration().getQueryServerURL());
             searchEngines.put(getFastConfiguration().getQueryServerURL(), engine);
@@ -498,6 +503,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     protected String getSortBy() {
+
         return getFastConfiguration().getSortBy();
     }
 
@@ -505,9 +511,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     // Private -------------------------------------------------------
 
     private void collectSpellingSuggestions(final IQueryResult result, final FastSearchResult searchResult) {
-        if (result.getQueryTransformations(false).getSuggestions().size() > 0) {
-            for (final Iterator iterator = result.getQueryTransformations(false).getAllQueryTransformations().iterator(); iterator.hasNext();) {
-                final IQueryTransformation transformation = (IQueryTransformation) iterator.next();
+        
+        final IQueryTransformations qTransforms = result.getQueryTransformations(false);
+        if (qTransforms.getSuggestions().size() > 0) {
+            for (IQueryTransformation transformation 
+                    : (Collection<IQueryTransformation>)qTransforms.getAllQueryTransformations()) {
 
                 if (transformation.getName().equals("FastQT_SpellCheck") && transformation.getAction().equals("nop")) {
                     final String custom = transformation.getCustom();
@@ -538,6 +546,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private SpellingSuggestion createSpellingSuggestion(final String custom) {
+
         final int suggestionIndex = custom.indexOf("->");
         final int qualityIndex = custom.indexOf("Quality:");
 
@@ -583,6 +592,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private SearchResultItem createResultItem(final IDocumentSummary document) {
+
         final SearchResultItem item = new BasicSearchResultItem();
 
         if (getFastConfiguration().getResultFields() != null) {
@@ -609,6 +619,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private IQuery createQuery() {
+
         ISearchParameters params = new SearchParameters();
         params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getFastConfiguration().isLemmatizeEnabled()));
 
@@ -663,7 +674,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             filter.append(getAdditionalFilter());
         }
 
-        if (getFastConfiguration().getFilter() != null && !ignoreFilter()) {
+        if (getFastConfiguration().getFilter() != null && getFastConfiguration().getFilter().length() >0
+                && !ignoreFilter()) {
+
             filter.append(" ");
             filter.append(getFastConfiguration().getFilter());
         }
@@ -690,7 +703,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         params.setParameter(new SearchParameter(BaseParameter.FILTER,
                 filter.toString() + " " + dynamicLanguage + " " + superFilter));
 
-        if (getFastConfiguration().getQtPipeline() != null) {
+        if (getFastConfiguration().getQtPipeline() != null && getFastConfiguration().getQtPipeline().length() >0) {
             params.setParameter(new SearchParameter(BaseParameter.QTPIPELINE,
                     getFastConfiguration().getQtPipeline()));
         }
@@ -707,11 +720,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         params.setParameter(new SearchParameter("hits", getResultsToReturn()));
         params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, getFastConfiguration().isClusteringEnabled()));
 
-        if (getFastConfiguration().getResultView() != null) {
+        if (getFastConfiguration().getResultView() != null && getFastConfiguration().getResultView().length() >0) {
             params.setParameter(new SearchParameter(BaseParameter.RESULT_VIEW, getFastConfiguration().getResultView()));
         }
 
-        if (getSortBy() != null) {
+        if (getSortBy() != null && getSortBy().length() >0) {
             params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getSortBy()));
         }
 
@@ -739,6 +752,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private String getDynamicParams(final Map map, final String key, final String defaultValue) {
+
         LOG.trace("getDynamicParams(map," + key +  "," + defaultValue + ")");
 
         String value = null;
@@ -769,9 +783,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             Collection allFlattened = new ArrayList();
 
 
-            for (Iterator iterator = getNavigators().values().iterator(); iterator.hasNext();) {
+            for (FastNavigator navigator : getNavigators().values()) {
 
-                FastNavigator navigator = (FastNavigator) iterator.next();
                 allFlattened.addAll(flattenNavigators(new ArrayList(), navigator));
             }
 
@@ -782,6 +795,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private Collection flattenNavigators(Collection soFar, FastNavigator nav) {
+
         soFar.add(nav);
 
         if (nav.getChildNavigator() != null) {
@@ -792,8 +806,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private void collectModifiers(IQueryResult result, FastSearchResult searchResult) {
-        for (Iterator iterator = navigatedTo.keySet().iterator(); iterator.hasNext();) {
-            String navigatorKey = (String) iterator.next();
+
+        for (String navigatorKey : navigatedTo.keySet()) {
 
             collectModifier(navigatorKey, result, searchResult);
         }
@@ -801,7 +815,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
-        FastNavigator nav = (FastNavigator) navigatedTo.get(navigatorKey);
+
+        final FastNavigator nav = (FastNavigator) navigatedTo.get(navigatorKey);
 
         INavigator navigator = result.getNavigator(nav.getName());
 
@@ -826,6 +841,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private FastNavigator findChildNavigator(FastNavigator nav, String nameToFind) {
+
         if (getParameters().containsKey(nav.getField())) {
             String navigatedValue[] = (String[]) getParameters().get(nav.getField());
             navigatedValues.put(nav.getField(), navigatedValue);
@@ -847,6 +863,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private SpellingSuggestion createProperNameSuggestion(String custom) {
+
         int suggestionIndex = custom.indexOf("->");
 
         if (LOG.isDebugEnabled()) {
@@ -896,6 +913,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     private boolean ignoreFilter() {
+
         final String[] param = ((String []) getParameters().get("ssr"));
         return param != null && param.length > 0 && param[0].equals("d");
     }
