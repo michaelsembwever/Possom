@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<!--
+Copyright (2006) Schibsted Søk AS
+$Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
+-->
+<log4j:configuration
+    xmlns:log4j="http://jakarta.apache.org/log4j/"
+    threshold="all"
+    debug="false">
+
+    <appender name="LOG_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.log"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ALL"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="ERROR_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.error"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ERROR"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="DUMP_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.dump"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ALL"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="SALES_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.sales"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ALL"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="MARKETING_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.marketing"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ALL"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="PRODUCT_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.product"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ALL"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="STATISTICS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.statistics"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ALL"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
+    <appender name="ANALYSIS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.analysis"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ALL"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
+    <logger name="no.schibstedsok.Dump" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="DUMP_APPEND"/>
+    </logger>
+    
+    <logger name="no.schibstedsok.Sales" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="SALES_APPEND"/>
+    </logger>
+    
+    <logger name="no.schibstedsok.Marketing" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="MARKETING_APPEND"/>
+    </logger>
+    
+    <logger name="no.schibstedsok.Statistics" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="STATISTICS_APPEND"/>
+    </logger>
+    
+    <logger name="no.schibstedsok.front.searchportal.analyzer.Analysis" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="ANALYSIS_APPEND"/>
+    </logger>
+    
+    <logger name="no.schibstedsok.Product" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="PRODUCT_APPEND"/>
+    </logger>
+    
+    <!-- These are here to avoid their DEBUG messages flooding our logfiles -->
+    <logger name="httpclient"><level value="INFO"/></logger>
+    <logger name="org.apache"><level value="INFO"/></logger>
+    <root>
+        <level value="@log.level@"/>
+        <appender-ref ref="ERROR_APPEND"/>
+        <appender-ref ref="LOG_APPEND"/>
+    </root>
+</log4j:configuration>
