@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result.test;
 
-import com.thoughtworks.xstream.XStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,7 +27,6 @@ import no.schibstedsok.front.searchportal.result.Modifier;
 
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
 import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
@@ -538,10 +536,6 @@ public final class FastNavigatorsTest extends TestCase {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
-            }
             
             public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
@@ -570,10 +564,6 @@ public final class FastNavigatorsTest extends TestCase {
             
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
             }
             
             public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {

@@ -6,7 +6,6 @@
 
 package no.schibstedsok.front.searchportal.command;
 
-import com.thoughtworks.xstream.XStream;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Properties;
@@ -17,7 +16,6 @@ import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.query.Query;
@@ -104,10 +102,6 @@ public class WhiteSearchCommandTest extends TestCase {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
             
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
-            }
-            
             public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
@@ -136,10 +130,6 @@ public class WhiteSearchCommandTest extends TestCase {
             
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-            
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
             }
             
             public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {

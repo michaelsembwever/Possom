@@ -1,6 +1,6 @@
 package no.schibstedsok.front.searchportal.servlet;
 
-import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +29,7 @@ public class SendMailServlet extends HttpServlet {
 
     public Properties props;
     public void init() {
-        props = XMLSearchTabsCreator.valueOf(Site.DEFAULT).getProperties(); // FIXME !!! Must work per Site
+        props = SiteConfiguration.valueOf(Site.DEFAULT).getProperties(); // FIXME !!! Must work per Site
     }
     public void destroy() {}
 

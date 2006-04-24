@@ -1,7 +1,6 @@
 // Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.analyzer;
 
-import com.thoughtworks.xstream.XStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -25,7 +24,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
@@ -339,10 +337,6 @@ public final class AnalysisRuleFactory {
 
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
             }
 
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {

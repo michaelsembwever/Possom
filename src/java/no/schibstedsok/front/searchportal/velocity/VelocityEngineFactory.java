@@ -11,7 +11,7 @@ package no.schibstedsok.front.searchportal.velocity;
 import java.util.HashMap;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.InfrastructureException;
-import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
@@ -74,7 +74,7 @@ public final class VelocityEngineFactory {
 
         try  {
             final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
-            final java.util.Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
+            final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
             // engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute"); // velocity 1.5
             engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
             // engine.setProperty("runtime.log.logsystem.log4j.logger", logger.getName()); // velocity 1.5

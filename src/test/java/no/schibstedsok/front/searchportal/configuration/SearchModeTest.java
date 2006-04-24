@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.configuration;
 
-import com.thoughtworks.xstream.XStream;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.common.ioc.ContextWrapper;
@@ -15,7 +14,6 @@ import java.util.HashMap;
 import java.util.Properties;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
 import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
@@ -62,10 +60,6 @@ public class SearchModeTest extends TestCase {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
-            }
             
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
@@ -108,10 +102,6 @@ public class SearchModeTest extends TestCase {
             }
             public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this,resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(String resource, XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this,resource, xstream);
             }
             
             public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {

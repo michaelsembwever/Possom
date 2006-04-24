@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result.test;
 
-import com.thoughtworks.xstream.XStream;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.result.Modifier;
@@ -19,7 +18,6 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
 
@@ -247,11 +245,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
-            }
-
+            
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }

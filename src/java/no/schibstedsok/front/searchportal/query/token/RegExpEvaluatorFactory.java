@@ -1,7 +1,6 @@
 // Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.token;
 
-import com.thoughtworks.xstream.XStream;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
@@ -21,7 +20,6 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -173,10 +171,6 @@ public final class RegExpEvaluatorFactory {
 
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
             }
 
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {

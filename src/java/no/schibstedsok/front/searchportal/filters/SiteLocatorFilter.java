@@ -25,7 +25,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
@@ -126,7 +126,7 @@ public final class SiteLocatorFilter implements Filter {
 
                     if (resource.startsWith(PUBLISH_DIR)) { // publishing system
                         // the publishing system is responsible for this.
-                        final Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
+                        final Properties props = SiteConfiguration.valueOf(site).getProperties();
                         url = props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL)
                         .replaceFirst("localhost",props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST))
                             + '/' + resource;

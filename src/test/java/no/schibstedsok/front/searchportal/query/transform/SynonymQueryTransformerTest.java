@@ -6,7 +6,6 @@
 
 package no.schibstedsok.front.searchportal.query.transform;
 
-import com.thoughtworks.xstream.XStream;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,11 +18,10 @@ import junit.framework.TestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 
-import no.schibstedsok.front.searchportal.configuration.FileResourcesSearchTabsCreatorTest;
+import no.schibstedsok.front.searchportal.configuration.FileResourcesSiteConfigurationTest;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;

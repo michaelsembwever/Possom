@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.servlet;
 
-import com.thoughtworks.xstream.XStream;
+
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.BaseContext;
@@ -14,10 +14,9 @@ import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.util.QueryStringHelper;
-import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.run.QueryFactory;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
@@ -92,10 +91,10 @@ public final class SearchServlet extends HttpServlet {
         final boolean forceReload = "tabs".equals(httpServletRequest.getParameter("reload"));
 
         if( forceReload ){
-            final boolean cleaned = XMLSearchTabsCreator.remove(site);
+            final boolean cleaned = SiteConfiguration.remove(site);
             LOG.warn(cleaned + WARN_TABS_CLEANED + site);
         }
-        //final SearchTabs tabs = XMLSearchTabsCreator.valueOf(site).getSearchTabs();
+        //final SearchTabs tabs = SiteConfiguration.valueOf(site).getSearchTabs();
 
         final String xmlParam = httpServletRequest.getParameter("xml");
 
@@ -117,9 +116,6 @@ public final class SearchServlet extends HttpServlet {
         final SiteContext genericCxt = new SiteContext(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">  
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
             }
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return UrlResourceLoader.newDocumentLoader(this, resource, builder);

@@ -8,7 +8,6 @@
 
 package no.schibstedsok.front.searchportal.configuration.loader;
 
-import com.thoughtworks.xstream.XStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -54,21 +53,6 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         return pl;
     }
 
-    /** Create a new XStreamLoader for the given resource name/path and load it with the given XStream.
-     * @param siteCxt the SiteContext that will tell us which site we are dealing with.
-     * @param resource the resource name/path.
-     * @param xstream the xstream to deserialise the resource with.
-     * @return the new PropertiesLoader to use.
-     **/
-    public static XStreamLoader newXStreamLoader(
-            final SiteContext siteCxt,
-            final String resource,
-            final XStream xstream) {
-
-        final XStreamLoader xl = new UrlResourceLoader(siteCxt);
-        xl.init(resource, xstream);
-        return xl;
-    }
 
     /** Create a new DocumentLoader for the given resource name/path and load it with the given DocumentBuilder.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.
@@ -196,10 +180,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                             final String prop = (String)p;
                             props.setProperty(prop, newProps.getProperty(prop));
                         }
-                    }
-                }
-                if (xstream != null) {
-                    xstreamResult = xstream.fromXML(new InputStreamReader(urlConn.getInputStream()));
+                    }  
                 }
                 if (builder != null) {
                     document = builder.parse(

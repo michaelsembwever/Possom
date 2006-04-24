@@ -1,6 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 /*
- * FileResourcesSearchTabsCreatorTest.java
+ * FileResourcesSiteConfigurationTest.java
  * JUnit based test
  *
  * Created on 22 January 2006, 16:05
@@ -8,22 +8,21 @@
 
 package no.schibstedsok.front.searchportal.configuration;
 
-import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 
-/** Tests using SearchTabsCreator against File-based configuration files.
- *
+/**
+ * Tests using SearchTabsCreator against File-based configuration files.
+ * 
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class FileResourcesSearchTabsCreatorTest extends TestCase {
+public final class FileResourcesSiteConfigurationTest extends TestCase {
 
     private static final String FAIL_CONFIG_NOT_FOUND =
             "\n\n"
@@ -32,33 +31,23 @@ public final class FileResourcesSearchTabsCreatorTest extends TestCase {
 
 
     /**
-     * Test of valueOf method, of class no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator.
+     * Test of valueOf method, of class no.schibstedsok.front.searchportal.configuration.SiteConfiguration.
      */
     public void testDefaultSite() {
 
         final Site site = Site.DEFAULT;
 
-        final SearchTabsCreator result = valueOf(site);
+        final SiteConfiguration result = valueOf(site);
         assertNotNull(FAIL_CONFIG_NOT_FOUND, result);
     }
 
-    /**
-     * Test of getSearchTabs method, of class no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator.
-     */
-    public void testDefaultSiteGetSearchTabs() {
-
-        final SearchTabsCreator instance = valueOf(Site.DEFAULT);
-
-        final SearchTabs result = instance.getSearchTabs();
-        assertNotNull(FAIL_CONFIG_NOT_FOUND, result);
-    }
 
     /**
-     * Test of getProperties method, of class no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator.
+     * Test of getProperties method, of class no.schibstedsok.front.searchportal.configuration.SiteConfiguration.
      */
     public void testDefaultSiteGetProperties() {
 
-        final SearchTabsCreator instance = valueOf(Site.DEFAULT);
+        final SiteConfiguration instance = valueOf(Site.DEFAULT);
 
         final Properties result = instance.getProperties();
         assertNotNull(FAIL_CONFIG_NOT_FOUND, result);
@@ -71,24 +60,16 @@ public final class FileResourcesSearchTabsCreatorTest extends TestCase {
      * @param site the site to obtain a SearchTabsCreator for
      * @return the searchTabsCreator to use.
      **/
-    public static SearchTabsCreator valueOf(final Site site) {
+    public static SiteConfiguration valueOf(final Site site) {
 
-        // XMLSearchTabsCreator.Context for this site & UrlResourceLoader.
-        final SearchTabsCreator stc = XMLSearchTabsCreator.valueOf(new XMLSearchTabsCreator.Context() {
+        // SiteConfiguration.Context for this site & UrlResourceLoader.
+        final SiteConfiguration stc = SiteConfiguration.valueOf(new SiteConfiguration.Context() {
             public Site getSite()  {
                 return site;
             }
 
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-
-            public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                return FileResourceLoader.newXStreamLoader(this, resource, xstream);
-            }
-            
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
         });

@@ -7,7 +7,7 @@ import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
@@ -103,7 +103,7 @@ public final class VelocityResultHandler implements ResultHandler {
         // coord helper
         context.put("coordHelper", new CoordHelper());
         // properties
-        context.put("linkpulse", new Linkpulse(XMLSearchTabsCreator.valueOf(site).getProperties()));
+        context.put("linkpulse", new Linkpulse(SiteConfiguration.valueOf(site).getProperties()));
         // decoder
         context.put("decoder", new Decoder());
         // math tool

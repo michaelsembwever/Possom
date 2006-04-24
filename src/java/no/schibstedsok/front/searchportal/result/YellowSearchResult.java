@@ -3,7 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.result;
 
-import com.thoughtworks.xstream.XStream;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.result.handler.PhoneNumberChooser;
 import no.schibstedsok.front.searchportal.result.handler.PhoneNumberFormatter;
@@ -160,10 +159,6 @@ public class YellowSearchResult extends FastSearchResult {
 
                 public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                     return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                }
-
-                public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-                    return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
                 }
 
                 public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {

@@ -1,3 +1,4 @@
+
 /* Copyright (2005-2006) Schibsted Søk AS
  *
  * AbstractResourceLoader.java
@@ -8,7 +9,7 @@
 
 package no.schibstedsok.front.searchportal.configuration.loader;
 
-import com.thoughtworks.xstream.XStream;
+
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.site.SiteContext;
@@ -25,7 +26,7 @@ import org.w3c.dom.Document;
  */
 public abstract class AbstractResourceLoader
         extends Thread
-        implements DocumentLoader, PropertiesLoader, XStreamLoader {
+        implements DocumentLoader, PropertiesLoader {
 
     private static final Log LOG = LogFactory.getLog(AbstractResourceLoader.class);
 
@@ -34,10 +35,6 @@ public abstract class AbstractResourceLoader
 
     /** the properties resource holder. **/
     protected Properties props;
-    /** the XStream resource holder. **/
-    protected XStream xstream;
-    /** the xstream resource result. **/
-    protected Object xstreamResult;
     /** DocumentBuilder builder **/
     protected DocumentBuilder builder;
     /** Document **/
@@ -90,15 +87,6 @@ public abstract class AbstractResourceLoader
 
     /** {@inheritDoc}
      */
-    public Object getXStreamResult() {
-        if (xstream == null) {
-            throw new IllegalStateException(ERR_MUST_USE_XSTREAM_INITIALISER);
-        }
-        return xstreamResult;
-    }
-
-    /** {@inheritDoc}
-     */
     public Document getDocument() {
         if (builder == null) {
             throw new IllegalStateException(ERR_MUST_USE_XSTREAM_INITIALISER);
@@ -118,17 +106,6 @@ public abstract class AbstractResourceLoader
         start();
     }
 
-
-    /** {@inheritDoc}
-     */
-    public void init(final String resource, final XStream xstream) {
-        if (isAlive()  || this.resource != null) {
-            throw new IllegalStateException(ERR_ONE_USE_ONLY);
-        }
-        this.resource = resource;
-        this.xstream = xstream;
-        start();
-    }
 
     /** {@inheritDoc}
      */

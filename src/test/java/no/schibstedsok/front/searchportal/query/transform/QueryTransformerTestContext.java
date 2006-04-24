@@ -9,7 +9,6 @@
 
 package no.schibstedsok.front.searchportal.query.transform;
 
-import com.thoughtworks.xstream.XStream;
 
 import java.util.Map;
 import java.util.Properties;
@@ -19,7 +18,6 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryTestContext;
@@ -78,10 +76,6 @@ public final class QueryTransformerTestContext implements QueryTransformer.Conte
     }
     public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
         return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-    }
-
-    public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
-        return FileResourceLoader.newXStreamLoader(this, resource, xstream);
     }
 
     public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {

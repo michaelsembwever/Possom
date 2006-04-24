@@ -9,7 +9,6 @@
 package no.schibstedsok.front.searchportal.query.run;
 
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
-import no.schibstedsok.front.searchportal.configuration.SearchTabsCreator;
 import org.apache.log4j.Logger;
 
 /**
