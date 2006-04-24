@@ -90,7 +90,7 @@ public class RolesDirective extends Directive {
         MD5Generator md5 = new MD5Generator("S3SAM rockz");
         String html = "";
 
-        html = "<div><table id=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
+        html = "<div><table class=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
 
         // print rows
         for (int i = 0; i < row.length; i++) {
@@ -98,7 +98,7 @@ public class RolesDirective extends Directive {
 
             // show 30 first rows
             if (i==30) {
-                html += "</table></div><div id=\"more_roles\" style=\"display: none;\"><table id=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
+                html += "</tr></table></div><div id=\"more_roles\" style=\"display: none;\"><table class=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
             }
             // column seperator
             col = row[i].split("#sep#");
