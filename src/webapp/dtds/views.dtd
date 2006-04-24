@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary indentification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/views.dtd
+
+--><!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE views SYSTEM "views.dtd">
+
+    <views>
+    ...
+    </views>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT views (tab)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT tab (enrichment|navigation)*>
+<!ATTLIST tab
+    mode CDATA #IMPLIED
+    key CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    ad-on-top CDATA #IMPLIED
+    ad-limit CDATA #IMPLIED
+    ad-command CDATA #IMPLIED
+    enrichment-on-top CDATA #IMPLIED
+    enrichment-limit CDATA #IMPLIED
+    page-size CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT navigation EMPTY>
+<!ATTLIST navigation
+    url-suffix CDATA #IMPLIED
+    tab CDATA #IMPLIED
+    match CDATA #IMPLIED
+    name CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT enrichment EMPTY>
+<!ATTLIST enrichment
+    command CDATA #IMPLIED
+    weight CDATA #IMPLIED
+    threshold CDATA #IMPLIED
+    rule CDATA #IMPLIED
+  >

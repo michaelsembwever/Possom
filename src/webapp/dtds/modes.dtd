@@ -1,0 +1,297 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary indentification
+    PUBLIC ID: -//vendor//vocabulary//EN
+    SYSTEM ID: http://server/path/modes.dtd
+
+--><!--
+    An example how to use this DTD from your XML document:
+
+    <?xml version="1.0"?>
+
+    <!DOCTYPE modes SYSTEM "modes.dtd">
+
+    <modes>
+    ...
+    </modes>
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT modes (mode)*>
+<!ATTLIST modes
+    template-prefix CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT mode (commands|yellowpages-command|whitepages-command|web-command|stock-command|sensis-command|picture-command|overture-ppc-command|news-command|math-command|fast-command|command)*>
+<!ATTLIST mode
+    inherit CDATA #IMPLIED
+    analysis CDATA #IMPLIED
+    executor CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT command EMPTY>
+<!ATTLIST command
+    results-to-return CDATA #IMPLIED
+    result-fields CDATA #IMPLIED
+    query-parameter CDATA #IMPLIED
+    paging CDATA #IMPLIED
+    always-run CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT fast-command (query-transformers|result-handlers)*>
+<!ATTLIST fast-command
+    sort-by CDATA #IMPLIED
+    synonymsEnanled CDATA #IMPLIED
+    qt-pipeline CDATA #IMPLIED
+    statistical-name CDATA #IMPLIED
+    results-to-return CDATA #IMPLIED
+    result-fields CDATA #IMPLIED
+    paging CDATA #IMPLIED
+    synonyms CDATA #IMPLIED
+    spellcheck CDATA #IMPLIED
+    spam-score-limit CDATA #IMPLIED
+    id CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    clustering CDATA #IMPLIED
+    collapsing CDATA #IMPLIED
+    collections CDATA #IMPLIED
+    filter CDATA #IMPLIED
+    keyword-clustering CDATA #IMPLIED
+    ignore-navigation CDATA #IMPLIED
+    lemmatize CDATA #IMPLIED
+    offensive-score-limit CDATA #IMPLIED
+    qt-pipieline CDATA #IMPLIED
+    query-server-url CDATA #IMPLIED
+    sor-by CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT math-command (result-handlers)*>
+<!ATTLIST math-command
+    statistical-name CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT result-handlers (velocity-output|field-chooser|age-calculator|tv-enrichment-date-format|weather-date-format|weather-celcius|sum|content-source-collections|add-doc-count|spelling-sugestion-chooser|find-file-format|xml-output|phone-number-chooser)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT velocity-output EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT news-command (result-handlers|query-transformers|navigators)*>
+<!ATTLIST news-command
+    sort-by CDATA #IMPLIED
+    results-to-return CDATA #IMPLIED
+    statistical-name CDATA #IMPLIED
+    result-fields CDATA #IMPLIED
+    query-server-url CDATA #IMPLIED
+    collections CDATA #IMPLIED
+    collapsing CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT overture-ppc-command (result-handlers|query-transformers)*>
+<!ATTLIST overture-ppc-command
+    results-to-return CDATA #IMPLIED
+    statistical-name CDATA #IMPLIED
+    partner-id CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT query-transformers (simple-site-search|exact-title-match|tv|term-prefix|prefix-remover)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT prefix-remover EMPTY>
+<!ATTLIST prefix-remover
+    prefixes CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT picture-command (result-handlers|query-transformers)*>
+<!ATTLIST picture-command
+    statistical-name CDATA #IMPLIED
+    results-to-return CDATA #IMPLIED
+    result-fields CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT sensis-command EMPTY>
+<!ATTLIST sensis-command
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT stock-command (result-handlers|query-transformers)*>
+<!ATTLIST stock-command
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT web-command (result-handlers|query-transformers)*>
+<!ATTLIST web-command
+    statistical-name CDATA #IMPLIED
+    spellcheck CDATA #IMPLIED
+    results-to-return CDATA #IMPLIED
+    result-fields CDATA #IMPLIED
+    query-server-url CDATA #IMPLIED
+    paging CDATA #IMPLIED
+    collections CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT whitepages-command (result-handlers|query-transformers)*>
+<!ATTLIST whitepages-command
+    statistical-name CDATA #IMPLIED
+    sort-by CDATA #IMPLIED
+    results-to-return CDATA #IMPLIED
+    result-fields CDATA #IMPLIED
+    query-server-url CDATA #IMPLIED
+    qt-pipeline CDATA #IMPLIED
+    collections CDATA #IMPLIED
+    always-run CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT yellowpages-command (result-handlers|query-transformers)*>
+<!ATTLIST yellowpages-command
+    statistical-name CDATA #IMPLIED
+    sort-by CDATA #IMPLIED
+    results-to-return CDATA #IMPLIED
+    result-fields CDATA #IMPLIED
+    query-server-url CDATA #IMPLIED
+    qt-pipeline CDATA #IMPLIED
+    collections CDATA #IMPLIED
+    always-run CDATA #IMPLIED
+    inherit CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT commands (yellowpages-command|whitepages-command|web-command|stock-command|picture-command|overture-ppc-command|news-command|math-command|fast-command)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT field-chooser EMPTY>
+<!ATTLIST field-chooser
+    fields CDATA #IMPLIED
+    target CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT term-prefix EMPTY>
+<!ATTLIST term-prefix
+    number-prefix CDATA #IMPLIED
+    prefix CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT age-calculator EMPTY>
+<!ATTLIST age-calculator
+    message-format CDATA #IMPLIED
+    as-date CDATA #IMPLIED
+    date-formt CDATA #IMPLIED
+    target CDATA #IMPLIED
+    source CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT tv EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT tv-enrichment-date-format EMPTY>
+<!ATTLIST tv-enrichment-date-format
+    target CDATA #IMPLIED
+    source CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT weather-date-format EMPTY>
+<!ATTLIST weather-date-format
+    target CDATA #IMPLIED
+    source CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT weather-celcius EMPTY>
+<!ATTLIST weather-celcius
+    target CDATA #IMPLIED
+    source CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT exact-title-match EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT navigators (navigator)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT navigator EMPTY>
+<!ATTLIST navigator
+    display-name CDATA #IMPLIED
+    name CDATA #IMPLIED
+    field CDATA #IMPLIED
+    id CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT sum EMPTY>
+<!ATTLIST sum
+    target CDATA #IMPLIED
+    nagivation CDATA #IMPLIED
+    modifiers CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT content-source-collections EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT add-doc-count EMPTY>
+<!ATTLIST add-doc-count
+    modifier CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT simple-site-search EMPTY>
+<!ATTLIST simple-site-search
+    parameter CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT spelling-sugestion-chooser EMPTY>
+<!ATTLIST spelling-sugestion-chooser
+    long-query-max-suggestions CDATA #IMPLIED
+    very-long-query CDATA #IMPLIED
+    long-query CDATA #IMPLIED
+    much-better CDATA #IMPLIED
+    max-distance CDATA #IMPLIED
+    max-suggestions CDATA #IMPLIED
+    min-score CDATA #IMPLIED
+  >
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT find-file-format EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT xml-output EMPTY>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT phone-number-chooser EMPTY>
