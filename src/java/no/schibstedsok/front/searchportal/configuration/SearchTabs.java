@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
+ * @deprecated use the new datamodel configuration API instead. eg SearchTabFactory and SearchModeFactory
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
@@ -12,9 +13,9 @@ public class SearchTabs {
 
     public Map searchModes = new HashMap();
 
-    public void addMode(SearchMode mode) {
-        searchModes.put(mode.getKey(), mode);
-    }
+//    public void addMode(SearchMode mode) {
+//        searchModes.put(mode.getKey(), mode);
+//    }
 
     public SearchMode getSearchMode(String modeKey) {
         return (SearchMode) searchModes.get(modeKey);

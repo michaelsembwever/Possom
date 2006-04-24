@@ -92,9 +92,7 @@ public interface SearchConfiguration {
     void setResultsToReturn(int numberOfResults);
 
     boolean isChild();
-
-    public String getRule();
-    public int getRuleThreshold();
+    
     public String getUseParameterAsQuery();
 
     boolean isAlwaysRunEnabled();

@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
@@ -131,14 +132,14 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                 + "conf/"
                 + super.getResource();
     }
-    
+
     public static String getHostHeader(final String resource){
         return resource.substring(7,resource.indexOf('/',8));
     }
-    
+
     public static String getURL(final String resource){
         return "http://localhost"+
-                resource.substring( resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
+                resource.substring(resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
     }
 
     /** {@inheritDoc}
@@ -156,11 +157,11 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
     /** {@inheritDoc}
      */
     public void run() {
-        if( props != null ){
+        if(props != null){
             // Properties inherent through the fallback process. Keys are *not* overridden.
             loadResource(getResource());
             loadResource(getFallbackResource());
-            
+
         }else{
             // Default behavour: only load first found resource
             if (!loadResource(getResource())) {
@@ -176,7 +177,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
 
         boolean success = false;
 
-        if( urlExists(resource) ){
+        if(urlExists(resource)){
 
             try {
 
@@ -190,8 +191,8 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                     final Properties newProps = new Properties();
                     newProps.load(urlConn.getInputStream());
                     for(Object p : newProps.keySet()){
-                        
-                        if( !props.containsKey(p) ){
+
+                        if(!props.containsKey(p)){
                             final String prop = (String)p;
                             props.setProperty(prop, newProps.getProperty(prop));
                         }
@@ -229,6 +230,10 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             }
         }
         return success;
+    }
+
+    public static PropertiesLoader newPropertiesLoader(BaseContext baseContext, String resource, Properties properties) {
+        return null;
     }
 
 }

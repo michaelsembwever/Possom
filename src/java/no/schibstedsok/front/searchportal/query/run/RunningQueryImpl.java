@@ -42,6 +42,7 @@ import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
 /**
@@ -56,22 +57,21 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.front.searchportal.analyzer.Analysis");
     private static final Logger PRODUCT_LOG = Logger.getLogger("no.schibstedsok.Product");
-
-
+    
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_RUN_QUERY = "Failure to run query";
 
     private final AnalysisRuleFactory rules;
-    private String queryStr = "";
-    private Query queryObj = null;
-    private Map parameters;
+    private final String queryStr;
+    private final Query queryObj;
+    private final Map parameters = new HashMap();;
     private int offset;
     private Locale locale;
     private final List<Modifier> sources = new Vector<Modifier>();
     private final TokenEvaluatorFactory tokenEvaluatorFactory;
     private final List<Enrichment> enrichments = new ArrayList<Enrichment>();
     private final Map<String,Integer> hits = new HashMap<String,Integer>();
-    private Map<String,Integer> scores = new HashMap<String,Integer>();
+    private final Map<String,Integer> scores = new HashMap<String,Integer>();
 
 
     /**
@@ -89,22 +89,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         queryStr = trimDuplicateSpaces(query);
 
-        if (queryStr != null) {
-            queryStr = queryStr.trim();
-        }
-
-        this.parameters = parameters;
+        this.parameters.putAll( parameters );
         this.locale = new Locale("no", "NO");
-
+        
         final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt =
                 ContextWrapper.wrap(
                     TokenEvaluatorFactoryImpl.Context.class,
-                        context,
-                        new QueryStringContext() {
-                            public String getQueryString() {
-                                return RunningQueryImpl.this.getQueryString();
-                            }
-                        });
+                    context,
+                    new QueryStringContext() {
+                        public String getQueryString() {
+                            return RunningQueryImpl.this.getQueryString();
+                        }
+                    });
 
         // This will among other things perform the initial fast search
         // for textual analysis.
@@ -180,13 +176,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             for (SearchConfiguration searchConfiguration : context.getSearchMode().getSearchConfigurations() ) {
 
-                final SearchConfiguration sc = searchConfiguration;
+                final SearchConfiguration config = searchConfiguration;
+                final String configName = config.getName();
+                
                 final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                         SearchCommand.Context.class,
                         context,
                         new BaseContext() {
                             public SearchConfiguration getSearchConfiguration() {
-                                return sc;
+                                return config;
                             }
                             public RunningQuery getRunningQuery() {
                                 return RunningQueryImpl.this;
@@ -197,16 +195,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         }
                 );
 
-                final AnalysisRule rule = rules.getRule(searchConfiguration.getRule());
-
-                if (rule != null) {
+                final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
+                if( eHint != null ){
+                    final AnalysisRule rule = rules.getRule(eHint.getRule());
 
                     if (context.getSearchMode().isQueryAnalysisEnabled() && offset == 0) {
 
                         LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
 
-                        ANALYSIS_LOG.info(" <analysis name=\"" + searchConfiguration.getRule() + "\">");
-                        LOG.debug("Scoring new style for " + searchConfiguration.getRule());
+                        ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
+                        LOG.debug("Scoring new style for " + eHint.getRule());
                         final int newScore = rule.evaluate(queryObj, tokenEvaluatorFactory);
 
                         LOG.debug("Score for " + searchConfiguration.getName() + " is " + newScore);
@@ -216,27 +214,27 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         }
                         ANALYSIS_LOG.info(" </analysis>");
 
-                        scores.put(searchConfiguration.getName(), Integer.valueOf(newScore));
+                        scores.put(config.getName(), Integer.valueOf(newScore));
 
-                        if (searchConfiguration.isAlwaysRunEnabled() || newScore >= searchConfiguration.getRuleThreshold()) {
+                        if (config.isAlwaysRunEnabled() || newScore >= eHint.getThreshold()) {
                             LOG.debug("Adding " + searchConfiguration.getName());
                             commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
 
-                    } else if (searchConfiguration.isAlwaysRunEnabled()) {
+                    } else if (config.isAlwaysRunEnabled()) {
                         commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                     }
 
                 } else {
 
                     // Optimisation. Alternate between the two web searches.
-                    if (isNorwegian(searchConfiguration) || isInternational(searchConfiguration)) {
+                    if (isNorwegian(config) || isInternational(config)) {
                         final String searchType = getSingleParameter("s");
                         if (searchType != null && searchType.equals("g")) {
-                            if (isInternational(searchConfiguration)) {
+                            if (isInternational(config)) {
                                 commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                             }
-                        } else if (isNorwegian(searchConfiguration)) {
+                        } else if (isNorwegian(config)) {
                             commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
                     } else {
@@ -255,6 +253,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             //  spent in task.isDone()
             boolean hitsToShow = false;
 
+            // Ensure any cancellations are properly handled
             for(Callable<SearchResult> command : commands){
                 ((SearchCommand)command).handleCancellation();
             }
@@ -266,23 +265,26 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     final SearchResult searchResult = task.get();
                     if (searchResult != null) {
 
-                        final SearchConfiguration configuration
-                                = searchResult.getSearchCommand().getSearchConfiguration();
+                        // Information we need
+                        final SearchConfiguration config = searchResult.getSearchCommand().getSearchConfiguration();
+                        final String name = config.getName();
+                        final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
+                        final Integer score = scores.get(name);
 
+                        // update hit status
                         hitsToShow |= searchResult.getHitCount() > 0;
-                        hits.put(configuration.getName(), searchResult.getHitCount());
+                        hits.put(name, searchResult.getHitCount());
 
-                        final Integer score = scores.get(configuration.getName());
-
-                        if (score != null && configuration.getRule() != null && score >= configuration.getRuleThreshold()) {
-                            if (searchResult.getResults().size() > 0 && score.intValue() > 15) {
-                                final Enrichment e = new Enrichment(score, configuration.getName());
-                                enrichments.add(e);
-                            }
+                        // score
+                        if( eHint != null && score != null && searchResult.getResults().size() > 0
+                                && score >= eHint.getThreshold() && score > 15) {
+                            
+                            // add enrichment
+                            final Enrichment e = new Enrichment(score, name);
+                            enrichments.add(e);
                         }
                     }
                 }
-
             }
 
             Collections.sort(sources);
@@ -307,7 +309,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 Collections.sort(enrichments);
 
-                PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchMode().getKey() + "\">"
+                PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchTab().getKey() + "\">"
                         + "<query>" + queryStr + "</query>");
                 for( Enrichment e : enrichments){
                     PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
@@ -383,6 +385,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         LOG.trace("getSearchMode()");
 
         return context.getSearchMode();
+    }
+    
+    public SearchTab getSearchTab(){
+        
+        LOG.trace("getSearchTab()");
+
+        return context.getSearchTab();
     }
 
     public List<Modifier> getSources() {

@@ -4,10 +4,15 @@ package no.schibstedsok.front.searchportal.servlet;
 import com.thoughtworks.xstream.XStream;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
+import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.SearchTabs;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.util.QueryStringHelper;
 import no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
@@ -16,6 +21,8 @@ import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.query.run.QueryFactory;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.i18n.TextMessages;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
+import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
 import org.apache.commons.lang.time.StopWatch;
 
 import javax.servlet.ServletException;
@@ -39,12 +46,12 @@ public final class SearchServlet extends HttpServlet {
     private static final Logger LOG = Logger.getLogger(SearchServlet.class);
     private static final String WARN_TABS_CLEANED = " status on cleaning tabs for ";
 
-    private SearchTabs tabs;
+    //private SearchTabs tabs;
 
     /** {@inheritDoc}
      */
     public void destroy() {
-        tabs.stopAll();
+        //tabs.stopAll();
     }
 
     /** {@inheritDoc}
@@ -88,7 +95,7 @@ public final class SearchServlet extends HttpServlet {
             final boolean cleaned = XMLSearchTabsCreator.remove(site);
             LOG.warn(cleaned + WARN_TABS_CLEANED + site);
         }
-        final SearchTabs tabs = XMLSearchTabsCreator.valueOf(site).getSearchTabs();
+        //final SearchTabs tabs = XMLSearchTabsCreator.valueOf(site).getSearchTabs();
 
         final String xmlParam = httpServletRequest.getParameter("xml");
 
@@ -99,37 +106,50 @@ public final class SearchServlet extends HttpServlet {
         }
         httpServletResponse.setCharacterEncoding("UTF-8"); // correct encoding
 
-        String searchModeKey = httpServletRequest.getParameter("c");
+        String searchTabKey = httpServletRequest.getParameter("c");
 
-        if (searchModeKey == null) {
-            searchModeKey = "d";
+        if (searchTabKey == null) {
+            searchTabKey = "d";
         }
-
-        final SearchMode mode = tabs.getSearchMode(searchModeKey);
-
-        final RunningQuery.Context rqCxt = new RunningQuery.Context() {
-            // <editor-fold defaultstate="collapsed" desc=" RunningQuery.Context ">
-            public SearchMode getSearchMode() {
-                return mode;
-            }
-
+        
+        // BaseContext providing SiteContext and ResourceContext. 
+        //  We need it casted as a SiteContext for the ResourceContext code to be happy.
+        final SiteContext genericCxt = new SiteContext(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">  
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-
             public XStreamLoader newXStreamLoader(final String resource, final XStream xstream) {
                 return UrlResourceLoader.newXStreamLoader(this, resource, xstream);
             }
-
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return UrlResourceLoader.newDocumentLoader(this, resource, builder);
             }
-
             public Site getSite() {
                 return site;
             }
-            //</editor-fold>
-        };
+        };//</editor-fold>
+
+        final SearchTab searchTab = SearchTabFactory.getTabFactory(
+                ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt))
+                .getTabByKey(searchTabKey);
+        final SearchMode mode = SearchModeFactory.getModeFactory(
+                ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
+                .getMode(searchTab.getMode());
+        
+        //final SearchMode mode = tabs.getSearchMode(searchTabKey);
+
+        final RunningQuery.Context rqCxt = ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" rqCxt ">
+                RunningQuery.Context.class,
+                new BaseContext() {
+                    public SearchMode getSearchMode() {
+                        return mode;
+                    }
+                    public SearchTab getSearchTab() {
+                        return searchTab;
+                    }
+                },
+                genericCxt
+        );//</editor-fold>
 
         final RunningQuery query = QueryFactory.getInstance()
             .createQuery(rqCxt, httpServletRequest, httpServletResponse);
@@ -137,16 +157,8 @@ public final class SearchServlet extends HttpServlet {
         httpServletRequest.setAttribute("locale", query.getLocale());
         httpServletRequest.setAttribute("query", query);
         httpServletRequest.setAttribute("site", site);
-        httpServletRequest.setAttribute("text", TextMessages.valueOf(new TextMessages.Context() {
-                // <editor-fold defaultstate="collapsed" desc=" TextMessages.Context ">
-                public Site getSite() {
-                    return site;
-                }
-                public PropertiesLoader newPropertiesLoader(final String rsc, final Properties props) {
-                    return UrlResourceLoader.newPropertiesLoader(this, rsc, props);
-                }
-                // </editor-fold>
-            }));
+        httpServletRequest.setAttribute("text", 
+                TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
 
         if (httpServletRequest.getParameter("offset") != null
                 && !"".equals(httpServletRequest.getParameter("offset"))) {
@@ -159,7 +171,7 @@ public final class SearchServlet extends HttpServlet {
                 QueryStringHelper.safeGetParameter(httpServletRequest, "q"));
         }
 
-        httpServletRequest.setAttribute("c", searchModeKey);
+        httpServletRequest.setAttribute("c", searchTabKey);
 
         try {
                 query.run();

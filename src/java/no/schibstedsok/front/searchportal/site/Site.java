@@ -79,7 +79,14 @@ public final class Site {
         INSTANCES.put(uniqueName, this);
     }
 
-
+    /** the parent to this site.
+     *      not properly implemented yet.
+     * returns null if we are the DEFAULT site.
+     * otherwise, currently, return the DEFAULT site.
+     **/
+    public Site getParent(){
+        return this == DEFAULT ? null : DEFAULT;
+    }
 
     /**
      * Getter for property siteName.

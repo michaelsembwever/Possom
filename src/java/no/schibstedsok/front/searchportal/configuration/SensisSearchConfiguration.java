@@ -1,10 +1,7 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.configuration;
 
-import no.schibstedsok.front.searchportal.command.FastSearchCommand;
-import no.schibstedsok.front.searchportal.command.SearchCommand;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
-import java.util.Map;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -12,4 +9,11 @@ import java.util.Map;
  */
 public class SensisSearchConfiguration extends FastConfiguration {
 
+    public SensisSearchConfiguration(){
+        super(null);
+    }
+
+    public SensisSearchConfiguration(final SearchConfiguration asc){
+        super(asc);
+    }
 }

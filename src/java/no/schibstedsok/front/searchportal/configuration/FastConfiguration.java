@@ -4,11 +4,14 @@
  */
 package no.schibstedsok.front.searchportal.configuration;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
-
-import java.util.*;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -37,6 +40,36 @@ public class FastConfiguration extends AbstractSearchConfiguration {
     private String filter;
 
     private boolean relevantQueriesEnabled = false;
+
+    public FastConfiguration(){
+        super(null);
+    }
+
+    public FastConfiguration(final SearchConfiguration asc){
+
+        super(asc);
+        if(asc != null && asc instanceof FastConfiguration){
+            final FastConfiguration fsc = (FastConfiguration) asc;
+            collections.addAll(fsc.collections);
+            searchParameters = fsc.searchParameters;
+            lemmatizeEnabled = fsc.lemmatizeEnabled;
+            spellcheckEnabled = fsc.spellcheckEnabled;
+            navigators.putAll(fsc.navigators);
+            sortBy = fsc.sortBy;
+            collapsingEnabled = fsc.collapsingEnabled;
+            queryServerURL = fsc.queryServerURL;
+            keywordClusteringEnabled = fsc.keywordClusteringEnabled;
+            qtPipeline = fsc.qtPipeline;
+            collectionString = fsc.collectionString;
+            resultView = fsc.resultView;
+            clusteringEnabled = fsc.clusteringEnabled;
+            ignoreNavigationEnabled = fsc.ignoreNavigationEnabled;
+            offensiveScoreLimit = fsc.offensiveScoreLimit;
+            spamScoreLimit = fsc.spamScoreLimit;
+            filter = fsc.filter;
+            relevantQueriesEnabled = fsc.relevantQueriesEnabled;
+        }
+    }
 
     public List getCollections() {
         return collections;
@@ -143,10 +176,6 @@ public class FastConfiguration extends AbstractSearchConfiguration {
         return (FastNavigator) navigators.get(navigatorKey);
     }
 
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
-
     public String getSortBy() {
         return sortBy;
     }
@@ -217,5 +246,44 @@ public class FastConfiguration extends AbstractSearchConfiguration {
 
     public String getFilter() {
         return filter;
+    }
+
+    void setSpamScoreLimit(final int i) {
+        spamScoreLimit = i;
+    }
+
+    /**
+     * Setter for property clusteringEnabled.
+     * @param clusteringEnabled New value of property clusteringEnabled.
+     */
+    public void setClusteringEnabled(final boolean clusteringEnabled) {
+    }
+
+    /**
+     * Setter for property collectionFilterString.
+     * @param collectionFilterString New value of property collectionFilterString.
+     */
+    public void setCollectionFilterString(final java.lang.String collectionFilterString) {
+    }
+
+    /**
+     * Setter for property filter.
+     * @param filter New value of property filter.
+     */
+    public void setFilter(final java.lang.String filter) {
+    }
+
+    /**
+     * Setter for property offensiveScoreLimit.
+     * @param offensiveScoreLimit New value of property offensiveScoreLimit.
+     */
+    public void setOffensiveScoreLimit(final int offensiveScoreLimit) {
+    }
+
+    /**
+     * Setter for property relevantQueriesEnabled.
+     * @param relevantQueriesEnabled New value of property relevantQueriesEnabled.
+     */
+    public void setRelevantQueriesEnabled(final boolean relevantQueriesEnabled) {
     }
 }

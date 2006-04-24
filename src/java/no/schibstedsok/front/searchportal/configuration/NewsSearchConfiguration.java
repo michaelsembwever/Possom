@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * NewsSearchConfiguration.java
  *
@@ -12,4 +13,12 @@ package no.schibstedsok.front.searchportal.configuration;
  * @author magnuse
  */
 public class NewsSearchConfiguration extends FastConfiguration {
+
+    public NewsSearchConfiguration(){
+        super(null);
+    }
+
+    public NewsSearchConfiguration(final SearchConfiguration asc){
+        super(asc);
+    }
 }

@@ -18,6 +18,7 @@ import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
 /** A RunningQuery is the central controller for a user's submitted search.
  * It has a one-to-one mapping to a search mode (see tabs.xml).
@@ -29,6 +30,7 @@ public interface RunningQuery {
 
     public interface Context extends BaseContext, ResourceContext, SiteContext {
         SearchMode getSearchMode();
+        SearchTab getSearchTab();
     }
 
     void addSource(final Modifier modifier);
@@ -58,6 +60,8 @@ public interface RunningQuery {
     String getQueryString();
 
     SearchMode getSearchMode();
+    
+    SearchTab getSearchTab();
 
     String getSourceParameters(final String source);
 

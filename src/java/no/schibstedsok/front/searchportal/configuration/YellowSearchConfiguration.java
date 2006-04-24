@@ -1,12 +1,7 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005-2006) Schibsted Søk AS
  */
 package no.schibstedsok.front.searchportal.configuration;
-
-import java.util.Map;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -16,5 +11,13 @@ import org.apache.commons.logging.LogFactory;
  * @version $Revision$
  */
 public class YellowSearchConfiguration extends FastConfiguration {
-    
+
+    public YellowSearchConfiguration(){
+        super(null);
+    }
+
+    public YellowSearchConfiguration(final SearchConfiguration asc){
+        super(asc);
+    }
+
 }

@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.command;
 
 import com.thoughtworks.xstream.XStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
@@ -37,6 +38,7 @@ import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
 import org.apache.commons.lang.time.StopWatch;
 
 
@@ -75,7 +77,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private String filter = "";
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
-    private Map parameters;
+    private final Map parameters = new HashMap();
     private volatile boolean completed = false;
 
 
@@ -92,7 +94,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
-        this.parameters = parameters;
+        this.parameters.putAll(parameters);
         transformedQuery = context.getQuery().getQueryString();
         final Clause root = context.getQuery().getRootClause();
         final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
@@ -234,7 +236,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     protected final String performQueryTransformation(){
 
-        final boolean useParameterAsQuery = getSearchConfiguration().getUseParameterAsQuery() != null;
+        // use the query or something search-command specific
+        final boolean useParameterAsQuery = getSearchConfiguration().getUseParameterAsQuery() != null 
+                && getSearchConfiguration().getUseParameterAsQuery().length() >0;
+        // so what query string is it then
         final String queryToUse = useParameterAsQuery
                 ? getSingleParameter(getSearchConfiguration().getUseParameterAsQuery())
                 : context.getQuery().getQueryString();
@@ -305,6 +310,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     new BaseContext(){// <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
                         public SearchResult getSearchResult() {
                             return result;
+                        }
+                        public SearchTab getSearchTab(){
+                            return context.getRunningQuery().getSearchTab();
                         }
                         /** @deprecated implementations should be using the QueryContext instead! */
                         public String getQueryString() {

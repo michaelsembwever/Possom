@@ -60,4 +60,25 @@ public class FastNavigator implements Serializable {
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
+
+    /**
+     * Holds value of property id.
+     */
+    private String id;
+
+    /**
+     * Getter for property id.
+     * @return Value of property id.
+     */
+    public String getId() {
+        return this.id;
+    }
+
+    /**
+     * Setter for property id.
+     * @param id New value of property id.
+     */
+    public void setId(String id) {
+        this.id = id;
+    }
 }

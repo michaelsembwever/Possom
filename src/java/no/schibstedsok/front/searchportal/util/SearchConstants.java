@@ -18,6 +18,8 @@ public final class SearchConstants {
     public static final String SENSIS_PROPERTYFILE = "sensis.properties";            //the properties file for configuration of FAST search and templates
     public static final String REGEXP_EVALUATOR_XMLFILE = "RegularExpressionEvaluators.xml";    //the xml file for regexp patterns
     public static final String ANALYSIS_RULES_XMLFILE = "AnalysisRules.xml";
+    public static final String MODES_XMLFILE = "modes.xml";
+    public static final String VIEWS_XMLFILE = "views.xml";
     public static final String PROPERTY_KEY___QR_SERVER = "qrserver";                //property key
     public static final String PROPERTY_KEY___TV_PATTERN = "tv-pattern";            //property key
     public static final String _COLLECTION_KEY = "default-collection";            //property file key

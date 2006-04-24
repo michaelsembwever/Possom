@@ -208,7 +208,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("queryHTMLEscaped", queryString);
         
         context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt)));
-        context.put("currentTab", cxt.getSearchResult().getSearchCommand().getRunningQuery().getSearchMode());
+        context.put("currentTab", cxt.getSearchTab());
         
         context.put("contextPath", request.getContextPath());
         context.put("hashGenerator", request.getAttribute("hashGenerator"));

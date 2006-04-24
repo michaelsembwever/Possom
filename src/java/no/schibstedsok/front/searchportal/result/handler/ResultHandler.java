@@ -8,6 +8,7 @@ import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
 /*
  * @version <tt>$Revision$</tt>
@@ -21,6 +22,7 @@ public interface ResultHandler {
      */
     public interface Context extends SiteContext, QueryContext, QueryStringContext, ResourceContext {
         SearchResult getSearchResult();
+        SearchTab getSearchTab();
 
         /** @deprecated implementations should be using the QueryContext instead! */
         String getQueryString();

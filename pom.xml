@@ -1,606 +1,449 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
- - Copyright (2005-2006) Schibsted Søk AS
- - $Id$
--->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <groupId>schibstedsok</groupId>
-    <artifactId>search-front-html</artifactId>
-    <modelVersion>4.0.0</modelVersion>
-    <name>Schibsted Søk Engine</name>
-    <version>2.0-SNAPSHOT</version>
-    <packaging>war</packaging>
-
-    <description>This is the project for Schibsted Søk's search-front application.</description>
-    <url>https://dev.schibstedsok.no/maven/sites/search-front-html/</url>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>https://dev.schibstedsok.no/jira/secure/BrowseProject.jspa?id=10000</url>
-    </issueManagement>
-
-    <ciManagement>
-        <system>continuum</system>
-        <url>https://dev.schibstedsok.no/continuum/servlet/continuum</url>
-        <notifiers>
-            <notifier>
-              <type>mail</type>
-              <configuration>
-                <address>commits-front@schibstedsok.no</address>
-              </configuration>
-            </notifier>
-        </notifiers>
-    </ciManagement>
-
-    <licenses>
-        <license>
-            <name>Schibsted Søk Copyright</name>
-            <url>LICENSE.txt</url>
-            <distribution>manual</distribution>
-        </license>
-    </licenses>
-
-    <scm>
-        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-front-html/trunk/</connection>
-        <url>https://dev.schibstedsok.no/svn/search-front-html/trunk/</url>
-    </scm>
-
-    <organization>
-        <name>Schibsted Søk AS</name>
-        <url>http://www.sesam.no/</url>
-    </organization>
-
-    <distributionManagement>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>schibstedsok</groupId>
+  <artifactId>search-front-html</artifactId>
+  <packaging>war</packaging>
+  <name>Schibsted Søk Engine</name>
+  <version>2.1-SNAPSHOT</version>
+  <description>This is the project for Schibsted Søk's search-front application.</description>
+  <url>https://dev.schibstedsok.no/maven/sites/search-front-html/</url>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://dev.schibstedsok.no/jira/secure/BrowseProject.jspa?id=10000</url>
+  </issueManagement>
+  <ciManagement>
+    <system>continuum</system>
+    <url>https://dev.schibstedsok.no/continuum/servlet/continuum</url>
+    <notifiers>
+      <notifier>
+        <configuration>
+          <address>commits-front@schibstedsok.no</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+  <developers>
+    <developer>
+      <id>larsjo</id>
+      <name>Lars Johansson</name>
+      <email>lars.johansson@conduct.no</email>
+      <organization>Conduct AS</organization>
+      <roles>
+        <role>Front end Developer</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>mickw</id>
+      <name>Michael Semb Wever</name>
+      <email>mick@wever.org</email>
+      <url>http://www.wever.org</url>
+      <organization>Schibsted Søk</organization>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>itthkjer</id>
+      <name>Thomas Kjærstad</name>
+      <email>itthkjer@sesam.no</email>
+      <organization>Schibsted Søk AS</organization>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>magnuse</id>
+      <name>Magnus Eklund</name>
+      <email>magnus.eklund@sesam.no</email>
+      <organization>Schibsted Søk AS</organization>
+      <timezone>+1</timezone>
+    </developer>
+    <developer>
+      <id>anders</id>
+      <name>Anders Johan Jamtli</name>
+      <email>anders.johan.jamtli@sesam.no</email>
+      <organization>Schibsted Søk AS</organization>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
+  <licenses>
+    <license>
+      <name>Schibsted Søk Copyright</name>
+      <url>LICENSE.txt</url>
+      <distribution>manual</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>scm:svn:https://dev.schibstedsok.no/svn/search-front-html/trunk/</connection>
+    <url>https://dev.schibstedsok.no/svn/search-front-html/trunk/</url>
+  </scm>
+  <organization>
+    <name>Schibsted Søk AS</name>
+    <url>http://www.sesam.no/</url>
+  </organization>
+  <build>
+    <sourceDirectory>src/java</sourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <defaultGoal>package</defaultGoal>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/conf</directory>
+        <includes>
+          <include>*.xml</include>
+          <include>*.properties</include>
+          <include>*.csv</include>
+          <include>*.txt</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/webapp/dtds</directory>
+        <includes>
+          <include>*.dtd</include>
+        </includes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warSourceDirectory>src/webapp</warSourceDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>axistools-maven-plugin</artifactId>
+        <version>0.7-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>wsdl2java</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>src/wsdl</sourceDirectory>
+          <testCases>false</testCases>
+          <serverSide>false</serverSide>
+          <subPackageByFileName>true</subPackageByFileName>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>2.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>javacc</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <sourceDirectory>${basedir}/src/javacc</sourceDirectory>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <locales>en</locales>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <profiles>
+    <profile>
+      <id>development</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <finalName>ROOT</finalName>
+      </build>
+      <properties>
+        <sesam.site.default>localhost:8080</sesam.site.default>
+        <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
+        <queryServerURL.2>http://localhost:15200</queryServerURL.2>
+        <queryServerURL.1>http://localhost:15100</queryServerURL.1>
+        <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+        <linkpulse.sesam>http://localhost:8080/search/</linkpulse.sesam>
+        <linkpulse.url>http://go.sesam.no/</linkpulse.url>
+        <log.file>sesam.develop</log.file>
+        <linkpulse.enable>false</linkpulse.enable>
+        <log.directory>./logs</log.directory>
+        <tokenevaluator.host>localhost</tokenevaluator.host>
+        <log.level>DEBUG</log.level>
+        <tokenevaluator.port>15400</tokenevaluator.port>
+      </properties>
+    </profile>
+    <profile>
+      <id>test</id>
+      <activation />
+      <build>
+        <finalName>ROOT.test</finalName>
+      </build>
+      <properties>
+        <sesam.site.default>bleedingsearch.schibstedsok.no</sesam.site.default>
+        <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
+        <tradedoubler.form.action>$$url</tradedoubler.form.action>
+        <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+        <queryServerURL.2>http://10.16.195.249:15300</queryServerURL.2>
+        <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
+        <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+        <linkpulse.sesam>http://bleedingsearch.schibstedsok.no/search/</linkpulse.sesam>
+        <linkpulse.url>http://go.sesam.no/</linkpulse.url>
+        <log.file>sesam</log.file>
+        <linkpulse.enable>true</linkpulse.enable>
+        <log.directory>/var/log/tomcat/bleedingsearch</log.directory>
+        <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+        <log.level>DEBUG</log.level>
+        <tokenevaluator.port>15200</tokenevaluator.port>
+      </properties>
+    </profile>
+    <profile>
+      <id>production</id>
+      <activation />
+      <build>
+        <finalName>ROOT.production</finalName>
+      </build>
+      <distributionManagement>
         <repository>
-            <id>Sesam</id>
-            <name>Schibsted Søk's repository</name>
-            <uniqueVersion>true</uniqueVersion>
-            <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2</url>
+          <id>Sesam-Production</id>
+          <name>Schibsted Søk's Production repository</name>
+          <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-production</url>
         </repository>
-        <site>
-            <id>dev443</id>
-            <name>Schibsted Søk's Development Websites</name>
-            <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html</url>
-        </site>
-    </distributionManagement>
-
-    <developers>
-        <developer>
-            <name>Lars Johansson</name>
-            <id>larsjo</id>
-            <email>lars.johansson@conduct.no</email>
-            <organization>Conduct AS</organization>
-            <roles>
-                <role>Front end Developer</role>
-            </roles>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <name>Michael Semb Wever</name>
-            <id>mickw</id>
-            <email>mick@wever.org</email>
-            <organization>Schibsted Søk</organization>
-            <url>http://www.wever.org</url>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <name>Thomas Kjærstad</name>
-            <id>itthkjer</id>
-            <email>itthkjer@sesam.no</email>
-            <organization>Schibsted Søk AS</organization>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <name>Magnus Eklund</name>
-            <id>magnuse</id>
-            <email>magnus.eklund@sesam.no</email>
-            <organization>Schibsted Søk AS</organization>
-            <timezone>+1</timezone>
-        </developer>
-        <developer>
-            <name>Anders Johan Jamtli</name>
-            <id>anders</id>
-            <email>anders.johan.jamtli@sesam.no</email>
-            <organization>Schibsted Søk AS</organization>
-            <timezone>+1</timezone>
-        </developer>
-    </developers>
-
-    <build>
-        <sourceDirectory>src/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
-        <defaultGoal>package</defaultGoal>
-        <resources>
-            <resource>
-                <directory>src/conf</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*.xml</include>
-                    <include>*.properties</include>
-                    <include>*.csv</include>
-                    <include>*.txt</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/webapp/dtds</directory>
-                <includes>
-                    <include>*.dtd</include>
-                </includes>
-            </resource>
-        </resources>
-
-        <plugins>
-
-            <!-- Compiler configuration -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-
-            <!-- WAR plugin configuration -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <warSourceDirectory>src/webapp</warSourceDirectory>
-                </configuration>
-            </plugin>
-
-            <!-- Source generation from wsdl files -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>axistools-maven-plugin</artifactId>
-                <version>0.7-SNAPSHOT</version>
-                <configuration>
-                    <sourceDirectory>src/wsdl</sourceDirectory>
-                    <testCases>false</testCases>
-
-                    <serverSide>false</serverSide>
-                    <subPackageByFileName>true</subPackageByFileName>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>wsdl2java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Parser generator configuration -->
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>javacc-maven-plugin</artifactId>
-                <version>0.6.1-SNAPSHOT</version>
-                <configuration>
-                    <sourceDirectory>src/javacc</sourceDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>javacc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Site internationalisation -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <!-- sure fire plugin failes for locale "no" -->
-                    <locales>en</locales>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <minmemory>128m</minmemory>
-                    <maxmemory>512m</maxmemory>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <profiles>
-  
-        <!-- DEVELOPMENT PROFILE -->
-        <profile>
-            <id>development</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <finalName>ROOT</finalName>
-            </build>
-            <properties>
-            
-                <!-- The default Site -->
-                <sesam.site.default>localhost:8080</sesam.site.default>
-            
-                <!-- QR Servers -->
-
-                <queryServerURL.1>http://localhost:15100</queryServerURL.1>
-                <queryServerURL.2>http://localhost:15200</queryServerURL.2>
-                <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
-
-                <!-- Log4j -->
-
-                <log.directory>./logs</log.directory>
-                <log.file>sesam.develop</log.file>
-                <log.level>DEBUG</log.level>
-
-                <!-- Token Evaluator -->
-
-                <tokenevaluator.host>localhost</tokenevaluator.host>
-                <tokenevaluator.port>15400</tokenevaluator.port>
-      
-                <!-- Linkpulse -->
-
-                <linkpulse.enable>false</linkpulse.enable>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <linkpulse.sesam>http://localhost:8080/search/</linkpulse.sesam>
-
-                <!-- Mail -->
-
-                <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-
-            </properties>
-        </profile>
-    
-        <!-- TEST PROFILE -->
-        <profile>
-            <id>test</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <finalName>ROOT.test</finalName>
-            </build>
-            <properties>
-                <!-- The default Site -->
-                <sesam.site.default>bleedingsearch.schibstedsok.no</sesam.site.default>
-            
-                <!-- QR Servers -->
-
-                <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
-                <queryServerURL.2>http://10.16.195.249:15300</queryServerURL.2>
-                <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
-
-                <!-- Log4j -->
-
-                <log.directory>/var/log/tomcat/bleedingsearch</log.directory>
-                <log.file>sesam</log.file>
-                <log.level>DEBUG</log.level>
-
-                <!-- Token Evaluator -->
-
-                <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
-                <tokenevaluator.port>15200</tokenevaluator.port>
-      
-                <!-- Linkpulse -->
-
-                <linkpulse.enable>true</linkpulse.enable>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <linkpulse.sesam>http://bleedingsearch.schibstedsok.no/search/</linkpulse.sesam>
-
-                <!-- Mail -->
-
-                <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-            
-                <!-- Trade doubler -->
-            
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-        
-            </properties>
-        </profile>
-
-        <!-- PRODUCTION PROFILE -->
-        <profile>
-            <id>production</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <finalName>ROOT.production</finalName>
-            </build>
-            <distributionManagement>
-                <repository>
-                    <id>Sesam-Production</id>
-                    <name>Schibsted Søk's Production repository</name>
-                    <uniqueVersion>true</uniqueVersion>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-production</url>
-                </repository>
-            </distributionManagement>
-            <properties>
-                <!-- The default Site -->
-                <sesam.site.default>sesam.no</sesam.site.default>
-            
-                <!-- QR Servers -->
-
-                <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
-                <queryServerURL.2>http://10.16.195.249:15300</queryServerURL.2>
-                <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
-
-                <!-- Log4j -->
-
-                <log.directory>/var/log/tomcat/www.sesam.no</log.directory>
-                <log.file>sesam</log.file>
-                <log.level>INFO</log.level>
-
-                <!-- Token Evaluator -->
-
-                <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
-                <tokenevaluator.port>15200</tokenevaluator.port>
-      
-                <!-- Linkpulse -->
-
-                <linkpulse.enable>true</linkpulse.enable>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <linkpulse.sesam>http://sesam.no/search/</linkpulse.sesam>
-
-                <!-- Mail -->
-
-                <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-
-                <!-- Trade doubler -->
-            
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-        
-            </properties>
-        </profile>
-    </profiles>
-
-    <repositories>
-        <repository>
-            <id>Sesam</id>
-            <name>Local Maven2 Repository</name>
-            <url>https://dev.schibstedsok.no/maven2</url>
-        </repository>
-        <repository>
-            <id>Central</id>
-            <name>Maven Central Repository</name>
-            <url>http://repo1.maven.org/maven2</url>
-        </repository>
-
-        <repository>
-            <id>SourceForge</id>
-            <name>Sourceforge Maven Repository</name>
-            <url>http://maven-plugins.sourceforge.net/maven</url>
-        </repository>
-        <repository>
-            <id>Maven Snapshots</id>
-            <url>http://snapshots.maven.codehaus.org/maven2/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>Maven Snapshots</id>
-            <url>http://snapshots.maven.codehaus.org/maven2/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>opensymphony</groupId>
-            <artifactId>oscache</artifactId>
-            <version>2.1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.3</version>
-        </dependency>
-
-        <dependency>
-            <groupId>velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>velocity-tools</groupId>
-            <artifactId>velocity-tools-generic</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.4</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jsp-api</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>1.1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-saaj</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-wsdl4j</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>axis</groupId>
-            <artifactId>axis-jaxrpc</artifactId>
-            <version>1.2.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>jep</groupId>
-            <artifactId>jep</artifactId>
-            <version>2.24</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-collections</groupId>
-            <artifactId>commons-collections</artifactId>
-            <version>3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>2.0</version>
-            <type>jar</type>
-        </dependency>
-
-        <!-- Logging -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.4</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.13</version>
-            <type>jar</type>
-        </dependency>
-
-        <!-- Web -->
-        <dependency>
-            <groupId>opensymphony</groupId>
-            <artifactId>sitemesh</artifactId>
-            <version>2.2.1</version>
-            <type>jar</type>
-        </dependency>
-
-        <!-- Indexes APIs -->
-        <dependency>
-            <groupId>fast</groupId>
-            <artifactId>dsapi</artifactId>
-            <version>2.0.45</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>xstream</groupId>
-            <artifactId>xstream</artifactId>
-            <version>1.1.3</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <type>jar</type>
-        </dependency>
-
-        <dependency>
-            <groupId>jug</groupId>
-            <artifactId>jug</artifactId>
-            <version>1.1.2</version>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
-
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>src/checkstyle/schibstedsok_checks.xml</configLocation>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jdepend-maven-plugin</artifactId>
-                <version>2.0-beta-1-SNAPSHOT</version>
-            </plugin>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <charset>UTF-8</charset>
-                    <docencoding>UTF-8</docencoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jxr-maven-plugin</artifactId>
-            </plugin>      
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>surefire-report-maven-plugin</artifactId>
-            </plugin>
-            <!--
-            Uncomment when
-            http://jira.codehaus.org/browse/MEV-362
-            is resolved
-            <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>changelog-maven-plugin</artifactId>
-            </plugin>
-            -->
-        </plugins>
-    </reporting>
-    
+      </distributionManagement>
+      <properties>
+        <sesam.site.default>sesam.no</sesam.site.default>
+        <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
+        <tradedoubler.form.action>$$url</tradedoubler.form.action>
+        <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
+        <queryServerURL.2>http://10.16.195.249:15300</queryServerURL.2>
+        <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
+        <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+        <linkpulse.sesam>http://sesam.no/search/</linkpulse.sesam>
+        <linkpulse.url>http://go.sesam.no/</linkpulse.url>
+        <log.file>sesam</log.file>
+        <linkpulse.enable>true</linkpulse.enable>
+        <log.directory>/var/log/tomcat/www.sesam.no</log.directory>
+        <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
+        <log.level>INFO</log.level>
+        <tokenevaluator.port>15200</tokenevaluator.port>
+      </properties>
+    </profile>
+  </profiles>
+  <repositories>
+    <repository>
+      <id>Sesam</id>
+      <name>Local Maven2 Repository</name>
+      <url>https://dev.schibstedsok.no/maven2</url>
+    </repository>
+    <repository>
+      <id>Central</id>
+      <name>Maven Central Repository</name>
+      <url>http://repo1.maven.org/maven2</url>
+    </repository>
+    <repository>
+      <id>SourceForge</id>
+      <name>Sourceforge Maven Repository</name>
+      <url>http://maven-plugins.sourceforge.net/maven</url>
+    </repository>
+    <repository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots />
+      <id>Maven Snapshots</id>
+      <url>http://snapshots.maven.codehaus.org/maven2/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots />
+      <id>Maven Snapshots</id>
+      <url>http://snapshots.maven.codehaus.org/maven2/</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <dependencies>
+    <dependency>
+      <groupId>opensymphony</groupId>
+      <artifactId>oscache</artifactId>
+      <version>2.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>velocity</groupId>
+      <artifactId>velocity</artifactId>
+      <version>1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>velocity-tools</groupId>
+      <artifactId>velocity-tools-generic</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>taglibs</groupId>
+      <artifactId>standard</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-saaj</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-wsdl4j</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis-jaxrpc</artifactId>
+      <version>1.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>jep</groupId>
+      <artifactId>jep</artifactId>
+      <version>2.24</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <version>3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-httpclient</groupId>
+      <artifactId>commons-httpclient</artifactId>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>log4j</groupId>
+      <artifactId>log4j</artifactId>
+      <version>1.2.13</version>
+    </dependency>
+    <dependency>
+      <groupId>opensymphony</groupId>
+      <artifactId>sitemesh</artifactId>
+      <version>2.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>fast</groupId>
+      <artifactId>dsapi</artifactId>
+      <version>2.0.45</version>
+    </dependency>
+    <dependency>
+      <groupId>xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <version>1.1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+    </dependency>
+    <dependency>
+      <groupId>jug</groupId>
+      <artifactId>jug</artifactId>
+      <version>1.1.2</version>
+    </dependency>
+  </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>${basedir}/src/checkstyle/schibstedsok_checks.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jdepend-maven-plugin</artifactId>
+        <version>2.0-beta-1-SNAPSHOT</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <charset>UTF-8</charset>
+          <docencoding>UTF-8</docencoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jxr-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>surefire-report-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>javacc-maven-plugin</artifactId>
+        <version>2.0</version>
+        <configuration>
+          <sourceDirectory>${basedir}/src/javacc</sourceDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+  <distributionManagement>
+    <repository>
+      <id>Sesam</id>
+      <name>Schibsted Søk's repository</name>
+      <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2</url>
+    </repository>
+    <site>
+      <id>dev443</id>
+      <name>Schibsted Søk's Development Websites</name>
+      <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html</url>
+    </site>
+  </distributionManagement>
 </project>

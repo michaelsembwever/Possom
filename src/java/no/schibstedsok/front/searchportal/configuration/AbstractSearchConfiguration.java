@@ -9,9 +9,7 @@ import no.schibstedsok.front.searchportal.util.SearchConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * A common base class for search configurations.
@@ -19,10 +17,10 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public abstract class AbstractSearchConfiguration implements SearchConfiguration {
+public class AbstractSearchConfiguration implements SearchConfiguration {
 
-    private static final Log LOG = LogFactory.getLog(AbstractSearchConfiguration.class);
-    
+    private static final Logger LOG = Logger.getLogger(AbstractSearchConfiguration.class);
+
     private static final String ERR_FAILED_QUERYTRANSFORMERS_COPY = "Failed to defensively clone QueryTransformers";
 
     private String name;
@@ -40,6 +38,21 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
 
     private String statisticsName;
 
+    public AbstractSearchConfiguration(final SearchConfiguration sc){
+        if(sc != null && sc instanceof AbstractSearchConfiguration){
+            final AbstractSearchConfiguration asc = (AbstractSearchConfiguration) sc;
+            name = asc.name;
+            queryTransformers.addAll(asc.queryTransformers);
+            resultHandlers.addAll(asc.resultHandlers);
+            pageSize = asc.pageSize;
+            resultFields.addAll(asc.resultFields);
+            resultsToReturn = asc.resultsToReturn;
+            isPagingEnabled = asc.isPagingEnabled;
+            child = asc.child;
+            useParameterAsQuery = asc.useParameterAsQuery;
+            isAlwaysRunEnabled = asc.isAlwaysRunEnabled;
+        }
+    }
 
     /**
      * Sets the paging enabled status of this configuration. The default is
@@ -48,9 +61,8 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
      * @param pagingEnabled
      */
     public final void setPagingEnabled(final boolean pagingEnabled) {
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("setPagingEnabled() " + pagingEnabled);
-        }
+
+        LOG.trace("setPagingEnabled() " + pagingEnabled);
         this.isPagingEnabled = pagingEnabled;
     }
 
@@ -62,22 +74,22 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
      * @return queryTransfomer
      */
     public final List<QueryTransformer> getQueryTransformers() {
-        
+
         final List<QueryTransformer> copy = new ArrayList<QueryTransformer>();
-        if( queryTransformers != null ){
+        if(queryTransformers != null){
             try {
-                for( QueryTransformer qt : queryTransformers ){
-                        copy.add( (QueryTransformer)qt.clone() );
+                for(QueryTransformer qt : queryTransformers){
+                        copy.add((QueryTransformer)qt.clone());
                 }
             } catch (CloneNotSupportedException ex) {
                 LOG.error(ERR_FAILED_QUERYTRANSFORMERS_COPY, ex);
             }
         }
-        return Collections.unmodifiableList( copy );
+        return Collections.unmodifiableList(copy);
     }
 
     public final void addQueryTransformer(final QueryTransformer queryTransformer) {
-        if( queryTransformer != null ){
+        if(queryTransformer != null){
             queryTransformers.add(queryTransformer);
         }
     }
@@ -130,14 +142,6 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
         return child;
     }
 
-    public String getRule() {
-        return rule;
-    }
-
-    public int getRuleThreshold() {
-        return ruleThreshold;
-    }
-
     public String getUseParameterAsQuery() {
         return useParameterAsQuery;
     }
@@ -146,11 +150,23 @@ public abstract class AbstractSearchConfiguration implements SearchConfiguration
         return isAlwaysRunEnabled;
     }
 
+    public void setAlwaysRunEnabled(final boolean enable){
+        isAlwaysRunEnabled = enable;
+    }
+
     public void setUseParameterAsQuery(final String useParameterAsQuery) {
         this.useParameterAsQuery = useParameterAsQuery;
     }
 
     public String getStatisticsName() {
         return statisticsName;
+    }
+
+    public void setStatisticsName(final String name){
+        statisticsName = name;
+    }
+    
+    public String toString(){
+        return getClass().getSimpleName() + " [" + name + "]";
     }
 }

@@ -4,6 +4,7 @@ package no.schibstedsok.front.searchportal.configuration;
 import com.thoughtworks.xstream.XStream;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
@@ -16,6 +17,8 @@ import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
+import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
 
 /** SearchMode tests.
  *
@@ -49,6 +52,11 @@ public class SearchModeTest extends TestCase {
         final RunningQuery.Context rqCxt = new RunningQuery.Context() {
             public SearchMode getSearchMode() {
                 return mode;
+            }
+            public SearchTab getSearchTab(){
+                return SearchTabFactory.getTabFactory(
+                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                    .getTabByKey("d");
             }
 
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
@@ -93,7 +101,11 @@ public class SearchModeTest extends TestCase {
             public SearchMode getSearchMode() {
                 return mode;
             }
-
+            public SearchTab getSearchTab(){
+                return SearchTabFactory.getTabFactory(
+                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                    .getTabByKey("d");
+            }
             public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this,resource, properties);
             }

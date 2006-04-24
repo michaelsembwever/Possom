@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
@@ -23,6 +24,8 @@ import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.query.run.RunningQueryImpl;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
+import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
 
 
 /**
@@ -92,7 +95,11 @@ public class WhiteSearchCommandTest extends TestCase {
             public SearchMode getSearchMode() {
                 return mode;
             }
-            
+            public SearchTab getSearchTab(){
+                return SearchTabFactory.getTabFactory(
+                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                    .getTabByKey("w");
+            }
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
@@ -108,6 +115,7 @@ public class WhiteSearchCommandTest extends TestCase {
             public Site getSite() {
                 return Site.DEFAULT;
             }
+            
             
         };
         

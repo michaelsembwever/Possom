@@ -117,4 +117,8 @@ public class AgeCalculatorResultHandler implements ResultHandler {
     public void setTargetField(final String targetField) {
         this.targetField = targetField;
     }
+
+    public void setSourceField(final String string) {
+        sourceField = string;
+    }
 }

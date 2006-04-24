@@ -13,4 +13,12 @@ import java.util.Map;
  */
 public class PicSearchConfiguration extends AbstractSearchConfiguration {
 
+    public PicSearchConfiguration(){
+        super(null);
+    }
+    
+    public PicSearchConfiguration(final SearchConfiguration asc){
+        super(asc);
+    }
+
 }

@@ -152,4 +152,8 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
         regExpFactory = RegExpEvaluatorFactory.valueOf(regExpEvalFactory);
     }
+
+    public void addPrefixes(final String[] pArr) {
+        prefixes.addAll(Arrays.asList(pArr));
+    }
 }

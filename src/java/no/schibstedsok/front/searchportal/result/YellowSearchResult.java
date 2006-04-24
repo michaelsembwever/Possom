@@ -19,6 +19,7 @@ import no.schibstedsok.front.searchportal.result.handler.PhoneNumberChooser;
 import no.schibstedsok.front.searchportal.result.handler.PhoneNumberFormatter;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -179,6 +180,9 @@ public class YellowSearchResult extends FastSearchResult {
 
                 public void addSource(final Modifier modifier) {
                     getSearchCommand().getRunningQuery().addSource(modifier);
+                }
+                public SearchTab getSearchTab(){
+                    return getSearchCommand().getRunningQuery().getSearchTab();
                 }
             };
 

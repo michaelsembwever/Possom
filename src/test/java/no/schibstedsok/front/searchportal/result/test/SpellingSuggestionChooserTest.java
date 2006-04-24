@@ -20,6 +20,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
 
 /**
@@ -266,6 +267,9 @@ public class SpellingSuggestionChooserTest extends TestCase {
             public void addSource(final Modifier modifier) {
                 result.getSearchCommand().getRunningQuery().addSource(modifier);
             }
+                public SearchTab getSearchTab(){
+                    return result.getSearchCommand().getRunningQuery().getSearchTab();
+                }
 
         };
         chooser.handleResult(resultHandlerContext, new HashMap());

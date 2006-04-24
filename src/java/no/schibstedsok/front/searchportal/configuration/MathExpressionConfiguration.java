@@ -9,4 +9,11 @@ package no.schibstedsok.front.searchportal.configuration;
  */
 public class MathExpressionConfiguration extends AbstractSearchConfiguration {
 
+    public MathExpressionConfiguration(){
+        super(null);
+    }
+
+    public MathExpressionConfiguration(final SearchConfiguration asc){
+        super(asc);
+    }
 }

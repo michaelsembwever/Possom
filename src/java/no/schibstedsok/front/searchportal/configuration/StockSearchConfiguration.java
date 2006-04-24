@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * StockSearchConfiguration.java
  *
@@ -11,8 +12,12 @@ package no.schibstedsok.front.searchportal.configuration;
  */
 public class StockSearchConfiguration extends AbstractSearchConfiguration {
 
-    /** Creates a new instance of StockSearchConfiguration */
-    public StockSearchConfiguration() {
+    public StockSearchConfiguration(){
+        super(null);
+    }
+
+    public StockSearchConfiguration(final SearchConfiguration asc){
+        super(asc);
     }
 
 }

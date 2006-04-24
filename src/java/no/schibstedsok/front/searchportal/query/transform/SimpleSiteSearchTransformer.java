@@ -73,6 +73,10 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
         }
         return null;
     }
+    
+    public void setParameterName(final String pn){
+        parameterName = pn;
+    }
 
     public Object clone() throws CloneNotSupportedException {
         final SimpleSiteSearchTransformer retValue = (SimpleSiteSearchTransformer)super.clone();

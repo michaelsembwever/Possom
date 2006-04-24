@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
@@ -29,6 +30,9 @@ import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoade
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
+import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
+import org.apache.log4j.Logger;
 
 /** Fast navigation tests.
  *
@@ -36,6 +40,8 @@ import no.schibstedsok.front.searchportal.site.Site;
  * @version <tt>$Revision$</tt>
  */
 public final class FastNavigatorsTest extends TestCase {
+    
+    private static final Logger LOG = Logger.getLogger(FastNavigatorsTest.class);
 
     FastConfiguration config;
     MockupResultHandler resultHandler;
@@ -387,13 +393,17 @@ public final class FastNavigatorsTest extends TestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        final FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+        {
+            final FastSearchCommand command1
+                    = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+            command1.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
-        final FastSearchResult result = (FastSearchResult) command.call();
+            final FastSearchResult result = (FastSearchResult) command1.call();
 
-        assertEquals("Oslo", command.getNavigatorTitle("geographic"));
+            LOG.info("command.getNavigatorTitle(geographic): " + command1.getNavigatorTitle("geographic"));
+            assertEquals("Oslo", command1.getNavigatorTitle("geographic"));
+        }
+        
 
         navigated[0] = "ywkommunenavigator";
 
@@ -406,10 +416,17 @@ public final class FastNavigatorsTest extends TestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue2);
+        
+        {
+            final FastSearchCommand command2
+                    = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+            command2.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
-        command.call();
+            command2.call();
 
-        assertEquals("Oslokommune", command.getNavigatorTitle("geographic"));
+            LOG.info("command.getNavigatorTitle(geographic): " + command2.getNavigatorTitle("geographic"));
+            assertEquals("Oslokommune", command2.getNavigatorTitle("geographic"));
+        }
     }
 
     public void tBackLinks() {
@@ -513,7 +530,11 @@ public final class FastNavigatorsTest extends TestCase {
             public SearchMode getSearchMode() {
                 return mode;
             }
-
+            public SearchTab getSearchTab(){
+                return SearchTabFactory.getTabFactory(
+                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                    .getTabByKey("d");
+            }
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }

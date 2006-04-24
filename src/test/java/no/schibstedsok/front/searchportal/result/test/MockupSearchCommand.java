@@ -3,6 +3,7 @@ package no.schibstedsok.front.searchportal.result.test;
 
 import com.thoughtworks.xstream.XStream;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
@@ -17,6 +18,8 @@ import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoade
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.XStreamLoader;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
+import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
 
 /** Create a Mockup SearchCommand.
  *
@@ -32,7 +35,11 @@ public class MockupSearchCommand implements SearchCommand {
         public SearchMode getSearchMode() {
             return mode;
         }
-
+        public SearchTab getSearchTab(){
+                return SearchTabFactory.getTabFactory(
+                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                    .getTabByKey("d");
+            }
         public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
             return FileResourceLoader.newPropertiesLoader(this, resource, properties);
         }

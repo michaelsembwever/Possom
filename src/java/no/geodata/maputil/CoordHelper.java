@@ -70,7 +70,9 @@ public class CoordHelper {
      * @return Vector containing MapPoint objects.
      */
     public Vector parseCoordString(String sCoord) {
-        Vector vMapPoint = new Vector();
+
+        sCoord = sCoord == null ? "" : sCoord; // avoid NullPointerExceptions further down.
+        final Vector vMapPoint = new Vector();
         int i = 0;
         int j = 0;
         int k = 0;

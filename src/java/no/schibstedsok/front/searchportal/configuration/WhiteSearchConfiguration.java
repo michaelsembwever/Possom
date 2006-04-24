@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * WhiteSearchConfiguration.java
  *
@@ -12,4 +13,12 @@ package no.schibstedsok.front.searchportal.configuration;
  * @author magnuse
  */
 public class WhiteSearchConfiguration extends FastConfiguration {
+
+    public WhiteSearchConfiguration(){
+        super(null);
+    }
+
+    public WhiteSearchConfiguration(final SearchConfiguration asc){
+        super(asc);
+    }
 }

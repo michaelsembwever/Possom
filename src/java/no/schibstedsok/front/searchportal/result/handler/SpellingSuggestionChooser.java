@@ -177,4 +177,32 @@ public class SpellingSuggestionChooser implements ResultHandler {
             }
         }
     }
+
+    public void setMinScore(int i) {
+        minimumScore = i;
+    }
+
+    public void setMaxSuggestions(int i) {
+        maxSuggestions = i;
+    }
+
+    public void setMaxDistance(int i) {
+        maxDistance = i;
+    }
+
+    public void setMuchBetter(int i) {
+        muchBetter = i;
+    }
+
+    public void setLongQuery(int i) {
+        longQuery = i;
+    }
+
+    public void setVeryLongQuery(int i) {
+        veryLongQuery = i;
+    }
+
+    public void setLongQueryMaxSuggestions(int i) {
+        maxSuggestionsForLongQueries = i;
+    }
 }

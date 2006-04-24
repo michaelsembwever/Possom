@@ -1,12 +1,11 @@
 /*
  * Copyright (2005-2006) Schibsted Søk AS
  */
-package no.schibstedsok.front.searchportal.analyzer.test;
+package no.schibstedsok.front.searchportal.analyzer;
 
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
 
-import no.schibstedsok.front.searchportal.analyzer.AnalysisRule;
 import junit.framework.TestCase;
 
 /**

@@ -34,18 +34,13 @@ public abstract class AbstractRunningQuery implements RunningQuery {
      * @param query that may conaint duplicate spaces
      * @return string with duplicate spaces removed
      */
-    protected static String trimDuplicateSpaces(String query){
+    protected static String trimDuplicateSpaces(final String query){
 
         LOG.trace("trimDuplicateSpaces(" + query + ")");
 
-        if(query == null){ return null; }
-        
-        if("".equals(query)) { return ""; }
-
-        //query = query.trim();
-        query = query.replaceAll("\\s+", " ");
-
-        return query;
+        return query == null 
+                ? null
+                : query.replaceAll("\\s+", " ").trim();
     }
 
 }

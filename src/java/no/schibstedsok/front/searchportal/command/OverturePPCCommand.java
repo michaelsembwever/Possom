@@ -83,12 +83,12 @@ private static final String SITE_SEARCH_PARTNER_ID = "schibstedsok_xml_no_search
         // could have prevented exact matching in the previous evaluation.
         final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
                 TokenEvaluatorFactoryImpl.Context.class,
-                    context,
                     new QueryStringContext() {
                         public String getQueryString() {
                             return getTransformedQuery();
                         }
-                    }
+                    },
+                    context
         );
 
         final TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);

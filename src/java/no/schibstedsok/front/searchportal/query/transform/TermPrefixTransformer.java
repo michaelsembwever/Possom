@@ -30,10 +30,7 @@ public final class TermPrefixTransformer extends AbstractQueryTransformer {
 
     private String numberPrefix;
     private String prefix;
-    
-    /** Just for tests **/
-    TermPrefixTransformer(){}
-    
+
     /**
      * This is th default fallback. Adds the prefix in the <code>prefix</code>
      * property
@@ -45,7 +42,7 @@ public final class TermPrefixTransformer extends AbstractQueryTransformer {
             addPrefix(clause, getPrefix());
         }
     }
-    
+
     /**
      * Add prefix to an integer clause.
      *
@@ -166,7 +163,7 @@ public final class TermPrefixTransformer extends AbstractQueryTransformer {
     private Map getTransformedTerms() {
         return getContext().getTransformedTerms();
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         final TermPrefixTransformer retValue = (TermPrefixTransformer)super.clone();
         retValue.numberPrefix = numberPrefix;

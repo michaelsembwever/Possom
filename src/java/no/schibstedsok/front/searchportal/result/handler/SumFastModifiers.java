@@ -22,9 +22,20 @@ public class SumFastModifiers implements ResultHandler {
     private String navigatorName;
     private Collection modifierNames = new ArrayList();
 
+    public SumFastModifiers(){}
+
     public SumFastModifiers(final String targetModifier, final String navigatorName) {
         this.targetModifier = targetModifier;
         this.navigatorName = navigatorName;
+    }
+
+
+    public void setTargetModifier(final String targetModifier){
+        this.targetModifier = targetModifier;
+    }
+
+    public void setNavigatorName(final String nm){
+        navigatorName = nm;
     }
 
     public void addModifierName(final String modifierName) {
