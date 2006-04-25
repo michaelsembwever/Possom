@@ -29,8 +29,15 @@ public class TvEnrichmentDateFormatHandler implements ResultHandler {
         this.targetField = targetField;
     }
 
+    public void setSourceField(final String sourceField) {
+       this.sourceField = sourceField;
+    }
+
+    public String getSourceField() {
+        return sourceField;
+    }
+    
     public void handleResult(final Context cxt, final Map parameters) {
-    	// TODO: for performance reasons, is SimpleDateFormat usage avoidable?
     	final SimpleDateFormat inputDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         final SimpleDateFormat outputDF = new SimpleDateFormat("HH:mm");
 
@@ -45,4 +52,5 @@ public class TvEnrichmentDateFormatHandler implements ResultHandler {
             }
         }
     }
+
 }

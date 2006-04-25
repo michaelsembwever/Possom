@@ -581,6 +581,10 @@
                 <decorator:getProperty property="page.picture-results"/>
                 <%}%>
 
+                <%if (currentC.equals("t")) {%>
+                <decorator:getProperty property="page.tv-results"/>
+                <%}%>
+
             </td>
 
 	    <%if (q.trim().equals("")) {%>

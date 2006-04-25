@@ -611,6 +611,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
                         sfm.setNavigatorName(rh.getAttribute("navigation"));
                         sfm.setTargetModifier(rh.getAttribute("target"));
                         break;
+                    case TV:
+                        final TvEnrichmentDateFormatHandler dh = (TvEnrichmentDateFormatHandler) handler;
+                        dh.setSourceField(rh.getAttribute("source"));
+                        dh.setTargetField(rh.getAttribute("target"));
+                        break;
                 }
 
                 return handler;
