@@ -74,8 +74,8 @@
 </head>
 
 
-<body onload="<%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("wip")) {%>init();<%}%>">
-
+<body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") ) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
+     
 
     <% // sitesearch
     final VelocityEngine engine = VelocityResultHandler.getEngine(site);
