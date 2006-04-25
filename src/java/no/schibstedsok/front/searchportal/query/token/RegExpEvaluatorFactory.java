@@ -5,7 +5,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.LocalEntityResolver;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
@@ -77,7 +76,6 @@ public final class RegExpEvaluatorFactory {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(new LocalEntityResolver());
         loader = context.newDocumentLoader(SearchConstants.REGEXP_EVALUATOR_XMLFILE, builder);
 
         INSTANCES.put(context.getSite(), this);

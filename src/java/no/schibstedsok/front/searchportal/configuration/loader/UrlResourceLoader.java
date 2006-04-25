@@ -66,6 +66,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             final DocumentBuilder builder) {
 
         final DocumentLoader dl = new UrlResourceLoader(siteCxt);
+        builder.setEntityResolver(new LocalEntityResolver());
         dl.init(resource, builder);
         return dl;
     }
@@ -211,10 +212,6 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             }
         }
         return success;
-    }
-
-    public static PropertiesLoader newPropertiesLoader(BaseContext baseContext, String resource, Properties properties) {
-        return null;
     }
 
 }

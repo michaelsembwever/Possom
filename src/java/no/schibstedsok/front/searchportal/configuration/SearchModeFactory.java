@@ -19,7 +19,6 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.LocalEntityResolver;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
@@ -140,7 +139,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        builder.setEntityResolver(new LocalEntityResolver());
         loader = context.newDocumentLoader(SearchConstants.MODES_XMLFILE, builder);
 
         // update the store of factories

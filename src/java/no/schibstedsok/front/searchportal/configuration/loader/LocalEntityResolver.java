@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 
-public final class LocalEntityResolver implements EntityResolver {
+final class LocalEntityResolver implements EntityResolver {
 
     private static final Logger LOG = Logger.getLogger(LocalEntityResolver.class);
     private static final String INFO_LOADING_DTD = "Loading local DTD ";
@@ -18,7 +18,8 @@ public final class LocalEntityResolver implements EntityResolver {
 
     public InputSource resolveEntity(final String publicId, final String systemId) {
 
-        if (systemId.startsWith("http://sesam.no/dtds/")) {
+        // the latter is only for development purposes when dtds have't been published to production yet
+        if (systemId.startsWith("http://sesam.no/dtds/") || systemId.startsWith("http://localhost")) {
             
             final String rsc = systemId.substring(systemId.lastIndexOf('/'));
             LOG.info(INFO_LOADING_DTD + rsc);

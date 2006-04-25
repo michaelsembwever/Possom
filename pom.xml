@@ -96,6 +96,16 @@
         </includes>
       </resource>
       <resource>
+        <filtering>true</filtering>
+        <directory>src/main/conf</directory>
+        <includes>
+          <include>*.xml</include>
+          <include>*.properties</include>
+          <include>*.csv</include>
+          <include>*.txt</include>
+        </includes>
+      </resource>
+      <resource>
         <directory>src/webapp/dtds</directory>
         <includes>
           <include>*.dtd</include>

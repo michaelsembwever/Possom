@@ -57,6 +57,7 @@ public final class FileResourceLoader extends AbstractResourceLoader {
             final DocumentBuilder builder) {
 
         final DocumentLoader dl = new FileResourceLoader(siteCxt);
+        builder.setEntityResolver(new LocalEntityResolver());
         dl.init(resource, builder);
         return dl;
     }
