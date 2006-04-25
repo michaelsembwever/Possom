@@ -395,22 +395,26 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
                 // query transformers
                 final NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);
-                for( QueryTransformerTypes qtType : QueryTransformerTypes.values()){
-                    final NodeList qtList = qtRootElement.getElementsByTagName(qtType.getXmlName());
-                    for( int i = 0 ; i < qtList.getLength(); ++i ){
-                        final Element qt = (Element) qtList.item(i);
-                        sc.addQueryTransformer(qtType.parseQueryTransformer(qt));
+                if( qtRootElement != null ){
+                    for( QueryTransformerTypes qtType : QueryTransformerTypes.values()){
+                        final NodeList qtList = qtRootElement.getElementsByTagName(qtType.getXmlName());
+                        for( int i = 0 ; i < qtList.getLength(); ++i ){
+                            final Element qt = (Element) qtList.item(i);
+                            sc.addQueryTransformer(qtType.parseQueryTransformer(qt));
+                        }
                     }
                 }
 
                 // result handlers
                 final NodeList rhNodeList = commandE.getElementsByTagName("result-handler");
                 final Element rhRootElement = (Element) rhNodeList.item(0);
-                for( ResultHandlerTypes rhType : ResultHandlerTypes.values()){
-                    final NodeList rhList = rhRootElement.getElementsByTagName(rhType.getXmlName());
-                    for( int i = 0 ; i < rhList.getLength(); ++i ){
-                        final Element rh = (Element) rhList.item(i);
-                        sc.addResultHandler(rhType.parseResultHandler(rh));
+                if( rhRootElement != null ){
+                    for( ResultHandlerTypes rhType : ResultHandlerTypes.values()){
+                        final NodeList rhList = rhRootElement.getElementsByTagName(rhType.getXmlName());
+                        for( int i = 0 ; i < rhList.getLength(); ++i ){
+                            final Element rh = (Element) rhList.item(i);
+                            sc.addResultHandler(rhType.parseResultHandler(rh));
+                        }
                     }
                 }
 
