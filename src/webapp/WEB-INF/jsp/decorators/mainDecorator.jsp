@@ -16,6 +16,7 @@
 <%@ page import="org.apache.velocity.Template"%>
 <%@ page import="org.apache.velocity.VelocityContext"%>
 <%@ page import="org.apache.velocity.app.VelocityEngine"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%
@@ -44,6 +45,7 @@
     final int enrichmentSize = enrichments.size();
 
     final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
+    pageContext.setAttribute("siteMeshPage", siteMeshPage);
 
     final RunningQuery query = (RunningQuery) request.getAttribute("query");
     final List sources = query.getSources();
@@ -506,90 +508,38 @@
                              <%  } else { %>
 
                                 <decorator:getProperty property="page.main_ads"/>
-                             <!--
-                                  Enrichments debugging:
-
-                                   <%
-                                     for (Iterator i = enrichments.iterator(); i.hasNext();) {
-                                         Enrichment ee = (Enrichment) i.next();
-
-                                         %>
-                                    <%= ee.getName() %>
-                                    <%= ee.getAnalysisResult() %>
-                                    <%
-                                     }
-                                   %>
-                             -->
+                                
+                             <!-- Enrichments on top: <c:out value="${tab.enrichmentOnTop}"/>
+                                  Enrichments in total: <c:out value="${tab.enrichmentLimit}"/>
+                                   <c:forEach var="ee" items="${enrichments}">
+                                       <c:out value="${ee.name}"/>: <c:out value="${ee.analysisResult}"/>
+                                   </c:forEach> -->
 
                               <decorator:getProperty property="page.globalSearchTips" />
 
-                                <%-- Display enrichments in order --%>
-                                <% if ( enrichmentSize > 1 ) { %>
-
-
-                                   <%
-                                     for (Iterator i = enrichments.iterator(); i.hasNext();) {
-                                         Enrichment ee = (Enrichment) i.next();
-
-                                         if (ee.getAnalysisResult() >= 85) {
-                                             String el = siteMeshPage.getProperty("page." + ee.getName());
-                                   %>
-                                   <%= el == null ? "" : el %>
-                                   <% } } %>
-
-                                    <%--  Shows the 3 first hits if more than 1 enrichment  --%>
-                                    <decorator:getProperty property="page.fast-results-norwegian_part1"/>
-
-                                       <%
-                                         for (Iterator i = enrichments.iterator(); i.hasNext();) {
-                                             Enrichment ee = (Enrichment) i.next();
-
-                                             if (ee.getAnalysisResult() < 85) {
-                                                 String el = siteMeshPage.getProperty("page." + ee.getName());
-                                       %>
-                                       <%= el == null ? "" : el %>
-                                       <% } } %>
-
-                                        <%--  Shows the 7 next hits after the second/third enrichments  --%>
-                                        <decorator:getProperty property="page.fast-results-norwegian_part2"/>
-
-
-                                <% } else { %>  <%-- one or zero enrichment --%>
-
-                                        <% if (enrichmentSize == 1) { %>
-
-                                            <% if (no_hits > 0) { %>
-                                                    <%
-                                                        Enrichment enrichment = (Enrichment) enrichments.get(0);
-                                                        String enrichment1 = siteMeshPage.getProperty("page." + enrichment.getName());{
-                                                    } %>
-                                                    <% if (enrichment.getAnalysisResult() >= 85) { %>
-                                                            <%= enrichment1 == null ? "" : enrichment1 %>
-                                                            <decorator:getProperty property="page.fast-results"/>
-                                                    <% } else { %>
-                                                           <decorator:getProperty property="page.fast-results-norwegian_part1"/>
-                                                           <%= enrichment1 == null ? "" : enrichment1 %>
-                                                           <decorator:getProperty property="page.fast-results-norwegian_part2"/>
-                                                    <%  } %>
-                                            <% } else { %>
-                                                    <%
-                                                        Enrichment enrichment = (Enrichment) enrichments.get(0);
-                                                        String enrichment1 = siteMeshPage.getProperty("page." + enrichment.getName());{
-                                                    } %>
-                                                    <%= enrichment1 == null ? "" : enrichment1 %>
-                                            <% } %>
-
-
-                                        <% } else { %>  <%-- Display enrichments in order --%>
-
-                                                <% if (no_hits > 0) { %>
-                                                    <%--  shows the result as usual if 1 or less enrichments  --%>
-                                                    <decorator:getProperty property="page.fast-results"/>
-                                                <% } else if(!q.trim().equals("")){%>
-                                                    <decorator:getProperty property="page.noHits"/>
-                                                <% } %>
-                                        <% } %>
-                                    <% } %>
+                         <%-- Display enrichments in order --%>
+                         
+                               <%-- Show tab's leading enrichments --%>
+                               <c:forEach var="ee" items="${enrichments}" varStatus="i">
+                                   <c:if test="${i.index < tab.enrichmentOnTop}">
+                                       <c:set var="pageName" value="page.${ee.name}"/>
+                                       <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
+                                   </c:if>
+                               </c:forEach>
+                               
+                               <%--  Shows the 3 first hits if more than 1 enrichment  --%>
+                               <decorator:getProperty property="page.fast-results-norwegian_part1"/>
+                               
+                               <%-- Show tab's proceeding enrichments --%>
+                               <c:forEach var="ee" items="${enrichments}" varStatus="i">
+                                   <c:if test="${i.index >= tab.enrichmentOnTop && i.index < tab.enrichmentLimit}">
+                                       <c:set var="pageName" value="page.${ee.name}"/>
+                                       <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
+                                   </c:if>
+                               </c:forEach>
+                               
+                               <%--  Shows the 7 next hits after the second/third enrichments  --%>
+                               <decorator:getProperty property="page.fast-results-norwegian_part2"/>
 
                             <% } %>
                         </td>
