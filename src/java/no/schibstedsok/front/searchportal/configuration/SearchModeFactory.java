@@ -406,7 +406,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
                 }
 
                 // result handlers
-                final NodeList rhNodeList = commandE.getElementsByTagName("result-handler");
+                final NodeList rhNodeList = commandE.getElementsByTagName("result-handlers");
                 final Element rhRootElement = (Element) rhNodeList.item(0);
                 if( rhRootElement != null ){
                     for( ResultHandlerTypes rhType : ResultHandlerTypes.values()){
