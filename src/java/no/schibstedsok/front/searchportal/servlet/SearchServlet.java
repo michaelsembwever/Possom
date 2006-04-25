@@ -166,6 +166,7 @@ public final class SearchServlet extends HttpServlet {
                 QueryStringHelper.safeGetParameter(httpServletRequest, "q"));
         }
 
+        httpServletRequest.setAttribute("tab", searchTab);
         httpServletRequest.setAttribute("c", searchTabKey);
 
         try {
