@@ -1,5 +1,5 @@
 <%-- Copyright (2006) Schibsted Søk AS --%>
-<%@ page import="no.schibstedsok.front.searchportal.configuration.XMLSearchTabsCreator"%>
+<%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
 <%@ page import="no.schibstedsok.front.searchportal.output.VelocityResultHandler"%>
 <%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
 <%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
@@ -28,8 +28,8 @@
         template.merge(context, out);
     }else{
 
-        final java.util.Properties props = XMLSearchTabsCreator.valueOf(site).getProperties();
-        final Linkpulse linkpulse = new Linkpulse(XMLSearchTabsCreator.valueOf(site).getProperties());
+        final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
+        final Linkpulse linkpulse = new Linkpulse(props);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
