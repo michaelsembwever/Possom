@@ -36,16 +36,12 @@ import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Logger;
-
 
 /**
  * A search command that uses FAST's msearch API.
@@ -54,7 +50,7 @@ import org.apache.log4j.Logger;
  */
 public final class MobileSearchCommand extends AbstractSearchCommand {
     
-    private static final Log LOG = Logger.getLog(MobileSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(MobileSearchCommand.class);
     
     private static final String PERSONALIZATION_GROUP = "aspiro-sesam1";
     private static final String USER_AGENT_PARAMETER="ua";
