@@ -613,8 +613,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
                         break;
                     case TV:
                         final TvEnrichmentDateFormatHandler dh = (TvEnrichmentDateFormatHandler) handler;
-                        dh.setSourceField(rh.getAttribute("source"));
                         dh.setTargetField(rh.getAttribute("target"));
+                        dh.setSourceField(rh.getAttribute("source"));
                         break;
                 }
 

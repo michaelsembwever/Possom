@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="placeholderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >
+		<property name="location" value="classpath:msearch-client.properties" />
+	</bean>
+	
+	<!--
+	   - The 'mSearchHttpInvoker' bean stores a local representation of the 
+	   - client-side proxy in order to circumvent accessing the bean factory.
+	   -->
+	<bean id="mSearchRemoteService" class="no.fast.msearch.search.http.HttpInvokerService" >
+		<constructor-arg ref="${msearch.remote.service}" />
+	</bean>
+	
+	<!--
+	   - Spring defines a proxy for the target service, which is used by the client. The definition
+	   - includes; the proxy factory class name, the HTTP URI ot the target service, and the exposed
+	   - service interface.
+	   -->
+	<bean id="mSearchHttpInvokerProxy" class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean" >
+		<!--
+		   - The URL comprises hostname:port/webapp-path/bean-id	
+		   -->
+		<property name="serviceUrl" value="http://${msearch.hostname}:${msearch.port}/${msearch.webApplicationPath}/msearchServiceHttpInvoker.esp" />
+		<property name="serviceInterface" value="no.fast.msearch.search.IMSearchEngine" />
+	</bean>
+
+</beans>

@@ -11,6 +11,7 @@ package no.schibstedsok.front.searchportal.command.impl;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.MathExpressionCommand;
+import no.schibstedsok.front.searchportal.command.MobileSearchCommand;
 import no.schibstedsok.front.searchportal.command.NewsSearchCommand;
 import no.schibstedsok.front.searchportal.command.OverturePPCCommand;
 import no.schibstedsok.front.searchportal.command.PicSearchCommand;
@@ -21,6 +22,7 @@ import no.schibstedsok.front.searchportal.command.WhiteSearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration;
+import no.schibstedsok.front.searchportal.configuration.MobileSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.NewsSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration;
 import no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration;
@@ -65,15 +67,17 @@ public final class SearchCommandFactory {
             return new NewsSearchCommand(cxt, parameters);
         } else if (config instanceof FastConfiguration) {
             return new FastSearchCommand(cxt, parameters);
-        }  else if (config instanceof MathExpressionConfiguration) {
+        } else if (config instanceof MathExpressionConfiguration) {
             return new MathExpressionCommand(cxt, parameters);
-        }  else if (config instanceof OverturePPCConfiguration) {
+        } else if (config instanceof OverturePPCConfiguration) {
             return new OverturePPCCommand(cxt, parameters);
         } else if (config instanceof PicSearchConfiguration) {
             return new PicSearchCommand(cxt, parameters);
-        }  else if (config instanceof SensisSearchConfiguration) {
+        } else if (config instanceof SensisSearchConfiguration) {
             return new FastSearchCommand(cxt, parameters);
-        } 
+        } else if (config instanceof MobileSearchConfiguration)  {
+            return new MobileSearchCommand(cxt, parameters);
+        }
         throw new UnsupportedOperationException("Cannot find suitable command for " + config.getName());
     }
 }
