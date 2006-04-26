@@ -120,4 +120,8 @@ public class MockupNavigator implements INavigator {
     public int compareTo(Object o) {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
     }
+
+    public int getFrequencyError() {
+        return 0;
+    }
 }
