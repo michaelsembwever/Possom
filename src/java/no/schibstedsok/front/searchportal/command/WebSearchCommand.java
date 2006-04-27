@@ -52,28 +52,4 @@ public class WebSearchCommand extends FastSearchCommand {
     }
 
 
-    /**
-     * LeafClause
-     *
-     * A leaf clause with a site field does not add anything to the query.
-     *
-     */
-    protected void visitImpl(final LeafClause clause) {
-        if (!hasSiteField(clause)) {
-            super.visitImpl(clause);
-        }
-    }
-
-    /**
-     * PhraseClause
-     *
-     * A phrase with a site field does not add anything to the query.
-     *
-     */
-    protected void visitImpl(final PhraseClause clause) {
-        if (!hasSiteField(clause)) {
-            super.visitImpl(clause);
-        }
-    }
-
 }
