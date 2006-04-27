@@ -549,7 +549,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             
             final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
             if (fieldFilters.containsKey(clause.getField())) {
-                appendSiteFilter(clause);
+                appendFilter(clause);
             }
         }
 
@@ -557,7 +557,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             
             final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
             if (fieldFilters.containsKey(clause.getField())) {
-                appendSiteFilter(clause);
+                appendFilter(clause);
             }
         }
 
@@ -580,10 +580,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getFirstClause().accept(this);
         }
 
-        private final void appendSiteFilter(final LeafClause clause) {
+        private final void appendFilter(final LeafClause clause) {
             
             final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
-            filterBuilder.append(" +" + fieldFilters.get(clause.getField()) + ":" + clause.getTerm());
+            if( "site".equals(clause.getField())){
+                // site fields do not accept quotes
+                final String term = clause.getTerm().replaceAll("\"","");
+                filterBuilder.append(" +" + fieldFilters.get(clause.getField()) + ":" + term);
+            }else{
+                filterBuilder.append(" +" + fieldFilters.get(clause.getField()) + ":" + clause.getTerm());
+            }
         }
     }
 
