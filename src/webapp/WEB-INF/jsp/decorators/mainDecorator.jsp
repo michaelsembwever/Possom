@@ -43,6 +43,7 @@
 
     final List enrichments = (List) request.getAttribute("enrichments");
     final int enrichmentSize = enrichments.size();
+    pageContext.setAttribute("enrichmentSize", enrichmentSize);
 
     final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
     pageContext.setAttribute("siteMeshPage", siteMeshPage);
@@ -55,6 +56,7 @@
 
     if (hits != null) {
         no_hits = hits.intValue();
+        pageContext.setAttribute("no_hits", hits);
     }
 
     String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
@@ -508,38 +510,47 @@
                              <%  } else { %>
 
                                 <decorator:getProperty property="page.main_ads"/>
+
+                             <c:choose>
+                                 <c:when test="${no_hits >0 || enrichmentSize >0}">
                                 
-                             <!-- Enrichments on top: <c:out value="${tab.enrichmentOnTop}"/>
-                                  Enrichments in total: <c:out value="${tab.enrichmentLimit}"/>
-                                   <c:forEach var="ee" items="${enrichments}">
-                                       <c:out value="${ee.name}"/>: <c:out value="${ee.analysisResult}"/>
-                                   </c:forEach> -->
+                                     <!--  Enrichments on top: <c:out value="${tab.enrichmentOnTop}"/>
+                                          Enrichments in total: <c:out value="${tab.enrichmentLimit}"/>
+                                           <c:forEach var="ee" items="${enrichments}">
+                                               <c:out value="${ee.name}"/>: <c:out value="${ee.analysisResult}"/>
+                                           </c:forEach> -->
 
-                              <decorator:getProperty property="page.globalSearchTips" />
+                                      <decorator:getProperty property="page.globalSearchTips" />
 
-                         <%-- Display enrichments in order --%>
-                         
-                               <%-- Show tab's leading enrichments --%>
-                               <c:forEach var="ee" items="${enrichments}" varStatus="i">
-                                   <c:if test="${i.index < tab.enrichmentOnTop}">
-                                       <c:set var="pageName" value="page.${ee.name}"/>
-                                       <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
-                                   </c:if>
-                               </c:forEach>
+                                     <%-- Display enrichments in order --%>
+
+                                       <%-- Show tab's leading enrichments --%>
+                                       <c:forEach var="ee" items="${enrichments}" varStatus="i">
+                                           <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult >= tab.enrichmentOnTopScore}">
+                                               <c:set var="pageName" value="page.${ee.name}"/>
+                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
+                                           </c:if>
+                                       </c:forEach>
+
+                                       <%--  Shows the 3 first hits if more than 1 enrichment  --%>
+                                       <decorator:getProperty property="page.fast-results-norwegian_part1"/>
+
+                                       <%-- Show tab's proceeding enrichments --%>
+                                       <c:forEach var="ee" items="${enrichments}" varStatus="i">
+                                           <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult < tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
+                                               <c:set var="pageName" value="page.${ee.name}"/>
+                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
+                                           </c:if>
+                                       </c:forEach>
+
+                                       <%--  Shows the 7 next hits after the second/third enrichments  --%>
+                                       <decorator:getProperty property="page.fast-results-norwegian_part2"/>
                                
-                               <%--  Shows the 3 first hits if more than 1 enrichment  --%>
-                               <decorator:getProperty property="page.fast-results-norwegian_part1"/>
-                               
-                               <%-- Show tab's proceeding enrichments --%>
-                               <c:forEach var="ee" items="${enrichments}" varStatus="i">
-                                   <c:if test="${i.index >= tab.enrichmentOnTop && i.index < tab.enrichmentLimit}">
-                                       <c:set var="pageName" value="page.${ee.name}"/>
-                                       <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
-                                   </c:if>
-                               </c:forEach>
-                               
-                               <%--  Shows the 7 next hits after the second/third enrichments  --%>
-                               <decorator:getProperty property="page.fast-results-norwegian_part2"/>
+                                 </c:when>
+                                 <c:otherwise>
+                                     <decorator:getProperty property="page.noHits" />
+                                 </c:otherwise>
+                             </c:choose>
 
                             <% } %>
                         </td>
