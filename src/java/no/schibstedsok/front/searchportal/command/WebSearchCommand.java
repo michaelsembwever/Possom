@@ -24,9 +24,6 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor
  */
 public class WebSearchCommand extends FastSearchCommand {
 
-    private static final String FAST_SITE_FILTER_PREFIX = "site";
-    private static final String SESAM_SITE_PREFIX = "site";
-
     /** Creates a new instance of WebSearchCommand
      *
      * @param cxt Search command context.
@@ -36,7 +33,7 @@ public class WebSearchCommand extends FastSearchCommand {
         super(cxt, parameters);
     }
 
-    private StringBuffer filterBuilder = null;
+    
 
     /**
      *
@@ -52,91 +49,5 @@ public class WebSearchCommand extends FastSearchCommand {
         }
     }
 
-    /**
-     * LeafClause
-     *
-     * A leaf clause with a site field does not add anything to the query.
-     *
-     */
-    protected void visitImpl(final LeafClause clause) {
-        if (!hasSiteField(clause)) {
-            super.visitImpl(clause);
-        }
-    }
-
-    /**
-     * PhraseClause
-     *
-     * A phrase with a site field does not add anything to the query.
-     *
-     */
-    protected void visitImpl(final PhraseClause clause) {
-        if (!hasSiteField(clause)) {
-            super.visitImpl(clause);
-        }
-    }
-
-    protected String getAdditionalFilter() {
-        synchronized (this) {
-            if (filterBuilder == null) {
-                filterBuilder = new StringBuffer();
-                new FilterVisitor().visit(context.getQuery().getRootClause());
-            }
-            return filterBuilder.toString();
-        }
-    }
-
-    private final boolean hasSiteField(final LeafClause clause) {
-        return clause.getField() != null
-                && clause.getField().equals(SESAM_SITE_PREFIX);
-    }
-
-    /**
-     *
-     * Visitor to create the FAST filter string. Handles the site: syntax.
-     *
-     * @todo add correct handling of NotClause and AndNotClause. This also needs
-     * to be added to the query builder visitor above.
-     *
-     */
-    private final class FilterVisitor extends AbstractReflectionVisitor {
-
-        protected void visitImpl(final LeafClause clause) {
-            if (hasSiteField(clause)) {
-                appendSiteFilter(clause);
-            }
-        }
-
-        protected void visitImpl(final PhraseClause clause) {
-            if (hasSiteField(clause)) {
-                appendSiteFilter(clause);
-            }
-        }
-
-        protected void visitImpl(final DefaultOperatorClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final OrClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final AndClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final XorClause clause) {
-            clause.getFirstClause().accept(this);
-        }
-
-        private final void appendSiteFilter(final LeafClause clause) {
-            filterBuilder.append("+");
-            filterBuilder.append(FAST_SITE_FILTER_PREFIX);
-            filterBuilder.append(':');
-            filterBuilder.append(clause.getTerm().replaceAll("\"", ""));
-        }
-    }
+    
 }

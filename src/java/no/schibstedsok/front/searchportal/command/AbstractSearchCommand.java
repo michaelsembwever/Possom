@@ -19,6 +19,7 @@ import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.Visitor;
@@ -74,6 +75,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     protected final Context context;
     private String filter = "";
+    private final String additionalFilter;
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
     private final Map parameters = new HashMap();
@@ -96,8 +98,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         this.parameters.putAll(parameters);
         transformedQuery = context.getQuery().getQueryString();
         final Clause root = context.getQuery().getRootClause();
+        
+        // initialise transformed terms
         final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
         mapInitialisor.visit(root);
+        
+        // create additional filters
+        final FilterVisitor  additionalFilterVisitor = new FilterVisitor();
+        additionalFilterVisitor.visit(context.getQuery().getRootClause());
+        additionalFilter = additionalFilterVisitor.getFilter();
     }
 
    // Public --------------------------------------------------------
@@ -364,6 +373,20 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return (String) transformedTerms.get(clause);
     }
 
+    /**
+     * Setter for property filter.
+     * @param filter New value of property filter.
+     */
+    protected void setFilter(final String filter) {
+        
+        LOG.debug("setFilter(\"" + filter + "\")");
+        this.filter = filter;
+    }
+    
+    protected String getAdditionalFilter() {
+        return additionalFilter;
+    }
+    
     // Private -------------------------------------------------------
 
     /**
@@ -379,7 +402,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             // initialise map with default values
 
 
-            final StringBuilder filterBuilder = new StringBuilder();
+            final StringBuilder filterBuilder = new StringBuilder(filter);
 
             for (final Iterator iterator = transformers.iterator(); iterator.hasNext();) {
 
@@ -504,4 +527,65 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getSecondClause().accept(this);
         }
     }
+
+
+    /**
+     *
+     * Visitor to create the FAST filter string. Handles the site: syntax.
+     *
+     * @todo add correct handling of NotClause and AndNotClause. This also needs
+     * to be added to the query builder visitor above.
+     *
+     */
+    private final class FilterVisitor extends AbstractReflectionVisitor {
+        
+        private final StringBuilder filterBuilder = new StringBuilder();
+        
+        String getFilter(){
+            return filterBuilder.toString().trim();
+        }
+
+        protected void visitImpl(final LeafClause clause) {
+            
+            final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
+            if (fieldFilters.containsKey(clause.getField())) {
+                appendSiteFilter(clause);
+            }
+        }
+
+        protected void visitImpl(final PhraseClause clause) {
+            
+            final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
+            if (fieldFilters.containsKey(clause.getField())) {
+                appendSiteFilter(clause);
+            }
+        }
+
+        protected void visitImpl(final DefaultOperatorClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final OrClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final AndClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final XorClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+
+        private final void appendSiteFilter(final LeafClause clause) {
+            
+            final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
+            filterBuilder.append(" +" + fieldFilters.get(clause.getField()) + ":" + clause.getTerm());
+        }
+    }
+
+    
 }

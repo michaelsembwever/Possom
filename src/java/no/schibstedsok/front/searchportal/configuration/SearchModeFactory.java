@@ -298,18 +298,35 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
                     final AbstractSearchConfiguration ascInherit = inherit instanceof AbstractSearchConfiguration 
                             ? (AbstractSearchConfiguration)inherit
                             : null;
+                    
                     asc.setName(id);
+                    
                     asc.setAlwaysRunEnabled( parseBoolean(commandE.getAttribute("always-run"), 
                             ascInherit != null ? ascInherit.isAlwaysRunEnabled() : false) );
+                    
+                    if( commandE.getAttribute("field-filters").length() >0 ){
+                        final String[] fieldFilters = commandE.getAttribute("field-filters").split(",");
+                        for( String fieldFilter : fieldFilters ){
+                            if( fieldFilter.contains(" AS ")){
+                                final String[] ff = fieldFilter.split(" AS ");
+                                asc.addFieldFilter(ff[0], ff[1]);
+                            }else{
+                                asc.addFieldFilter(fieldFilter, fieldFilter);
+                            }
+                        }
+                    }
                     asc.setPagingEnabled( parseBoolean(commandE.getAttribute("paging"),
                             ascInherit != null ? ascInherit.isPagingEnabled() : false) );
+                    
                     asc.setUseParameterAsQuery( commandE.getAttribute("query-parameter") );
+                    
                     if( commandE.getAttribute("result-fields").length() >0 ){
-                    final String[] resultFields = commandE.getAttribute("result-fields").split(",");
+                        final String[] resultFields = commandE.getAttribute("result-fields").split(",");
                         for( String resultField : resultFields ){
                             asc.addResultField(resultField);
                         }
                     }
+                    
                     asc.setStatisticsName(parseString(commandE.getAttribute("statistical-name"),
                             ascInherit != null ? ascInherit.getStatisticsName() : ""));
                 }

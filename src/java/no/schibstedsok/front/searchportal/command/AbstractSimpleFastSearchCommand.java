@@ -498,10 +498,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return (IFastSearchEngine) searchEngines.get(getFastConfiguration().getQueryServerURL());
     }
 
-    protected String getAdditionalFilter() {
-        return null;
-    }
-
     protected String getSortBy() {
 
         return getFastConfiguration().getSortBy();

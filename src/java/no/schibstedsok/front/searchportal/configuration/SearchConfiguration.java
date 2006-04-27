@@ -97,4 +97,11 @@ public interface SearchConfiguration {
 
     boolean isAlwaysRunEnabled();
     String getStatisticsName();
+
+    /**
+     * Getter for property fieldFilters.
+     * 
+     * @return Value of property fieldFilters.
+     */
+    Map<String, String> getFieldFilters();
 }

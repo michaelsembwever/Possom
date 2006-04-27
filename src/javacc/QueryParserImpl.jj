@@ -105,7 +105,7 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
     | <ANDNOT: ("ANDNOT")>
     | <INTEGER: ((<DIGIT>)+)>
     | <WORD: (<LETTER>|<DIGIT>|<WORD_SYMBOL_PREFIX>)(<LETTER>|<DIGIT>|<WORD_SYMBOL_MIDDLE>)*("*")?>
-    | <#WORD_SYMBOL_PREFIX: (".")>
+    | <#WORD_SYMBOL_PREFIX: (".")|("<")|("=")|(">")>
     | <#WORD_SYMBOL_MIDDLE: (".")|("-")|("_")>
     | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration.
             " ", "!", 

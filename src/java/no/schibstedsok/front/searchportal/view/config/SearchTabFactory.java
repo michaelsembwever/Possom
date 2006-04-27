@@ -215,6 +215,9 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
                     navigations,
                     parseInt(tabE.getAttribute("enrichment-limit"), inherit != null ? inherit.getEnrichmentLimit() : -1), 
                     parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null ? inherit.getEnrichmentOnTop() : -1),
+                    parseInt(tabE.getAttribute("enrichment-on-top-score"), inherit != null 
+                        ? inherit.getEnrichmentOnTopScore() 
+                        : -1),
                     enrichments,
                     adCommand,
                     parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),

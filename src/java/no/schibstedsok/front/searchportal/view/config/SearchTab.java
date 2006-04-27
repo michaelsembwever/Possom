@@ -36,7 +36,7 @@ public final class SearchTab {
     // Constructors --------------------------------------------------
 
     /** Creates a new instance of SearchTab */
-    public SearchTab(
+    SearchTab(
                 final SearchTab inherit, 
                 final String id, 
                 final String mode, 
@@ -46,6 +46,7 @@ public final class SearchTab {
                 final Collection<NavigatorHint> navigations,
                 final int enrichmentLimit, 
                 final int enrichmentOnTop,
+                final int enrichmentOnTopScore,
                 final Collection<EnrichmentHint> enrichments,
                 final String adCommand,
                 final int adLimit,
@@ -64,6 +65,9 @@ public final class SearchTab {
         this.navigators.addAll(navigators);
         this.enrichmentLimit = enrichmentLimit >=0 || inherit == null ? enrichmentLimit : inherit.enrichmentLimit;
         this.enrichmentOnTop = enrichmentOnTop >=0 || inherit == null ? enrichmentOnTop : inherit.enrichmentOnTop;
+        this.enrichmentOnTopScore = enrichmentOnTopScore >=0 || inherit == null 
+                ? enrichmentOnTopScore 
+                : inherit.enrichmentOnTopScore;
         this.enrichments.addAll(enrichments);
         this.adCommand = adCommand != null && adCommand.trim().length() >0 
                 ? adCommand 
@@ -415,5 +419,18 @@ public final class SearchTab {
     
     public String toString(){
         return id + (inherit != null ? " --> " + inherit.toString() : "");
+    }
+
+    /**
+     * Holds value of property enrichmentOnTopScore.
+     */
+    private int enrichmentOnTopScore;
+
+    /**
+     * Getter for property enrichmentScoreOnTop.
+     * @return Value of property enrichmentScoreOnTop.
+     */
+    public int getEnrichmentOnTopScore() {
+        return this.enrichmentOnTopScore;
     }
 }

@@ -2,6 +2,8 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
@@ -46,6 +48,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
             resultHandlers.addAll(asc.resultHandlers);
             pageSize = asc.pageSize;
             resultFields.addAll(asc.resultFields);
+            fieldFilters.putAll(asc.fieldFilters);
             resultsToReturn = asc.resultsToReturn;
             isPagingEnabled = asc.isPagingEnabled;
             child = asc.child;
@@ -168,5 +171,22 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     
     public String toString(){
         return getClass().getSimpleName() + " [" + name + "]";
+    }
+
+    /**
+     * Holds value of property fieldFilters.
+     */
+    private final Map<String,String> fieldFilters = new HashMap<String,String>();
+    
+    void addFieldFilter(final String field, final String filter){
+        fieldFilters.put(field, field);
+    }
+
+    /**
+     * Getter for property fieldFilters.
+     * @return Value of property fieldFilters.
+     */
+    public Map<String,String> getFieldFilters() {
+        return Collections.unmodifiableMap(fieldFilters);
     }
 }
