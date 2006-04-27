@@ -435,6 +435,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             return "c=p";
         } else if (source.startsWith("Person")) {
             return "c=w";
+        } else if (source.startsWith("Norske blogger")) {
+            return "c=b";
         } else if (source.startsWith("Bedrift")) {
             return "c=y";
         } else if (source.equals("Internasjonale nettsider")) {

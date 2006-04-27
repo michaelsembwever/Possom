@@ -413,9 +413,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             final String transformedTerm = (String) getTransformedTerm(clause);
             if (transformedTerm != null && transformedTerm.length() > 0) {
                 if (insideNot) {
-                    appendToQueryRepresentation(" -");
+                    appendToQueryRepresentation("-");
                 }  else if (writeAnd != null && writeAnd.booleanValue()) {
-                    appendToQueryRepresentation(" +");
+                    appendToQueryRepresentation("+");
                 }
                 appendToQueryRepresentation(transformedTerm);
             }

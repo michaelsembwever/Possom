@@ -16,6 +16,7 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
+import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
@@ -75,12 +76,28 @@ public class WebSearchCommandTest extends TestCase {
                 "bil",
                 "");
     }
+
+    public void testExclusion() {
+        executeTestOfQuery("magnus -eklund",
+                "magnus -eklund",
+                "");
+        executeTestOfQuery("-whatever",
+                "-whatever",
+                "");
+    }
+
+    
+    public void testTwoTerms() {
+        executeTestOfQuery("magnus eklund",
+                "magnus eklund",
+                "");
+    }
     
     /**
      *
      *
      */
-    public void testExclusion() {
+    public void testSiteExclusion() {
 //        executeTestOfQuery(
 //                "-site:zmag.org bil",
 //                "bil",
@@ -107,6 +124,7 @@ public class WebSearchCommandTest extends TestCase {
     }
     
     private void executeTestOfQuery(final String query, final String wantedQuery, final String wantedFilter) {
+        
         final SearchCommand.Context cxt = createCommandContext(query);
         
         final WebSearchCommand cmd = new WebSearchCommand(cxt, Collections.EMPTY_MAP);
@@ -118,12 +136,16 @@ public class WebSearchCommandTest extends TestCase {
     }
     
     private SearchCommand.Context createCommandContext(final String query) {
+        
         final FastConfiguration config = new FastConfiguration();
+        
         final RunningQuery.Context rqCxt = new RunningQuery.Context() {
             private final SearchMode mode = new SearchMode();
             
             public SearchMode getSearchMode() {
-                return mode;
+                return SearchModeFactory.getModeFactory(
+                        ContextWrapper.wrap(SearchModeFactory.Context.class, this))
+                        .getMode("magic");
             }
             public SearchTab getSearchTab(){
                 return SearchTabFactory.getTabFactory(
@@ -148,7 +170,7 @@ public class WebSearchCommandTest extends TestCase {
         
         final SearchCommand.Context searchCmdCxt = new SearchCommand.Context() {
             public SearchConfiguration getSearchConfiguration() {
-                return config;
+                return rqCxt.getSearchMode().getSearchConfiguration("defaultSearch");
             }
             
             public RunningQuery getRunningQuery() {

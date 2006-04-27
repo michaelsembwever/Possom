@@ -11,8 +11,10 @@ package no.schibstedsok.front.searchportal.command;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.command.SearchCommand.Context;
 import no.schibstedsok.front.searchportal.query.AndClause;
+import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.XorClause;
@@ -89,6 +91,64 @@ public class NewsSearchCommand extends FastSearchCommand {
         return context.getQuery().getRootClause() == firstLeaf
           && (firstLeaf.getKnownPredicates().contains(TokenPredicate.NEWS_MAGIC)
               || firstLeaf.getPossiblePredicates().contains(TokenPredicate.NEWS_MAGIC));
+    }
+
+
+    /**
+     *
+     * Visitor to create the FAST filter string. Handles the nyhetskilde: syntax.
+     *
+     * @todo add correct handling of NotClause and AndNotClause. This also needs
+     * to be added to the query builder visitor above.
+     *
+     */
+    private final class FilterVisitor extends AbstractReflectionVisitor {
+
+        protected void visitImpl(final NotClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+
+        protected void visitImpl(final AndNotClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+
+        protected void visitImpl(final LeafClause clause) {
+            if (hasSourceField(clause)) {
+                appendSiteFilter(clause);
+            }
+        }
+
+        protected void visitImpl(final PhraseClause clause) {
+            if (hasSourceField(clause)) {
+                appendSiteFilter(clause);
+            }
+        }
+
+        protected void visitImpl(final DefaultOperatorClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final OrClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final AndClause clause) {
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final XorClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+
+        private final void appendSiteFilter(final LeafClause clause) {
+            filterBuilder.append("+");
+            filterBuilder.append(FAST_SOURCE_FILTER_FIELD);
+            filterBuilder.append(':');
+            filterBuilder.append(clause.getTerm().replaceAll("\"", ""));
+        }
     }
 
 }

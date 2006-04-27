@@ -53,6 +53,16 @@ public final class SearchMode {
     public Collection<SearchConfiguration> getSearchConfigurations() {
         return searchConfigurations;
     }
+    
+    public SearchConfiguration getSearchConfiguration(final String name) {
+       
+        for( SearchConfiguration sc : searchConfigurations){
+            if( sc.getName().equals(name) ){
+                return sc;
+            }
+        }
+        return null;
+    }
 
     public void setSearchConfigurations(Collection<SearchConfiguration> searchConfigurations) {
         this.searchConfigurations = searchConfigurations;

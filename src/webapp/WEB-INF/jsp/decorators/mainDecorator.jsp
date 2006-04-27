@@ -79,7 +79,6 @@
 
 
 <body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") ) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
-     
 
     <% // sitesearch
     final VelocityEngine engine = VelocityResultHandler.getEngine(site);
@@ -420,7 +419,7 @@
 		            <% int i = 0; %>
                     <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
                         Modifier e = (Modifier) iterator.next();
-                        if ( (currentC.equals("d") && !e.getName().equals("Nettsøk")) || (currentC.equals("d") && searchType != null && searchType.equals("g")) || currentC.equals("p")) {
+                        if ( (currentC.equals("d") && !e.getName().equals("Nettsøk")) || (currentC.equals("d") && searchType != null && searchType.equals("g")) || currentC.equals("p") || currentC.equals("b")) {
                             ++i;
                     %>
 
@@ -596,7 +595,10 @@
                 <decorator:getProperty property="page.tv-results"/>
                 <%}%>
 
-            </td>
+                <%if (currentC.equals("b")) {%>
+                <decorator:getProperty property="page.blog-search"/>
+                <%}%> 
+               </td>
 
 	    <%if (q.trim().equals("")) {%>
 
@@ -642,6 +644,7 @@ tmsec[0]="tmsec=sesam";
 <% } else if (currentC.equals("w")) { %> tmsec[1]="tmsec=personsok";
 <% } else if (currentC.equals("wip")) { %> tmsec[1]="tmsec=personsok_info";
 <% } else if (currentC.equals("p")) { %> tmsec[1]="tmsec=bildesok";
+<% } else if (currentC.equals("b")) { %> tmsec[1]="tmsec=bloggsok";
 <% } %>
 getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 //-->
@@ -658,6 +661,7 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } else if (currentC.equals("w")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=personsok" alt="" /></noscript>
 <% } else if (currentC.equals("wip")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=personsok_info" alt="" /></noscript>
 <% } else if (currentC.equals("p")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bildesok" alt="" /></noscript>
+<% } else if (currentC.equals("b")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bloggesok" alt="" /></noscript>
 <% } %>
 
 <!-- end gallup -->

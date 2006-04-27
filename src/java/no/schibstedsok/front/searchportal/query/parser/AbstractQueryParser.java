@@ -46,7 +46,7 @@ public abstract class AbstractQueryParser implements QueryParser {
      ***/
     protected static final String ERR_EMPTY_CONTEXT
         = "The \"QueryParser(QueryParser.Context)\" constructor must be used!";
-    private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
+    private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException of ";
 
     /** the context this query parser implementation must work against.
      ***/
@@ -87,9 +87,9 @@ public abstract class AbstractQueryParser implements QueryParser {
                 };
                 
             }catch(ParseException pe){
-                LOG.warn(ERR_PARSING, pe);
+                LOG.warn(ERR_PARSING + queryStr, pe);
             } catch (TokenMgrError tme)  {
-                LOG.error(ERR_PARSING, tme);
+                LOG.error(ERR_PARSING + queryStr, tme);
             }
             
             if( query == null ){
