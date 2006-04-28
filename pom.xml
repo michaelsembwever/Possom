@@ -5,7 +5,7 @@
   <groupId>schibstedsok</groupId>
   <artifactId>search-front-html</artifactId>
   <packaging>war</packaging>
-  <name>Schibsted Søk Engine</name>
+  <name>Sesam Search Engine</name>
   <version>2.1-SNAPSHOT</version>
   <description>This is the project for Schibsted Søk's search-front application.</description>
   <url>https://dev.schibstedsok.no/maven/sites/search-front-html/</url>
