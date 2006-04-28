@@ -6,6 +6,7 @@
  */
 package no.schibstedsok.front.searchportal.command;
 
+import java.util.Properties;
 import no.fast.ds.common.FastException;
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.IDocumentSummary;
@@ -31,6 +32,7 @@ import no.fast.personalization.api.IPersonalizationSpecification;
 
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.MobileSearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -54,6 +56,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
     
     private static final String PERSONALIZATION_GROUP = "aspiro-sesam1";
     private static final String USER_AGENT_PARAMETER="ua";
+    private static final String MSEARCH_CLIENT_PROPS = "msearch-client.properties";
     
     private final MobileSearchConfiguration cfg;
     
@@ -61,6 +64,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
         super(cxt, parameters);
         cfg = (MobileSearchConfiguration) cxt.getSearchConfiguration();
     }
+
     
     public SearchResult execute() {
         try {

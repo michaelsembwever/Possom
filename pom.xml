@@ -182,6 +182,7 @@
         <queryServerURL.3>http://cobraprod.bos3.fasstsearch.net:15100</queryServerURL.3>
         <queryServerURL.2>http://localhost:15200</queryServerURL.2>
         <queryServerURL.1>http://localhost:15100</queryServerURL.1>
+	<msearch.configuration.url>http://mobile:8080/mobile/conf/msearch-client.properties</msearch.configuration.url>
         <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
         <linkpulse.sesam>http://localhost:8080/search/</linkpulse.sesam>
         <linkpulse.url>http://go.sesam.no/</linkpulse.url>
@@ -206,7 +207,8 @@
         <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
         <queryServerURL.2>http://10.16.195.249:15300</queryServerURL.2>
         <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
-        <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
+	<msearch.configuration.url>http://mobil.bleedingsearch.schibstedsok.no/mobil.bleedingsearch.schibstedsok.no/conf/msearch-client.properties</msearch.configuration.url> 
+	<mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
         <linkpulse.sesam>http://bleedingsearch.schibstedsok.no/search/</linkpulse.sesam>
         <linkpulse.url>http://go.sesam.no/</linkpulse.url>
         <log.file>sesam</log.file>
@@ -237,6 +239,7 @@
         <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
         <queryServerURL.2>http://10.16.195.249:15300</queryServerURL.2>
         <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
+	<msearch.configuration.url>http://mobil.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url> 
         <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
         <linkpulse.sesam>http://sesam.no/search/</linkpulse.sesam>
         <linkpulse.url>http://go.sesam.no/</linkpulse.url>

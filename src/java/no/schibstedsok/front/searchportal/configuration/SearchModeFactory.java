@@ -262,8 +262,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
         STOCK_COMMAND(StockSearchConfiguration.class),
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
-        YELLOWPAGES_COMMAND(YellowSearchConfiguration.class);
-
+        YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
+        MOBILE_COMMAND(MobileSearchConfiguration.class);
+        
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
 
@@ -407,6 +408,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
                 }
                 if( sc instanceof YellowSearchConfiguration ){
                     final YellowSearchConfiguration ysc = (YellowSearchConfiguration) sc;
+                }
+                if (sc instanceof MobileSearchConfiguration) {
+                    final MobileSearchConfiguration msc = (MobileSearchConfiguration) sc;
+
+                    msc.setPersonalizationGroup(commandE.getAttribute("personalization-group"));
+                    msc.setSortBy(commandE.getAttribute("sort-by"));
+                    msc.setSource(commandE.getAttribute("source"));
                 }
 
                 // query transformers

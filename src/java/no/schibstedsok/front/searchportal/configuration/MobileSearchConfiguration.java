@@ -45,8 +45,16 @@ public class MobileSearchConfiguration extends AbstractSearchConfiguration {
     public String getPersonalizationGroup() {
         return personalizationGroup;
     }
+    
+    public void setPersonalizationGroup(final String group) {
+        this.personalizationGroup = group;
+    }
 
     public String getSortBy() {
         return sortBy;
+    }
+
+    public void setSortBy(final String sortBy) {
+        this.sortBy = sortBy;
     }
 }
