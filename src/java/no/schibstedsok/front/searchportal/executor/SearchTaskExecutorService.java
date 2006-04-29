@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.executor;
 
 
@@ -18,18 +19,18 @@ final class SearchTaskExecutorService extends ThreadPoolExecutor {
     private static final Logger LOG = Logger.getLogger(SearchTaskExecutorService.class);
 
     public SearchTaskExecutorService() {
-        super(20, 100, 5L, TimeUnit.SECONDS, new SynchronousQueue());
+        super(20, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue());
     }
 
-    protected SearchTask newTaskFor(Callable<SearchResult> callable) {
+    protected SearchTask newTaskFor(final Callable<SearchResult> callable) {
 
         final SearchCommand command = (SearchCommand) callable;
 
-        if (LOG.isDebugEnabled()) {    
+        if (LOG.isDebugEnabled()) {
             LOG.debug("Creating new search task " + command.getSearchConfiguration().getName());
         }
 
-        return new SearchTask( command );
+        return new SearchTask(command);
     }
 
 }

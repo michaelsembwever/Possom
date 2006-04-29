@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.executor;
 
 import java.util.concurrent.ThreadPoolExecutor;
@@ -11,13 +12,13 @@ import java.util.TimerTask;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class ThreadPoolInspector extends TimerTask {
+public final class ThreadPoolInspector extends TimerTask {
 
     private ThreadPoolExecutor threadPool;
 
-    public ThreadPoolInspector(ThreadPoolExecutor threadPool, int msPeriod) {
+    public ThreadPoolInspector(final ThreadPoolExecutor threadPool, final int msPeriod) {
         this.threadPool = threadPool;
-        Timer t = new Timer();
+        final Timer t = new Timer();
         LOG.info("Scheduling to run every " + msPeriod + "ms");
         t.schedule(this, 0, msPeriod);
     }

@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.executor;
 
 import java.util.concurrent.ExecutionException;
@@ -18,7 +19,7 @@ public class SearchTask extends FutureTask<SearchResult> {
 
     private SearchCommand command;
 
-    public SearchTask(SearchCommand command) {
+    public SearchTask(final SearchCommand command) {
         super(command);
 
         this.command = command;
@@ -28,7 +29,7 @@ public class SearchTask extends FutureTask<SearchResult> {
         return command;
     }
 
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public boolean cancel(final boolean mayInterruptIfRunning) {
         LOG.debug("Cancel called " + command);
 
         return super.cancel(mayInterruptIfRunning);    //To change body of overridden methods use File | Settings | File Templates.
