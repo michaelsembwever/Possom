@@ -11,6 +11,10 @@ package no.schibstedsok.front.searchportal.configuration.loader;
 
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import org.apache.commons.logging.Log;
@@ -25,13 +29,15 @@ import org.w3c.dom.Document;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public abstract class AbstractResourceLoader
-        extends Thread
-        implements DocumentLoader, PropertiesLoader {
+        implements Runnable, DocumentLoader, PropertiesLoader {
+
+    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     private static final Log LOG = LogFactory.getLog(AbstractResourceLoader.class);
 
     private final SiteContext context;
     private volatile String resource;
+    private volatile Future future;
 
     /** the properties resource holder. **/
     protected Properties props;
@@ -98,35 +104,40 @@ public abstract class AbstractResourceLoader
     /** {@inheritDoc}
      */
     public void init(final String resource, final Properties props) {
-        if (isAlive() || this.resource != null) {
+        
+        if (future != null && !future.isDone()) {
             throw new IllegalStateException(ERR_ONE_USE_ONLY);
         }
         this.resource = resource;
         this.props = props;
-        start();
+        future = EXECUTOR.submit(this);
     }
 
 
     /** {@inheritDoc}
      */
     public void init(final String resource, final DocumentBuilder builder) {
-        if (isAlive()  || this.resource != null) {
+        
+        if (future != null && !future.isDone()) {
             throw new IllegalStateException(ERR_ONE_USE_ONLY);
         }
         this.resource = resource;
         this.builder = builder;
-        start();
+        future = EXECUTOR.submit(this);
     }
 
     /** {@inheritDoc}
      */
     public void abut() {
-        if (this.resource == null) {
+        
+        if (future == null) {
             throw new IllegalStateException(ERR_NOT_INITIALISED);
         }
         try {
-            this.join();
+            future.get();
         } catch (InterruptedException ex) {
+            LOG.error(ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD, ex);
+        } catch (ExecutionException ex) {
             LOG.error(ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD, ex);
         }
     }

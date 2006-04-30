@@ -6,7 +6,7 @@
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
 <%@ page import="com.opensymphony.module.sitemesh.util.OutputConverter"%>
-<%@ page import="no.schibstedsok.front.searchportal.i18n.TextMessages"%>
+<%@ page import="no.schibstedsok.front.searchportal.view.i18n.TextMessages"%>
 <%@ page import="no.schibstedsok.front.searchportal.output.VelocityResultHandler"%>
 <%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>

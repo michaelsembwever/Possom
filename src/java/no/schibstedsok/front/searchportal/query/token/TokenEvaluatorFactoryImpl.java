@@ -6,6 +6,10 @@ package no.schibstedsok.front.searchportal.query.token;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 
@@ -27,7 +31,9 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     public interface Context extends BaseContext, QueryStringContext, RegExpEvaluatorFactory.Context, 
             SiteConfiguration.Context{
     }
-
+    
+    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    
     private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new AlwaysTrueTokenEvaluator();
 
     private TokenEvaluator fastEvaluator;
@@ -40,7 +46,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     private static final String ERR_GENERIC_TOKENTYPE_WIHOUT_IMPL = "Generic token type not known or implemented. ";
 
     private final Context context;
-    private final Thread fastEvaluatorCreator;
+    private final Future fastEvaluatorCreator;
 
     /** The current term the parser is on **/
     private String currTerm = null;
@@ -59,8 +65,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
      */
     public TokenEvaluatorFactoryImpl(final Context cxt) {
         context = cxt;
-        fastEvaluatorCreator = new FastEvaluatorCreator();
-        fastEvaluatorCreator.start();
+        fastEvaluatorCreator = EXECUTOR.submit( new FastEvaluatorCreator() );
+        
         jedEvaluator = new JepTokenEvaluator(context.getQueryString());
     }
 
@@ -100,8 +106,10 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
     private TokenEvaluator getFastEvaluator() {
         try {
-            fastEvaluatorCreator.join();
+            fastEvaluatorCreator.get();
         } catch (InterruptedException ex) {
+            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex );
+        } catch (ExecutionException ex) {
             LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex );
         }
         return fastEvaluator;
@@ -131,7 +139,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         return possiblePredicates;
     }
 
-    private final class FastEvaluatorCreator extends Thread{
+    private final class FastEvaluatorCreator implements Runnable{
         public void run() {
             final String host = getProperties().getProperty("tokenevaluator.host");
             final int port = Integer.parseInt(getProperties().getProperty("tokenevaluator.port"));
