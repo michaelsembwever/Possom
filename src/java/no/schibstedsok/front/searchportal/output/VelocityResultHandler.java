@@ -9,7 +9,7 @@ import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.i18n.TextMessages;
+import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.Decoder;
 import no.schibstedsok.front.searchportal.result.Linkpulse;

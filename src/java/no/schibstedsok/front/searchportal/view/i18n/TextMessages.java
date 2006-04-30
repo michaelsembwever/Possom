@@ -1,5 +1,5 @@
 // Copyright (2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.i18n;
+package no.schibstedsok.front.searchportal.view.i18n;
 
 import java.text.MessageFormat;
 import java.util.HashMap;

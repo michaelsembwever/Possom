@@ -10,7 +10,7 @@ import java.util.TimeZone;
 
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 
-import no.schibstedsok.front.searchportal.i18n.TextMessages;
+import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 import no.schibstedsok.front.searchportal.site.Site;
 

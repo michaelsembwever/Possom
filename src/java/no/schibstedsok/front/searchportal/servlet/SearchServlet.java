@@ -9,7 +9,6 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.util.QueryStringHelper;
@@ -18,7 +17,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.query.run.QueryFactory;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
-import no.schibstedsok.front.searchportal.i18n.TextMessages;
+import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
 import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
 import org.apache.commons.lang.time.StopWatch;
@@ -89,32 +88,32 @@ public final class SearchServlet extends HttpServlet {
         final Site site = (Site) httpServletRequest.getAttribute(Site.NAME_KEY);
         final boolean forceReload = "tabs".equals(httpServletRequest.getParameter("reload"));
 
-        if( forceReload ){
+        if(forceReload){
             final boolean cleaned = SiteConfiguration.remove(site);
             LOG.warn(cleaned + WARN_TABS_CLEANED + site);
         }
         //final SearchTabs tabs = SiteConfiguration.valueOf(site).getSearchTabs();
 
 
-        // TODO. Any better way to do this. Sitemesh? 
+        // TODO. Any better way to do this. Sitemesh?
         if (site.getName().startsWith("mobile")) {
             httpServletResponse.setContentType("text/xml; charset=utf-8");
         } else {
             httpServletResponse.setContentType("text/html; charset=utf-8");
         }
-        
+
         httpServletResponse.setCharacterEncoding("UTF-8"); // correct encoding
 
-        
+
         String searchTabKey = httpServletRequest.getParameter("c");
 
         if (searchTabKey == null) {
             searchTabKey = "d";
         }
-        
-        // BaseContext providing SiteContext and ResourceContext. 
+
+        // BaseContext providing SiteContext and ResourceContext.
         //  We need it casted as a SiteContext for the ResourceContext code to be happy.
-        final SiteContext genericCxt = new SiteContext(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">  
+        final SiteContext genericCxt = new SiteContext(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
             }
@@ -132,7 +131,7 @@ public final class SearchServlet extends HttpServlet {
         final SearchMode mode = SearchModeFactory.getModeFactory(
                 ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
                 .getMode(searchTab.getMode());
-        
+
         //final SearchMode mode = tabs.getSearchMode(searchTabKey);
 
         final RunningQuery.Context rqCxt = ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" rqCxt ">
@@ -154,7 +153,7 @@ public final class SearchServlet extends HttpServlet {
         httpServletRequest.setAttribute("locale", query.getLocale());
         httpServletRequest.setAttribute("query", query);
         httpServletRequest.setAttribute("site", site);
-        httpServletRequest.setAttribute("text", 
+        httpServletRequest.setAttribute("text",
                 TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
 
         if (httpServletRequest.getParameter("offset") != null
@@ -164,7 +163,7 @@ public final class SearchServlet extends HttpServlet {
         }
 
         if (httpServletRequest.getParameter("q") != null) {
-            httpServletRequest.setAttribute("q", 
+            httpServletRequest.setAttribute("q",
                 QueryStringHelper.safeGetParameter(httpServletRequest, "q"));
         }
 
