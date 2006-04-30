@@ -3,6 +3,7 @@
  */
 package no.schibstedsok.front.searchportal.analyzer;
 
+import no.schibstedsok.front.searchportal.query.analyser.AnalysisRule;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
 

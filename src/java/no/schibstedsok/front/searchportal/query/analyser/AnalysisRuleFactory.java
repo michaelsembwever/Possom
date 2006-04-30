@@ -1,5 +1,5 @@
 // Copyright (2005-2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.analyser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

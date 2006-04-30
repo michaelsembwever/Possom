@@ -6,7 +6,7 @@
  *
  */
 
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.analyser;
 
 import java.util.HashSet;
 import java.util.Iterator;

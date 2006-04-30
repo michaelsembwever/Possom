@@ -1,7 +1,7 @@
 /*
  * Copyright (2005-2006) Schibsted Søk AS
  */
-package no.schibstedsok.front.searchportal.analyzer;
+package no.schibstedsok.front.searchportal.query.analyser;
 
 
 import java.util.HashMap;
