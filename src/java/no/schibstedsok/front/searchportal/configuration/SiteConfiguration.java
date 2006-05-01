@@ -38,13 +38,9 @@ public final class SiteConfiguration {
 
     private static final Logger LOG = Logger.getLogger(SiteConfiguration.class);
 
-
-
     private SiteConfiguration(final Context cxt) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Configuration()");
-        }
+        LOG.debug("Configuration()");
 
         context = cxt;
 
@@ -56,7 +52,10 @@ public final class SiteConfiguration {
     }
 
     public Properties getProperties() {
-        propertyLoader.abut();
+        
+        if( properties.size() == 0 ){
+            propertyLoader.abut();
+        }
         return properties;
     }
 
