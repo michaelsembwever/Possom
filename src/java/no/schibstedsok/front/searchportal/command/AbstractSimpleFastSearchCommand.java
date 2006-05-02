@@ -210,6 +210,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     public String getNavigatorTitle(final String navigatorKey) {
 
+        LOG.trace("getNavigatorTitle("+navigatorKey+")");
         final FastNavigator nav = getNavigatedTo(navigatorKey);
 
         FastNavigator parent = findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), nav.getName());
@@ -507,10 +508,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     // Private -------------------------------------------------------
 
     private void collectSpellingSuggestions(final IQueryResult result, final FastSearchResult searchResult) {
-        
+
         final IQueryTransformations qTransforms = result.getQueryTransformations(false);
         if (qTransforms.getSuggestions().size() > 0) {
-            for (IQueryTransformation transformation 
+            for (IQueryTransformation transformation
                     : (Collection<IQueryTransformation>)qTransforms.getAllQueryTransformations()) {
 
                 if (transformation.getName().equals("FastQT_SpellCheck") && transformation.getAction().equals("nop")) {

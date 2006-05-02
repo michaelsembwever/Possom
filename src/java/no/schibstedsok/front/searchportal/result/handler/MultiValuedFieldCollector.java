@@ -14,7 +14,11 @@ import no.schibstedsok.front.searchportal.result.SearchResultItem;
  */
 public class MultiValuedFieldCollector implements ResultHandler {
 
-    private Map fieldMap = new HashMap();
+    private Map<String,String> fieldMap = new HashMap<String,String>();
+    
+    public void addField(final String field, final String as){
+        fieldMap.put(field, as);
+    }
 
     public void handleResult(final Context cxt, final Map parameters) {
 
