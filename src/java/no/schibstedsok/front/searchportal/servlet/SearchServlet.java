@@ -96,7 +96,7 @@ public final class SearchServlet extends HttpServlet {
 
 
         // TODO. Any better way to do this. Sitemesh?
-        if (site.getName().startsWith("mobile")) {
+        if (site.getName().startsWith("mobil")) {
             httpServletResponse.setContentType("text/xml; charset=utf-8");
         } else {
             httpServletResponse.setContentType("text/html; charset=utf-8");

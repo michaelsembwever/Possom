@@ -5,8 +5,11 @@
     <decorator name="printable" page="printDecorator.jsp" >
     </decorator>
 
+    <decorator name="mobiledecorator" page="mobileDecorator.jsp"/>
+
     <decorator name="maindecorator" page="mainDecorator.jsp">
 	    <pattern>*</pattern>
     </decorator>
+
 
 </decorators>
