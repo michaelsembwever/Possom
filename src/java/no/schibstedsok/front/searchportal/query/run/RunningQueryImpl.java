@@ -290,6 +290,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             Collections.sort(sources);
 
             if (!hitsToShow) {
+                PRODUCT_LOG.info("<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
+                        + "<query>" + queryStr + "</query></no-hits>");
 // FIXME: i do not know how to reset/clean the sitemesh's outputStream so the result from the new RunningQuery are used.                
 //                int sourceHits = 0;
 //                for (final Iterator it = sources.iterator(); it.hasNext();) {
@@ -309,7 +311,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 Collections.sort(enrichments);
 
-                PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchTab().getKey() + "\">"
+                PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchTab().getKey() 
+                        + "\" size=\"" + enrichments.size() + "\">"
                         + "<query>" + queryStr + "</query>");
                 for( Enrichment e : enrichments){
                     PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
