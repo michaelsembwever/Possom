@@ -63,7 +63,6 @@ public final class TestVisitor extends TestCase {
                     public Site getSite()  {
                         return Site.DEFAULT;
                     }
-
                 });
 
         final LeafClause magnus = WordClauseImpl.createWordClause("magnus", "firstName", tokenEvaluatorFactory);
@@ -184,7 +183,7 @@ public final class TestVisitor extends TestCase {
                 "+4792221689",
                 "+4792221689");
     }
-    
+
     public void testUnicodeAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "सिद्धार्थ गौतम",

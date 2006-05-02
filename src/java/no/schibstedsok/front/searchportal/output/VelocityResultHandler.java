@@ -2,13 +2,12 @@
 package no.schibstedsok.front.searchportal.output;
 
 import java.io.IOException;
-import java.util.Properties;
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
-import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.Decoder;
@@ -206,14 +205,14 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
         context.put("command", cxt.getSearchResult().getSearchCommand());
         context.put("queryHTMLEscaped", queryString);
-        
+
         context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt)));
         context.put("currentTab", cxt.getSearchTab());
-        
+
         context.put("contextPath", request.getContextPath());
         context.put("hashGenerator", request.getAttribute("hashGenerator"));
         context.put("runningQuery", cxt.getSearchResult().getSearchCommand().getRunningQuery());
-        
+
         context.put("tradedoubler", new TradeDoubler(request));
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();

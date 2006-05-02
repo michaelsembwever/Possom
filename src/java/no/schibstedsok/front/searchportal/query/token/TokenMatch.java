@@ -24,14 +24,14 @@ public final class TokenMatch
     public TokenMatch(final String token, final String match, final int start, final int end) {
         this.token = token;
         this.match = match;
-        this.start = new Integer(start);
-        this.end = new Integer(end);
+        this.start = Integer.valueOf(start);
+        this.end = Integer.valueOf(end);
         // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
         matcher = Pattern.compile("(^|\\s)" + match + "($|\\s)", RegExpEvaluatorFactory.REG_EXP_OPTIONS);
     }
 
     public int compareTo(final Object o) {
-        TokenMatch other = (TokenMatch) o;
+        final TokenMatch other = (TokenMatch) o;
 
         return start.compareTo(other.getStart());
     }

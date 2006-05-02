@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result;
 
 import java.util.ArrayList;
@@ -14,12 +15,12 @@ public class BasicSearchResultItem implements SearchResultItem {
 
     private HashMap fields = new HashMap();
 
-    public void addField(String field, String value) {
+    public void addField(final String field, final String value) {
         fields.put(field, value);
     }
 
-    public String getField(String field) {
-        String fieldValue = (String) fields.get(field);
+    public String getField(final String field) {
+        final String fieldValue = (String) fields.get(field);
 
         if (fieldValue != null && (fieldValue.equals("  ") || fieldValue.equals(" "))) {
             return null;
@@ -28,22 +29,22 @@ public class BasicSearchResultItem implements SearchResultItem {
         }
     }
 
-    public Object getFieldAsObject(String field) {
+    public Object getFieldAsObject(final String field) {
         return fields.get(field);
     }
-    
-    public Integer getInteger(String field) {
-        String fieldValue = (String) fields.get(field);
+
+    public Integer getInteger(final String field) {
+        final String fieldValue = (String) fields.get(field);
 
         if (fieldValue != null) {
-            return new Integer(Integer.parseInt(fieldValue));
+            return Integer.valueOf(Integer.parseInt(fieldValue));
         } else {
             return null;
         }
     }
 
-    public String getField(String field, int maxLength) {
-        String fieldValue = (String) fields.get(field);
+    public String getField(final String field, final int maxLength) {
+        final String fieldValue = (String) fields.get(field);
 
         if (fieldValue != null) {
             if (fieldValue.equals("  ")) {
@@ -62,22 +63,22 @@ public class BasicSearchResultItem implements SearchResultItem {
         return fields.keySet();
     }
 
-    public Collection getMultivaluedField(String field) {
+    public Collection getMultivaluedField(final String field) {
         return (Collection) fields.get(field);
     }
 
-    public void addToMultivaluedField(String field, String value) {
+    public void addToMultivaluedField(final String field, final String value) {
         if (! fields.containsKey(field)) {
             fields.put(field, new ArrayList());
         }
 
-        Collection previousValues = (Collection) fields.get(field);
+        final Collection previousValues = (Collection) fields.get(field);
         previousValues.add(value);
     }
 
-    public boolean equals(Object obj) {
-        SearchResultItem other = (SearchResultItem) obj;
-        
+    public boolean equals(final Object obj) {
+        final SearchResultItem other = (SearchResultItem) obj;
+
         if (other.getField("recordid") != null && getField("recordid") != null) {
             return getField("recordid").equals(other.getField("recordid"));
         } else {
@@ -86,7 +87,7 @@ public class BasicSearchResultItem implements SearchResultItem {
     }
 
     public int hashCode() {
-        
+
         if (getField("recordid") != null) {
             return getField("recordid").hashCode();
         } else {
@@ -94,12 +95,12 @@ public class BasicSearchResultItem implements SearchResultItem {
         }
     }
 
-    public void addNestedSearchResult(String field, SearchResult nestedResult) {
+    public void addNestedSearchResult(final String field, final SearchResult nestedResult) {
        fields.put(field, nestedResult);
-        
+
     }
 
-    public SearchResult getNestedSearchResult(String field) {
+    public SearchResult getNestedSearchResult(final String field) {
        return (SearchResult) fields.get(field);
     }
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
@@ -38,7 +39,7 @@ import org.apache.log4j.Logger;
  * @version <tt>$Revision$</tt>
  */
 public final class FastNavigatorsTest extends TestCase {
-    
+
     private static final Logger LOG = Logger.getLogger(FastNavigatorsTest.class);
 
     FastConfiguration config;
@@ -162,7 +163,7 @@ public final class FastNavigatorsTest extends TestCase {
 
         assertNotNull(result.getModifiers("geographic"));
 
-        Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
+        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
         assertEquals("ywkommunenavigator", modifier.getNavigator().getName());
 
     }
@@ -354,8 +355,8 @@ public final class FastNavigatorsTest extends TestCase {
 
         final FastNavigator nav = command.getNavigatedTo("geographic");
 
-        for (Iterator iterator = result.getModifiers("geographic").iterator(); iterator.hasNext();) {
-            Modifier modifier = (Modifier) iterator.next();
+        for (final Iterator iterator = result.getModifiers("geographic").iterator(); iterator.hasNext();) {
+            final Modifier modifier = (Modifier) iterator.next();
         }
     }
 
@@ -401,7 +402,7 @@ public final class FastNavigatorsTest extends TestCase {
             LOG.info("command.getNavigatorTitle(geographic): " + command1.getNavigatorTitle("geographic"));
             assertEquals("Oslo", command1.getNavigatorTitle("geographic"));
         }
-        
+
 
         navigated[0] = "ywkommunenavigator";
 
@@ -414,7 +415,7 @@ public final class FastNavigatorsTest extends TestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue2);
-        
+
         {
             final FastSearchCommand command2
                     = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
@@ -536,45 +537,33 @@ public final class FastNavigatorsTest extends TestCase {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-            
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
             public Site getSite() {
                 return Site.DEFAULT;
             }
-
         };
 
         final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());
-        
-        final SearchCommand.Context searchCmdCxt = new SearchCommand.Context() {
-            public SearchConfiguration getSearchConfiguration() {
-                return config;
-            }
 
-            public RunningQuery getRunningQuery() {
-                return rq;
-            }
-            
-            public Site getSite() {
-                return Site.DEFAULT;
-            }
-            
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-            
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
-            }            
+        final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
+                SearchCommand.Context.class,
+                new BaseContext() {
+                    public SearchConfiguration getSearchConfiguration() {
+                        return config;
+                    }
+                    public RunningQuery getRunningQuery() {
+                        return rq;
+                    }
+                    public Query getQuery(){
+                        return rq.getQuery();
+                    }
+                },
+                rqCxt);
 
-            public Query getQuery(){
-                return rq.getQuery();
-            }
-        };
-        
         return searchCmdCxt;
     }
 

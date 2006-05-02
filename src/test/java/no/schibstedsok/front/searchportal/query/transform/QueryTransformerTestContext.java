@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * TestQueryTransformerContextProvider.java
  *
@@ -34,7 +35,7 @@ public final class QueryTransformerTestContext implements QueryTransformer.Conte
     private final Query query;
     private final Map<Clause,String> transformedTerms;
     private final TokenEvaluatorFactory tokenEvaluatorFactory;
-    
+
     /**
      * Creates a new instance of TestQueryTransformerContextProvider
      */
@@ -68,6 +69,7 @@ public final class QueryTransformerTestContext implements QueryTransformer.Conte
     public Site getSite() {
         return Site.DEFAULT;
     }
+
     public Query getQuery() {
         return query;
     }

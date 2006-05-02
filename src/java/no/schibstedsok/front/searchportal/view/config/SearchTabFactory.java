@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * ViewFactory.java
  *
@@ -10,16 +11,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
@@ -34,7 +37,7 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public final class SearchTabFactory extends AbstractDocumentFactory{
-    
+
     /**
      * The context any SearchTabFactory must work against. *
      */
@@ -46,22 +49,22 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     private static final Logger LOG = Logger.getLogger(SearchTabFactory.class);
-    private static final String ERR_DOC_BUILDER_CREATION = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";    
+    private static final String ERR_DOC_BUILDER_CREATION = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String INFO_PARSING_TAB = "Parsing tab ";
     private static final String INFO_PARSING_ENRICHMENT = " Parsing enrichment ";
     private static final String INFO_PARSING_NAVIGATION = " Parsing navigation ";
-    
+
     // Attributes ----------------------------------------------------
 
     private final Map<String,SearchTab> tabsByName = new HashMap<String,SearchTab>();
     private final Map<String,SearchTab> tabsByKey = new HashMap<String,SearchTab>();
     private final ReentrantReadWriteLock tabsLock = new ReentrantReadWriteLock();
-    
+
     private final DocumentLoader loader;
     private final Context context;
-    
+
     // Static --------------------------------------------------------
-    
+
     public static SearchTabFactory getTabFactory(final Context cxt) {
 
         final Site site = cxt.getSite();
@@ -82,10 +85,10 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
 
 
     // Constructors --------------------------------------------------
-    
+
     /** Creates a new instance of ViewFactory */
     private SearchTabFactory(final Context cxt) throws ParserConfigurationException {
-        
+
         LOG.trace("SearchTabFactory(cxt)");
 
         context = cxt;
@@ -100,13 +103,13 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
         INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
         INSTANCES_LOCK.writeLock().unlock();
-        
+
         // start initialisation
         init();
     }
-    
+
     // Public --------------------------------------------------------
-    
+
     public SearchTab getTabByName(final String id){
 
         LOG.trace("getTab(" + id + ")");
@@ -114,11 +117,17 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
         SearchTab tab = getTabImpl(id);
         if(tab == null && context.getSite().getParent() != null){
             // not found in this site's views.xml. look in parent's site.
-            final SearchTabFactory factory = getTabFactory( ContextWrapper.wrap(
+            final SearchTabFactory factory = getTabFactory(ContextWrapper.wrap(
                     Context.class,
-                    new BaseContext(){
+                    new SiteContext(){
                         public Site getSite(){
                             return context.getSite().getParent();
+                        }
+                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                        }
+                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
                         }
                     },
                     context
@@ -127,7 +136,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
         }
         return tab;
     }
-    
+
     /** getTabsByKey will only look at tabs in this site.
      * It will NOT falback to the parent site.
      ***/
@@ -143,13 +152,13 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
             tabsLock.readLock().unlock();
         }
     }
-    
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
 
     private void init() {
 
@@ -161,30 +170,30 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
         final Element root = doc.getDocumentElement();
 
         final NodeList tabList = root.getElementsByTagName("tab");
-        for( int i = 0 ; i < tabList.getLength(); ++i){
+        for(int i = 0 ; i < tabList.getLength(); ++i){
             final Element tabE = (Element) tabList.item(i);
             final String id = tabE.getAttribute("id");
             LOG.info(INFO_PARSING_TAB + id);
             final SearchTab inherit = getTabByName(tabE.getAttribute("inherit"));
             final String mode = parseString(tabE.getAttribute("mode"), inherit != null ? inherit.getMode() : "");
             final String key = parseString(tabE.getAttribute("key"), inherit != null ? inherit.getKey() : "");
-            final String parentKey = parseString(tabE.getAttribute("parent-key"), 
+            final String parentKey = parseString(tabE.getAttribute("parent-key"),
                     inherit != null ? inherit.getParentKey() : "");
-            final String adCommand = parseString(tabE.getAttribute("ad-command"), 
+            final String adCommand = parseString(tabE.getAttribute("ad-command"),
                     inherit != null ? inherit.getAdCommand() : "");
-            
+
 
             // enrichment hints
             final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");
             final Collection<SearchTab.EnrichmentHint> enrichments = new ArrayList<SearchTab.EnrichmentHint>();
-            for( int j = 0 ; j < enrichmentNodeList.getLength(); ++j){
+            for(int j = 0 ; j < enrichmentNodeList.getLength(); ++j){
                 final Element e = (Element) enrichmentNodeList.item(j);
                 final String rule = e.getAttribute("rule");
                 LOG.info(INFO_PARSING_ENRICHMENT + rule);
                 final int threshold = parseInt(e.getAttribute("threshold"), -1);
                 final float weight = parseFloat(e.getAttribute("weight"), -1);
                 final String command = e.getAttribute("command");
-                final SearchTab.EnrichmentHint enrichment 
+                final SearchTab.EnrichmentHint enrichment
                         = new SearchTab.EnrichmentHint(rule, threshold, weight, command);
                 enrichments.add(enrichment);
             }
@@ -192,31 +201,31 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
             // navigation hints
             final NodeList navigationNodeList = tabE.getElementsByTagName("navigation");
             final Collection<SearchTab.NavigatorHint> navigations = new ArrayList<SearchTab.NavigatorHint>();
-            for( int j = 0 ; j < navigationNodeList.getLength(); ++j){
+            for(int j = 0 ; j < navigationNodeList.getLength(); ++j){
                 final Element n = (Element) navigationNodeList.item(j);
                 final String name = n.getAttribute("name");
                 LOG.info(INFO_PARSING_NAVIGATION + name);
-                final SearchTab.NavigatorHint.MatchType match 
+                final SearchTab.NavigatorHint.MatchType match
                         = SearchTab.NavigatorHint.MatchType.valueOf(n.getAttribute("match").toUpperCase());
                 final String tab = n.getAttribute("tab");
                 final String urlSuffix = n.getAttribute("url-suffix");
-                final SearchTab.NavigatorHint navHint 
+                final SearchTab.NavigatorHint navHint
                         = new SearchTab.NavigatorHint(name, match, tab, urlSuffix);
                 navigations.add(navHint);
             }
 
             final SearchTab tab = new SearchTab(
-                    inherit, 
-                    id, 
-                    mode, 
-                    key, 
-                    parentKey, 
+                    inherit,
+                    id,
+                    mode,
+                    key,
+                    parentKey,
                     parseInt(tabE.getAttribute("page-size"), inherit != null ? inherit.getPageSize() : -1),
                     navigations,
-                    parseInt(tabE.getAttribute("enrichment-limit"), inherit != null ? inherit.getEnrichmentLimit() : -1), 
+                    parseInt(tabE.getAttribute("enrichment-limit"), inherit != null ? inherit.getEnrichmentLimit() : -1),
                     parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null ? inherit.getEnrichmentOnTop() : -1),
-                    parseInt(tabE.getAttribute("enrichment-on-top-score"), inherit != null 
-                        ? inherit.getEnrichmentOnTopScore() 
+                    parseInt(tabE.getAttribute("enrichment-on-top-score"), inherit != null
+                        ? inherit.getEnrichmentOnTopScore()
                         : -1),
                     enrichments,
                     adCommand,
@@ -232,9 +241,9 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
         LOG.debug("Parsing " + SearchConstants.VIEWS_XMLFILE + " finished");
 
     }
-    
+
     private SearchTab getTabImpl(final String id){
-        
+
         LOG.trace("getTabImpl(" + id + ")");
 
         try{
@@ -245,7 +254,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
             tabsLock.readLock().unlock();
         }
     }
-    
+
     // Inner classes -------------------------------------------------
-    
+
 }

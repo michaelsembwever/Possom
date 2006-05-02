@@ -41,15 +41,14 @@ public class MockupSearchCommand implements SearchCommand {
         public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
             return FileResourceLoader.newPropertiesLoader(this, resource, properties);
         }
-        
-        public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+
+        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
             return FileResourceLoader.newDocumentLoader(this, resource, builder);
         }
 
         public Site getSite() {
             return Site.DEFAULT;
         }
-
     };
 
     private RunningQuery query;

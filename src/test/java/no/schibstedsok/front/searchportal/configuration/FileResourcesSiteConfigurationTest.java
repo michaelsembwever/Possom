@@ -9,16 +9,14 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
-import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * Tests using SearchTabsCreator against File-based configuration files.
- * 
+ *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
@@ -67,7 +65,6 @@ public final class FileResourcesSiteConfigurationTest extends TestCase {
             public Site getSite()  {
                 return site;
             }
-
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }

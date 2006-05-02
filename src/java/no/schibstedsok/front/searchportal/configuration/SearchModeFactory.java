@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,6 +19,8 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
@@ -143,10 +146,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
         // update the store of factories
         INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
-        INSTANCES_LOCK.writeLock().unlock();
-
         // start initialisation
         init();
+        INSTANCES_LOCK.writeLock().unlock();
+
     }
 
    // Public --------------------------------------------------------
@@ -160,9 +163,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
             // not found in this site's modes.xml. look in parent's site.
             final SearchModeFactory factory = getModeFactory(ContextWrapper.wrap(
                     Context.class,
-                    new BaseContext(){
+                    new SiteContext(){
                         public Site getSite(){
                             return context.getSite().getParent();
+                        }
+                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                        }
+                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
                         }
                     },
                     context
@@ -197,7 +206,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
             final SearchMode mode = new SearchMode(inherit);
             mode.setId(id);
             mode.setExecutor(parseExecutor(modeE.getAttribute("executor"), new SequentialSearchCommandExecutor()));
-            mode.setQueryAnalysisEnabled(parseBoolean( modeE.getAttribute("analysis"),
+            mode.setQueryAnalysisEnabled(parseBoolean(modeE.getAttribute("analysis"),
                     inherit != null ? inherit.isQueryAnalysisEnabled() : false));
 
             // setup new commands list for this mode
@@ -301,7 +310,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
 
                     asc.setName(id);
 
-                    asc.setAlwaysRunEnabled( parseBoolean(commandE.getAttribute("always-run"),
+                    asc.setAlwaysRunEnabled(parseBoolean(commandE.getAttribute("always-run"),
                             ascInherit != null ? ascInherit.isAlwaysRunEnabled() : false));
 
                     if(commandE.getAttribute("field-filters").length() >0){
@@ -362,7 +371,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
                             fscInherit != null ? fscInherit.getSortBy() : ""));
                     fsc.setSpamScoreLimit(parseInt(commandE.getAttribute("spam-score-limit"),
                             fscInherit != null ? fscInherit.getSpamScoreLimit() : -1));
-                    fsc.setSpellcheckEnabled( parseBoolean(commandE.getAttribute("spellcheck"),
+                    fsc.setSpellcheckEnabled(parseBoolean(commandE.getAttribute("spellcheck"),
                              fscInherit != null ? fscInherit.isSpellcheckEnabled() : false));
                     //fsc.setSynonymEnabled(Boolean.parseBoolean(commandE.getAttribute("synonyms"))); // FIXME !!
 

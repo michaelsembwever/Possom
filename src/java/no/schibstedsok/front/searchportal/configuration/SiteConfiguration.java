@@ -18,12 +18,12 @@ import org.apache.log4j.Logger;
 
 /**
  * SiteConfiguration properties.
- * 
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision: 2720 $</tt>
  */
 public final class SiteConfiguration {
-    
+
     public interface Context extends BaseContext, PropertiesContext, SiteContext {
     }
 
@@ -52,8 +52,8 @@ public final class SiteConfiguration {
     }
 
     public Properties getProperties() {
-        
-        if( properties.size() == 0 ){
+
+        if(properties.size() == 0){
             propertyLoader.abut();
         }
         return properties;
@@ -86,7 +86,6 @@ public final class SiteConfiguration {
             public Site getSite() {
                 return site;
             }
-
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
             }

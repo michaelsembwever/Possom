@@ -65,7 +65,7 @@ public final class Site {
 
     /** Creates a new instance of Site. */
     private Site(final String _siteName, final Locale _locale) {
-        
+
         // siteName must finish with a '\'
         siteName = _siteName.endsWith("/")
             ? _siteName
@@ -126,18 +126,18 @@ public final class Site {
     public Locale getLocale() {
         return locale;
     }
-    
+
     /** {@inheritDoc}
      */
     public String toString(){
         return uniqueName;
     }
-    
+
     /** {@inheritDoc}
      */
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return obj instanceof Site
-                ? uniqueName.equals( ((Site)obj).uniqueName )
+                ? uniqueName.equals(((Site)obj).uniqueName)
                 : super.equals(obj);
     }
 
@@ -145,8 +145,8 @@ public final class Site {
      */
     public int hashCode() {
         return uniqueName.hashCode();
-    }    
-    
+    }
+
     /** Get the instance for the given siteName.
      * A "www." prefix will be automatically ignored.
      * @param siteName the virtual host name.
@@ -158,7 +158,7 @@ public final class Site {
         final String shortSiteName = siteName.endsWith("/")
             ? siteName.replaceAll("www.","")
             : siteName.replaceAll("www.","") + '/';
-                
+
         Site site = INSTANCES.get(getUniqueName(shortSiteName,locale));
         if (site == null) {
             site = new Site(shortSiteName, locale);
@@ -171,7 +171,7 @@ public final class Site {
 
     static {
         Locale.setDefault(new Locale("no","NO"));
-        
+
         final Properties props = new Properties();
         try  {
             props.load(Site.class.getResourceAsStream('/' + SearchConstants.CONFIGURATION_FILE));

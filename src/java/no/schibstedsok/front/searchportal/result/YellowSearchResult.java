@@ -18,6 +18,7 @@ import no.schibstedsok.front.searchportal.result.handler.PhoneNumberChooser;
 import no.schibstedsok.front.searchportal.result.handler.PhoneNumberFormatter;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
 import org.apache.commons.logging.Log;
@@ -44,12 +45,12 @@ public class YellowSearchResult extends FastSearchResult {
         this.top3 = top3;
         this.local = local;
 
-        List resultToAlter = getResults();
+        final List resultToAlter = getResults();
 
-        List resultsToAdd = new ArrayList();
+        final List resultsToAdd = new ArrayList();
 
-        for (Iterator iter = top3.getResults().iterator(); iter.hasNext();) {
-            SearchResultItem item = (SearchResultItem) iter.next();
+        for (final Iterator iter = top3.getResults().iterator(); iter.hasNext();) {
+            final SearchResultItem item = (SearchResultItem) iter.next();
 
             if (Integer.parseInt(item.getField("rank")) > 100000) {
                 resultsToAdd.add(item);
@@ -156,7 +157,6 @@ public class YellowSearchResult extends FastSearchResult {
                 public Site getSite() {
                     return Site.DEFAULT; // FIXME !!! Needs to work on a per SiteSearch basis.
                 }
-
                 public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                     return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
                 }
@@ -181,18 +181,18 @@ public class YellowSearchResult extends FastSearchResult {
                 }
             };
 
-        PhoneNumberChooser chooser = new PhoneNumberChooser();
+        final PhoneNumberChooser chooser = new PhoneNumberChooser();
         chooser.handleResult(resultHandlerContext, null);
 
-        PhoneNumberFormatter formatter = new PhoneNumberFormatter();
+        final PhoneNumberFormatter formatter = new PhoneNumberFormatter();
         formatter.handleResult(resultHandlerContext, null);
 
-        Iterator pResults = pseudoLocalResult.getResults().iterator();
+        final Iterator pResults = pseudoLocalResult.getResults().iterator();
 
-        Collection secondaryHits = new ArrayList();
+        final Collection secondaryHits = new ArrayList();
 
         while (pResults.hasNext() && localResult.getHitCount() + secondaryHits.size() < 10) {
-            SearchResultItem item = (SearchResultItem) pResults.next();
+            final SearchResultItem item = (SearchResultItem) pResults.next();
 
             if (!localResult.getResults().contains(item)) {
                 secondaryHits.add(item);

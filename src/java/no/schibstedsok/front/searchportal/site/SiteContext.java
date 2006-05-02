@@ -18,6 +18,7 @@ import no.schibstedsok.common.ioc.BaseContext;
  */
 public interface SiteContext extends BaseContext {
     /** What is the site to use.
+     *<b>If you override this then you must also override any ResourceContexts!!</b>
      * @return the site.
      **/
     Site getSite();

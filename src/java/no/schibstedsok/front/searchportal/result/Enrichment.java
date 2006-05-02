@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result;
 
 /**
@@ -9,7 +10,7 @@ public class Enrichment implements Comparable {
     private int analysisResult;
     private String name;
 
-    public Enrichment(int analysisResult, String name) {
+    public Enrichment(final int analysisResult, final String name) {
         this.analysisResult = analysisResult;
         this.name = name;
     }
@@ -22,10 +23,10 @@ public class Enrichment implements Comparable {
         return name;
     }
 
-    public int compareTo(Object o) {
-        Enrichment e = (Enrichment) o;
-        Integer otherScore = new Integer(e.getAnalysisResult());
-        Integer thisScore = new Integer(analysisResult);
+    public int compareTo(final Object o) {
+        final Enrichment e = (Enrichment) o;
+        final Integer otherScore = Integer.valueOf(e.getAnalysisResult());
+        final Integer thisScore = Integer.valueOf(analysisResult);
         return otherScore.compareTo(thisScore);
     }
 }

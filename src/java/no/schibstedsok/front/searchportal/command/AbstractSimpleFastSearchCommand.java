@@ -899,7 +899,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
                             if (! context.getRunningQuery().getQueryString().equalsIgnoreCase(suggAndWeight[0])) {
 
-                                RelevantQuery rq = new RelevantQuery(suggAndWeight[0], new Integer(suggAndWeight[1]));
+                                RelevantQuery rq = new RelevantQuery(suggAndWeight[0], Integer.valueOf(suggAndWeight[1]));
                                 searchResult.addRelevantQuery(rq);
                             }
                         }

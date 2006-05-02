@@ -332,7 +332,6 @@ public final class AnalysisRuleFactory {
             public Site getSite() {
                 return site;
             }
-
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
             }

@@ -28,16 +28,16 @@ import no.schibstedsok.front.searchportal.view.config.SearchTab;
 public class SpellingSuggestionChooserTest extends TestCase {
 
     public void testNoSuggestions() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         handleResult(chooser, result);
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
     public void testOneTermOneSuggestion() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting"));
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting"));
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
@@ -45,19 +45,19 @@ public class SpellingSuggestionChooserTest extends TestCase {
     }
 
     public void testOneTermOneSuggestionwithLimit() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(230);
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(230);
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
     public void testOneTermTwoSuggestionsSameScore() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
@@ -66,11 +66,11 @@ public class SpellingSuggestionChooserTest extends TestCase {
     }
 
     public void testOneTermNumberOfSuggestionsSameScoreOnLimit() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
-        SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -80,12 +80,12 @@ public class SpellingSuggestionChooserTest extends TestCase {
     }
 
     public void testOneTermNumberOfSuggestionsSameScoreOvertLimit() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
-        SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
-        SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
+        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -96,14 +96,14 @@ public class SpellingSuggestionChooserTest extends TestCase {
     }
 
     public void testOneTermNumberOfSuggestionsDiffScoreOvertLimit() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 211);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
-        SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 223);
-        SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
-        SpellingSuggestion suggestion5 = new SpellingSuggestion("slankting", "slankinga", 227);
-        SpellingSuggestion suggestion6 = new SpellingSuggestion("slankting", "slafnkinga", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 211);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 223);
+        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
+        final SpellingSuggestion suggestion5 = new SpellingSuggestion("slankting", "slankinga", 227);
+        final SpellingSuggestion suggestion6 = new SpellingSuggestion("slankting", "slafnkinga", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -114,19 +114,19 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(3, numberOfSuggestions(result, "slankting"));
 
-        List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
 
         assertFalse(suggestionList.contains(suggestion));
         assertFalse(suggestionList.contains(suggestion3));
     }
 
     public void testOneTermNumberOfSuggestionsSameScoreLimitToZero() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 0);
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
-        SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
-        SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 0);
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
+        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -136,74 +136,74 @@ public class SpellingSuggestionChooserTest extends TestCase {
     }
 
     public void testOneTermTwoSuggestionsDifferentScore() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 230);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 230);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(1, numberOfSuggestions(result, "slankting"));
-        List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
         assertFalse(suggestionList.contains(suggestion));
     }
 
     public void testTwoTermsBothWrong() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
         assertEquals(2, numberOfTermsCorrected(result));
-        List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
-        List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
+        final List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
         assertTrue(suggestionList2.contains(suggestion2));
     }
 
     public void testTwoTermsBothWrongManySuggestions() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
-        SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
-        List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
-        List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
+        final List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
         assertNull(suggestionList2);
     }
 
     public void testTwoTermsBothWrongManySuggestionsOneMuchBetter() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
-        SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 240);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 240);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
         handleResult(chooser, result);
         assertEquals(2, numberOfTermsCorrected(result));
-        List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
-        List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
+        final List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
         assertTrue(suggestionList2.contains(suggestion3));
     }
 
     public void testThreeTermsTwoWrong() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel bil"));
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
-        SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 240);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel bil"));
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 240);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -213,9 +213,9 @@ public class SpellingSuggestionChooserTest extends TestCase {
     }
 
     public void testThreeTermsOneWrong() {
-        SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
-        BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykkel bil"));
-        SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykkel bil"));
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
@@ -228,7 +228,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
     }
 
     private int numberOfSuggestions(final BasicSearchResult result, final String term) {
-        List listOfSuggestions = (List) result.getSpellingSuggestions().get(term);
+        final List listOfSuggestions = (List) result.getSpellingSuggestions().get(term);
         return listOfSuggestions.size();
     }
 
@@ -241,11 +241,10 @@ public class SpellingSuggestionChooserTest extends TestCase {
             public Site getSite() {
                 return Site.DEFAULT;
             }
-
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-            
+
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
@@ -261,9 +260,9 @@ public class SpellingSuggestionChooserTest extends TestCase {
             public void addSource(final Modifier modifier) {
                 result.getSearchCommand().getRunningQuery().addSource(modifier);
             }
-                public SearchTab getSearchTab(){
-                    return result.getSearchCommand().getRunningQuery().getSearchTab();
-                }
+            public SearchTab getSearchTab(){
+                return result.getSearchCommand().getRunningQuery().getSearchTab();
+            }
 
         };
         chooser.handleResult(resultHandlerContext, new HashMap());

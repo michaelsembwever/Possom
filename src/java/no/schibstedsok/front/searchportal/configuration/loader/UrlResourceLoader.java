@@ -15,7 +15,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
@@ -181,7 +180,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                             final String prop = (String)p;
                             props.setProperty(prop, newProps.getProperty(prop));
                         }
-                    }  
+                    }
                 }
                 if (builder != null) {
                     document = builder.parse(

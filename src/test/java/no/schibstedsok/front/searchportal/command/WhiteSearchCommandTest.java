@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  *
  * Created on March 4, 2006, 2:32 PM
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
@@ -31,11 +33,11 @@ import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
  * @author magnuse
  */
 public class WhiteSearchCommandTest extends TestCase {
-    
-    public WhiteSearchCommandTest(String name) {
+
+    public WhiteSearchCommandTest(final String name) {
         super(name);
     }
-    
+
     public void testQueryRepresentationInteger() {
         final String query = getParsedQueryAsString("524287");
         assertEquals("whitepages:524287", query);
@@ -68,28 +70,28 @@ public class WhiteSearchCommandTest extends TestCase {
         final String query = getParsedQueryAsString("\"magnus eklund\" 97 40 3306 oslo sarsgate 74");
         assertEquals("whitephon:magnus whitephon:eklund whitepages:97403306 whitephon:oslo whitephon:sarsgate whitepages:74", query);
     }
-    
+
     public void testIgnoreField() {
         final String query = getParsedQueryAsString("site:vg.no magnus eklund");
         assertEquals("whitephon:magnus whitephon:eklund", query.trim());
     }
-    
+
     private String getParsedQueryAsString(final String query) {
         final SearchCommand.Context cxt = createCommandContext(query);
         final WhiteSearchCommand command = createSearchCommand(cxt);
         return command.getQueryRepresentation(cxt.getQuery());
-       
+
     }
-    
+
     private WhiteSearchCommand createSearchCommand(final SearchCommand.Context cxt) {
         return new WhiteSearchCommand(cxt, Collections.EMPTY_MAP);
     }
-    
+
     private SearchCommand.Context createCommandContext(final String query) {
         final FastConfiguration config = new FastConfiguration();
         final RunningQuery.Context rqCxt = new RunningQuery.Context() {
             private final SearchMode mode = new SearchMode();
-            
+
             public SearchMode getSearchMode() {
                 return mode;
             }
@@ -101,46 +103,36 @@ public class WhiteSearchCommandTest extends TestCase {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-            
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
-            
+
             public Site getSite() {
                 return Site.DEFAULT;
             }
-            
-            
+
         };
-        
+
         final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());
-        
-        final SearchCommand.Context searchCmdCxt = new SearchCommand.Context() {
-            public SearchConfiguration getSearchConfiguration() {
-                return config;
-            }
-            
-            public RunningQuery getRunningQuery() {
-                return rq;
-            }
-            
-            public Site getSite() {
-                return Site.DEFAULT;
-            }
-            
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-            
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-            
-            public Query getQuery(){
-                return rq.getQuery();
-            }
-        };
-        
+
+        final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap( 
+                SearchCommand.Context.class,
+                new BaseContext() {
+                    public SearchConfiguration getSearchConfiguration() {
+                        return config;
+                    }
+
+                    public RunningQuery getRunningQuery() {
+                        return rq;
+                    }
+
+                    public Query getQuery(){
+                        return rq.getQuery();
+                    }
+            },
+            rqCxt);
+
         return searchCmdCxt;
     }
 }

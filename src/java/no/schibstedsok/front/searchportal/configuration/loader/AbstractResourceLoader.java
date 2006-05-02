@@ -104,7 +104,7 @@ public abstract class AbstractResourceLoader
     /** {@inheritDoc}
      */
     public void init(final String resource, final Properties props) {
-        
+
         if (future != null && !future.isDone()) {
             throw new IllegalStateException(ERR_ONE_USE_ONLY);
         }
@@ -117,7 +117,7 @@ public abstract class AbstractResourceLoader
     /** {@inheritDoc}
      */
     public void init(final String resource, final DocumentBuilder builder) {
-        
+
         if (future != null && !future.isDone()) {
             throw new IllegalStateException(ERR_ONE_USE_ONLY);
         }
@@ -129,7 +129,7 @@ public abstract class AbstractResourceLoader
     /** {@inheritDoc}
      */
     public void abut() {
-        
+
         if (future == null) {
             throw new IllegalStateException(ERR_NOT_INITIALISED);
         }

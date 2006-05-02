@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
 public final class RegExpEvaluatorFactory {
 
     /**
-     * The context the RegExpEvaluatorFactory must work against. 
+     * The context the RegExpEvaluatorFactory must work against.
      */
     public interface Context extends BaseContext, ResourceContext, SiteContext {
     }
@@ -44,7 +44,7 @@ public final class RegExpEvaluatorFactory {
     private static final String ERR_MUST_USE_CONTEXT_CONSTRUCTOR = "Must use constructor that supplies a context!";
     private static final String ERR_DOC_BUILDER_CREATION = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String ERR_COULD_NOT_FIND_TOKEN_PREDICATE = "Failed to find TokenPredicate.";
-    
+
     static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
 
     /**
@@ -127,7 +127,7 @@ public final class RegExpEvaluatorFactory {
 
                 final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
                 regExpEvaluators.put(token, regExpTokenEvaluator);
-                    
+
             }
             LOG.debug("Parsing " + SearchConstants.REGEXP_EVALUATOR_XMLFILE + " finished");
         }
@@ -166,7 +166,6 @@ public final class RegExpEvaluatorFactory {
             public Site getSite() {
                 return site;
             }
-
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
             }

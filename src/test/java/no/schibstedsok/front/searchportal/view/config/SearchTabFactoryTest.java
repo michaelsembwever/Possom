@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * SearchTabFactoryTest.java
  * JUnit based test
@@ -22,8 +23,8 @@ import org.apache.log4j.Logger;
 public final class SearchTabFactoryTest extends TestCase {
 
     private static final Logger LOG = Logger.getLogger(SearchTabFactoryTest.class);
-    
-    public SearchTabFactoryTest(String testName) {
+
+    public SearchTabFactoryTest(final String testName) {
         super(testName);
     }
 
@@ -37,7 +38,7 @@ public final class SearchTabFactoryTest extends TestCase {
      * Test of getViewFactory method, of class no.schibstedsok.front.searchportal.view.config.SearchTabFactory.
      */
     public void testGetViewFactory() {
-        
+
         assertNotNull(getViewFactory());
     }
 
@@ -45,7 +46,7 @@ public final class SearchTabFactoryTest extends TestCase {
      * Test of testGetTabByName method, of class no.schibstedsok.front.searchportal.view.config.SearchTabFactory.
      */
     public void testGetTabByName() {
-        
+
         LOG.trace("testGetTab");
 
         final String id = "norwegian-internet";
@@ -54,12 +55,12 @@ public final class SearchTabFactoryTest extends TestCase {
         final SearchTab result = instance.getTabByName(id);
         assertNotNull(result);
     }
-    
+
     /**
      * Test of testGetTabByKey method, of class no.schibstedsok.front.searchportal.view.config.SearchTabFactory.
      */
     public void testGetTabByKey() {
-        
+
         LOG.trace("testGetTab");
 
         final String key = "d";
@@ -68,10 +69,10 @@ public final class SearchTabFactoryTest extends TestCase {
         final SearchTab result = instance.getTabByKey(key);
         assertNotNull(result);
     }
-    
-    
+
+
     private SearchTabFactory getViewFactory() {
-        
+
         LOG.trace("getModeFactory");
 
         final SearchTabFactory.Context cxt = new SearchTabFactory.Context(){
@@ -88,5 +89,5 @@ public final class SearchTabFactoryTest extends TestCase {
 
         return result;
     }
-    
+
 }

@@ -8,7 +8,6 @@ import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.query.run.RunningQueryImpl;
-import no.schibstedsok.front.searchportal.output.TextOutputResultHandler;
 
 import java.util.HashMap;
 import java.util.Properties;
@@ -60,7 +59,7 @@ public class SearchModeTest extends TestCase {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-            
+
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
@@ -68,7 +67,6 @@ public class SearchModeTest extends TestCase {
             public Site getSite() {
                 return Site.DEFAULT;
             }
-
         };
 
         final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no", new HashMap());
@@ -79,7 +77,7 @@ public class SearchModeTest extends TestCase {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
-    
+
 
     public void testOverturePPCConfiguration() throws Exception {
 
@@ -100,20 +98,19 @@ public class SearchModeTest extends TestCase {
                     ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                     .getTabByKey("d");
             }
-            public PropertiesLoader newPropertiesLoader(String resource, Properties properties) {
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this,resource, properties);
             }
-            
-            public DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder) {
+
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
 
             public Site getSite() {
-                return Site.DEFAULT; 
+                return Site.DEFAULT;
             }
-            
         };
-        
+
         final RunningQuery runningQuery = new RunningQueryImpl(rqCxt, query, new HashMap());
 
         runningQuery.run();

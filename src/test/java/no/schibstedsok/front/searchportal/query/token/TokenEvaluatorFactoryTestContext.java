@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * TokenEvaluatorFactoryTestContext.java
  *
@@ -10,7 +11,6 @@
 package no.schibstedsok.front.searchportal.query.token;
 
 
-import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -19,9 +19,6 @@ import no.schibstedsok.front.searchportal.configuration.FileResourcesSiteConfigu
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.front.searchportal.query.Clause;
-import no.schibstedsok.front.searchportal.query.Query;
-import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**
@@ -31,7 +28,7 @@ import no.schibstedsok.front.searchportal.site.Site;
 public final class TokenEvaluatorFactoryTestContext implements TokenEvaluatorFactoryImpl.Context{
 
     private final String query;
-    
+
     /**
      * Creates a new instance of TokenEvaluatorFactoryTestContext
      */
@@ -58,5 +55,5 @@ public final class TokenEvaluatorFactoryTestContext implements TokenEvaluatorFac
     public Site getSite()  {
         return Site.DEFAULT;
     }
-    
+
 }

@@ -64,7 +64,6 @@ public final class TextMessages {
             public Site getSite() {
                 return site;
             }
-
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
             }
@@ -87,7 +86,7 @@ public final class TextMessages {
         // import servers-default text messages [does not override existing values]
         LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE+Locale.getDefault());
         loadKeys(Locale.getDefault());
-        
+
         INSTANCES.put(cxt.getSite(),this);
     }
 
@@ -109,7 +108,7 @@ public final class TextMessages {
 
     private void performLoadKeys(final Locale locale) {
 
-        final PropertiesLoader loader 
+        final PropertiesLoader loader
                 = context.newPropertiesLoader(MESSAGE_RESOURCE + "_" + locale.toString() + ".properties", keys);
         loader.abut();
         loader.getProperties();

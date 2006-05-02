@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.spell;
 
 import org.apache.commons.logging.Log;
@@ -33,7 +34,7 @@ public class SpellingSuggestion implements Comparable {
         return suggestion;
     }
 
-    public void setSuggestion(String suggestion) {
+    public void setSuggestion(final String suggestion) {
         this.suggestion = suggestion;
     }
 
@@ -45,9 +46,9 @@ public class SpellingSuggestion implements Comparable {
         return getOriginal() + " " + getSuggestion() + "(" + getScore() + ")";
     }
 
-    public int compareTo(Object o) {
-        SpellingSuggestion suggestion = (SpellingSuggestion) o;
-        return new Integer(suggestion.getScore()).compareTo(new Integer(this.score));
+    public int compareTo(final Object o) {
+        final SpellingSuggestion suggestion = (SpellingSuggestion) o;
+        return Integer.valueOf(suggestion.getScore()).compareTo(Integer.valueOf(this.score));
     }
 
 }

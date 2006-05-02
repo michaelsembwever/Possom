@@ -59,7 +59,7 @@ public final class VelocityEngineFactory {
             /** We override this method to dampen the <ERROR velocity: ResourceManager : unable to find resource ...>
              * error messages in sesam.error
              **/
-            public Template getTemplate(String name) throws ResourceNotFoundException, ParseErrorException, Exception {
+            public Template getTemplate(final String name) throws ResourceNotFoundException, ParseErrorException, Exception {
 
                 final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
                 Logger.getLogger(VELOCITY_LOGGER).setLevel(Level.FATAL);
@@ -132,7 +132,6 @@ public final class VelocityEngineFactory {
             public Site getSite() {
                 return site;
             }
-
         });
         return instance;
     }
