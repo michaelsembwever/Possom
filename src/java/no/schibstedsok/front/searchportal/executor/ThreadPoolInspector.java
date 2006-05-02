@@ -26,10 +26,10 @@ public final class ThreadPoolInspector extends TimerTask {
     private static final Log LOG = LogFactory.getLog(ThreadPoolInspector.class);
 
     public void run() {
-        LOG.info("Thread pool size: " + threadPool.getPoolSize());
-        LOG.info("Largest size: " + threadPool.getLargestPoolSize());
+        LOG.info("Thread pool size: " + threadPool.getPoolSize()
+                + "; Largest size: " + threadPool.getLargestPoolSize());
         LOG.info("Active threads: " + threadPool.getActiveCount());
-        LOG.info("Approx. task count: " + threadPool.getTaskCount());
-        LOG.info("Completed count: " + threadPool.getCompletedTaskCount());
+        LOG.info("Approx. task count: " + threadPool.getTaskCount()
+                + "; Completed count: " + threadPool.getCompletedTaskCount());
     }
 }
