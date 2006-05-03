@@ -83,6 +83,15 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
         return instance;
     }
 
+    public static boolean remove(final Site site){
+
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            return null != INSTANCES.remove(site);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
+    }
 
     // Constructors --------------------------------------------------
 

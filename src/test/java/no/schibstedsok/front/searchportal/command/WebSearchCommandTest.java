@@ -147,7 +147,7 @@ public class WebSearchCommandTest extends TestCase {
             public SearchMode getSearchMode() {
                 return SearchModeFactory.getModeFactory(
                         ContextWrapper.wrap(SearchModeFactory.Context.class, this))
-                        .getMode("magic");
+                        .getMode("norsk-magic");
             }
             public SearchTab getSearchTab(){
                 return SearchTabFactory.getTabFactory(

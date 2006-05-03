@@ -68,7 +68,7 @@ public final class SearchModeFactoryTest extends TestCase {
     public void testGetMode() {
         LOG.trace("testGetMode");
 
-        final String id = "magic";
+        final String id = "norsk-magic";
         final SearchModeFactory instance = getModeFactory();
 
         final SearchMode result = instance.getMode(id);

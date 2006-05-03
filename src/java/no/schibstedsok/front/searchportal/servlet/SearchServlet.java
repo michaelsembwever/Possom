@@ -41,7 +41,11 @@ public final class SearchServlet extends HttpServlet {
     private static final long serialVersionUID = 3068140845772756438L;
 
     private static final Logger LOG = Logger.getLogger(SearchServlet.class);
-    private static final String WARN_TABS_CLEANED = " status on cleaning tabs for ";
+    private static final String ERR_MISSING_TAB = "No existing implementation for tab ";
+    private static final String ERR_MISSING_MODE = "No existing implementation for mode ";
+    private static final String WARN_TABS_CLEANED = " status on cleaning site for ";
+    private static final String WARN_CONFIG_CLEANED = " status on cleaning configuration for ";
+    private static final String WARN_MODES_CLEANED = " status on cleaning modes for ";
 
     //private SearchTabs tabs;
 
@@ -54,29 +58,18 @@ public final class SearchServlet extends HttpServlet {
     /** {@inheritDoc}
      */
     protected void doGet(
-            final HttpServletRequest httpServletRequest,
-            final HttpServletResponse httpServletResponse)
+            final HttpServletRequest request,
+            final HttpServletResponse response)
                 throws ServletException, IOException {
 
 
-        if (httpServletRequest.getParameter("q") == null) {
-            String redir = httpServletRequest.getContextPath();
-            if (redir == null) { redir = "/"; }
-            if (!redir.endsWith("/")) {
-                LOG.debug("doGet: Adding / to " + redir);
-
-                redir += "/";
-            }
-
-            LOG.info("doGet(): Empty Query String redirect=" + redir);
-
-            httpServletResponse.sendRedirect(redir);
+        if ( isEmptyQuery(request, response) ) {
             return;
         }
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("ENTR: doGet()");
-            LOG.debug("Character encoding ="  + httpServletRequest.getCharacterEncoding());
+            LOG.debug("Character encoding ="  + request.getCharacterEncoding());
         }
 
         StopWatch stopWatch = null;
@@ -85,27 +78,13 @@ public final class SearchServlet extends HttpServlet {
             stopWatch.start();
         }
 
-        final Site site = (Site) httpServletRequest.getAttribute(Site.NAME_KEY);
-        final boolean forceReload = "tabs".equals(httpServletRequest.getParameter("reload"));
+        final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+        
+        performReloads(site, request.getParameter("reload"));
 
-        if(forceReload){
-            final boolean cleaned = SiteConfiguration.remove(site);
-            LOG.warn(cleaned + WARN_TABS_CLEANED + site);
-        }
-        //final SearchTabs tabs = SiteConfiguration.valueOf(site).getSearchTabs();
+        updateContentType(site, response);
 
-
-        // TODO. Any better way to do this. Sitemesh?
-        if (site.getName().startsWith("mobil")) {
-            httpServletResponse.setContentType("text/xml; charset=utf-8");
-        } else {
-            httpServletResponse.setContentType("text/html; charset=utf-8");
-        }
-
-        httpServletResponse.setCharacterEncoding("UTF-8"); // correct encoding
-
-
-        String searchTabKey = httpServletRequest.getParameter("c");
+        String searchTabKey = request.getParameter("c");
 
         if (searchTabKey == null) {
             searchTabKey = "d";
@@ -128,11 +107,20 @@ public final class SearchServlet extends HttpServlet {
         final SearchTab searchTab = SearchTabFactory.getTabFactory(
                 ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt))
                 .getTabByKey(searchTabKey);
+        
+        if( searchTab == null ){
+            LOG.error(ERR_MISSING_TAB + searchTabKey);
+            throw new UnsupportedOperationException(ERR_MISSING_TAB + searchTabKey);
+        }
+        
         final SearchMode mode = SearchModeFactory.getModeFactory(
                 ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
                 .getMode(searchTab.getMode());
-
-        //final SearchMode mode = tabs.getSearchMode(searchTabKey);
+        
+        if( mode == null ){
+            LOG.error(ERR_MISSING_MODE + searchTab.getMode());
+            throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
+        }
 
         final RunningQuery.Context rqCxt = ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" rqCxt ">
                 RunningQuery.Context.class,
@@ -148,27 +136,27 @@ public final class SearchServlet extends HttpServlet {
         );//</editor-fold>
 
         final RunningQuery query = QueryFactory.getInstance()
-            .createQuery(rqCxt, httpServletRequest, httpServletResponse);
+            .createQuery(rqCxt, request, response);
 
-        httpServletRequest.setAttribute("locale", query.getLocale());
-        httpServletRequest.setAttribute("query", query);
-        httpServletRequest.setAttribute("site", site);
-        httpServletRequest.setAttribute("text",
+        request.setAttribute("locale", query.getLocale());
+        request.setAttribute("query", query);
+        request.setAttribute("site", site);
+        request.setAttribute("text",
                 TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
 
-        if (httpServletRequest.getParameter("offset") != null
-                && !"".equals(httpServletRequest.getParameter("offset"))) {
+        if (request.getParameter("offset") != null
+                && !"".equals(request.getParameter("offset"))) {
 
-            query.setOffset(Integer.parseInt(httpServletRequest.getParameter("offset")));
+            query.setOffset(Integer.parseInt(request.getParameter("offset")));
         }
 
-        if (httpServletRequest.getParameter("q") != null) {
-            httpServletRequest.setAttribute("q",
-                QueryStringHelper.safeGetParameter(httpServletRequest, "q"));
+        if (request.getParameter("q") != null) {
+            request.setAttribute("q",
+                QueryStringHelper.safeGetParameter(request, "q"));
         }
 
-        httpServletRequest.setAttribute("tab", searchTab);
-        httpServletRequest.setAttribute("c", searchTabKey);
+        request.setAttribute("tab", searchTab);
+        request.setAttribute("c", searchTabKey);
 
         try {
                 query.run();
@@ -180,6 +168,62 @@ public final class SearchServlet extends HttpServlet {
             stopWatch.stop();
             LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
         }
+    }
+    
+    private void performReloads(
+            final Site site,
+            final String reload){
+        
+        if( "all".equalsIgnoreCase(reload) ){
+            final boolean cleaned = SiteConfiguration.remove(site);
+            LOG.warn(cleaned + WARN_CONFIG_CLEANED + site);
+        } 
+        if( "all".equalsIgnoreCase(reload) || "tabs".equalsIgnoreCase(reload) ){
+            final boolean cleaned = SearchTabFactory.remove(site);
+            LOG.warn(cleaned + WARN_TABS_CLEANED + site);
+        }
+        if( "all".equalsIgnoreCase(reload) || "modes".equalsIgnoreCase(reload) ){
+            final boolean cleaned = SearchModeFactory.remove(site);
+            LOG.warn(cleaned + WARN_MODES_CLEANED + site);
+        }
+    }
+    
+    private boolean isEmptyQuery(
+            final HttpServletRequest request,
+            final HttpServletResponse response ) throws IOException{
+        
+        if (request.getParameter("q") == null) {
+            
+            String redir = request.getContextPath();
+            if (redir == null) { 
+                redir = "/"; 
+            }
+            if (!redir.endsWith("/")) {
+                LOG.debug("doGet: Adding / to " + redir);
+
+                redir += "/";
+            }
+
+            LOG.info("doGet(): Empty Query String redirect=" + redir);
+
+            response.sendRedirect(redir);
+            return true;
+        }
+        return false;
+    }
+    
+    private void updateContentType(
+            final Site site,
+            final HttpServletResponse response ){
+        
+        // TODO. Any better way to do this. Sitemesh?
+        if (site.getName().startsWith("mobil")) {
+            response.setContentType("text/xml; charset=utf-8");
+        } else {
+            response.setContentType("text/html; charset=utf-8");
+        }
+
+        response.setCharacterEncoding("UTF-8"); // correct encoding
     }
 
 }
