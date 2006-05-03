@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractClause implements Clause {
 
     private static final Log LOG = LogFactory.getLog(AbstractClause.class);
-    private static final String DEBUG_REFERENCE_REUSED = "Gjenbruk weakReference. Size nå ";
+    private static final String DEBUG_REFERENCE_REUSED = "Gjenbruk weakReference. Størrelse: ";
 
     private final String term;
     private final Set<TokenPredicate> knownPredicates;
