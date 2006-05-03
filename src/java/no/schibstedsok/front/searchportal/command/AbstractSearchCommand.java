@@ -159,7 +159,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         MDC.put(Site.NAME_KEY, context.getSite().getName());
 
         final String thread = Thread.currentThread().getName();
-        if (getSearchConfiguration().getStatisticsName() != null) {
+        final String statName = getSearchConfiguration().getStatisticsName();
+        if (statName != null && statName.length()>0 ) {
             Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticsName() + "]");
         }  else  {
             Thread.currentThread().setName(thread + " [" + getClass().getSimpleName() + "]");

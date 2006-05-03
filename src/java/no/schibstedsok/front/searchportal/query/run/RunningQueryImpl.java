@@ -227,19 +227,19 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 } else {
 
-                    // Optimisation. Alternate between the two web searches.
-                    if (isNorwegian(config) || isInternational(config)) {
-                        final String searchType = getSingleParameter("s");
-                        if (searchType != null && searchType.equals("g")) {
-                            if (isInternational(config)) {
-                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
-                            }
-                        } else if (isNorwegian(config)) {
-                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
-                        }
-                    } else {
+//                    // Optimisation. Alternate between the two web searches.
+//                    if (isNorwegian(config) || isInternational(config)) {
+//                        final String searchType = getSingleParameter("s");
+//                        if (searchType != null && searchType.equals("g")) {
+//                            if (isInternational(config)) {
+//                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
+//                            }
+//                        } else if (isNorwegian(config)) {
+//                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
+//                        }
+//                    } else {
                         commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
-                    }
+//                    }
                 }
             }
 
@@ -265,18 +265,20 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     final SearchResult searchResult = task.get();
                     if (searchResult != null) {
 
-                        // Information we need
+                        // Information we need about and for the enrichment
                         final SearchConfiguration config = searchResult.getSearchCommand().getSearchConfiguration();
                         final String name = config.getName();
                         final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
-                        final Integer score = scores.get(name);
+                        final int score = scores.get(name) != null
+                                ? (int)(scores.get(name) * eHint.getWeight())
+                                : 0;
 
                         // update hit status
                         hitsToShow |= searchResult.getHitCount() > 0;
                         hits.put(name, searchResult.getHitCount());
 
                         // score
-                        if( eHint != null && score != null && searchResult.getResults().size() > 0
+                        if( eHint != null && searchResult.getResults().size() > 0
                                 && score >= eHint.getThreshold() && score > 15) {
                             
                             // add enrichment
