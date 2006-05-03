@@ -24,7 +24,7 @@
   >
 
 <!--- Put your DTDDoc comment here. -->
-<!ELEMENT mode (commands|yellowpages-command|whitepages-command|web-command|stock-command|sensis-command|picture-command|overture-ppc-command|news-command|math-command|fast-command|command)*>
+<!ELEMENT mode (commands|yellowpages-command|whitepages-command|web-command|stock-command|sensis-command|picture-command|overture-ppc-command|news-command|math-command|fast-command|command|mobile-command)*>
 <!ATTLIST mode
     inherit CDATA #IMPLIED
     analysis CDATA #IMPLIED
