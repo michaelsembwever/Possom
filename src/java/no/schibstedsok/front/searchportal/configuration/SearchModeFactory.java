@@ -436,27 +436,40 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
                 }
 
                 // query transformers
-                final NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
+                NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);
                 if(qtRootElement != null){
-                    for(QueryTransformerTypes qtType : QueryTransformerTypes.values()){
-                        final NodeList qtList = qtRootElement.getElementsByTagName(qtType.getXmlName());
-                        for(int i = 0 ; i < qtList.getLength(); ++i){
-                            final Element qt = (Element) qtList.item(i);
-                            sc.addQueryTransformer(qtType.parseQueryTransformer(qt));
+                    qtNodeList = qtRootElement.getChildNodes();
+                    
+                    for(int i = 0; i < qtNodeList.getLength(); i++) {
+                        final Node node = qtNodeList.item(i);
+                        if (!(node instanceof Element)) {
+                            continue;
+                        }
+                        final Element qt = (Element) node;
+                        for (QueryTransformerTypes qtType : QueryTransformerTypes.values()) {
+                            if (qt.getTagName().equals(qtType.getXmlName())) {
+                                sc.addQueryTransformer(qtType.parseQueryTransformer(qt));
+                            }
                         }
                     }
                 }
 
                 // result handlers
-                final NodeList rhNodeList = commandE.getElementsByTagName("result-handlers");
+                NodeList rhNodeList = commandE.getElementsByTagName("result-handlers");
                 final Element rhRootElement = (Element) rhNodeList.item(0);
                 if(rhRootElement != null){
-                    for(ResultHandlerTypes rhType : ResultHandlerTypes.values()){
-                        final NodeList rhList = rhRootElement.getElementsByTagName(rhType.getXmlName());
-                        for(int i = 0 ; i < rhList.getLength(); ++i){
-                            final Element rh = (Element) rhList.item(i);
-                            sc.addResultHandler(rhType.parseResultHandler(rh));
+                    rhNodeList = rhRootElement.getChildNodes();
+                    for(int i = 0; i < rhNodeList.getLength(); i++) {
+                        final Node node = rhNodeList.item(i);
+                        if (!(node instanceof Element)) {
+                            continue;
+                        }
+                        final Element rh = (Element) node;
+                        for (ResultHandlerTypes rhType : ResultHandlerTypes.values()) {
+                            if (rh.getTagName().equals(rhType.getXmlName())) {
+                                sc.addResultHandler(rhType.parseResultHandler(rh));
+                            }
                         }
                     }
                 }
@@ -533,7 +546,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
         SIMPLE_SITE_SEARCH (SimpleSiteSearchTransformer.class),
         SYNONYM (SynonymQueryTransformer.class),
         TERM_PREFIX (TermPrefixTransformer.class),
-        TV (TvQueryTransformer.class);
+        TV (TvQueryTransformer.class);        
 
         private final Class<? extends QueryTransformer> clazz;
         private final String xmlName;
