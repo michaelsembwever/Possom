@@ -15,6 +15,7 @@ import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -22,6 +23,8 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
  * @version <tt>$Id$</tt>
  */
 public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
+    
+    private static final Logger LOG = Logger.getLogger(PrefixRemoverTransformer.class);
 
     private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
             Arrays.asList(
@@ -50,6 +53,8 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     private StringBuilder prefixBuilder = new StringBuilder();
     private List<LeafClause> leafList = new ArrayList<LeafClause>();
     private RegExpEvaluatorFactory regExpFactory = null;
+
+    private static final String ERR_PREFIX_NOT_FOUND = "No such TokenPredicate ";
     
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
@@ -121,7 +126,11 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
             if (customPrefixes == null && prefixes != null && prefixes.size() > 0) {
                 final Collection<TokenPredicate> cp = new ArrayList();
                 for (String tp : prefixes) {
-                    cp.add(TokenPredicate.valueOf(tp));
+                    try{
+                        cp.add(TokenPredicate.valueOf(tp));
+                    }catch(IllegalArgumentException iae){
+                        LOG.error(ERR_PREFIX_NOT_FOUND + tp, iae);
+                    }
                 }
                 customPrefixes = Collections.unmodifiableCollection(cp);
             }
