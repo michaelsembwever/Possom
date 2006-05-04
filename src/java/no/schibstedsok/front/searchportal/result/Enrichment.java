@@ -5,28 +5,25 @@ package no.schibstedsok.front.searchportal.result;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class Enrichment implements Comparable {
+public class Enrichment implements Comparable<Enrichment> {
 
-    private int analysisResult;
+    private float analysisResult;
     private String name;
 
-    public Enrichment(final int analysisResult, final String name) {
+    public Enrichment(final float analysisResult, final String name) {
         this.analysisResult = analysisResult;
         this.name = name;
     }
 
     public int getAnalysisResult() {
-        return analysisResult;
+        return (int)analysisResult;
     }
 
     public String getName() {
         return name;
     }
 
-    public int compareTo(final Object o) {
-        final Enrichment e = (Enrichment) o;
-        final Integer otherScore = Integer.valueOf(e.getAnalysisResult());
-        final Integer thisScore = Integer.valueOf(analysisResult);
-        return otherScore.compareTo(thisScore);
+    public int compareTo(final Enrichment e) {
+        return (int)(analysisResult - e.analysisResult);
     }
 }

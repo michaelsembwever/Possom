@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.executor;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * A {@link no.schibstedsok.front.searchportal.executor.SearchCommandExecutor} executing a list of callables in parallel.
@@ -11,10 +12,11 @@ import java.util.concurrent.ExecutorService;
  */
 public final class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
 
-    private static final int INSPECTOR_PERIOD = 300000;
+//    private static final int INSPECTOR_PERIOD = 300000;
 
-    private transient static final SearchTaskExecutorService EXECUTOR = new SearchTaskExecutorService();
-    private transient static final ThreadPoolInspector INSPECTOR = new ThreadPoolInspector(EXECUTOR, INSPECTOR_PERIOD);
+    //private transient static final SearchTaskExecutorService EXECUTOR = new SearchTaskExecutorService();
+    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+    //private static final ThreadPoolInspector INSPECTOR = new ThreadPoolInspector(EXECUTOR, INSPECTOR_PERIOD);
 
     /**
      * Creates a new parallel EXECUTOR.
@@ -22,12 +24,12 @@ public final class ParallelSearchCommandExecutor extends AbstractSearchCommandEx
     public ParallelSearchCommandExecutor() {
     }
 
-    public void stop() {
-        LOG.info("Shutting down thread pool inspector");
-        INSPECTOR.cancel();
-        LOG.warn(EXECUTOR.getTaskCount() + " processed");
-        super.stop();
-    }
+//    public void stop() {
+//        //LOG.info("Shutting down ExecutorService");
+//        //INSPECTOR.cancel();
+//        //LOG.warn(EXECUTOR.getTaskCount() + " processed");
+//        super.stop();
+//    }
 
     protected ExecutorService getExecutorService(){
         return EXECUTOR;

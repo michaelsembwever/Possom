@@ -25,7 +25,6 @@
 
     String currentC = "d";    //default collection
     currentC = (String) request.getAttribute("c");
-    final String searchType = request.getParameter("s");
     String q = (String) request.getAttribute("q");
     final String contentsource = (String) request.getParameter("contentsource");
     final String qURLEncoded = URLEncoder.encode(q, "utf-8");
@@ -41,7 +40,7 @@
     final String ss = request.getParameter("ss");
     final String ssr = request.getParameter("ssr");
 
-    final List enrichments = (List) request.getAttribute("enrichments");
+    final List<Enrichment> enrichments = (List<Enrichment>) request.getAttribute("enrichments");
     final int enrichmentSize = enrichments.size();
     pageContext.setAttribute("enrichmentSize", enrichmentSize);
 
@@ -49,7 +48,7 @@
     pageContext.setAttribute("siteMeshPage", siteMeshPage);
 
     final RunningQuery query = (RunningQuery) request.getAttribute("query");
-    final List sources = query.getSources();
+    final List<Modifier> sources = query.getSources();
     final Integer hits = (Integer) query.getNumberOfHits("defaultSearch");
 
     int no_hits = 0;
@@ -87,10 +86,9 @@
         // it *is* new-school n we doda-dance
         final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
 
-        for (Iterator iter = sources.iterator(); iter.hasNext();) {
-            Modifier mod = (Modifier) iter.next();
+        for (Modifier mod : sources) {
             if ( mod.getName().equals("sesam_hits")) {
-                context.put("sesam_hits", text.getMessage("numberFormat", new Integer(mod.getCount())));
+                context.put("sesam_hits", text.getMessage("numberFormat", mod.getCount()));
             }
         }
         // populate context with sitemesh stuff
@@ -113,17 +111,18 @@
         // merge it into the JspWriter
         template.merge(context, out);%>
     <%-- old-school sitesearch --%>
-    <% } else if (currentC.equals("d") && "ds".equals(ss) ||
-            currentC.equals("d") && "di".equals(ss) ||
-            currentC.equals("d") && "pr".equals(ss) ||
-            currentC.equals("d") && "im".equals(ss) ||
-            currentC.equals("d") && "nrk".equals(ss) ||
-            currentC.equals("d") && "af".equals(ss) ||
-            currentC.equals("d") && "fv".equals(ss) ||
-            currentC.equals("d") && "aa".equals(ss) ||
-            currentC.equals("d") && "bt".equals(ss) ||
-            currentC.equals("d") && "sa".equals(ss) ||
-            currentC.equals("d") && "it".equals(ss)) { %>
+    <% } else if (currentC.equals("d") && (
+             "ds".equals(ss) ||
+             "di".equals(ss) ||
+             "pr".equals(ss) ||
+             "im".equals(ss) ||
+             "nrk".equals(ss) ||
+             "af".equals(ss) ||
+             "fv".equals(ss) ||
+             "aa".equals(ss) ||
+             "bt".equals(ss) ||
+             "sa".equals(ss) ||
+             "it".equals(ss))) { %>
 
 
         <div id="frame">
@@ -338,27 +337,23 @@
     <tr>
 	<%if (q.trim().equals("") && !currentC.equals("m")) {%>
 
-	<%}else if (currentC.equals("m") || currentC.equals("d") || !q.trim().equals("")) {%>
+	<%}else if (currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || !q.trim().equals("")) {%>
         <td class="cell_one" valign="top">
 
             <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
         		    <% int i=0; %>
-                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
-                        Modifier e = (Modifier) iterator.next();
+                    <% for (Modifier e : sources) {
                         ++i;
-                    %>
-                    <% if(i!=1) {%>
-                            <tr>
-                                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
-                            </tr>
+                    if(i!=1) {%>
+                            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
                     <% } %>
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
                                 <img <% if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
-                            <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
+                            <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
                         </tr>
                     <%}%>
                 </table>
@@ -366,21 +361,17 @@
             <%}else if (currentC.equals("w") || currentC.equals("wip")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
 		            <% int i=0; %>
-                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
-                        Modifier e = (Modifier) iterator.next();
+                    <% for (Modifier e : sources) {
 		                ++i;
-                    %>
-                    <% if(i!=1) {%>
-                            <tr>
-                                <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
-                            </tr>
+                    if(i!=1) {%>
+                            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
                     <% } %>
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                         <td class="nav_pad_icon">
                             <img <% if (e.getName().startsWith("Bedriftss")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
                             <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                         </td>
-                        <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
+                        <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
                     </tr>
                     <%}%>
                 </table>
@@ -393,21 +384,17 @@
             <%}else if (currentC.equals("m")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
 		            <% int i=0; %>
-                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
-                        Modifier e = (Modifier) iterator.next();
+                    <% for (Modifier e : sources) {
                         ++i;
-                                %>
-                        <% if(i!=1) {%>
-                                <tr>
-                                    <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
-                                </tr>
+                        if(i!=1) {%>
+                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
                         <% } %>
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
                                 <img src="../images/menu/nettsok.gif" class="nav_icon" align="left" alt="" />
                                 <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
-                            <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
+                            <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
                         </tr>
                     <%}%>
                 </table>
@@ -417,23 +404,19 @@
 
                 <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
 		            <% int i = 0; %>
-                    <% for (Iterator iterator = sources.iterator(); iterator.hasNext();) {
-                        Modifier e = (Modifier) iterator.next();
-                        if ( (currentC.equals("d") && !e.getName().equals("Nettsøk")) || (currentC.equals("d") && searchType != null && searchType.equals("g")) || currentC.equals("p") || currentC.equals("b")) {
+                    <% for (Modifier e : sources) {
+                        if ( (currentC.equals("d") && !e.getName().equals("Nettsøk"))
+                                || currentC.equals("g") || currentC.equals("p") || currentC.equals("b")) {
                             ++i;
-                    %>
-
-                            <% if(i!=1) {%>
-                                <tr>
-                                    <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td>
-                                </tr>
+                            if(i!=1) {%>
+                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
                             <% } %>
                             <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                                 <td class="nav_pad_icon">
                                     <img <% if (e.getName().startsWith("Bedrifts")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Bildes")) { %> src="../images/menu/bilde.gif" <% } else if (e.getName().equals("Verden")) { %> src="../images/menu/nettsok.gif"  <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/menu/nyheter.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
                                     <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
                                 </td>
-                                <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", new Integer(e.getCount())) %></td>
+                                <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
                             </tr>
                         <%}%>
                     <%}%>
@@ -464,7 +447,7 @@
         <%}%>
                 <%--<decorator:getProperty property="page.search-bar"/>--%>
                 <!-- Magic -->
-                <%if (currentC.equals("d")) {%>
+                <%if (currentC.equals("d") || "g".equals(currentC)) {%>
 
 
                         <%--  Header  --%>
@@ -498,15 +481,6 @@
 			<tr>
                         <decorator:getProperty property="page.spellcheck"/>
                          <td id="result_container">
-                             <% if ("n".equals(searchType)) { %>
-                                    <% if (no_hits > 0) { %>
-                                        <decorator:getProperty property="page.fast-results"/>
-                                    <%  } else if(!q.trim().equals("")){ %>
-                                        <decorator:getProperty property="page.noHits"/>
-                                    <% } %>
-                             <% } else if ("g".equals(searchType)) { %>
-                                    <decorator:getProperty property="page.global-results"/>
-                             <%  } else { %>
 
                                 <decorator:getProperty property="page.main_ads"/>
 
@@ -531,27 +505,31 @@
                                            </c:if>
                                        </c:forEach>
 
-                                       <%--  Shows the 3 first hits if more than 1 enrichment  --%>
-                                       <decorator:getProperty property="page.fast-results-norwegian_part1"/>
+                                        <% if ("d".equals(currentC)) { %>
+                                           <%--  Shows the 3 first hits if more than 1 enrichment  --%>
+                                           <decorator:getProperty property="page.fast-results-norwegian_part1"/>
 
-                                       <%-- Show tab's proceeding enrichments --%>
-                                       <c:forEach var="ee" items="${enrichments}" varStatus="i">
-                                           <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult < tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
-                                               <c:set var="pageName" value="page.${ee.name}"/>
-                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
-                                           </c:if>
-                                       </c:forEach>
+                                           <%-- Show tab's proceeding enrichments --%>
+                                           <c:forEach var="ee" items="${enrichments}" varStatus="i">
+                                               <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult < tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
+                                                   <c:set var="pageName" value="page.${ee.name}"/>
+                                                   <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
+                                               </c:if>
+                                           </c:forEach>
 
-                                       <%--  Shows the 7 next hits after the second/third enrichments  --%>
-                                       <decorator:getProperty property="page.fast-results-norwegian_part2"/>
-                               
+                                           <%--  Shows the 7 next hits after the second/third enrichments  --%>
+                                           <decorator:getProperty property="page.fast-results-norwegian_part2"/>
+                                           
+                                       <% } else if ("g".equals(currentC)) { %>
+                                       
+                                            <decorator:getProperty property="page.global-results"/>
+                                       <% } %>
                                  </c:when>
                                  <c:otherwise>
                                      <decorator:getProperty property="page.noHits" />
                                  </c:otherwise>
                              </c:choose>
 
-                            <% } %>
                         </td>
 			</tr>
 			</table>
@@ -632,7 +610,7 @@
 <!--
 var tmsec = new Array(2);
 tmsec[0]="tmsec=sesam";
-<% if (currentC.equals("d") && "g".equals(searchType)) { %> tmsec[1]="tmsec=sesamsok_verden";
+<% if (currentC.equals("g")) { %> tmsec[1]="tmsec=sesamsok_verden";
 <% } else if (currentC.equals("d")) { %> tmsec[1]="tmsec=sesamsok";
 <% } else if (currentC.equals("m") && "Norske nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_norske";
 <% } else if (currentC.equals("m") && "Internasjonale nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_internasjonale";
@@ -649,7 +627,7 @@ tmsec[0]="tmsec=sesam";
 getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 //-->
 </script>
-<% if (currentC.equals("d") && "g".equals(searchType)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok_verden" alt="" /></noscript>
+<% if (currentC.equals("g") ) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok_verden" alt="" /></noscript>
 <% } else if (currentC.equals("d")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok" alt="" /></noscript>
 <% } else if (currentC.equals("m") && "Norske nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_norske" alt="" /></noscript>
 <% } else if (currentC.equals("m") && "Internasjonale nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_internasjonale" alt="" /></noscript>

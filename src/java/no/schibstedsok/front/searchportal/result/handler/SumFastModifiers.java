@@ -16,11 +16,11 @@ import no.schibstedsok.front.searchportal.result.SearchResult;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class SumFastModifiers implements ResultHandler {
+public final class SumFastModifiers implements ResultHandler {
 
     private String targetModifier;
     private String navigatorName;
-    private Collection modifierNames = new ArrayList();
+    private final Collection modifierNames = new ArrayList();
 
     public SumFastModifiers(){}
 

@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
  */
 public class SearchTask extends FutureTask<SearchResult> {
 
-    private static final Logger LOG = Logger.getLogger(SearchTaskExecutorService.class);
+    private static final Logger LOG = Logger.getLogger(SearchTask.class);
 
     private SearchCommand command;
 

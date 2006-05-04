@@ -65,7 +65,7 @@ public interface RunningQuery {
 
     String getSourceParameters(final String source);
 
-    List getSources();
+    List<Modifier> getSources();
 
     TokenEvaluatorFactory getTokenEvaluatorFactory();
 

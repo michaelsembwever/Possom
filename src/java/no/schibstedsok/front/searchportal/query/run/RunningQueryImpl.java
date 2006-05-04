@@ -269,8 +269,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         final SearchConfiguration config = searchResult.getSearchCommand().getSearchConfiguration();
                         final String name = config.getName();
                         final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
-                        final int score = scores.get(name) != null
-                                ? (int)(scores.get(name) * eHint.getWeight())
+                        final float score = scores.get(name) != null
+                                ? scores.get(name) * eHint.getWeight()
                                 : 0;
 
                         // update hit status
