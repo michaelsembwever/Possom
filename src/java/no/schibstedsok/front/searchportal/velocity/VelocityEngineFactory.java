@@ -10,9 +10,16 @@ package no.schibstedsok.front.searchportal.velocity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
@@ -44,7 +51,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     /**
      * The context the AnalysisRules must work against. *
      */
-    public interface Context extends SiteContext {
+    public interface Context extends SiteContext, ResourceContext {
     }
 
     private final Context context;
@@ -73,7 +80,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
         try  {
             final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
-            final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
+            final java.util.Properties props = SiteConfiguration.valueOf(
+                    ContextWrapper.wrap(SiteConfiguration.Context.class, cxt)).getProperties();
             // engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute"); // velocity 1.5
             engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
             // engine.setProperty("runtime.log.logsystem.log4j.logger", logger.getName()); // velocity 1.5
@@ -136,6 +144,12 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         final VelocityEngineFactory instance = VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context() {
             public Site getSite() {
                 return site;
+            }
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+            }
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
             }
         });
         return instance;

@@ -55,13 +55,9 @@ public final class VelocityResultHandler implements ResultHandler {
     private static final String ERR_GETTING_TEMPLATE = "Error getting template ";
     private static final String ERR_NP_WRITING_TO_STREAM = "Possible client cancelled request. (NullPointerException writing to response's stream).";
 
-    public static VelocityEngine getEngine(final Site site){
+    public static VelocityEngine getEngine(final Context cxt){
 
-        return VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context() {
-                public Site getSite() {
-                    return site;
-                }
-            }).getEngine();
+        return VelocityEngineFactory.valueOf(ContextWrapper.wrap(VelocityEngineFactory.Context.class,cxt)).getEngine();
     }
 
     public static Template getTemplate(
@@ -139,7 +135,7 @@ public final class VelocityResultHandler implements ResultHandler {
             }
 
             final Site site = cxt.getSite();
-            final VelocityEngine engine = getEngine(site);
+            final VelocityEngine engine = getEngine(cxt);
             final Template template = getTemplate(engine, site, searchConfiguration.getName());
 
             if (LOG.isDebugEnabled()) {
