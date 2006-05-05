@@ -8,6 +8,7 @@
 
 package no.schibstedsok.front.searchportal.configuration;
 
+import java.util.Locale;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
@@ -38,10 +39,10 @@ public final class SearchModeFactoryTest extends TestCase {
      */
     public void testGetModeFactory(){
 
-        assertNotNull(getModeFactory());
+        assertNotNull(getModeFactory(null));
     }
 
-    private SearchModeFactory getModeFactory() {
+    private SearchModeFactory getModeFactory(final Locale locale) {
         LOG.trace("getModeFactory");
 
         final SearchModeFactory.Context cxt = new SearchModeFactory.Context(){
@@ -49,15 +50,12 @@ public final class SearchModeFactoryTest extends TestCase {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
             public Site getSite()  {
-                return Site.DEFAULT;
+                return locale == null ? Site.DEFAULT : Site.valueOf(Site.DEFAULT.getName(), locale);
             }
         };
 
         final SearchModeFactory result = SearchModeFactory.getModeFactory(cxt);
         assertNotNull(result);
-
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
 
         return result;
     }
@@ -69,10 +67,33 @@ public final class SearchModeFactoryTest extends TestCase {
         LOG.trace("testGetMode");
 
         final String id = "norsk-magic";
-        final SearchModeFactory instance = getModeFactory();
+        final SearchModeFactory instance = getModeFactory(null);
 
         final SearchMode result = instance.getMode(id);
         assertNotNull(result);
+    }
+    
+    /**
+     * Test of memory against getMode method, 
+     * of class no.schibstedsok.front.searchportal.configuration.SearchModeFactory.
+     */
+    public void testGetModeOnAllAvailableLocales() {
+        LOG.trace("testGetModeOnAllAvailableLocales");
+
+        final String id = "norsk-magic";
+        System.gc();
+        final long initialTotal = Runtime.getRuntime().totalMemory();
+        final long initialFree = Runtime.getRuntime().freeMemory();
+        LOG.info("Number of Available locales " + Locale.getAvailableLocales().length);
+        for( Locale l : Locale.getAvailableLocales() ){
+            final SearchModeFactory instance = getModeFactory(l);
+
+            final SearchMode result = instance.getMode(id);
+            assertNotNull(result);
+        }
+        LOG.info("Total memory increased "+(Runtime.getRuntime().totalMemory()-initialTotal) + " bytes");
+        LOG.info("Free memory decreased "+(initialFree-Runtime.getRuntime().freeMemory()) + " bytes");
+        System.gc();
     }
 
 }

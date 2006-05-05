@@ -8,6 +8,7 @@
 
 package no.schibstedsok.front.searchportal.view.config;
 
+import java.util.Locale;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
@@ -39,7 +40,7 @@ public final class SearchTabFactoryTest extends TestCase {
      */
     public void testGetViewFactory() {
 
-        assertNotNull(getViewFactory());
+        assertNotNull(getViewFactory(null));
     }
 
     /**
@@ -50,7 +51,7 @@ public final class SearchTabFactoryTest extends TestCase {
         LOG.trace("testGetTab");
 
         final String id = "norwegian-internet";
-        final SearchTabFactory instance = getViewFactory();
+        final SearchTabFactory instance = getViewFactory(null);
 
         final SearchTab result = instance.getTabByName(id);
         assertNotNull(result);
@@ -64,14 +65,37 @@ public final class SearchTabFactoryTest extends TestCase {
         LOG.trace("testGetTab");
 
         final String key = "d";
-        final SearchTabFactory instance = getViewFactory();
+        final SearchTabFactory instance = getViewFactory(null);
 
         final SearchTab result = instance.getTabByKey(key);
         assertNotNull(result);
     }
 
+    /**
+     * Test of memory against getTabByKey method, 
+     * of class no.schibstedsok.front.searchportal.configuration.SearchModeFactory.
+     */
+    public void testGetTabByKeyModeOnAllAvailableLocales() {
+        LOG.trace("testGetModeOnAllAvailableLocales");
 
-    private SearchTabFactory getViewFactory() {
+        final String key = "d";
+        System.gc();
+        final long initialTotal = Runtime.getRuntime().totalMemory();
+        final long initialFree = Runtime.getRuntime().freeMemory();
+        LOG.info("Number of Available locales " + Locale.getAvailableLocales().length);
+        for( Locale l : Locale.getAvailableLocales() ){
+            final SearchTabFactory instance = getViewFactory(l);
+
+            final SearchTab result = instance.getTabByKey(key);
+            assertNotNull(result);
+        }
+        LOG.info("Total memory increased "+(Runtime.getRuntime().totalMemory()-initialTotal) + " bytes");
+        LOG.info("Free memory decreased "+(initialFree-Runtime.getRuntime().freeMemory()) + " bytes");
+        System.gc();
+    }
+    
+
+    private SearchTabFactory getViewFactory(final Locale locale) {
 
         LOG.trace("getModeFactory");
 
@@ -80,7 +104,7 @@ public final class SearchTabFactoryTest extends TestCase {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
             public Site getSite()  {
-                return Site.DEFAULT;
+                return locale == null ? Site.DEFAULT :Site.valueOf(Site.DEFAULT.getName(), locale);
             }
         };
 
