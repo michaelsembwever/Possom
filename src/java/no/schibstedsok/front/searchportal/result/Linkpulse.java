@@ -41,8 +41,11 @@ public class Linkpulse {
                     toUrl = toUrl + attrArr[0] + "=" + attrArr[1];
 
             }
-            //adds the original url
-            toUrl = toUrl + "/" + props.getProperty("linkpulse.sesam") + orgUrl;
+            //adds to-url, if to-url links to external site we must drop linkpulse.sesam           
+            if (indexpage.equals("ext"))
+                toUrl = toUrl + "/" + orgUrl;
+            else
+                toUrl = toUrl + "/" + props.getProperty("linkpulse.sesam") + orgUrl;
         } else
             if (indexpage.equals("true"))
                 toUrl = "search/" + orgUrl;
