@@ -74,7 +74,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             final IMSearchInfo searchInfo = MSearchInfoFactory.getMSearchInfo();
             final List sources = new ArrayList();
             
-            if (cfg.getSortBy() != null) {
+            if (!cfg.getSortBy().equals("")) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY,
                         cfg.getSortBy()));
             }
@@ -85,6 +85,12 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             final IDeviceCapabilities cap = getDeviceCapabilities();
             final IPersonalizationSpecification ps = ExplicitUserGroupPersonalizationFactory.getUserGroupSpecification(cfg.getPersonalizationGroup());
             final IQuery query = new Query(params);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("mSearch query is " + query);
+            }
+            
+            
             final List<IMSearchResult> results = cap != null ? engine.search(query, ps, cap) : engine.search(query, ps);
             
             IMSearchResult mResult = null;
