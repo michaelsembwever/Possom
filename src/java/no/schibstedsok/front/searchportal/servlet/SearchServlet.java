@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.servlet;
 
 
+import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.BaseContext;
@@ -9,8 +10,11 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.query.analyser.AnalysisRuleFactory;
+import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.front.searchportal.util.QueryStringHelper;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
@@ -43,9 +47,6 @@ public final class SearchServlet extends HttpServlet {
     private static final Logger LOG = Logger.getLogger(SearchServlet.class);
     private static final String ERR_MISSING_TAB = "No existing implementation for tab ";
     private static final String ERR_MISSING_MODE = "No existing implementation for mode ";
-    private static final String WARN_TABS_CLEANED = " status on cleaning site for ";
-    private static final String WARN_CONFIG_CLEANED = " status on cleaning configuration for ";
-    private static final String WARN_MODES_CLEANED = " status on cleaning modes for ";
 
     //private SearchTabs tabs;
 
@@ -79,17 +80,6 @@ public final class SearchServlet extends HttpServlet {
         }
 
         final Site site = (Site) request.getAttribute(Site.NAME_KEY);
-        
-        performReloads(site, request.getParameter("reload"));
-
-        updateContentType(site, response);
-
-        String searchTabKey = request.getParameter("c");
-
-        if (searchTabKey == null) {
-            searchTabKey = "d";
-        }
-
         // BaseContext providing SiteContext and ResourceContext.
         //  We need it casted as a SiteContext for the ResourceContext code to be happy.
         final SiteContext genericCxt = new SiteContext(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
@@ -104,7 +94,18 @@ public final class SearchServlet extends HttpServlet {
             }
         };//</editor-fold>
 
-        final SearchTab searchTab = SearchTabFactory.getTabFactory(
+        
+        FactoryReloads.performReloads(genericCxt, request.getParameter("reload"));
+
+        updateContentType(site, response);
+
+        String searchTabKey = request.getParameter("c");
+
+        if (searchTabKey == null) {
+            searchTabKey = "d";
+        }
+
+        final SearchTab searchTab = SearchTabFactory.valueOf(
                 ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt))
                 .getTabByKey(searchTabKey);
         
@@ -113,7 +114,7 @@ public final class SearchServlet extends HttpServlet {
             throw new UnsupportedOperationException(ERR_MISSING_TAB + searchTabKey);
         }
         
-        final SearchMode mode = SearchModeFactory.getModeFactory(
+        final SearchMode mode = SearchModeFactory.valueOf(
                 ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
                 .getMode(searchTab.getMode());
         
@@ -170,23 +171,6 @@ public final class SearchServlet extends HttpServlet {
         }
     }
     
-    private void performReloads(
-            final Site site,
-            final String reload){
-        
-        if( "all".equalsIgnoreCase(reload) ){
-            final boolean cleaned = SiteConfiguration.remove(site);
-            LOG.warn(cleaned + WARN_CONFIG_CLEANED + site);
-        } 
-        if( "all".equalsIgnoreCase(reload) || "tabs".equalsIgnoreCase(reload) ){
-            final boolean cleaned = SearchTabFactory.remove(site);
-            LOG.warn(cleaned + WARN_TABS_CLEANED + site);
-        }
-        if( "all".equalsIgnoreCase(reload) || "modes".equalsIgnoreCase(reload) ){
-            final boolean cleaned = SearchModeFactory.remove(site);
-            LOG.warn(cleaned + WARN_MODES_CLEANED + site);
-        }
-    }
     
     private boolean isEmptyQuery(
             final HttpServletRequest request,

@@ -61,7 +61,7 @@ public final class VelocityResultHandler implements ResultHandler {
                 public Site getSite() {
                     return site;
                 }
-            });
+            }).getEngine();
     }
 
     public static Template getTemplate(

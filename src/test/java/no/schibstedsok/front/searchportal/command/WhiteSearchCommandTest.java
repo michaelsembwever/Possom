@@ -96,7 +96,7 @@ public class WhiteSearchCommandTest extends TestCase {
                 return mode;
             }
             public SearchTab getSearchTab(){
-                return SearchTabFactory.getTabFactory(
+                return SearchTabFactory.valueOf(
                     ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                     .getTabByKey("w");
             }

@@ -145,12 +145,12 @@ public class WebSearchCommandTest extends TestCase {
             private final SearchMode mode = new SearchMode();
 
             public SearchMode getSearchMode() {
-                return SearchModeFactory.getModeFactory(
+                return SearchModeFactory.valueOf(
                         ContextWrapper.wrap(SearchModeFactory.Context.class, this))
                         .getMode("norsk-magic");
             }
             public SearchTab getSearchTab(){
-                return SearchTabFactory.getTabFactory(
+                return SearchTabFactory.valueOf(
                     ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                     .getTabByKey("d");
             }

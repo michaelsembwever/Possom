@@ -55,6 +55,7 @@ import no.schibstedsok.front.searchportal.result.handler.WeatherCelciusHandler;
 import no.schibstedsok.front.searchportal.result.handler.WeatherDateHandler;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import no.schibstedsok.front.searchportal.util.config.AbstractDocumentFactory;
 
@@ -68,7 +69,7 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:mick@wever.org>mick</a>
  * @version <tt>$Id$</tt>
  */
-public final class SearchModeFactory extends AbstractDocumentFactory{
+public final class SearchModeFactory extends AbstractDocumentFactory implements SiteKeyedFactory{
 
     /**
      * The context any SearchModeFactory must work against. *
@@ -109,7 +110,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
 
    // Static --------------------------------------------------------
 
-    public static SearchModeFactory getModeFactory(final Context cxt) {
+    public static SearchModeFactory valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
 
@@ -127,7 +128,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
         return instance;
     }
     
-    public static boolean remove(final Site site){
+    public boolean remove(final Site site){
 
         try{
             INSTANCES_LOCK.writeLock().lock();
@@ -171,7 +172,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory{
         SearchMode mode = getModeImpl(id);
         if(mode == null && id != null && id.length() >0 && context.getSite().getParent() != null){
             // not found in this site's modes.xml. look in parent's site.
-            final SearchModeFactory factory = getModeFactory(ContextWrapper.wrap(
+            final SearchModeFactory factory = valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){

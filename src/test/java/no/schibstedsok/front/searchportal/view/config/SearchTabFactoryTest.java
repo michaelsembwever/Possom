@@ -108,7 +108,7 @@ public final class SearchTabFactoryTest extends TestCase {
             }
         };
 
-        final SearchTabFactory result = SearchTabFactory.getTabFactory(cxt);
+        final SearchTabFactory result = SearchTabFactory.valueOf(cxt);
         assertNotNull(result);
 
         return result;

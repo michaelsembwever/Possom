@@ -25,6 +25,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import no.schibstedsok.front.searchportal.util.config.AbstractDocumentFactory;
 import org.apache.log4j.Logger;
@@ -36,7 +37,7 @@ import org.w3c.dom.NodeList;
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class SearchTabFactory extends AbstractDocumentFactory{
+public final class SearchTabFactory extends AbstractDocumentFactory implements SiteKeyedFactory{
 
     /**
      * The context any SearchTabFactory must work against. *
@@ -65,7 +66,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
 
     // Static --------------------------------------------------------
 
-    public static SearchTabFactory getTabFactory(final Context cxt) {
+    public static SearchTabFactory valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
 
@@ -83,7 +84,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
         return instance;
     }
 
-    public static boolean remove(final Site site){
+    public boolean remove(final Site site){
 
         try{
             INSTANCES_LOCK.writeLock().lock();
@@ -126,7 +127,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
         SearchTab tab = getTabImpl(id);
         if(tab == null && context.getSite().getParent() != null){
             // not found in this site's views.xml. look in parent's site.
-            final SearchTabFactory factory = getTabFactory(ContextWrapper.wrap(
+            final SearchTabFactory factory = valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){
@@ -173,7 +174,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory{
 
         loader.abut();
         LOG.debug("Parsing " + SearchConstants.VIEWS_XMLFILE + " started");
-        final SearchModeFactory modeFactory = SearchModeFactory.getModeFactory(
+        final SearchModeFactory modeFactory = SearchModeFactory.valueOf(
                 ContextWrapper.wrap(SearchModeFactory.Context.class, context));
         final Document doc = loader.getDocument();
         final Element root = doc.getDocumentElement();

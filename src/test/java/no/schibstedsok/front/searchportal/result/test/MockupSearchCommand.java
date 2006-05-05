@@ -34,7 +34,7 @@ public class MockupSearchCommand implements SearchCommand {
             return mode;
         }
         public SearchTab getSearchTab(){
-                return SearchTabFactory.getTabFactory(
+                return SearchTabFactory.valueOf(
                     ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                     .getTabByKey("d");
             }

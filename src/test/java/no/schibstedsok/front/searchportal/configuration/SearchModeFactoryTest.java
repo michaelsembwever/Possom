@@ -35,7 +35,7 @@ public final class SearchModeFactoryTest extends TestCase {
     }
 
     /**
-     * Test of getModeFactory method, of class no.schibstedsok.front.searchportal.configuration.SearchModeFactory.
+     * Test of valueOf method, of class no.schibstedsok.front.searchportal.configuration.SearchModeFactory.
      */
     public void testGetModeFactory(){
 
@@ -54,7 +54,7 @@ public final class SearchModeFactoryTest extends TestCase {
             }
         };
 
-        final SearchModeFactory result = SearchModeFactory.getModeFactory(cxt);
+        final SearchModeFactory result = SearchModeFactory.valueOf(cxt);
         assertNotNull(result);
 
         return result;

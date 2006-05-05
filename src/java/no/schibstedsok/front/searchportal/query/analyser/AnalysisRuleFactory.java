@@ -7,10 +7,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilderFactory;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
@@ -39,7 +41,7 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version <tt>$Revision$</tt>
  */
-public final class AnalysisRuleFactory {
+public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
     /**
      * The context the AnalysisRuleFactory must work against. *
@@ -67,6 +69,7 @@ public final class AnalysisRuleFactory {
      * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
     private static final Map<Site,AnalysisRuleFactory> INSTANCES = new HashMap<Site,AnalysisRuleFactory>();
+    private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     private final Map predicateIds = new HashMap();
 
@@ -88,7 +91,9 @@ public final class AnalysisRuleFactory {
         final DocumentBuilder builder = factory.newDocumentBuilder();
         loader = context.newDocumentLoader(SearchConstants.ANALYSIS_RULES_XMLFILE, builder);
 
+        INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
+        INSTANCES_LOCK.writeLock().unlock();
     }
 
     private void init() {
@@ -305,8 +310,12 @@ public final class AnalysisRuleFactory {
      * @return AnalysisRuleFactory for this site.
      */
     public static AnalysisRuleFactory valueOf(final Context cxt) {
+        
         final Site site = cxt.getSite();
+        INSTANCES_LOCK.readLock().lock();
         AnalysisRuleFactory instance = INSTANCES.get(site);
+        INSTANCES_LOCK.readLock().unlock();
+        
         if (instance == null) {
             try {
                 instance = new AnalysisRuleFactory(cxt);
@@ -342,6 +351,16 @@ public final class AnalysisRuleFactory {
 
         });
         return instance;
+    }
+    
+    public boolean remove(final Site site){
+
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            return null != INSTANCES.remove(site);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
     }
 
 }

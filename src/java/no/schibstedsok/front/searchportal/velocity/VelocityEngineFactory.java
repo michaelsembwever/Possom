@@ -10,10 +10,12 @@ package no.schibstedsok.front.searchportal.velocity;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -28,17 +30,14 @@ import org.apache.velocity.runtime.RuntimeConstants;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class VelocityEngineFactory {
+public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     private static final Logger LOG = Logger.getLogger(VelocityEngineFactory.class);
     private static final String VELOCITY_LOGGER = "org.apache.velocity";
 
-    /**
-     * Synchronisation occurs through method signature to "VelocityEngine valueOf(Context)".
-     *  While synchronsation is not ciritical without it in this case we were getting 10+ identical
-     *   velocityEngines being created one the first request.
-     */
     private static final Map<Site,VelocityEngineFactory> INSTANCES = new HashMap<Site,VelocityEngineFactory>();
+    
+    private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     private final VelocityEngine engine;
 
@@ -97,10 +96,12 @@ public final class VelocityEngineFactory {
             throw new InfrastructureException(e);
         }
 
+        INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(site, this);
+        INSTANCES_LOCK.writeLock().unlock();
     }
 
-    public VelocityEngine getVelocityEngine() {
+    public VelocityEngine getEngine() {
         return engine;
     }
 
@@ -109,14 +110,18 @@ public final class VelocityEngineFactory {
      * @param cxt the contextual needs the VelocityEngine must use to operate.
      * @return VelocityEngine for this site.
      */
-    public synchronized static VelocityEngine valueOf(final Context cxt) {
+    public static VelocityEngineFactory valueOf(final Context cxt) {
+        
         final Site site = cxt.getSite();
+        INSTANCES_LOCK.readLock().lock();
         VelocityEngineFactory instance = INSTANCES.get(site);
+        INSTANCES_LOCK.readLock().unlock();
+        
         if (instance == null) {
             instance = new VelocityEngineFactory(cxt);
 
         }
-        return instance.getVelocityEngine();
+        return instance;
     }
 
     /**
@@ -125,15 +130,25 @@ public final class VelocityEngineFactory {
      * @param site the site the VelocityEngine will work for.
      * @return VelocityEngine for this site.
      */
-    public static VelocityEngine valueOf(final Site site) {
+    public static VelocityEngineFactory valueOf(final Site site) {
 
         // RegExpEvaluatorFactory.Context for this site & UrlResourceLoader.
-        final VelocityEngine instance = VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context() {
+        final VelocityEngineFactory instance = VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context() {
             public Site getSite() {
                 return site;
             }
         });
         return instance;
+    }
+
+    public boolean remove(Site site) {
+        
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            return null != INSTANCES.remove(site);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
     }
 
 }

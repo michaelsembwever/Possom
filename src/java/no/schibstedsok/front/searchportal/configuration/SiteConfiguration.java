@@ -12,6 +12,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Logger;
 
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision: 2720 $</tt>
  */
-public final class SiteConfiguration {
+public final class SiteConfiguration implements SiteKeyedFactory{
 
     public interface Context extends BaseContext, PropertiesContext, SiteContext {
     }
@@ -93,7 +94,7 @@ public final class SiteConfiguration {
         return stc;
     }
 
-    public static boolean remove(final Site site){
+    public boolean remove(final Site site){
 
         try{
             INSTANCES_LOCK.writeLock().lock();

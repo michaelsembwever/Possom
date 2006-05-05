@@ -1,6 +1,7 @@
 // Copyright (2005-2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.token;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
@@ -8,6 +9,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ import org.w3c.dom.NodeList;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version <tt>$Revision$</tt>
  */
-public final class RegExpEvaluatorFactory {
+public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
 
     /**
      * The context the RegExpEvaluatorFactory must work against.
@@ -54,6 +56,7 @@ public final class RegExpEvaluatorFactory {
      * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
     private static final Map<Site,RegExpEvaluatorFactory> INSTANCES = new HashMap<Site,RegExpEvaluatorFactory>();
+    private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     private final Context context;
     private final DocumentLoader loader;
@@ -78,7 +81,9 @@ public final class RegExpEvaluatorFactory {
         final DocumentBuilder builder = factory.newDocumentBuilder();
         loader = context.newDocumentLoader(SearchConstants.REGEXP_EVALUATOR_XMLFILE, builder);
 
+        INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
+        INSTANCES_LOCK.writeLock().unlock();
     }
 
     /** Loads the resource SearchConstants.REGEXP_EVALUATOR_XMLFILE containing all regular expression patterns
@@ -140,8 +145,12 @@ public final class RegExpEvaluatorFactory {
      * @return RegExpEvaluatorFactory for this site.
      */
     public static RegExpEvaluatorFactory valueOf(final Context cxt) {
+        
         final Site site = cxt.getSite();
+        INSTANCES_LOCK.readLock().lock();
         RegExpEvaluatorFactory instance = INSTANCES.get(site);
+        INSTANCES_LOCK.readLock().unlock();
+        
         if (instance == null) {
             try {
                 instance = new RegExpEvaluatorFactory(cxt);
@@ -186,6 +195,16 @@ public final class RegExpEvaluatorFactory {
     public RegExpTokenEvaluator getEvaluator(final TokenPredicate token) {
         init();
         return regExpEvaluators.get(token);
+    }
+
+    public boolean remove(final Site site) {
+        
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            return null != INSTANCES.remove(site);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
     }
 
 }
