@@ -19,6 +19,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
+<%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
+<%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
 <%
     final TextMessages text = (TextMessages) request.getAttribute("text");
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);
@@ -57,6 +59,8 @@
         no_hits = hits.intValue();
         pageContext.setAttribute("no_hits", hits);
     }
+    final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
+    final Linkpulse linkpulse = new Linkpulse(props);
 
     String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
     if (currentC.equals("y")) searchButton = "../tradedoubler/searchbox/button-company.png";
@@ -351,7 +355,8 @@
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
                                 <img <% if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
+                                <% String x = "?q=" + qURLEncoded + "&amp;" + query.getSourceParameters(e.getName()); %>
+                                <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
                         </tr>
@@ -369,7 +374,8 @@
                     <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                         <td class="nav_pad_icon">
                             <img <% if (e.getName().startsWith("Bedriftss")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                            <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
+                            <% String x = "?q=" + qURLEncoded + "&amp;" + query.getSourceParameters(e.getName()); %>
+                            <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
                         </td>
                         <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
                     </tr>
@@ -392,7 +398,8 @@
                         <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                             <td class="nav_pad_icon">
                                 <img src="../images/menu/nettsok.gif" class="nav_icon" align="left" alt="" />
-                                <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
+                                <% String x = "?q=" + qURLEncoded + "&amp;" + query.getSourceParameters(e.getName()); %>
+                                <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
                         </tr>
@@ -414,7 +421,8 @@
                             <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
                                 <td class="nav_pad_icon">
                                     <img <% if (e.getName().startsWith("Bedrifts")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Bildes")) { %> src="../images/menu/bilde.gif" <% } else if (e.getName().equals("Verden")) { %> src="../images/menu/nettsok.gif"  <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/menu/nyheter.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                    <a href="?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>" onclick="return strep(this);"><%= e.getName() %></a>
+                                    <% String x = "?q=" + qURLEncoded + "&amp;" + query.getSourceParameters(e.getName()); %>
+                                    <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
                                 </td>
                                 <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
                             </tr>
@@ -486,7 +494,7 @@
 
                              <c:choose>
                                  <c:when test="${no_hits >0 || enrichmentSize >0}">
-                                
+
                                      <!--  Enrichments on top: <c:out value="${tab.enrichmentOnTop}"/>
                                           Enrichments in total: <c:out value="${tab.enrichmentLimit}"/>
                                            <c:forEach var="ee" items="${enrichments}">
@@ -519,9 +527,9 @@
 
                                            <%--  Shows the 7 next hits after the second/third enrichments  --%>
                                            <decorator:getProperty property="page.fast-results-norwegian_part2"/>
-                                           
+
                                        <% } else if ("g".equals(currentC)) { %>
-                                       
+
                                             <decorator:getProperty property="page.global-results"/>
                                        <% } %>
                                  </c:when>
@@ -575,7 +583,7 @@
 
                 <%if (currentC.equals("b")) {%>
                 <decorator:getProperty property="page.blog-search"/>
-                <%}%> 
+                <%}%>
                </td>
 
 	    <%if (q.trim().equals("")) {%>
