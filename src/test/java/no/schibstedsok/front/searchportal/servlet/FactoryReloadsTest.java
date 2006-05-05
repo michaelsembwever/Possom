@@ -54,7 +54,7 @@ public class FactoryReloadsTest extends TestCase {
         
         // BaseContext providing SiteContext and ResourceContext.
         //  We need it casted as a SiteContext for the ResourceContext code to be happy.
-        return new SiteContext(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
+        return new SiteContext(){
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }

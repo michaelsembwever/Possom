@@ -7,7 +7,6 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
-import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.Decoder;
@@ -36,6 +35,11 @@ import java.io.Writer;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 
 /** Handles the populating the velocity contexts.
  * Strictly view domain.
@@ -58,6 +62,22 @@ public final class VelocityResultHandler implements ResultHandler {
     public static VelocityEngine getEngine(final Context cxt){
 
         return VelocityEngineFactory.valueOf(ContextWrapper.wrap(VelocityEngineFactory.Context.class,cxt)).getEngine();
+    }
+    
+    /** Utility wrapper to getEngine(Context) defaulting to UrlResourceLoader resource loading. **/
+    public static VelocityEngine getEngine(final Site site){
+
+        return VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context(){
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+            }
+            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+            }
+            public Site getSite() {
+                return Site.DEFAULT;
+            }
+        }).getEngine();
     }
 
     public static Template getTemplate(
