@@ -70,6 +70,24 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
                     return s.get(paramValue[0]);
                 }
             }
+        } else {
+            // return null if empty
+            final String[] query = (String[]) parameters.get("q");
+            if (query[0].trim().equals(""))
+                return null;
+
+            // The site is given in the psite parameter
+            final String[] privateSite = (String[]) parameters.get("psite");
+
+            if (privateSite != null && privateSite.length > 0) {
+                final String[] def = (String[]) parameters.get("s");
+//                final String[] track = (String []) parameters.get("ss_lt");
+                
+                // Also make sure that the statistics parameter is present
+                if ((def == null || def.length == 0 || def[0].equals("pss"))) {
+                    return "+site:" + privateSite[0];
+                }
+            }
         }
         return null;
     }
