@@ -122,10 +122,10 @@ public class AccountingDirective extends Directive {
                 break;
         }
         html += "</table>";
-        html += "<a href=\"http://www.lindorff.no/\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a>";
+        html += "<div id=\"lindorff\"><span style=\"float:left\">Lindorff har levert tallene</span><span style=\"float:right;\">* Alle tall er i hele tusen</span></div>";
+        html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"http://www.lindorff.no/\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
 
         writer.write(html);
-
         Token lastToken = node.getLastToken();
 
         if (lastToken.image.endsWith("\n")) {
