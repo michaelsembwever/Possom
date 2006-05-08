@@ -29,6 +29,10 @@ public class WeatherCelciusHandler implements ResultHandler  {
         this.targetField = targetField;
     }
 
+    public void setSourceField(final String sourceField) {
+        this.sourceField = sourceField;
+    }
+    
     public void handleResult(final Context cxt, final Map parameters) {
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
             String celcius = item.getField(sourceField);

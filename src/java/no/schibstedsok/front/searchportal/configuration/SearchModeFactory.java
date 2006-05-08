@@ -692,6 +692,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         dh.setTargetField(rh.getAttribute("target"));
                         dh.setSourceField(rh.getAttribute("source"));
                         break;
+                    case WEATHER_CELCIUS:
+                        final WeatherCelciusHandler ch = (WeatherCelciusHandler) handler;
+                        ch.setTargetField(rh.getAttribute("target"));
+                        ch.setSourceField(rh.getAttribute("source"));
+                    case WEATHER_DATE:
+                        final WeatherDateHandler dateh = (WeatherDateHandler) handler;
+                        dateh.setTargetField(rh.getAttribute("target"));
+                        dateh.setSourceField(rh.getAttribute("source"));
                 }
 
                 return handler;

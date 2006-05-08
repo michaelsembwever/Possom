@@ -32,6 +32,10 @@ public class WeatherDateHandler implements ResultHandler  {
         this.targetField = targetField;
     }
 
+        public void setSourceField(String string) {
+        this.sourceField = sourceField;
+    }
+
     public void handleResult(final Context cxt, final Map parameters) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {

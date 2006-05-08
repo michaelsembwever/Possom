@@ -3,7 +3,6 @@ package no.schibstedsok.front.searchportal.result.handler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 
@@ -52,5 +51,6 @@ public class TvEnrichmentDateFormatHandler implements ResultHandler {
             }
         }
     }
+
 
 }
