@@ -257,20 +257,23 @@ public class FastConfiguration extends AbstractSearchConfiguration {
      * @param clusteringEnabled New value of property clusteringEnabled.
      */
     public void setClusteringEnabled(final boolean clusteringEnabled) {
+        this.clusteringEnabled = clusteringEnabled;
     }
 
     /**
      * Setter for property collectionFilterString.
      * @param collectionFilterString New value of property collectionFilterString.
      */
-    public void setCollectionFilterString(final java.lang.String collectionFilterString) {
+    public void setCollectionFilterString(final String collectionFilterString) {
+        this.collectionString = collectionString;
     }
 
     /**
      * Setter for property filter.
      * @param filter New value of property filter.
      */
-    public void setFilter(final java.lang.String filter) {
+    public void setFilter(final String filter) {
+        this.filter = filter;
     }
 
     /**
@@ -278,6 +281,7 @@ public class FastConfiguration extends AbstractSearchConfiguration {
      * @param offensiveScoreLimit New value of property offensiveScoreLimit.
      */
     public void setOffensiveScoreLimit(final int offensiveScoreLimit) {
+        this.offensiveScoreLimit = offensiveScoreLimit;
     }
 
     /**
@@ -285,5 +289,6 @@ public class FastConfiguration extends AbstractSearchConfiguration {
      * @param relevantQueriesEnabled New value of property relevantQueriesEnabled.
      */
     public void setRelevantQueriesEnabled(final boolean relevantQueriesEnabled) {
+        this.relevantQueriesEnabled = relevantQueriesEnabled;
     }
 }
