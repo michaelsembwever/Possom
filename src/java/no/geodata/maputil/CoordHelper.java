@@ -29,7 +29,7 @@ public class CoordHelper {
 
     public final static int zoomCount = 7;
 
-    public final static int defaultZoom = 2;
+    public int defaultZoom = 2;
     public int imgWidth = 363; //bildestørrelse i pixler, bredde
     public int imgHeight = 363; //bildestørrelse i pixler, høyde
     public final static int envFactor = 30; //faktor for å lage rom rundt envelope. Angis i pixler
@@ -64,7 +64,15 @@ public class CoordHelper {
     /** Creates a new instance of CoordHelper */
     public CoordHelper() {
     }
+    
+    public void setDefaultZoomlevel(int defaultZoom) {
+        this.defaultZoom = defaultZoom;
+    }
 
+    public int getDefaultZoomlevel() {
+        return defaultZoom;
+    }
+    
     /**
      * @param sCoord Coordinate string, x1,y1;x2,y2;x3,y3;x4,y4...osv.
      * @return Vector containing MapPoint objects.
@@ -134,7 +142,7 @@ public class CoordHelper {
         try  {
             mp.x = Double.parseDouble(item.getField("xcoord"));
             mp.y = Double.parseDouble(item.getField("ycoord"));
-            int zoomnivaa = defaultZoom;
+            int zoomnivaa = getDefaultZoomlevel();
             return makeEnvelope(mp.x, mp.y, zoomnivaa);
         }
         catch (Exception e) {
@@ -152,13 +160,23 @@ public class CoordHelper {
     }
 
     /**
+     * Returns MapEnvelope from given list of company objects and converts coodrs to pixCoords.
+     * @param companies List of companies
+     * @param zoomLevel Minimum zoomlevel to use
+     * @return MapEnvelope
+     */
+    public MapEnvelope getEnvelope(final List companies, final int zoomlevel) {
+        Vector mps = extractMapPoints(companies);
+        return makeEnvelope(mps, zoomlevel);
+    }
+    
+    /**
      * Returns MapEnvelope from given list of company objects and converts coords to pixCoords
      * @param companies
      * @return MapEnvelope
      */
     public MapEnvelope getEnvelope(final List companies) {
-        Vector mps = extractMapPoints(companies);
-        return makeEnvelope(mps);
+        return getEnvelope(companies, getDefaultZoomlevel());
     }
 
     /**
@@ -232,10 +250,19 @@ public class CoordHelper {
 
     /**
      * Generates MapEnvelope from a vector of points, imgwidth and imgheight.
+     * @param vMapPoints list of pints
+     * @return MapEnvelope
+     */
+    public MapEnvelope makeEnvelope(Vector vMapPoints) {
+        return makeEnvelope(vMapPoints, getDefaultZoomlevel());
+    }
+    
+    /**
+     * Generates MapEnvelope from a vector of points, imgwidth and imgheight.
      * @param vMapPoints vector containg MapPoints
      * @return MapEnvelope,
      */
-    public MapEnvelope makeEnvelope(Vector vMapPoints) {
+    public MapEnvelope makeEnvelope(Vector vMapPoints, int zoomlevel) {
         //loope igjennom vector for � finne max/ min verdier
         MapPoint mp = new MapPoint();
         MapPoint mp2 = new MapPoint();
@@ -287,11 +314,11 @@ public class CoordHelper {
                 return me;
             }
             else if (counter == 1) { //kun ett punkt i lista inneholder riktige koordinater
-                me = makeEnvelope(me.maxX, me.maxY, defaultZoom);
+                me = makeEnvelope(me.maxX, me.maxY, zoomlevel);
                 return me;
             }
             else if ((me.maxX - me.minX) == 0) { //har flere koordinater men alle har samme verdi
-                zoomscale = getZoomScale(defaultZoom);
+                zoomscale = getZoomScale(zoomlevel);
                 //beregner fiktive max/min koordinater.
                 centerX = me.maxX;
                 centerY = me.maxY;
@@ -320,7 +347,7 @@ public class CoordHelper {
                 me.centerX = me.minX + deltaX / 2;
                 me.centerY = me.minY + deltaY / 2;
                 if (deltaX == 0 && deltaY == 0) { //dersom deltax og deltay er null, betyr det at alle punkt har samme koordinater.
-                    me = makeEnvelope(me.centerX, me.centerY, defaultZoom);
+                    me = makeEnvelope(me.centerX, me.centerY, zoomlevel);
                     return me;
                 }
                 else  {
@@ -589,8 +616,8 @@ public class CoordHelper {
 
     public String getDefaultZoom() {
         return Integer.toString(defaultZoom);
-
     }
+    
     public int getImgWidth() {
 
         return imgWidth;
