@@ -32,7 +32,7 @@ public class WeatherDateHandler implements ResultHandler  {
         this.targetField = targetField;
     }
 
-        public void setSourceField(String string) {
+    public void setSourceField(String sourceField) {
         this.sourceField = sourceField;
     }
 
