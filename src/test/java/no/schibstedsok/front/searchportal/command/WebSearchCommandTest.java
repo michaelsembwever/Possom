@@ -33,7 +33,7 @@ import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
  *
  * @author magnuse
  */
-public class WebSearchCommandTest extends TestCase {
+public final class WebSearchCommandTest extends AbstractSearchCommandTest {
 
     public WebSearchCommandTest(final String testName) {
         super(testName);
@@ -127,7 +127,7 @@ public class WebSearchCommandTest extends TestCase {
 
     private void executeTestOfQuery(final String query, final String wantedQuery, final String wantedFilter) {
 
-        final SearchCommand.Context cxt = createCommandContext(query);
+        final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
 
         final WebSearchCommand cmd = new WebSearchCommand(cxt, Collections.EMPTY_MAP);
 
@@ -137,54 +137,4 @@ public class WebSearchCommandTest extends TestCase {
         assertEquals(wantedFilter, cmd.getAdditionalFilter());
     }
 
-    private SearchCommand.Context createCommandContext(final String query) {
-
-        final FastConfiguration config = new FastConfiguration();
-
-        final RunningQuery.Context rqCxt = new RunningQuery.Context() {
-            private final SearchMode mode = new SearchMode();
-
-            public SearchMode getSearchMode() {
-                return SearchModeFactory.valueOf(
-                        ContextWrapper.wrap(SearchModeFactory.Context.class, this))
-                        .getMode("norsk-magic");
-            }
-            public SearchTab getSearchTab(){
-                return SearchTabFactory.valueOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
-                    .getTabByKey("d");
-            }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-
-            public Site getSite() {
-                return Site.DEFAULT;
-            }
-        };
-
-        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());
-
-        final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
-                SearchCommand.Context.class,
-                new BaseContext() {
-                    public SearchConfiguration getSearchConfiguration() {
-                        return rqCxt.getSearchMode().getSearchConfiguration("defaultSearch");
-                    }
-
-                    public RunningQuery getRunningQuery() {
-                        return rq;
-                    }
-                    public Query getQuery(){
-                        return rq.getQuery();
-                    }
-                },
-                rqCxt);
-
-        return searchCmdCxt;
-    }
 }

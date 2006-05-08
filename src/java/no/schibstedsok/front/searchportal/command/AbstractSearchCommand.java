@@ -45,6 +45,7 @@ import org.apache.commons.lang.time.StopWatch;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -67,8 +68,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             = "Cancellation (and now handling of) occurred to ";
 
     static{
-        System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
-        System.setProperty("sun.net.client.defaultReadTimeout", "3000");
+        
+        // when the root logger is set to DEBUG do not limit connection times
+        if( Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.TRACE)){
+            System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
+            System.setProperty("sun.net.client.defaultReadTimeout", "3000");
+        }
     }
 
    // Attributes ----------------------------------------------------

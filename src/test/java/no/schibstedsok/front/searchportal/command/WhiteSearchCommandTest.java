@@ -32,7 +32,7 @@ import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
  *
  * @author magnuse
  */
-public class WhiteSearchCommandTest extends TestCase {
+public final class WhiteSearchCommandTest extends AbstractSearchCommandTest {
 
     public WhiteSearchCommandTest(final String name) {
         super(name);
@@ -77,7 +77,7 @@ public class WhiteSearchCommandTest extends TestCase {
     }
 
     private String getParsedQueryAsString(final String query) {
-        final SearchCommand.Context cxt = createCommandContext(query);
+        final SearchCommand.Context cxt = createCommandContext(query, "w", "whitePages");
         final WhiteSearchCommand command = createSearchCommand(cxt);
         return command.getQueryRepresentation(cxt.getQuery());
 
@@ -87,52 +87,4 @@ public class WhiteSearchCommandTest extends TestCase {
         return new WhiteSearchCommand(cxt, Collections.EMPTY_MAP);
     }
 
-    private SearchCommand.Context createCommandContext(final String query) {
-        final FastConfiguration config = new FastConfiguration();
-        final RunningQuery.Context rqCxt = new RunningQuery.Context() {
-            private final SearchMode mode = new SearchMode();
-
-            public SearchMode getSearchMode() {
-                return mode;
-            }
-            public SearchTab getSearchTab(){
-                return SearchTabFactory.valueOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
-                    .getTabByKey("w");
-            }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-
-            public Site getSite() {
-                return Site.DEFAULT;
-            }
-
-        };
-
-        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());
-
-        final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap( 
-                SearchCommand.Context.class,
-                new BaseContext() {
-                    public SearchConfiguration getSearchConfiguration() {
-                        return config;
-                    }
-
-                    public RunningQuery getRunningQuery() {
-                        return rq;
-                    }
-
-                    public Query getQuery(){
-                        return rq.getQuery();
-                    }
-            },
-            rqCxt);
-
-        return searchCmdCxt;
-    }
 }

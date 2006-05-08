@@ -57,6 +57,9 @@ public final class VelocityResultHandler implements ResultHandler {
     private static final String INFO_TEMPLATE_NOT_FOUND = "Could not find template ";
     private static final String ERR_IN_TEMPLATE = "Error parsing template ";
     private static final String ERR_GETTING_TEMPLATE = "Error getting template ";
+    private static final String DEBUG_TEMPLATE_SEARCH = "Looking for template ";
+    private static final String DEBUG_TEMPLATE_FOUND = "Created template ";
+    private static final String ERR_TEMPLATE_NOT_FOUND = "Could not find the template ";
     private static final String ERR_NP_WRITING_TO_STREAM = "Possible client cancelled request. (NullPointerException writing to response's stream).";
 
     public static VelocityEngine getEngine(final Context cxt){
@@ -150,48 +153,51 @@ public final class VelocityResultHandler implements ResultHandler {
         final Writer w = new StringWriter();
         final SearchConfiguration searchConfiguration = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("handleResult: Looking for template: " + searchConfiguration + searchConfiguration.getName() + ".vm");
-            }
+            LOG.debug(DEBUG_TEMPLATE_SEARCH + searchConfiguration + searchConfiguration.getName() + ".vm");
 
             final Site site = cxt.getSite();
             final VelocityEngine engine = getEngine(cxt);
             final Template template = getTemplate(engine, site, searchConfiguration.getName());
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("handleResult: Created Template=" + template.getName());
-            }
+            if( template != null ){
+            
+                LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
 
-            final VelocityContext context = newContextInstance(engine);
-            populateVelocityContext(context, cxt, request, response);
+                final VelocityContext context = newContextInstance(engine);
+                populateVelocityContext(context, cxt, request, response);
 
-            try {
+                try {
 
-                template.merge(context, w);
-                response.getWriter().write(w.toString());
+                    template.merge(context, w);
+                    response.getWriter().write(w.toString());
 
-            } catch (MethodInvocationException ex) {
-                throw new InfrastructureException(ex);
+                } catch (MethodInvocationException ex) {
+                    throw new InfrastructureException(ex);
 
-            } catch (ResourceNotFoundException ex) {
-                throw new InfrastructureException(ex);
+                } catch (ResourceNotFoundException ex) {
+                    throw new InfrastructureException(ex);
 
-            } catch (ParseErrorException ex) {
-                throw new InfrastructureException(ex);
+                } catch (ParseErrorException ex) {
+                    throw new InfrastructureException(ex);
 
-            } catch (IOException ex) {
-                throw new InfrastructureException(ex);
+                } catch (IOException ex) {
+                    throw new InfrastructureException(ex);
 
-            } catch (NullPointerException ex) {
-                //  at com.opensymphony.module.sitemesh.filter.RoutablePrintWriter.write(RoutablePrintWriter.java:132)
+                } catch (NullPointerException ex) {
+                    //at com.opensymphony.module.sitemesh.filter.RoutablePrintWriter.write(RoutablePrintWriter.java:132)
 
-                // indicates an error in the underlying RoutablePrintWriter stream
-                //  typically the client has closed the connection
-                LOG.warn(ERR_NP_WRITING_TO_STREAM);
+                    // indicates an error in the underlying RoutablePrintWriter stream
+                    //  typically the client has closed the connection
+                    LOG.warn(ERR_NP_WRITING_TO_STREAM);
 
-            } catch (Exception ex) {
-                throw new InfrastructureException(ex);
+                } catch (Exception ex) {
+                    throw new InfrastructureException(ex);
 
+                }
+            
+            }else{
+                LOG.error(ERR_TEMPLATE_NOT_FOUND + searchConfiguration.getName() + ".vm");
+                throw new UnsupportedOperationException(ERR_TEMPLATE_NOT_FOUND + searchConfiguration.getName() + ".vm");
             }
 
     }
