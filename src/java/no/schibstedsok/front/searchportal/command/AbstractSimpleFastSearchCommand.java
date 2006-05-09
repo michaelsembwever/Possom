@@ -650,12 +650,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             filter.append(" ").append(StringUtils.join(navStrings.iterator(), " "));
         }
 
-        String site = getDynamicParams(getParameters(), "site", null);
-
-        if (site != null) {
-            filter.append(" +site:" + site);
-        }
-
         if (getFastConfiguration().getOffensiveScoreLimit() > 0) {
             filter.append(" ").append("-ocfscore:>").append(getFastConfiguration().getOffensiveScoreLimit());
 
