@@ -76,15 +76,13 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
             if (query[0].trim().equals(""))
                 return null;
 
-            // The site is given in the psite parameter
-            final String[] privateSite = (String[]) parameters.get("psite");
-
+            // The site is given in the site parameter
+            final String[] privateSite = (String[]) parameters.get("site");
             if (privateSite != null && privateSite.length > 0) {
-                final String[] def = (String[]) parameters.get("s");
-//                final String[] track = (String []) parameters.get("ss_lt");
-                
-                // Also make sure that the statistics parameter is present
-                if ((def == null || def.length == 0 || def[0].equals("pss"))) {
+                final String[] collection = (String[]) parameters.get("c");
+
+                // Also make sure that the c parameter is set to pss
+                if (collection[0].equals("pss")) {
                     return "+site:" + privateSite[0];
                 }
             }
