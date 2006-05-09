@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesContext;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
@@ -32,12 +35,11 @@ public final class TextMessages {
     private static final String MESSAGE_RESOURCE = "messages";
 
     /**
-     * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
-     * time. But only one will persist in the map.
-     *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
-     * the resources to improve the performance. But I doubt this would gain much, if anything at all.
      */
     private static final Map<Site,TextMessages> INSTANCES = new HashMap<Site,TextMessages>();
+    private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
+    
+    private static final String SITE_LOCALE_DEFAULT = "site.locale.default";
 
     private static final String DEBUG_LOADING_WITH_LOCALE = "Looking for "+MESSAGE_RESOURCE+"_";
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
@@ -47,7 +49,10 @@ public final class TextMessages {
     public static TextMessages valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
+        INSTANCES_LOCK.readLock().lock();
         TextMessages instance = INSTANCES.get(site);
+        INSTANCES_LOCK.readLock().unlock();
+        
         if (instance == null) {
             instance = new TextMessages(cxt);
         }
@@ -78,16 +83,39 @@ public final class TextMessages {
 
     private TextMessages(final Context cxt) {
 
+        LOG.trace("TextMessages(cxt)");
+        INSTANCES_LOCK.writeLock().lock();
         context = cxt;
 
         // import browser-applicable text messages
         loadKeys(cxt.getSite().getLocale());
 
-        // import servers-default text messages [does not override existing values]
-        LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE+Locale.getDefault());
-        loadKeys(Locale.getDefault());
+        // import messages from site's preferred locale [will not override already loaded messages]
+        final String[] prefLocale = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
+                .getProperty(SITE_LOCALE_DEFAULT).split("_");
+        
+        
+        switch(prefLocale.length){
+            case 1:
+                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE 
+                        + prefLocale[0]);
+                loadKeys(new Locale(prefLocale[0]));
+                break;
+            case 2:
+                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE 
+                        + prefLocale[0] + '_' + prefLocale[1]);
+                loadKeys(new Locale(prefLocale[0],prefLocale[1]));
+                break;
+            case 3:
+                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE + prefLocale[0] 
+                        + '_' + prefLocale[1] + '_' + prefLocale[2]);
+                loadKeys(new Locale(prefLocale[0],prefLocale[1],prefLocale[2]));
+                break;
+        }
 
+        
         INSTANCES.put(cxt.getSite(),this);
+        INSTANCES_LOCK.writeLock().unlock();
     }
 
     private void loadKeys(final Locale l) {

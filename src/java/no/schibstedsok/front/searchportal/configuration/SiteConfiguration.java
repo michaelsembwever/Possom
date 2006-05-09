@@ -41,13 +41,12 @@ public final class SiteConfiguration implements SiteKeyedFactory{
 
     private SiteConfiguration(final Context cxt) {
 
-        LOG.debug("Configuration()");
-
+        INSTANCES_LOCK.writeLock().lock();
+        LOG.trace("Configuration(cxt)");
         context = cxt;
 
         propertyLoader = context.newPropertiesLoader(SearchConstants.CONFIGURATION_FILE, properties);
-
-        INSTANCES_LOCK.writeLock().lock();
+        
         INSTANCES.put(context.getSite(), this);
         INSTANCES_LOCK.writeLock().unlock();
     }
@@ -58,6 +57,14 @@ public final class SiteConfiguration implements SiteKeyedFactory{
             propertyLoader.abut();
         }
         return properties;
+    }
+    
+    public String getProperty(final String key) {
+
+        if(properties.size() == 0){
+            propertyLoader.abut();
+        }
+        return properties.getProperty(key);
     }
 
     /** Find the correct instance handling this Site.

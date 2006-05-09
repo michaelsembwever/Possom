@@ -240,10 +240,10 @@ public final class SiteLocatorFilter implements Filter {
         // Just because many norwegians have their computers installed in english mode
         //  we can't presume they want their webpages in english.
         //  Therefore we must always initially replace english locales with norwegian.
-        final Locale requestLocale = servletRequest.getLocale();
-        final Locale locale = "en".equals(requestLocale.getLanguage())
-                ? Locale.getDefault()
-                : requestLocale;
+        final Locale locale = servletRequest.getLocale();
+//        final Locale locale = "en".equals(requestLocale.getLanguage())
+//                ? Locale.getDefault()
+//                : requestLocale;
 
         LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
 
