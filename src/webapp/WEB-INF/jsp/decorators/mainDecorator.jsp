@@ -72,7 +72,7 @@
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
     <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/sitesearch.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/sitesearch.css?x" rel="stylesheet" type="text/css" />
     <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
@@ -341,9 +341,8 @@
     <tr>
 	<%if (q.trim().equals("") && !currentC.equals("m")) {%>
 
-	<%}else if (currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || !q.trim().equals("")) {%>
+	<%}else if (currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss") || !q.trim().equals("")) {%>
         <td class="cell_one" valign="top">
-
             <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
         		    <% int i=0; %>
@@ -413,7 +412,7 @@
 		            <% int i = 0; %>
                     <% for (Modifier e : sources) {
                         if ( (currentC.equals("d") && !e.getName().equals("Nettsøk"))
-                                || currentC.equals("g") || currentC.equals("p") || currentC.equals("b")) {
+                                || currentC.equals("g") || currentC.equals("pss") || currentC.equals("p") || currentC.equals("b")) {
                             ++i;
                             if(i!=1) {%>
                                 <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
@@ -455,7 +454,7 @@
         <%}%>
                 <%--<decorator:getProperty property="page.search-bar"/>--%>
                 <!-- Magic -->
-                <%if (currentC.equals("d") || "g".equals(currentC)) {%>
+                <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
 
 
                         <%--  Header  --%>
@@ -522,7 +521,7 @@
                                            </c:if>
                                        </c:forEach>
 
-                                        <% if ("d".equals(currentC)) { %>
+                                        <% if ("d".equals(currentC) || "pss".equals(currentC)) { %>
                                            <%--  Shows the 3 first hits if more than 1 enrichment  --%>
                                            <decorator:getProperty property="page.fast-results-norwegian_part1"/>
 
