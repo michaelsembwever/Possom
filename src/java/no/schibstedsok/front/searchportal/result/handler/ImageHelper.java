@@ -18,7 +18,11 @@ import org.apache.commons.lang.StringUtils;
  */
 public class ImageHelper implements ResultHandler {
 
-    private Map fieldMap = new HashMap();
+    private Map<String,String> fieldMap = new HashMap<String,String>();
+
+    public void addField(final String field, final String as){
+        fieldMap.put(field, as);
+    }
 
     public void handleResult(final Context cxt, final Map parameters) {
 

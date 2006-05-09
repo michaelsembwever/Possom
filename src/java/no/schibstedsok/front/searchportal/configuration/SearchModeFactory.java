@@ -668,6 +668,22 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             }
                         }
                         break;
+                    case IMAGE_HELPER:
+                        final ImageHelper im = (ImageHelper) handler;
+                        {
+                            if(rh.getAttribute("fields").length() >0){
+                                final String[] fields = rh.getAttribute("fields").split(",");
+                                for(String field : fields){
+                                    if(field.contains(" AS ")){
+                                        final String[] ff = field.split(" AS ");
+                                        im.addField(ff[0], ff[1]);
+                                    }else{
+                                        im.addField(field, field);
+                                    }
+                                }
+                            }
+                        }
+                        break;
                     case SPELLING_SUGGESTION_CHOOSER:
                         final SpellingSuggestionChooser ssc = (SpellingSuggestionChooser) handler;
                         ssc.setMinScore(parseInt(rh.getAttribute("min-score"), -1));
