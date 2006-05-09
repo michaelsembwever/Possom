@@ -163,6 +163,9 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     }
 
     public void addPrefixes(final String[] pArr) {
-        prefixes.addAll(Arrays.asList(pArr));
+        
+        if( pArr.length > 0 && pArr[0].trim().length() >0 ){
+            prefixes.addAll(Arrays.asList(pArr));
+        }
     }
 }
