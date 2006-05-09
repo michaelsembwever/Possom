@@ -7,7 +7,7 @@
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
 <%@ page import="com.opensymphony.module.sitemesh.util.OutputConverter"%>
 <%@ page import="no.schibstedsok.front.searchportal.view.i18n.TextMessages"%>
-<%@ page import="no.schibstedsok.front.searchportal.output.VelocityResultHandler"%>
+<%@ page import="no.schibstedsok.front.searchportal.view.output.VelocityResultHandler"%>
 <%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
 <%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
@@ -52,16 +52,15 @@
 
     final RunningQuery query = (RunningQuery) request.getAttribute("query");
     final List<Modifier> sources = query.getSources();
-    final Integer hits = (Integer) query.getNumberOfHits("defaultSearch");
+    final Integer dHits = (Integer) query.getNumberOfHits("defaultSearch");
+    final Integer gHits = (Integer) query.getNumberOfHits("globalSearch");
+    final int no_hits = dHits != null && dHits > 0 
+            ? dHits.intValue() 
+            : gHits != null && gHits > 0 ? gHits.intValue() : 0;
 
-    int no_hits = 0;
-
-    if (hits != null) {
-        no_hits = hits.intValue();
-        pageContext.setAttribute("no_hits", hits);
-    }
-    final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
-    final Linkpulse linkpulse = new Linkpulse(props);
+    pageContext.setAttribute("no_hits", no_hits);
+    
+    final Linkpulse linkpulse = new Linkpulse(SiteConfiguration.valueOf(site).getProperties());
 
     String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
     if (currentC.equals("y")) searchButton = "../tradedoubler/searchbox/button-company.png";

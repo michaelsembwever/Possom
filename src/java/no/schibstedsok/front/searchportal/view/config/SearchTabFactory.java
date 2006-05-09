@@ -18,7 +18,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
@@ -174,8 +173,6 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
         loader.abut();
         LOG.debug("Parsing " + SearchConstants.VIEWS_XMLFILE + " started");
-        final SearchModeFactory modeFactory = SearchModeFactory.valueOf(
-                ContextWrapper.wrap(SearchModeFactory.Context.class, context));
         final Document doc = loader.getDocument();
         final Element root = doc.getDocumentElement();
 

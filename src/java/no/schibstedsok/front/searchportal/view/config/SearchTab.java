@@ -11,7 +11,6 @@ package no.schibstedsok.front.searchportal.view.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import org.apache.log4j.Logger;
 
 /**

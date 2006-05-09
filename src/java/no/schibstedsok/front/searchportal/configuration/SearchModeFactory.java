@@ -24,9 +24,9 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
-import no.schibstedsok.front.searchportal.output.TextOutputResultHandler;
-import no.schibstedsok.front.searchportal.output.VelocityResultHandler;
-import no.schibstedsok.front.searchportal.output.XmlOutputResultHandler;
+import no.schibstedsok.front.searchportal.view.output.TextOutputResultHandler;
+import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
+import no.schibstedsok.front.searchportal.view.output.XmlOutputResultHandler;
 import no.schibstedsok.front.searchportal.query.transform.ExactTitleMatchTransformer;
 import no.schibstedsok.front.searchportal.query.transform.InfopageQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.NewsTransformer;

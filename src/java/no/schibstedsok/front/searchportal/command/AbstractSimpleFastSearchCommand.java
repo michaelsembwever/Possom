@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.ConfigurationException;
@@ -115,11 +116,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     public Map getOtherNavigators(final String navigatorKey) {
 
-        final Map otherNavigators = new HashMap();
+        final Map<String,String> otherNavigators = new HashMap<String,String>();
 
-        for (final Iterator iterator = getParameters().keySet().iterator(); iterator.hasNext();) {
-
-            final String parameterName = (String) iterator.next();
+        for (String parameterName : (Set<String>)getParameters().keySet()) {
 
             if (parameterName.startsWith("nav_") && !parameterName.substring(parameterName.indexOf('_') + 1).equals(navigatorKey)) {
                 final String paramValue[] = (String[]) getParameters().get(parameterName);

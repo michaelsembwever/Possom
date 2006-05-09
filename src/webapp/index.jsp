@@ -1,6 +1,6 @@
 <%-- Copyright (2006) Schibsted Søk AS --%>
 <%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
-<%@ page import="no.schibstedsok.front.searchportal.output.VelocityResultHandler"%>
+<%@ page import="no.schibstedsok.front.searchportal.view.output.VelocityResultHandler"%>
 <%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
 <%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
 <%@ page import="org.apache.velocity.Template"%>

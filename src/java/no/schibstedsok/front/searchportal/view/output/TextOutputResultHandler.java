@@ -1,5 +1,5 @@
 // Copyright (2006) Schibsted Søk AS
-package no.schibstedsok.front.searchportal.output;
+package no.schibstedsok.front.searchportal.view.output;
 
 import java.util.Map;
 import java.util.Iterator;

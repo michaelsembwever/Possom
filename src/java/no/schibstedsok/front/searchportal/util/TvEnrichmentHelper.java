@@ -12,7 +12,7 @@ import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import no.schibstedsok.front.searchportal.output.VelocityResultHandler;
+import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
