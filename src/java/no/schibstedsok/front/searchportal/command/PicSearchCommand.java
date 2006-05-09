@@ -61,9 +61,10 @@ public class PicSearchCommand extends AbstractSearchCommand {
         final Document doc = doSearch(url);
 
         final BasicSearchResult searchResult = new BasicSearchResult(this);
-        final Element resultElement = doc.getDocumentElement();
 
         if (doc != null) {
+
+            final Element resultElement = doc.getDocumentElement();
 
             searchResult.setHitCount(Integer.parseInt(resultElement.getAttribute("hits")));
 

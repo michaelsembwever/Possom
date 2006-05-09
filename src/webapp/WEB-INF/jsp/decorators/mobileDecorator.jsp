@@ -25,6 +25,7 @@
         context.put("currentTab", query.getSearchTab());
         context.put("runningQuery", query);
         context.put("query", query.getQueryString());
+        context.put("enrichments", query.getEnrichments());
         
         {
             final StringWriter buffer = new StringWriter();
