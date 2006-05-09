@@ -141,7 +141,6 @@ public final class SearchServlet extends HttpServlet {
 
         request.setAttribute("locale", query.getLocale());
         request.setAttribute("query", query);
-        request.setAttribute("site", site);
         request.setAttribute("text",
                 TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
 
