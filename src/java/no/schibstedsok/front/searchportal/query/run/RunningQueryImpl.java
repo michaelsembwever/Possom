@@ -151,7 +151,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     public Integer getNumberOfHits(final String configName) {
 
-        LOG.trace("getNumberOfHits()");
+        LOG.trace("getNumberOfHits(" + configName + ")");
 
         Integer i = hits.get(configName);
         if (i == null) {
@@ -311,22 +311,27 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 //                }
             }  else  {
 
-                Collections.sort(enrichments);
-
-                PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchTab().getKey() 
-                        + "\" size=\"" + enrichments.size() + "\">"
-                        + "<query>" + queryStr + "</query>");
-                for( Enrichment e : enrichments){
-                    PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
-                            + "\" score=\"" + e.getAnalysisResult() + "\"/>");
-                }
-                PRODUCT_LOG.info("</enrichments>");
+                performEnrichmentHandling();
             }
 
             
         } catch (Exception e) {
             LOG.error(ERR_RUN_QUERY, e);
         }
+    }
+    
+    private void performEnrichmentHandling(){
+        
+        Collections.sort(enrichments);
+
+        PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchTab().getKey() 
+                + "\" size=\"" + enrichments.size() + "\">"
+                + "<query>" + queryStr + "</query>");
+        for( Enrichment e : enrichments){
+            PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
+                    + "\" score=\"" + e.getAnalysisResult() + "\"/>");
+        }
+        PRODUCT_LOG.info("</enrichments>");
     }
 
     private String getSingleParameter(final String paramName) {
