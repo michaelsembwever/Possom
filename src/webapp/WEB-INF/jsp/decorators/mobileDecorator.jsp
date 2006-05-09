@@ -1,4 +1,4 @@
-<%@ page import="java.io.StringWriter"%><%@ page import="java.net.URLEncoder"%><%@ page import="java.util.List"%><%@ page import="java.util.Iterator"%><%@ page import="com.opensymphony.module.sitemesh.Page"%><%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%><%@ page import="com.opensymphony.module.sitemesh.util.OutputConverter"%><%@ page import="no.schibstedsok.front.searchportal.view.i18n.TextMessages"%><%@ page import="no.schibstedsok.front.searchportal.view.output.VelocityResultHandler"%><%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %><%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%><%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%><%@ page import="no.schibstedsok.front.searchportal.site.Site"%><%@ page import="org.apache.commons.lang.StringEscapeUtils" %><%@ page import="org.apache.velocity.Template"%><%@ page import="org.apache.velocity.VelocityContext"%><%@ page import="org.apache.velocity.app.VelocityEngine"%><% 
+<%@ page language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %><%@ page import="java.io.StringWriter"%><%@ page import="java.net.URLEncoder"%><%@ page import="java.util.List"%><%@ page import="java.util.Iterator"%><%@ page import="com.opensymphony.module.sitemesh.Page"%><%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%><%@ page import="com.opensymphony.module.sitemesh.util.OutputConverter"%><%@ page import="no.schibstedsok.front.searchportal.view.i18n.TextMessages"%><%@ page import="no.schibstedsok.front.searchportal.view.output.VelocityResultHandler"%><%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %><%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%><%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%><%@ page import="no.schibstedsok.front.searchportal.site.Site"%><%@ page import="org.apache.commons.lang.StringEscapeUtils" %><%@ page import="org.apache.velocity.Template"%><%@ page import="org.apache.velocity.VelocityContext"%><%@ page import="org.apache.velocity.app.VelocityEngine"%><% 
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);
     final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
     final TextMessages text = (TextMessages) request.getAttribute("text");
@@ -22,6 +22,10 @@
         context.put("base", request.getContextPath());
         context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
         context.put("text", text);
+        context.put("currentTab", query.getSearchTab());
+        context.put("runningQuery", query);
+        context.put("query", query.getQueryString());
+        
         {
             final StringWriter buffer = new StringWriter();
             siteMeshPage.writeBody(OutputConverter.getWriter(buffer));

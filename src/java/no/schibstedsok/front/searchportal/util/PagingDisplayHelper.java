@@ -104,4 +104,8 @@ public class PagingDisplayHelper {
     public int getNumberOfResults() {
         return numberOfResults;
     }
+    
+    public int getCurrentOffset() {
+        return currentOffset;
+    }
 }

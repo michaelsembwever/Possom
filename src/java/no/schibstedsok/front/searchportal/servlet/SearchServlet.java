@@ -105,9 +105,7 @@ public final class SearchServlet extends HttpServlet {
             searchTabKey = "d";
         }
 
-        final SearchTab searchTab = SearchTabFactory.valueOf(
-                ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt))
-                .getTabByKey(searchTabKey);
+        final SearchTab searchTab = SearchTabFactory.valueOf(ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)).getTabByKey(searchTabKey);
         
         if( searchTab == null ){
             LOG.error(ERR_MISSING_TAB + searchTabKey);
@@ -202,6 +200,12 @@ public final class SearchServlet extends HttpServlet {
         // TODO. Any better way to do this. Sitemesh?
         if (site.getName().startsWith("mobil")) {
             response.setContentType("text/xml; charset=utf-8");
+            try {
+                // Just can't get sitemesh to work in the way I imagine it works.
+                response.getWriter().write("<html><head><META name=\"decorator\" content=\"mobiledecorator\"/></head></html>");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         } else {
             response.setContentType("text/html; charset=utf-8");
         }

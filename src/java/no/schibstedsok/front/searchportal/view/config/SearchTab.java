@@ -36,7 +36,7 @@ public final class SearchTab {
 
     /** Creates a new instance of SearchTab */
     SearchTab(
-                final SearchTab inherit, 
+                final SearchTab inherit,
                 final String id, 
                 final String mode, 
                 final String key, 
@@ -61,7 +61,7 @@ public final class SearchTab {
                 ? parentKey 
                 : inherit != null ? inherit.parentKey : null;
         this.pageSize = pageSize >=0 || inherit == null ? pageSize : inherit.pageSize;
-        this.navigators.addAll(navigators);
+        this.navigators.addAll(navigations);
         this.enrichmentLimit = enrichmentLimit >=0 || inherit == null ? enrichmentLimit : inherit.enrichmentLimit;
         this.enrichmentOnTop = enrichmentOnTop >=0 || inherit == null ? enrichmentOnTop : inherit.enrichmentOnTop;
         this.enrichmentOnTopScore = enrichmentOnTopScore >=0 || inherit == null 
@@ -331,13 +331,15 @@ public final class SearchTab {
         public NavigatorHint(
                 final String name,
                 final MatchType match,
-                final String tab,
-                final String urlSuffix){
+                final String tabName,
+                final String urlSuffix,
+                final SearchTabFactory tabFactory){
             
             this.name = name;
             this.match = match;
-            this.tab = tab;
+            this.tabName = tabName;
             this.urlSuffix = urlSuffix;
+            this.tabFactory = tabFactory;
         }
 
         public enum MatchType {
@@ -345,21 +347,31 @@ public final class SearchTab {
             EQUAL,
             SUFFIX;
         }
-
+        
+        private final SearchTabFactory tabFactory;
+        
         /**
-         * Holds value of property tab.
+         * Holds value of property tabName.
          */
-        private final String tab;
-
+        private final String tabName;
+        
+        
         /**
          * Getter for property tab.
          * @return Value of property tab.
          */
-        public String getTab() {
+        public String getTabName() {
             
-            return this.tab;
+            return this.tabName;
         }
 
+        /**
+         * Returns the tab associated with this hint.
+         */
+        public SearchTab getTab() {
+            return tabFactory.getTabByName(tabName);
+        }
+        
         /**
          * Holds value of property name.
          */
@@ -414,7 +426,28 @@ public final class SearchTab {
     public Collection<NavigatorHint> getNavigators() {
         return Collections.unmodifiableCollection(navigators);
     }
-
+    
+    /**
+     * Returns the navigator hint matching name. Returns null if no navigator
+     * hint matches.
+     */
+    public NavigatorHint getNavigatorHint(String name) {
+        for (NavigatorHint hint : navigators) {
+            switch(hint.match) {
+                case EQUAL:
+                    if (hint.name.equals(name))
+                        return hint;
+                    break;
+                case PREFIX:
+                    if (name.startsWith(hint.name))
+                        return hint;
+                case SUFFIX:
+                    if (name.endsWith(hint.name))
+                        return hint;
+            }
+        }
+        return null;
+    }
     
     public String toString(){
         return id + (inherit != null ? " --> " + inherit.toString() : "");
