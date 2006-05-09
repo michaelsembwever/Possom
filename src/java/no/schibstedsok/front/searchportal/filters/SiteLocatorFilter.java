@@ -46,12 +46,14 @@ public final class SiteLocatorFilter implements Filter {
     private static final String ERR_NOT_FOUND = "Failed to find resource ";
     private static final String ERR_UNCAUGHT_RUNTIME_EXCEPTION
             = "Following runtime exception was let loose in tomcat\n";
+
+    private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";    
     private static final String DEBUG_REQUESTED_VHOST = "Virtual host is ";
     private static final String DEBUG_REDIRECTING_TO = " redirect to ";
 
     private static final String HTTP = "http://";
-
     private static final String PUBLISH_DIR = "/img/";
+    private static final String SITE_LOCALE_SUPPORTED = "site.locale.supported";
 
     /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
@@ -225,7 +227,7 @@ public final class SiteLocatorFilter implements Filter {
     }
 
     /** The method to obtain the correct Site from the request.
-     *
+     * It only returns a site with a locale supported by that site.
      **/
     public static Site getSite(final ServletRequest servletRequest) {
         // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
@@ -237,17 +239,40 @@ public final class SiteLocatorFilter implements Filter {
             // falls back to this when not behind Apache. (Development machine).
             : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
 
-        // Just because many norwegians have their computers installed in english mode
-        //  we can't presume they want their webpages in english.
-        //  Therefore we must always initially replace english locales with norwegian.
         final Locale locale = servletRequest.getLocale();
-//        final Locale locale = "en".equals(requestLocale.getLanguage())
-//                ? Locale.getDefault()
-//                : requestLocale;
 
         LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
 
-        return Site.valueOf(vhost, locale);
+        final Site result = Site.valueOf(vhost, locale);
+        
+        final String[] locales = SiteConfiguration.valueOf(result).getProperty(SITE_LOCALE_SUPPORTED).split(",");
+        for(String l : locales ){
+            if( locale.toString().equals(l) ){
+                return result;
+            }
+        }
+        
+        final String[] prefLocale = SiteConfiguration.valueOf(result)
+                .getProperty(SearchConstants.SITE_LOCALE_DEFAULT)
+                .split("_");
+        
+        switch(prefLocale.length){
+            case 3:
+                LOG.info(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] 
+                        + '_' + prefLocale[1] + '_' + prefLocale[2]);
+                return Site.valueOf(vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
+            case 2:
+                LOG.info(result+INFO_USING_DEFAULT_LOCALE 
+                        + prefLocale[0] + '_' + prefLocale[1]);
+                return Site.valueOf(vhost, new Locale(prefLocale[0], prefLocale[1]));
+            case 1:
+            default:
+                LOG.info(result+INFO_USING_DEFAULT_LOCALE 
+                        + prefLocale[0]);
+                return Site.valueOf(vhost, new Locale(prefLocale[0]));
+        }
+        
+        
     }
 
 }

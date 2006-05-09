@@ -15,6 +15,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,7 +40,7 @@ public final class TextMessages {
     private static final Map<Site,TextMessages> INSTANCES = new HashMap<Site,TextMessages>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
     
-    private static final String SITE_LOCALE_DEFAULT = "site.locale.default";
+    
 
     private static final String DEBUG_LOADING_WITH_LOCALE = "Looking for "+MESSAGE_RESOURCE+"_";
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
@@ -92,7 +93,7 @@ public final class TextMessages {
 
         // import messages from site's preferred locale [will not override already loaded messages]
         final String[] prefLocale = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
-                .getProperty(SITE_LOCALE_DEFAULT).split("_");
+                .getProperty(SearchConstants.SITE_LOCALE_DEFAULT).split("_");
         
         
         switch(prefLocale.length){
@@ -143,26 +144,30 @@ public final class TextMessages {
     }
 
     public String getMessage(final String key) {
-        return getMessage(key, new Object[]{});
+        return getMessageImpl(key);
     }
 
     public String getMessage(final String key, final Object arg0) {
-        return getMessage(key, new Object[]{arg0});
+        return getMessageImpl(key, arg0);
     }
 
     public String getMessage(final String key, final Object arg0, final Object arg1) {
-        return getMessage(key, new Object[]{arg0, arg1});
+        return getMessageImpl(key, arg0, arg1);
     }
 
     public String getMessage(final String key, final Object arg0, final Object arg1, final Object arg2) {
-        return getMessage(key, new Object[]{arg0, arg1, arg2});
+        return getMessageImpl(key, arg0, arg1, arg2);
     }
 
     public String getMessage(final String key, final Object arg0, final Object arg1, final Object arg2, final Object arg3) {
-        return getMessage(key, new Object[]{arg0, arg1, arg3});
+        return getMessageImpl(key, arg0, arg1, arg3);
     }
 
     public String getMessage(final String key, final Object... arguments){
+        return getMessageImpl(key, arguments);
+    }
+    
+    private String getMessageImpl(final String key, final Object... arguments){
         // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
         final MessageFormat format = new MessageFormat(keys.getProperty(key),context.getSite().getLocale());
         return format.format(arguments);

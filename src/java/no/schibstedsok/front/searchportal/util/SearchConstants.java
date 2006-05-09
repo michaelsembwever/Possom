@@ -13,7 +13,8 @@ package no.schibstedsok.front.searchportal.util;
  */
 public final class SearchConstants {
 
-    //Static properties file variables
+    public static final String SITE_LOCALE_DEFAULT = "site.locale.default";
+    
     public static final String FAST_PROPERTYFILE = "fast.properties";                //the properties file for configuration of FAST search and templates
     public static final String SENSIS_PROPERTYFILE = "sensis.properties";            //the properties file for configuration of FAST search and templates
     public static final String REGEXP_EVALUATOR_XMLFILE = "RegularExpressionEvaluators.xml";    //the xml file for regexp patterns
