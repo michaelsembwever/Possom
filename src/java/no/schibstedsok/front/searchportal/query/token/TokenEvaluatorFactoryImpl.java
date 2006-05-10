@@ -15,6 +15,7 @@ import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
+import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -137,6 +138,10 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
     public Set<TokenPredicate> getClausesPossiblePredicates() {
         return possiblePredicates;
+    }
+
+    public Site getSite() {
+        return context.getSite();
     }
 
     private final class FastEvaluatorCreator implements Runnable{

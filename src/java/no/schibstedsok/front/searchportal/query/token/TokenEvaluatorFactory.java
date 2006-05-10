@@ -4,6 +4,7 @@
 package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.Set;
+import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * A TokenEvaluateFactory provides knowledge about which implementation of
@@ -44,4 +45,6 @@ public interface TokenEvaluatorFactory {
      void setClausesPossiblePredicates(Set<TokenPredicate> possiblePredicates);
      
      Set<TokenPredicate> getClausesPossiblePredicates();
+     
+     Site getSite();
 }

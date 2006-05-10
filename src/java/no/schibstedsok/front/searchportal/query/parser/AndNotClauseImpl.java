@@ -15,6 +15,7 @@ import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * The AndNotClauseImpl represents a joining not clause between two terms in the query.
@@ -31,8 +32,9 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      * An overlap of creation is non-critical.
      */
-    private static final Map<String,WeakReference<AndNotClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<AndNotClauseImpl>>();
-
+    private static final Map<Site,Map<String,WeakReference<AndNotClauseImpl>>> WEAK_CACHE 
+            = new HashMap<Site,Map<String,WeakReference<AndNotClauseImpl>>>();
+    
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -75,6 +77,13 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
+        
+        // the weakCache to use.
+        Map<String,WeakReference<AndNotClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        if( weakCache == null ){
+            weakCache = new HashMap<String,WeakReference<AndNotClauseImpl>>();
+            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+        }
 
         // use helper method from AbstractLeafClause
         return createClause(
@@ -83,7 +92,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
                 first,
                 null,
                 predicate2evaluatorFactory,
-                PREDICATES_APPLICABLE, WEAK_CACHE);
+                PREDICATES_APPLICABLE, weakCache);
     }
 
     /**

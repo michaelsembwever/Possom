@@ -15,6 +15,7 @@ import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * The NotClauseImpl represents a not clause between prefixing another term in the query.
@@ -29,8 +30,9 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<String,WeakReference<NotClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<NotClauseImpl>>();
-
+    private static final Map<Site,Map<String,WeakReference<NotClauseImpl>>> WEAK_CACHE 
+            = new HashMap<Site,Map<String,WeakReference<NotClauseImpl>>>();
+    
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -69,6 +71,12 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
+        // the weakCache to use.
+        Map<String,WeakReference<NotClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        if( weakCache == null ){
+            weakCache = new HashMap<String,WeakReference<NotClauseImpl>>();
+            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+        }
 
         // use helper method from AbstractLeafClause
         return createClause(
@@ -77,7 +85,7 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
                 first,
                 null,
                 predicate2evaluatorFactory,
-                PREDICATES_APPLICABLE, WEAK_CACHE);
+                PREDICATES_APPLICABLE, weakCache);
     }
 
     /**

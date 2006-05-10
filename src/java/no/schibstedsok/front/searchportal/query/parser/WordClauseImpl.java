@@ -13,6 +13,7 @@ import java.util.Set;
 import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.front.searchportal.site.Site;
 /**
  * Represent a word in the query. May contain the optional field (field:word).
  * May contain both character and digits but cannot contain only digits
@@ -26,7 +27,8 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<String,WeakReference<WordClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<WordClauseImpl>>();
+    private static final Map<Site,Map<String,WeakReference<WordClauseImpl>>> WEAK_CACHE 
+            = new HashMap<Site,Map<String,WeakReference<WordClauseImpl>>>();
 
     /* A WordClauseImpl specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -70,13 +72,20 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
+        // the weakCache to use.
+        Map<String,WeakReference<WordClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        if( weakCache == null ){
+            weakCache = new HashMap<String,WeakReference<WordClauseImpl>>();
+            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+        }
+        
         // use helper method from AbstractLeafClause
         return createClause(
                 WordClauseImpl.class,
                 term,
                 field,
                 predicate2evaluatorFactory,
-                PREDICATES_APPLICABLE, WEAK_CACHE);
+                PREDICATES_APPLICABLE, weakCache);
     }
 
     /**

@@ -15,6 +15,7 @@ import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * The OrClauseImpl represents a joining clause between two terms in the query.
@@ -29,8 +30,9 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<String,WeakReference<DefaultOperatorClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<DefaultOperatorClauseImpl>>();
-
+    private static final Map<Site,Map<String,WeakReference<DefaultOperatorClauseImpl>>> WEAK_CACHE 
+            = new HashMap<Site,Map<String,WeakReference<DefaultOperatorClauseImpl>>>();
+    
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -80,6 +82,13 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
+        
+        // the weakCache to use.
+        Map<String,WeakReference<DefaultOperatorClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        if( weakCache == null ){
+            weakCache = new HashMap<String,WeakReference<DefaultOperatorClauseImpl>>();
+            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+        }
 
         // use helper method from AbstractLeafClause
         return createClause(
@@ -88,7 +97,7 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
                 first,
                 second,
                 predicate2evaluatorFactory,
-                PREDICATES_APPLICABLE, WEAK_CACHE);
+                PREDICATES_APPLICABLE, weakCache);
     }
 
     /**

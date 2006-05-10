@@ -14,6 +14,7 @@ import no.schibstedsok.front.searchportal.query.EmailClause;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * EmailClauseImpl. Contains one email address.
@@ -28,8 +29,9 @@ public final class EmailClauseImpl extends AbstractLeafClause implements EmailCl
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<String,WeakReference<EmailClauseImpl>> WEAK_CACHE = new HashMap<String,WeakReference<EmailClauseImpl>>();
-
+    private static final Map<Site,Map<String,WeakReference<EmailClauseImpl>>> WEAK_CACHE 
+            = new HashMap<Site,Map<String,WeakReference<EmailClauseImpl>>>();
+    
     /* A IntegerClauseImpl specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -65,13 +67,21 @@ public final class EmailClauseImpl extends AbstractLeafClause implements EmailCl
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
+        
+        // the weakCache to use.
+        Map<String,WeakReference<EmailClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        if( weakCache == null ){
+            weakCache = new HashMap<String,WeakReference<EmailClauseImpl>>();
+            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+        }
+        
         // use helper method from AbstractLeafClause
         return createClause(
                 EmailClauseImpl.class,
                 term,
                 field,
                 predicate2evaluatorFactory,
-                PREDICATES_APPLICABLE, WEAK_CACHE);
+                PREDICATES_APPLICABLE, weakCache);
     }
 
     /**

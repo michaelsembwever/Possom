@@ -170,7 +170,6 @@ public final class Site {
     private static final String SITE_DEFAULT_FALLBACK = "sesam.no";
 
     static {
-        Locale.setDefault(new Locale("no","NO"));
 
         final Properties props = new Properties();
         try  {
