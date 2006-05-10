@@ -10,7 +10,7 @@ import java.io.IOException;
 import org.apache.log4j.Logger;
 
 /**
- * Logs the viewings for 'papiraviser' and the news source
+ * Logs different statistics with ajax
  *
  * @author <a href="mailto:thomas.kjerstad@schibsted.no">Thomas Kjaerstad</a>.
  * @version <tt>$Revision$</tt>
@@ -25,23 +25,22 @@ public final class RetrieverLogServlet extends HttpServlet {
 
     protected void doGet(final HttpServletRequest req, final HttpServletResponse res) throws ServletException, IOException {
 
-        final String type = req.getParameter("type");
+        final String paper = req.getParameter("paper");
 
-        //logs click on homepage link from yellow resultpage and from infopage
-        if ("homepage".equals(type)) {
-
-            LOG.info(
-                    "<company-info type=\"" + req.getParameter("c") + "_hp\">"
-                        + "<query>" + req.getParameter("q") + "</query>"
-                        + ("y".equals(req.getParameter("c"))
-                            ? "<y-position>" + req.getParameter("ypos") + "</y-position>"
-                            : "")
-                        + "<name>" + req.getParameter("name") + "</name>"
-                    + "</company-info>");
-
-        } else {
-
+        //news statistics is treated as before until Bernt is ready to adapt to new format
+        if (paper != null) {
             LOG.info("<retriever-info name=\"papiraviser - " + req.getParameter("paper") + "\"\\>");
+        } else {
+            LOG.info(
+                    "<view-info>" +
+                    "<collection>" + req.getParameter("c") + "</collection>" +
+                    "<type>" + req.getParameter("type") + "</type>" +
+                    "<query>" + req.getParameter("q") + "</query>" +
+                    "<name>" + req.getParameter("name") + "</name>" +
+                    ((req.getParameter("pos") != null)
+                            ? "<position>" + req.getParameter("pos") + "</position>"
+                            : "") +
+                    "</view-info>");
         }
         // clients must not cache these requests
         res.setHeader("Cache-Control", "no-cache, must-revalidate, post-check=0, pre-check=0");
