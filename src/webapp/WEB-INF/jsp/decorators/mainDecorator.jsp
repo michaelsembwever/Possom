@@ -605,7 +605,7 @@
 
 	    <%if (q.trim().equals("")) {%>
 
-            <%}else if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g")) {%>
+            <%}else if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("pss")) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
                 </td>
