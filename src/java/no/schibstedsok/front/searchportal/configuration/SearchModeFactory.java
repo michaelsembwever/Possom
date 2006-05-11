@@ -432,6 +432,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final MobileSearchConfiguration msc = (MobileSearchConfiguration) sc;
 
                     msc.setPersonalizationGroup(commandE.getAttribute("personalization-group"));
+                    msc.setTelenorPersonalizationGroup(commandE.getAttribute("telenor-personalization-group"));
                     msc.setSortBy(commandE.getAttribute("sort-by"));
                     msc.setSource(commandE.getAttribute("source"));
                 }

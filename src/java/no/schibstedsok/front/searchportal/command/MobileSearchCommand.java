@@ -57,6 +57,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
     private static final String PERSONALIZATION_GROUP = "aspiro-sesam1";
     private static final String USER_AGENT_PARAMETER="ua";
     private static final String MSEARCH_CLIENT_PROPS = "msearch-client.properties";
+    private static final String ORIGINATION_PARAMETER = "origination";
     
     private final MobileSearchConfiguration cfg;
     
@@ -83,13 +84,22 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             params.setParameter(new SearchParameter("offset", getCurrentOffset(0)));
             
             final IDeviceCapabilities cap = getDeviceCapabilities();
-            final IPersonalizationSpecification ps = ExplicitUserGroupPersonalizationFactory.getUserGroupSpecification(cfg.getPersonalizationGroup());
+
+            String personalizationGroup = cfg.getPersonalizationGroup();
+            
+            if (getParameter(ORIGINATION_PARAMETER).equals("telenor")) {
+                personalizationGroup = cfg.getTelenorPersonalizationGroup();
+            }
+            
+            IPersonalizationSpecification ps = 
+                    ExplicitUserGroupPersonalizationFactory.getUserGroupSpecification(personalizationGroup);
+            
+            
             final IQuery query = new Query(params);
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("mSearch query is " + query);
             }
-            
             
             final List<IMSearchResult> results = cap != null ? engine.search(query, ps, cap) : engine.search(query, ps);
             

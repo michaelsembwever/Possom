@@ -22,6 +22,7 @@ public class MobileSearchConfiguration extends AbstractSearchConfiguration {
 
     private String source;
     private String personalizationGroup;
+    private String telenorPersonalizationGroup;
     private String sortBy;
 
     public MobileSearchConfiguration(final SearchConfiguration asc) {
@@ -30,6 +31,7 @@ public class MobileSearchConfiguration extends AbstractSearchConfiguration {
             final MobileSearchConfiguration cfg = (MobileSearchConfiguration) asc;
             source = cfg.source;
             personalizationGroup = cfg.personalizationGroup;
+            telenorPersonalizationGroup = cfg.telenorPersonalizationGroup;
             sortBy = cfg.sortBy;
         }
     }
@@ -50,6 +52,14 @@ public class MobileSearchConfiguration extends AbstractSearchConfiguration {
         this.personalizationGroup = group;
     }
 
+    public String getTelenorPersonalizationGroup() {
+        return telenorPersonalizationGroup;
+    }
+
+    public void setTelenorPersonalizationGroup(final String telenorPersonalizationGroup) {
+        this.telenorPersonalizationGroup = telenorPersonalizationGroup;
+    }
+    
     public String getSortBy() {
         return sortBy;
     }

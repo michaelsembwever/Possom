@@ -363,6 +363,21 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return parameters;
     }
 
+    /**
+     * Returns parameter value. In case the parameter is multi-valued only the
+     * first value is returned. If the parameter does not exist or is empty
+     * the empty string is returned.
+     */
+    protected String getParameter(String paramName) {
+        if (parameters.containsKey(paramName)) {
+            String val[] = (String[]) parameters.get(paramName);
+            if (val.length > 0 && val[0].length() > 0) {
+                return val[0];
+            }
+        }
+        return "";
+    }
+    
     protected final synchronized String getQueryRepresentation(final Query query) {
 
         final Clause root = query.getRootClause();
