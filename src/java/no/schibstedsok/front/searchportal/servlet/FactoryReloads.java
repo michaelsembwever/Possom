@@ -16,7 +16,7 @@ import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.front.searchportal.velocity.VelocityEngineFactory;
+import no.schibstedsok.front.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
 import org.apache.log4j.Logger;
 

@@ -6,7 +6,7 @@
  *
  */
 
-package no.schibstedsok.front.searchportal.velocity;
+package no.schibstedsok.front.searchportal.view.velocity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,7 +87,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             // engine.setProperty("runtime.log.logsystem.log4j.logger", logger.getName()); // velocity 1.5
             engine.setProperty("runtime.log.logsystem.log4j.category", logger.getName());
             engine.setProperty(Velocity.RESOURCE_LOADER, "url");
-            engine.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.velocity.URLVelocityTemplateLoader");
+            engine.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.view.velocity.URLVelocityTemplateLoader");
             engine.setProperty("url.resource.loader.cache", "true");
             engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
             engine.setProperty("velocimacro.library", site.getTemplateDir() + "/VM_global_library.vm");
@@ -97,7 +97,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             engine.setProperty(SearchConstants.PUBLISH_SYSTEM_HOST, props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
             engine.setProperty("input.encoding", "UTF-8");
             engine.setProperty("output.encoding", "UTF-8");
-            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.velocity.PublishDirective,no.schibstedsok.front.searchportal.velocity.AccountingDirective,no.schibstedsok.front.searchportal.velocity.RolesDirective,no.schibstedsok.front.searchportal.velocity.XmlEscapeDirective");
+            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.view.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.view.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.view.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.view.velocity.PublishDirective,no.schibstedsok.front.searchportal.view.velocity.AccountingDirective,no.schibstedsok.front.searchportal.view.velocity.RolesDirective,no.schibstedsok.front.searchportal.view.velocity.XmlEscapeDirective");
             engine.init();
 
         } catch (Exception e) {

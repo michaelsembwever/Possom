@@ -1,4 +1,4 @@
-package no.schibstedsok.front.searchportal.velocity;
+package no.schibstedsok.front.searchportal.view.velocity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

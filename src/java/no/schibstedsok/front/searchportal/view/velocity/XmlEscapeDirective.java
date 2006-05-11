@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package no.schibstedsok.front.searchportal.velocity;
+package no.schibstedsok.front.searchportal.view.velocity;
 
 import java.io.IOException;
 import java.io.Writer;

@@ -5,7 +5,7 @@
  *
  */
 
-package no.schibstedsok.front.searchportal.velocity;
+package no.schibstedsok.front.searchportal.view.velocity;
 
 import java.io.BufferedReader;
 import java.io.IOException;

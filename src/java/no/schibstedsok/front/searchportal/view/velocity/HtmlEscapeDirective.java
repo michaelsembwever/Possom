@@ -1,18 +1,15 @@
 /*
- * UrlEncodeDirective.java
+ * HtmlEscapeDirective.java
  *
- * Created on February 6, 2006, 3:45 PM
+ * Created on February 6, 2006, 5:34 PM
  *
  */
-
-package no.schibstedsok.front.searchportal.velocity;
+package no.schibstedsok.front.searchportal.view.velocity;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.net.URLEncoder;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -23,30 +20,17 @@ import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  *
- * A velocity directive to do url encoding.
+ * A velocity directive to escape HTML.
  *
  * <code>
- * #urlencode('&q=hej')
- * #urlencode('&q=hej', 'iso-8859-1')
+ * #htmlescape("<h1>html</h1>')
  * </code>
- *
- * The default charset is utf-8.
  *
  * @author magnuse
  */
-public final class UrlEncodeDirective extends Directive {
+public final class HtmlEscapeDirective extends Directive {
 
-    private static transient Log log = LogFactory.getLog(UrlEncodeDirective.class);
-
-    private static final String NAME = "urlencode";
-    private static final String DEFAULT_CHARSET = "utf-8";
-
-    /**
-     * {@inheritDoc}
-     */
-    public String getName() {
-        return NAME;
-    }
+    private static final String NAME = "htmlescape";
 
     /**
      * {@inheritDoc}
@@ -58,21 +42,22 @@ public final class UrlEncodeDirective extends Directive {
     /**
      * {@inheritDoc}
      */
+    public String getName() {
+        return NAME;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        if (node.jjtGetNumChildren() < 1) {
-            rsvc.error("#" + getName() + " - missing argument");
+        if (node.jjtGetNumChildren() != 1) {
+            rsvc.error("#" + getName() + " - wrong number of argumants");
             return false;
         }
 
-        String charset = DEFAULT_CHARSET;
-
         final String input = node.jjtGetChild(0).value(context).toString();
 
-        if (node.jjtGetNumChildren() == 2) {
-            charset = node.jjtGetChild(1).value(context).toString();
-        }
-
-        writer.write(URLEncoder.encode(input, charset));
+        writer.write(StringEscapeUtils.escapeHtml(input));
 
         final Token lastToken = node.getLastToken();
 

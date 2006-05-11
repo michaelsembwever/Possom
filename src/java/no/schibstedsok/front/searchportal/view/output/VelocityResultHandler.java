@@ -13,7 +13,7 @@ import no.schibstedsok.front.searchportal.result.Decoder;
 import no.schibstedsok.front.searchportal.result.Linkpulse;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
-import no.schibstedsok.front.searchportal.velocity.VelocityEngineFactory;
+import no.schibstedsok.front.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.front.searchportal.util.TradeDoubler;
