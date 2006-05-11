@@ -71,9 +71,11 @@
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/sitesearch.css?x" rel="stylesheet" type="text/css" />
-    <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/default.css?x" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/decorator-style.css?x=" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/sitesearch.css?x=" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/ps.css?x=" rel="stylesheet" type="text/css" />
+    <link media="print" href="../css/print-style.css?x=" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>

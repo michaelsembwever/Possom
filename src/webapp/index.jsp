@@ -37,7 +37,9 @@
     <head>
         <title>Sesam</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="css/decorator-style.css" rel="stylesheet" type="text/css" />
+        <link href="css/default.css" rel="stylesheet" type="text/css" />
+        <link href="css/front.css" rel="stylesheet" type="text/css" />
+        <link href="css/ps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
         <script type="text/javascript" language="JavaScript"><!--
