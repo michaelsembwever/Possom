@@ -12,7 +12,6 @@
 <%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
 <%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
 <%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
-<%@ page import="no.schibstedsok.front.searchportal.util.TvEnrichmentHelper"%>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ page import="org.apache.velocity.Template"%>
 <%@ page import="org.apache.velocity.VelocityContext"%>
@@ -504,22 +503,11 @@
 
                                       <decorator:getProperty property="page.globalSearchTips" />
 									
-                                        <%-- Find webtv and tv enrichments and merge them --%>
-                                        <% TvEnrichmentHelper.mergeEnrichments(request, engine, siteMeshPage, "tvEnrichMerge"); %>	
-
                                        <%-- Show tab's leading enrichments --%>
                                        <c:forEach var="ee" items="${enrichments}" varStatus="i">
                                            <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult >= tab.enrichmentOnTopScore}">
-                                           		<c:choose>
-                                                            <c:when test="${ee == webtvEnrich || ee == tvEnrich}">
-                                                                <c:out value="${tvEnrichStr}" escapeXml="false"/>
-                                                                <c:set var="tvEnrichStr" value=""/>
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                               <c:set var="pageName" value="page.${ee.name}"/>
-                                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
-                                                            </c:otherwise>
-		                                       	</c:choose>
+                                               <c:set var="pageName" value="page.${ee.name}"/>
+                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
                                            </c:if>
                                        </c:forEach>
 
@@ -531,16 +519,8 @@
                                        <%-- Show tab's proceeding enrichments --%>
                                        <c:forEach var="ee" items="${enrichments}" varStatus="i">
                                            <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult < tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
-                                           		<c:choose>
-	                                           		<c:when test="${ee == webtvEnrich || ee == tvEnrich}">
-	                                           			<c:out value="${tvEnrichStr}" escapeXml="false"/>
-	                                           			<c:set var="tvEnrichStr" value=""/>
-	                                           		</c:when>
-	                                           		<c:otherwise>
-		                                               <c:set var="pageName" value="page.${ee.name}"/>
-		                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
-		                                          	</c:otherwise>
-		                                       	</c:choose>
+                                               <c:set var="pageName" value="page.${ee.name}"/>
+                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
                                            </c:if>
                                        </c:forEach>
 
