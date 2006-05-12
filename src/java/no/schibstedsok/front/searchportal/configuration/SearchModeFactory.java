@@ -145,6 +145,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             throws ParserConfigurationException {
 
         LOG.trace("ModeFactory(cxt)");
+        INSTANCES_LOCK.writeLock().lock();
 
         context = cxt;
 
@@ -155,7 +156,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         loader = context.newDocumentLoader(SearchConstants.MODES_XMLFILE, builder);
 
         // update the store of factories
-        INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
         // start initialisation
         init();

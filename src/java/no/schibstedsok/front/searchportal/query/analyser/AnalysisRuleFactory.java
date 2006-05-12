@@ -86,12 +86,13 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             throws ParserConfigurationException {
 
         context = cxt;
+        INSTANCES_LOCK.writeLock().lock();
+        
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
         loader = context.newDocumentLoader(SearchConstants.ANALYSIS_RULES_XMLFILE, builder);
 
-        INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
         INSTANCES_LOCK.writeLock().unlock();
     }

@@ -75,13 +75,14 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     private RegExpEvaluatorFactory(final Context cxt)
             throws ParserConfigurationException {
 
+        
+        INSTANCES_LOCK.writeLock().lock();
         context = cxt;
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
         loader = context.newDocumentLoader(SearchConstants.REGEXP_EVALUATOR_XMLFILE, builder);
 
-        INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
         INSTANCES_LOCK.writeLock().unlock();
     }

@@ -99,6 +99,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     private SearchTabFactory(final Context cxt) throws ParserConfigurationException {
 
         LOG.trace("SearchTabFactory(cxt)");
+        INSTANCES_LOCK.writeLock().lock();
 
         context = cxt;
 
@@ -109,7 +110,6 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         loader = context.newDocumentLoader(SearchConstants.VIEWS_XMLFILE, builder);
 
         // update the store of factories
-        INSTANCES_LOCK.writeLock().lock();
         INSTANCES.put(context.getSite(), this);
         INSTANCES_LOCK.writeLock().unlock();
 

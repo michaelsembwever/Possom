@@ -58,6 +58,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     /** Creates a new instance of VelocityEngineFactory */
     private VelocityEngineFactory(final Context cxt) {
+        
+        INSTANCES_LOCK.writeLock().lock();
         context = cxt;
         final Site site = cxt.getSite();
 
@@ -80,7 +82,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
         try  {
             final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
-            final java.util.Properties props = SiteConfiguration.valueOf(
+            final Properties props = SiteConfiguration.valueOf(
                     ContextWrapper.wrap(SiteConfiguration.Context.class, cxt)).getProperties();
             // engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute"); // velocity 1.5
             engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
@@ -104,7 +106,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             throw new InfrastructureException(e);
         }
 
-        INSTANCES_LOCK.writeLock().lock();
+        
         INSTANCES.put(site, this);
         INSTANCES_LOCK.writeLock().unlock();
     }
@@ -124,6 +126,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         INSTANCES_LOCK.readLock().lock();
         VelocityEngineFactory instance = INSTANCES.get(site);
         INSTANCES_LOCK.readLock().unlock();
+        
         
         if (instance == null) {
             instance = new VelocityEngineFactory(cxt);
