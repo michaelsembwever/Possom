@@ -392,30 +392,32 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
         
         /* Run velocity result handler on the enrichment results */
-        VelocityResultHandler vrh = new VelocityResultHandler();
-        final SearchResult cxtResult = tvResult;
+        if (tvResult != null && tvResult.getResults().size() > 0) {
+            VelocityResultHandler vrh = new VelocityResultHandler();
+            final SearchResult cxtResult = tvResult;
         
-        final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
-                ResultHandler.Context.class,
-                new BaseContext(){// <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
-                    public SearchResult getSearchResult() {
-                        return cxtResult;
-                    }
-                    public SearchTab getSearchTab(){
-                        return RunningQueryImpl.this.getSearchTab();
-                    }
-                    /** @deprecated implementations should be using the QueryContext instead! */
-                    public String getQueryString() {
-                        return queryObj.getQueryString();
-                    }
+            final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
+                    ResultHandler.Context.class,
+                    new BaseContext(){// <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
+                        public SearchResult getSearchResult() {
+                            return cxtResult;
+                        }
+                        public SearchTab getSearchTab(){
+                            return RunningQueryImpl.this.getSearchTab();
+                        }
+                        /** @deprecated implementations should be using the QueryContext instead! */
+                        public String getQueryString() {
+                            return queryObj.getQueryString();
+                        }
                     
-                    public Query getQuery() {
-                        return queryObj;
-                    }
-                },// </editor-fold>
-                context
-        );
-        vrh.handleResult(resultHandlerContext, parameters);
+                        public Query getQuery() {
+                            return queryObj;
+                        }
+                    },// </editor-fold>
+                    context
+            );
+            vrh.handleResult(resultHandlerContext, parameters);
+        }
     }
 
     private String getSingleParameter(final String paramName) {
