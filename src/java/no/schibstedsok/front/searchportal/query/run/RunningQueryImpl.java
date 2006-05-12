@@ -16,15 +16,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
+import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.front.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.front.searchportal.configuration.SearchConfigurationContext;
 import no.schibstedsok.front.searchportal.query.QueryContext;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
+import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.front.searchportal.query.token.ReportingTokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
@@ -38,11 +41,13 @@ import no.schibstedsok.front.searchportal.executor.SearchTask;
 import no.schibstedsok.front.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
-import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.front.searchportal.result.Enrichment;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
+import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
+import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
 import org.apache.log4j.Logger;
 
 /**
@@ -60,6 +65,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_RUN_QUERY = "Failure to run query";
+    private static final String ERR_WRONG_CONFIGURATION = "Configuration of wrong type";
 
     private final AnalysisRuleFactory rules;
     private final String queryStr;
@@ -311,27 +317,105 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 //                }
             }  else  {
 
-                performEnrichmentHandling();
+                performEnrichmentHandling(results);
             }
-
-            
         } catch (Exception e) {
             LOG.error(ERR_RUN_QUERY, e);
         }
     }
     
-    private void performEnrichmentHandling(){
+    private void performEnrichmentHandling(List<Future<SearchResult>> results) throws InterruptedException, ExecutionException {
         
         Collections.sort(enrichments);
 
         PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchTab().getKey() 
                 + "\" size=\"" + enrichments.size() + "\">"
                 + "<query>" + queryStr + "</query>");
+        
+        Enrichment tvEnrich = null;
+        Enrichment webtvEnrich = null;
+        
         for( Enrichment e : enrichments){
             PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
                     + "\" score=\"" + e.getAnalysisResult() + "\"/>");
+            
+            /* Store reference to webtv and tv enrichments */
+            if ("webtvEnrich".equals(e.getName())) {
+                webtvEnrich = e;
+            } else if ("tvEnrich".equals(e.getName())) {
+                tvEnrich = e;
+            }
         }
         PRODUCT_LOG.info("</enrichments>");
+        
+        SearchResult tvResult = null;
+        SearchResult webtvResult = null;
+        Future taskToRemove = null;
+        
+        for (Future<SearchResult> task : results) {
+            if (task.isDone() && !task.isCancelled()) {
+                if ("webtvEnrich".equals(task.get().getSearchCommand().getSearchConfiguration().getName())) {
+                    webtvResult = task.get();
+                    taskToRemove = task;
+                } else if ("tvEnrich".equals(task.get().getSearchCommand().getSearchConfiguration().getName())) {
+                    tvResult = task.get();
+                }
+            }
+        }
+        results.remove(taskToRemove);
+       
+        /* Update score and if necessary the enrichment name */
+        if (webtvEnrich != null && tvEnrich != null) {
+            if (webtvEnrich.getAnalysisResult() > tvEnrich.getAnalysisResult()) {
+                tvEnrich.setAnalysisResult(webtvEnrich.getAnalysisResult());
+            }
+            enrichments.remove(webtvEnrich);
+        } else if (webtvEnrich != null && tvEnrich == null) {
+            tvEnrich = webtvEnrich;
+            webtvEnrich.setName("tvEnrich");
+        }
+       
+        /* Move webtv results into tv results and if necessary change name of the configuration */
+        if (webtvResult != null && webtvResult.getResults().size() > 0) {
+            if (tvResult != null && tvResult.getResults().size() > 0) {
+                tvResult.getResults().addAll(webtvResult.getResults());
+            } else {
+                if (webtvResult.getSearchCommand().getSearchConfiguration() instanceof FastConfiguration) {
+                    FastConfiguration fsc = (FastConfiguration) webtvResult.getSearchCommand().getSearchConfiguration();
+                    fsc.setName("tvEnrich");
+                    tvResult = webtvResult;
+                    
+                } else {
+                    LOG.error(ERR_WRONG_CONFIGURATION);
+                }
+            }
+        }
+        
+        /* Run velocity result handler on the enrichment results */
+        VelocityResultHandler vrh = new VelocityResultHandler();
+        final SearchResult cxtResult = tvResult;
+        
+        final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
+                ResultHandler.Context.class,
+                new BaseContext(){// <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
+                    public SearchResult getSearchResult() {
+                        return cxtResult;
+                    }
+                    public SearchTab getSearchTab(){
+                        return RunningQueryImpl.this.getSearchTab();
+                    }
+                    /** @deprecated implementations should be using the QueryContext instead! */
+                    public String getQueryString() {
+                        return queryObj.getQueryString();
+                    }
+                    
+                    public Query getQuery() {
+                        return queryObj;
+                    }
+                },// </editor-fold>
+                context
+        );
+        vrh.handleResult(resultHandlerContext, parameters);
     }
 
     private String getSingleParameter(final String paramName) {

@@ -19,10 +19,18 @@ public class Enrichment implements Comparable<Enrichment> {
         return (int)analysisResult;
     }
 
+    public void setAnalysisResult(final float analysisResult) {
+        this.analysisResult = analysisResult;
+    }
+    
     public String getName() {
         return name;
     }
 
+    public void setName(final String name) {
+        this.name = name;
+    }
+    
     public int compareTo(final Enrichment e) {
         return (int)(analysisResult - e.analysisResult);
     }
