@@ -13,6 +13,8 @@ import org.apache.commons.logging.LogFactory;
 import java.io.Writer;
 import java.io.IOException;
 
+import no.schibstedsok.front.searchportal.result.Linkpulse;
+
 /**
  * Created by IntelliJ IDEA.
  * User: SSTHKJER
@@ -78,6 +80,10 @@ public class AccountingDirective extends Directive {
         String text = "";
         boolean quitLoop = false;
 
+        // use linkpulse to log lindorff logo click
+        Linkpulse linkpulse = (Linkpulse) context.get("linkpulse");
+        String lpUrl = linkpulse.getUrl("http://www.lindorff.no/", "category:static;subcategory:provider", "sgo", "ext");
+
         //print rows
         for (int i = 0; i < row.length; i++) {
 
@@ -123,7 +129,7 @@ public class AccountingDirective extends Directive {
         }
         html += "</table>";
         html += "<div id=\"lindorff\"><span style=\"float:left\">Lindorff har levert tallene</span><span style=\"float:right;\">* Alle tall er i hele tusen</span></div>";
-        html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"http://www.lindorff.no/\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
+        html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"" + lpUrl + "\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
 
         writer.write(html);
         Token lastToken = node.getLastToken();
