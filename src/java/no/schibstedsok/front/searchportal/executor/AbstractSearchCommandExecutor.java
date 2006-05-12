@@ -26,6 +26,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
 
 
     protected transient static final Logger LOG = Logger.getLogger(AbstractSearchCommandExecutor.class);
+    private static final String DEBUG_INVOKEALL = "invokeAll using ";
 
 
     // Constants -----------------------------------------------------
@@ -47,6 +48,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
 
     public List<Future<SearchResult>> invokeAll(final Collection<Callable<SearchResult>> callables, final int timeoutInMillis)  {
 
+        LOG.debug(DEBUG_INVOKEALL + getClass().getSimpleName());
         final List<Future<SearchResult>> results = new ArrayList<Future<SearchResult>>();
         try {
             results.addAll(getExecutorService().invokeAll(callables, timeoutInMillis, TimeUnit.MILLISECONDS));

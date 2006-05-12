@@ -216,7 +216,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchMode inherit = getMode(modeE.getAttribute("inherit"));
             final SearchMode mode = new SearchMode(inherit);
             mode.setId(id);
-            mode.setExecutor(parseExecutor(modeE.getAttribute("executor"), new SequentialSearchCommandExecutor()));
+            mode.setExecutor(parseExecutor(modeE.getAttribute("executor"), 
+                    inherit != null ? inherit.getExecutor() : new SequentialSearchCommandExecutor()));
             mode.setQueryAnalysisEnabled(parseBoolean(modeE.getAttribute("analysis"),
                     inherit != null ? inherit.isQueryAnalysisEnabled() : false));
 

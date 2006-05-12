@@ -24,13 +24,6 @@ public final class ParallelSearchCommandExecutor extends AbstractSearchCommandEx
     public ParallelSearchCommandExecutor() {
     }
 
-//    public void stop() {
-//        //LOG.info("Shutting down ExecutorService");
-//        //INSPECTOR.cancel();
-//        //LOG.warn(EXECUTOR.getTaskCount() + " processed");
-//        super.stop();
-//    }
-
     protected ExecutorService getExecutorService(){
         return EXECUTOR;
     }
