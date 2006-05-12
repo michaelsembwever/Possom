@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 import no.schibstedsok.front.searchportal.security.MD5Generator;
+import no.schibstedsok.front.searchportal.result.Linkpulse;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 
 /**
  * Created by IntelliJ IDEA.
@@ -88,6 +90,9 @@ public class RolesDirective extends Directive {
 
         // Needs this for link, find a way to import password..
         MD5Generator md5 = new MD5Generator("S3SAM rockz");
+
+        // use linkpulse to log roles click
+        Linkpulse linkpulse = (Linkpulse) context.get("linkpulse");
         String html = "";
 
         html = "<div><table class=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
@@ -114,6 +119,8 @@ public class RolesDirective extends Directive {
                         text = name;
                     else {
                         String nameEncode = "";
+                        String orgUrl = "";
+                        String lpUrl = "";
                         // create link to infopage
                         if (page.equals("y")) {
                             //remove date of birth from string
@@ -122,11 +129,13 @@ public class RolesDirective extends Directive {
                             else
                                 nameEncode = URLEncoder.encode(name, "utf-8");
 
-                            text = "<a href=\"?c=wip&amp;q=" + nameEncode + "&amp;personId=" + recordid + "&amp;personId_x=" + md5.generateMD5(recordid) + "\">" + name + "</a>";
-                        }else {
+                            orgUrl = "?c=wip&amp;q=" + nameEncode + "&amp;personId=" + recordid + "&amp;personId_x=" + md5.generateMD5(recordid);
+                        } else {
                             nameEncode = URLEncoder.encode(name, "utf-8");
-                            text = "<a href=\"?c=yip&amp;q=" + nameEncode + "&amp;companyId=" + recordid + "&amp;companyId_x=" + md5.generateMD5(recordid) + "\">" + name + "</a>";
+                            orgUrl = "?c=yip&amp;q=" + nameEncode + "&amp;companyId=" + recordid + "&amp;companyId_x=" + md5.generateMD5(recordid);
                         }
+                        lpUrl = linkpulse.getUrl(orgUrl, "category:results;subcategory:roles", "sgo", "");
+                        text = "<a href=\"" + lpUrl + "\">" + name + "</a>";
                     }
                 } else
                     text = col[k].trim();
@@ -151,7 +160,6 @@ public class RolesDirective extends Directive {
         html += "\"><a href=\"#\" onclick=\"javascript:document.getElementById('more_roles').style.display='block'; document.getElementById('expand_roles').style.display='none'; document.getElementById('hide_roles').style.display='block'\">Vis alle</a></div>";
 
         html += "<div id=\"hide_roles\" style=\"display: none\"><a href=\"#\" onclick=\"javascript:document.getElementById('more_roles').style.display='none'; document.getElementById('expand_roles').style.display='block'; document.getElementById('hide_roles').style.display='none'\">Skjul</a></div>";
-
 
         writer.write(html);
         Token lastToken = node.getLastToken();
