@@ -505,7 +505,7 @@
 									
                                        <%-- Show tab's leading enrichments --%>
                                        <c:forEach var="ee" items="${enrichments}" varStatus="i">
-                                           <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult >= tab.enrichmentOnTopScore}">
+                                           <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult > tab.enrichmentOnTopScore}">
                                                <c:set var="pageName" value="page.${ee.name}"/>
                                                <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
                                            </c:if>
@@ -518,7 +518,7 @@
 
                                        <%-- Show tab's proceeding enrichments --%>
                                        <c:forEach var="ee" items="${enrichments}" varStatus="i">
-                                           <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult < tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
+                                           <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult <= tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
                                                <c:set var="pageName" value="page.${ee.name}"/>
                                                <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
                                            </c:if>
