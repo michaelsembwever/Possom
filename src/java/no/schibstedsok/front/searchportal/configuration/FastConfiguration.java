@@ -19,11 +19,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  */
 public class FastConfiguration extends AbstractSearchConfiguration {
 
-    private final List collections = new ArrayList();
+    private final List<String> collections = new ArrayList<String>();
     private Map searchParameters;
     private boolean lemmatizeEnabled;
     private boolean spellcheckEnabled;
-    private final Map navigators = new HashMap();
+    private final Map<String,FastNavigator> navigators = new HashMap<String,FastNavigator>();
     private String sortBy;
     private boolean collapsingEnabled;
     private String queryServerURL;
@@ -71,7 +71,7 @@ public class FastConfiguration extends AbstractSearchConfiguration {
         }
     }
 
-    public List getCollections() {
+    public List<String> getCollections() {
         return collections;
     }
 
@@ -160,20 +160,16 @@ public class FastConfiguration extends AbstractSearchConfiguration {
         this.spellcheckEnabled = spellcheckEnabled;
     }
 
-    public Map getNavigators() {
+    public Map<String,FastNavigator> getNavigators() {
         return navigators;
     }
-
-//    public void setNavigators(Map navigators) {
-//        this.navigators = navigators;
-//    }
 
     public void addNavigator(final FastNavigator navigator, final String navKey) {
         navigators.put(navKey, navigator);
     }
 
     public FastNavigator getNavigator(final String navigatorKey) {
-        return (FastNavigator) navigators.get(navigatorKey);
+        return navigators.get(navigatorKey);
     }
 
     public String getSortBy() {
