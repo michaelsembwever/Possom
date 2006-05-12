@@ -202,7 +202,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 );
 
                 final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
-                if( eHint != null ){
+                if( eHint != null && !queryObj.isBlank()){
                     final AnalysisRule rule = rules.getRule(eHint.getRule());
 
                     if (context.getSearchMode().isQueryAnalysisEnabled() && offset == 0) {

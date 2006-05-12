@@ -37,5 +37,8 @@ public interface Query {
      * Terms are represented by LeafClauses.
      **/
     int getTermCount();
+    
+    /** Is the query blank (or just full of useless symbols). **/
+    boolean isBlank();
 
 }

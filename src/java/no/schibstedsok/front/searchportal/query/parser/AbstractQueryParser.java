@@ -30,7 +30,6 @@ import org.apache.log4j.Logger;
 
 /** Abstract helper for implementing a QueryParser
  * Provides default implementation to get the query object.
- * <b>This implementation is not synchronised / thread-safe.</b>
  *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -76,15 +75,15 @@ public abstract class AbstractQueryParser implements QueryParser {
                 throw new IllegalStateException(ERR_EMPTY_CONTEXT);
             }
             try{
-                final Clause root = ( queryStr == null || queryStr.trim().length()==0 )
-                    ? context.createWordClause("",null)
-                    : parse();
+                if( queryStr != null && queryStr.trim().length()>0 ){
+                    final Clause root = parse();
 
-                query = new AbstractQuery(context.getQueryString()){
-                    public Clause getRootClause(){
-                        return root;
-                    }
-                };
+                    query = new AbstractQuery(context.getQueryString()){
+                        public Clause getRootClause(){
+                            return root;
+                        }
+                    };
+                }
                 
             }catch(ParseException pe){
                 LOG.warn(ERR_PARSING + queryStr, pe);
@@ -93,10 +92,14 @@ public abstract class AbstractQueryParser implements QueryParser {
             }
             
             if( query == null ){
+                final Clause empty = context.createWordClause("",null);
                 // common post-exception handling
                 query = new AbstractQuery(context.getQueryString()){
                     public Clause getRootClause(){
-                        return context.createWordClause("",null);
+                        return empty;
+                    }
+                    public boolean isBlank(){
+                        return true;
                     }
                 };
             }

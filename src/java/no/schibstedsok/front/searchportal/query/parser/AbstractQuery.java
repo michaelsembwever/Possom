@@ -58,6 +58,10 @@ public abstract class AbstractQuery implements Query {
         return counter.getTermCount();
     }
 
+    public boolean isBlank(){
+        return false;
+    }
+    
     private final class FirstLeafFinder extends AbstractReflectionVisitor {
         private boolean searching = true;
         private LeafClause firstLeaf;
