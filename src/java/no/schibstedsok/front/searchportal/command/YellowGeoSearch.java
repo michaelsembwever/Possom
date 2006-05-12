@@ -31,7 +31,9 @@ public class YellowGeoSearch extends FastSearchCommand {
     
     private boolean ypkeywordsgeo = false;
     
-   public YellowGeoSearch(final Context cxt, final Map parameters) {
+    private StringBuilder filterBuilder = null;
+    
+    public YellowGeoSearch(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
     
@@ -157,12 +159,18 @@ public class YellowGeoSearch extends FastSearchCommand {
     }
     
     protected String getAdditionalFilter() {
-        if (ypkeywordsgeo && getLastGeoMatch() != null) {
-            return "+ypkeywordsgeo:" + getLastGeoMatch().getMatch();
-        } else {
-            return null;
+
+        synchronized (this) {
+            if (filterBuilder == null) {
+                filterBuilder = new StringBuilder(super.getAdditionalFilter());
+
+                if (ypkeywordsgeo && getLastGeoMatch() != null) {
+                    filterBuilder.append("+ypkeywordsgeo:" + getLastGeoMatch().getMatch());
+                }
+            }
+
+            return filterBuilder.toString();
         }
-        
     }
 
     protected String getSortBy() {

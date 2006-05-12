@@ -73,11 +73,12 @@ public class NewsSearchCommand extends FastSearchCommand {
         synchronized (this) {
             if (filterBuilder == null) {
                 filterBuilder = new StringBuilder(super.getAdditionalFilter());
-            }
+            
 
-            // Add filter to retrieve all documents.
-            if (containsJustThePrefix()) {
-                filterBuilder.append(FAST_SIZE_HACK);
+                // Add filter to retrieve all documents.
+                if (containsJustThePrefix()) {
+                    filterBuilder.append(FAST_SIZE_HACK);
+                }
             }
 
             return filterBuilder.toString();
