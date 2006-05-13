@@ -6,6 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -17,6 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
+import no.schibstedsok.front.searchportal.command.BlendingNewsSearchCommand;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
@@ -276,6 +278,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         FAST_COMMAND (FastConfiguration.class),
         MATH_COMMAND (MathExpressionConfiguration.class),
         NEWS_COMMAND (NewsSearchConfiguration.class),
+        BLENDING_NEWS_COMMAND (BlendingNewsSearchConfiguration.class),
         OVERTURE_PPC_COMMAND(OverturePPCConfiguration.class),
         PICTURE_COMMAND(PicSearchConfiguration.class),
         SENSIS_COMMAND(SensisSearchConfiguration.class),
@@ -437,7 +440,21 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     msc.setSortBy(commandE.getAttribute("sort-by"));
                     msc.setSource(commandE.getAttribute("source"));
                 }
-
+                if (sc instanceof BlendingNewsSearchConfiguration) {
+                    final BlendingNewsSearchConfiguration bnsc = (BlendingNewsSearchConfiguration) sc;
+                    
+                    String filters[] = commandE.getAttribute("filters").split(",");
+                    
+                    List<String> filterList = new ArrayList<String>();
+                    
+                    for (int i = 0; i < filters.length; i++) {
+                        filterList.add(filters[i].trim());
+                    }
+                    
+                    bnsc.setFiltersToBlend(filterList);
+                    bnsc.setDocumentsPerFilter(Integer.parseInt(commandE.getAttribute("documentsPerFilter")));
+                }
+                
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);

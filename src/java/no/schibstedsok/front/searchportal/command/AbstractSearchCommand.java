@@ -351,7 +351,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param i the current offset.
      * @return i plus the offset of the current page.
      */
-    protected final int getCurrentOffset(final int i) {
+    protected int getCurrentOffset(final int i) {
         if (getSearchConfiguration().isPagingEnabled()) {
             return i + context.getRunningQuery().getOffset();
         } else {

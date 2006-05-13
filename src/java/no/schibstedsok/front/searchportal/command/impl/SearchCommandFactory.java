@@ -9,6 +9,7 @@
 package no.schibstedsok.front.searchportal.command.impl;
 
 import java.util.Map;
+import no.schibstedsok.front.searchportal.command.BlendingNewsSearchCommand;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.MathExpressionCommand;
 import no.schibstedsok.front.searchportal.command.MobileSearchCommand;
@@ -20,6 +21,7 @@ import no.schibstedsok.front.searchportal.command.StockSearchCommand;
 import no.schibstedsok.front.searchportal.command.WebSearchCommand;
 import no.schibstedsok.front.searchportal.command.WhiteSearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
+import no.schibstedsok.front.searchportal.configuration.BlendingNewsSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration;
 import no.schibstedsok.front.searchportal.configuration.MobileSearchConfiguration;
@@ -55,7 +57,9 @@ public final class SearchCommandFactory {
         // It is also not as performance savvy as the original implementation.
         // Possibilities are 1) move association to xml (tabs.xml?) or 2) use class naming scheme.
         // An example of possibility (2) would be XXXSearchConfiguration --> XXXSearchCommand
-        if (config instanceof YellowSearchConfiguration) {
+        if (config instanceof BlendingNewsSearchConfiguration) {
+            return new BlendingNewsSearchCommand(cxt, parameters);
+        } if (config instanceof YellowSearchConfiguration) {
             return new YellowGeoSearch(cxt, parameters);
         } if (config instanceof StockSearchConfiguration) {
             return new StockSearchCommand(cxt, parameters);
