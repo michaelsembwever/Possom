@@ -57,7 +57,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
     private static final String PERSONALIZATION_GROUP = "aspiro-sesam1";
     private static final String USER_AGENT_PARAMETER="ua";
     private static final String MSEARCH_CLIENT_PROPS = "msearch-client.properties";
-    private static final String ORIGINATION_PARAMETER = "origination";
+    private static final String ORIGINATION_PARAMETER = "originator";
     
     private final MobileSearchConfiguration cfg;
     

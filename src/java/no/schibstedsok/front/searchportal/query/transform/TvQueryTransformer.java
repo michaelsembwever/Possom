@@ -31,6 +31,12 @@ public final class TvQueryTransformer extends AbstractQueryTransformer {
      */
     public String getTransformedQuery() {
 
+        // If a channel has been chosen using tv_ syntax. Query should be empty
+        // to return everything.
+        if (getContext().getQuery().getQueryString().startsWith("tv_")) {
+            return "";
+        }
+        
         final String transformedQuery = getContext().getTransformedQuery();
         return TV_PATTERNS.matcher(transformedQuery).replaceAll("");
     }
@@ -44,10 +50,18 @@ public final class TvQueryTransformer extends AbstractQueryTransformer {
 
         final String origQuery = getContext().getQuery().getQueryString();
 
-        LOG.debug("TVVVVVV");
+        final StringBuilder filter = new StringBuilder();
+        
+        // Special case to choose channel.
+        if (origQuery.startsWith("tv_")) {
+           filter.append("+wpfornavn:^");
+           filter.append(origQuery.substring(3));
+           filter.append("$ ");
+        }
 
-        return origQuery.length() > 0
-                ? "+tvendtime:>" + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(new Date())
-                : "";
+        filter.append("+tvendtime:>");
+        filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(new Date()));
+        
+        return filter.toString();
     }
 }
