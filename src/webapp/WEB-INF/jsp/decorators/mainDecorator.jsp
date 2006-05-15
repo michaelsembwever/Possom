@@ -70,8 +70,8 @@
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/default.css?x" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/decorator-style.css?x=" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/default.css?x=" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/decorator-style.css?y=" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/sitesearch.css?x=" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/ps.css?x=" rel="stylesheet" type="text/css" />
     <link media="print" href="../css/print-style.css?x=" rel="stylesheet" type="text/css" />
