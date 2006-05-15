@@ -10,8 +10,6 @@ package no.schibstedsok.front.searchportal.filters;
 
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +45,7 @@ public final class SiteLocatorFilter implements Filter {
     private static final String ERR_UNCAUGHT_RUNTIME_EXCEPTION
             = "Following runtime exception was let loose in tomcat\n";
 
-    private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";    
+    private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
     private static final String DEBUG_REQUESTED_VHOST = "Virtual host is ";
     private static final String DEBUG_REDIRECTING_TO = " redirect to ";
 
@@ -120,7 +118,7 @@ public final class SiteLocatorFilter implements Filter {
                         ? resource.substring(0, resource.indexOf('/',1)+1)
                         : null;
 
-                if (rscDir != null && EXTERNAL_DIRS.contains(rscDir) ) {
+                if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
 
                     // This URL does not belong to search-front-html
                     final Site site = (Site) req.getAttribute(Site.NAME_KEY);
@@ -244,35 +242,35 @@ public final class SiteLocatorFilter implements Filter {
         LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
 
         final Site result = Site.valueOf(vhost, locale);
-        
+
         final String[] locales = SiteConfiguration.valueOf(result).getProperty(SITE_LOCALE_SUPPORTED).split(",");
-        for(String l : locales ){
-            if( locale.toString().equals(l) ){
+        for(String l : locales){
+            if(locale.toString().equals(l)){
                 return result;
             }
         }
-        
+
         final String[] prefLocale = SiteConfiguration.valueOf(result)
                 .getProperty(SearchConstants.SITE_LOCALE_DEFAULT)
                 .split("_");
-        
+
         switch(prefLocale.length){
             case 3:
-                LOG.info(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] 
+                LOG.info(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
                         + '_' + prefLocale[1] + '_' + prefLocale[2]);
                 return Site.valueOf(vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
             case 2:
-                LOG.info(result+INFO_USING_DEFAULT_LOCALE 
+                LOG.info(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0] + '_' + prefLocale[1]);
                 return Site.valueOf(vhost, new Locale(prefLocale[0], prefLocale[1]));
             case 1:
             default:
-                LOG.info(result+INFO_USING_DEFAULT_LOCALE 
+                LOG.info(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0]);
                 return Site.valueOf(vhost, new Locale(prefLocale[0]));
         }
-        
-        
+
+
     }
 
 }
