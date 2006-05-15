@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * @version <tt>$Id$</tt>
  */
 public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
-    
+
     private static final Logger LOG = Logger.getLogger(PrefixRemoverTransformer.class);
 
     private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
@@ -45,42 +45,42 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
 
     private static final String BLANK = "";
-    
+
     private Collection<String> prefixes = new ArrayList<String>();
     private Collection<TokenPredicate> customPrefixes;
-    
+
     private Set<TokenPredicate> insidePrefixes = new HashSet<TokenPredicate>();
     private StringBuilder prefixBuilder = new StringBuilder();
     private List<LeafClause> leafList = new ArrayList<LeafClause>();
     private RegExpEvaluatorFactory regExpFactory = null;
 
     private static final String ERR_PREFIX_NOT_FOUND = "No such TokenPredicate ";
-    
+
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
 
     protected void visitImpl(final DefaultOperatorClause clause) {
         for (TokenPredicate predicate : getPrefixes()) {
-            if ( clause.getPossiblePredicates().contains(predicate) ) {
+            if (clause.getPossiblePredicates().contains(predicate)) {
                 insidePrefixes.add(predicate);
             }
         }
         clause.getFirstClause().accept(this);
-        if( insidePrefixes.size() > 0 ){
+        if(insidePrefixes.size() > 0){
             clause.getSecondClause().accept(this);
         }
     }
-    
+
     protected void visitImpl(final PhraseClause clause) {
         // don't remove prefix if it is infact a phrase.
     }
-    
+
     protected void visitImpl(final LeafClause clause) {
         // Do not remove if the query is just the prefix.
         if (getContext().getQuery().getTermCount() > 1) {
 
-            if( insidePrefixes.size() > 0 ){
+            if(insidePrefixes.size() > 0){
                 if(prefixBuilder.length()>0){
                     prefixBuilder.append(' ');
                 }
@@ -92,7 +92,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
                 }
                 for(TokenPredicate predicate : insidePrefixes){
 
-                    if( regExpFactory.getEvaluator(predicate).evaluateToken(null, prefixBuilder.toString(), null, true) ){
+                    if(regExpFactory.getEvaluator(predicate).evaluateToken(null, prefixBuilder.toString(), null, true)){
                         for(LeafClause c : leafList){
                             getContext().getTransformedTerms().put(c, BLANK);
                         }
@@ -120,7 +120,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
         prefixBuilder.setLength(0);
         leafList.clear();
     }
-    
+
     private Collection<TokenPredicate> getPrefixes() {
         synchronized (this) {
             if (customPrefixes == null && prefixes != null && prefixes.size() > 0) {
@@ -139,7 +139,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
                 ? customPrefixes
                 : DEFAULT_PREFIXES;
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         final PrefixRemoverTransformer retValue = (PrefixRemoverTransformer)super.clone();
         retValue.customPrefixes = customPrefixes;
@@ -148,14 +148,14 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
         retValue.insidePrefixes = new HashSet<TokenPredicate>();
         retValue.prefixBuilder = new StringBuilder();
         retValue.leafList = new ArrayList<LeafClause>();
-        
+
         return retValue;
     }
 
     public void setContext(final QueryTransformer.Context cxt) {
 
         super.setContext(cxt);
-        
+
         final RegExpEvaluatorFactory.Context regExpEvalFactory = ContextWrapper.wrap(
                 RegExpEvaluatorFactory.Context.class, cxt);
 
@@ -163,8 +163,8 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     }
 
     public void addPrefixes(final String[] pArr) {
-        
-        if( pArr.length > 0 && pArr[0].trim().length() >0 ){
+
+        if(pArr.length > 0 && pArr[0].trim().length() >0){
             prefixes.addAll(Arrays.asList(pArr));
         }
     }

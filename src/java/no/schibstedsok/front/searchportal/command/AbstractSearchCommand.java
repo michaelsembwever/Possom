@@ -4,13 +4,9 @@ package no.schibstedsok.front.searchportal.command;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
@@ -42,7 +38,6 @@ import no.schibstedsok.front.searchportal.view.config.SearchTab;
 import org.apache.commons.lang.time.StopWatch;
 
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.log4j.Level;
@@ -68,12 +63,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             = "Cancellation (and now handling of) occurred to ";
 
     static{
-        
+
         // when the root logger is set to DEBUG do not limit connection times
-        //if( Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+        if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
             System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
             System.setProperty("sun.net.client.defaultReadTimeout", "3000");
-        //}
+        }
     }
 
    // Attributes ----------------------------------------------------
@@ -103,11 +98,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         this.parameters.putAll(parameters);
         transformedQuery = context.getQuery().getQueryString();
         final Clause root = context.getQuery().getRootClause();
-        
+
         // initialise transformed terms
         final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
         mapInitialisor.visit(root);
-        
+
         // create additional filters
         final FilterVisitor  additionalFilterVisitor = new FilterVisitor();
         additionalFilterVisitor.visit(context.getQuery().getRootClause());
@@ -165,7 +160,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         final String thread = Thread.currentThread().getName();
         final String statName = getSearchConfiguration().getStatisticsName();
-        if (statName != null && statName.length()>0 ) {
+        if (statName != null && statName.length()>0) {
             Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticsName() + "]");
         }  else  {
             Thread.currentThread().setName(thread + " [" + getClass().getSimpleName() + "]");
@@ -188,7 +183,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     public void handleCancellation(){
 
-        if( !completed ){
+        if(!completed){
             LOG.error(ERR_HANDLING_CANCELLATION
                     + getSearchConfiguration().getName()
                     + " [" + getClass().getSimpleName() + "]");
@@ -251,7 +246,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final String performQueryTransformation(){
 
         // use the query or something search-command specific
-        final boolean useParameterAsQuery = getSearchConfiguration().getUseParameterAsQuery() != null 
+        final boolean useParameterAsQuery = getSearchConfiguration().getUseParameterAsQuery() != null
                 && getSearchConfiguration().getUseParameterAsQuery().length() >0;
         // so what query string is it then
         final String queryToUse = useParameterAsQuery
@@ -342,7 +337,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
-    
+
     /**
      * Returns the offset in the result set. If paging is enabled for the
      * current search configuration the offset to the current page will be
@@ -368,16 +363,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * first value is returned. If the parameter does not exist or is empty
      * the empty string is returned.
      */
-    protected String getParameter(String paramName) {
+    protected String getParameter(final String paramName) {
         if (parameters.containsKey(paramName)) {
-            String val[] = (String[]) parameters.get(paramName);
+            final String val[] = (String[]) parameters.get(paramName);
             if (val.length > 0 && val[0].length() > 0) {
                 return val[0];
             }
         }
         return "";
     }
-    
+
     protected final synchronized String getQueryRepresentation(final Query query) {
 
         final Clause root = query.getRootClause();
@@ -399,22 +394,22 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param filter New value of property filter.
      */
     protected void setFilter(final String filter) {
-        
+
         LOG.debug("setFilter(\"" + filter + "\")");
         this.filter = filter;
     }
-    
+
     protected String getAdditionalFilter() {
         return additionalFilter;
     }
-    
+
     // Private -------------------------------------------------------
 
     /**
      *
      * @param transformers
      */
-    private void applyQueryTransformers(final Query query, final List transformers) {
+    private void applyQueryTransformers(final Query query, final List<QueryTransformer> transformers) {
         if (transformers != null) {
 
 
@@ -425,9 +420,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             final StringBuilder filterBuilder = new StringBuilder(filter);
 
-            for (final Iterator iterator = transformers.iterator(); iterator.hasNext();) {
+            for (QueryTransformer transformer : transformers) {
 
-                final QueryTransformer transformer = (QueryTransformer) iterator.next();
                 final boolean ttq = touchedTransformedQuery;
 
                 final QueryTransformer.Context qtCxt = ContextWrapper.wrap(
@@ -476,7 +470,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 }
             }
             // avoid the trailing space.
-            filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)).trim(); 
+            filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)).trim();
         }
     }
 
@@ -562,15 +556,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      */
     private final class FilterVisitor extends AbstractReflectionVisitor {
-        
+
         private final StringBuilder filterBuilder = new StringBuilder();
-        
+
         String getFilter(){
             return filterBuilder.toString().trim();
         }
 
         protected void visitImpl(final LeafClause clause) {
-            
+
             final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
             if (fieldFilters.containsKey(clause.getField())) {
                 appendFilter(clause);
@@ -578,7 +572,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         protected void visitImpl(final PhraseClause clause) {
-            
+
             final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
             if (fieldFilters.containsKey(clause.getField())) {
                 appendFilter(clause);
@@ -605,9 +599,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         private final void appendFilter(final LeafClause clause) {
-            
+
             final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
-            if( "site".equals(clause.getField())){
+            if("site".equals(clause.getField())){
                 // site fields do not accept quotes
                 final String term = clause.getTerm().replaceAll("\"","");
                 filterBuilder.append(" +" + fieldFilters.get(clause.getField()) + ":" + term);
@@ -617,5 +611,5 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
-    
+
 }

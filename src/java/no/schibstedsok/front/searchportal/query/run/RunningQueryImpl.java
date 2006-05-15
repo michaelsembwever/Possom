@@ -42,6 +42,7 @@ import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
 import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -247,7 +248,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
 
-            final List<Future<SearchResult>> results = context.getSearchMode().getExecutor().invokeAll(commands, 10000);
+            final List<Future<SearchResult>> results = context.getSearchMode().getExecutor().invokeAll(commands,
+                    Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) ?  10000 :  Integer.MAX_VALUE);
 
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()

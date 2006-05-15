@@ -284,7 +284,6 @@
             <releases>
                 <enabled>false</enabled>
             </releases>
-            <snapshots />
             <id>Maven Snapshots</id>
             <url>http://snapshots.maven.codehaus.org/maven2/</url>
         </repository>
