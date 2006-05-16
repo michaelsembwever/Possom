@@ -17,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class SpellingSuggestionChooser implements ResultHandler {
+public final class SpellingSuggestionChooser implements ResultHandler {
 
     private static transient Log log = LogFactory.getLog(SpellingSuggestionChooser.class);
 
@@ -113,9 +113,9 @@ public class SpellingSuggestionChooser implements ResultHandler {
         }
     }
 
-    private void removeAllIfOneIsNotMuchBetter(final List suggestionList) {
-        final SpellingSuggestion best = (SpellingSuggestion) suggestionList.get(0);
-        final SpellingSuggestion nextBest = (SpellingSuggestion) suggestionList.get(1);
+    private void removeAllIfOneIsNotMuchBetter(final List<SpellingSuggestion> suggestionList) {
+        final SpellingSuggestion best =  suggestionList.get(0);
+        final SpellingSuggestion nextBest =  suggestionList.get(1);
 
         if (best.getScore() < nextBest.getScore() + muchBetter) {
             suggestionList.clear();
@@ -133,15 +133,15 @@ public class SpellingSuggestionChooser implements ResultHandler {
         }
     }
 
-    private int numberOfCorrectedTerms(final Map<String, List> spellingSuggestions) {
+    private int numberOfCorrectedTerms(final Map<String,List<SpellingSuggestion>> spellingSuggestions) {
         return spellingSuggestions.keySet().size();
     }
 
-    private void removeSuggestionsWithTooHighDifference(final List suggestionList) {
+    private void removeSuggestionsWithTooHighDifference(final List<SpellingSuggestion> suggestionList) {
         int lastScore = -1;
 
-        for (final Iterator iterator = suggestionList.iterator(); iterator.hasNext();) {
-            final SpellingSuggestion suggestion = (SpellingSuggestion) iterator.next();
+        for (final Iterator<SpellingSuggestion> iterator = suggestionList.iterator(); iterator.hasNext();) {
+            final SpellingSuggestion suggestion =  iterator.next();
 
             if (suggestion.getScore() + maxDistance < lastScore) {
                 iterator.remove();
@@ -153,12 +153,12 @@ public class SpellingSuggestionChooser implements ResultHandler {
         }
     }
 
-    private void limitNumberOfSuggestions(final List suggestionList, final int limit) {
+    private void limitNumberOfSuggestions(final List<SpellingSuggestion> suggestionList, final int limit) {
         if (suggestionList.size() > limit) {
             final int numberToRemove = suggestionList.size() - limit;
 
             for (int i = 0; i < numberToRemove; i++) {
-                final SpellingSuggestion removed = (SpellingSuggestion) suggestionList.remove(suggestionList.size() - 1);
+                final SpellingSuggestion removed =  suggestionList.remove(suggestionList.size() - 1);
                 if (log.isDebugEnabled()) {
                     log.debug("Suggestion " + removed + " to reach maximum number of suggestions");
                 }
@@ -166,9 +166,9 @@ public class SpellingSuggestionChooser implements ResultHandler {
         }
     }
 
-    private void removeSuggestionsWithTooLowScore(final List suggestionList) {
-        for (final Iterator suggestions = suggestionList.iterator(); suggestions.hasNext();) {
-            final SpellingSuggestion suggestion =  (SpellingSuggestion) suggestions.next();
+    private void removeSuggestionsWithTooLowScore(final List<SpellingSuggestion> suggestionList) {
+        for (final Iterator<SpellingSuggestion> suggestions = suggestionList.iterator(); suggestions.hasNext();) {
+            final SpellingSuggestion suggestion =   suggestions.next();
             if (suggestion.getScore() < minimumScore) {
                 suggestions.remove();
                 if (log.isDebugEnabled()) {

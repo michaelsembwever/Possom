@@ -18,13 +18,13 @@ import org.apache.commons.logging.LogFactory;
  */
 public class BasicSearchResult implements SearchResult {
 
-    private static Log log = LogFactory.getLog(BasicSearchResult.class);
+    private static Log LOG = LogFactory.getLog(BasicSearchResult.class);
 
     private final SearchCommand searchCommand;
     protected int hitCount = -1;
     private final List<SearchResultItem> results = new ArrayList<SearchResultItem>();
-    private final Map<String, List> spellingSuggestions = new HashMap<String, List>();
-    private final List querySuggestions = new ArrayList();
+    private final Map<String,List<SpellingSuggestion>> spellingSuggestions = new HashMap<String,List<SpellingSuggestion>>();
+    private final List<QuerySuggestion> querySuggestions = new ArrayList<QuerySuggestion>();
 
     public BasicSearchResult(final SearchCommand command) {
         this.searchCommand = command;
@@ -48,24 +48,24 @@ public class BasicSearchResult implements SearchResult {
 
     public void addSpellingSuggestion(SpellingSuggestion suggestion) {
         if (spellingSuggestions.containsKey(suggestion.getOriginal())) {
-            List exising = spellingSuggestions.get(suggestion.getOriginal());
+            final List<SpellingSuggestion> exising = spellingSuggestions.get(suggestion.getOriginal());
             exising.add(suggestion);
         } else {
-            List existingSuggestions = new ArrayList();
+            final List<SpellingSuggestion> existingSuggestions = new ArrayList<SpellingSuggestion>();
             existingSuggestions.add(suggestion);
             spellingSuggestions.put(suggestion.getOriginal(), existingSuggestions);
         }
 
-        if (log.isDebugEnabled()) {
-            log.debug("Spelling suggestions " + suggestion + " " + "added");
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Spelling suggestions " + suggestion + " " + "added");
         }
     }
     
-    public Map<String, List> getSpellingSuggestions() {
+    public Map<String,List<SpellingSuggestion>> getSpellingSuggestions() {
         return spellingSuggestions;
     }
 
-    public List getQuerySuggestions() {
+    public List<QuerySuggestion> getQuerySuggestions() {
        return querySuggestions;
     }
 

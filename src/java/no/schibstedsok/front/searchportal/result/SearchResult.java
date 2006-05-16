@@ -31,9 +31,9 @@ public interface SearchResult {
 
     void addSpellingSuggestion(SpellingSuggestion suggestion);
 
-    Map<String, List> getSpellingSuggestions();
+    Map<String,List<SpellingSuggestion>> getSpellingSuggestions();
 
-    List getQuerySuggestions();
+    List<QuerySuggestion> getQuerySuggestions();
 
     void addQuerySuggestion(QuerySuggestion query);
 }
