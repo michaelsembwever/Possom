@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
