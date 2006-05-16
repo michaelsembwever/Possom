@@ -128,7 +128,7 @@ public final class SiteLocatorFilter implements Filter {
                         // the publishing system is responsible for this.
                         final Properties props = SiteConfiguration.valueOf(site).getProperties();
                         url = props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL)
-                        .replaceFirst("localhost",props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST))
+                            .replaceFirst("localhost",props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST))
                             + '/' + resource;
 
                     }  else  {
@@ -147,7 +147,7 @@ public final class SiteLocatorFilter implements Filter {
 
                     if (url != null) {
                         res.sendRedirect(url);
-                        LOG.debug(resource + DEBUG_REDIRECTING_TO + url);
+                        LOG.trace(resource + DEBUG_REDIRECTING_TO + url);
                     }
 
                 } else  {
@@ -256,16 +256,16 @@ public final class SiteLocatorFilter implements Filter {
 
         switch(prefLocale.length){
             case 3:
-                LOG.info(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
+                LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
                         + '_' + prefLocale[1] + '_' + prefLocale[2]);
                 return Site.valueOf(vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
             case 2:
-                LOG.info(result+INFO_USING_DEFAULT_LOCALE
+                LOG.trace(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0] + '_' + prefLocale[1]);
                 return Site.valueOf(vhost, new Locale(prefLocale[0], prefLocale[1]));
             case 1:
             default:
-                LOG.info(result+INFO_USING_DEFAULT_LOCALE
+                LOG.trace(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0]);
                 return Site.valueOf(vhost, new Locale(prefLocale[0]));
         }
