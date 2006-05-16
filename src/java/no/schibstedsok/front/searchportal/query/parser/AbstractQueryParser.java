@@ -39,6 +39,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     /** Protected so an .jj file implementing this class can reuse.
      **/
     protected static final Logger LOG = Logger.getLogger(AbstractQueryParser.class);
+    private static final Logger PRODUCT_LOG = Logger.getLogger("no.schibstedsok.Product");
     private static final Stack<String> METHOD_STACK = new Stack<String>();
 
     /** Error message when the parser tries to parse an empty query string.
@@ -46,6 +47,7 @@ public abstract class AbstractQueryParser implements QueryParser {
     protected static final String ERR_EMPTY_CONTEXT
         = "The \"QueryParser(QueryParser.Context)\" constructor must be used!";
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException of ";
+    private static final String INFO_UNSUPPORTED_QUERY_SYNTAX = "<invalid-query>";
 
     /** the context this query parser implementation must work against.
      ***/
@@ -87,8 +89,12 @@ public abstract class AbstractQueryParser implements QueryParser {
                 
             }catch(ParseException pe){
                 LOG.warn(ERR_PARSING + queryStr, pe);
+                // also let product department know these queries are not working
+                PRODUCT_LOG.info("<invalid-query type=\"ParseException\">" + queryStr + "</invalid-query>");
             } catch (TokenMgrError tme)  {
                 LOG.error(ERR_PARSING + queryStr, tme);
+                // also let product department know these queries are not working
+                PRODUCT_LOG.info("<invalid-query type=\"TokenMgrError\">" + queryStr + "</invalid-query>");
             }
             
             if( query == null ){
