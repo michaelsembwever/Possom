@@ -60,7 +60,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_RUN_QUERY = "Failure to run query";
-    private static final String ERR_WRONG_CONFIGURATION = "Configuration of wrong type";
 
     private final AnalysisRuleFactory rules;
     private final String queryStr;
@@ -218,7 +217,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         scores.put(config.getName(), Integer.valueOf(newScore));
 
                         if (config.isAlwaysRunEnabled() || newScore >= eHint.getThreshold()) {
-                            LOG.debug("Adding " + searchConfiguration.getName());
                             commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
 
@@ -331,6 +329,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         Enrichment tvEnrich = null;
         Enrichment webtvEnrich = null;
 
+        /* Write product log and find webtv and tv enrichments */
         for(Enrichment e : enrichments){
             PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
                     + "\" score=\"" + e.getAnalysisResult() + "\"/>");
@@ -343,23 +342,22 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
         }
         PRODUCT_LOG.info("</enrichments>");
-
+        
         SearchResult tvResult = null;
         SearchResult webtvResult = null;
-        Future taskToRemove = null;
 
+        /* Find webtv and tv results */
         for (Future<SearchResult> task : results) {
             if (task.isDone() && !task.isCancelled()) {
-                if ("webtvEnrich".equals(task.get().getSearchCommand().getSearchConfiguration().getName())) {
-                    webtvResult = task.get();
-                    taskToRemove = task;
-                } else if ("tvEnrich".equals(task.get().getSearchCommand().getSearchConfiguration().getName())) {
-                    tvResult = task.get();
+                SearchResult sr = task.get();
+                if ("webtvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
+                    webtvResult = sr;
+                } else if ("tvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
+                    tvResult = sr;
                 }
             }
         }
-        results.remove(taskToRemove);
-
+        
         /* Update score and if necessary the enrichment name */
         if (webtvEnrich != null && tvEnrich != null) {
             if (webtvEnrich.getAnalysisResult() > tvEnrich.getAnalysisResult()) {
@@ -370,23 +368,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             tvEnrich = webtvEnrich;
             webtvEnrich.setName("tvEnrich");
         }
-
-        /* Move webtv results into tv results and if necessary change name of the configuration */
+        
+        /* Merge webtv results into tv results */
         if (webtvResult != null && webtvResult.getResults().size() > 0) {
-            if (tvResult != null && tvResult.getResults().size() > 0) {
+            if (tvResult != null) {
                 tvResult.getResults().addAll(webtvResult.getResults());
-            } else {
-                if (webtvResult.getSearchCommand().getSearchConfiguration() instanceof FastConfiguration) {
-                    final FastConfiguration fsc = (FastConfiguration) webtvResult.getSearchCommand().getSearchConfiguration();
-                    fsc.setName("tvEnrich");
-                    tvResult = webtvResult;
-
-                } else {
-                    LOG.error(ERR_WRONG_CONFIGURATION);
-                }
+                tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
             }
         }
-
+        
         /* Run velocity result handler on the enrichment results */
         if (tvResult != null && tvResult.getResults().size() > 0) {
             final VelocityResultHandler vrh = new VelocityResultHandler();
@@ -394,13 +384,15 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
                     ResultHandler.Context.class,
-                    new BaseContext(){// <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
+                    new BaseContext(){
                         public SearchResult getSearchResult() {
                             return cxtResult;
                         }
+                        
                         public SearchTab getSearchTab(){
                             return RunningQueryImpl.this.getSearchTab();
                         }
+                        
                         /** @deprecated implementations should be using the QueryContext instead! */
                         public String getQueryString() {
                             return queryObj.getQueryString();
@@ -409,7 +401,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         public Query getQuery() {
                             return queryObj;
                         }
-                    },// </editor-fold>
+                    },
                     context
             );
             vrh.handleResult(resultHandlerContext, parameters);
