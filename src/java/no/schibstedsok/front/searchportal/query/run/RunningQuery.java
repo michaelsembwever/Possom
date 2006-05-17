@@ -63,8 +63,6 @@ public interface RunningQuery {
     
     SearchTab getSearchTab();
 
-    String getSourceParameters(final String source);
-
     List<Modifier> getSources();
 
     TokenEvaluatorFactory getTokenEvaluatorFactory();

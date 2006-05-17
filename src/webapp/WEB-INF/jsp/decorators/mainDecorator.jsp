@@ -352,10 +352,10 @@
                     if(i!=1) {%>
                             <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
                     <% } %>
-                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
+                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix()%>");'>
                             <td class="nav_pad_icon">
                                 <img <% if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                <% String x = "?q=" + qURLEncoded + "&amp;" + query.getSourceParameters(e.getName()); %>
+                                <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix(); %>
                                 <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
@@ -371,10 +371,10 @@
                     if(i!=1) {%>
                             <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
                     <% } %>
-                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
+                    <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix()%>");'>
                         <td class="nav_pad_icon">
                             <img <% if (e.getName().startsWith("Bedriftss")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                            <% String x = "?q=" + qURLEncoded + "&amp;" + query.getSourceParameters(e.getName()); %>
+                            <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix(); %>
                             <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
                         </td>
                         <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
@@ -395,10 +395,10 @@
                         if(i!=1) {%>
                                 <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
                         <% } %>
-                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
+                        <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix()%>");'>
                             <td class="nav_pad_icon">
                                 <img src="../images/menu/nettsok.gif" class="nav_icon" align="left" alt="" />
-                                <% String x = "?q=" + qURLEncoded + "&amp;" + query.getSourceParameters(e.getName()); %>
+                                <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix(); %>
                                 <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
                             </td>
                             <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>
@@ -418,10 +418,10 @@
                             if(i!=1) {%>
                                 <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
                             <% } %>
-                            <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%=query.getSourceParameters(e.getName())%>");'>
+                            <tr onmouseover="this.style.background='#E3DEE4';" onmouseout="this.style.background='#F3F3F3';" onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix()%>");'>
                                 <td class="nav_pad_icon">
                                     <img <% if (e.getName().startsWith("Bedrifts")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Bildes")) { %> src="../images/menu/bilde.gif" <% } else if (e.getName().equals("Verden")) { %> src="../images/menu/nettsok.gif"  <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/menu/nyheter.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                    <% String x = "?q=" + qURLEncoded + "&amp;" + query.getSourceParameters(e.getName()); %>
+                                    <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix(); %>
                                     <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
                                 </td>
                                 <td class="nav_pad" align="right"><%=text.getMessage("numberFormat", e.getCount()) %></td>

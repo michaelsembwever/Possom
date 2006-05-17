@@ -27,6 +27,9 @@ public final class SearchTab {
     private static final Logger LOG = Logger.getLogger(SearchTab.class);
     private static final String ERR_ENRICHMENT_BY_COMMAND_NON_EXISTENT 
             = "No enrichment, in this SearchTab, is linked to the command ";
+    private static final String ERR_NAVIGATION_HINT_NOT_FOUND
+            = "Navigation hint not found for ";
+            
 
     // Attributes ----------------------------------------------------
 
@@ -431,7 +434,7 @@ public final class SearchTab {
      * Returns the navigator hint matching name. Returns null if no navigator
      * hint matches.
      */
-    public NavigatorHint getNavigatorHint(String name) {
+    public NavigatorHint getNavigationHint(String name) {
         for (NavigatorHint hint : navigators) {
             switch(hint.match) {
                 case EQUAL:
@@ -446,9 +449,12 @@ public final class SearchTab {
                         return hint;
             }
         }
+        
+        LOG.error(ERR_NAVIGATION_HINT_NOT_FOUND + name);
+        
         return null;
     }
-    
+
     public String toString(){
         return id + (inherit != null ? " --> " + inherit.toString() : "");
     }

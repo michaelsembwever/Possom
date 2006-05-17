@@ -506,34 +506,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return tokenEvaluatorFactory;
     }
 
-    // TODO Find some other way to do this. Really do!
-    public String getSourceParameters(final String source) {
-
-        LOG.trace("getSourceParameters() Source=" + source);
-
-        if (source.equals("Norske nettsider")) {
-            return "c=n";
-        } else if (source.startsWith("Nyhets")) {
-            return "c=m&amp;nav_sources=contentsourcenavigator";
-        } else if (source.startsWith("Bild")) {
-            return "c=p";
-        } else if (source.startsWith("Person")) {
-            return "c=w";
-        } else if (source.startsWith("Norske blogger")) {
-            return "c=b";
-        } else if (source.startsWith("Bedrift")) {
-            return "c=y";
-        } else if (source.equals("Internasjonale nettsider")) {
-            return "c=g";
-        } else {
-            return "c=d";
-        }
-    }
-
     public Query getQuery() {
         return queryObj;
     }
-
-
-
 }
