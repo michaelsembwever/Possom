@@ -213,7 +213,7 @@
             </build>
             <properties>
                 <sesam.site.default>bleedingsearch.schibstedsok.no</sesam.site.default>
-                <queryServerURL.4>http://10.11.65.200:15100</queryServerURL.4>
+                <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
