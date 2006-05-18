@@ -343,20 +343,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
         PRODUCT_LOG.info("</enrichments>");
         
-        SearchResult tvResult = null;
-        SearchResult webtvResult = null;
-
-        /* Find webtv and tv results */
-        for (Future<SearchResult> task : results) {
-            if (task.isDone() && !task.isCancelled()) {
-                SearchResult sr = task.get();
-                if ("webtvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
-                    webtvResult = sr;
-                } else if ("tvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
-                    tvResult = sr;
-                }
-            }
-        }
         
         /* Update score and if necessary the enrichment name */
         if (webtvEnrich != null && tvEnrich != null) {
@@ -369,42 +355,59 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             webtvEnrich.setName("tvEnrich");
         }
         
-        /* Merge webtv results into tv results */
-        if (webtvResult != null && webtvResult.getResults().size() > 0) {
-            if (tvResult != null) {
-                tvResult.getResults().addAll(webtvResult.getResults());
-                tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
+        if (tvEnrich != null) {
+            SearchResult tvResult = null;
+            SearchResult webtvResult = null;
+
+            /* Find webtv and tv results */
+            for (Future<SearchResult> task : results) {
+                if (task.isDone() && !task.isCancelled()) {
+                    SearchResult sr = task.get();
+                    if ("webtvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
+                        webtvResult = sr;
+                    } else if ("tvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
+                        tvResult = sr;
+                    }
+                }
             }
-        }
-        
-        /* Run velocity result handler on the enrichment results */
-        if (tvResult != null && tvResult.getResults().size() > 0) {
-            final VelocityResultHandler vrh = new VelocityResultHandler();
-            final SearchResult cxtResult = tvResult;
 
-            final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
-                    ResultHandler.Context.class,
-                    new BaseContext(){
-                        public SearchResult getSearchResult() {
-                            return cxtResult;
-                        }
-                        
-                        public SearchTab getSearchTab(){
-                            return RunningQueryImpl.this.getSearchTab();
-                        }
-                        
-                        /** @deprecated implementations should be using the QueryContext instead! */
-                        public String getQueryString() {
-                            return queryObj.getQueryString();
-                        }
+            /* Merge webtv results into tv results */
+            if (webtvResult != null && webtvResult.getResults().size() > 0) {
+                if (tvResult != null) {
+                    tvResult.getResults().addAll(webtvResult.getResults());
+                    tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
+                }
+            }
 
-                        public Query getQuery() {
-                            return queryObj;
-                        }
-                    },
-                    context
-            );
-            vrh.handleResult(resultHandlerContext, parameters);
+            /* Run velocity result handler on the enrichment results */
+            if (tvResult != null && tvResult.getResults().size() > 0) {
+                final VelocityResultHandler vrh = new VelocityResultHandler();
+                final SearchResult cxtResult = tvResult;
+
+                final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
+                        ResultHandler.Context.class,
+                        new BaseContext(){
+                            public SearchResult getSearchResult() {
+                                return cxtResult;
+                            }
+
+                            public SearchTab getSearchTab(){
+                                return RunningQueryImpl.this.getSearchTab();
+                            }
+
+                            /** @deprecated implementations should be using the QueryContext instead! */
+                            public String getQueryString() {
+                                return queryObj.getQueryString();
+                            }
+
+                            public Query getQuery() {
+                                return queryObj;
+                            }
+                        },
+                        context
+                );
+                vrh.handleResult(resultHandlerContext, parameters);
+            }
         }
     }
 
