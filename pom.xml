@@ -140,7 +140,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>axistools-maven-plugin</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>1.0</version>
                 <executions>
                     <execution>
                         <goals>
