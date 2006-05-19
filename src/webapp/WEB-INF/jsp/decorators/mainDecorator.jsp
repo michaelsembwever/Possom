@@ -363,7 +363,7 @@
                     <%}%>
                 </table>
                 <decorator:getProperty property="page.companies-nav"/>
-            <%}else if (currentC.equals("w") || currentC.equals("wip")) {%>
+            <%}else if (currentC.equals("w") || currentC.equals("wip") || currentC.equals("wipgift")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
 		            <% int i=0; %>
                     <% for (Modifier e : sources) {
@@ -381,10 +381,7 @@
                     </tr>
                     <%}%>
                 </table>
-                <% if (currentC.equals("wip")) {%>
-                    <decorator:getProperty property="page.infopage-nav"/>
-                    <decorator:getProperty property="page.persons-nav"/>
-                <% } else { %>
+                <% if (!currentC.equals("wipgift")) {%>
                     <decorator:getProperty property="page.persons-nav"/>
                 <% } %>
             <%}else if (currentC.equals("m")) {%>
@@ -448,7 +445,7 @@
 
         <%if (q.trim().equals("")) {%>
             <td valign="top" colspan="3">
-        <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")) {%>
+        <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip") && !currentC.equals("wipgift")) {%>
             <td class="cell_three" valign="top">
         <% }else{ %>
             <td class="cell_three" valign="top" colspan="2">
@@ -555,6 +552,10 @@
                 <decorator:getProperty property="page.infopage"/>
                 <%}%>
                 <%if (currentC.equals("wip")) {%>
+                <decorator:getProperty property="page.infopage"/>
+                <%}%>
+
+                <%if (currentC.equals("wipgift")) {%>
                 <decorator:getProperty property="page.infopage"/>
                 <%}%>
 
