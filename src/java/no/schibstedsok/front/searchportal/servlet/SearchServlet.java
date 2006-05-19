@@ -94,7 +94,7 @@ public final class SearchServlet extends HttpServlet {
             }
         };//</editor-fold>
 
-        
+
         FactoryReloads.performReloads(genericCxt, request.getParameter("reload"));
 
         updateContentType(site, response);
@@ -106,16 +106,16 @@ public final class SearchServlet extends HttpServlet {
         }
 
         final SearchTab searchTab = SearchTabFactory.valueOf(ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)).getTabByKey(searchTabKey);
-        
+
         if( searchTab == null ){
             LOG.error(ERR_MISSING_TAB + searchTabKey);
             throw new UnsupportedOperationException(ERR_MISSING_TAB + searchTabKey);
         }
-        
+
         final SearchMode mode = SearchModeFactory.valueOf(
                 ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
                 .getMode(searchTab.getMode());
-        
+
         if( mode == null ){
             LOG.error(ERR_MISSING_MODE + searchTab.getMode());
             throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
@@ -167,17 +167,17 @@ public final class SearchServlet extends HttpServlet {
             LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
         }
     }
-    
-    
+
+
     private boolean isEmptyQuery(
             final HttpServletRequest request,
             final HttpServletResponse response ) throws IOException{
-        
+
         if (request.getParameter("q") == null) {
-            
+
             String redir = request.getContextPath();
-            if (redir == null) { 
-                redir = "/"; 
+            if (redir == null) {
+                redir = "/";
             }
             if (!redir.endsWith("/")) {
                 LOG.debug("doGet: Adding / to " + redir);
@@ -192,11 +192,11 @@ public final class SearchServlet extends HttpServlet {
         }
         return false;
     }
-    
+
     private void updateContentType(
             final Site site,
             final HttpServletResponse response ){
-        
+
         // TODO. Any better way to do this. Sitemesh?
         if (site.getName().startsWith("mobil")) {
             response.setContentType("text/xml; charset=utf-8");
