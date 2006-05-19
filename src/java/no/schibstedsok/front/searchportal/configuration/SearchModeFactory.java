@@ -52,7 +52,7 @@ import no.schibstedsok.front.searchportal.result.handler.PhoneNumberFormatter;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.result.handler.SpellingSuggestionChooser;
 import no.schibstedsok.front.searchportal.result.handler.SumFastModifiers;
-import no.schibstedsok.front.searchportal.result.handler.TvEnrichmentDateFormatHandler;
+import no.schibstedsok.front.searchportal.result.handler.DateFormatHandler;
 import no.schibstedsok.front.searchportal.result.handler.WeatherCelciusHandler;
 import no.schibstedsok.front.searchportal.result.handler.WeatherDateHandler;
 import no.schibstedsok.front.searchportal.site.Site;
@@ -625,7 +625,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         PHONE_NUMBER_FORMATTER (PhoneNumberFormatter.class),
         SPELLING_SUGGESTION_CHOOSER (SpellingSuggestionChooser.class),
         SUM (SumFastModifiers.class),
-        TV (TvEnrichmentDateFormatHandler.class),
+        DATE_FORMAT (DateFormatHandler.class),
         WEATHER_CELCIUS (WeatherCelciusHandler.class),
         WEATHER_DATE (WeatherDateHandler.class),
 
@@ -722,9 +722,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         sfm.setNavigatorName(rh.getAttribute("navigation"));
                         sfm.setTargetModifier(rh.getAttribute("target"));
                         break;
-                    case TV:
-                        final TvEnrichmentDateFormatHandler dh = (TvEnrichmentDateFormatHandler) handler;
-                        dh.setTargetField(rh.getAttribute("target"));
+                    case DATE_FORMAT:
+                        final DateFormatHandler dh = (DateFormatHandler) handler;
+                        if (rh.hasAttribute("prefix")) {
+                            dh.setFieldPrefix(rh.getAttribute("prefix"));
+                        }
                         dh.setSourceField(rh.getAttribute("source"));
                         break;
                     case WEATHER_CELCIUS:
