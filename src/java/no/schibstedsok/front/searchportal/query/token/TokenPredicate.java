@@ -90,7 +90,9 @@ public enum TokenPredicate implements Predicate {
     PHONENUMBER (Type.REGEX),
     ONLYSKIINFO (Type.REGEX),
     EMPTYQUERY (Type.REGEX),
-
+    LOAN_TRIGGER (Type.REGEX),
+    SUDOKU_TRIGGER (Type.REGEX),
+    
     // JepTokenPredicate
     MATHPREDICATE (Type.JEP);
 

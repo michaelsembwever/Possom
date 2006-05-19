@@ -89,8 +89,10 @@ private static final String SITE_SEARCH_PARTNER_ID = "schibstedsok_xml_no_search
         );
 
         final TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
-
-        final boolean top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluatorFactory);
+        
+        final boolean top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluatorFactory) 
+          && !TokenPredicate.LOAN_TRIGGER.evaluate(tokenEvaluatorFactory) 
+          && !TokenPredicate.SUDOKU_TRIGGER.evaluate(tokenEvaluatorFactory);
         
         final String query = getTransformedQuery().replace(' ', '+');
         final StringBuffer url = createRequestURL(query, top);

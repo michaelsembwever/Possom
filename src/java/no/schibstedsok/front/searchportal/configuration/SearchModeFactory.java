@@ -286,8 +286,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
-        MOBILE_COMMAND(MobileSearchConfiguration.class);
-
+        MOBILE_COMMAND(MobileSearchConfiguration.class),
+        STATIC_COMMAND(StaticSearchConfiguration.class);
+        
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
 
@@ -454,7 +455,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     bnsc.setFiltersToBlend(filterList);
                     bnsc.setDocumentsPerFilter(Integer.parseInt(commandE.getAttribute("documentsPerFilter")));
                 }
-                
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);
