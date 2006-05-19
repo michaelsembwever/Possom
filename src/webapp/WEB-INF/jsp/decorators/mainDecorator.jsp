@@ -593,8 +593,8 @@
                     <decorator:getProperty property="page.ads"/>
                 </td>
             <%}else if (currentC.equals("p")) {%>
-                <td class="cell_four" valign="bottom" width="225">
                     <decorator:getProperty property="page.ads"/>
+                    <decorator:getProperty property="page.ads-picsearch-logo"/>
                 </td>
             <%}%>
 
