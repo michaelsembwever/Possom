@@ -25,7 +25,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * @author ajamtli
  */
 public final class RemovePrefixDirective extends Directive {
-    
+
     /** Logger. */
     private static transient Log log = LogFactory.getLog(RemovePrefixDirective.class);
 
