@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
@@ -198,7 +199,7 @@ public class YellowGeoSearch extends FastSearchCommand {
      * @param clause The clause to prefix.
      */
     protected void visitImpl(final IntegerClause clause) {
-        if (! getTransformedTerm(clause).equals("")) {
+        if (!getTransformedTerm(clause).equals("")) {
             appendToQueryRepresentation(PREFIX_INTEGER);
         }
 
@@ -211,11 +212,12 @@ public class YellowGeoSearch extends FastSearchCommand {
      * @param clause The clause to prefix.
      */
     protected void visitImpl(final PhoneNumberClause clause) {
-        if (! getTransformedTerm(clause).equals("")) {
+        if (!getTransformedTerm(clause).equals("")) {
             appendToQueryRepresentation(PREFIX_INTEGER);
         }
         super.visitImpl(clause);
     }
+
     /**
      * Adds phonetic prefix to a leaf clause.
      * Remove dots from words. (people, street, suburb, or city names do not have dots.)
@@ -224,11 +226,22 @@ public class YellowGeoSearch extends FastSearchCommand {
      */
     protected void visitImpl(final LeafClause clause) {
         if (clause.getField() == null) {
-            if (! getTransformedTerm(clause).equals("")) {
+            if (!getTransformedTerm(clause).equals("")) {
                 appendToQueryRepresentation(PREFIX_PHONETIC);
             }
 
-            appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.",""));
+            appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.", ""));
+        }
+    }
+
+    /**
+     * Add integer prefix to the organisation number.
+     *
+     * @param clause The clause to prefix.
+     */
+    protected void visitImpl(final OrganisationNumberClause clause) {
+        if (!getTransformedTerm(clause).equals("")) {
+            appendToQueryRepresentation(PREFIX_INTEGER + getTransformedTerm(clause));
         }
     }
 
