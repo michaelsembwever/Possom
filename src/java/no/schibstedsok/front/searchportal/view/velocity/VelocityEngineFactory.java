@@ -99,7 +99,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             engine.setProperty(SearchConstants.PUBLISH_SYSTEM_HOST, props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
             engine.setProperty("input.encoding", "UTF-8");
             engine.setProperty("output.encoding", "UTF-8");
-            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.view.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.view.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.view.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.view.velocity.PublishDirective,no.schibstedsok.front.searchportal.view.velocity.AccountingDirective,no.schibstedsok.front.searchportal.view.velocity.RolesDirective,no.schibstedsok.front.searchportal.view.velocity.XmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.WikiDirective");
+            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.view.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.view.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.view.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.view.velocity.PublishDirective,no.schibstedsok.front.searchportal.view.velocity.AccountingDirective,no.schibstedsok.front.searchportal.view.velocity.RolesDirective,no.schibstedsok.front.searchportal.view.velocity.XmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.WikiDirective,no.schibstedsok.front.searchportal.view.velocity.RemovePrefixDirective");
             engine.init();
 
         } catch (Exception e) {
