@@ -1,5 +1,6 @@
 package no.schibstedsok.front.searchportal.view.velocity;
 
+import java.net.URLEncoder;
 import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.context.InternalContextAdapter;
@@ -70,11 +71,11 @@ public class WikiDirective extends Directive {
         final String s = node.jjtGetChild(0).value(context).toString();
         final String wap = s.replace("no.wikipedia.org/wiki", "no.wapedia.org");
         
-        //String cut = wap.substring(0, wap.lastIndexOf("/")+1);
-        //String wikiword = URLEncoder.encode(s.substring(s.lastIndexOf("/")+1), "UTF-8");
-        //writer.write(cut+wikiword);
+        String cut = wap.substring(0, wap.lastIndexOf("/")+1);
+        String wikiword = URLEncoder.encode(s.substring(s.lastIndexOf("/")+1), "UTF-8");
+        writer.write(cut+wikiword);
 
-        writer.write(StringEscapeUtils.escapeXml(wap));
+//        writer.write(StringEscapeUtils.escapeXml(wap));
 
         if (node.getLastToken().image.endsWith("\n")) {
             writer.write("\n");
