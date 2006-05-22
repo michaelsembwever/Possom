@@ -26,6 +26,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
+import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
 import no.schibstedsok.front.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.front.searchportal.view.output.XmlOutputResultHandler;
@@ -566,7 +567,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SIMPLE_SITE_SEARCH (SimpleSiteSearchTransformer.class),
         SYNONYM (SynonymQueryTransformer.class),
         TERM_PREFIX (TermPrefixTransformer.class),
-        TV (TvQueryTransformer.class);        
+        TV (TvQueryTransformer.class),
+        WEBTV (WebTvQueryTransformer.class);        
 
         private final Class<? extends QueryTransformer> clazz;
         private final String xmlName;
