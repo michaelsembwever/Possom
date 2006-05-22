@@ -74,6 +74,7 @@
     <link media="screen" href="../css/default.css?x=1" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/decorator-style.css?y=1" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/sitesearch.css?x=1" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/front.css?x=1" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/ps.css?x=1" rel="stylesheet" type="text/css" />
     <link media="print" href="../css/print-style.css?x=1" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
@@ -314,7 +315,11 @@
 
     <% } else { %>
 
-<decorator:getProperty property="page.search-bar"/>
+        <%if (q.trim().equals("") && !currentC.equals("m")) {%>
+	<decorator:getProperty property="page.newsearch-bar"/>
+	<% }else{ %>
+	<decorator:getProperty property="page.search-bar"/>
+	<% } %>
 
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
     <%if (q.trim().equals("") && !currentC.equals("m")) {%>
