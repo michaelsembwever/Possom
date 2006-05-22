@@ -21,6 +21,7 @@
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
 <%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
+<%@ page import="no.schibstedsok.front.searchportal.view.config.SearchTab" %>
 <%
     final TextMessages text = (TextMessages) request.getAttribute("text");
     final Site site = (Site)request.getAttribute(Site.NAME_KEY);
@@ -348,18 +349,21 @@
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
         		    <% int i=0; %>
                     <% for (Modifier e : sources) {
-                        ++i;
-                    if(i!=1) {%>
-                            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
-                    <% } %>
-                        <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix()%>");'>
-                            <td class="nav_pad_icon">
-                                <img <% if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix(); %>
-                                <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
-                            </td>
-                            <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
-                        </tr>
+                        SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
+                        if (hint != null) {
+                            ++i;
+                        if(i!=1) {%>
+                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
+                        <% } %>
+                            <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + hint.getTab().getKey() +hint.getUrlSuffix()%>");'>
+                                <td class="nav_pad_icon">
+                                    <img <% if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                    <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + hint.getTab().getKey() +hint.getUrlSuffix(); %>
+                                    <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
+                                </td>
+                                <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
+                            </tr>
+                        <%}%>
                     <%}%>
                 </table>
                 <decorator:getProperty property="page.companies-nav"/>
@@ -367,18 +371,21 @@
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i=0; %>
                     <% for (Modifier e : sources) {
-		                ++i;
-                    if(i!=1) {%>
-                            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
-                    <% } %>
-                    <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix()%>");'>
-                        <td class="nav_pad_icon">
-                            <img <% if (e.getName().startsWith("Bedriftss")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                            <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix(); %>
-                            <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
-                        </td>
-                        <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
-                    </tr>
+                        SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
+                        if (hint != null) {
+                                    ++i;
+                        if(i!=1) {%>
+                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
+                        <% } %>
+                        <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + hint.getTab().getKey() +hint.getUrlSuffix()%>");'>
+                            <td class="nav_pad_icon">
+                                <img <% if (e.getName().startsWith("Bedriftss")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + hint.getTab().getKey() +hint.getUrlSuffix(); %>
+                                <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
+                            </td>
+                            <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
+                        </tr>
+                        <%}%>
                     <%}%>
                 </table>
                 <% if (!currentC.equals("wipgift")) {%>
@@ -388,18 +395,21 @@
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i=0; %>
                     <% for (Modifier e : sources) {
-                        ++i;
-                        if(i!=1) {%>
-                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
-                        <% } %>
-                        <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix()%>");'>
-                            <td class="nav_pad_icon">
-                                <img src="../images/menu/nettsok.gif" class="nav_icon" align="left" alt="" />
-                                <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix(); %>
-                                <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
-                            </td>
-                            <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
-                        </tr>
+                        SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
+                        if (hint != null) {
+                            ++i;
+                            if(i!=1) {%>
+                                    <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
+                            <% } %>
+                            <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + hint.getTab().getKey() +hint.getUrlSuffix()%>");'>
+                                <td class="nav_pad_icon">
+                                    <img src="../images/menu/nettsok.gif" class="nav_icon" align="left" alt="" />
+                                    <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + hint.getTab().getKey() +hint.getUrlSuffix(); %>
+                                    <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
+                                </td>
+                                <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
+                            </tr>
+                        <%}%>
                     <%}%>
                 </table>
                 <decorator:getProperty property="page.newsSearchNavigator" />
@@ -409,20 +419,23 @@
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i = 0; %>
                     <% for (Modifier e : sources) {
-                        if ( (currentC.equals("d") && !e.getName().equals("Nettsøk"))
-                                || currentC.equals("g") || currentC.equals("pss") || currentC.equals("p") || currentC.equals("b")) {
-                            ++i;
-                            if(i!=1) {%>
-                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
-                            <% } %>
-                            <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix()%>");'>
-                                <td class="nav_pad_icon">
-                                    <img <% if (e.getName().startsWith("Bedrifts")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Bildes")) { %> src="../images/menu/bilde.gif" <% } else if (e.getName().equals("Verden")) { %> src="../images/menu/nettsok.gif"  <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/menu/nyheter.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                    <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + query.getSearchTab().getNavigationHint(e.getName()).getTab().getKey() +query.getSearchTab().getNavigationHint(e.getName()).getUrlSuffix(); %>
-                                    <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
-                                </td>
-                                <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
-                            </tr>
+                        SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
+                        if (hint != null) {
+                            if ( (currentC.equals("d") && !e.getName().equals("Norske nettsider"))
+                                    || currentC.equals("g") || currentC.equals("pss") || currentC.equals("p") || currentC.equals("b")) {
+                                ++i;
+                                if(i!=1) {%>
+                                    <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
+                                <% } %>
+                                <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + hint.getTab().getKey() +hint.getUrlSuffix()%>");'>
+                                    <td class="nav_pad_icon">
+                                        <img <% if (e.getName().startsWith("Bedrifts")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Bildes")) { %> src="../images/menu/bilde.gif" <% } else if (e.getName().equals("Verden")) { %> src="../images/menu/nettsok.gif"  <% } else if (e.getName().startsWith("Nyhetss")) { %> src="../images/menu/nyheter.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                        <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + hint.getTab().getKey() +hint.getUrlSuffix(); %>
+                                        <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
+                                    </td>
+                                    <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
+                                </tr>
+                            <%}%>
                         <%}%>
                     <%}%>
                 </table>
