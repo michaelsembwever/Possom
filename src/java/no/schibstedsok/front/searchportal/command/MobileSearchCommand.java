@@ -90,7 +90,11 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             if (getParameter(ORIGINATION_PARAMETER).equals("telenor") 
               && !cfg.getTelenorPersonalizationGroup().equals("")) 
             {
-                personalizationGroup = cfg.getTelenorPersonalizationGroup();
+                // Entertainment disabled for Telenor.
+                SearchResult zeroResult = new BasicSearchResult(this);
+                zeroResult.setHitCount(0);
+                return zeroResult;
+//                personalizationGroup = cfg.getTelenorPersonalizationGroup();
             }
             
             IPersonalizationSpecification ps = 
