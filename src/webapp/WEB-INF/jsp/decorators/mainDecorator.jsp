@@ -70,11 +70,11 @@
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/default.css?x=" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/decorator-style.css?y=" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/sitesearch.css?x=" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/ps.css?x=" rel="stylesheet" type="text/css" />
-    <link media="print" href="../css/print-style.css?x=" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/default.css?x=1" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/decorator-style.css?y=1" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/sitesearch.css?x=1" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/ps.css?x=1" rel="stylesheet" type="text/css" />
+    <link media="print" href="../css/print-style.css?x=1" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>
@@ -345,7 +345,7 @@
 	<%}else if (currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss") || !q.trim().equals("")) {%>
         <td class="cell_one" valign="top">
             <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
-                <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
+                <table border="0" cellspacing="0" cellpadding="0" class="menu">
         		    <% int i=0; %>
                     <% for (Modifier e : sources) {
                         ++i;
@@ -364,7 +364,7 @@
                 </table>
                 <decorator:getProperty property="page.companies-nav"/>
             <%}else if (currentC.equals("w") || currentC.equals("wip") || currentC.equals("wipgift")) {%>
-                <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
+                <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i=0; %>
                     <% for (Modifier e : sources) {
 		                ++i;
@@ -385,7 +385,7 @@
                     <decorator:getProperty property="page.persons-nav"/>
                 <% } %>
             <%}else if (currentC.equals("m")) {%>
-                <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
+                <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i=0; %>
                     <% for (Modifier e : sources) {
                         ++i;
@@ -406,7 +406,7 @@
                 <decorator:getProperty property="page.media-collection-nav"/>
             <% }else{ %>
 
-                <table border="0" cellspacing="0" cellpadding="0" class="leftbar_table">
+                <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i = 0; %>
                     <% for (Modifier e : sources) {
                         if ( (currentC.equals("d") && !e.getName().equals("Nettsøk"))
@@ -499,7 +499,7 @@
                                            </c:forEach> -->
 
                                       <decorator:getProperty property="page.globalSearchTips" />
-									
+
                                        <%-- Show tab's leading enrichments --%>
                                        <c:forEach var="ee" items="${enrichments}" varStatus="i">
                                            <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult > tab.enrichmentOnTopScore}">
