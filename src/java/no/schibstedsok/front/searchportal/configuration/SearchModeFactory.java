@@ -355,6 +355,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     asc.setStatisticsName(parseString(commandE.getAttribute("statistical-name"),
                             ascInherit != null ? ascInherit.getStatisticsName() : ""));
+
+                    asc.setPicsearchCountry(parseString(commandE.getAttribute("picsearchCountry"),
+                            ascInherit != null ? ascInherit.getPicsearchCountry() : "no"));
+
                 }
                 if(sc instanceof FastConfiguration){
                     final FastConfiguration fsc = (FastConfiguration) sc;

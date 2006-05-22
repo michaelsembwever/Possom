@@ -7,6 +7,8 @@ import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
+import no.schibstedsok.front.searchportal.InfrastructureException;
+import no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,8 +45,8 @@ public class PicSearchCommand extends AbstractSearchCommand {
     public SearchResult execute() {
 
         String query = getTransformedQuery();
-
         query = query.replace(' ', '+');
+        PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
 
         try {
             query = URLEncoder.encode(query, "utf-8");
@@ -52,7 +54,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        final String url = "/query?ie=UTF-8&tldb=no&custid=558735&version=2.6&thumbs=" + getSearchConfiguration().getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
+        final String url = "/query?ie=UTF-8&tldb=" + psConfig.getPicsearchCountry() + "&custid=558735&version=2.6&thumbs=" + getSearchConfiguration().getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
 
         if (log.isDebugEnabled()) {
             log.debug("Using url " + url);

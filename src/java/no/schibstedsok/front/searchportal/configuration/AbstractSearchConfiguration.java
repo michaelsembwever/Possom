@@ -39,6 +39,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     private boolean isAlwaysRunEnabled = false;
 
     private String statisticsName;
+    private String picsearchCountry;
 
     public AbstractSearchConfiguration(final SearchConfiguration sc){
         if(sc != null && sc instanceof AbstractSearchConfiguration){
@@ -167,6 +168,14 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
 
     public void setStatisticsName(final String name){
         statisticsName = name;
+    }
+
+    public String getPicsearchCountry() {
+        return picsearchCountry;
+    }
+
+    public void setPicsearchCountry(final String country){
+        picsearchCountry = country;
     }
     
     public String toString(){
