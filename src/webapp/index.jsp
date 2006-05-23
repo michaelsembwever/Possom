@@ -164,7 +164,7 @@
 
 </table>
 
-<div id="footer_space" align="center">
+<div id="footer_space_index">
 <div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
         <% 
             try{
