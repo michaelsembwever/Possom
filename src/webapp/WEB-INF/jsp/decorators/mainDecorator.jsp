@@ -315,7 +315,7 @@
 
     <% } else { %>
 
-        <%if (q.trim().equals("") && !currentC.equals("m")) {%>
+        <%if (q.trim().equals("") && (currentC.equals("y") || currentC.equals("w") || currentC.equals("p"))) {%>
 	<decorator:getProperty property="page.newsearch-bar"/>
 	<% }else{ %>
 	<decorator:getProperty property="page.search-bar"/>
