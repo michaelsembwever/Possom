@@ -5,6 +5,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.site.Site;
@@ -188,14 +189,38 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
         return instance;
     }
 
-    /**
-     *
-     * @param token
-     * @return
+    /** 
+     * If the regular expression is not found in this site's RegularExpressionEvaluators.xml file
+     * it will fallback and look in the parent site.
+     * @param token the predicate the evaluator is to be used for
+     * @return the RegExpTokenEvaluator to use.
      */
-    public RegExpTokenEvaluator getEvaluator(final TokenPredicate token) {
+    public TokenEvaluator getEvaluator(final TokenPredicate token) {
         init();
-        return regExpEvaluators.get(token);
+        TokenEvaluator result = regExpEvaluators.get(token);
+        if( result == null ){
+            result = valueOf(ContextWrapper.wrap(
+                    Context.class,
+                    new SiteContext(){
+                        public Site getSite(){
+                            return context.getSite().getParent();
+                        }
+                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                        }
+                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+                        }
+                    },
+                    context
+                )).getEvaluator(token);
+        }
+        if( result == null ){
+            // if we cannot find an evaulator, then awlways fail evaluation. 
+            //  Rather than encourage a NullPointerException
+            result = TokenEvaluatorFactoryImpl.ALWAYS_FALSE_EVALUATOR;
+        }
+        return result;
     }
 
     public boolean remove(final Site site) {

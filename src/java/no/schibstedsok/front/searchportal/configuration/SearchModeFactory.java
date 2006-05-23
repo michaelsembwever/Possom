@@ -18,7 +18,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
-import no.schibstedsok.front.searchportal.command.BlendingNewsSearchCommand;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;

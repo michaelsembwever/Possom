@@ -16,7 +16,6 @@ import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.site.Site;
-import org.apache.commons.collections.Predicate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -35,7 +34,23 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     
-    private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new AlwaysTrueTokenEvaluator();
+    private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new TokenEvaluator(){
+        public boolean evaluateToken(final String token, final String term, final String query) {
+            return true;
+        }
+        public boolean isQueryDependant(final TokenPredicate predicate) {
+            return false;
+        }        
+    };
+    
+    static final TokenEvaluator ALWAYS_FALSE_EVALUATOR = new TokenEvaluator(){
+        public boolean evaluateToken(final String token, final String term, final String query) {
+            return false;
+        }
+        public boolean isQueryDependant(final TokenPredicate predicate) {
+            return false;
+        }        
+    };
 
     private TokenEvaluator fastEvaluator;
     private final JepTokenEvaluator jedEvaluator;

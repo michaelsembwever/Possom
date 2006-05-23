@@ -19,7 +19,6 @@ import java.util.concurrent.Future;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.QueryTokenizer;
-import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.front.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
@@ -200,8 +199,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     final AnalysisRule rule = rules.getRule(eHint.getRule());
 
                     if (context.getSearchMode().isQueryAnalysisEnabled() && offset == 0) {
-
-                        LOG.debug("run: searchMode.getKey().equals(d) && offset == 0");
 
                         ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
                         LOG.debug("Scoring new style for " + eHint.getRule());

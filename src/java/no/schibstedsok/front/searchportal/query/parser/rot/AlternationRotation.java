@@ -8,12 +8,10 @@
 
 package no.schibstedsok.front.searchportal.query.parser.rot;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -39,6 +37,9 @@ public final class AlternationRotation {
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(AlternationRotation.class);
+    private static final String DEBUG_ROOT_NOT_OPERATION = "Root is not an OperationClause";
+    private static final String DEBUG_FOUND_FORESTS = "Numer of forests found in query ";
+    private static final String DEBUG_ORIGINAL_BRANCH_ADD = "Adding to original branch ";
 
     // Attributes ----------------------------------------------------
 
@@ -71,16 +72,25 @@ public final class AlternationRotation {
         // find forests (subtrees) of AndClauses and OrClauses.
         if(originalRoot instanceof OperationClause){
             OperationClause root = (OperationClause) originalRoot;
-            for(OperationClause clause : new ForestFinder().findForestRoots(root)){
+            final Set<OperationClause> forestRoots = new ForestFinder().findForestRoots(root);
+            LOG.debug(DEBUG_FOUND_FORESTS + forestRoots.size());
+            for(OperationClause clause : forestRoots){
 
-                final LinkedList<? extends OperationClause> rotations = clause instanceof AndClause
-                         ? createRotationsFor(AndClause.class, (AndClause) clause)
-                         : createRotationsFor(OrClause.class, (OrClause) clause);
+                LinkedList<? extends OperationClause> rotations = null;
+                if(clause instanceof AndClause){
+                    rotations = createForestRotation(AndClause.class, (AndClause) clause);
+                }else if(clause instanceof OrClause){
+                    rotations = createForestRotation(OrClause.class, (OrClause) clause);
+                }else if(clause instanceof DefaultOperatorClause){
+                    rotations = createForestRotation(DefaultOperatorClause.class, (DefaultOperatorClause) clause);
+                }
+                
                 final XorClause result = createXorClause(clause, rotations);
                 root = replaceDescendant(clause.getClass(), root, result, clause);
             }
             return root;
         }else{
+            LOG.debug(DEBUG_ROOT_NOT_OPERATION);
             return originalRoot;
         }
 
@@ -96,15 +106,16 @@ public final class AlternationRotation {
 
     // Private -------------------------------------------------------
 
-    private <T extends OperationClause> LinkedList<T> createRotationsFor(final Class<T> rotateFor, final T oForestRoot) {
+    private <T extends OperationClause> LinkedList<T> createForestRotation(final Class<T> rotateFor, final T oForestRoot) {
 
-        LOG.debug("createRotationsFor(" + rotateFor.getSimpleName() + ", " + oForestRoot + ")");
+        LOG.debug("createForestRotation(" + rotateFor.getSimpleName() + ", " + oForestRoot + ")");
 
         // store this right-leaning branch for later comparason.
-        final List<T> origBranch = new ArrayList<T>();
-        for (T oC = oForestRoot; rightOpChild(rotateFor, oC) != null; oC = rightOpChild(rotateFor, oC)) {
+        final LinkedList<T> origBranch = new LinkedList<T>();
+        for (T oC = oForestRoot; oC != null; oC = rightOpChild(rotateFor, oC)) {
 
             // add to branch
+            LOG.debug(DEBUG_ORIGINAL_BRANCH_ADD + oC);
             origBranch.add(oC);
             // add to the state-memory maps (creating initial map state, simple self pointing mappings)
             originalFromNew.put(oC,oC);
@@ -117,11 +128,8 @@ public final class AlternationRotation {
         // and the first nAlternation is the original branch
         alternations.addFirst(oForestRoot);
 
-
-
         // oIterate backwards from the right-most child (of type rotateFor) on the branch
-        final LinkedList<T> origBranchLL = new LinkedList<T>(origBranch);
-        for (T oIterate = origBranchLL.removeLast(); origBranchLL.size() > 1; oIterate = origBranchLL.removeLast()) {
+        for (T oIterate = origBranch.removeLast(); origBranch.size() > 1; oIterate = origBranch.removeLast()) {
 
             // clear mappings
             beforeRotationFromOriginal.clear();
@@ -221,7 +229,7 @@ public final class AlternationRotation {
     /** will return null instead of a leafClause **/
     private <T extends OperationClause> T leftOpChild(final Class<T> opCls, final T clause){
         final Clause c = leftChild(clause);
-        return c.getClass() == opCls ? (T) c : null;
+        return opCls.isAssignableFrom(c.getClass()) ? (T) c : null;
     }
 
     /** return the left child, left or operation. **/
@@ -233,7 +241,7 @@ public final class AlternationRotation {
     /** will return null instead of a leafClause **/
     private <T extends OperationClause> T rightOpChild(final Class<T> opCls, final T clause){
         final Clause c = rightChild(clause);
-        return c.getClass() == opCls ? (T) c : null;
+        return opCls.isAssignableFrom(c.getClass()) ? (T) c : null;
     }
 
     /** will return right child, left or operation. **/
@@ -243,7 +251,10 @@ public final class AlternationRotation {
             c = ((AndClause) clause).getSecondClause();
         }  else if (clause instanceof OrClause) {
             c = ((OrClause) clause).getSecondClause();
+        }  else if (clause instanceof DefaultOperatorClause) {
+            c = ((DefaultOperatorClause) clause).getSecondClause();
         }
+        LOG.debug("rightChild -->" + c);
         return c;
     }
 
@@ -290,7 +301,14 @@ public final class AlternationRotation {
             final T replacementFor) {
 
         LOG.debug("createOperatorClause(" + ", " + left + ", " + right + ", " + replacementFor + ")");
-        final T clause = (T) context.createAndClause(left, right); // FIXME And || Or
+        T clause = null;
+        if (clause instanceof AndClause) {
+            clause = (T) context.createAndClause(left, right);
+        }  else if (clause instanceof OrClause) {
+            clause = (T) context.createOrClause(left, right);
+        }  else if (clause instanceof DefaultOperatorClause) {
+            clause = (T) context.createDefaultOperatorClause(left, right);
+        }
         // update our mappings between rotations
         originalFromNew.put(clause, replacementFor);
         newFromOriginal.put(replacementFor, clause);
@@ -311,7 +329,7 @@ public final class AlternationRotation {
     // Inner classes -------------------------------------------------
 
     private static final class ParentFinder extends AbstractReflectionVisitor {
-        private boolean searching = true;
+        private boolean searching = false;
         private OperationClause parent;
         private Clause child;
 
@@ -322,7 +340,12 @@ public final class AlternationRotation {
 
         public synchronized <T extends OperationClause> T getParent(final T root, final Clause child) {
             this.child = child;
+            if (searching || child == null) {
+                throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
+            }
+            searching = true;
             visit(root);
+            searching = false;
             this.child = null;
             if (parent == null) {
                 throw new IllegalArgumentException(ERR_CHILD_NOT_IN_HEIRARCHY);
@@ -378,22 +401,14 @@ public final class AlternationRotation {
             // leaves can't be parents :-)
         }
 
-        /**
-         * {@inheritDoc}
-         */
-        public void visit(final Object clause) {
-            if (searching || child == null) {
-                throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
-            }
-            searching = true;
-            super.visit(clause);
-            searching = false;
-        }
-
     }
 
     private static final class ForestFinder extends AbstractReflectionVisitor {
-        private boolean searching = true;
+        
+        
+        private static final Logger LOG = Logger.getLogger(ForestFinder.class);
+        private static final String DEBUG_COUNT_TO = "Trees in forest ";
+        private boolean searching = false;
         private final Set<OperationClause> roots = new HashSet<OperationClause>();
 
         private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY
@@ -401,8 +416,13 @@ public final class AlternationRotation {
 
         public synchronized Set<OperationClause> findForestRoots(final OperationClause root) {
 
-            visit(root);
+            if (searching) {
+                throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
+            }
+            searching = true;
             roots.clear();
+            visit(root);
+            searching = false;
             return Collections.unmodifiableSet(roots);
         }
 
@@ -426,6 +446,7 @@ public final class AlternationRotation {
                     or = (OrClause) or.getSecondClause()){
 
                 ++count;
+                LOG.debug(DEBUG_COUNT_TO + count);
             }
             if(count >=3){
                 roots.add(clause);
@@ -441,6 +462,7 @@ public final class AlternationRotation {
                     or = (AndClause) or.getSecondClause()){
 
                 ++count;
+                LOG.debug(DEBUG_COUNT_TO + count);
             }
             if(count >=3){
                 roots.add(clause);
@@ -456,6 +478,7 @@ public final class AlternationRotation {
                     or = (DefaultOperatorClause) or.getSecondClause()){
 
                 ++count;
+                LOG.debug(DEBUG_COUNT_TO + count);
             }
             if(count >=3){
                 roots.add(clause);
@@ -466,18 +489,6 @@ public final class AlternationRotation {
 
         protected void visitImpl(final LeafClause clause) {
             // leaves can't be forest roots :-)
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void visit(final Object clause) {
-            if (searching) {
-                throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
-            }
-            searching = true;
-            super.visit(clause);
-            searching = false;
         }
 
     }

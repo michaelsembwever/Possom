@@ -14,6 +14,8 @@ import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.RegExpTokenEvaluator;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 
@@ -92,7 +94,11 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
                 }
                 for(TokenPredicate predicate : insidePrefixes){
 
-                    if(regExpFactory.getEvaluator(predicate).evaluateToken(null, prefixBuilder.toString(), null, true)){
+                    final TokenEvaluator eval = regExpFactory.getEvaluator(predicate);
+                    // HACK. if it isn't a RegExpTokenEvaluator it won't remove the prefix.
+                    if(eval instanceof RegExpTokenEvaluator
+                            && ((RegExpTokenEvaluator)eval).evaluateToken(null, prefixBuilder.toString(), null, true)){
+                        
                         for(LeafClause c : leafList){
                             getContext().getTransformedTerms().put(c, BLANK);
                         }

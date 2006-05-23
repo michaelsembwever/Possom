@@ -25,6 +25,7 @@ import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.WordClause;
+import no.schibstedsok.front.searchportal.query.parser.rot.AlternationRotation;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.log4j.Logger;
 
@@ -78,7 +79,9 @@ public abstract class AbstractQueryParser implements QueryParser {
             }
             try{
                 if( queryStr != null && queryStr.trim().length()>0 ){
+                    
                     final Clause root = parse();
+                    //final Clause root = alterations( parse() );
 
                     query = new AbstractQuery(context.getQueryString()){
                         public Clause getRootClause(){
@@ -113,6 +116,14 @@ public abstract class AbstractQueryParser implements QueryParser {
         return query;
     }
 
+    private Clause alterations(final Clause original){
+        
+        // rotation alterations
+        final AlternationRotation rotator 
+                = new AlternationRotation(ContextWrapper.wrap(AlternationRotation.Context.class,context));
+        return rotator.createRotations(original);
+    }
+    
     protected final Context createContext(final String input){
         
         return ContextWrapper.wrap(
