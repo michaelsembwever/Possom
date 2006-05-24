@@ -130,7 +130,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     private Collection<TokenPredicate> getPrefixes() {
         synchronized (this) {
             if (customPrefixes == null && prefixes != null && prefixes.size() > 0) {
-                final Collection<TokenPredicate> cp = new ArrayList();
+                final Collection<TokenPredicate> cp = new ArrayList(DEFAULT_PREFIXES);
                 for (String tp : prefixes) {
                     try{
                         cp.add(TokenPredicate.valueOf(tp));
