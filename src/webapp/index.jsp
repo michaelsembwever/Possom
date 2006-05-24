@@ -6,6 +6,8 @@
 <%@ page import="org.apache.velocity.Template"%>
 <%@ page import="org.apache.velocity.VelocityContext"%>
 <%@ page import="org.apache.velocity.app.VelocityEngine"%>
+<%@ page import="java.util.List"%>
+<%@ page import="java.util.ArrayList"%>
 <%@ page
         language="java"
         errorPage="/internal-error.jsp"
@@ -17,13 +19,32 @@
     final VelocityEngine engine = VelocityResultHandler.getEngine(site);
     final Template template = VelocityResultHandler.getTemplate(engine, site, "/pages/index");
     if (template != null){
+
+
+        final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
+        final Linkpulse linkpulse = new Linkpulse(props);
+        List list = new ArrayList();
+
+        try{
+            final java.net.URLConnection urlConn = new java.net.URL(props.getProperty("publishing.system.baseURL")+"/pages/front.html").openConnection();
+            urlConn.addRequestProperty("host", props.getProperty("publishing.system.host-header"));
+            final java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(urlConn.getInputStream()));
+
+            for(String line = reader.readLine();line!=null;line=reader.readLine()){
+                list.add(line);
+            }
+        }catch(Exception e){
+            org.apache.log4j.Logger.getLogger("index.jsp").error("Failed to import pub/pages/front.html");
+        }
+
+
         // it *is* new-school n we doda-dance
         final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
         // populate context with sitemesh stuff
         context.put("request", request);
         context.put("response", response);
         context.put("base", request.getContextPath());
-
+        context.put("pub", list);
         // merge it into the JspWriter
         template.merge(context, out);
     }else{
