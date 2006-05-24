@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
@@ -172,12 +173,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             final String queryToUse = performQueryTransformation();
             final SearchResult result = performExecution(queryToUse);
             performResultHandling(result);
+            
+            
+            completed = true;
             return result;
 
         }  finally  {
             // restore thread name
             Thread.currentThread().setName(thread);
-            completed = true;
         }
     }
 

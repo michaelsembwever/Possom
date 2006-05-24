@@ -239,11 +239,11 @@ public final class VelocityResultHandler implements ResultHandler {
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
-        if (config.isPagingEnabled()) {
+//        if (config.isPagingEnabled()) {
             final PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), config.getResultsToReturn(), 10);
             pager.setCurrentOffset(cxt.getSearchResult().getSearchCommand().getRunningQuery().getOffset());
             context.put("pager", pager);
-        }
+//        }
 
 
     }

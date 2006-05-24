@@ -259,29 +259,33 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 if (task.isDone() && !task.isCancelled()) {
 
-                    final SearchResult searchResult = task.get();
-                    if (searchResult != null) {
+                    try{
+                        final SearchResult searchResult = task.get();
+                        if (searchResult != null) {
 
-                        // Information we need about and for the enrichment
-                        final SearchConfiguration config = searchResult.getSearchCommand().getSearchConfiguration();
-                        final String name = config.getName();
-                        final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
-                        final float score = scores.get(name) != null
-                                ? scores.get(name) * eHint.getWeight()
-                                : 0;
+                            // Information we need about and for the enrichment
+                            final SearchConfiguration config = searchResult.getSearchCommand().getSearchConfiguration();
+                            final String name = config.getName();
+                            final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
+                            final float score = scores.get(name) != null
+                                    ? scores.get(name) * eHint.getWeight()
+                                    : 0;
 
-                        // update hit status
-                        hitsToShow |= searchResult.getHitCount() > 0;
-                        hits.put(name, searchResult.getHitCount());
+                            // update hit status
+                            hitsToShow |= searchResult.getHitCount() > 0;
+                            hits.put(name, searchResult.getHitCount());
 
-                        // score
-                        if(eHint != null && searchResult.getResults().size() > 0
-                                && score >= eHint.getThreshold() && score > 15) {
+                            // score
+                            if(eHint != null && searchResult.getResults().size() > 0
+                                    && score >= eHint.getThreshold() && score > 15) {
 
-                            // add enrichment
-                            final Enrichment e = new Enrichment(score, name);
-                            enrichments.add(e);
+                                // add enrichment
+                                final Enrichment e = new Enrichment(score, name);
+                                enrichments.add(e);
+                            }
                         }
+                    }catch(ExecutionException ee){
+                        LOG.error(ee);
                     }
                 }
             }

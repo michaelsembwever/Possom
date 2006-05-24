@@ -393,9 +393,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             }
 
             return searchResult;
+            
         } catch (ConfigurationException e) {
             LOG.error("execute", e);
             throw new InfrastructureException(e);
+            
         } catch (MalformedURLException e) {
             LOG.error("execute", e);
             throw new InfrastructureException(e);
