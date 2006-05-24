@@ -74,7 +74,7 @@
 <div style="background-image: url(images/index/stripe_bg.gif); background-repeat: repeat-x; background-position: 0px 105px;" align="center">
 <table border="0" width="850" cellspacing="0" cellpadding="0">
     <tr>
-        <td valign="bottom" align="left" width="170"><img src="images/index/menu_top.gif" border="0" /></a></td>
+        <td valign="bottom" align="left" width="170"><img src="images/index/menu_top.gif" border="0" /></td>
         <td valign="middle" align="left"><img src="images/index/logo.png" id="logo_index" width="215" height="61" alt="logo" /></td>
     </tr>
 
@@ -103,7 +103,7 @@
                 } // -->
             </script>
 
-            <input type="image" id="index_submit" src="images/searchbar/nettsok_knapp.gif" /> 
+            <input type="image" id="index_submit" src="images/searchbar/nettsok_knapp.gif" />
 	    &nbsp;
             <a href="<%=linkpulse.getUrl("?q=&page=/pages/7/index", "category:static;subcategory=header", "sgo", "true") %>">S&#248;ketips</a>
             </div>
@@ -147,7 +147,7 @@
         </td>
         </td>
         <td valign="top" align="left">
-        <% 
+        <%
             try{
                 final java.net.URLConnection urlConn = new java.net.URL(props.getProperty("publishing.system.baseURL")+"/pages/front.html").openConnection();
                 urlConn.addRequestProperty("host", props.getProperty("publishing.system.host-header"));
@@ -166,7 +166,7 @@
 
 <div id="footer_space_index">
 <div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
-        <% 
+        <%
             try{
                 final java.net.URLConnection urlConn = new java.net.URL(props.getProperty("publishing.system.baseURL")+"/pages/footer.html").openConnection();
                 urlConn.addRequestProperty("host", props.getProperty("publishing.system.host-header"));
