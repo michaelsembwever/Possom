@@ -3,6 +3,8 @@ package no.schibstedsok.front.searchportal.view.velocity;
 import java.io.IOException;
 
 import java.io.Writer;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,7 +58,7 @@ public final class RemovePrefixDirective extends Directive {
             return false;
         }
 
-        final String s = node.jjtGetChild(0).value(context).toString();
+        final String s = URLDecoder.decode(node.jjtGetChild(0).value(context).toString(),"UTF-8");
         final String prefix = node.jjtGetChild(1).value(context).toString();
        
         String returnString = s;
@@ -65,8 +67,8 @@ public final class RemovePrefixDirective extends Directive {
             returnString = returnString.trim();
         }
         
-        writer.write(returnString);
-
+        writer.write(URLEncoder.encode(returnString, "UTF-8"));
+        
         final Token lastToken = node.getLastToken();
 
         if (lastToken.image.endsWith("\n")) {
