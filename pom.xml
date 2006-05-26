@@ -8,7 +8,7 @@
     <name>Sesam Search Engine</name>
     <version>2.1-SNAPSHOT</version>
     <description>This is the project for Schibsted Søk's search-front application.</description>
-    <url>https://dev.schibstedsok.no/maven/sites/search-front-html/</url>
+    <url>https://dev.schibstedsok.no/maven/sites/search-portal/</url>
     <issueManagement>
         <system>JIRA</system>
         <url>https://dev.schibstedsok.no/jira/secure/BrowseProject.jspa?id=10000</url>
@@ -73,8 +73,8 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-front-html/trunk/</connection>
-        <url>https://dev.schibstedsok.no/svn/search-front-html/trunk/</url>
+        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/</connection>
+        <url>https://dev.schibstedsok.no/svn/search-portal/trunk/</url>
     </scm>
     <organization>
         <name>Schibsted Søk AS</name>
@@ -199,7 +199,7 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam.develop</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
-                <log.directory>./logs</log.directory>
+                <log.directory>${basedir}/logs</log.directory>
                 <tokenevaluator.host>localhost</tokenevaluator.host>
                 <log.level>DEBUG</log.level>
                 <tokenevaluator.port>15400</tokenevaluator.port>
