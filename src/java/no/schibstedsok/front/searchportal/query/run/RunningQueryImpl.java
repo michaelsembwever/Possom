@@ -152,12 +152,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public Integer getNumberOfHits(final String configName) {
 
         LOG.trace("getNumberOfHits(" + configName + ")");
-
-        Integer i = hits.get(configName);
-        if (i == null) {
-            i = Integer.valueOf(0);
-        }
-        return i;
+        return hits.get(configName);
+    }
+    
+    public Map<String,Integer> getHits(){
+        return Collections.unmodifiableMap(hits);
     }
 
     /**
@@ -178,6 +177,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 final SearchConfiguration config = searchConfiguration;
                 final String configName = config.getName();
+                hits.put(config.getName(), Integer.valueOf(0));
 
                 final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                         SearchCommand.Context.class,

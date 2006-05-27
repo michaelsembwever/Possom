@@ -46,7 +46,6 @@ public final class DataModelResultHandler implements ResultHandler{
         // simple beginnngs of the datamodel handler
         //  currently only puts into the request what we'll need at the decorator level.
         //   copy these over from VelocityResultHandler.populateContext() as needed.
-        parameters.put("currentTab", cxt.getSearchTab());
         
         // results
         if( parameters.get("results") == null ){

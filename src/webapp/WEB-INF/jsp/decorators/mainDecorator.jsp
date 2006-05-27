@@ -1,71 +1,64 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
-<%@ page import="java.io.StringWriter"%>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.util.List"%>
-<%@ page import="java.util.Iterator"%>
+<%@ page import="java.util.Map"%>
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
-<%@ page import="com.opensymphony.module.sitemesh.util.OutputConverter"%>
+<%@ page import="no.schibstedsok.front.searchportal.view.config.SearchTab"%>
 <%@ page import="no.schibstedsok.front.searchportal.view.i18n.TextMessages"%>
-<%@ page import="no.schibstedsok.front.searchportal.view.output.VelocityResultHandler"%>
-<%@ page import="no.schibstedsok.front.searchportal.query.run.RunningQuery" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
 <%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
 <%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
+<%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
+<%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
+<%@ page import="no.schibstedsok.front.searchportal.view.config.SearchTab" %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
-<%@ page import="org.apache.velocity.Template"%>
-<%@ page import="org.apache.velocity.VelocityContext"%>
-<%@ page import="org.apache.velocity.app.VelocityEngine"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
-<%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
-<%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
-<%@ page import="no.schibstedsok.front.searchportal.view.config.SearchTab" %>
 <%
-    final TextMessages text = (TextMessages) request.getAttribute("text");
-    final Site site = (Site)request.getAttribute(Site.NAME_KEY);
+final TextMessages text = (TextMessages) request.getAttribute("text");
+final Site site = (Site)request.getAttribute(Site.NAME_KEY);
+final SearchTab tab = (SearchTab)request.getAttribute("tab");
 
-    String currentC = "d";    //default collection
-    currentC = (String) request.getAttribute("c");
-    String q = (String) request.getAttribute("q");
-    final String contentsource = (String) request.getParameter("contentsource");
-    final String qURLEncoded = URLEncoder.encode(q, "utf-8");
-    q = StringEscapeUtils.escapeHtml(q);
-    final boolean publish = null != request.getParameter("page");
-    final String help = request.getParameter("help");
-    final String about = request.getParameter("about");
-    final String ads_help = request.getParameter("ads_help");
-    final String smart = request.getParameter("smart");
-    final String box = request.getParameter("box");
-    final String toolbar = request.getParameter("toolbar");
-    final String tradedoubler = request.getParameter("td");
-    final String ss = request.getParameter("ss");
-    final String ssr = request.getParameter("ssr");
+String currentC = "d";    //default collection
+currentC = (String) request.getAttribute("c");
+String q = (String) request.getAttribute("q");
+final String contentsource = (String) request.getParameter("contentsource");
+final String qURLEncoded = URLEncoder.encode(q, "utf-8");
+q = StringEscapeUtils.escapeHtml(q);
+final boolean publish = null != request.getParameter("page");
+final String help = request.getParameter("help");
+final String about = request.getParameter("about");
+final String ads_help = request.getParameter("ads_help");
+final String smart = request.getParameter("smart");
+final String box = request.getParameter("box");
+final String toolbar = request.getParameter("toolbar");
+final String tradedoubler = request.getParameter("td");
+final String ss = request.getParameter("ss");
+final String ssr = request.getParameter("ssr");
 
-    final List<Enrichment> enrichments = (List<Enrichment>) request.getAttribute("enrichments");
-    final int enrichmentSize = enrichments.size();
-    pageContext.setAttribute("enrichmentSize", enrichmentSize);
+final List<Enrichment> enrichments = (List<Enrichment>) request.getAttribute("enrichments");
+final int enrichmentSize = enrichments.size();
+pageContext.setAttribute("enrichmentSize", enrichmentSize);
 
-    final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
-    pageContext.setAttribute("siteMeshPage", siteMeshPage);
+final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
+pageContext.setAttribute("siteMeshPage", siteMeshPage);
 
-    final RunningQuery query = (RunningQuery) request.getAttribute("query");
-    final List<Modifier> sources = (List<Modifier>)request.getAttribute("sources");
-    final Integer dHits = (Integer) query.getNumberOfHits("defaultSearch");
-    final Integer gHits = (Integer) query.getNumberOfHits("globalSearch");
-    final int no_hits = dHits != null && dHits > 0 
-            ? dHits.intValue() 
-            : gHits != null && gHits > 0 ? gHits.intValue() : 0;
+final List<Modifier> sources = (List<Modifier>)request.getAttribute("sources");
+final Map<String,Integer> hits = (Map<String,Integer>)request.getAttribute("hits");
+final Integer dHits = hits.get("defaultSearch");
+final Integer gHits = hits.get("globalSearch");
+final int no_hits = dHits!= null&&dHits > 0 ? dHits.intValue() : gHits!= null&&gHits > 0 ? gHits.intValue() : 0;
 
-    pageContext.setAttribute("no_hits", no_hits);
-    
-    final Linkpulse linkpulse = new Linkpulse(SiteConfiguration.valueOf(site).getProperties());
+pageContext.setAttribute("no_hits", no_hits);
 
-    String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
-    if (currentC.equals("y")) searchButton = "../tradedoubler/searchbox/button-company.png";
-    else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-person.png";
+final Linkpulse linkpulse = new Linkpulse(SiteConfiguration.valueOf(site).getProperties());
+
+String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
+if (currentC.equals("y")) searchButton = "../tradedoubler/searchbox/button-company.png";
+else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-person.png";
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -328,7 +321,7 @@
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
         		    <% int i=0; %>
                     <% for (Modifier e : sources) {
-                        SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
+                        SearchTab.NavigatorHint hint = tab.getNavigationHint(e.getName());
                         if (hint != null) {
                             ++i;
                         if(i!=1) {%>
@@ -350,7 +343,7 @@
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i=0; %>
                     <% for (Modifier e : sources) {
-                        SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
+                        SearchTab.NavigatorHint hint = tab.getNavigationHint(e.getName());
                         if (hint != null) {
                                     ++i;
                         if(i!=1) {%>
@@ -374,7 +367,7 @@
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i=0; %>
                     <% for (Modifier e : sources) {
-                        SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
+                        SearchTab.NavigatorHint hint = tab.getNavigationHint(e.getName());
                         if (hint != null) {
                             ++i;
                             if(i!=1) {%>
@@ -398,7 +391,7 @@
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
 		            <% int i = 0; %>
                     <% for (Modifier e : sources) {
-                        SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
+                        SearchTab.NavigatorHint hint = tab.getNavigationHint(e.getName());
                         if (hint != null) {
                             if ( (currentC.equals("d") && !e.getName().equals("Norske nettsider"))
                                     || currentC.equals("g") || currentC.equals("pss") || currentC.equals("p") || currentC.equals("pp")  || currentC.equals("b")) {

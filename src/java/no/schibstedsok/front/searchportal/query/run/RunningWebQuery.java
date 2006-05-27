@@ -92,5 +92,6 @@ public final class RunningWebQuery extends RunningQueryImpl {
         // ...and...
         request.setAttribute("enrichments", getEnrichments());
         request.setAttribute("sources", getSources());
+        request.setAttribute("hits",getHits());
     }
 }
