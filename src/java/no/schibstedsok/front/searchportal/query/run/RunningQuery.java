@@ -52,8 +52,6 @@ public interface RunningQuery {
     Integer getNumberOfHits(final String configName);
 
     int getNumberOfTerms();
-
-    int getOffset();
     
     Query getQuery();
 
@@ -73,7 +71,5 @@ public interface RunningQuery {
      * @throws InterruptedException
      */
     void run() throws InterruptedException;
-
-    void setOffset(final int offset);
 
 }

@@ -17,7 +17,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
-import no.fast.ds.search.IFastSearchEngine;
 import no.schibstedsok.front.searchportal.configuration.BlendingNewsSearchConfiguration;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
@@ -93,7 +92,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
      * @return i plus the offset of the current page.
      */
     protected int getCurrentOffset(final int i) {
-        return context.getRunningQuery().getOffset() / cfg.getFiltersToBlend().size();
+        return Integer.parseInt((String) getParameters().get("offset")) / cfg.getFiltersToBlend().size();
     }
 
     protected int getResultsToReturn() {

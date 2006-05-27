@@ -2,11 +2,12 @@
 package no.schibstedsok.front.searchportal.query.run;
 
 
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Iterator;
-import no.schibstedsok.front.searchportal.query.*;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -14,12 +15,13 @@ import org.apache.commons.logging.Log;
 /*
  * @version <tt>$Revision$</tt>
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * TODO move common code out of RunningQueryImpl and into AbstractRunningQuery, '
- *  and change extension to AbstractRunningQuery.
  */
-public class RunningWebQuery extends RunningQueryImpl {
+public final class RunningWebQuery extends RunningQueryImpl {
 
     private static final Log LOG = LogFactory.getLog(RunningWebQuery.class);
+    
+    private final HttpServletRequest request;
+    private final HttpServletResponse response;
 
 
     /**
@@ -34,29 +36,61 @@ public class RunningWebQuery extends RunningQueryImpl {
                            final HttpServletRequest request,
                            final HttpServletResponse response) {
 
-        super(cxt, query, new HashMap());
+        super(cxt, query, new Hashtable<String,Object>());
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: RunningWebQuery(mode, query, request,response)");
-        }
-        for (Iterator iterator = request.getParameterMap().keySet().iterator(); iterator.hasNext();) {
-            String parameterName = (String) iterator.next();
-            String[] parameterValues = request.getParameterValues(parameterName);
+        LOG.trace("RunningWebQuery(mode, query, request, response)");
+
+        // Add all request parameters
+        for (String parameterName : (Set<String>)request.getParameterMap().keySet()) {
+
+            final String[] parameterValues = request.getParameterValues(parameterName);
             addParameter(parameterName, parameterValues);
 
             if (LOG.isDebugEnabled()) {
-                StringBuffer buff = new StringBuffer();
+                final StringBuilder buff = new StringBuilder();
 
-                for (int i = 0; i < parameterValues.length; i++) {
-                    buff.append(parameterValues[i] + ", ");
+                for (String s : parameterValues) {
+                    buff.append(s + ", ");
                 }
-                LOG.debug("RunningWebQuery: Added " + parameterName + ", values: " + buff);
+                LOG.debug("Added " + parameterName + ", values: " + buff);
             }
-
         }
+        
+        // Add all request attributes (servlet may have added some things already)...
+        for (Enumeration<String> e = (Enumeration<String>)request.getAttributeNames(); e.hasMoreElements();) {
+
+            final String attrName = e.nextElement();
+            // HACK backwards-compatibility since we never designed for unique names across parameters & attributes
+            //  any attribute that overlaps a parameter's name won't be added!!
+            if( !parameters.containsKey(attrName) ){
+                addParameter(attrName, request.getAttribute(attrName));
+                LOG.debug("Added " + attrName + ", value: " + request.getAttribute(attrName));
+            }
+        }
+        
+        this.request = request;
+        this.response = response;
         addParameter("request", request);
         addParameter("response", response);
 
+        
+    }
+    
+    public void run() throws InterruptedException{
+        
+        super.run();
+        
+        // push all parameters into request attributes
+        for( Map.Entry<String,Object> entry : parameters.entrySet() ){
+            // don't put back in String array that only contains one element
+            if( entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1 ){
+                request.setAttribute(entry.getKey(), ((String[])entry.getValue())[0]);
+            }else{
+                request.setAttribute(entry.getKey(), entry.getValue());
+            }
+        }
+        // ...and...
         request.setAttribute("enrichments", getEnrichments());
+        request.setAttribute("sources", getSources());
     }
 }

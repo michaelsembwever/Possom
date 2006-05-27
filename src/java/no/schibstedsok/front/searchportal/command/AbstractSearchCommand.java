@@ -2,11 +2,9 @@
 package no.schibstedsok.front.searchportal.command;
 
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
@@ -79,7 +77,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final String additionalFilter;
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
-    private final Map parameters = new HashMap();
+    private volatile Map<String,Object> parameters;
     private volatile boolean completed = false;
 
 
@@ -92,11 +90,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param parameters    Command parameters.
      */
     public AbstractSearchCommand(final SearchCommand.Context cxt,
-                                 final Map parameters) {
+                                 final Map<String,Object> parameters) {
 
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
-        this.parameters.putAll(parameters);
+        this.parameters = parameters;
         transformedQuery = context.getQuery().getQueryString();
         final Clause root = context.getQuery().getRootClause();
 
@@ -351,7 +349,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected int getCurrentOffset(final int i) {
         if (getSearchConfiguration().isPagingEnabled()) {
-            return i + context.getRunningQuery().getOffset();
+            return i + Integer.parseInt((String) getParameters().get("offset"));
         } else {
             return i;
         }

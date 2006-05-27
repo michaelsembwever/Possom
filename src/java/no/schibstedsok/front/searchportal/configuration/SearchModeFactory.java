@@ -18,14 +18,15 @@ import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
-import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
+import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
 import no.schibstedsok.front.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.front.searchportal.view.output.XmlOutputResultHandler;
@@ -76,7 +77,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     /**
      * The context any SearchModeFactory must work against. *
      */
-    public interface Context extends BaseContext, DocumentContext, SiteContext {}
+    public interface Context extends BaseContext, ResourceContext, SiteContext {}
 
    // Constants -----------------------------------------------------
 
@@ -234,7 +235,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final NodeList commandsList = modeE.getElementsByTagName(commandType.getXmlName());
                 for (int j = 0; j < commandsList.getLength(); ++j) {
                     final Element commandE = (Element) commandsList.item(j);
-                    final SearchConfiguration sc = commandType.parseSearchConfiguration(commandE, mode);
+                    final SearchConfiguration sc = commandType.parseSearchConfiguration(context, commandE, mode);
                     modesCommands.put(sc.getName(), sc);
                     mode.addSearchConfiguration(sc);
                 }
@@ -302,6 +303,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         public SearchConfiguration parseSearchConfiguration(
+                final Context cxt, 
                 final Element commandE,
                 final SearchMode mode){
 
@@ -383,7 +385,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             fscInherit != null ? fscInherit.getOffensiveScoreLimit() : -1));
                     fsc.setQtPipeline(parseString(commandE.getAttribute("qt-pipeline"),
                             fscInherit != null ? fscInherit.getQtPipeline() : ""));
-                    fsc.setQueryServerURL(parseString(commandE.getAttribute("query-server-url"),
+                    final String queryServerUrl = commandE.getAttribute("query-server-url");
+                    
+                    fsc.setQueryServerURL(parseProperty(cxt, queryServerUrl,
                             fscInherit != null ? fscInherit.getQueryServerURL() : null));
                     fsc.setRelevantQueriesEnabled(parseBoolean(commandE.getAttribute("relevant-queries"),
                             fscInherit != null ? fscInherit.isRelevantQueriesEnabled() : false));
@@ -532,6 +536,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             return config;
         }
 
+        private String parseProperty(final Context cxt, final String s, final String def){
+            
+            final String key = s.trim().length() == 0 ? def != null ? def : "" : s;
+            return key.startsWith("http://")
+                ? key
+                : SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt)).getProperty(key);
+        }
+        
         private Collection<FastNavigator> parseNavigators(final Element navsE){
 
             final Collection<FastNavigator> navigators = new ArrayList<FastNavigator>();
@@ -621,6 +633,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         AGE_CALCULATOR (AgeCalculatorResultHandler.class),
         CATEGORY_SPLITTER (CategorySplitter.class),
         CONTENT_SOURCE_COLLECTOR (ContentSourceCollector.class),
+        DATA_MODEL (DataModelResultHandler.class),
         DISCARD_OLD_NEWS (DiscardOldNewsResultHandler.class),
         FIELD_CHOOSER (FieldChooser.class),
         FIND_FILE_FORMAT (FindFileFormat.class),

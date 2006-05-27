@@ -14,43 +14,16 @@
         contentType="text/html; charset=utf-8"
         pageEncoding="UTF-8"
         %>
-<%  final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 
-    final VelocityEngine engine = VelocityResultHandler.getEngine(site);
-    final Template template = VelocityResultHandler.getTemplate(engine, site, "/pages/index");
-    if (template != null){
+<search:import template="/pages/index"/>
 
-
-        final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
-        final Linkpulse linkpulse = new Linkpulse(props);
-        List list = new ArrayList();
-
-        try{
-            final java.net.URLConnection urlConn = new java.net.URL(props.getProperty("publishing.system.baseURL")+"/pages/front.html").openConnection();
-            urlConn.addRequestProperty("host", props.getProperty("publishing.system.host-header"));
-            final java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(urlConn.getInputStream()));
-
-            for(String line = reader.readLine();line!=null;line=reader.readLine()){
-                list.add(line);
-            }
-        }catch(Exception e){
-            org.apache.log4j.Logger.getLogger("index.jsp").error("Failed to import pub/pages/front.html");
-        }
-
-
-        // it *is* new-school n we doda-dance
-        final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
-        // populate context with sitemesh stuff
-        context.put("request", request);
-        context.put("response", response);
-        context.put("base", request.getContextPath());
-        context.put("pub", list);
-        // merge it into the JspWriter
-        template.merge(context, out);
-    }else{
-
-        final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
-        final Linkpulse linkpulse = new Linkpulse(props);
+<c:if test="${!empty Missing_pagesindex_Template}">
+<%
+final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
+final Linkpulse linkpulse = new Linkpulse(props);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -222,4 +195,5 @@
 
     </body>
 </html>
-<%   } %>
+<%--   } --%>
+</c:if>

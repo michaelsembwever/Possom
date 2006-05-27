@@ -164,7 +164,7 @@ public final class VelocityResultHandler implements ResultHandler {
                 LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
 
                 final VelocityContext context = newContextInstance(engine);
-                populateVelocityContext(context, cxt, request, response);
+                populateVelocityContext(context, cxt, request, response, parameters);
 
                 try {
 
@@ -205,7 +205,8 @@ public final class VelocityResultHandler implements ResultHandler {
     protected void populateVelocityContext(final VelocityContext context,
                                            final Context cxt,
                                            final HttpServletRequest request,
-                                           final HttpServletResponse response) {
+                                           final HttpServletResponse response,
+                                           final Map parameters) {
 
         LOG.trace("populateVelocityContext()");
 
@@ -239,11 +240,11 @@ public final class VelocityResultHandler implements ResultHandler {
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
-//        if (config.isPagingEnabled()) {
+        if (config.isPagingEnabled()) {
             final PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), config.getResultsToReturn(), 10);
-            pager.setCurrentOffset(cxt.getSearchResult().getSearchCommand().getRunningQuery().getOffset());
+            pager.setCurrentOffset(Integer.parseInt((String) parameters.get("offset")));
             context.put("pager", pager);
-//        }
+        }
 
 
     }

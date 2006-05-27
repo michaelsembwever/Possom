@@ -54,10 +54,12 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
 
     public String getFilter(final Map parameters) {
 
-        final String[] paramValue = (String[]) parameters.get(parameterName);
+        final String paramValue = parameters.get(parameterName) instanceof String[]
+                ? ((String[])parameters.get(parameterName))[0]
+                : (String)parameters.get(parameterName);
 
-        if (paramValue != null && paramValue.length > 0) {
-            if (!(paramValue[0].equals("") || paramValue[0].equals("d"))) {
+        if (paramValue != null && paramValue.length() > 0) {
+            if (!(paramValue.equals("") || paramValue.equals("d"))) {
 
                 final Map<String,String> s = sites != null && sites.size()>0
                         ? new HashMap(DEFAULT_SITES)
@@ -66,24 +68,33 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
                     s.putAll(sites);
                 }
 
-                if (s.containsKey(paramValue[0])) {
-                    return s.get(paramValue[0]);
+                if (s.containsKey(paramValue)) {
+                    return s.get(paramValue);
                 }
             }
         } else {
             // return null if empty
-            final String[] query = (String[]) parameters.get("q");
-            if (query[0].trim().equals(""))
+            final String query = parameters.get("q") instanceof String[]
+                ? ((String[])parameters.get("q"))[0]
+                : (String)parameters.get("q");
+
+            if (query.trim().equals("")){
                 return null;
+            }
 
             // The site is given in the site parameter
-            final String[] privateSite = (String[]) parameters.get("site");
-            if (privateSite != null && privateSite.length > 0) {
-                final String[] collection = (String[]) parameters.get("c");
+            final String privateSite = parameters.get("site") instanceof String[]
+                ? ((String[])parameters.get("site"))[0]
+                : parameters.get("site") instanceof String ? (String)parameters.get("site") : null;
+            
+            if (privateSite != null && privateSite.length() > 0) {
+                final String collection = parameters.get("c") instanceof String[]
+                    ? ((String[])parameters.get("c"))[0]
+                    : (String)parameters.get("c");
 
                 // Also make sure that the c parameter is set to pss
-                if (collection[0].equals("pss")) {
-                    return "+site:" + privateSite[0];
+                if (collection.equals("pss")) {
+                    return "+site:" + privateSite;
                 }
             }
         }

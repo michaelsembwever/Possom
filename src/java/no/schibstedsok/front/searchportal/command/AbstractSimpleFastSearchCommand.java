@@ -68,6 +68,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
+    
+    private static final String DEBUG_FAST_SEARCH_ENGINE ="Creating Fast Engine to ";
 
     // Attributes ----------------------------------------------------
     private Map<String,FastNavigator> navigatedTo = new HashMap<String,FastNavigator>();
@@ -494,7 +496,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     protected IFastSearchEngine getSearchEngine() throws ConfigurationException, MalformedURLException {
 
         if (!searchEngines.containsKey(getFastConfiguration().getQueryServerURL())) {
-            IFastSearchEngine engine = engineFactory.createSearchEngine(getFastConfiguration().getQueryServerURL());
+            LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getFastConfiguration().getQueryServerURL());
+            final IFastSearchEngine engine 
+                    = engineFactory.createSearchEngine(getFastConfiguration().getQueryServerURL());
             searchEngines.put(getFastConfiguration().getQueryServerURL(), engine);
         }
         return (IFastSearchEngine) searchEngines.get(getFastConfiguration().getQueryServerURL());

@@ -9,10 +9,12 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import java.util.Locale;
+import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.log4j.Logger;
 
@@ -51,6 +53,9 @@ public final class SearchModeFactoryTest extends TestCase {
             }
             public Site getSite()  {
                 return locale == null ? Site.DEFAULT : Site.valueOf(Site.DEFAULT.getName(), locale);
+            }
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
         };
 

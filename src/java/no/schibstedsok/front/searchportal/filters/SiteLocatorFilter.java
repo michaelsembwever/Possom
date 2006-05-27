@@ -162,14 +162,14 @@ public final class SiteLocatorFilter implements Filter {
 
             doAfterProcessing(request, response);
 
-        }  catch (RuntimeException e) {
+        }  catch (Exception e) {
             // Don't let anything through without logging it.
             //  Otherwise it ends in a different logfile.
             LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION);
             for (Throwable t = e; t != null; t = e.getCause()) {
                 LOG.error("", t);
             }
-            throw e;
+            throw new ServletException(e);
         }
 
     }

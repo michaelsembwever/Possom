@@ -19,6 +19,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
+<%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 <%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
 <%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
 <%@ page import="no.schibstedsok.front.searchportal.view.config.SearchTab" %>
@@ -51,7 +52,7 @@
     pageContext.setAttribute("siteMeshPage", siteMeshPage);
 
     final RunningQuery query = (RunningQuery) request.getAttribute("query");
-    final List<Modifier> sources = query.getSources();
+    final List<Modifier> sources = (List<Modifier>)request.getAttribute("sources");
     final Integer dHits = (Integer) query.getNumberOfHits("defaultSearch");
     final Integer gHits = (Integer) query.getNumberOfHits("globalSearch");
     final int no_hits = dHits != null && dHits > 0 
@@ -85,40 +86,13 @@
 
 
 <body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") ) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
-
-    <% // sitesearch
-    final VelocityEngine engine = VelocityResultHandler.getEngine(site);
-    final Template template = VelocityResultHandler.getTemplate(engine, site, "/pages/main");
-    if (template != null){
-        // it *is* new-school n we doda-dance
-        final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
-
-        for (Modifier mod : sources) {
-            if ( mod.getName().equals("sesam_hits")) {
-                context.put("sesam_hits", text.getMessage("numberFormat", mod.getCount()));
-            }
-        }
-        // populate context with sitemesh stuff
-        context.put("request", request);
-        context.put("response", response);
-        context.put("page", siteMeshPage);
-        context.put("base", request.getContextPath());
-        context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
-        context.put("text", text);
-        {
-            final StringWriter buffer = new StringWriter();
-            siteMeshPage.writeBody(OutputConverter.getWriter(buffer));
-            context.put("body", buffer.toString());
-        }
-        //{ // missing frm our version of sitemesh
-        //    final StringWriter buffer = new StringWriter();
-        //    siteMeshPage.writeHead(OutputConverter.getWriter(buffer));
-        //    context.put("head", buffer.toString());
-        //}
-        // merge it into the JspWriter
-        template.merge(context, out);%>
+        
+    <search:import template="/pages/main"/>
+        
+    <c:if test="${! empty Missing_pagesmain_Template}">
+        
     <%-- old-school sitesearch --%>
-    <% } else if (currentC.equals("d") && (
+    <% if (currentC.equals("d") && (
              "ds".equals(ss) ||
              "di".equals(ss) ||
              "pr".equals(ss) ||
@@ -427,7 +401,7 @@
                         SearchTab.NavigatorHint hint = query.getSearchTab().getNavigationHint(e.getName());
                         if (hint != null) {
                             if ( (currentC.equals("d") && !e.getName().equals("Norske nettsider"))
-                                    || currentC.equals("g") || currentC.equals("pss") || currentC.equals("p") || currentC.equals("b")) {
+                                    || currentC.equals("g") || currentC.equals("pss") || currentC.equals("p") || currentC.equals("pp")  || currentC.equals("b")) {
                                 ++i;
                                 if(i!=1) {%>
                                     <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
@@ -591,8 +565,10 @@
                 <decorator:getProperty property="page.persons-results"/>
                 <%}%>
 
-                <%if (currentC.equals("p")) {%>
-                <decorator:getProperty property="page.picture-results"/>
+                <%if (currentC.equals("p") || currentC.equals("pp") ) {%>
+                    <search:import template="scanpix"/>
+                    <!--search:import template="picSearch"/-->
+                    <decorator:getProperty property="page.picsearch-results"/>
                 <%}%>
 
                 <%if (currentC.equals("t")) {%>
@@ -627,6 +603,8 @@
     <decorator:getProperty property="page.footer"/>
 
 <%}%>
+
+    </c:if>
 
 <decorator:getProperty property="page.map-script"/>
 

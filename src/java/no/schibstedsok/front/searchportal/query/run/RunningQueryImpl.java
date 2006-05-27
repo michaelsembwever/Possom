@@ -5,6 +5,7 @@
 package no.schibstedsok.front.searchportal.query.run;
 
 
+import java.util.Hashtable;
 import java.util.concurrent.Callable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,13 +60,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_RUN_QUERY = "Failure to run query";
+    private static final String ERR_EXECUTION_ERROR = "Failure on a search command: ";
 
     private final AnalysisRuleFactory rules;
     private final String queryStr;
     private final Query queryObj;
-    private final Map parameters = new HashMap();;
+    protected volatile Map<String,Object> parameters = new Hashtable<String,Object>();
     private int offset;
-    private Locale locale;
+    private final Locale locale = new Locale("no", "NO");
     private final List<Modifier> sources = new Vector<Modifier>();
     private final TokenEvaluatorFactory tokenEvaluatorFactory;
     private final List<Enrichment> enrichments = new ArrayList<Enrichment>();
@@ -88,8 +90,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         queryStr = trimDuplicateSpaces(query);
 
-        this.parameters.putAll(parameters);
-        this.locale = new Locale("no", "NO");
+        this.parameters = parameters;
 
         final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt =
                 ContextWrapper.wrap(
@@ -223,19 +224,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 } else {
 
-//                    // Optimisation. Alternate between the two web searches.
-//                    if (isNorwegian(config) || isInternational(config)) {
-//                        final String searchType = getSingleParameter("s");
-//                        if (searchType != null && searchType.equals("g")) {
-//                            if (isInternational(config)) {
-//                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
-//                            }
-//                        } else if (isNorwegian(config)) {
-//                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
-//                        }
-//                    } else {
-                        commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
-//                    }
+                    commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                 }
             }
 
@@ -285,7 +274,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             }
                         }
                     }catch(ExecutionException ee){
-                        LOG.error(ee);
+                        LOG.error(ERR_EXECUTION_ERROR, ee.getCause());
                     }
                 }
             }
@@ -450,19 +439,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         LOG.trace("getQueryString()");
 
         return queryStr;
-    }
-
-    public int getOffset() {
-
-        LOG.trace("getOffset(): " + offset);
-
-        return offset;
-    }
-
-    public void setOffset(final int offset) {
-        LOG.trace("setOffset():" + offset);
-
-        this.offset = offset;
     }
 
     public Locale getLocale() {

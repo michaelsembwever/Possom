@@ -7,6 +7,8 @@
 
 package no.schibstedsok.front.searchportal.util.config;
 
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesContext;
+
 /**
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -55,6 +57,8 @@ public abstract class AbstractDocumentFactory {
     protected static final String parseString(final String s, final String def){
         return s.trim().length() == 0 ? def : s;
     }
+    
+
     
     // Inner classes -------------------------------------------------
     

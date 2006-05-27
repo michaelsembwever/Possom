@@ -2,7 +2,6 @@
 package no.schibstedsok.front.searchportal.servlet;
 
 
-import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.BaseContext;
@@ -10,13 +9,9 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.front.searchportal.query.analyser.AnalysisRuleFactory;
-import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
-import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.front.searchportal.util.QueryStringHelper;
-import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.query.run.QueryFactory;
@@ -121,51 +116,51 @@ public final class SearchServlet extends HttpServlet {
             throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
         }
 
-        final RunningQuery.Context rqCxt = ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" rqCxt ">
-                RunningQuery.Context.class,
-                new BaseContext() {
-                    public SearchMode getSearchMode() {
-                        return mode;
-                    }
-                    public SearchTab getSearchTab() {
-                        return searchTab;
-                    }
-                },
-                genericCxt
-        );//</editor-fold>
+        request.setAttribute("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
 
-        final RunningQuery query = QueryFactory.getInstance()
-            .createQuery(rqCxt, request, response);
-
-        request.setAttribute("locale", query.getLocale());
-        request.setAttribute("query", query);
-        request.setAttribute("text",
-                TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
-
-        if (request.getParameter("offset") != null
-                && !"".equals(request.getParameter("offset"))) {
-
-            query.setOffset(Integer.parseInt(request.getParameter("offset")));
+        if (request.getParameter("offset") == null || "".equals(request.getParameter("offset"))) {
+            request.setAttribute("offset", "0");
         }
 
         if (request.getParameter("q") != null) {
-            request.setAttribute("q",
-                QueryStringHelper.safeGetParameter(request, "q"));
+            request.setAttribute("q", QueryStringHelper.safeGetParameter(request, "q"));
         }
 
         request.setAttribute("tab", searchTab);
         request.setAttribute("c", searchTabKey);
 
         try {
+
+                final RunningQuery.Context rqCxt = ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" rqCxt ">
+                        RunningQuery.Context.class,
+                        new BaseContext() {
+                            public SearchMode getSearchMode() {
+                                return mode;
+                            }
+                            public SearchTab getSearchTab() {
+                                return searchTab;
+                            }
+                        },
+                        genericCxt
+                );//</editor-fold>
+
+                final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
+                
+                request.setAttribute("locale", query.getLocale());
+                request.setAttribute("query", query);
+                
                 query.run();
+                
+                if (LOG.isInfoEnabled()) {
+                    stopWatch.stop();
+                    LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
+                }
+                
         } catch (InterruptedException e) {
             LOG.error("Task timed out");
         }
 
-        if (LOG.isInfoEnabled()) {
-            stopWatch.stop();
-            LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
-        }
+        
     }
 
 
