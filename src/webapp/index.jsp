@@ -1,13 +1,4 @@
 <%-- Copyright (2006) Schibsted Søk AS --%>
-<%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
-<%@ page import="no.schibstedsok.front.searchportal.view.output.VelocityResultHandler"%>
-<%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
-<%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
-<%@ page import="org.apache.velocity.Template"%>
-<%@ page import="org.apache.velocity.VelocityContext"%>
-<%@ page import="org.apache.velocity.app.VelocityEngine"%>
-<%@ page import="java.util.List"%>
-<%@ page import="java.util.ArrayList"%>
 <%@ page
         language="java"
         errorPage="/internal-error.jsp"
@@ -17,14 +8,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 
-<search:import template="/pages/index"/>
+<search:velocity template="/pages/index"/>
 
 <c:if test="${!empty Missing_pagesindex_Template}">
-<%
-final Site site = (Site) request.getAttribute(Site.NAME_KEY);
-final java.util.Properties props = SiteConfiguration.valueOf(site).getProperties();
-final Linkpulse linkpulse = new Linkpulse(props);
-%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
@@ -99,7 +85,7 @@ final Linkpulse linkpulse = new Linkpulse(props);
 
             <input type="image" id="index_submit" src="images/searchbar/nettsok_knapp.gif" />
 	    &nbsp;
-            <a href="<%=linkpulse.getUrl("?q=&page=/pages/7/index", "category:static;subcategory=header", "sgo", "true") %>">S&#248;ketips</a>
+            <a href='<search:linkPulse url="?q=&page=/pages/7/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a>
             </div>
             <div id="searchbox_tips">
             <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
@@ -117,42 +103,31 @@ final Linkpulse linkpulse = new Linkpulse(props);
         <td valign="top" align="left">
             <table border="0" width="151" cellspacing="0" cellpadding="0" style="border-left: 1px solid #C5C5C5; border-right: 1px solid #C5C5C5; border-bottom: 1px solid #C5C5C5; font-size: 12px;">
                 <tr>
-                    <td style="background-image: url(images/index/menu_bg.gif); height: 34px; padding-left: 8px;" valign="middle"><img src="images/index/nyheter_20_20.gif" border="0" align="left" /> &nbsp; <a href="<%=linkpulse.getUrl("?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske nyheter&amp;userSortBy=datetime&amp;q=", "category:front_service", "sgo", "true") %>" onclick="return strep(this);">Nyhetss&#248;k</a></td>
+                    <td style="background-image: url(images/index/menu_bg.gif); height: 34px; padding-left: 8px;" valign="middle"><img src="images/index/nyheter_20_20.gif" border="0" align="left" /> &nbsp; <a href='<search:linkPulse url="?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske nyheter&amp;userSortBy=datetime&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
                 </tr>
                 <tr>
                     <td><img src="images/index/dottedline.gif" border="0" /></td>
                 </tr>
                 <tr>
-                    <td style="background-image: url(images/index/menu_bg.gif); height: 34px; padding-left: 8px;" valign="middle"><img src="images/index/bedrift_20_20.gif" border="0" align="left" /> &nbsp; <a href="<%=linkpulse.getUrl("?c=y", "category:front_service", "sgo", "true") %>" onclick="return strep(this);">Bedriftss&#248;k</a></td>
+                    <td style="background-image: url(images/index/menu_bg.gif); height: 34px; padding-left: 8px;" valign="middle"><img src="images/index/bedrift_20_20.gif" border="0" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a></td>
                 </tr>
                 <tr>
                     <td><img src="images/index/dottedline.gif" border="0" /></td>
                 </tr>
                 <tr>
-                    <td style="background-image: url(images/index/menu_bg.gif); height: 34px; padding-left: 8px;" valign="middle"><img src="images/index/person_20_20.gif" border="0" align="left" /> &nbsp; <a href="<%=linkpulse.getUrl("?c=w", "category:front_service", "sgo", "true") %>" onclick="return strep(this);">Persons&#248;k</a></td>
+                    <td style="background-image: url(images/index/menu_bg.gif); height: 34px; padding-left: 8px;" valign="middle"><img src="images/index/person_20_20.gif" border="0" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a></td>
                 </tr>
                 <tr>
                     <td><img src="images/index/dottedline.gif" border="0" /></td>
                 </tr>
                 <tr>
-                    <td style="background-image: url(images/index/menu_bg.gif); height: 34px; padding-left: 8px;" valign="middle"><img src="images/index/bilder_20_20.gif" border="0" align="left" /> &nbsp; <a href="<%=linkpulse.getUrl("?c=p", "category:front_service", "sgo", "true") %>" onclick="return strep(this);">Bildes&#248;k</a></td>
+                    <td style="background-image: url(images/index/menu_bg.gif); height: 34px; padding-left: 8px;" valign="middle"><img src="images/index/bilder_20_20.gif" border="0" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a></td>
                 </tr>
             </table>
         </td>
         </td>
         <td valign="top" align="left">
-        <%
-            try{
-                final java.net.URLConnection urlConn = new java.net.URL(props.getProperty("publishing.system.baseURL")+"/pages/front.html").openConnection();
-                urlConn.addRequestProperty("host", props.getProperty("publishing.system.host-header"));
-                final java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(urlConn.getInputStream()));
-                for(String line = reader.readLine();line!=null;line=reader.readLine()){
-                    out.println(line);
-                }
-            }catch(Exception e){
-                org.apache.log4j.Logger.getLogger("index.jsp").error("Failed to import pub/pages/front.html");
-            }
-        %>
+            <search:publish page="/pages/front"/>
         </td>
     </tr>
 
@@ -160,18 +135,7 @@ final Linkpulse linkpulse = new Linkpulse(props);
 
 <div id="footer_space_index">
 <div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
-        <%
-            try{
-                final java.net.URLConnection urlConn = new java.net.URL(props.getProperty("publishing.system.baseURL")+"/pages/footer.html").openConnection();
-                urlConn.addRequestProperty("host", props.getProperty("publishing.system.host-header"));
-                final java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(urlConn.getInputStream()));
-                for(String line = reader.readLine();line!=null;line=reader.readLine()){
-                    out.println(line);
-                }
-            }catch(Exception e){
-                org.apache.log4j.Logger.getLogger("index.jsp").error("Failed to import pub/pages/footer.html");
-            }
-        %>
+        <search:publish page="/pages/footer"/>
 <br />
 <div style="padding: 8px 0px 20px 0px;"><img src="images/pix.gif" border="0" width="100%" height="2" alt="" /></div>
 </div>
@@ -195,5 +159,4 @@ final Linkpulse linkpulse = new Linkpulse(props);
 
     </body>
 </html>
-<%--   } --%>
 </c:if>

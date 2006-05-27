@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.result;
 
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -50,6 +51,27 @@ public class Modifier implements Comparable {
 
     public String toString() {
         return name + "(" + getCount() + ")";
+    }
+
+    /**
+     * Holds value of property navigationHint.
+     */
+    private SearchTab.NavigatorHint navigationHint;
+
+    /**
+     * Getter for property navigationHint.
+     * @return Value of property navigationHint.
+     */
+    public SearchTab.NavigatorHint getNavigationHint() {
+        return this.navigationHint;
+    }
+
+    /**
+     * Setter for property navigationHint.
+     * @param navigationHint New value of property navigationHint.
+     */
+    public void setNavigationHint(SearchTab.NavigatorHint navigationHint) {
+        this.navigationHint = navigationHint;
     }
 
 }

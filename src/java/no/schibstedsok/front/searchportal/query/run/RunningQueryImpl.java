@@ -152,7 +152,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public Integer getNumberOfHits(final String configName) {
 
         LOG.trace("getNumberOfHits(" + configName + ")");
-        return hits.get(configName);
+        return hits.get(configName) != null ? hits.get(configName) : Integer.valueOf(0);
     }
     
     public Map<String,Integer> getHits(){
@@ -279,7 +279,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 }
             }
 
-            Collections.sort(sources);
+            performModifierHandling();
 
             if (!hitsToShow) {
                 PRODUCT_LOG.info("<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
@@ -405,6 +405,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
     }
 
+    private void performModifierHandling(){
+        
+        Collections.sort(sources);
+        for(Modifier m : sources){
+            m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
+        }
+    }
+    
     private String getSingleParameter(final String paramName) {
 
         LOG.trace("getSingleParameter()");

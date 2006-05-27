@@ -17,6 +17,7 @@
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%
 final TextMessages text = (TextMessages) request.getAttribute("text");
 final Site site = (Site)request.getAttribute(Site.NAME_KEY);
@@ -80,7 +81,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 <body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") ) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
         
-    <search:import template="/pages/main"/>
+    <search:velocity template="/pages/main"/>
         
     <c:if test="${! empty Missing_pagesmain_Template}">
         
@@ -101,138 +102,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
         <div id="frame">
             <div id="header">
-                <% if ("ds".equals(ss)) { %>
-                    <a href="http://www.dinside.no"><img id="sitelogo" src="../images/sitesearch/aller/dinside/logo.gif" alt="Dinside logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" style="padding-bottom: 11px;" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.dinside.no/data/">Data</a><span>|</span></li>
-                        <li><a href="http://www.dinside.no/reise/">Reise</a><span>|</span></li>
-                        <li><a href="http://www.dinside.no/motor/">Motor</a><span>|</span></li>
-                        <li><a href="http://www.dinside.no/okonomi/">økonomi</a><span>|</span></li>
-                        <li><a href="http://www.dinside.no/jobb/">Jobb</a><span>|</span></li>
-                        <li><a href="http://www.dinside.no/bolig/">Bolig</a></li>
-                    </ul>
-                <% } else if ("di".equals(ss)) { %>
-                    <a href="http://www.digi.no"><img id="sitelogo" src="../images/sitesearch/aller/digi/logo.gif" alt="Digi logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" style="padding-bottom: 7px;" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.digi.no/bed_tek/">Bedriftsteknologi</a><span>|</span></li>
-                        <li><a href="http://www.digi.no/pers_tek/">Personlig teknologi</a><span>|</span></li>
-                        <li><a href="http://www.digi.no/resultater/">Resultater/finans</a></li>
-                    </ul>
-                <% } else if ("pr".equals(ss)) { %>
-                    <a href="http://www.propaganda-as.no/"><img id="sitelogo" src="../images/sitesearch/aller/propaganda/logo.gif" alt="Propaganda logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.propaganda-as.no/emneomrader/">Sist uke</a><span>|</span></li>
-                        <li><a href="http://www.propaganda-as.no/emneomrader/reklame/">Reklame</a><span>|</span></li>
-                        <li><a href="http://www.propaganda-as.no/emneomrader/media/">Media</a><span>|</span></li>
-                        <li><a href="http://www.propaganda-as.no/emneomrader/prinfo/">PR/info</a><span>|</span></li>
-                        <li><a href="http://www.propaganda-as.no/jobb/">Jobb</a><span>|</span></li>
-                        <li><a href="http://www.propaganda-as.no/emneomrader/design/">Design</a></li>
-                    </ul>
-                <% } else if ("im".equals(ss)) { %>
-                    <a href="http://www.imarkedet.no/"><img id="sitelogo" src="../images/sitesearch/aller/imarkedet/logo.gif" alt="iMarkedet logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" style="padding-bottom: 13px;" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.imarkedet.no/anyhet/">Nyheter</a><span>|</span></li>
-                        <li><a href="http://www.imarkedet.no/analyse/">Analyser</a><span>|</span></li>
-                        <li><a href="http://www.imarkedet.no/unoterte/">Unoterte</a><span>|</span></li>
-                        <li><a href="http://www.imarkedet.no/itinternett/">IT-markedet</a><span>|</span></li>
-                        <li><a href="http://www.imarkedet.no/shippingoffshore/">Shipping/offshore</a></li>
-                    </ul>
-                <% } else if ("it".equals(ss)) { %>
-                    <a href="http://www.itavisen.no/"><img id="sitelogo" src="../images/sitesearch/aller/itavisen/logo.gif" alt="Itavisen logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.itavisen.no/nyheter/">Nyheter</a><span>|</span></li>
-                        <li><a href="http://www.itavisen.no/tester/">Tester</a><span>|</span></li>
-                        <li><a href="http://www.itavisen.no/spill/">Spill</a><span>|</span></li>
-                        <li><a href="http://www.itavisen.no/bransjen/">IT-bransjen</a></li>
-                    </ul>
-                <% } else if ("nrk".equals(ss)) { %>
-                    <a href="http://www.nrk.no/"><img id="sitelogo" src="../images/sitesearch/nrk/logo.gif" alt="Nrk logo" title="Til forsida på NRK.no" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.nrk.no/nyheter/">Nyheter</a><span>|</span></li>
-                        <li><a href="http://www.nrk.no/sport/">Sport</a><span>|</span></li>
-                        <li><a href=" http://www.nrk.no/underholdning/">Undeholdning</a><span>|</span></li>
-                        <li><a href="http://www.nrk.no/musikk/">Musikk</a><span>|</span></li>
-                        <li><a href="http://www.nrk.no/p3/">P3</a><span>|</span></li>
-                        <li><a href="http://www.nrk.no/barn/">Barn</a><span>|</span></li>
-                        <li><a href="http://www.nrk.no/tv/">TV</a><span>|</span></li>
-                        <li><a href="http://www.nrk.no/radio/">Radio</a><span>|</span></li>
-                        <li><a href="http://www7.nrk.no/nrkplayer/default.aspx?Hovedkategori_id=2">Nett-TV</a><span>|</span></li>
-                        <li><a href="http://www.nrk.no/tjenester/nrk_nettradio/3220264.html?kanal=p1">Nettradio</a></li>
-                    </ul>
-                <% } else if ("af".equals(ss)) { %>
-                    <a href="http://www.aftenposten.no/"><img id="sitelogo" src="../images/sitesearch/aftenposten/logo.gif" alt="Aftenposten logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.aftenposten.no/nyheter/iriks/">Innenriks</a><span>|</span></li>
-                        <li><a href="http://www.aftenposten.no/nyheter/uriks/">Utenriks</a><span>|</span></li>
-                        <li><a href="http://www.aftenposten.no/nyheter/okonomi/">&#216;konomi</a><span>|</span></li>
-                        <li><a href="http://debatt.aftenposten.no/Group.asp">Meninger & Debatt</a><span>|</span></li>
-                        <li><a href="http://www.aftenposten.no/nyheter/sport/">Sport</a><span>|</span></li>
-                        <li><a href="http://forbruker.no/">Forbruker.no</a></li>
-                    </ul>
-                <% } else if ("fv".equals(ss)) { %>
-                    <a href="http://www.fedrelandsvennen.no/"><img id="sitelogo" src="../images/sitesearch/fevennen/logo.gif" alt="Aftenposten logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.fedrelandsvennen.no/">Hovedsiden</a><span>|</span></li>
-                        <li><a href="http://www.fedrelandsvennen.no/nyheter/">Nyheter</a><span>|</span></li>
-                        <li><a href="http://www.fedrelandsvennen.no/sport/">Sport</a><span>|</span></li>
-                        <li><a href="http://fotball.fvn.no/">Fotball</a><span>|</span></li>
-                        <li><a href="http://www.fedrelandsvennen.no/kulturpuls/">Kulturpuls</a><span>|</span></li>
-                        <li><a href="http://www.fedrelandsvennen.no/vi_og_vart/">Vi & v&#229;rt</a><span>|</span></li>
-                        <li><a href="http://www.fedrelandsvennen.no/meninger/">Meninger</a><span>|</span></li>
-                        <li><a href="http://www.fedrelandsvennen.no/varet/">V&#230;ret</a></li>
-                    </ul>
-                <% } else if ("aa".equals(ss)) { %>
-                    <a href="http://www.adressa.no/"><img id="sitelogo" src="../images/sitesearch/adresseavisen/logo.gif" alt="Adresseavisen logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.adressa.no/nyheter/">Nyheter</a><span>|</span></li>
-                        <li><a href="http://www.adressa.no/nyheter/trondheim/">Trondheim</a><span>|</span></li>
-                        <li><a href="http://www.adressa.no/kultur/">Kultur</a><span>|</span></li>
-                        <li><a href="http://www.adressa.no/sport/">Sport</a><span>|</span></li>
-                        <li><a href="http://fotball.adressa.no/">Fotball</a><span>|</span></li>
-                        <li><a href="http://www.adressa.no/forbruker/">Forbruker</a><span>|</span></li>
-                        <li><a href="http://www.adressa.no/forbruker/sexogsamliv/">Sex og samliv</a><span>|</span></li>
-                        <li><a href="http://www.adressa.no/forbruker/reiseliv/">Reiseliv</a><span>|</span></li>
-                        <li><a href="ttp://www.adressa.no/forbruker/bil/">Bil</a><span>|</span></li>
-                        <li><a href="http://www.adressa.no/forbruker/digital/">Teknologi</a></li>
-                    </ul>
-                <% } else if ("bt".equals(ss)) { %>
-                    <a href="http://www.bt.no/"><img id="sitelogo" src="../images/sitesearch/bt/logo.png" alt="Bergens Tidende logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://www.bt.no/lokalt">Lokalt</a><span>|</span></li>
-                        <li><a href="http://www.bt.no/innenriks">Innenriks</a><span>|</span></li>
-                        <li><a href="http://www.bt.no/utenriks">Utenriks</a><span>|</span></li>
-                        <li><a href="http://www.bt.no/sport">Sport</a><span>|</span></li>
-                        <li><a href="http://www.bt.no/kultur">Kultur</a><span>|</span></li>
-                        <li><a href="http://www.bt.no/okonomi">&#216;konomi</a><span>|</span></li>
-                        <li><a href="http://www.bt.no/bergenpuls">Bergenpuls</a><span>|</span></li>
-                        <li><a href="http://www.bt.no/forbruker">Forbruker</a><span>|</span></li>
-                        <li><a href="http://www.bt.no/kamera">Webkamera</a></li>
-                    </ul>
-                <% } else if ("sa".equals(ss)) { %>
-                    <a href="http://aftenbladet.no/"><img id="sitelogo" src="../images/sitesearch/sa/logo.gif" alt="Stavanger Aftenblad logo" /></a>
-                    <a href="../"><img src="../images/sitesearch/aller/sesam.gif" alt="Sesam logo" /></a>
-                    <ul id="sitelinks">
-                        <li><a href="http://aftenbladet.no/">Hovedsiden</a><span>|</span></li>
-                        <li><a href="http://aftenbladet.no/lokalt/">Lokalt</a><span>|</span></li>
-                        <li><a href="http://aftenbladet.no/innenriks/">Innenriks</a><span>|</span></li>
-                        <li><a href="http://aftenbladet.no/utenriks/">Utenriks</a><span>|</span></li>
-                        <li><a href="http://aftenbladet.no/debatt/">Debatt</a><span>|</span></li>
-                        <li><a href="http://aftenbladet.no/vaeret/">Været</a><span>|</span></li>
-                        <li><a href="http://fotball.aftenbladet.no/">Fotball</a><span>|</span></li>
-                        <li><a href="http://aftenbladet.no/sport/">Sport</a><span>|</span></li>
-                        <li><a href="http://aftenbladet.no/kultur/">Kultur</a><span>|</span></li>
-                        <li><a href="http://kundesenter.aftenbladet.no/">Kundesenter</a></li>
-                    </ul>
-                <% } %>
+                <search:velocity template="legacy/skin/headers/${param.ss}.vm"/>
                 <decorator:getProperty property="page.search-bar"/>
 
             </div>
@@ -311,7 +181,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     </tr>
     <% } %>
 
-
     <tr>
 	<%if (q.trim().equals("") && !currentC.equals("m")) {%>
 
@@ -319,24 +188,21 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <td class="cell_one" valign="top">
             <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
-        		    <% int i=0; %>
-                    <% for (Modifier e : sources) {
-                        SearchTab.NavigatorHint hint = tab.getNavigationHint(e.getName());
-                        if (hint != null) {
-                            ++i;
-                        if(i!=1) {%>
-                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
-                        <% } %>
-                            <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + hint.getTab().getKey() +hint.getUrlSuffix()%>");'>
+                    <c:set var="rows" value="${0}"/>
+                    <c:forEach var="e" items="${sources}">
+                        <c:set var="hint" value="${e.navigationHint}"/>
+                        <c:if test="${!empty hint}"><c:set var="rows" value="${rows +1}"/>
+                            <c:if test="${rows > 1}"><tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr></c:if>
+                            <tr onclick='strepRollover("<c:out value='?q=${q}&c=${tab.key}${hint.urlSuffix}'/>");'>
                                 <td class="nav_pad_icon">
-                                    <img <% if (e.getName().startsWith("Persons")) { %> src="../images/menu/person.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
-                                    <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + hint.getTab().getKey() +hint.getUrlSuffix(); %>
-                                    <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
+                                    <img <c:choose><c:when test="${f:startsWith(e.name,'Persons')}">src="../images/menu/person.gif"</c:when><c:when test="${f:startsWith(e.name,'Netts')}">src="../images/menu/nettsok.gif"</c:when></c:choose> class="nav_icon" align="left" alt="" />
+                                    <a href='<search:linkPulse url="?q=${q}&c=${tab.key}${hint.urlSuffix}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${e.name}"/></a>
                                 </td>
-                                <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
+                                <%-- TODO turn the following scriplet into a custom tag --%>
+                                <td class="nav_pad"><%=text.getMessage("numberFormat", ((Modifier)pageContext.getAttribute("e")).getCount()) %></td>
                             </tr>
-                        <%}%>
-                    <%}%>
+                        </c:if>
+                    </c:forEach>
                 </table>
                 <decorator:getProperty property="page.companies-nav"/>
             <%}else if (currentC.equals("w") || currentC.equals("wip") || currentC.equals("wipgift")) {%>
@@ -559,7 +425,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
 
                 <%if (currentC.equals("p") || currentC.equals("pp") ) {%>
-                    <search:import template="scanpix"/>
+                    <search:velocity template="scanpix"/>
                     <!--search:import template="picSearch"/-->
                     <decorator:getProperty property="page.picsearch-results"/>
                 <%}%>

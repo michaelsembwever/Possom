@@ -3,10 +3,8 @@
   <tlib-version>1.0</tlib-version>
   <short-name>searchportal</short-name>
   <uri>/WEB-INF/SearchPortal</uri>
-
-  
   <tag>
-    <name>import</name>
+    <name>velocity</name>
     <tag-class>no.schibstedsok.front.searchportal.view.taglib.ImportVelocityTemplateTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
@@ -17,6 +15,46 @@
     </attribute>
     <attribute>
       <name>command</name>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
+  <tag>
+    <name>publish</name>
+    <tag-class>no.schibstedsok.front.searchportal.view.taglib.ImportPublishingPageTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>page</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
+  <tag>
+    <name>linkPulse</name>
+    <tag-class>no.schibstedsok.front.searchportal.view.taglib.LinkPulseTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>url</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>param</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>script</name>
+      <required>false</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>index</name>
+      <required>true</required>
       <rtexprvalue>true</rtexprvalue>
       <type>java.lang.String</type>
     </attribute>
