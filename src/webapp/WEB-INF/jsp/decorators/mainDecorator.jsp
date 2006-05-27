@@ -195,7 +195,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                             <c:if test="${rows > 1}"><tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr></c:if>
                             <tr onclick='strepRollover("<c:out value='?q=${q}&c=${tab.key}${hint.urlSuffix}'/>");'>
                                 <td class="nav_pad_icon">
-                                    <img <c:choose><c:when test="${f:startsWith(e.name,'Persons')}">src="../images/menu/person.gif"</c:when><c:when test="${f:startsWith(e.name,'Netts')}">src="../images/menu/nettsok.gif"</c:when></c:choose> class="nav_icon" align="left" alt="" />
+                                    <img src='<c:out value="../images/menu/${hint.image}"/>' class="nav_icon" align="left" alt="" />
                                     <a href='<search:linkPulse url="?q=${q}&c=${tab.key}${hint.urlSuffix}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${e.name}"/></a>
                                 </td>
                                 <%-- TODO turn the following scriplet into a custom tag --%>

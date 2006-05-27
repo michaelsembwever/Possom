@@ -336,12 +336,14 @@ public final class SearchTab {
                 final MatchType match,
                 final String tabName,
                 final String urlSuffix,
+                final String image,
                 final SearchTabFactory tabFactory){
             
             this.name = name;
             this.match = match;
             this.tabName = tabName;
             this.urlSuffix = urlSuffix;
+            this.image = image;
             this.tabFactory = tabFactory;
         }
 
@@ -413,6 +415,20 @@ public final class SearchTab {
         public String getUrlSuffix() {
             return this.urlSuffix;
         }
+
+        /**
+         * Holds value of property image.
+         */
+        private String image;
+
+        /**
+         * Getter for property image.
+         * @return Value of property image.
+         */
+        public String getImage() {
+            return this.image;
+        }
+
         
 
     }

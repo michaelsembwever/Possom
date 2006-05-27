@@ -32,6 +32,7 @@
     tab CDATA #IMPLIED
     match CDATA #IMPLIED
     name CDATA #IMPLIED
+    image CDATA #IMPLIED
   >
 
 <!--- Put your DTDDoc comment here. -->
