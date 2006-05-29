@@ -141,10 +141,8 @@ public final class VelocityResultHandler implements ResultHandler {
 
         // This requirement of the users of this class to send the web stuff
         // as parameters is a bit too implicit...
-
         final HttpServletRequest request = (HttpServletRequest) parameters.get("request");
         final HttpServletResponse response = (HttpServletResponse) parameters.get("response");
-
         if (request == null || response == null) {
             throw new IllegalStateException("Both request and response must be set in the parameters");
         }
@@ -164,7 +162,7 @@ public final class VelocityResultHandler implements ResultHandler {
                 LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
 
                 final VelocityContext context = newContextInstance(engine);
-                populateVelocityContext(context, cxt, request, response, parameters);
+                populateVelocityContext(context, cxt, parameters);
 
                 try {
 
@@ -204,9 +202,7 @@ public final class VelocityResultHandler implements ResultHandler {
 
     protected void populateVelocityContext(final VelocityContext context,
                                            final Context cxt,
-                                           final HttpServletRequest request,
-                                           final HttpServletResponse response,
-                                           final Map parameters) {
+                                           final Map<String,Object> parameters) {
 
         LOG.trace("populateVelocityContext()");
 
@@ -218,31 +214,51 @@ public final class VelocityResultHandler implements ResultHandler {
             queryStringURLEncoded = URLEncoder.encode(queryString, "UTF-8");
             queryString = StringEscapeUtils.escapeHtml(queryString);
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOG.error(e);
         }
-
-        context.put("result", cxt.getSearchResult());
+        
+        // push all parameters into request attributes
+        for( Map.Entry<String,Object> entry : parameters.entrySet() ){
+            // don't put back in String array that only contains one element
+            context.put(entry.getKey(), entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1
+                    ? context.put(entry.getKey(), ((String[])entry.getValue())[0])
+                    : entry.getValue());
+        }
+        
+        // populate context with request and response // TODO remove, since all attributes are copied in
+        final HttpServletRequest request = (HttpServletRequest) parameters.get("request");
+        final HttpServletResponse response = (HttpServletResponse) parameters.get("response");
         context.put("request", request);
         context.put("response", response);
+
+        // search-portal attributes
+        context.put("result", cxt.getSearchResult());
         context.put("query", queryStringURLEncoded);
-        context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
-        context.put("command", cxt.getSearchResult().getSearchCommand());
         context.put("queryHTMLEscaped", queryString);
-
-        context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt)));
-        context.put("currentTab", cxt.getSearchTab());
-
+        context.put("currentTab", cxt.getSearchTab()); // duplicate of "tab"
         context.put("contextPath", request.getContextPath());
-        context.put("hashGenerator", request.getAttribute("hashGenerator"));
-        context.put("runningQuery", cxt.getSearchResult().getSearchCommand().getRunningQuery());
-
         context.put("tradedoubler", new TradeDoubler(request));
+        
+        // following are deprecated as the view domain should not be accessing them
+        context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
+        context.put("runningQuery", (RunningQuery) request.getAttribute("query"));
+        context.put("command", cxt.getSearchResult().getSearchCommand());
+
+        
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
         if (config.isPagingEnabled()) {
-            final PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), config.getResultsToReturn(), 10);
-            pager.setCurrentOffset(Integer.parseInt((String) parameters.get("offset")));
+            final PagingDisplayHelper pager = new PagingDisplayHelper(
+                    cxt.getSearchResult().getHitCount(), 
+                    config.getResultsToReturn(), 
+                    cxt.getSearchTab().getPageSize());
+            
+            final Object v = parameters.get("offset");
+            pager.setCurrentOffset(Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
+                    ? ((String[]) v)[0]
+                    : (String) v));
+            
             context.put("pager", pager);
         }
 

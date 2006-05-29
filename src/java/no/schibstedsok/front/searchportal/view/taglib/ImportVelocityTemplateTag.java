@@ -11,6 +11,7 @@ import com.opensymphony.module.sitemesh.Page;
 import com.opensymphony.module.sitemesh.RequestConstants;
 import com.opensymphony.module.sitemesh.util.OutputConverter;
 import java.io.StringWriter;
+import java.util.Enumeration;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
@@ -75,16 +76,22 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
 
                 final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
                 
-                // populate context with request, response, and search-portal attributes
+                // populate context with request and response // TODO remove, since all attributes are copied in
                 context.put("request", cxt.getRequest());
                 context.put("response", cxt.getResponse());
+                
+                // populate context with  search-portal attributes
                 context.put("commandName", command != null ? command : template);
                 context.put("base", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("contextPath", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("text", text);
-                context.put("hashGenerator", cxt.findAttribute("hashGenerator"));
-                context.put("results", cxt.getRequest().getAttribute("results"));
-                context.put("pagers", cxt.getRequest().getAttribute("pagers"));
+                
+                // push all parameters into request attributes
+                for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames(); e.hasMoreElements();) {
+                    final String attrName = e.nextElement();
+                    context.put(attrName, cxt.getRequest().getAttribute(attrName));
+                    LOG.debug("Added to context " + attrName + ", value: " + cxt.getRequest().getAttribute(attrName));
+                }
                 
                 // populate modifiers
                 final List<Modifier> sources = (List<Modifier>) cxt.findAttribute("sources");

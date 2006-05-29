@@ -349,7 +349,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected int getCurrentOffset(final int i) {
         if (getSearchConfiguration().isPagingEnabled()) {
-            return i + Integer.parseInt((String) getParameters().get("offset"));
+            final Object v = parameters.get("offset");
+            return i + Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
+                    ? ((String[]) v)[0]
+                    : (String) v);
         } else {
             return i;
         }
