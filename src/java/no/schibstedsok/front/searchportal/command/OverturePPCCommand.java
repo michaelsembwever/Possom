@@ -49,6 +49,7 @@ public class OverturePPCCommand extends AbstractSearchCommand {
             "?mkt=no&" +
             "adultFilter=clean";
     private static final String OVERTURE_PARAMETER_ENCODING = "iso-8859-1";
+    private static final int MAX_ADS_RIGHT_COL = 4;
 
     private static Log log = LogFactory.getLog(OverturePPCCommand.class);
 
@@ -97,7 +98,7 @@ private static final String SITE_SEARCH_PARTNER_ID = "schibstedsok_xml_no_search
 
         if (log.isDebugEnabled()) {
             log.debug("Using URL " + url);
-        }
+        }       
 
         try {
             final Document doc = getOvertureXmlResult(url);
@@ -142,8 +143,13 @@ private static final String SITE_SEARCH_PARTNER_ID = "schibstedsok_xml_no_search
 
         int resultsToReturn = context.getSearchConfiguration().getResultsToReturn();
 
-        if (top) {
+        if (top && (!getParameters().containsKey("ss") && !isVgSiteSearch()) ) {
             resultsToReturn += ppcConfig.getResultsOnTop();
+        } else {
+            if (resultsToReturn >= MAX_ADS_RIGHT_COL)
+                resultsToReturn = MAX_ADS_RIGHT_COL;
+            else
+                resultsToReturn += ppcConfig.getResultsOnTop();
         }
 
         try {
