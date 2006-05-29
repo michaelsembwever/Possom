@@ -102,7 +102,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
         <div id="frame">
             <div id="header">
-                <search:velocity template="legacy/skin/headers/${param.ss}.vm"/>
+                <search:velocity template="legacy/skin/headers/${param.ss}"/>
                 <decorator:getProperty property="page.search-bar"/>
 
             </div>
