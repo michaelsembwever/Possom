@@ -20,7 +20,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * A velocity directive to remove a prefix if it exists.
  *
  * <code>
- * #removePrefix('this is the string to be checked', 'prefix to be removed')
+ * #removePrefix('this is the string to be checked', 'prefix to be removed', 'encoding to use')
  * </code>
  *
  *
@@ -53,13 +53,17 @@ public final class RemovePrefixDirective extends Directive {
      */
     public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) 
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        if (node.jjtGetNumChildren() != 2) {
+        if (node.jjtGetNumChildren() != 3) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
 
+        /* Encoding from Sesam is always UTF-8 */
         final String s = URLDecoder.decode(node.jjtGetChild(0).value(context).toString(),"UTF-8");
         final String prefix = node.jjtGetChild(1).value(context).toString();
+        
+        /* Encoding to use depends on target site. */
+        final String encoding = node.jjtGetChild(2).value(context).toString();
        
         String returnString = s;
         if (s.startsWith(prefix)) {
@@ -67,7 +71,7 @@ public final class RemovePrefixDirective extends Directive {
             returnString = returnString.trim();
         }
         
-        writer.write(URLEncoder.encode(returnString, "UTF-8"));
+        writer.write(URLEncoder.encode(returnString, encoding));
         
         final Token lastToken = node.getLastToken();
 
