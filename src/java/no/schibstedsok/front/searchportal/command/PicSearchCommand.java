@@ -30,7 +30,7 @@ import java.net.URLEncoder;
 public class PicSearchCommand extends AbstractSearchCommand {
 
     private static Log log = LogFactory.getLog(PicSearchCommand.class);
-    HTTPClient client = HTTPClient.instance("picture_search", SearchConstants.PIC_SEARCH_HOST, 80);
+    HTTPClient client = HTTPClient.instance("picture_search", "localhost", 15252);
 
     /**
      * @param query         The query to act on.
@@ -38,7 +38,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public PicSearchCommand(final SearchCommand.Context cxt, final Map parameters) {
+    public PicSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 

@@ -83,6 +83,8 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
                 context.put("contextPath", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("text", text);
                 context.put("hashGenerator", cxt.findAttribute("hashGenerator"));
+                context.put("results", cxt.getRequest().getAttribute("results"));
+                context.put("pagers", cxt.getRequest().getAttribute("pagers"));
                 
                 // populate modifiers
                 final List<Modifier> sources = (List<Modifier>) cxt.findAttribute("sources");

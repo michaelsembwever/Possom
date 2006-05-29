@@ -200,9 +200,11 @@
                 <log.file>sesam.develop</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
                 <log.directory>${basedir}/logs</log.directory>
-                <tokenevaluator.host>localhost</tokenevaluator.host>
                 <log.level>DEBUG</log.level>
+                <tokenevaluator.host>localhost</tokenevaluator.host>
                 <tokenevaluator.port>15400</tokenevaluator.port>
+                <tokenevaluator.host>localhost</tokenevaluator.host>
+                <tokenevaluator.port>15252</tokenevaluator.port>
             </properties>
         </profile>
         <profile>
@@ -229,6 +231,8 @@
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <log.level>DEBUG</log.level>
                 <tokenevaluator.port>15200</tokenevaluator.port>
+                <tokenevaluator.host>license.picsearch.com</tokenevaluator.host>
+                <tokenevaluator.port>80</tokenevaluator.port>
             </properties>
         </profile>
         <profile>
@@ -262,6 +266,8 @@
                 <tokenevaluator.host>10.16.195.250</tokenevaluator.host>
                 <log.level>INFO</log.level>
                 <tokenevaluator.port>15200</tokenevaluator.port>
+                <tokenevaluator.host>license.picsearch.com</tokenevaluator.host>
+                <tokenevaluator.port>80</tokenevaluator.port>
             </properties>
         </profile>
     </profiles>

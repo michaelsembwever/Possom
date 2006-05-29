@@ -425,9 +425,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
 
                 <%if (currentC.equals("p") || currentC.equals("pp") ) {%>
-                    <search:velocity template="scanpix"/>
-                    <!--search:import template="picSearch"/-->
-                    <decorator:getProperty property="page.picsearch-results"/>
+                    <div style="width: 100%;">
+                        <search:velocity template="scanpix"/>
+                        <!--search:import template="picSearch"/-->
+                        <decorator:getProperty property="page.picsearch-results"/>
+                    </div>
                 <%}%>
 
                 <%if (currentC.equals("t")) {%>

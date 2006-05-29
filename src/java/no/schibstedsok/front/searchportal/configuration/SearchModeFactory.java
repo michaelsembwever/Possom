@@ -386,7 +386,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fsc.setQtPipeline(parseString(commandE.getAttribute("qt-pipeline"),
                             fscInherit != null ? fscInherit.getQtPipeline() : ""));
                     final String queryServerUrl = commandE.getAttribute("query-server-url");
-                    
                     fsc.setQueryServerURL(parseProperty(cxt, queryServerUrl,
                             fscInherit != null ? fscInherit.getQueryServerURL() : null));
                     fsc.setRelevantQueriesEnabled(parseBoolean(commandE.getAttribute("relevant-queries"),
@@ -425,6 +424,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
                 if(sc instanceof PicSearchConfiguration){
                     final PicSearchConfiguration psc = (PicSearchConfiguration) sc;
+                    final PicSearchConfiguration pscInherit = inherit instanceof PicSearchConfiguration
+                            ? (PicSearchConfiguration)inherit
+                            : null;
+                    final String queryServerHost = commandE.getAttribute("query-server-host");
+                    psc.setQueryServerHost(parseProperty(cxt, queryServerHost,
+                            pscInherit != null ? pscInherit.getQueryServerHost() : null));
+                    final String queryServerPort = commandE.getAttribute("query-server-port");
+                    psc.setQueryServerPort(Integer.valueOf(parseProperty(cxt, queryServerPort,
+                            pscInherit != null ? String.valueOf(pscInherit.getQueryServerPort()) : "0")));
                 }
                 if(sc instanceof SensisSearchConfiguration){
                     final SensisSearchConfiguration ssc = (SensisSearchConfiguration) sc;
@@ -539,9 +547,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         private String parseProperty(final Context cxt, final String s, final String def){
             
             final String key = s.trim().length() == 0 ? def != null ? def : "" : s;
-            return key.startsWith("http://")
-                ? key
-                : SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt)).getProperty(key);
+            final String value = SiteConfiguration.valueOf(
+                    ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
+                    .getProperty(key);
+            return value != null ? value : key;
         }
         
         private Collection<FastNavigator> parseNavigators(final Element navsE){
