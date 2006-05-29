@@ -35,15 +35,12 @@ import org.apache.commons.logging.LogFactory;
 public abstract class AbstractClause implements Clause {
 
     private static final Log LOG = LogFactory.getLog(AbstractClause.class);
+    private static final String INFO_WEAK_CACHE_SIZE ="WeakCache size at ";
     private static final String DEBUG_REFERENCE_REUSED = "Gjenbruk weakReference. Størrelse: ";
 
     private final String term;
     private final Set<TokenPredicate> knownPredicates;
     private final Set<TokenPredicate> possiblePredicates;
-
-
-
-
 
     /**
      * See if there is an identical and immutable Clause already in use in the JVM.
@@ -87,6 +84,11 @@ public abstract class AbstractClause implements Clause {
                 super.clear();
             }
         });
+        
+        // log weakCache size every 100 increments
+        if( weakCache.size() % 100 == 0){
+            LOG.info(INFO_WEAK_CACHE_SIZE +  weakCache.size());
+        }
     }
 
     /**
