@@ -59,4 +59,20 @@
       <type>java.lang.String</type>
     </attribute>
   </tag>
+  <tag>
+    <name>text</name>
+    <tag-class>no.schibstedsok.front.searchportal.view.taglib.TextMessageTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>key</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <name>args</name>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.Object</type>
+    </attribute>
+  </tag>
 </taglib>

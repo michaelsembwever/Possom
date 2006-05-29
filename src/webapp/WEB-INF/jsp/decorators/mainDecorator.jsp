@@ -17,7 +17,6 @@
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="f" %>
 <%
 final TextMessages text = (TextMessages) request.getAttribute("text");
 final Site site = (Site)request.getAttribute(Site.NAME_KEY);
@@ -198,8 +197,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                                     <img src='<c:out value="../images/menu/${hint.image}"/>' class="nav_icon" align="left" alt="" />
                                     <a href='<search:linkPulse url="?q=${q}&c=${tab.key}${hint.urlSuffix}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${e.name}"/></a>
                                 </td>
-                                <%-- TODO turn the following scriplet into a custom tag --%>
-                                <td class="nav_pad"><%=text.getMessage("numberFormat", ((Modifier)pageContext.getAttribute("e")).getCount()) %></td>
+                                <td class="nav_pad"><search:text key="numberFormat" args="${e.count}"/></td>
                             </tr>
                         </c:if>
                     </c:forEach>
