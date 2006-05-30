@@ -76,14 +76,7 @@ public abstract class AbstractClause implements Clause {
             final T clause,
             final Map<String,WeakReference<T>> weakCache) {
 
-        weakCache.put(key, new WeakReference<T>(clause) {
-            public void clear() {
-                // clear the hashmap entry too!
-                weakCache.remove(key);
-                // clear the referent
-                super.clear();
-            }
-        });
+        weakCache.put(key, new WeakClauseReference<T>(key, clause, weakCache));
         
         // log weakCache size every 100 increments
         if( weakCache.size() % 100 == 0){
@@ -207,4 +200,26 @@ public abstract class AbstractClause implements Clause {
     private static final String DEBUG_FOUND_PREDICATE_POSSIBLE = "\") possible ";
 
 
+    private final static class WeakClauseReference<T> extends WeakReference{
+        
+        private final Map<String,WeakReference<T>> weakCache;
+        private final String key;
+        
+        WeakClauseReference(
+                final String key,
+                final T clause,
+                final Map<String,WeakReference<T>> weakCache){
+            
+            super(clause);
+            this.key = key;
+            this.weakCache = weakCache;
+        }
+        
+        public void clear() {
+            // clear the hashmap entry too!
+            weakCache.remove(key);
+            // clear the referent
+            super.clear();
+        }
+    }
 }
