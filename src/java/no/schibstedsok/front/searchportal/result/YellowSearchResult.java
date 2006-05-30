@@ -51,11 +51,15 @@ public class YellowSearchResult extends FastSearchResult {
 
         for (final Iterator iter = top3.getResults().iterator(); iter.hasNext();) {
             final SearchResultItem item = (SearchResultItem) iter.next();
-
+            
             if (Integer.parseInt(item.getField("rank")) > 100000) {
-                resultsToAdd.add(item);
-                ++addedTop3;
 
+                if ((localResult == null || !localResult.getResults().contains(item)) &&
+                    (pseudoLocalResults == null || !pseudoLocalResult.getResults().contains(item)))
+                {
+                    resultsToAdd.add(item);
+                    ++addedTop3;
+                }
             }
         }
 
