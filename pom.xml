@@ -205,6 +205,10 @@
                 <tokenevaluator.port>15400</tokenevaluator.port>
                 <tokenevaluator.host>localhost</tokenevaluator.host>
                 <tokenevaluator.port>15252</tokenevaluator.port>
+                <!-- Picsearch server -->
+                
+                <picsearch.host>localhost</picsearch.host>
+                <picsearch.port>15252</picsearch.port>
             </properties>
         </profile>
         <profile>
@@ -233,6 +237,10 @@
                 <tokenevaluator.port>15200</tokenevaluator.port>
                 <tokenevaluator.host>license.picsearch.com</tokenevaluator.host>
                 <tokenevaluator.port>80</tokenevaluator.port>
+                <!-- Picsearch server -->
+                
+                <picsearch.host>license.picsearch.com</picsearch.host>
+                <picsearch.port>80</picsearch.port>
             </properties>
         </profile>
         <profile>
@@ -268,6 +276,10 @@
                 <tokenevaluator.port>15200</tokenevaluator.port>
                 <tokenevaluator.host>license.picsearch.com</tokenevaluator.host>
                 <tokenevaluator.port>80</tokenevaluator.port>
+                <!-- Picsearch server -->
+                
+                <picsearch.host>license.picsearch.com</picsearch.host>
+                <picsearch.port>80</picsearch.port>
             </properties>
         </profile>
     </profiles>
