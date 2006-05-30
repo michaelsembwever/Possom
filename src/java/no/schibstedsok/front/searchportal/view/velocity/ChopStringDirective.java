@@ -6,6 +6,7 @@ import java.io.Writer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -17,6 +18,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 /**
  *
  * A velocity directive to chop a string
+ * If a third parameter "esc" is sent, the string will also be htmlescaped
  *
  * <code>
  * #chopString('this string is being chopped!' 20)
@@ -50,13 +52,14 @@ public final class ChopStringDirective extends Directive {
      * {@inheritDoc}
      */
     public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        if (node.jjtGetNumChildren() != 2) {
+        if (node.jjtGetNumChildren() != 2 && node.jjtGetNumChildren() != 3) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
 
         final String s = node.jjtGetChild(0).value(context).toString();
         final int length = Integer.parseInt(node.jjtGetChild(1).value(context).toString());
+
 
         String choppedString = "";
         if (s.length() <= length)
@@ -69,17 +72,24 @@ public final class ChopStringDirective extends Directive {
             else if (lastChar.equals(" "))
                 choppedString = sub.substring(0, length) + " ...";
             else {
-		final int lastSpace = sub.lastIndexOf(" ");
+		        final int lastSpace = sub.lastIndexOf(" ");
 
-		if (lastSpace >= 0) {
-		    choppedString = sub.substring(0, sub.lastIndexOf(" ")) + " ...";
-		} else {
-		    choppedString = sub.substring(0, length) + "...";
-		}
-	    }
+                if (lastSpace >= 0) {
+                    choppedString = sub.substring(0, sub.lastIndexOf(" ")) + " ...";
+                } else {
+                    choppedString = sub.substring(0, length) + "...";
+                }
+	        }
         }
 
-        writer.write(choppedString);
+        if (node.jjtGetNumChildren() > 2) {
+            String htmlescape = node.jjtGetChild(2).value(context).toString();
+            if (htmlescape.equals("esc"))
+                writer.write(StringEscapeUtils.escapeHtml(choppedString));
+            else
+                writer.write(choppedString);
+        } else
+            writer.write(choppedString);
 
         final Token lastToken = node.getLastToken();
 
