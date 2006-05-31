@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.hitta.se/HittaService/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" targetNamespace="http://www.hitta.se/HittaService/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://www.hitta.se/HittaService/">
+      <s:element name="GetWhiteAmount">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="who" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="where" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="key" type="s:string" />
+
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetWhiteAmountResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetWhiteAmountResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+
+      </s:element>
+      <s:element name="GetPinkAmount">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="who" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="where" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="key" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+
+      </s:element>
+      <s:element name="GetPinkAmountResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="GetPinkAmountResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+
+  </wsdl:types>
+  <wsdl:message name="GetWhiteAmountSoapIn">
+    <wsdl:part name="parameters" element="tns:GetWhiteAmount" />
+  </wsdl:message>
+  <wsdl:message name="GetWhiteAmountSoapOut">
+    <wsdl:part name="parameters" element="tns:GetWhiteAmountResponse" />
+  </wsdl:message>
+  <wsdl:message name="GetPinkAmountSoapIn">
+    <wsdl:part name="parameters" element="tns:GetPinkAmount" />
+
+  </wsdl:message>
+  <wsdl:message name="GetPinkAmountSoapOut">
+    <wsdl:part name="parameters" element="tns:GetPinkAmountResponse" />
+  </wsdl:message>
+  <wsdl:portType name="HittaServiceSoap">
+    <wsdl:operation name="GetWhiteAmount">
+      <wsdl:input message="tns:GetWhiteAmountSoapIn" />
+      <wsdl:output message="tns:GetWhiteAmountSoapOut" />
+    </wsdl:operation>
+
+    <wsdl:operation name="GetPinkAmount">
+      <wsdl:input message="tns:GetPinkAmountSoapIn" />
+      <wsdl:output message="tns:GetPinkAmountSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="HittaServiceSoap" type="tns:HittaServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document" />
+    <wsdl:operation name="GetWhiteAmount">
+      <soap:operation soapAction="http://www.hitta.se/HittaService/GetWhiteAmount" style="document" />
+
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetPinkAmount">
+      <soap:operation soapAction="http://www.hitta.se/HittaService/GetPinkAmount" style="document" />
+
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="HittaService">
+
+    <documentation xmlns="http://schemas.xmlsoap.org/wsdl/" />
+    <wsdl:port name="HittaServiceSoap" binding="tns:HittaServiceSoap">
+      <soap:address location="http://hittacontent1.hitta.se/HittaWebService/HittaService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
