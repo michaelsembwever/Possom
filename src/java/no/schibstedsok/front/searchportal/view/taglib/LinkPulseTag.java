@@ -62,7 +62,7 @@ public final class LinkPulseTag extends SimpleTagSupport {
             
             final Site site = (Site) cxt.findAttribute(Site.NAME_KEY);
             final Properties props = SiteConfiguration.valueOf(site).getProperties();
-            final Linkpulse linkpulse = new Linkpulse(props);
+            final Linkpulse linkpulse = new Linkpulse(site, props);
             
             out.print(linkpulse.getUrl(url, param, script, index));
             

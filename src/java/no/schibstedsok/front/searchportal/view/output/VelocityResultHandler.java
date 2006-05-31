@@ -121,7 +121,7 @@ public final class VelocityResultHandler implements ResultHandler {
         // coord helper
         context.put("coordHelper", new CoordHelper());
         // properties
-        context.put("linkpulse", new Linkpulse(SiteConfiguration.valueOf(site).getProperties()));
+        context.put("linkpulse", new Linkpulse(site, SiteConfiguration.valueOf(site).getProperties()));
         // decoder
         context.put("decoder", new Decoder());
         // math tool

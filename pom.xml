@@ -195,7 +195,6 @@
                 <queryServerURL.1>http://localhost:15100</queryServerURL.1>
                 <msearch.configuration.url>http://mobile:8080/mobile/conf/msearch-client.properties</msearch.configuration.url>
                 <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-                <linkpulse.sesam>http://localhost:8080/search/</linkpulse.sesam>
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam.develop</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
@@ -225,7 +224,6 @@
                 <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
                 <msearch.configuration.url>http://mobil.bleedingsearch.schibstedsok.no/mobil.bleedingsearch.schibstedsok.no/conf/msearch-client.properties</msearch.configuration.url> 
                 <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-                <linkpulse.sesam>http://bleedingsearch.schibstedsok.no/search/</linkpulse.sesam>
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>true</linkpulse.enable>
@@ -263,7 +261,6 @@
                 <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
                 <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url> 
                 <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
-                <linkpulse.sesam>http://sesam.no/search/</linkpulse.sesam>
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>true</linkpulse.enable>

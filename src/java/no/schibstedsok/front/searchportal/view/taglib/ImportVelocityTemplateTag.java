@@ -81,7 +81,7 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
                 context.put("response", cxt.getResponse());
                 
                 // populate context with  search-portal attributes
-                context.put("commandName", command != null ? command : template);
+                context.put("commandName", command != null ? command : this.template);
                 context.put("base", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("contextPath", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("text", text);

@@ -54,7 +54,7 @@ final int no_hits = dHits!= null&&dHits > 0 ? dHits.intValue() : gHits!= null&&g
 
 pageContext.setAttribute("no_hits", no_hits);
 
-final Linkpulse linkpulse = new Linkpulse(SiteConfiguration.valueOf(site).getProperties());
+final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).getProperties());
 
 String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
 if (currentC.equals("y")) searchButton = "../tradedoubler/searchbox/button-company.png";

@@ -13,6 +13,7 @@ import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
+import org.apache.log4j.Logger;
 
 /**
  *
@@ -23,6 +24,9 @@ public final class DataModelResultHandler implements ResultHandler{
     
     
     // Constants -----------------------------------------------------
+    private static final Logger LOG = Logger.getLogger(DataModelResultHandler.class);
+    private static final String DEBUG_CREATED_RESULTS = "Creating results Hashtable";
+    private static final String DEBUG_ADD_RESULT = "Adding the result ";
     
     // Attributes ----------------------------------------------------
     
@@ -50,10 +54,12 @@ public final class DataModelResultHandler implements ResultHandler{
         // results
         if( parameters.get("results") == null ){
             parameters.put("results", new Hashtable<String,SearchResult>());
+            LOG.debug(DEBUG_CREATED_RESULTS);
         }
         final Hashtable<String,SearchResult> results 
                 = (Hashtable<String,SearchResult>)parameters.get("results");
 
+        LOG.debug(DEBUG_ADD_RESULT + config.getName());
         results.put(config.getName(), cxt.getSearchResult());
         
         // Paging helper

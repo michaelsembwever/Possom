@@ -357,8 +357,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     asc.setStatisticsName(parseString(commandE.getAttribute("statistical-name"),
                             ascInherit != null ? ascInherit.getStatisticsName() : ""));
 
-                    asc.setPicsearchCountry(parseString(commandE.getAttribute("picsearchCountry"),
-                            ascInherit != null ? ascInherit.getPicsearchCountry() : "no"));
+                    
 
                 }
                 if(sc instanceof FastConfiguration){
@@ -433,6 +432,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final String queryServerPort = commandE.getAttribute("query-server-port");
                     psc.setQueryServerPort(Integer.valueOf(parseProperty(cxt, queryServerPort,
                             pscInherit != null ? String.valueOf(pscInherit.getQueryServerPort()) : "0")));
+                    psc.setPicsearchCountry(parseString(commandE.getAttribute("picsearchCountry"),
+                            pscInherit != null ? pscInherit.getPicsearchCountry() : "no"));
                 }
                 if(sc instanceof SensisSearchConfiguration){
                     final SensisSearchConfiguration ssc = (SensisSearchConfiguration) sc;

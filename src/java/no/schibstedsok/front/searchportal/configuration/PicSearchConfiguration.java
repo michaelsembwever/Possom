@@ -9,7 +9,7 @@ import java.util.Map;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id $</tt>
  */
 public final class PicSearchConfiguration extends AbstractSearchConfiguration {
 
@@ -60,6 +60,16 @@ public final class PicSearchConfiguration extends AbstractSearchConfiguration {
      */
     public void setQueryServerPort(final int queryServerPort) {
         this.queryServerPort = queryServerPort;
+    }
+
+    private String picsearchCountry;
+
+    public String getPicsearchCountry() {
+        return picsearchCountry;
+    }
+
+    public void setPicsearchCountry(final String country) {
+        picsearchCountry = country;
     }
 
 }

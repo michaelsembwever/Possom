@@ -16,7 +16,7 @@ import java.util.Map;
 public interface SearchResult {
     /**
      * Returns the {@link SearchCommand} that produced this result.
-     *
+     * @deprecated should not be accessing search command from the view domain.
      * @return the search command.
      */
     SearchCommand getSearchCommand();

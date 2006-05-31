@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.result;
 
 import java.util.Properties;
+import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * Linkpulse adds a part in front of the url for userlogging.
@@ -11,49 +12,59 @@ import java.util.Properties;
  * @author Thomas Kjærstad <a href="thomas@schibstedsok.no">thomas@schibstedsok.no</a>
  * @version $Id$
  */
-public class Linkpulse {
+public final class Linkpulse {
 
-    private Properties props;
+    private final Site site;
+    private final Properties props;
 
-    public Linkpulse(final Properties properties) {
+    public Linkpulse(
+            final Site site,
+            final Properties properties) {
+        
+        this.site = site;
         this.props = properties;
     }
 
-    public String  getUrl(String orgUrl, String paramString, String script, String indexpage) {
+    public String  getUrl(
+            final String orgUrl, 
+            final String paramString, 
+            final String script, 
+            final String indexpage) {
 
-        String toUrl = "";
+        final StringBuilder toUrl = new StringBuilder();
 
         //linkpulse property is set to true only in the production build
-        if (props.getProperty("linkpulse.enable").equals("true")) {
+        if (Boolean.valueOf(props.getProperty("linkpulse.enable"))) {
 
-            toUrl = props.getProperty("linkpulse.url") + script + "/";
+            toUrl.append(props.getProperty("linkpulse.url") + script + '/');
 
             //click attributes comes as a string seperated by ';'
-            String[] paramArr = paramString.split(";");
+            final String[] paramArr = paramString.split(";");
             for (int i = 0; i < paramArr.length; i++) {
 
                 //the attributes is seperated by ';' in the url if it's more than one attribute
-                if (i != 0) toUrl = toUrl + ";";
+                if (i != 0){
+                    toUrl.append(';');
+                }
 
                 //the attribute and the attribute value is seperated by ':'
-                String[] attrArr = paramArr[i].split(":");
-                for (int k = 1; k < attrArr.length; k++)
-                    toUrl = toUrl + attrArr[0] + "=" + attrArr[1];
-
+                final String[] attrArr = paramArr[i].split(":");
+                for (int k = 0; k < attrArr.length; k++){
+                    toUrl.append(attrArr[k] + '=' + attrArr[k+1]);
+                }
             }
-            //adds to-url, if to-url links to external site we must drop linkpulse.sesam           
-            if (indexpage.equals("ext"))
-                toUrl = toUrl + "/" + orgUrl;
-            else
-                toUrl = toUrl + "/" + props.getProperty("linkpulse.sesam") + orgUrl;
-        } else
-            if (indexpage.equals("true"))
-                toUrl = "search/" + orgUrl;
-            else
-                toUrl = orgUrl;
+            //adds to-url, if to-url links to external site we must drop site name prefix         
+            toUrl.append( indexpage.equalsIgnoreCase("ext")
+                    ?  '/' + orgUrl
+                    :  "http://" + site.getName() + "search/" + orgUrl);
+        } else{
+            
+           toUrl.append( Boolean.valueOf(indexpage)
+                   ? "search/" + orgUrl
+                   : orgUrl);
+        }
 
-
-        return toUrl;
+        return toUrl.toString();
     }
 
 }
