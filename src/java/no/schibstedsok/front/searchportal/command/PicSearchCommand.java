@@ -2,12 +2,12 @@
 package no.schibstedsok.front.searchportal.command;
 
 
+import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
-import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
@@ -27,10 +27,10 @@ import java.net.URLEncoder;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class PicSearchCommand extends AbstractSearchCommand {
+public final class PicSearchCommand extends AbstractSearchCommand {
 
-    private static Log log = LogFactory.getLog(PicSearchCommand.class);
-    HTTPClient client = HTTPClient.instance("picture_search", "localhost", 15252);
+    private static final Log LOG = LogFactory.getLog(PicSearchCommand.class);
+    private final HTTPClient client;
 
     /**
      * @param query         The query to act on.
@@ -40,13 +40,18 @@ public class PicSearchCommand extends AbstractSearchCommand {
      */
     public PicSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
+        final SiteConfiguration siteConfig
+                = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+        client = HTTPClient.instance(
+                "picture_search",
+                siteConfig.getProperty("picsearch.host"),
+                Integer.valueOf(siteConfig.getProperty("picsearch.port")));
     }
 
     public SearchResult execute() {
 
-        String query = getTransformedQuery();
-        query = query.replace(' ', '+');
-        PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
+        String query = getTransformedQuery().replace(' ', '+');
+        final PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
 
         try {
             query = URLEncoder.encode(query, "utf-8");
@@ -56,9 +61,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
 
         final String url = "/query?ie=UTF-8&tldb=" + psConfig.getPicsearchCountry() + "&custid=558735&version=2.6&thumbs=" + getSearchConfiguration().getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Using url " + url);
-        }
+        LOG.debug("Using url " + url);
 
         final Document doc = doSearch(url);
 
@@ -77,7 +80,7 @@ public class PicSearchCommand extends AbstractSearchCommand {
 
                 final BasicSearchResultItem item = new BasicSearchResultItem();
 
-                for (Iterator iterator = getSearchConfiguration().getResultFields().iterator(); iterator.hasNext();) {
+                for (final Iterator iterator = getSearchConfiguration().getResultFields().iterator(); iterator.hasNext();) {
                     final String fieldName = (String) iterator.next();
 
                     item.addField(fieldName, picture.getAttribute(fieldName));
@@ -93,11 +96,11 @@ public class PicSearchCommand extends AbstractSearchCommand {
         try {
             return client.getXmlDocument("picture_search", url);
         } catch (HttpException e) {
-            log.error("Unable to connect to " + url, e);
+            LOG.error("Unable to connect to " + url, e);
         } catch (IOException e) {
-            log.error("Problems with connection to " + url, e);
+            LOG.error("Problems with connection to " + url, e);
         } catch (SAXException e) {
-            log.error("XML Parse error " + url , e);
+            LOG.error("XML Parse error " + url , e);
         }
         return null;
     }

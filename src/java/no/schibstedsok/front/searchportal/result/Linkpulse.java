@@ -65,7 +65,7 @@ public final class Linkpulse {
             //adds to-url, if to-url links to external site we must drop site name prefix         
             toUrl.append( indexpage.equalsIgnoreCase("ext")
                     ?  '/' + orgUrl
-                    :  "http://" + site.getName() + "search/" + orgUrl);
+                    :  "/http://" + site.getName() + "search/" + orgUrl);
         } else{
             
            toUrl.append( Boolean.valueOf(indexpage)
