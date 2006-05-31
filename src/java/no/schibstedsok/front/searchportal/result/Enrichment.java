@@ -32,6 +32,6 @@ public class Enrichment implements Comparable<Enrichment> {
     }
     
     public int compareTo(final Enrichment e) {
-        return (int)(analysisResult + e.analysisResult);
+        return (int)(e.analysisResult - analysisResult);
     }
 }
