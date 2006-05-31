@@ -7,7 +7,6 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
-import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.Decoder;
 import no.schibstedsok.front.searchportal.result.Linkpulse;
@@ -78,7 +77,7 @@ public final class VelocityResultHandler implements ResultHandler {
                 return UrlResourceLoader.newDocumentLoader(this, resource, builder);
             }
             public Site getSite() {
-                return Site.DEFAULT;
+                return site;
             }
         }).getEngine();
     }
