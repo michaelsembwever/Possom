@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +19,8 @@ import org.apache.velocity.runtime.parser.node.Node;
 
 /**
  * A velocity directive to remove a prefix if it exists.
+ * 
+ * If 'html' is used for encoding the string will be HTML escaped.
  *
  * <code>
  * #removePrefix('this is the string to be checked', 'prefix to be removed', 'encoding to use')
@@ -82,7 +85,11 @@ public final class RemovePrefixDirective extends Directive {
             returnString = returnString.replaceAll("[&*?<>]", " ");
         }
         
-        writer.write(URLEncoder.encode(returnString, encoding));
+        if ("html".equals(encoding)) {
+            writer.write(StringEscapeUtils.escapeHtml(returnString));
+        } else {
+            writer.write(URLEncoder.encode(returnString, encoding));
+        }
         
         final Token lastToken = node.getLastToken();
 
