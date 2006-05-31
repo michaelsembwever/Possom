@@ -75,7 +75,7 @@ public final class RemovePrefixDirective extends Directive {
         final String encoding = node.jjtGetChild(2).value(context).toString();
        
         String returnString = s;
-        if (s.startsWith(prefix)) {
+        if (s.toLowerCase().startsWith(prefix)) {
             returnString = s.substring(prefix.length());
             returnString = returnString.trim();
         }
