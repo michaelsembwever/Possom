@@ -1,6 +1,6 @@
 /* Copyright (2005-2006) Schibsted Søk AS
  *
- * AlternationRotation.java
+ * RotationAlternation.java
  *
  * Created on 4 March 2006, 11:51
  *
@@ -31,12 +31,12 @@ import org.apache.log4j.Logger;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class AlternationRotation {
+public final class RotationAlternation {
 
     public interface Context extends BaseContext, QueryParser.Context {  }
 
     // Constants -----------------------------------------------------
-    private static final Logger LOG = Logger.getLogger(AlternationRotation.class);
+    private static final Logger LOG = Logger.getLogger(RotationAlternation.class);
     private static final String DEBUG_ROOT_NOT_OPERATION = "Root is not an OperationClause";
     private static final String DEBUG_FOUND_FORESTS = "Numer of forests found in query ";
     private static final String DEBUG_ORIGINAL_BRANCH_ADD = "Adding to original branch ";
@@ -60,9 +60,9 @@ public final class AlternationRotation {
     // Constructors --------------------------------------------------
 
     /**
-     * Creates a new instance of AlternationRotation
+     * Creates a new instance of RotationAlternation
      */
-    public AlternationRotation(final Context cxt) {
+    public RotationAlternation(final Context cxt) {
         context = cxt;
     }
 

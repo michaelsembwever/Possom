@@ -25,7 +25,7 @@ import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.WordClause;
-import no.schibstedsok.front.searchportal.query.parser.rot.AlternationRotation;
+import no.schibstedsok.front.searchportal.query.parser.rot.RotationAlternation;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.log4j.Logger;
 
@@ -119,8 +119,8 @@ public abstract class AbstractQueryParser implements QueryParser {
     private Clause alterations(final Clause original){
         
         // rotation alterations
-        final AlternationRotation rotator 
-                = new AlternationRotation(ContextWrapper.wrap(AlternationRotation.Context.class,context));
+        final RotationAlternation rotator 
+                = new RotationAlternation(ContextWrapper.wrap(RotationAlternation.Context.class,context));
         return rotator.createRotations(original);
     }
     
