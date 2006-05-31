@@ -7,7 +7,10 @@
     <packaging>war</packaging>
     <name>Sesam Search Engine</name>
     <version>2.1-SNAPSHOT</version>
-    <description>This is the project for Schibsted Søk's search-front application.</description>
+    <description>
+        This is the project for Schibsted Søk's search-portal application. Aka Sesam.
+        Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
+    </description>
     <url>https://dev.schibstedsok.no/maven/sites/search-portal/</url>
     <issueManagement>
         <system>JIRA</system>
@@ -74,7 +77,7 @@
     </licenses>
     <scm>
         <connection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/</connection>
-        <url>https://dev.schibstedsok.no/svn/search-portal/trunk/</url>
+        <url>https://dev.schibstedsok.no/websvn/listing.php?repname=search-portal&amp;path=%2F&amp;sc=0</url>
     </scm>
     <organization>
         <name>Schibsted Søk AS</name>
@@ -501,7 +504,7 @@
         <site>
             <id>dev443</id>
             <name>Schibsted Søk's Development Websites</name>
-            <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-front-html</url>
+            <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven/sites/search-portal</url>
         </site>
     </distributionManagement>
 </project>
