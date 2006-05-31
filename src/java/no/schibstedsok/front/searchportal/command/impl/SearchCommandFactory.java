@@ -11,6 +11,7 @@ package no.schibstedsok.front.searchportal.command.impl;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.command.BlendingNewsSearchCommand;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
+import no.schibstedsok.front.searchportal.command.HittaWebServiceSearchCommand;
 import no.schibstedsok.front.searchportal.command.MathExpressionCommand;
 import no.schibstedsok.front.searchportal.command.MobileSearchCommand;
 import no.schibstedsok.front.searchportal.command.NewsSearchCommand;
@@ -24,6 +25,7 @@ import no.schibstedsok.front.searchportal.command.WhiteSearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
 import no.schibstedsok.front.searchportal.configuration.BlendingNewsSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
+import no.schibstedsok.front.searchportal.configuration.HittaServiceSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.MathExpressionConfiguration;
 import no.schibstedsok.front.searchportal.configuration.MobileSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.NewsSearchConfiguration;
@@ -58,34 +60,52 @@ public final class SearchCommandFactory {
         // this is the drawback of removing the command dependency from configuration classes.
         // It is also not as performance savvy as the original implementation.
         // Possibilities are 1) move association to xml (tabs.xml?) or 2) use class naming scheme.
-        // An example of possibility (2) would be XXXSearchConfiguration --> XXXSearchCommand
+        // An example of (2) would be XXXSearchConfiguration --> XXXSearchCommand
+        
         if (config instanceof BlendingNewsSearchConfiguration) {
             return new BlendingNewsSearchCommand(cxt, parameters);
-        } if (config instanceof YellowSearchConfiguration) {
+            
+        } else if (config instanceof YellowSearchConfiguration) {
             return new YellowGeoSearch(cxt, parameters);
-        } if (config instanceof StockSearchConfiguration) {
+            
+        } else if (config instanceof StockSearchConfiguration) {
             return new StockSearchCommand(cxt, parameters);
-        } if (config instanceof WhiteSearchConfiguration) {
+            
+        } else if (config instanceof WhiteSearchConfiguration) {
             return new WhiteSearchCommand(cxt, parameters);
+            
         } else if (config instanceof WebSearchConfiguration) {
             return new WebSearchCommand(cxt, parameters);
+            
         } else if (config instanceof NewsSearchConfiguration) {
             return new NewsSearchCommand(cxt, parameters);
-        } else if (config instanceof FastConfiguration) {
-            return new FastSearchCommand(cxt, parameters);
-        } else if (config instanceof MathExpressionConfiguration) {
+            
+        }  else if (config instanceof MathExpressionConfiguration) {
             return new MathExpressionCommand(cxt, parameters);
+            
         } else if (config instanceof OverturePPCConfiguration) {
             return new OverturePPCCommand(cxt, parameters);
+            
         } else if (config instanceof PicSearchConfiguration) {
             return new PicSearchCommand(cxt, parameters);
+            
         } else if (config instanceof SensisSearchConfiguration) {
             return new FastSearchCommand(cxt, parameters);
+            
         } else if (config instanceof MobileSearchConfiguration)  {
             return new MobileSearchCommand(cxt, parameters);
+            
         } else if (config instanceof StaticSearchConfiguration) {
             return new StaticSearchCommand(cxt, parameters);
+            
+        } else if (config instanceof FastConfiguration) {
+            return new FastSearchCommand(cxt, parameters);
+            
+        } else if (config instanceof HittaServiceSearchConfiguration) {
+            return new HittaWebServiceSearchCommand(cxt, parameters);
+            
         }
+        
         throw new UnsupportedOperationException("Cannot find suitable command for " + config.getName());
     }
 }

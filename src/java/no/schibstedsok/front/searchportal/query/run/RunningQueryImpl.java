@@ -265,7 +265,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             hits.put(name, searchResult.getHitCount());
 
                             // score
-                            if(eHint != null && searchResult.getResults().size() > 0
+                            if(eHint != null && searchResult.getHitCount() > 0
                                     && score >= eHint.getThreshold() && score > 15) {
 
                                 // add enrichment

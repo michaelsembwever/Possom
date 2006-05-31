@@ -174,11 +174,14 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                     // allows us to inherent back through the fallback process.
                     final Properties newProps = new Properties();
                     newProps.load(urlConn.getInputStream());
-                    for(Object p : newProps.keySet()){
+                    
+                    synchronized( props ){
+                        for(Object p : newProps.keySet()){
 
-                        if(!props.containsKey(p)){
-                            final String prop = (String)p;
-                            props.setProperty(prop, newProps.getProperty(prop));
+                            if(!props.containsKey(p)){
+                                final String prop = (String)p;
+                                props.setProperty(prop, newProps.getProperty(prop));
+                            }
                         }
                     }
                 }

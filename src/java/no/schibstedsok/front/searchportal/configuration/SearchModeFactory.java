@@ -130,7 +130,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
         return instance;
     }
-    
+
     public boolean remove(final Site site){
 
         try{
@@ -219,7 +219,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchMode inherit = getMode(modeE.getAttribute("inherit"));
             final SearchMode mode = new SearchMode(inherit);
             mode.setId(id);
-            mode.setExecutor(parseExecutor(modeE.getAttribute("executor"), 
+            mode.setExecutor(parseExecutor(modeE.getAttribute("executor"),
                     inherit != null ? inherit.getExecutor() : new SequentialSearchCommandExecutor()));
             mode.setQueryAnalysisEnabled(parseBoolean(modeE.getAttribute("analysis"),
                     inherit != null ? inherit.isQueryAnalysisEnabled() : false));
@@ -276,20 +276,21 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private enum CommandTypes {
         COMMAND (AbstractSearchConfiguration.class),
-        FAST_COMMAND (FastConfiguration.class),
-        MATH_COMMAND (MathExpressionConfiguration.class),
-        NEWS_COMMAND (NewsSearchConfiguration.class),
         BLENDING_NEWS_COMMAND (BlendingNewsSearchConfiguration.class),
+        FAST_COMMAND (FastConfiguration.class),
+        HITTA_COMMAND (HittaServiceSearchConfiguration.class),
+        MATH_COMMAND (MathExpressionConfiguration.class),
+        MOBILE_COMMAND(MobileSearchConfiguration.class),
+        NEWS_COMMAND (NewsSearchConfiguration.class),
         OVERTURE_PPC_COMMAND(OverturePPCConfiguration.class),
         PICTURE_COMMAND(PicSearchConfiguration.class),
         SENSIS_COMMAND(SensisSearchConfiguration.class),
+        STATIC_COMMAND(StaticSearchConfiguration.class),
         STOCK_COMMAND(StockSearchConfiguration.class),
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
-        YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
-        MOBILE_COMMAND(MobileSearchConfiguration.class),
-        STATIC_COMMAND(StaticSearchConfiguration.class);
-        
+        YELLOWPAGES_COMMAND(YellowSearchConfiguration.class);
+
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
 
@@ -303,7 +304,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         public SearchConfiguration parseSearchConfiguration(
-                final Context cxt, 
+                final Context cxt,
                 final Element commandE,
                 final SearchMode mode){
 
@@ -357,7 +358,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     asc.setStatisticsName(parseString(commandE.getAttribute("statistical-name"),
                             ascInherit != null ? ascInherit.getStatisticsName() : ""));
 
-                    
+
 
                 }
                 if(sc instanceof FastConfiguration){
@@ -406,6 +407,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         }
 
                     }
+                }
+                if(sc instanceof HittaServiceSearchConfiguration){
+                    final HittaServiceSearchConfiguration hsc = (HittaServiceSearchConfiguration) sc;
+                    final HittaServiceSearchConfiguration hscInherit = inherit instanceof HittaServiceSearchConfiguration
+                            ? (HittaServiceSearchConfiguration)inherit
+                            : null;
+                    hsc.setCatalog(parseString(commandE.getAttribute("catalog"),
+                            hscInherit != null ? hscInherit.getCatalog() : ""));
                 }
                 if(sc instanceof MathExpressionConfiguration){
                     final MathExpressionConfiguration msc = (MathExpressionConfiguration) sc;
@@ -460,15 +469,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
                 if (sc instanceof BlendingNewsSearchConfiguration) {
                     final BlendingNewsSearchConfiguration bnsc = (BlendingNewsSearchConfiguration) sc;
-                    
-                    String filters[] = commandE.getAttribute("filters").split(",");
-                    
-                    List<String> filterList = new ArrayList<String>();
-                    
+
+                    final String filters[] = commandE.getAttribute("filters").split(",");
+
+                    final List<String> filterList = new ArrayList<String>();
+
                     for (int i = 0; i < filters.length; i++) {
                         filterList.add(filters[i].trim());
                     }
-                    
+
                     bnsc.setFiltersToBlend(filterList);
                     bnsc.setDocumentsPerFilter(Integer.parseInt(commandE.getAttribute("documentsPerFilter")));
                 }
@@ -477,7 +486,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Element qtRootElement = (Element) qtNodeList.item(0);
                 if(qtRootElement != null){
                     qtNodeList = qtRootElement.getChildNodes();
-                    
+
                     for(int i = 0; i < qtNodeList.getLength(); i++) {
                         final Node node = qtNodeList.item(i);
                         if (!(node instanceof Element)) {
@@ -546,14 +555,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         private String parseProperty(final Context cxt, final String s, final String def){
-            
+
             final String key = s.trim().length() == 0 ? def != null ? def : "" : s;
             final String value = SiteConfiguration.valueOf(
                     ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
                     .getProperty(key);
             return value != null ? value : key;
         }
-        
+
         private Collection<FastNavigator> parseNavigators(final Element navsE){
 
             final Collection<FastNavigator> navigators = new ArrayList<FastNavigator>();
@@ -593,7 +602,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SYNONYM (SynonymQueryTransformer.class),
         TERM_PREFIX (TermPrefixTransformer.class),
         TV (TvQueryTransformer.class),
-        WEBTV (WebTvQueryTransformer.class);        
+        WEBTV (WebTvQueryTransformer.class);
 
         private final Class<? extends QueryTransformer> clazz;
         private final String xmlName;

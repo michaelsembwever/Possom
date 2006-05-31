@@ -13,6 +13,8 @@ import no.schibstedsok.front.searchportal.site.Site;
  * @version $Id$
  */
 public final class Linkpulse {
+    
+    private static final String ERR_TOO_MANY_COLONS = "Too many colons in key-value ";
 
     private final Site site;
     private final Properties props;
@@ -49,8 +51,15 @@ public final class Linkpulse {
 
                 //the attribute and the attribute value is seperated by ':'
                 final String[] attrArr = paramArr[i].split(":");
-                for (int k = 0; k < attrArr.length; k++){
-                    toUrl.append(attrArr[k] + '=' + attrArr[k+1]);
+                switch(attrArr.length){
+                    case 1:
+                        toUrl.append(attrArr[0]);
+                        break;
+                    case 2:
+                        toUrl.append(attrArr[0] + '=' + attrArr[1]);
+                        break;
+                    default:
+                        throw new IllegalArgumentException(ERR_TOO_MANY_COLONS + paramArr[i]);
                 }
             }
             //adds to-url, if to-url links to external site we must drop site name prefix         
