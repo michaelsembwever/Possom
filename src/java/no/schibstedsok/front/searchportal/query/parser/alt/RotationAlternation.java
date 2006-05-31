@@ -6,7 +6,7 @@
  *
  */
 
-package no.schibstedsok.front.searchportal.query.parser.rot;
+package no.schibstedsok.front.searchportal.query.parser.alt;
 
 import java.util.Collections;
 import java.util.HashMap;

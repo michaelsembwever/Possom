@@ -25,7 +25,7 @@ import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.WordClause;
-import no.schibstedsok.front.searchportal.query.parser.rot.RotationAlternation;
+import no.schibstedsok.front.searchportal.query.parser.alt.RotationAlternation;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import org.apache.log4j.Logger;
 
