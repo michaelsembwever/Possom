@@ -23,13 +23,13 @@ public final class SearchTab {
 
 
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(SearchTab.class);
-    private static final String ERR_ENRICHMENT_BY_COMMAND_NON_EXISTENT 
+    private static final String ERR_ENRICHMENT_BY_COMMAND_NON_EXISTENT
             = "No enrichment, in this SearchTab, is linked to the command ";
     private static final String ERR_NAVIGATION_HINT_NOT_FOUND
             = "Navigation hint not found for ";
-            
+
 
     // Attributes ----------------------------------------------------
 
@@ -40,49 +40,49 @@ public final class SearchTab {
     /** Creates a new instance of SearchTab */
     SearchTab(
                 final SearchTab inherit,
-                final String id, 
-                final String mode, 
-                final String key, 
+                final String id,
+                final String mode,
+                final String key,
                 final String parentKey,
                 final int pageSize,
                 final Collection<NavigatorHint> navigations,
-                final int enrichmentLimit, 
+                final int enrichmentLimit,
                 final int enrichmentOnTop,
                 final int enrichmentOnTopScore,
                 final Collection<EnrichmentHint> enrichments,
                 final String adCommand,
                 final int adLimit,
                 final int adOnTop){
-        
+
         this.inherit = inherit;
         this.id = id;
-        
+
         // rather compact code. simply assigns the property to that pass in, or that from the inherit object, or null/-1
         this.mode = mode != null && mode.trim().length() >0 ? mode : inherit != null ? inherit.mode : null;
         this.key = key != null && key.trim().length() >0 ? key : inherit != null ? inherit.key : null;
-        this.parentKey = parentKey != null && parentKey.trim().length() >0 
-                ? parentKey 
+        this.parentKey = parentKey != null && parentKey.trim().length() >0
+                ? parentKey
                 : inherit != null ? inherit.parentKey : null;
         this.pageSize = pageSize >=0 || inherit == null ? pageSize : inherit.pageSize;
         this.navigators.addAll(navigations);
         this.enrichmentLimit = enrichmentLimit >=0 || inherit == null ? enrichmentLimit : inherit.enrichmentLimit;
         this.enrichmentOnTop = enrichmentOnTop >=0 || inherit == null ? enrichmentOnTop : inherit.enrichmentOnTop;
-        this.enrichmentOnTopScore = enrichmentOnTopScore >=0 || inherit == null 
-                ? enrichmentOnTopScore 
+        this.enrichmentOnTopScore = enrichmentOnTopScore >=0 || inherit == null
+                ? enrichmentOnTopScore
                 : inherit.enrichmentOnTopScore;
         this.enrichments.addAll(enrichments);
-        this.adCommand = adCommand != null && adCommand.trim().length() >0 
-                ? adCommand 
+        this.adCommand = adCommand != null && adCommand.trim().length() >0
+                ? adCommand
                 : inherit != null ? inherit.adCommand : null;
         this.adLimit = adLimit >=0 || inherit == null ? adLimit : inherit.adLimit;
         this.adOnTop = adOnTop >=0 || inherit == null ? adOnTop : inherit.adOnTop;
-        if( inherit != null ){
+        if(inherit != null){
             this.navigators.addAll(inherit.navigators);
-            this.enrichments.addAll(inherit.enrichments);            
+            this.enrichments.addAll(inherit.enrichments);
         }
     }
 
-    // Getters --------------------------------------------------------    
+    // Getters --------------------------------------------------------
 
     /**
      * Holds value of property id.
@@ -198,7 +198,7 @@ public final class SearchTab {
      * @return Value of property key.
      */
     public String getKey() {
-        
+
        if (parentKey != null) {
             return parentKey;
         } else {
@@ -218,8 +218,8 @@ public final class SearchTab {
     public String getParentKey() {
         return this.parentKey;
     }
-    
-    
+
+
 
     /**
      * Holds value of property enrichments.
@@ -235,15 +235,15 @@ public final class SearchTab {
     }
 
     public EnrichmentHint getEnrichmentByCommand(final String command){
-        
-        for( EnrichmentHint e : enrichments ){
-            if( e.getCommand().equals(command) ){
+
+        for(EnrichmentHint e : enrichments){
+            if(e.getCommand().equals(command)){
                 return e;
             }
         }
         return null;
     }
-    
+
     /**
      * Holds value of property mode.
      */
@@ -257,24 +257,79 @@ public final class SearchTab {
         return this.mode;
     }
 
+    /**
+     * Holds value of property navigations.
+     */
+    private final Collection<NavigatorHint> navigators = new ArrayList<NavigatorHint>();
+
+    /**
+     * Getter for property navigations.
+     * @return Value of property navigations.
+     */
+    public Collection<NavigatorHint> getNavigators() {
+        return Collections.unmodifiableCollection(navigators);
+    }
+
+    /**
+     * Returns the navigator hint matching name. Returns null if no navigator
+     * hint matches.
+     */
+    public NavigatorHint getNavigationHint(final String name) {
+        for (NavigatorHint hint : navigators) {
+            switch(hint.match) {
+                case EQUAL:
+                    if (hint.name.equals(name))
+                        return hint;
+                    break;
+                case PREFIX:
+                    if (name.startsWith(hint.name))
+                        return hint;
+                case SUFFIX:
+                    if (name.endsWith(hint.name))
+                        return hint;
+            }
+        }
+
+        LOG.error(ERR_NAVIGATION_HINT_NOT_FOUND + name);
+
+        return null;
+    }
+
+    public String toString(){
+        return id + (inherit != null ? " --> " + inherit.toString() : "");
+    }
+
+    /**
+     * Holds value of property enrichmentOnTopScore.
+     */
+    private int enrichmentOnTopScore;
+
+    /**
+     * Getter for property enrichmentScoreOnTop.
+     * @return Value of property enrichmentScoreOnTop.
+     */
+    public int getEnrichmentOnTopScore() {
+        return this.enrichmentOnTopScore;
+    }
+
     // Inner classes -------------------------------------------------
 
     /** Immutable POJO holding Enrichment properties from a given tab.
      **/
     public static final class EnrichmentHint  {
-        
+
         public EnrichmentHint(
                 final String rule,
                 final int threshold,
                 final float weight,
                 final String command){
-            
+
             this.rule = rule;
             this.threshold = threshold;
             this .weight = weight;
             this.command = command;
         }
-        
+
         /**
          * Holds value of property rule.
          */
@@ -330,7 +385,7 @@ public final class SearchTab {
 
     /** Immuable POJO holding navigation information for a given tab **/
     public static final class NavigatorHint {
-        
+
         public NavigatorHint(
                 final String name,
                 final MatchType match,
@@ -338,7 +393,7 @@ public final class SearchTab {
                 final String urlSuffix,
                 final String image,
                 final SearchTabFactory tabFactory){
-            
+
             this.name = name;
             this.match = match;
             this.tabName = tabName;
@@ -352,21 +407,21 @@ public final class SearchTab {
             EQUAL,
             SUFFIX;
         }
-        
+
         private final SearchTabFactory tabFactory;
-        
+
         /**
          * Holds value of property tabName.
          */
         private final String tabName;
-        
-        
+
+
         /**
          * Getter for property tab.
          * @return Value of property tab.
          */
         public String getTabName() {
-            
+
             return this.tabName;
         }
 
@@ -376,7 +431,7 @@ public final class SearchTab {
         public SearchTab getTab() {
             return tabFactory.getTabByName(tabName);
         }
-        
+
         /**
          * Holds value of property name.
          */
@@ -429,62 +484,9 @@ public final class SearchTab {
             return this.image;
         }
 
-        
+
 
     }
 
-    /**
-     * Holds value of property navigations.
-     */
-    private final Collection<NavigatorHint> navigators = new ArrayList<NavigatorHint>();
 
-    /**
-     * Getter for property navigations.
-     * @return Value of property navigations.
-     */
-    public Collection<NavigatorHint> getNavigators() {
-        return Collections.unmodifiableCollection(navigators);
-    }
-    
-    /**
-     * Returns the navigator hint matching name. Returns null if no navigator
-     * hint matches.
-     */
-    public NavigatorHint getNavigationHint(String name) {
-        for (NavigatorHint hint : navigators) {
-            switch(hint.match) {
-                case EQUAL:
-                    if (hint.name.equals(name))
-                        return hint;
-                    break;
-                case PREFIX:
-                    if (name.startsWith(hint.name))
-                        return hint;
-                case SUFFIX:
-                    if (name.endsWith(hint.name))
-                        return hint;
-            }
-        }
-        
-        LOG.error(ERR_NAVIGATION_HINT_NOT_FOUND + name);
-        
-        return null;
-    }
-
-    public String toString(){
-        return id + (inherit != null ? " --> " + inherit.toString() : "");
-    }
-
-    /**
-     * Holds value of property enrichmentOnTopScore.
-     */
-    private int enrichmentOnTopScore;
-
-    /**
-     * Getter for property enrichmentScoreOnTop.
-     * @return Value of property enrichmentScoreOnTop.
-     */
-    public int getEnrichmentOnTopScore() {
-        return this.enrichmentOnTopScore;
-    }
 }

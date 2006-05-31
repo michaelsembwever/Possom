@@ -190,12 +190,17 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     <c:set var="rows" value="${0}"/>
                     <c:forEach var="e" items="${sources}">
                         <c:set var="hint" value="${e.navigationHint}"/>
-                        <c:if test="${!empty hint}"><c:set var="rows" value="${rows +1}"/>
-                            <c:if test="${rows > 1}"><tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr></c:if>
-                            <tr onclick='strepRollover("<c:out value='?q=${q}&c=${tab.key}${hint.urlSuffix}'/>");'>
+                        <c:if test="${!empty hint}">
+                            <c:set var="rows" value="${rows +1}"/>
+                            <c:set var="navUrl" value="?q=${q}&c=${hint.tab.key}${hint.urlSuffix}"/>
+                            <c:if test="${rows > 1}">
+                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
+                            </c:if>
+                            <tr onclick='strepRollover("<c:out value='${navUrl}'/>");'>
                                 <td class="nav_pad_icon">
                                     <img src='<c:out value="../images/menu/${hint.image}"/>' class="nav_icon" align="left" alt="" />
-                                    <a href='<search:linkPulse url="?q=${q}&c=${tab.key}${hint.urlSuffix}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${e.name}"/></a>
+                                    <a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' 
+                                        onclick="return strep(this);"><c:out value="${e.name}"/></a>
                                 </td>
                                 <td class="nav_pad"><search:text key="numberFormat" args="${e.count}"/></td>
                             </tr>
