@@ -56,7 +56,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         try {
             query = URLEncoder.encode(query, "utf-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            LOG.error(e);
         }
 
         final String url = "/query?ie=UTF-8&tldb=" + psConfig.getPicsearchCountry() + "&custid=558735&version=2.6&thumbs=" + getSearchConfiguration().getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
@@ -80,8 +80,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
                 final BasicSearchResultItem item = new BasicSearchResultItem();
 
-                for (final Iterator iterator = getSearchConfiguration().getResultFields().iterator(); iterator.hasNext();) {
-                    final String fieldName = (String) iterator.next();
+                for (final String fieldName : getSearchConfiguration().getResultFields()) {
 
                     item.addField(fieldName, picture.getAttribute(fieldName));
                 }

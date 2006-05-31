@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Writer;
-import java.net.SocketException;
 import java.net.URL;
 import java.net.URLConnection;
 import org.apache.log4j.Logger;
@@ -92,8 +91,8 @@ public final class PublishDirective extends Directive {
             
             return true;
         
-        }catch(SocketException se){
-            LOG.error(ERR_NETWORK_DOWN, se);
+        }catch(IOException se){
+            LOG.error(ERR_NETWORK_DOWN + se);
             return false;
         }
 
