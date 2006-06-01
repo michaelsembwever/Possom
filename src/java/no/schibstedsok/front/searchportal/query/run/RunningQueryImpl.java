@@ -66,7 +66,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final String queryStr;
     private final Query queryObj;
     protected volatile Map<String,Object> parameters = new Hashtable<String,Object>();
-    private int offset;
     private final Locale locale = new Locale("no", "NO");
     private final List<Modifier> sources = new Vector<Modifier>();
     private final TokenEvaluatorFactory tokenEvaluatorFactory;
@@ -199,7 +198,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 if(eHint != null && !queryObj.isBlank()){
                     final AnalysisRule rule = rules.getRule(eHint.getRule());
 
-                    if (context.getSearchMode().isQueryAnalysisEnabled() && offset == 0) {
+                    if (context.getSearchMode().isQueryAnalysisEnabled() 
+                            && "0".equals(parameters.get("offset")) ) {
 
                         ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
                         LOG.debug("Scoring new style for " + eHint.getRule());
