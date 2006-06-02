@@ -483,10 +483,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /** returns null when array is null **/
-    private String getSingleParameter(final String paramName) {
-        return parameters.get(paramName) != null
+    protected final String getSingleParameter(final String paramName) {
+        return parameters.get(paramName) instanceof String[]
                 ? ((String[]) parameters.get(paramName))[0]
-                : null;
+                : (String) parameters.get(paramName);
     }
 
     private Query createQuery(final String queryString) {
