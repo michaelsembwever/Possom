@@ -9,6 +9,7 @@
 package no.schibstedsok.front.searchportal.command.impl;
 
 import java.util.Map;
+import no.schibstedsok.front.searchportal.command.AdvancedFastSearchCommand;
 import no.schibstedsok.front.searchportal.command.BlendingNewsSearchCommand;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.HittaWebServiceSearchCommand;
@@ -23,6 +24,7 @@ import no.schibstedsok.front.searchportal.command.StockSearchCommand;
 import no.schibstedsok.front.searchportal.command.WebSearchCommand;
 import no.schibstedsok.front.searchportal.command.WhiteSearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
+import no.schibstedsok.front.searchportal.configuration.AdvancedFastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.BlendingNewsSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.HittaServiceSearchConfiguration;
@@ -79,10 +81,12 @@ public final class SearchCommandFactory {
             
         } else if (config instanceof NewsSearchConfiguration) {
             return new NewsSearchCommand(cxt, parameters);
-            
-        }  else if (config instanceof MathExpressionConfiguration) {
+        } else if (config instanceof AdvancedFastConfiguration) {
+            return new AdvancedFastSearchCommand(cxt, parameters);
+        } else if (config instanceof FastConfiguration) {
+            return new FastSearchCommand(cxt, parameters);
+        } else if (config instanceof MathExpressionConfiguration) {
             return new MathExpressionCommand(cxt, parameters);
-            
         } else if (config instanceof OverturePPCConfiguration) {
             return new OverturePPCCommand(cxt, parameters);
             

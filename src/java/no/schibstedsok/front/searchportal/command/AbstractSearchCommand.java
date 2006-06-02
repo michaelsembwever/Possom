@@ -418,13 +418,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param transformers
      */
     private void applyQueryTransformers(final Query query, final List<QueryTransformer> transformers) {
-        if (transformers != null) {
-
-
+        if (transformers != null && transformers.size() > 0) {
             boolean touchedTransformedQuery = false;
-
-            // initialise map with default values
-
 
             final StringBuilder filterBuilder = new StringBuilder(filter);
 
@@ -479,6 +474,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             }
             // avoid the trailing space.
             filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)).trim();
+        } else {
+            transformedQuery = getQueryRepresentation(query);
         }
     }
 

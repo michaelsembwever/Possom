@@ -95,6 +95,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String ERR_MISSING_IMPLEMENTATION = "Missing implementation case in CommandTypes";
     private static final String ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED
             = "Each FastNavigator is only allowed to have one child. Parent was ";
+    private static final String ERR_FAST_EPS_QR_SERVER = "" +
+            "Query server adressen cannot contain the scheme (http://): ";
     private static final String INFO_PARSING_MODE = "Parsing mode ";
     private static final String INFO_PARSING_CONFIGURATION = " Parsing configuration ";
     private static final String INFO_PARSING_NAVIGATOR = "  Parsing navigator ";
@@ -278,6 +280,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         COMMAND (AbstractSearchConfiguration.class),
         BLENDING_NEWS_COMMAND (BlendingNewsSearchConfiguration.class),
         FAST_COMMAND (FastConfiguration.class),
+        ADVANCED_FAST_COMMAND (AdvancedFastConfiguration.class),
         HITTA_COMMAND (HittaServiceSearchConfiguration.class),
         MATH_COMMAND (MathExpressionConfiguration.class),
         MOBILE_COMMAND(MobileSearchConfiguration.class),
@@ -293,6 +296,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
+
 
         CommandTypes(final Class<? extends SearchConfiguration> clazz){
             this.clazz = clazz;
@@ -407,6 +411,26 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         }
 
                     }
+                }
+                if (sc instanceof AdvancedFastConfiguration) {
+                    final AdvancedFastConfiguration asc = (AdvancedFastConfiguration) sc;
+                    final AdvancedFastConfiguration ascInherit = inherit instanceof AdvancedFastConfiguration
+                            ? (AdvancedFastConfiguration) inherit 
+                            : null;
+                    asc.setView(parseString(commandE.getAttribute("view"),
+                            ascInherit != null ? ascInherit.getView() : ""));
+                    asc.setSortBy(parseString(commandE.getAttribute("sort-by"),
+                            ascInherit != null ? ascInherit.getSortBy() : "default"));
+
+                    final String qrServer = commandE.getAttribute("query-server");
+                    final String qrServerValue = parseProperty(cxt, qrServer,
+                            ascInherit != null ? ascInherit.getQueryServer() : null);
+
+                    if (qrServerValue.startsWith("http://")) {
+                       throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + qrServerValue);
+                    }
+                            
+                    asc.setQueryServer(qrServerValue);
                 }
                 if(sc instanceof HittaServiceSearchConfiguration){
                     final HittaServiceSearchConfiguration hsc = (HittaServiceSearchConfiguration) sc;
