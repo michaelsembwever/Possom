@@ -42,6 +42,7 @@ public class OverturePPCConfiguration extends AbstractSearchConfiguration {
      * Setter for property partnerId.
      * @param partnerId New value of property partnerId.
      */
-    public void setPartnerId(final java.lang.String partnerId) {
+    public void setPartnerId(final java.lang.String partner) {
+        partnerId = partner; 
     }
 }
