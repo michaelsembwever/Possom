@@ -411,7 +411,7 @@
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
-            <version>2.0</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -432,6 +432,11 @@
             <groupId>fast</groupId>
             <artifactId>dsapi</artifactId>
             <version>2.0.70</version>
+        </dependency>
+        <dependency>
+            <groupId>fast</groupId>
+            <artifactId>esp-searchapi</artifactId>
+            <version>5.0.14</version>
         </dependency>
         <dependency>
             <groupId>fast</groupId>
