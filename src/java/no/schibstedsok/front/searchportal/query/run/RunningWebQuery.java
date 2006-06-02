@@ -44,7 +44,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
         for (String parameterName : (Set<String>)request.getParameterMap().keySet()) {
 
             final String[] parameterValues = request.getParameterValues(parameterName);
-            addParameter(parameterName, parameterValues);
+            addParameter(parameterName, parameterValues.length>1 ? parameterValues : parameterValues[0]);
 
             if (LOG.isDebugEnabled()) {
                 final StringBuilder buff = new StringBuilder();

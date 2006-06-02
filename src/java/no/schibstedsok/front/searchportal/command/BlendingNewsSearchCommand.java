@@ -92,7 +92,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
      * @return i plus the offset of the current page.
      */
     protected int getCurrentOffset(final int i) {
-        return Integer.parseInt((String) getParameters().get("offset")) / cfg.getFiltersToBlend().size();
+        return Integer.parseInt(getParameter("offset")) / cfg.getFiltersToBlend().size();
     }
 
     protected int getResultsToReturn() {

@@ -369,10 +369,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected String getParameter(final String paramName) {
         if (parameters.containsKey(paramName)) {
-            final String val[] = (String[]) parameters.get(paramName);
-            if (val.length > 0 && val[0].length() > 0) {
-                return val[0];
-            }
+            if( parameters.get(paramName) instanceof String[] ){
+                final String val[] = (String[]) parameters.get(paramName);
+                if (val.length > 0 && val[0].length() > 0) {
+                    return val[0];
+                }
+            }else if( parameters.get(paramName) instanceof String ){
+                return (String)parameters.get(paramName);
+            } 
         }
         return "";
     }

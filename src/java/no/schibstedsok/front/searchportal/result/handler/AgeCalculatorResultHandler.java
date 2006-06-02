@@ -62,13 +62,15 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     dateParts[2] = Long.valueOf(age / (60 * 1000) % 60);
 
                     String ageString = ""; // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
-                    final String[]  s = (String[]) parameters.get("contentsource");
+                    final String  s = parameters.get("contentsource") instanceof String[] 
+                            ? ((String[])parameters.get("contentsource"))[0] 
+                            : (String)parameters.get("contentsource");
 
                     final TextMessages txtMsgs = TextMessages.valueOf(
                             ContextWrapper.wrap(TextMessages.Context.class, cxt));
 
                     //older than 3 days or source is Mediearkivet, show dd.mm.yyyy
-                    if (dateParts[0].longValue() > 3 || s != null && s[0].equals("Mediearkivet") || asDate == true)
+                    if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || asDate == true)
                         ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
                     //more than 1 day, show days
                     else if (dateParts[0].longValue() > 0) {

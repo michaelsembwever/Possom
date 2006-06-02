@@ -123,8 +123,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         for (String parameterName : (Set<String>)getParameters().keySet()) {
 
             if (parameterName.startsWith("nav_") && !parameterName.substring(parameterName.indexOf('_') + 1).equals(navigatorKey)) {
-                final String paramValue[] = (String[]) getParameters().get(parameterName);
-                otherNavigators.put(parameterName.substring(parameterName.indexOf('_') + 1), paramValue[0]);
+                final String paramValue = getParameter(parameterName);
+                otherNavigators.put(parameterName.substring(parameterName.indexOf('_') + 1), paramValue);
             }
         }
         return otherNavigators;
@@ -152,9 +152,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     public FastNavigator getParentNavigator(final String navigatorKey) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
-            final String navName[] = (String[]) getParameters().get("nav_" + navigatorKey);
+            final String navName =  getParameter("nav_" + navigatorKey);
 
-            return findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), navName[0]);
+            return findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), navName);
 
         } else {
             return null;
@@ -268,24 +268,24 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     public List addNavigatorBackLinks(final FastNavigator navigator, final List links, final String navigatorKey) {
 
-        final String a[] = (String[]) getParameters().get(navigator.getField());
+        final String a = getParameter(navigator.getField());
 
         if (a != null) {
 
             LOG.debug(navigator.getName());
-            LOG.debug(a[0]);
+            LOG.debug(a);
 
-            if (!(navigator.getName().equals("ywfylkesnavigator") && a[0].equals("Oslo"))) {
-                if (!(navigator.getName().equals("ywkommunenavigator") && a[0].equals("Oslo"))) {
+            if (!(navigator.getName().equals("ywfylkesnavigator") && a.equals("Oslo"))) {
+                if (!(navigator.getName().equals("ywkommunenavigator") && a.equals("Oslo"))) {
                     links.add(navigator);
                 }
             }
         }
 
         if (navigator.getChildNavigator() != null) {
-            final String n[] = (String[]) getParameters().get("nav_" + navigatorKey);
+            final String n = getParameter("nav_" + navigatorKey);
 
-            if (n != null && navigator.getName().equals(n[0])) {
+            if (n != null && navigator.getName().equals(n)) {
                 return links;
             }
 
@@ -313,8 +313,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                     final String navigatorKey = (String) iterator.next();
 
                     if (getParameters().containsKey("nav_" + navigatorKey)) {
-                        final String navigatedTo[] = (String[]) getParameters().get("nav_" + navigatorKey);
-                        addNavigatedTo(navigatorKey, navigatedTo[0]);
+                        final String navigatedTo = getParameter("nav_" + navigatorKey);
+                        addNavigatedTo(navigatorKey, navigatedTo);
                     } else {
                         addNavigatedTo(navigatorKey, null);
                     }
@@ -637,7 +637,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         if (getFastConfiguration().isKeywordClusteringEnabled()) {
             if (getParameters().containsKey("kw")) {
-                kwString = StringUtils.join((String[]) getParameters().get("kw"), " ");
+                kwString =  getParameters().get("kw") instanceof String[]
+                        ? StringUtils.join((String[]) getParameters().get("kw"), " ")
+                        : getParameter("kw");
             }
 
             if (!kwString.equals("")) {
@@ -646,7 +648,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
         // TODO: This is a little bit messy
         // Set filter, the filtertype may be adv
-        StringBuffer filter = new StringBuffer(getFastConfiguration().getCollectionFilterString());
+        final StringBuilder filter = new StringBuilder(getFastConfiguration().getCollectionFilterString());
 
 
         if (!getFastConfiguration().isIgnoreNavigationEnabled() && getNavigators() != null) {
@@ -726,13 +728,13 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         // TODO: Refactor
         if (getParameters().containsKey("userSortBy")) {
 
-            String sortBy[] = (String[]) getParameters().get("userSortBy");
+            String sortBy = getParameter("userSortBy");
             if (LOG.isDebugEnabled()) {
-                LOG.debug("createQuery: SortBY " + sortBy[0]);
+                LOG.debug("createQuery: SortBY " + sortBy);
             }
-            if ("standard".equals(sortBy[0])) {
+            if ("standard".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retrievernews+docdatetime"));
-            } else if ("datetime".equals(sortBy[0])) {
+            } else if ("datetime".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard"));
             }
         }
@@ -838,8 +840,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private FastNavigator findChildNavigator(FastNavigator nav, String nameToFind) {
 
         if (getParameters().containsKey(nav.getField())) {
-            String navigatedValue[] = (String[]) getParameters().get(nav.getField());
-            navigatedValues.put(nav.getField(), navigatedValue);
+            
+            navigatedValues.put(nav.getField(), getParameters().get(nav.getField()) instanceof String[]
+                    ? (String[])getParameters().get(nav.getField())
+                    : new String[]{getParameter(nav.getField())});
         }
 
         if (nav.getName().equals(nameToFind)) {

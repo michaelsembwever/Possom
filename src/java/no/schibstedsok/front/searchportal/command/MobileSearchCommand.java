@@ -153,7 +153,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
         IDeviceCapabilities cap = null;
         
         if (getParameters().containsKey(USER_AGENT_PARAMETER)) {
-            final String userAgent = (((String[]) getParameters().get(USER_AGENT_PARAMETER))[0]);
+            final String userAgent = ( getParameter(USER_AGENT_PARAMETER));
             cap = DeviceCapabilitiesFactory.getDeviceCapabilities();
             cap.setUserAgent(userAgent);
         }

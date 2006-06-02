@@ -254,7 +254,7 @@ public final class VelocityResultHandler implements ResultHandler {
                     cxt.getSearchTab().getPageSize());
             
             final Object v = parameters.get("offset");
-            pager.setCurrentOffset(Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
+            pager.setCurrentOffset(Integer.parseInt( v instanceof String[] 
                     ? ((String[]) v)[0]
                     : (String) v));
             
