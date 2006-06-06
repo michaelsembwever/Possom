@@ -6,7 +6,7 @@
     <artifactId>search-portal</artifactId>
     <packaging>war</packaging>
     <name>Sesam Search Engine</name>
-    <version>2.1-SNAPSHOT</version>
+    <version>2.2-SNAPSHOT</version>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
         Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
