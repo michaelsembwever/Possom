@@ -60,9 +60,9 @@ public final class PublishDirective extends Directive {
    /**
      * {@inheritDoc}
      */
-    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) 
+    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node)
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        
+
         if (node.jjtGetNumChildren() < 2) {
             rsvc.error("#" + getName() + " - missing argument");
             return false;
@@ -88,9 +88,9 @@ public final class PublishDirective extends Directive {
             if (lastToken.image.endsWith("\n")) {
                 writer.write('\n');
             }
-            
+
             return true;
-        
+
         }catch(IOException se){
             LOG.error(ERR_NETWORK_DOWN + url, se);
             return false;
