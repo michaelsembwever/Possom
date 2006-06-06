@@ -38,9 +38,9 @@ import org.apache.velocity.runtime.parser.node.Node;
 public final class PublishDirective extends Directive {
 
     private static final Logger LOG = Logger.getLogger(PublishDirective.class);
-    private static final String ERR_NETWORK_DOWN = "Network down?";
-    private static final String DEBUG_LOADING_1 = "Pusblishing ";
-    private static final String DEBUG_LOADING_2 = "\n with host-header ";
+    private static final String ERR_NETWORK_DOWN = "Network down? ";
+    private static final String DEBUG_LOADING_1 = "Publishing ";
+    private static final String DEBUG_LOADING_2 = " with host-header ";
 
     private static final String NAME = "publish";
     private static final String DEFAULT_CHARSET = "utf-8";
@@ -74,12 +74,11 @@ public final class PublishDirective extends Directive {
 
         final String url = node.jjtGetChild(0).value(context).toString() + ".html";
         final String header = node.jjtGetChild(1).value(context).toString();
-        LOG.debug(url);
         final URLConnection urlConn = new URL(url).openConnection();
         urlConn.addRequestProperty("host", header);
 
         try{
-            LOG.trace(DEBUG_LOADING_1 + url + DEBUG_LOADING_2 + header);
+            LOG.debug(DEBUG_LOADING_1 + url + DEBUG_LOADING_2 + header);
             final BufferedReader reader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
             for (String line = reader.readLine(); line != null; line=reader.readLine()) {
                 writer.write(line);
