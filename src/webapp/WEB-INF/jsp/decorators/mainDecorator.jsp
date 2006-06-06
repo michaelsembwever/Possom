@@ -70,6 +70,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <link media="screen" href="../css/sitesearch.css?x=1" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/front.css?x=1" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/ps.css?x=1" rel="stylesheet" type="text/css" />
+    <c:forEach var="t" items="${tab.ancestry}">
+        <link media="screen" href="../css/tab/<c:out value='${t.id}'/>.css?x=1" rel="stylesheet" type="text/css" />
+    </c:forEach>
     <link media="print" href="../css/print-style.css?x=1" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
@@ -428,10 +431,12 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
 
                 <%if (currentC.equals("p") || currentC.equals("pp") ) {%>
-                    <div style="width: 100%;">
-                        <!--search:velocity template="scanpix"/-->
-                        <!--search:import template="picSearch"/-->
+                    <div>
                         <decorator:getProperty property="page.picsearch-results"/>
+                        <search:velocity template="results/scanpix" command="scanpix"/>
+                        <!--search:import template="picSearch"/-->
+                        
+                        <div class="clearFloat">&nbsp;</div>
                     </div>
                 <%}%>
 

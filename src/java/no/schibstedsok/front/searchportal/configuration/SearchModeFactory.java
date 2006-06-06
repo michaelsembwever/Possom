@@ -439,6 +439,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             : null;
                     hsc.setCatalog(parseString(commandE.getAttribute("catalog"),
                             hscInherit != null ? hscInherit.getCatalog() : ""));
+                    hsc.setKey(parseString(commandE.getAttribute("key"),
+                            hscInherit != null ? hscInherit.getKey() : ""));
                 }
                 if(sc instanceof MathExpressionConfiguration){
                     final MathExpressionConfiguration msc = (MathExpressionConfiguration) sc;

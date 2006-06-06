@@ -11,6 +11,7 @@ package no.schibstedsok.front.searchportal.view.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import org.apache.log4j.Logger;
 
 /**
@@ -310,6 +311,16 @@ public final class SearchTab {
      */
     public int getEnrichmentOnTopScore() {
         return this.enrichmentOnTopScore;
+    }
+    
+    public List<SearchTab> getAncestry(){
+        // XXX cache result
+        final List<SearchTab> ancestry = new ArrayList<SearchTab>();
+        for( SearchTab t = this; t != null; t = t.getInherit()){
+            ancestry.add(t);
+        }
+        Collections.reverse(ancestry);
+        return Collections.unmodifiableList(ancestry);
     }
 
     // Inner classes -------------------------------------------------

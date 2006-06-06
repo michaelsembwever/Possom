@@ -15,7 +15,7 @@ import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
-/**
+/** 
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -52,9 +52,11 @@ public final class DataModelResultHandler implements ResultHandler{
         //   copy these over from VelocityResultHandler.populateContext() as needed.
         
         // results
-        if( parameters.get("results") == null ){
-            parameters.put("results", new Hashtable<String,SearchResult>());
-            LOG.debug(DEBUG_CREATED_RESULTS);
+        synchronized( parameters ){
+            if( parameters.get("results") == null ){
+                parameters.put("results", new Hashtable<String,SearchResult>());
+                LOG.debug(DEBUG_CREATED_RESULTS);
+            }
         }
         final Hashtable<String,SearchResult> results 
                 = (Hashtable<String,SearchResult>)parameters.get("results");

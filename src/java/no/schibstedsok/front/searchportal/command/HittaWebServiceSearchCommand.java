@@ -64,11 +64,11 @@ public final class HittaWebServiceSearchCommand extends AbstractWebServiceSearch
             final HittaServiceSoap service = locator.getHittaServiceSoap();
 
             if(conf.getCatalog().equalsIgnoreCase("white")){
-                hits = service.getWhiteAmount(getTransformedQuery(), "", "")
-                        + service.getWhiteAmount("", getTransformedQuery(), "");
+                hits = service.getWhiteAmount(getTransformedQuery(), "", conf.getKey())
+                        + service.getWhiteAmount("", getTransformedQuery(), conf.getKey());
             }else if(conf.getCatalog().equalsIgnoreCase("pink")){
-                hits = service.getPinkAmount(getTransformedQuery(), "", "")
-                        + service.getPinkAmount("", getTransformedQuery(), "");
+                hits = service.getPinkAmount(getTransformedQuery(), "", conf.getKey())
+                        + service.getPinkAmount("", getTransformedQuery(), conf.getKey());
             }
 
         } catch (ServiceException ex) {

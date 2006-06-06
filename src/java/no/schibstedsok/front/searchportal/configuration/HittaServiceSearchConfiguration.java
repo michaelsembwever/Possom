@@ -42,5 +42,26 @@ public final class HittaServiceSearchConfiguration extends AbstractWebServiceSea
         this.catalog = catalog;
     }
 
+    /**
+     * Holds value of property key.
+     */
+    private String key;
+
+    /**
+     * Getter for property key.
+     * @return Value of property key.
+     */
+    public String getKey() {
+        return this.key;
+    }
+
+    /**
+     * Setter for property key.
+     * @param key New value of property key.
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
 
 }
