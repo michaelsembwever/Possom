@@ -33,6 +33,7 @@ public final class HittaWebServiceSearchCommand extends AbstractWebServiceSearch
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(HittaWebServiceSearchCommand.class);
+    private static final String DEBUG_CONF_NFO = "Conf details --> ";
 
     // Attributes ----------------------------------------------------
 
@@ -57,18 +58,18 @@ public final class HittaWebServiceSearchCommand extends AbstractWebServiceSearch
         final HittaServiceSearchConfiguration conf = (HittaServiceSearchConfiguration) context.getSearchConfiguration();
         int hits = 0;
 
+        LOG.debug(DEBUG_CONF_NFO + conf.getCatalog() + ' ' + conf.getKey());
 
         try {
             final HittaServiceLocator locator = new HittaServiceLocator();
-
             final HittaServiceSoap service = locator.getHittaServiceSoap();
 
             if(conf.getCatalog().equalsIgnoreCase("white")){
                 hits = service.getWhiteAmount(getTransformedQuery(), "", conf.getKey())
-                        + service.getWhiteAmount("", getTransformedQuery(), conf.getKey());
+                        ;//+ service.getWhiteAmount("", getTransformedQuery(), conf.getKey());
             }else if(conf.getCatalog().equalsIgnoreCase("pink")){
                 hits = service.getPinkAmount(getTransformedQuery(), "", conf.getKey())
-                        + service.getPinkAmount("", getTransformedQuery(), conf.getKey());
+                        ;//+ service.getPinkAmount("", getTransformedQuery(), conf.getKey());
             }
 
         } catch (ServiceException ex) {

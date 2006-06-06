@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author <a href="mailto:anders.johan.jamtli@sesam.no">Anders Johan Jamtli</a>
  */
-public class QueryStringHelper {
+public final class QueryStringHelper {
     /** A safer way to get parameters for the query string. 
      * Handles ISO-8859-1 and UTF-8 URL encodings. 
      * 

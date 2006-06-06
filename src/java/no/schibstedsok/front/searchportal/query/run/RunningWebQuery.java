@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.logging.Log;
@@ -90,6 +91,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
             }
         }
         // ...and...
+        request.setAttribute("queryHTMLEscaped", StringEscapeUtils.escapeHtml(getQueryString()));
         request.setAttribute("enrichments", getEnrichments());
         request.setAttribute("sources", getSources());
         request.setAttribute("hits",getHits());

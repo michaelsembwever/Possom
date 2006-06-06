@@ -27,7 +27,7 @@ currentC = (String) request.getAttribute("c");
 String q = (String) request.getAttribute("q");
 final String contentsource = (String) request.getParameter("contentsource");
 final String qURLEncoded = URLEncoder.encode(q, "utf-8");
-q = StringEscapeUtils.escapeHtml(q);
+q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
 final String help = request.getParameter("help");
 final String about = request.getParameter("about");
@@ -341,33 +341,35 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 			<table border="0" width="100%">
 			<tr>
-                        <decorator:getProperty property="page.spellcheck"/>
-                         <td id="result_container">
+                <decorator:getProperty property="page.spellcheck"/>
+                 <td id="result_container">
 
-                                <decorator:getProperty property="page.main_ads"/>
+                        <decorator:getProperty property="page.main_ads"/>
 
-                             <c:choose>
-                                 <c:when test="${no_hits >0 || enrichmentSize >0}">
+                     <c:choose>
+                         <c:when test="${no_hits >0 || enrichmentSize >0}">
 
-                                     <!--  Enrichments on top: <c:out value="${tab.enrichmentOnTop}"/>
-                                          Enrichments in total: <c:out value="${tab.enrichmentLimit}"/>
-                                           <c:forEach var="ee" items="${enrichments}">
-                                               <c:out value="${ee.name}"/>: <c:out value="${ee.analysisResult}"/>
-                                           </c:forEach> -->
+                             <!--  Enrichments on top: <c:out value="${tab.enrichmentOnTop}"/>
+                              Enrichments in total: <c:out value="${tab.enrichmentLimit}"/>
+                               <c:forEach var="ee" items="${enrichments}">
+                                   <c:out value="${ee.name}"/>: <c:out value="${ee.analysisResult}"/>
+                               </c:forEach> -->
 
-                                      <decorator:getProperty property="page.globalSearchTips" />
+                              <decorator:getProperty property="page.globalSearchTips" />
 
-                                       <%-- Show tab's leading enrichments --%>
-                                       <c:forEach var="ee" items="${enrichments}" varStatus="i">
-                                           <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult > tab.enrichmentOnTopScore}">
-                                               <c:set var="pageName" value="page.${ee.name}"/>
-                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
-                                           </c:if>
-                                       </c:forEach>
+                               <%-- Show tab's leading enrichments --%>
+                               <c:forEach var="ee" items="${enrichments}" varStatus="i">
+                                   <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult > tab.enrichmentOnTopScore}">
+                                       <c:set var="pageName" value="page.${ee.name}"/>
+                                       <search:velocity template="enrichments/${ee.name}" command="${ee.name}"/>
+                                        <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
+                                   </c:if>
+                               </c:forEach>
 
-                                        <% if ("d".equals(currentC) || "pss".equals(currentC)) { %>
-                                           <%--  Shows the 3 first hits if more than 1 enrichment  --%>
-                                           <decorator:getProperty property="page.fast-results-norwegian_part1"/>
+                                <c:choose>
+                                    <c:when test="${tab.id == 'local-internet' || tab.id == 'pss'}">
+                                       <%--  Shows the 3 first hits if more than 1 enrichment  --%>
+                                       <decorator:getProperty property="page.fast-results-norwegian_part1"/>
 
 
                                        <%-- Show tab's proceeding enrichments --%>
@@ -378,20 +380,21 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                                            </c:if>
                                        </c:forEach>
 
-                                           <%--  Shows the 7 next hits after the second/third enrichments  --%>
-                                           <decorator:getProperty property="page.fast-results-norwegian_part2"/>
+                                       <%--  Shows the 7 next hits after the second/third enrichments  --%>
+                                       <decorator:getProperty property="page.fast-results-norwegian_part2"/>
 
-                                       <% } else if ("g".equals(currentC)) { %>
+                                    </c:when>
+                                    <c:when test="${tab.id == 'global-internet'}">
+                                        <decorator:getProperty property="page.global-results"/>
+                                   </c:when>
+                               </c:choose>
+                         </c:when>
+                         <c:otherwise>
+                             <decorator:getProperty property="page.noHits" />
+                         </c:otherwise>
+                     </c:choose>
 
-                                            <decorator:getProperty property="page.global-results"/>
-                                       <% } %>
-                                 </c:when>
-                                 <c:otherwise>
-                                     <decorator:getProperty property="page.noHits" />
-                                 </c:otherwise>
-                             </c:choose>
-
-                        </td>
+                </td>
 			</tr>
 			</table>
                         <% } %>  <%-- Sok smart --%>

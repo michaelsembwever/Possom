@@ -1,14 +1,9 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.configuration;
 
-import no.schibstedsok.front.searchportal.command.PicSearchCommand;
-import no.schibstedsok.front.searchportal.command.SearchCommand;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 
-import java.util.Map;
 
 /**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id $</tt>
  */
 public final class HittaServiceSearchConfiguration extends AbstractWebServiceSearchConfiguration {
@@ -16,9 +11,14 @@ public final class HittaServiceSearchConfiguration extends AbstractWebServiceSea
     public HittaServiceSearchConfiguration(){
         super(null);
     }
-    
+
     public HittaServiceSearchConfiguration(final SearchConfiguration asc){
         super(asc);
+        if(asc != null && asc instanceof HittaServiceSearchConfiguration){
+            final HittaServiceSearchConfiguration hssc = (HittaServiceSearchConfiguration)asc;
+
+            key = hssc.key;
+        }
     }
 
     /**
@@ -38,7 +38,7 @@ public final class HittaServiceSearchConfiguration extends AbstractWebServiceSea
      * Setter for property catalog.
      * @param catalog New value of property catalog.
      */
-    public void setCatalog(String catalog) {
+    public void setCatalog(final String catalog) {
         this.catalog = catalog;
     }
 
@@ -59,7 +59,7 @@ public final class HittaServiceSearchConfiguration extends AbstractWebServiceSea
      * Setter for property key.
      * @param key New value of property key.
      */
-    public void setKey(String key) {
+    public void setKey(final String key) {
         this.key = key;
     }
 
