@@ -92,7 +92,7 @@ public final class PublishDirective extends Directive {
             return true;
         
         }catch(IOException se){
-            LOG.error(ERR_NETWORK_DOWN + se);
+            LOG.error(ERR_NETWORK_DOWN + url, se);
             return false;
         }
 
