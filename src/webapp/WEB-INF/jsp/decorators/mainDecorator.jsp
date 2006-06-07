@@ -81,7 +81,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 </head>
 
 
-<body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") ) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
+<body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") ) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")|| currentC.equals("swip")) {%>init(); checkTab();<% } %>">
         
     <search:velocity template="/pages/main"/>
         
@@ -258,6 +258,28 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 </table>
                 <decorator:getProperty property="page.newsSearchNavigator" />
                 <decorator:getProperty property="page.media-collection-nav"/>
+            <%}else if (currentC.equals("sw") || currentC.equals("swip")) {%>
+                <table border="0" cellspacing="0" cellpadding="0" class="menu">
+		            <% int i=0; %>
+                    <% for (Modifier e : sources) {
+                        SearchTab.NavigatorHint hint = tab.getNavigationHint(e.getName());
+                        if (hint != null) {
+                                    ++i;
+                        if(i!=1) {%>
+                                <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
+                        <% } %>
+                        <tr onclick='strepRollover("?q=<%=qURLEncoded%>&amp;<%="c=" + hint.getTab().getKey() +hint.getUrlSuffix()%>");'>
+                            <td class="nav_pad_icon">
+                                <img <% if (e.getName().startsWith("Bedriftss")) { %> src="../images/menu/bedrift.gif" <% } else if (e.getName().startsWith("Netts")) { %> src="../images/menu/nettsok.gif" <% } %> class="nav_icon" align="left" alt="" />
+                                <% String x = "?q=" + qURLEncoded + "&amp;" + "c=" + hint.getTab().getKey() +hint.getUrlSuffix(); %>
+                                <a href="<%=linkpulse.getUrl(x, "category:navigation;subcategory:service_left", "sgo", "") %>" onclick="return strep(this);"><%= e.getName() %></a>
+                            </td>
+                            <td class="nav_pad"><%=text.getMessage("numberFormat", e.getCount()) %></td>
+                        </tr>
+                        <%}%>
+                    <%}%>
+                </table>
+                <decorator:getProperty property="page.weather-nav"/>
             <% }else{ %>
 
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
@@ -302,7 +324,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
         <%if (q.trim().equals("")) {%>
             <td valign="top" colspan="3">
-        <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip") && !currentC.equals("wipgift")) {%>
+        <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")&& !currentC.equals("swip") && !currentC.equals("wipgift")) {%>
             <td class="cell_three" valign="top">
         <% }else{ %>
             <td class="cell_three" valign="top" colspan="2">
@@ -411,7 +433,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%if (currentC.equals("yip") || currentC.equals("yipticker")) {%>
                 <decorator:getProperty property="page.infopage"/>
                 <%}%>
-                <%if (currentC.equals("wip")) {%>
+                <%if (currentC.equals("wip") || currentC.equals("swip")) {%>
                 <decorator:getProperty property="page.infopage"/>
                 <%}%>
 
@@ -426,6 +448,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.pseudo-local"/>
                 <decorator:getProperty property="page.companies-results"/>
                 <%}%>
+                <%}%>
+
+                <!-- Weather -->
+                <%if (currentC.equals("sw")) {%>
+                <decorator:getProperty property="page.weather"/>
                 <%}%>
 
                 <!-- Persons -->
@@ -496,7 +523,9 @@ tmsec[0]="tmsec=sesam";
 <% } else if (currentC.equals("y")) { %> tmsec[1]="tmsec=bedriftssok";
 <% } else if (currentC.equals("yip")) { %> tmsec[1]="tmsec=bedriftssok_info";
 <% } else if (currentC.equals("w")) { %> tmsec[1]="tmsec=personsok";
-<% } else if (currentC.equals("wip")) { %> tmsec[1]="tmsec=personsok_info";
+<% //} else if (currentC.equals("wip")) { %> tmsec[1]="tmsec=personsok_info";
+<% //} else if (currentC.equals("sw")) { %> tmsec[1]="tmsec=weathersok";
+<% } else if (currentC.equals("swip")) { %> tmsec[1]="tmsec=weathersok_info";
 <% } else if (currentC.equals("p")) { %> tmsec[1]="tmsec=bildesok";
 <% } else if (currentC.equals("b")) { %> tmsec[1]="tmsec=bloggsok";
 <% } else if (currentC.equals("n")) { %> tmsec[1]="tmsec=siteN24";
