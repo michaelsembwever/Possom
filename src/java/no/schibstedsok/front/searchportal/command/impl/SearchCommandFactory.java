@@ -9,7 +9,11 @@
 package no.schibstedsok.front.searchportal.command.impl;
 
 import java.util.Map;
+<<<<<<< .mine
+
+=======
 import no.schibstedsok.front.searchportal.command.AdvancedFastSearchCommand;
+>>>>>>> .r3065
 import no.schibstedsok.front.searchportal.command.BlendingNewsSearchCommand;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.HittaWebServiceSearchCommand;
@@ -21,6 +25,7 @@ import no.schibstedsok.front.searchportal.command.PicSearchCommand;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.StaticSearchCommand;
 import no.schibstedsok.front.searchportal.command.StockSearchCommand;
+import no.schibstedsok.front.searchportal.command.StormWeatherSearchCommand;
 import no.schibstedsok.front.searchportal.command.WebSearchCommand;
 import no.schibstedsok.front.searchportal.command.WhiteSearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
@@ -37,6 +42,7 @@ import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SensisSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.StaticSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.StockSearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.StormWeatherSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.WebSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.WhiteSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration;
@@ -64,7 +70,9 @@ public final class SearchCommandFactory {
         // Possibilities are 1) move association to xml (tabs.xml?) or 2) use class naming scheme.
         // An example of (2) would be XXXSearchConfiguration --> XXXSearchCommand
         
-        if (config instanceof BlendingNewsSearchConfiguration) {
+        if (config instanceof StormWeatherSearchConfiguration)  {
+        	return new StormWeatherSearchCommand(cxt, parameters);
+        } if (config instanceof BlendingNewsSearchConfiguration) {
             return new BlendingNewsSearchCommand(cxt, parameters);
             
         } else if (config instanceof YellowSearchConfiguration) {
@@ -98,7 +106,7 @@ public final class SearchCommandFactory {
             
         } else if (config instanceof MobileSearchConfiguration)  {
             return new MobileSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof StaticSearchConfiguration) {
             return new StaticSearchCommand(cxt, parameters);
             

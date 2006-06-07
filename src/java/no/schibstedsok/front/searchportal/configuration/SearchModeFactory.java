@@ -26,7 +26,9 @@ import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
+import no.schibstedsok.front.searchportal.view.output.RssHandler;
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
+
 import no.schibstedsok.front.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.front.searchportal.view.output.XmlOutputResultHandler;
@@ -39,6 +41,7 @@ import no.schibstedsok.front.searchportal.query.transform.SimpleSiteSearchTransf
 import no.schibstedsok.front.searchportal.query.transform.SynonymQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.TermPrefixTransformer;
 import no.schibstedsok.front.searchportal.query.transform.TvQueryTransformer;
+import no.schibstedsok.front.searchportal.query.transform.WeatherInfopageQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.AddDocCountModifier;
 import no.schibstedsok.front.searchportal.result.handler.AgeCalculatorResultHandler;
 import no.schibstedsok.front.searchportal.result.handler.CategorySplitter;
@@ -46,12 +49,16 @@ import no.schibstedsok.front.searchportal.result.handler.ContentSourceCollector;
 import no.schibstedsok.front.searchportal.result.handler.DiscardOldNewsResultHandler;
 import no.schibstedsok.front.searchportal.result.handler.FieldChooser;
 import no.schibstedsok.front.searchportal.result.handler.FindFileFormat;
+import no.schibstedsok.front.searchportal.result.handler.ForecastPeriodHandler;
+import no.schibstedsok.front.searchportal.result.handler.ForecastWindHandler;
 import no.schibstedsok.front.searchportal.result.handler.ImageHelper;
+import no.schibstedsok.front.searchportal.result.handler.MapCoordHandler;
 import no.schibstedsok.front.searchportal.result.handler.MultiValuedFieldCollector;
 import no.schibstedsok.front.searchportal.result.handler.PhoneNumberChooser;
 import no.schibstedsok.front.searchportal.result.handler.PhoneNumberFormatter;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.result.handler.SpellingSuggestionChooser;
+import no.schibstedsok.front.searchportal.result.handler.ForecastDateHandler;
 import no.schibstedsok.front.searchportal.result.handler.SumFastModifiers;
 import no.schibstedsok.front.searchportal.result.handler.DateFormatHandler;
 import no.schibstedsok.front.searchportal.result.handler.WeatherCelciusHandler;
@@ -292,6 +299,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         STOCK_COMMAND(StockSearchConfiguration.class),
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
+        STORMWEATHER_COMMAND(StormWeatherSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class);
 
         private final Class<? extends SearchConfiguration> clazz;
@@ -355,7 +363,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     if(commandE.getAttribute("result-fields").length() >0){
                         final String[] resultFields = commandE.getAttribute("result-fields").split(",");
                         for(String resultField : resultFields){
-                            asc.addResultField(resultField);
+                            asc.addResultField(resultField.trim());
                         }
                     }
 
@@ -507,6 +515,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     bnsc.setFiltersToBlend(filterList);
                     bnsc.setDocumentsPerFilter(Integer.parseInt(commandE.getAttribute("documentsPerFilter")));
                 }
+                if (sc instanceof StormWeatherSearchConfiguration) {
+					StormWeatherSearchConfiguration swsc = (StormWeatherSearchConfiguration) sc;
+					if(commandE.getAttribute("xml-elements").length() >0){
+                        final String[] elms = commandE.getAttribute("xml-elements").split(",");
+                        for(String elm : elms){
+                            swsc.addElementValue(elm.trim());
+                        }
+                    }					
+				}
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);
@@ -622,6 +639,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private enum QueryTransformerTypes {
         EXACT_TITLE_MATCH (ExactTitleMatchTransformer.class),
         INFOPAGE (InfopageQueryTransformer.class),
+        WEATHERINFOPAGE (WeatherInfopageQueryTransformer.class),
         NEWS (NewsTransformer.class),
         PREFIX_REMOVER (PrefixRemoverTransformer.class),
         SIMPLE_SITE_SEARCH (SimpleSiteSearchTransformer.class),
@@ -688,12 +706,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         PHONE_NUMBER_FORMATTER (PhoneNumberFormatter.class),
         SPELLING_SUGGESTION_CHOOSER (SpellingSuggestionChooser.class),
         SUM (SumFastModifiers.class),
-        DATE_FORMAT (DateFormatHandler.class),
+        DATE_FORMAT (DateFormatHandler.class), 
         WEATHER_CELCIUS (WeatherCelciusHandler.class),
         WEATHER_DATE (WeatherDateHandler.class),
+        FORECAST_DATE (ForecastDateHandler.class),
+        FORECAST_WIND (ForecastWindHandler.class),
+        MAP_COORD (MapCoordHandler.class),
 
         TEXT_OUTPUT (TextOutputResultHandler.class),
         VELOCITY_OUTPUT (VelocityResultHandler.class),
+        RSS_OUTPUT (RssHandler.class),
         XML_OUTPUT (XmlOutputResultHandler.class);
 
 
@@ -797,11 +819,23 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         ch.setTargetField(rh.getAttribute("target"));
                         ch.setSourceField(rh.getAttribute("source"));
                         break;
+                    case MAP_COORD:
+                        final MapCoordHandler mch = (MapCoordHandler) handler;
+                        break;
+                    case FORECAST_WIND:
+                        final ForecastWindHandler wh = (ForecastWindHandler) handler;
+                        break;
+                    case FORECAST_DATE:	//subclasses must be checked first
+                        final ForecastDateHandler sdateh = (ForecastDateHandler) handler;
+                        sdateh.setTargetField(rh.getAttribute("target"));
+                        sdateh.setSourceField(rh.getAttribute("source"));
+                        break;
                     case WEATHER_DATE:
                         final WeatherDateHandler dateh = (WeatherDateHandler) handler;
                         dateh.setTargetField(rh.getAttribute("target"));
                         dateh.setSourceField(rh.getAttribute("source"));
                         break;
+                    
                 }
 
                 return handler;
