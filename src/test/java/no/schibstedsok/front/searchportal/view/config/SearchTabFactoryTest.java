@@ -9,10 +9,12 @@
 package no.schibstedsok.front.searchportal.view.config;
 
 import java.util.Locale;
+import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.log4j.Logger;
 
@@ -72,7 +74,7 @@ public final class SearchTabFactoryTest extends TestCase {
     }
 
     /**
-     * Test of memory against getTabByKey method, 
+     * Test of memory against getTabByKey method,
      * of class no.schibstedsok.front.searchportal.configuration.SearchModeFactory.
      */
     public void testGetTabByKeyModeOnAllAvailableLocales() {
@@ -83,7 +85,7 @@ public final class SearchTabFactoryTest extends TestCase {
         final long initialTotal = Runtime.getRuntime().totalMemory();
         final long initialFree = Runtime.getRuntime().freeMemory();
         LOG.info("Number of Available locales " + Locale.getAvailableLocales().length);
-        for( Locale l : Locale.getAvailableLocales() ){
+        for(Locale l : Locale.getAvailableLocales()){
             final SearchTabFactory instance = getViewFactory(l);
 
             final SearchTab result = instance.getTabByKey(key);
@@ -93,7 +95,7 @@ public final class SearchTabFactoryTest extends TestCase {
         LOG.info("Free memory decreased "+(initialFree-Runtime.getRuntime().freeMemory()) + " bytes");
         System.gc();
     }
-    
+
 
     private SearchTabFactory getViewFactory(final Locale locale) {
 
@@ -102,6 +104,9 @@ public final class SearchTabFactoryTest extends TestCase {
         final SearchTabFactory.Context cxt = new SearchTabFactory.Context(){
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
+            }
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
             public Site getSite()  {
                 return locale == null ? Site.DEFAULT :Site.valueOf(Site.DEFAULT.getName(), locale);
