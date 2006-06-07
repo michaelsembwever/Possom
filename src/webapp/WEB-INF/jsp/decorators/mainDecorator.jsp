@@ -65,15 +65,15 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/default.css?x=1" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/decorator-style.css?y=1" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/sitesearch.css?x=1" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/front.css?x=1" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/ps.css?x=1" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/000/default.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/000/decorator-style.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/000/sitesearch.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/000/front.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/000/ps.css" rel="stylesheet" type="text/css" />
     <c:forEach var="t" items="${tab.ancestry}">
-        <link media="screen" href="../css/tab/<c:out value='${t.id}'/>.css?x=1" rel="stylesheet" type="text/css" />
+        <link media="screen" href="../css/000/tab/<c:out value='${t.id}'/>.css" rel="stylesheet" type="text/css" />
     </c:forEach>
-    <link media="print" href="../css/print-style.css?x=1" rel="stylesheet" type="text/css" />
+    <link media="print" href="../css/000/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>

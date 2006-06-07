@@ -132,11 +132,13 @@ public final class SiteLocatorFilter implements Filter {
                             + '/' + resource;
 
                     }  else  {
+                        // TODO strip the version number out of the resource
+                        final String noVersionRsc = resource.replaceFirst("/(\\d)+/","/");
                         // search-front-config is responsible for this.
                         // But first we must find which layer will serve it.
-                        url = HTTP + site.getName() + site.getConfigContext() + resource;
+                        url = HTTP + site.getName() + site.getConfigContext() + noVersionRsc;
                         if (!UrlResourceLoader.urlExists(url)) {
-                            url = HTTP + Site.DEFAULT.getName() + Site.DEFAULT.getConfigContext() + resource;
+                            url = HTTP + Site.DEFAULT.getName() + Site.DEFAULT.getConfigContext() + noVersionRsc;
                             if (!UrlResourceLoader.urlExists(url)) {
                                 res.sendError(HttpServletResponse.SC_NOT_FOUND);
                                 url = null;

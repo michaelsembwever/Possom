@@ -394,7 +394,7 @@ public final class SearchTab {
         }
     }
 
-    /** Immuable POJO holding navigation information for a given tab **/
+    /** Immutable POJO holding navigation information for a given tab **/
     public static final class NavigatorHint {
 
         public NavigatorHint(
