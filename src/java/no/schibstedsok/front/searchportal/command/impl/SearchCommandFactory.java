@@ -9,11 +9,7 @@
 package no.schibstedsok.front.searchportal.command.impl;
 
 import java.util.Map;
-<<<<<<< .mine
-
-=======
 import no.schibstedsok.front.searchportal.command.AdvancedFastSearchCommand;
->>>>>>> .r3065
 import no.schibstedsok.front.searchportal.command.BlendingNewsSearchCommand;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
 import no.schibstedsok.front.searchportal.command.HittaWebServiceSearchCommand;
