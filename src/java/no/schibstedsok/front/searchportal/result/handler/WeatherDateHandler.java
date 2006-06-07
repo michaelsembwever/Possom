@@ -22,7 +22,7 @@ public class WeatherDateHandler implements ResultHandler  {
     static SimpleDateFormat datePart = new SimpleDateFormat("dd.MM.yyyy");
 
     private String targetField;
-    private String sourceField;
+    protected String sourceField;
 
     public String getTargetField() {
         return targetField;
