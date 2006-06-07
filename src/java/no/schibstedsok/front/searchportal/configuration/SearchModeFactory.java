@@ -26,7 +26,6 @@ import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
-import no.schibstedsok.front.searchportal.view.output.RssHandler;
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
 
 import no.schibstedsok.front.searchportal.view.output.TextOutputResultHandler;
@@ -49,7 +48,6 @@ import no.schibstedsok.front.searchportal.result.handler.ContentSourceCollector;
 import no.schibstedsok.front.searchportal.result.handler.DiscardOldNewsResultHandler;
 import no.schibstedsok.front.searchportal.result.handler.FieldChooser;
 import no.schibstedsok.front.searchportal.result.handler.FindFileFormat;
-import no.schibstedsok.front.searchportal.result.handler.ForecastPeriodHandler;
 import no.schibstedsok.front.searchportal.result.handler.ForecastWindHandler;
 import no.schibstedsok.front.searchportal.result.handler.ImageHelper;
 import no.schibstedsok.front.searchportal.result.handler.MapCoordHandler;
@@ -715,7 +713,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
         TEXT_OUTPUT (TextOutputResultHandler.class),
         VELOCITY_OUTPUT (VelocityResultHandler.class),
-        RSS_OUTPUT (RssHandler.class),
         XML_OUTPUT (XmlOutputResultHandler.class);
 
 
