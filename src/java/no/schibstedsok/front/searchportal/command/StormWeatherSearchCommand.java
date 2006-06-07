@@ -13,7 +13,6 @@ import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
-import no.schibstedsok.front.searchportal.util.CacheFactory;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.logging.Log;
