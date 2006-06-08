@@ -27,7 +27,8 @@ import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
-
+import no.schibstedsok.front.searchportal.query.transform.TvSearchQueryTransformer;
+import no.schibstedsok.front.searchportal.result.handler.TvSearchSortingHandler;
 import no.schibstedsok.front.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.front.searchportal.view.output.XmlOutputResultHandler;
@@ -298,8 +299,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
         STORMWEATHER_COMMAND(StormWeatherSearchConfiguration.class),
-        YELLOWPAGES_COMMAND(YellowSearchConfiguration.class);
-
+        YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
+        TVSEARCH_COMMAND(TvSearchConfiguration.class);
+        
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
 
@@ -513,6 +515,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     bnsc.setFiltersToBlend(filterList);
                     bnsc.setDocumentsPerFilter(Integer.parseInt(commandE.getAttribute("documentsPerFilter")));
                 }
+
                 if (sc instanceof StormWeatherSearchConfiguration) {
 					StormWeatherSearchConfiguration swsc = (StormWeatherSearchConfiguration) sc;
 					if(commandE.getAttribute("xml-elements").length() >0){
@@ -522,6 +525,19 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         }
                     }					
 				}
+
+                if (sc instanceof TvSearchConfiguration) {
+                    final TvSearchConfiguration tssc = (TvSearchConfiguration) sc;
+                    final String[] defaultChannels = commandE.getAttribute("default-channels").split(",");
+                    for (String channel : defaultChannels) {
+                        tssc.addDefaultChannel(channel.trim());
+                    }
+                    
+                    tssc.setResultsPerChannel(Integer.parseInt(commandE.getAttribute("results-per-channel")));
+                    tssc.setResultsToFetch(Integer.parseInt(commandE.getAttribute("results-to-fetch")));
+                    tssc.setChannelsPerPage(Integer.parseInt(commandE.getAttribute("channels-per-page")));
+                }
+                
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);
@@ -643,8 +659,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SIMPLE_SITE_SEARCH (SimpleSiteSearchTransformer.class),
         SYNONYM (SynonymQueryTransformer.class),
         TERM_PREFIX (TermPrefixTransformer.class),
+        WEBTV (WebTvQueryTransformer.class),
         TV (TvQueryTransformer.class),
-        WEBTV (WebTvQueryTransformer.class);
+        TVSEARCH(TvSearchQueryTransformer.class);        
 
         private final Class<? extends QueryTransformer> clazz;
         private final String xmlName;
@@ -710,7 +727,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         FORECAST_DATE (ForecastDateHandler.class),
         FORECAST_WIND (ForecastWindHandler.class),
         MAP_COORD (MapCoordHandler.class),
-
+        TVSEARCH_SORTING (TvSearchSortingHandler.class),
         TEXT_OUTPUT (TextOutputResultHandler.class),
         VELOCITY_OUTPUT (VelocityResultHandler.class),
         XML_OUTPUT (XmlOutputResultHandler.class);

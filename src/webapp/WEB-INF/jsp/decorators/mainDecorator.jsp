@@ -52,6 +52,14 @@ final Integer dHits = hits.get("defaultSearch");
 final Integer gHits = hits.get("globalSearch");
 final int no_hits = dHits!= null&&dHits > 0 ? dHits.intValue() : gHits!= null&&gHits > 0 ? gHits.intValue() : 0;
 
+/* TODO: add tvSearch hits */
+/*    final Integer tHits = (Integer) query.getNumberOfHits("tvSearch");
+    final int no_hits = dHits != null && dHits > 0 
+            ? dHits.intValue() 
+            : gHits != null && gHits > 0 ? gHits.intValue() : 
+            tHits != null && tHits > 0 ? tHits.intValue() : 0;
+*/  
+
 pageContext.setAttribute("no_hits", no_hits);
 
 final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).getProperties());
@@ -161,7 +169,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	<% } %>
 
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
-    <%if (q.trim().equals("") && !currentC.equals("m")) {%>
+    <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("t")) {%>
     <tr>
         <td class="cell_one">&nbsp;</td>
         <td class="cell_three">&nbsp;</td>
@@ -184,9 +192,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% } %>
 
     <tr>
-	<%if (q.trim().equals("") && !currentC.equals("m")) {%>
+	<%if (q.trim().equals("") && (!currentC.equals("m") && !currentC.equals("t")) ) {%>
 
-	<%}else if (currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss") || !q.trim().equals("")) {%>
+	<%}else if ((currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t")) {%>
         <td class="cell_one" valign="top">
             <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
@@ -280,6 +288,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     <%}%>
                 </table>
                 <decorator:getProperty property="page.weather-nav"/>
+            <%}else if (currentC.equals("t")) {%>
+            
+                <decorator:getProperty property="page.tvSearchNavigator" />                 
             <% }else{ %>
 
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
@@ -322,7 +333,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         </td>
 	<% } %>
 
-        <%if (q.trim().equals("")) {%>
+        <%if (q.trim().equals("") && !currentC.equals("t")) {%>
             <td valign="top" colspan="3">
         <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")&& !currentC.equals("swip") && !currentC.equals("wipgift")) {%>
             <td class="cell_three" valign="top">
@@ -415,7 +426,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                              <decorator:getProperty property="page.noHits" />
                          </c:otherwise>
                      </c:choose>
-
                 </td>
 			</tr>
 			</table>
@@ -472,6 +482,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
                 <%if (currentC.equals("t")) {%>
                 <decorator:getProperty property="page.tv-results"/>
+                <decorator:getProperty property="page.tvSearchWebTv"/>
                 <%}%>
 
                 <%if (currentC.equals("b")) {%>

@@ -14,6 +14,7 @@ import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 import no.schibstedsok.front.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.util.Channels;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.front.searchportal.util.TradeDoubler;
 
@@ -243,7 +244,9 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("runningQuery", (RunningQuery) request.getAttribute("query"));
         context.put("command", cxt.getSearchResult().getSearchCommand());
 
-        
+        /* TODO: check where this went */
+        /* context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt))); */
+        context.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, cxt)));
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 

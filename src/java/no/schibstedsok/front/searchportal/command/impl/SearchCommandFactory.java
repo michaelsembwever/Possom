@@ -22,6 +22,7 @@ import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.command.StaticSearchCommand;
 import no.schibstedsok.front.searchportal.command.StockSearchCommand;
 import no.schibstedsok.front.searchportal.command.StormWeatherSearchCommand;
+import no.schibstedsok.front.searchportal.command.TvSearchCommand;
 import no.schibstedsok.front.searchportal.command.WebSearchCommand;
 import no.schibstedsok.front.searchportal.command.WhiteSearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
@@ -39,6 +40,7 @@ import no.schibstedsok.front.searchportal.configuration.SensisSearchConfiguratio
 import no.schibstedsok.front.searchportal.configuration.StaticSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.StockSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.StormWeatherSearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.TvSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.WebSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.WhiteSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration;
@@ -68,7 +70,8 @@ public final class SearchCommandFactory {
         
         if (config instanceof StormWeatherSearchConfiguration)  {
         	return new StormWeatherSearchCommand(cxt, parameters);
-        } if (config instanceof BlendingNewsSearchConfiguration) {
+        } 
+        if (config instanceof BlendingNewsSearchConfiguration) {
             return new BlendingNewsSearchCommand(cxt, parameters);
             
         } else if (config instanceof YellowSearchConfiguration) {
@@ -85,12 +88,19 @@ public final class SearchCommandFactory {
             
         } else if (config instanceof NewsSearchConfiguration) {
             return new NewsSearchCommand(cxt, parameters);
+
+        } else if (config instanceof TvSearchConfiguration) {
+            return new TvSearchCommand(cxt, parameters);
+
         } else if (config instanceof AdvancedFastConfiguration) {
             return new AdvancedFastSearchCommand(cxt, parameters);
+
         } else if (config instanceof FastConfiguration) {
             return new FastSearchCommand(cxt, parameters);
+
         } else if (config instanceof MathExpressionConfiguration) {
             return new MathExpressionCommand(cxt, parameters);
+
         } else if (config instanceof OverturePPCConfiguration) {
             return new OverturePPCCommand(cxt, parameters);
             
