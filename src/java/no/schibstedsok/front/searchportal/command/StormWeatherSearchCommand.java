@@ -73,13 +73,10 @@ public class StormWeatherSearchCommand extends FastSearchCommand {
 
     	//Fast search
         FastSearchResult fastResult = executeFastCommand();
-        fastResult.setHitCount(0);
-
+        
     	// "enrich" the Fast result with Storm weather forecasts based on lat/long.
         if(fastResult.getResults().size() > 0){
         	
-        	fastResult.setHitCount(fastResult.getResults().size());
-   
         	for (Iterator results = fastResult.getResults().iterator(); results.hasNext();) {
         		
         		BasicSearchResultItem result = (BasicSearchResultItem) results.next();
