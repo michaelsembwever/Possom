@@ -85,7 +85,7 @@
 
             <input type="image" id="index_submit" src="images/searchbar/nettsok_knapp.gif" />
 	    &nbsp;
-            <a href='<search:linkPulse url="?q=&page=/pages/7/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a>
+            <a id="searchtip_front" href='<search:linkPulse url="?q=&page=/pages/7/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a>
             </div>
             <div id="searchbox_tips">
             <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
@@ -125,7 +125,6 @@
                 </tr>
             </table>
         </td>
-        </td>
         <td valign="top" align="left">
             <search:publish page="/pages/front"/>
         </td>
@@ -134,10 +133,10 @@
 </table>
 
 <div id="footer_space_index">
-<div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
-        <search:publish page="/pages/footer"/>
-<br />
-<div style="padding: 8px 0px 20px 0px;"><img src="images/pix.gif" border="0" width="100%" height="2" alt="" /></div>
+    <div class="lightdots"><img src="images/pix.gif" width="100%" height="1" alt="" /></div>
+    <search:publish page="/pages/footer"/>
+    <br />
+    <div style="padding: 8px 0px 20px 0px;"><img src="images/pix.gif" border="0" width="100%" height="2" alt="" /></div>
 </div>
 
 </div>
