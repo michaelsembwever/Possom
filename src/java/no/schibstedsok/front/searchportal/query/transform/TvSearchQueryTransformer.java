@@ -27,7 +27,7 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
     public String getFilter(final Map parameters) {
 
         final boolean blankQuery = getContext().getQuery().isBlank();
-        final String sortBy = parameters.get("userSortBy") != null ? ((String []) parameters.get("userSortBy"))[0] : "channel";
+        final String sortBy = parameters.get("userSortBy") != null ? (String) parameters.get("userSortBy") : "channel";
         
         Calendar cal = Calendar.getInstance();
         final StringBuilder filter = new StringBuilder();
