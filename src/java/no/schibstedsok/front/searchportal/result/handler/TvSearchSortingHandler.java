@@ -93,7 +93,7 @@ public class TvSearchSortingHandler implements ResultHandler {
                 }
             }
         } else if (sortBy.equals("category")) {
-            joinBlocks(cxt, hm, "category");
+            joinBlocks(cxt, hm, "categories");
         }
     }
     
