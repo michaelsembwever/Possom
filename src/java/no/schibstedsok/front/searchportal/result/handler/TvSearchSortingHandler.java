@@ -20,31 +20,62 @@ import no.schibstedsok.front.searchportal.result.SearchResultItem;
  */
 public class TvSearchSortingHandler implements ResultHandler {
     
+    /** Number of results per block of channels, days or categories. **/
+    private int resultsPerBlock;
+    
+    /** Number of blocks to display per page. **/
+    private int blocksPerPage;
+     
+    public int getResultsPerBlock() {
+        return resultsPerBlock;
+    }
+    
+    public void setResultsPerBlock(int resultsPerBlock) {
+        this.resultsPerBlock = resultsPerBlock;
+    }
+    
+    public int getBlocksPerPage() {
+        return blocksPerPage;
+    }
+    
+    public void setBlocksPerPage(int blocksPerPage) {
+        this.blocksPerPage = blocksPerPage;
+    }
+    
     public void handleResult(final Context cxt, final Map parameters) {
-        final String sortBy = parameters.containsKey("userSortBy") ? ((String [])parameters.get("userSortBy"))[0] : "channel";
+        final String sortBy = parameters.containsKey("userSortBy") ? ((String)parameters.get("userSortBy")) : "channel";
         
         final TvSearchConfiguration searchConfiguration = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
         
-        if (sortBy.equals("channel")) {
-            HashMap<String,ArrayList<SearchResultItem>> hm = new HashMap();
-            SearchResult sr = cxt.getSearchResult();
-            final int resultsPerChannel = searchConfiguration.getResultsPerChannel();
-            
-            /* Split search result in channels */
-            for (SearchResultItem sri : sr.getResults()) {
-                String channel = sri.getField("channel");
-                if (!hm.containsKey(channel)) {
-                    hm.put(channel, new ArrayList<SearchResultItem>());
-                }
+        HashMap<String,ArrayList<SearchResultItem>> hm = new HashMap();
+        SearchResult sr = cxt.getSearchResult();
+        final int resultsPerBlock = getResultsPerBlock();
+        String field = "channel";
+        
+        if (sortBy.equals("day")) {
+            field = "weekday";
+        } else if (sortBy.equals("category")) {
+            field = "category";
+        }
 
-                List<SearchResultItem> channelResults = hm.get(channel);
-
-                if (channelResults.size() < resultsPerChannel) {
-                    channelResults.add(sri);
-                }
+        /* Split search result */
+        for (SearchResultItem sri : sr.getResults()) {
+            String fieldValue = sri.getField(field);
+            if (!hm.containsKey(fieldValue)) {
+                hm.put(fieldValue, new ArrayList<SearchResultItem>());
             }
-
-            sr.getResults().clear();
+            
+            List<SearchResultItem> results = hm.get(fieldValue);
+            
+            if (results.size() < resultsPerBlock) {
+                results.add(sri);
+            }
+        }
+        
+        sr.getResults().clear();
+        
+        
+        if (sortBy.equals("channel")) {
             if (cxt.getQuery().isBlank()) {
                 for (String channel : searchConfiguration.getDefaultChannels()) {
                     if (hm.containsKey(channel)) {
@@ -52,39 +83,9 @@ public class TvSearchSortingHandler implements ResultHandler {
                     }
                 }
             } else {
-                final List<Modifier> modifiers = ((FastSearchResult) cxt.getSearchResult()).getModifiers("channels");
-                int i = 0;
-                for (Modifier modifier : modifiers) {
-                    if (i > searchConfiguration.getChannelsPerPage()) {
-                        break;
-                    }
-                    if (hm.containsKey(modifier.getName())) {
-                        sr.getResults().addAll(hm.get(modifier.getName()));
-                    }
-                    i++;
-                }
+                joinBlocks(cxt, hm, "channel");
             }
         } else if (sortBy.equals("day")) {
-            HashMap<String,ArrayList<SearchResultItem>> hm = new HashMap();
-            SearchResult sr = cxt.getSearchResult();
-            final int resultsPerDay = searchConfiguration.getResultsPerChannel();
-            
-            /* Split results into days */
-            for (SearchResultItem sri : sr.getResults()) {
-                String weekday = sri.getField("weekday");
-                if (!hm.containsKey(weekday)) {
-                    hm.put(weekday, new ArrayList<SearchResultItem>());
-                }
-                
-                List<SearchResultItem> weekdayResults = hm.get(weekday);
-                
-                if (weekdayResults.size() < resultsPerDay) {
-                    weekdayResults.add(sri);
-                }
-            }
-            
-            sr.getResults().clear();
-            
             for (int i = 0; i < 7; i++) {
                 String weekDay = Integer.toString(i);
                 if (hm.containsKey(weekDay)) {
@@ -92,7 +93,25 @@ public class TvSearchSortingHandler implements ResultHandler {
                 }
             }
         } else if (sortBy.equals("category")) {
-            
+            joinBlocks(cxt, hm, "category");
         }
+    }
+    
+    private final SearchResult joinBlocks(final Context cxt, final HashMap hm, final String modifiersId) {
+        final TvSearchConfiguration searchConfiguration = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+        final List<Modifier> modifiers = ((FastSearchResult) cxt.getSearchResult()).getModifiers(modifiersId);
+        final SearchResult sr = cxt.getSearchResult();
+        
+        int i = 0;
+        for (Modifier modifier : modifiers) {
+            if (i > getBlocksPerPage()) {
+                break;
+            }
+            if (hm.containsKey(modifier.getName())) {
+                sr.getResults().addAll((List<SearchResultItem>)hm.get(modifier.getName()));
+            }
+            i++;
+        }
+        return sr;
     }
 }
