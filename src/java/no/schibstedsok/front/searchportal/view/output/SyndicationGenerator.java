@@ -125,6 +125,7 @@ public class SyndicationGenerator {
                 contents.add(content);
                 
                 entry.setContents(contents);
+                entry.setDescription(content);
                 
                 entries.add(entry);
             }
