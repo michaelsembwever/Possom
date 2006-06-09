@@ -90,11 +90,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 
 <body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") ) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")|| currentC.equals("swip")) {%>init(); checkTab();<% } %>">
-        
+
     <search:velocity template="/pages/main"/>
-        
+
     <c:if test="${! empty Missing_pagesmain_Template}">
-        
+
     <%-- old-school sitesearch --%>
     <% if (currentC.equals("d") && (
              "ds".equals(ss) ||
@@ -177,7 +177,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     </tr>
     <% }else{ %>
     <tr>
-        <td class="cell_one"><span class="pad_5l">Naviger</span></td>
+        <td class="cell_one"><span class="pad_5l"><%=text.getMessage("naviger") %></span></td>
         <td class="cell_three"><decorator:getProperty property="page.middle-bar"/></td>
         <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
     </tr>
@@ -210,7 +210,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                             <tr onclick='strepRollover("<c:out value='${navUrl}'/>");'>
                                 <td class="nav_pad_icon">
                                     <img src='<c:out value="../images/menu/${hint.image}"/>' class="nav_icon" align="left" alt="" />
-                                    <a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' 
+                                    <a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>'
                                         onclick="return strep(this);"><c:out value="${e.name}"/></a>
                                 </td>
                                 <td class="nav_pad"><search:text key="numberFormat" args="${e.count}"/></td>
@@ -289,8 +289,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 </table>
                 <decorator:getProperty property="page.weather-nav"/>
             <%}else if (currentC.equals("t")) {%>
-            
-                <decorator:getProperty property="page.tvSearchNavigator" />                 
+
+                <decorator:getProperty property="page.tvSearchNavigator" />
             <% }else{ %>
 
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
@@ -475,7 +475,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <decorator:getProperty property="page.picsearch-results"/>
                         <search:velocity template="results/scanpix" command="scanpix"/>
                         <!--search:import template="picSearch"/-->
-                        
+
                         <div class="clearFloat">&nbsp;</div>
                     </div>
                 <%}%>
