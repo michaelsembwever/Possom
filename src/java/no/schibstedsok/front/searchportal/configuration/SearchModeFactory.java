@@ -692,6 +692,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         tpqt.setPrefix(qt.getAttribute("prefix"));
                         tpqt.setNumberPrefix(qt.getAttribute("number-prefix"));
                         break;
+                    case TVSEARCH:
+                        final TvSearchQueryTransformer tsqt = (TvSearchQueryTransformer) transformer;
+                        tsqt.setWithEndtime(qt.getAttribute("with-endtime").equals("true"));
                 }
                 return transformer;
 
