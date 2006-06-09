@@ -104,7 +104,7 @@ public class TvSearchSortingHandler implements ResultHandler {
         
         int i = 0;
         for (Modifier modifier : modifiers) {
-            if (i > getBlocksPerPage()) {
+            if (i == getBlocksPerPage()) {
                 break;
             }
             if (hm.containsKey(modifier.getName())) {
