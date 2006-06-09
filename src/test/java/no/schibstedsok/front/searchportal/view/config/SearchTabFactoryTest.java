@@ -18,7 +18,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.log4j.Logger;
 
-/**
+/** Tests for SearchTabFactory. Using default search-config's configuration files.
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -52,7 +52,7 @@ public final class SearchTabFactoryTest extends TestCase {
 
         LOG.trace("testGetTab");
 
-        final String id = "norwegian-internet";
+        final String id = "local-internet";
         final SearchTabFactory instance = getViewFactory(null);
 
         final SearchTab result = instance.getTabByName(id);

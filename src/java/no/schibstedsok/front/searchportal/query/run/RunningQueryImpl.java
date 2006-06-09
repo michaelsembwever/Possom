@@ -118,17 +118,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     }
 
-    private List<TokenMatch> getTokenMatches(final String token) {
-        final ReportingTokenEvaluator e
-                = (ReportingTokenEvaluator) tokenEvaluatorFactory.getEvaluator(TokenPredicate.valueFor(token));
+    private List<TokenMatch> getTokenMatches(final TokenPredicate token) {
+        
+        final ReportingTokenEvaluator e = (ReportingTokenEvaluator) tokenEvaluatorFactory.getEvaluator(token);
         return e.reportToken(token, queryStr);
     }
 
     public List<TokenMatch> getGeographicMatches() {
+        
         final List<TokenMatch> matches = new ArrayList<TokenMatch>();
 
-        matches.addAll(getTokenMatches("geolocal"));
-        matches.addAll(getTokenMatches("geoglobal"));
+        matches.addAll(getTokenMatches(TokenPredicate.GEOLOCAL));
+        matches.addAll(getTokenMatches(TokenPredicate.GEOGLOBAL));
 
         Collections.sort(matches);
 

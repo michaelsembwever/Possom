@@ -13,7 +13,6 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Logger;
 
 
@@ -24,6 +23,11 @@ import org.apache.log4j.Logger;
  * @version <tt>$Revision: 2720 $</tt>
  */
 public final class SiteConfiguration implements SiteKeyedFactory{
+
+    public static final String CONFIGURATION_FILE = "configuration.properties";
+    public static final String SITE_LOCALE_DEFAULT = "site.locale.default";
+    public static final String PUBLISH_SYSTEM_URL = "publishing.system.baseURL";
+    public static final String PUBLISH_SYSTEM_HOST = "publishing.system.host-header";
 
     public interface Context extends BaseContext, PropertiesContext, SiteContext {
     }
@@ -45,8 +49,8 @@ public final class SiteConfiguration implements SiteKeyedFactory{
         LOG.trace("Configuration(cxt)");
         context = cxt;
 
-        propertyLoader = context.newPropertiesLoader(SearchConstants.CONFIGURATION_FILE, properties);
-        
+        propertyLoader = context.newPropertiesLoader(CONFIGURATION_FILE, properties);
+
         INSTANCES.put(context.getSite(), this);
         INSTANCES_LOCK.writeLock().unlock();
     }
@@ -58,7 +62,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
         }
         return properties;
     }
-    
+
     public String getProperty(final String key) {
 
         if(properties.size() == 0){

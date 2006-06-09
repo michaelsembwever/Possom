@@ -49,6 +49,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     private static final String ERR_COULD_NOT_FIND_TOKEN_PREDICATE = "Failed to find TokenPredicate.";
 
     static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+    public static final String REGEXP_EVALUATOR_XMLFILE = "RegularExpressionEvaluators.xml";
 
     /**
      * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
@@ -82,7 +83,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        loader = context.newDocumentLoader(SearchConstants.REGEXP_EVALUATOR_XMLFILE, builder);
+        loader = context.newDocumentLoader(REGEXP_EVALUATOR_XMLFILE, builder);
 
         INSTANCES.put(context.getSite(), this);
         INSTANCES_LOCK.writeLock().unlock();
@@ -97,9 +98,10 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
      */
     private void init() {
 
+        INSTANCES_LOCK.writeLock().lock();
         if (!init) {
             loader.abut();
-            LOG.debug("Parsing " + SearchConstants.REGEXP_EVALUATOR_XMLFILE + " started");
+            LOG.debug("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
             final Document doc = loader.getDocument();
             final Element root = doc.getDocumentElement();
             final NodeList evaluators = root.getElementsByTagName("evaluator");
@@ -136,9 +138,10 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                 regExpEvaluators.put(token, regExpTokenEvaluator);
 
             }
-            LOG.debug("Parsing " + SearchConstants.REGEXP_EVALUATOR_XMLFILE + " finished");
+            LOG.debug("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
+            init = true;
         }
-        init = true;
+        INSTANCES_LOCK.writeLock().unlock();
     }
 
     /** Main method to retrieve the correct RegExpEvaluatorFactory to further obtain

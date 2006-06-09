@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * ImportPublishingPageTag.java
  *
@@ -7,7 +8,6 @@
 package no.schibstedsok.front.searchportal.view.taglib;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -19,7 +19,6 @@ import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.site.Site;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Logger;
 
 /**
@@ -29,37 +28,37 @@ import org.apache.log4j.Logger;
  */
 
 public final class ImportPublishingPageTag extends SimpleTagSupport {
-    
+
     private static final Logger LOG = Logger.getLogger(ImportPublishingPageTag.class);
 
     /**
      * Initialization of page property.
      */
     private String page;
-    
+
     /**Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
      */
     public void doTag() throws JspException {
-        
+
         final PageContext cxt = (PageContext) getJspContext();
         final JspWriter out = cxt.getOut();
-        
+
         try {
-            
+
             final JspFragment f=getJspBody();
-            if (f != null){ 
+            if (f != null){
                 f.invoke(out);
             }
-            
+
             final Site site = (Site) cxt.findAttribute(Site.NAME_KEY);
             final Properties props = SiteConfiguration.valueOf(site).getProperties();
-            
-            final URL url = new URL(props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL) + page + ".html");
+
+            final URL url = new URL(props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL) + page + ".html");
             final URLConnection urlConn = url.openConnection();
 
-            urlConn.addRequestProperty("host", props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
+            urlConn.addRequestProperty("host", props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST));
             final BufferedReader reader = new java.io.BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 
             for(String line = reader.readLine();line!=null;line=reader.readLine()){
@@ -68,9 +67,9 @@ public final class ImportPublishingPageTag extends SimpleTagSupport {
         }catch(Exception e){
             LOG.error("Failed to import pub" + page + ".html");
         }
-        
+
     }
-    
+
     /**
      * Setter for the command attribute.
      */

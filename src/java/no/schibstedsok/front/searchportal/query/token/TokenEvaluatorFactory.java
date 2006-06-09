@@ -4,7 +4,11 @@
 package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.Set;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
+import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.site.SiteContext;
 
 /**
  * A TokenEvaluateFactory provides knowledge about which implementation of
@@ -20,6 +24,9 @@ import no.schibstedsok.front.searchportal.site.Site;
  */
 public interface TokenEvaluatorFactory {
 
+    public interface Context extends BaseContext, QueryStringContext, ResourceContext, SiteContext{
+    }
+    
     /**
      *
      * @param token

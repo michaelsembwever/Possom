@@ -15,7 +15,6 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,8 +38,8 @@ public final class TextMessages {
      */
     private static final Map<Site,TextMessages> INSTANCES = new HashMap<Site,TextMessages>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
-    
-    
+
+
 
     private static final String DEBUG_LOADING_WITH_LOCALE = "Looking for "+MESSAGE_RESOURCE+"_";
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
@@ -53,7 +52,7 @@ public final class TextMessages {
         INSTANCES_LOCK.readLock().lock();
         TextMessages instance = INSTANCES.get(site);
         INSTANCES_LOCK.readLock().unlock();
-        
+
         if (instance == null) {
             instance = new TextMessages(cxt);
         }
@@ -93,28 +92,28 @@ public final class TextMessages {
 
         // import messages from site's preferred locale [will not override already loaded messages]
         final String[] prefLocale = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
-                .getProperty(SearchConstants.SITE_LOCALE_DEFAULT).split("_");
-        
-        
+                .getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
+
+
         switch(prefLocale.length){
             case 1:
-                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE 
+                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0]);
                 loadKeys(new Locale(prefLocale[0]));
                 break;
             case 2:
-                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE 
+                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0] + '_' + prefLocale[1]);
                 loadKeys(new Locale(prefLocale[0],prefLocale[1]));
                 break;
             case 3:
-                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE + prefLocale[0] 
+                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
                         + '_' + prefLocale[1] + '_' + prefLocale[2]);
                 loadKeys(new Locale(prefLocale[0],prefLocale[1],prefLocale[2]));
                 break;
         }
 
-        
+
         INSTANCES.put(cxt.getSite(),this);
         INSTANCES_LOCK.writeLock().unlock();
     }
@@ -166,7 +165,7 @@ public final class TextMessages {
     public String getMessage(final String key, final Object... arguments){
         return getMessageImpl(key, arguments);
     }
-    
+
     private String getMessageImpl(final String key, final Object... arguments){
         // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
         final MessageFormat format = new MessageFormat(keys.getProperty(key),context.getSite().getLocale());

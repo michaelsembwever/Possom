@@ -11,7 +11,6 @@ import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.Decoder;
 import no.schibstedsok.front.searchportal.result.Linkpulse;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import no.schibstedsok.front.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.Channels;
@@ -66,7 +65,7 @@ public final class VelocityResultHandler implements ResultHandler {
 
         return VelocityEngineFactory.valueOf(ContextWrapper.wrap(VelocityEngineFactory.Context.class,cxt)).getEngine();
     }
-    
+
     /** Utility wrapper to getEngine(Context) defaulting to UrlResourceLoader resource loading. **/
     public static VelocityEngine getEngine(final Site site){
 
@@ -116,8 +115,8 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("fallbackSite", fallbackSite);
         context.put("locale", site.getLocale());
         // publishing system
-        context.put(PUBLISH_URL, engine.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
-        context.put(PUBLISH_HOST, engine.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
+        context.put(PUBLISH_URL, engine.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL));
+        context.put(PUBLISH_HOST, engine.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST));
         // coord helper
         context.put("coordHelper", new CoordHelper());
         // properties
@@ -157,8 +156,8 @@ public final class VelocityResultHandler implements ResultHandler {
             final VelocityEngine engine = getEngine(cxt);
             final Template template = getTemplate(engine, site, searchConfiguration.getName());
 
-            if( template != null ){
-            
+            if(template != null){
+
                 LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
 
                 final VelocityContext context = newContextInstance(engine);
@@ -192,7 +191,7 @@ public final class VelocityResultHandler implements ResultHandler {
                     throw new InfrastructureException(ex);
 
                 }
-            
+
             }else{
                 LOG.error(ERR_TEMPLATE_NOT_FOUND + searchConfiguration.getName() + ".vm");
                 throw new UnsupportedOperationException(ERR_TEMPLATE_NOT_FOUND + searchConfiguration.getName() + ".vm");
@@ -216,15 +215,15 @@ public final class VelocityResultHandler implements ResultHandler {
         } catch (UnsupportedEncodingException e) {
             LOG.error(e);
         }
-        
+
         // push all parameters into request attributes
-        for( Map.Entry<String,Object> entry : parameters.entrySet() ){
+        for(Map.Entry<String,Object> entry : parameters.entrySet()){
             // don't put back in String array that only contains one element
             context.put(entry.getKey(), entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1
                     ? context.put(entry.getKey(), ((String[])entry.getValue())[0])
                     : entry.getValue());
         }
-        
+
         // populate context with request and response // TODO remove, since all attributes are copied in
         final HttpServletRequest request = (HttpServletRequest) parameters.get("request");
         final HttpServletResponse response = (HttpServletResponse) parameters.get("response");
@@ -238,7 +237,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("currentTab", cxt.getSearchTab()); // duplicate of "tab"
         context.put("contextPath", request.getContextPath());
         context.put("tradedoubler", new TradeDoubler(request));
-        
+
         // following are deprecated as the view domain should not be accessing them
         context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
         context.put("runningQuery", (RunningQuery) request.getAttribute("query"));
@@ -252,15 +251,15 @@ public final class VelocityResultHandler implements ResultHandler {
 
         if (config.isPagingEnabled()) {
             final PagingDisplayHelper pager = new PagingDisplayHelper(
-                    cxt.getSearchResult().getHitCount(), 
-                    config.getResultsToReturn(), 
+                    cxt.getSearchResult().getHitCount(),
+                    config.getResultsToReturn(),
                     cxt.getSearchTab().getPageSize());
-            
+
             final Object v = parameters.get("offset");
-            pager.setCurrentOffset(Integer.parseInt( v instanceof String[] 
+            pager.setCurrentOffset(Integer.parseInt(v instanceof String[]
                     ? ((String[]) v)[0]
                     : (String) v));
-            
+
             context.put("pager", pager);
         }
 

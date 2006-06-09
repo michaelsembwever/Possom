@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -127,8 +126,8 @@ public final class SiteLocatorFilter implements Filter {
                     if (resource.startsWith(PUBLISH_DIR)) { // publishing system
                         // the publishing system is responsible for this.
                         final Properties props = SiteConfiguration.valueOf(site).getProperties();
-                        url = props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL)
-                            .replaceFirst("localhost",props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST))
+                        url = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL)
+                            .replaceFirst("localhost",props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST))
                             + '/' + resource;
 
                     }  else  {
@@ -253,7 +252,7 @@ public final class SiteLocatorFilter implements Filter {
         }
 
         final String[] prefLocale = SiteConfiguration.valueOf(result)
-                .getProperty(SearchConstants.SITE_LOCALE_DEFAULT)
+                .getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT)
                 .split("_");
 
         switch(prefLocale.length){

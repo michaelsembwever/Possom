@@ -48,7 +48,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
      *
      * @return true if any of the patterns matches.
      */
-    public boolean evaluateToken(final String token, final String term, final String query) {
+    public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
         return evaluateToken(token, term, query, false);
     }
@@ -67,7 +67,7 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
      * @return true if any of the patterns matches.
      */
     public boolean evaluateToken(
-            final String token,
+            final TokenPredicate token,
             final String term,
             final String query,
             final boolean exactMatchRequired) {

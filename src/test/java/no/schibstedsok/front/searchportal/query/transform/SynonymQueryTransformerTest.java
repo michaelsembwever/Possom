@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * SynonymQueryTransformerTest.java
  *
@@ -95,7 +96,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
         final String result = builder.getQueryString();
-        
+
         LOG.debug("testOneWord builder gave " + result);
         if( query.getFirstLeafClause().getKnownPredicates().contains(TokenPredicate.STOCKMARKETTICKERS)){
             assertEquals("(sch schibsted)", result);
@@ -116,7 +117,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
         final String result = builder.getQueryString();
-        
+
         LOG.debug("testTwoWords builder gave " + result);
         if( query.getFirstLeafClause().getKnownPredicates().contains(TokenPredicate.STOCKMARKETTICKERS)){
             assertEquals("(oslo oslo areal) (sch schibsted) schibsted", result);
@@ -165,35 +166,35 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 //            assertEquals("schibsted asa oslo", result);
 //        }
 //    }
-    
+
     private Map<Clause,String> applyTransformer(
             final SynonymQueryTransformer t,
             final Query query,
             final String predicateName,
             final TokenEvaluatorFactoryImpl.Context tefCxt,
             final TokenEvaluatorFactory tef) {
-        
+
         t.addPredicateName(predicateName);
         return super.applyTransformer(t,query,tefCxt,tef);
     }
 
-    
+
     public static final class QueryBuilder extends AbstractReflectionVisitor {
         private final Query query;
         private final Map map;
         private final StringBuffer sb = new StringBuffer();
-        
+
         public QueryBuilder(final Query q, final Map m) {
             query = q;
             map = m;
         }
-        
+
         public synchronized String getQueryString() {
             sb.setLength(0);
             visit(query.getRootClause());
             return sb.toString();
         }
-        
+
         public void visitImpl(final LeafClause clause) {
             sb.append(map.get(clause));
         }
@@ -236,20 +237,20 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
             // clause.getSecondClause().accept(this);
         }
     }
-    
+
     private static class MapInitialisor extends AbstractReflectionVisitor {
-        
+
         private final Map map;
-        
+
         public MapInitialisor(final Map m) {
             map = m;
         }
-        
+
         public void visitImpl(final LeafClause clause) {
             final String fullTerm =
                     (clause.getField() == null ? "" : clause.getField() + ": ")
                     + clause.getTerm();
-            
+
             map.put(clause, fullTerm);
         }
         public void visitImpl(final OperationClause clause) {

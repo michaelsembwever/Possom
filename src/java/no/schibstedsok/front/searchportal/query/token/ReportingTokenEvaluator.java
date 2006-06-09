@@ -17,6 +17,6 @@ public interface ReportingTokenEvaluator {
      *            the query to look in.
      * @return the matches.
      */
-    List<TokenMatch> reportToken(String token, String query);
+    List<TokenMatch> reportToken(TokenPredicate token, String query);
 
 }

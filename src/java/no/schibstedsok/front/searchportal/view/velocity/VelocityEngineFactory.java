@@ -23,7 +23,6 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -43,7 +42,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     private static final String VELOCITY_LOGGER = "org.apache.velocity";
 
     private static final Map<Site,VelocityEngineFactory> INSTANCES = new HashMap<Site,VelocityEngineFactory>();
-    
+
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     private final VelocityEngine engine;
@@ -58,7 +57,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     /** Creates a new instance of VelocityEngineFactory */
     private VelocityEngineFactory(final Context cxt) {
-        
+
         INSTANCES_LOCK.writeLock().lock();
         context = cxt;
         final Site site = cxt.getSite();
@@ -95,8 +94,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             engine.setProperty("velocimacro.library", site.getTemplateDir() + "/VM_global_library.vm");
             engine.setProperty(Site.NAME_KEY, site);
             engine.setProperty("site.fallback", Site.DEFAULT);
-            engine.setProperty(SearchConstants.PUBLISH_SYSTEM_URL, props.getProperty(SearchConstants.PUBLISH_SYSTEM_URL));
-            engine.setProperty(SearchConstants.PUBLISH_SYSTEM_HOST, props.getProperty(SearchConstants.PUBLISH_SYSTEM_HOST));
+            engine.setProperty(SiteConfiguration.PUBLISH_SYSTEM_URL, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL));
+            engine.setProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST));
             engine.setProperty("input.encoding", "UTF-8");
             engine.setProperty("output.encoding", "UTF-8");
             engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.view.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.view.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.view.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.view.velocity.PublishDirective,no.schibstedsok.front.searchportal.view.velocity.AccountingDirective,no.schibstedsok.front.searchportal.view.velocity.RolesDirective,no.schibstedsok.front.searchportal.view.velocity.XmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.WikiDirective,no.schibstedsok.front.searchportal.view.velocity.RemovePrefixDirective");
@@ -106,7 +105,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             throw new InfrastructureException(e);
         }
 
-        
+
         INSTANCES.put(site, this);
         INSTANCES_LOCK.writeLock().unlock();
     }
@@ -121,13 +120,13 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
      * @return VelocityEngine for this site.
      */
     public static VelocityEngineFactory valueOf(final Context cxt) {
-        
+
         final Site site = cxt.getSite();
         INSTANCES_LOCK.readLock().lock();
         VelocityEngineFactory instance = INSTANCES.get(site);
         INSTANCES_LOCK.readLock().unlock();
-        
-        
+
+
         if (instance == null) {
             instance = new VelocityEngineFactory(cxt);
 
@@ -158,8 +157,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         return instance;
     }
 
-    public boolean remove(Site site) {
-        
+    public boolean remove(final Site site) {
+
         try{
             INSTANCES_LOCK.writeLock().lock();
             return null != INSTANCES.remove(site);

@@ -70,6 +70,8 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      */
     private static final Map<Site,AnalysisRuleFactory> INSTANCES = new HashMap<Site,AnalysisRuleFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
+    
+    public static final String ANALYSIS_RULES_XMLFILE = "AnalysisRules.xml";
 
     private final Map predicateIds = new HashMap();
 
@@ -91,7 +93,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        loader = context.newDocumentLoader(SearchConstants.ANALYSIS_RULES_XMLFILE, builder);
+        loader = context.newDocumentLoader(ANALYSIS_RULES_XMLFILE, builder);
 
         INSTANCES.put(context.getSite(), this);
         INSTANCES_LOCK.writeLock().unlock();
@@ -100,7 +102,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     private void init() {
         if (!init) {
             loader.abut();
-            LOG.debug("Parsing " + SearchConstants.ANALYSIS_RULES_XMLFILE + " started");
+            LOG.debug("Parsing " + ANALYSIS_RULES_XMLFILE + " started");
             final Document doc = loader.getDocument();
             final Element root = doc.getDocumentElement();
 
@@ -134,7 +136,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                 rules.put(id, analysisRule);
                 LOG.debug(DEBUG_FINISHED_RULE + id + " " + analysisRule);
             }
-            LOG.debug("Parsing " + SearchConstants.ANALYSIS_RULES_XMLFILE + " finished");
+            LOG.debug("Parsing " + ANALYSIS_RULES_XMLFILE + " finished");
         }
         init = true;
     }

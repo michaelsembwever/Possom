@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -173,7 +173,7 @@ public final class Site {
 
         final Properties props = new Properties();
         try  {
-            props.load(Site.class.getResourceAsStream('/' + SearchConstants.CONFIGURATION_FILE));
+            props.load(Site.class.getResourceAsStream('/' + SiteConfiguration.CONFIGURATION_FILE));
         }  catch (IOException ex) {
             LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
         }

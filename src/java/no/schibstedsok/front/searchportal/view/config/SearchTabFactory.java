@@ -25,7 +25,6 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import no.schibstedsok.front.searchportal.util.config.AbstractDocumentFactory;
 import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 import org.apache.log4j.Logger;
@@ -48,8 +47,10 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
     private static final Map<Site, SearchTabFactory> INSTANCES = new HashMap<Site,SearchTabFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
-    
+
     private static final String MSG_NAV_PREFIX = "navigation_";
+
+    public static final String VIEWS_XMLFILE = "views.xml";
 
     private static final Logger LOG = Logger.getLogger(SearchTabFactory.class);
     private static final String ERR_DOC_BUILDER_CREATION = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
@@ -110,7 +111,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        loader = context.newDocumentLoader(SearchConstants.VIEWS_XMLFILE, builder);
+        loader = context.newDocumentLoader(VIEWS_XMLFILE, builder);
 
         // update the store of factories
         INSTANCES.put(context.getSite(), this);
@@ -175,7 +176,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     private void init() {
 
         loader.abut();
-        LOG.debug("Parsing " + SearchConstants.VIEWS_XMLFILE + " started");
+        LOG.debug("Parsing " + VIEWS_XMLFILE + " started");
         final Document doc = loader.getDocument();
         final Element root = doc.getDocumentElement();
         final TextMessages msgs = TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, context));
@@ -252,7 +253,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         }
 
         // finished
-        LOG.debug("Parsing " + SearchConstants.VIEWS_XMLFILE + " finished");
+        LOG.debug("Parsing " + VIEWS_XMLFILE + " finished");
 
     }
 

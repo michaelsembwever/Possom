@@ -8,19 +8,14 @@ package no.schibstedsok.front.searchportal.util;
  * <p/>
  * Various constants in use in application.
  *
+ * @deprecated constants should be defined in the class that is primarily responsible for it.
  * @author <a href="lars.johansson@conduct.no">Lars Johansson</a>
- * @version $Revision$
+ * @version $Id$
  */
 public final class SearchConstants {
 
-    public static final String SITE_LOCALE_DEFAULT = "site.locale.default";
 
-    public static final String FAST_PROPERTYFILE = "fast.properties";                //the properties file for configuration of FAST search and templates
-    public static final String SENSIS_PROPERTYFILE = "sensis.properties";            //the properties file for configuration of FAST search and templates
-    public static final String REGEXP_EVALUATOR_XMLFILE = "RegularExpressionEvaluators.xml";    //the xml file for regexp patterns
-    public static final String ANALYSIS_RULES_XMLFILE = "AnalysisRules.xml";
-    public static final String MODES_XMLFILE = "modes.xml";
-    public static final String VIEWS_XMLFILE = "views.xml";
+
     public static final String PROPERTY_KEY___QR_SERVER = "qrserver";                //property key
     public static final String PROPERTY_KEY___TV_PATTERN = "tv-pattern";            //property key
     public static final String _COLLECTION_KEY = "default-collection";            //property file key
@@ -71,10 +66,10 @@ public final class SearchConstants {
     public static final String OVERTURE_PPC_HOST= "xml.no.overture.com";
     public static final String OVERTURE_PPC_ELEMENT = "Listing";
     public static final Object REQUEST_PARAM_PICTURE_SEARCH = "p";
-    public static final String CONFIGURATION_FILE = "configuration.properties";
+
     public static final Object PARAMETER_OFFSET = "offset";
-    public static final String PUBLISH_SYSTEM_URL = "publishing.system.baseURL";
-    public static final String PUBLISH_SYSTEM_HOST = "publishing.system.host-header";
+
+
 
     public static final String[] ALL_COLLECTIONS = {"tv",
                                                     "webcrawlno1",
@@ -96,6 +91,8 @@ public final class SearchConstants {
                                                     "mano",
                                                     "skiinfo"
     };
+
+
 
 
 }

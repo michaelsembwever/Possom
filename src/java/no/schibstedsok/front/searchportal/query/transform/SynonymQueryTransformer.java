@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * SynonymQueryTransformer.java
  *
@@ -18,15 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.front.searchportal.query.token.VeryFastTokenEvaluator;
 import org.apache.log4j.Logger;
-
 /** XXX This will get largely rewritten when alternation rotation comes into play.
  *
  * @author maek
@@ -48,12 +45,12 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
             final Properties props = new Properties();
             props.load(SynonymQueryTransformer.class.getResourceAsStream("/tickers.properties"));
 
-            for( Map.Entry<Object,Object> entry : props.entrySet()){
+            for(Map.Entry<Object,Object> entry : props.entrySet()){
 
                 final String key = ((String)entry.getKey()).toLowerCase();
                 final String value = ((String)entry.getValue()).toLowerCase();
-                synonyms.put( key, value );
-                reverseSynonyms.put( value, key );
+                synonyms.put(key, value);
+                reverseSynonyms.put(value, key);
             }
 
         }catch(IOException ioe){
@@ -75,23 +72,23 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
      * contained in predicateNames */
     private Collection<String> predicateNames = new ArrayList<String>();
     private Collection<TokenPredicate> customPredicates;
-    
+
     private List<LeafClause> leafs = new ArrayList<LeafClause>();
     private Set<TokenPredicate> matchingPredicates = new HashSet<TokenPredicate>();
     private List<LeafClause> expanded = new ArrayList<LeafClause>();
-    
+
     private StringBuilder builder = new StringBuilder();
-    
+
     void addPredicateName(final String name) {
         predicateNames.add(name);
     }
-    
+
     protected void visitImpl(final DefaultOperatorClause clause) {
 
         LOG.trace("visitImpl(" + clause + ")");
 
         for (final TokenPredicate p : getPredicates()) {
-            
+
             if (clause.getKnownPredicates().contains(p)
                     || clause.getPossiblePredicates().contains(p)) {
 
@@ -99,23 +96,23 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
                 matchingPredicates.add(p);
             }
         }
-        
+
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
 
     }
-    
+
     protected void visitImpl(final LeafClause clause) {
 
         LOG.trace("visitImpl(" + clause + ")");
 
         if (!matchingPredicates.isEmpty() && !expanded.contains(clause)) {
             for (final TokenPredicate p : matchingPredicates) {
-                
+
                 if (matchingPredicates.size() > 0) {
                     builder.append(' ');
                 }
-                
+
                 if (isSynonym(builder.toString() + clause.getTerm())) {
 
                     LOG.debug("adding to builder " + clause.getTerm());
@@ -133,11 +130,11 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
                 }
             }
         }
-        
+
         for (TokenPredicate predicate : getPredicates()) {
 
             boolean applicable = clause.getKnownPredicates().contains(predicate);
-            if( !applicable && clause.getPossiblePredicates().contains(predicate) ){
+            if(!applicable && clause.getPossiblePredicates().contains(predicate)){
                 // possible predicates depend on placement of terms within the query.
                 //  this state can't be assigned to the terms as they are immutable and
                 //   re-used across multiple queries at any given time.
@@ -156,13 +153,13 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
             }
         }
     }
-    
-    private void expandSynonym(final List<LeafClause> replace, String synonym) {
+
+    private void expandSynonym(final List<LeafClause> replace, final String synonym) {
 
         LOG.trace("expandSynonym(" + replace + ", " + synonym + ")");
         final LeafClause first = replace.get(0);
         final LeafClause last = replace.get(replace.size() - 1);
-        
+
         if (first != last) {
             getContext().getTransformedTerms().put(first, "(" + first.getTerm());
             getContext().getTransformedTerms().put(last, last.getTerm()+ " " + synonym + ")");
@@ -170,14 +167,14 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
             getContext().getTransformedTerms().put(last, "(" + last.getTerm()+ " " + synonym + ")");
         }
     }
-    
-    private void expandSynonym(final LeafClause replace, String synonym) {
+
+    private void expandSynonym(final LeafClause replace, final String synonym) {
 
         LOG.trace("expandSynonym(" + replace + ", " + synonym + ")");
         final String originalTerm = getContext().getTransformedTerms().get(replace);
         getContext().getTransformedTerms().put(replace, "(" + originalTerm + " " + synonym + ")");
     }
-    
+
     private Collection<TokenPredicate> getPredicates() {
 
         synchronized (this) {
@@ -212,7 +209,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         final String s = string.toLowerCase();
         return SYNONYMS.containsKey(s) || REVERSE_SYNONYMS.containsKey(s);
     }
-    
+
     public static String getSynonym(final String string) {
 
         final String s = string.toLowerCase();
@@ -220,16 +217,16 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
                 ? SYNONYMS.get(s)
                 : REVERSE_SYNONYMS.get(s);
     }
-    
+
     public Object clone() throws CloneNotSupportedException {
         final SynonymQueryTransformer retValue = (SynonymQueryTransformer)super.clone();
-        
+
         retValue.predicateNames = predicateNames;
         retValue.customPredicates = customPredicates;
         retValue.matchingPredicates = new HashSet<TokenPredicate>();
         retValue.builder = new StringBuilder();
         retValue.leafs = new ArrayList<LeafClause>();
-        
+
         return retValue;
     }
 

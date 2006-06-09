@@ -65,7 +65,6 @@ import no.schibstedsok.front.searchportal.result.handler.WeatherDateHandler;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import no.schibstedsok.front.searchportal.util.config.AbstractDocumentFactory;
 
 import org.apache.log4j.Logger;
@@ -89,6 +88,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private static final Map<Site, SearchModeFactory> INSTANCES = new HashMap<Site,SearchModeFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
+    
+    public static final String MODES_XMLFILE = "modes.xml";
 
 
     private static final Map<SearchMode,Map<String,SearchConfiguration>> COMMANDS
@@ -164,7 +165,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        loader = context.newDocumentLoader(SearchConstants.MODES_XMLFILE, builder);
+        loader = context.newDocumentLoader(MODES_XMLFILE, builder);
 
         // update the store of factories
         INSTANCES.put(context.getSite(), this);
@@ -212,7 +213,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private void init(){
 
         loader.abut();
-        LOG.debug("Parsing " + SearchConstants.MODES_XMLFILE + " started");
+        LOG.debug("Parsing " + MODES_XMLFILE + " started");
         final Document doc = loader.getDocument();
         final Element root = doc.getDocumentElement();
 
@@ -255,7 +256,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         // finished
-        LOG.debug("Parsing " + SearchConstants.MODES_XMLFILE + " finished");
+        LOG.debug("Parsing " + MODES_XMLFILE + " finished");
 
     }
 

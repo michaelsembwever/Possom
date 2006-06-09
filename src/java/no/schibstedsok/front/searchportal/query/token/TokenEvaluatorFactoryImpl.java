@@ -10,15 +10,15 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import no.schibstedsok.common.ioc.BaseContext;
+import javax.xml.parsers.ParserConfigurationException;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
-
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.http.HTTPClient;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 /**
  * TokenEvaluateFactory provides knowledge about which implementation of
  * {@link TokenEvaluator} that can handle a particular token.
@@ -28,14 +28,12 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
-    public interface Context extends BaseContext, QueryStringContext, RegExpEvaluatorFactory.Context, 
-            SiteConfiguration.Context{
-    }
+    
     
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     
     private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new TokenEvaluator(){
-        public boolean evaluateToken(final String token, final String term, final String query) {
+        public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             return true;
         }
         public boolean isQueryDependant(final TokenPredicate predicate) {
@@ -44,7 +42,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     };
     
     static final TokenEvaluator ALWAYS_FALSE_EVALUATOR = new TokenEvaluator(){
-        public boolean evaluateToken(final String token, final String term, final String query) {
+        public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             return false;
         }
         public boolean isQueryDependant(final TokenPredicate predicate) {
@@ -60,6 +58,7 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
             "Interrupted waiting for FastEvaluatorCreator. Analysis on this query will fail.";
     private static final String ERR_TOKENTYPE_WIHOUT_IMPL = "Token type not known or implemented. ";
     private static final String ERR_GENERIC_TOKENTYPE_WIHOUT_IMPL = "Generic token type not known or implemented. ";
+    private static final String ERR_FAILED_CREATING_EVAL = "Failed to create VeryFastTokenEvaluator";
 
     private final Context context;
     private final Future fastEvaluatorCreator;
@@ -104,7 +103,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
             case FAST:
                 return getFastEvaluator();
             case REGEX:
-                return RegExpEvaluatorFactory.valueOf(context).getEvaluator(token);
+                return RegExpEvaluatorFactory.valueOf(
+                        ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class,context)).getEvaluator(token);
             case JEP:
                 return jedEvaluator;
             default:
@@ -117,7 +117,9 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
     }
 
     protected Properties getProperties() {
-        return SiteConfiguration.valueOf(context).getProperties();
+        
+        return SiteConfiguration.valueOf(
+                        ContextWrapper.wrap(SiteConfiguration.Context.class,context)).getProperties();
     }
 
     private TokenEvaluator getFastEvaluator() {
@@ -163,9 +165,14 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         public void run() {
             final String host = getProperties().getProperty("tokenevaluator.host");
             final int port = Integer.parseInt(getProperties().getProperty("tokenevaluator.port"));
+            try {
 
-            fastEvaluator = new VeryFastTokenEvaluator(
-                    HTTPClient.instance("token_evaluator", host, port), getQueryString());
+                fastEvaluator = new VeryFastTokenEvaluator(
+                        HTTPClient.instance("token_evaluator", host, port),
+                        ContextWrapper.wrap(VeryFastTokenEvaluator.Context.class, context));
+            } catch (ParserConfigurationException ex) {
+                LOG.error(ERR_FAILED_CREATING_EVAL, ex);
+            }
         }
         
     }

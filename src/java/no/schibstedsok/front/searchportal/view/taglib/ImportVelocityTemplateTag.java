@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * ImportVelocityTemplateTag.java
  *
@@ -35,7 +36,7 @@ import org.apache.velocity.app.VelocityEngine;
  */
 
 public final class ImportVelocityTemplateTag extends SimpleTagSupport {
-    
+
     private static final Logger LOG = Logger.getLogger(ImportVelocityTemplateTag.class);
     private static final String ERR_MERGE_FAILURE = "Template merging failed";
 
@@ -48,34 +49,34 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
      * Initialization of command property.
      */
     private String command;
-    
+
     /**Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
      */
     public void doTag() throws JspException {
-        
+
         final String missing = "Missing_" + this.template.replaceAll("/","") + "_Template";
-        
+
         final PageContext cxt = (PageContext) getJspContext();
         cxt.removeAttribute(missing);
         final JspWriter out = cxt.getOut();
-        
+
         try {
-            
+
             final JspFragment f = getJspBody();
-            if (f != null){  
+            if (f != null){
                 f.invoke(out);
             }
             final Site site = (Site)cxt.findAttribute(Site.NAME_KEY);
             final TextMessages text = (TextMessages)cxt.findAttribute("text");
-            
+
             final VelocityEngine engine = VelocityResultHandler.getEngine(site);
             final Template template = VelocityResultHandler.getTemplate(engine, site, this.template);
             if (template != null){
 
                 final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
-                
+
                 // populate context with request and response // TODO remove, since all attributes are copied in
                 context.put("request", cxt.getRequest());
                 context.put("response", cxt.getResponse());
@@ -84,27 +85,27 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
                 context.put("base", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("contextPath", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("text", text);
-                
+
                 // push all parameters into request attributes
                 for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames(); e.hasMoreElements();) {
                     final String attrName = e.nextElement();
                     context.put(attrName, cxt.getRequest().getAttribute(attrName));
                     LOG.debug("Added to context " + attrName + ", value: " + cxt.getRequest().getAttribute(attrName));
                 }
-                
+
                 // populate modifiers
                 final List<Modifier> sources = (List<Modifier>) cxt.findAttribute("sources");
-                if( sources != null ){
+                if(sources != null){
                     for (Modifier mod : sources) {
-                        if ( mod.getName().equals("sesam_hits")) {
+                        if (mod.getName().equals("sesam_hits")) {
                             context.put("sesam_hits", text.getMessage("numberFormat", mod.getCount()));
                         }
                     }
                 }
-                
+
                 // populate sitemesh attributes
                 final Page siteMeshPage = (Page) cxt.findAttribute(RequestConstants.PAGE);
-                    if( siteMeshPage != null ){
+                    if(siteMeshPage != null){
                     context.put("page", siteMeshPage);
                     context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
                     {
@@ -118,19 +119,19 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
                     //    context.put("head", buffer.toString());
                     //}
                 }
-                
+
                 // merge it into the JspWriter
                 template.merge(context, out);
-                
+
             }else{
                 cxt.setAttribute(missing, Boolean.TRUE);
             }
-            
+
         } catch (Exception ex) {
             LOG.error(ERR_MERGE_FAILURE, ex);
             throw new JspException(ex);
         }
-        
+
     }
 
     /**

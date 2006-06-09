@@ -9,12 +9,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
+import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 
 import no.schibstedsok.front.searchportal.http.HTTPClient;
+import no.schibstedsok.front.searchportal.query.QueryStringContext;
+import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.site.SiteContext;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -23,37 +32,97 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * VeryFastTokenEvaluator is part of no.schibstedsok.front.searchportal.analyzer.
+ * VeryFastTokenEvaluator is part of no.schibstedsok.front.searchportal.query.
+ *
+ * TODO would make sense to split this class into an Evaluator and a factory, similar to RegExpEvaluator.
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @version 0.1
- * @version $Revision$, $Author$, $Date$
+ * @author mick
+ * @version $Id$
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
 
+    public interface Context extends BaseContext, QueryStringContext, DocumentContext, SiteContext{
+    }
+
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
-    
+
+    public static String VERYFAST_EVALUATOR_XMLFILE = "VeryFastEvaluators.xml";
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
     private static final String REAL_TOKEN_SUFFIX = "QM";
-    private static final String EXACT_PREFIX = "exact_";
+    private static final String EXACT_PREFIX = "EXACT_";
     private static final String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
 
+    private static final Map<Site,Map<TokenPredicate,String>> LIST_NAMES
+            = new HashMap<Site,Map<TokenPredicate,String>>();
+    private static final ReentrantReadWriteLock LIST_NAMES_LOCK = new ReentrantReadWriteLock();
+    private final DocumentLoader loader;
+    private volatile boolean init = true;
+
     private final HTTPClient httpClient;
+    private final Context context;
     private final Map<String, List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
 
     /**
-     * Search fast and initialize analyzis result.
+     * Search fast and initialize analysis result.
      * @param query
      */
-    VeryFastTokenEvaluator(final HTTPClient client, final String query) {
+    VeryFastTokenEvaluator(final HTTPClient client, final Context cxt)
+            throws ParserConfigurationException  {
+
         // pre-condition check
         if (client == null) {
             throw new IllegalArgumentException("Not allowed to use null HTTPClient!");
         }
         this.httpClient = client;
-        queryFast(query);
+        LIST_NAMES_LOCK.writeLock().lock();
+        context = cxt;
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+        loader = context.newDocumentLoader(VERYFAST_EVALUATOR_XMLFILE, builder);
+
+        if(LIST_NAMES.get(context.getSite()) == null){
+            LIST_NAMES.put(context.getSite(), new HashMap<TokenPredicate,String>());
+            init = false;
+        }
+
+        LIST_NAMES_LOCK.writeLock().unlock();
+        queryFast(context.getQueryString());
+    }
+
+    private void init() {
+
+        LIST_NAMES_LOCK.writeLock().lock();
+        if (!init) {
+            loader.abut();
+            LOG.debug("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
+            final Map<TokenPredicate,String> listNames = LIST_NAMES.get(context.getSite());
+            final Document doc = loader.getDocument();
+            final Element root = doc.getDocumentElement();
+            final NodeList lists = root.getElementsByTagName("list");
+            for (int i = 0; i < lists.getLength(); ++i) {
+
+                final Element list = (Element) lists.item(i);
+
+                final String tokenName = list.getAttribute("token");
+                LOG.debug(" ->list@token: " + tokenName);
+
+                final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+
+                final String listName = list.getAttribute("list-name");
+                LOG.debug(" ->list: " + listName);
+
+                listNames.put(token, listName);
+
+            }
+            LOG.debug("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
+            init = true;
+        }
+
+        LIST_NAMES_LOCK.writeLock().unlock();
     }
 
     /**
@@ -69,10 +138,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
      * @param token  can be any of the above
      * @return true if the query contains any of the above
      */
-    public boolean evaluateToken(final String token, final String term, final String query) {
+    public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
         boolean evaluation = false;
-        final String realTokenFQ = REAL_TOKEN_PREFIX + token + REAL_TOKEN_SUFFIX;
+        final String realTokenFQ = getFastListName(token);
 
         if (analysisResult.containsKey(realTokenFQ)) {
             if (term == null) {
@@ -92,12 +161,12 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         return evaluation;
     }
 
-    public List<TokenMatch> reportToken(final String token, final String query) {
+    public List<TokenMatch> reportToken(final TokenPredicate token, final String query) {
 
         LOG.trace("reportToken(" + token + "," + query + ")");
 
         if (evaluateToken(token, null, query)) {
-            String realTokenFQ = REAL_TOKEN_PREFIX + token + REAL_TOKEN_SUFFIX;
+            final String realTokenFQ = REAL_TOKEN_PREFIX + token + REAL_TOKEN_SUFFIX;
             return analysisResult.get(realTokenFQ);
         } else {
             return Collections.EMPTY_LIST;
@@ -105,7 +174,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     }
 
     /**
-     * Search fast and find out if the given tokesn are company, firstname, lastname etc
+     * Search fast and find out if the given tokens are company, firstname, lastname etc
      * @param query
      */
     private void queryFast(final String query) {
@@ -157,8 +226,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         }
     }
 
-    public boolean isQueryDependant(TokenPredicate predicate) {
-        return predicate.getFastListName().startsWith(EXACT_PREFIX);
+    public boolean isQueryDependant(final TokenPredicate predicate) {
+        return predicate.name().startsWith(EXACT_PREFIX);
     }
 
     private void addMatch(final String name, final String match, final String query) {
@@ -176,5 +245,14 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
             analysisResult.get(name).add(tknMatch);
         }
+    }
+
+    private String getFastListName(final TokenPredicate token){
+        init();
+        LIST_NAMES_LOCK.readLock().lock();
+        final Map<TokenPredicate,String> listNames = LIST_NAMES.get(context.getSite());
+        final String listName = listNames.get(token);
+        LIST_NAMES_LOCK.readLock().unlock();
+        return REAL_TOKEN_PREFIX + listName + REAL_TOKEN_SUFFIX;
     }
 }
