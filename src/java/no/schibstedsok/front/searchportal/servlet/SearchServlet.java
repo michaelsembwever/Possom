@@ -92,7 +92,7 @@ public final class SearchServlet extends HttpServlet {
 
         FactoryReloads.performReloads(genericCxt, request.getParameter("reload"));
 
-        updateContentType(site, response);
+        updateContentType(site, response, request);
 
         String searchTabKey = request.getParameter("c");
 
@@ -190,10 +190,13 @@ public final class SearchServlet extends HttpServlet {
 
     private void updateContentType(
             final Site site,
-            final HttpServletResponse response ){
+            final HttpServletResponse response,
+            final HttpServletRequest request){
 
         // TODO. Any better way to do this. Sitemesh?
-        if (site.getName().startsWith("mobil")) {
+        if (request.getParameter("output") != null && request.getParameter("output").equals("rss")) {
+            response.setContentType("text/xml; charset=utf-8");
+        } else if (site.getName().startsWith("mobil")) {
             response.setContentType("text/xml; charset=utf-8");
             try {
                 // Just can't get sitemesh to work in the way I imagine it works.

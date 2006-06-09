@@ -439,6 +439,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     }
                             
                     asc.setQueryServer(qrServerValue);
+                    // navigators
+                    final NodeList nList = commandE.getElementsByTagName("navigators");
+                    for(int i = 0; i < nList.getLength(); ++i){
+                        final Collection<FastNavigator> navigators = parseNavigators((Element)nList.item(i));
+                        for(FastNavigator navigator : navigators){
+                            asc.addNavigator(navigator, navigator.getId());
+                        }
+
+                    }
                 }
                 if(sc instanceof HittaServiceSearchConfiguration){
                     final HittaServiceSearchConfiguration hsc = (HittaServiceSearchConfiguration) sc;
@@ -853,8 +862,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     case TVSEARCH_SORTING:
                         final TvSearchSortingHandler tssh = (TvSearchSortingHandler) handler;
                         
-                        tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
-                        tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
+//                        tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
+ //                       tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
                         break;
                 }
 

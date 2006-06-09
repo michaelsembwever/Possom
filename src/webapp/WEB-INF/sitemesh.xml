@@ -11,6 +11,10 @@
 
     <decorator-mappers>
 
+        <mapper class="com.opensymphony.module.sitemesh.mapper.ParameterDecoratorMapper">
+            <param name="decorator.parameter" value="output"/>
+        </mapper>
+
         <!-- mapper that allows HTML META tags to control choice of decorator -->
         <!-- First force decorator if its hardcode into the Velocity templates or whereevere it is
              hardcoded -->
@@ -29,7 +33,6 @@
         <mapper class="com.opensymphony.module.sitemesh.mapper.ConfigDecoratorMapper">
             <param name="config" value="${decorators-file}"/>
         </mapper>
-
 
         <!--
         <mapper class="com.opensymphony.module.sitemesh.mapper.FrameSetDecoratorMapper">

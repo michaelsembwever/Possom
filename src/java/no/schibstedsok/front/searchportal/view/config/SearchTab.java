@@ -45,6 +45,7 @@ public final class SearchTab {
                 final String mode,
                 final String key,
                 final String parentKey,
+                final String rssResultName,
                 final int pageSize,
                 final Collection<NavigatorHint> navigations,
                 final int enrichmentLimit,
@@ -81,6 +82,7 @@ public final class SearchTab {
             this.navigators.addAll(inherit.navigators);
             this.enrichments.addAll(inherit.enrichments);
         }
+        this.rssResultName = rssResultName;
     }
 
     // Getters --------------------------------------------------------
@@ -220,7 +222,19 @@ public final class SearchTab {
         return this.parentKey;
     }
 
-
+    /**
+     * Holds value of property rssResultName
+     */
+    private final String rssResultName;
+    
+    /**
+     * Getter for property rssResultName.
+     * @return Value of property rssResultName.
+     */
+    public String getRssResultName() {
+        return rssResultName;
+    }
+    
 
     /**
      * Holds value of property enrichments.

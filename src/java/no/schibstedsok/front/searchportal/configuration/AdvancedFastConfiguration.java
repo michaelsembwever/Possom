@@ -9,6 +9,9 @@
 
 package no.schibstedsok.front.searchportal.configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  *
  * @author maek
@@ -19,6 +22,8 @@ public class AdvancedFastConfiguration extends AbstractSearchConfiguration {
     private String queryServer;
     private String sortBy;
     
+    private final Map<String,FastNavigator> navigators = new HashMap<String,FastNavigator>();
+
     public AdvancedFastConfiguration(final SearchConfiguration asc){
         super(asc);
     }
@@ -49,5 +54,16 @@ public class AdvancedFastConfiguration extends AbstractSearchConfiguration {
     
     public void setSortBy(final String sortBy) {
         this.sortBy = sortBy;
+    }
+    
+    public Map<String,FastNavigator> getNavigators() {
+        return navigators;
+    }
+    public void addNavigator(final FastNavigator navigator, final String navKey) {
+        navigators.put(navKey, navigator);
+    }
+
+    public FastNavigator getNavigator(final String navigatorKey) {
+        return navigators.get(navigatorKey);
     }
 }
