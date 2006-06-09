@@ -21,15 +21,9 @@ public class TvSearchConfiguration extends FastConfiguration {
     
     /** Filter for use when an empty query is sumbitted or no spesific sorting is used. **/
     private List<String> defaultChannels = new ArrayList<String>();
- 
-    /** Number of results per channel when doing an empty search. **/
-    private int resultsPerChannel;
     
     /** Number of results to fetch for empty searches **/
     private int resultsToFetch;
-    
-    /** Number of channels to display per page. **/
-    private int channelsPerPage;
     
     public TvSearchConfiguration() {
         super(null);
@@ -52,27 +46,11 @@ public class TvSearchConfiguration extends FastConfiguration {
         defaultChannels.add(defaultChannel);
     }
     
-    public int getResultsPerChannel() {
-        return resultsPerChannel;
-    }
-    
-    public void setResultsPerChannel(int resultsPerChannel) {
-        this.resultsPerChannel = resultsPerChannel;
-    }
-    
     public int getResultsToFetch() {
         return resultsToFetch;
     }
     
     public void setResultsToFetch(int resultsToFetch) {
         this.resultsToFetch = resultsToFetch;
-    }
-    
-    public int getChannelsPerPage() {
-        return channelsPerPage;
-    }
-    
-    public void setChannelsPerPage(int channelsPerPage) {
-        this.channelsPerPage = channelsPerPage;
     }
 }
