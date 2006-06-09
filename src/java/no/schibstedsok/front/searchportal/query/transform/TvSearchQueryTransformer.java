@@ -20,6 +20,8 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
 
     private static final Log LOG = LogFactory.getLog(TvSearchQueryTransformer.class);
   
+    private boolean withEndtime;
+    
     /**
      * Set time window
      * @return filter for time window to search from
@@ -35,7 +37,7 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
         filter.append("");
 
-        if (blankQuery) {
+        if (blankQuery && getWithEndtime()) {
 
 
             filter.append(" +endtime:<");
@@ -49,5 +51,13 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
             filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
         }
         return filter.toString();
+    }
+    
+    public boolean getWithEndtime() {
+        return withEndtime;
+    }
+    
+    public void setWithEndtime(boolean withEndtime) {
+        this.withEndtime = withEndtime;
     }
 }
