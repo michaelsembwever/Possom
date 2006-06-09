@@ -532,10 +532,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     for (String channel : defaultChannels) {
                         tssc.addDefaultChannel(channel.trim());
                     }
-                    
-                    tssc.setResultsPerChannel(Integer.parseInt(commandE.getAttribute("results-per-channel")));
                     tssc.setResultsToFetch(Integer.parseInt(commandE.getAttribute("results-to-fetch")));
-                    tssc.setChannelsPerPage(Integer.parseInt(commandE.getAttribute("channels-per-page")));
+                    
                 }
                 
                 // query transformers
@@ -849,7 +847,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         dateh.setTargetField(rh.getAttribute("target"));
                         dateh.setSourceField(rh.getAttribute("source"));
                         break;
-                    
+                    case TVSEARCH_SORTING:
+                        final TvSearchSortingHandler tssh = (TvSearchSortingHandler) handler;
+                        
+                        tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
+                        tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
+                        break;
                 }
 
                 return handler;
