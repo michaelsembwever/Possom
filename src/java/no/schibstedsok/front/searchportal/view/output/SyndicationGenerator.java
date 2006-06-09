@@ -119,7 +119,12 @@ public class SyndicationGenerator {
                 
                 entry.setTitle(render("entryTitle", item));
                 entry.setUri(render("entryUri", item));
-                entry.setDescription(content);
+
+                final List contents = new ArrayList();
+                
+                contents.add(content);
+                
+                entry.setContents(contents);
                 
                 entries.add(entry);
             }
