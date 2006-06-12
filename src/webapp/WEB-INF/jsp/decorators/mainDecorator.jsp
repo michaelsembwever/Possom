@@ -295,6 +295,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}else if (currentC.equals("t")) {%>
 
                 <decorator:getProperty property="page.tvSearchNavigator" />
+            <%}else if (currentC.equals("b")) {%>
+            
             <% }else{ %>
 
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
@@ -334,6 +336,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
 
             <%}%>
+            <c:if test='${!(empty tab.rssResultName)}'>
+                <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss">RSS</a> | <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss&feedType=atom_0.3">ATOM</a>
+            </c:if>
         </td>
 	<% } %>
 
