@@ -485,8 +485,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
 
                 <%if (currentC.equals("t")) {%>
-                <decorator:getProperty property="page.tv-results"/>
-                <decorator:getProperty property="page.tvSearchWebTv"/>
+                    <decorator:getProperty property="page.tv-results"/>
                 <%}%>
 
                 <%if (currentC.equals("b")) {%>
@@ -494,7 +493,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
                </td>
 
-	    <%if (q.trim().equals("")) {%>
+	    <%if (q.trim().equals("") && !currentC.equals("t")) {%>
 
             <%}else if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("pss")) {%>
                 <td class="cell_four" valign="top" width="225">
@@ -503,6 +502,10 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}else if (currentC.equals("p")) {%>
                     <decorator:getProperty property="page.ads"/>
                     <decorator:getProperty property="page.ads-picsearch-logo"/>
+                </td>
+            <%} else if (currentC.equals("t")) {%>
+                <td class="cell_four" valign="top" width="225">
+                    <decorator:getProperty property="page.tvSearchWebTv"/>        
                 </td>
             <%}%>
 
