@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.command;
 
 import no.schibstedsok.common.ioc.ContextWrapper;
@@ -25,13 +26,13 @@ import java.util.Map;
  * the ads. This is done by evaluating the predicate "exact_ppctoplist".
  */
 public final class OverturePPCCommand extends AbstractYahooSearchCommand {
-    
+
     public static final String OVERTURE_PPC_ELEMENT = "Listing";
-    
+
     private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_sitesearch";
 
     private static final Logger LOG = Logger.getLogger(OverturePPCCommand.class);
-    
+
     private boolean top = false;
 
     /**
@@ -66,9 +67,9 @@ public final class OverturePPCCommand extends AbstractYahooSearchCommand {
         );
 
         final TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
-        
+
         top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluatorFactory);
-        
+
         final String query = getTransformedQuery().replace(' ', '+');
         final StringBuilder url = createRequestURL(query);
 
@@ -99,9 +100,9 @@ public final class OverturePPCCommand extends AbstractYahooSearchCommand {
     protected int getResultsToReturn(){
 
         int resultsToReturn = super.getResultsToReturn();
-        int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
-        int resultsOnTop = context.getRunningQuery().getSearchTab().getAdOnTop();
-        
+        final int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
+        final int resultsOnTop = context.getRunningQuery().getSearchTab().getAdOnTop();
+
         if (top && (!getParameters().containsKey("ss") && !isVgSiteSearch())) {
             resultsToReturn += resultsOnTop;
         } else {
@@ -113,9 +114,9 @@ public final class OverturePPCCommand extends AbstractYahooSearchCommand {
         }
         return resultsToReturn;
     }
-    
+
     protected String getPartnerId(){
-        
+
         // FIXME. When vg and the other site searches have their own context
         // remove this and use the property partnerId of OverturePPCConfiguration
         // instead.
@@ -124,7 +125,7 @@ public final class OverturePPCCommand extends AbstractYahooSearchCommand {
                 : super.getPartnerId();
     }
 
-  
+
 }
 
 

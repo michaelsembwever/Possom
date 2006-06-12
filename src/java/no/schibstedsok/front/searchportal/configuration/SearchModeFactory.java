@@ -88,7 +88,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private static final Map<Site, SearchModeFactory> INSTANCES = new HashMap<Site,SearchModeFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
-    
+
     public static final String MODES_XMLFILE = "modes.xml";
 
 
@@ -302,7 +302,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         STORMWEATHER_COMMAND(StormWeatherSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
         TVSEARCH_COMMAND(TvSearchConfiguration.class);
-        
+
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
 
@@ -424,7 +424,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if (sc instanceof AdvancedFastConfiguration) {
                     final AdvancedFastConfiguration asc = (AdvancedFastConfiguration) sc;
                     final AdvancedFastConfiguration ascInherit = inherit instanceof AdvancedFastConfiguration
-                            ? (AdvancedFastConfiguration) inherit 
+                            ? (AdvancedFastConfiguration) inherit
                             : null;
                     asc.setView(parseString(commandE.getAttribute("view"),
                             ascInherit != null ? ascInherit.getView() : ""));
@@ -438,7 +438,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     if (qrServerValue.startsWith("http://")) {
                        throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + qrServerValue);
                     }
-                            
+
                     asc.setQueryServer(qrServerValue);
                     // navigators
                     final NodeList nList = commandE.getElementsByTagName("navigators");
@@ -481,7 +481,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             oscInherit != null ? oscInherit.getPort() : 80));
                     osc.setUrl(parseString(commandE.getAttribute("url"),
                             oscInherit != null ? oscInherit.getUrl() : ""));
-                    
+
                 }
                 if(sc instanceof PicSearchConfiguration){
                     final PicSearchConfiguration psc = (PicSearchConfiguration) sc;
@@ -536,7 +536,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
 
                 if (sc instanceof StormWeatherSearchConfiguration) {
-					StormWeatherSearchConfiguration swsc = (StormWeatherSearchConfiguration) sc;
+					final StormWeatherSearchConfiguration swsc = (StormWeatherSearchConfiguration) sc;
 					if(commandE.getAttribute("xml-elements").length() >0){
                         final String[] elms = commandE.getAttribute("xml-elements").split(",");
                         for(String elm : elms){
@@ -552,9 +552,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         tssc.addDefaultChannel(channel.trim());
                     }
                     tssc.setResultsToFetch(Integer.parseInt(commandE.getAttribute("results-to-fetch")));
-                    
+
                 }
-                
+
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);
@@ -678,7 +678,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         TERM_PREFIX (TermPrefixTransformer.class),
         WEBTV (WebTvQueryTransformer.class),
         TV (TvQueryTransformer.class),
-        TVSEARCH(TvSearchQueryTransformer.class);        
+        TVSEARCH(TvSearchQueryTransformer.class);
 
         private final Class<? extends QueryTransformer> clazz;
         private final String xmlName;
@@ -741,7 +741,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         PHONE_NUMBER_FORMATTER (PhoneNumberFormatter.class),
         SPELLING_SUGGESTION_CHOOSER (SpellingSuggestionChooser.class),
         SUM (SumFastModifiers.class),
-        DATE_FORMAT (DateFormatHandler.class), 
+        DATE_FORMAT (DateFormatHandler.class),
         WEATHER_CELCIUS (WeatherCelciusHandler.class),
         WEATHER_DATE (WeatherDateHandler.class),
         FORECAST_DATE (ForecastDateHandler.class),
@@ -871,7 +871,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         break;
                     case TVSEARCH_SORTING:
                         final TvSearchSortingHandler tssh = (TvSearchSortingHandler) handler;
-                        
+
 //                        tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
  //                       tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
                         break;

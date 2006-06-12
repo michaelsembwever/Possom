@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * AbstractYahooSearchCommand.java
  *
@@ -27,23 +28,23 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
-    
-    
+
+
     // Constants -----------------------------------------------------
-    
+
     private static final String BASE_PATH = "/d/search/p/schibstedsok/xml/no/?mkt=no&adultFilter=clean";
 
     private static final Logger LOG = Logger.getLogger(AbstractYahooSearchCommand.class);
-    
+
     // Attributes ----------------------------------------------------
-    
+
     private HTTPClient client;
-    
+
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
-    
+
+
     /**
      * Create new overture command.
      *
@@ -54,39 +55,39 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
     public AbstractYahooSearchCommand(
             final Context cxt,
             final Map parameters) {
-        
+
         super(cxt, parameters);
 
         final AbstractYahooSearchConfiguration conf = (AbstractYahooSearchConfiguration)cxt.getSearchConfiguration();
         client = HTTPClient.instance(conf.getName(), conf.getHost(), conf.getPort());
     }
-    
+
     // Public --------------------------------------------------------
-    
+
     // Z implementation ----------------------------------------------
-    
+
     // Y overrides ---------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     protected int getResultsToReturn(){
-        
+
         return context.getSearchConfiguration().getResultsToReturn();
     }
-    
+
     protected String getPartnerId(){
-        
-        final AbstractYahooSearchConfiguration conf 
+
+        final AbstractYahooSearchConfiguration conf
                 = (AbstractYahooSearchConfiguration)context.getSearchConfiguration();
         return conf.getPartnerId();
     }
 
-    protected final StringBuilder createRequestURL(final String query) 
+    protected final StringBuilder createRequestURL(final String query)
             throws InfrastructureException {
-        
-        final AbstractYahooSearchConfiguration ppcConfig 
+
+        final AbstractYahooSearchConfiguration ppcConfig
                 = (AbstractYahooSearchConfiguration) context.getSearchConfiguration();
 
         final StringBuilder url = new StringBuilder(BASE_PATH);
@@ -103,11 +104,11 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
         return url;
     }
 
-    /** Override if you want to add fields to the ResultItem from the element. 
+    /** Override if you want to add fields to the ResultItem from the element.
      * Remember to use super.createItem(element) instead of creating a ResultItem from scratch.
      **/
     protected BasicSearchResultItem createItem(final Element ppcListing) {
-        
+
         final BasicSearchResultItem item = new BasicSearchResultItem();
         final NodeList click = ppcListing.getElementsByTagName("ClickUrl");
 
@@ -123,19 +124,19 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
     }
 
     protected final Document getOvertureXmlResult(final String url) throws IOException, SAXException {
-        
+
         return client.getXmlDocument(context.getSearchConfiguration().getName(), url);
     }
 
     protected final boolean isVgSiteSearch() {
         return context.getQuery().getQueryString().contains("site:vg.no");
-    }  
-    
+    }
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 
 
-    
+
 
 }

@@ -20,11 +20,11 @@ public final class OverturePPCConfiguration extends AbstractYahooSearchConfigura
         }
     }
 
-    
+
 
     private int resultsOnTop;
 
-    
+
 
     /** @deprecated use views.xml instead **/
     public int getResultsOnTop() {

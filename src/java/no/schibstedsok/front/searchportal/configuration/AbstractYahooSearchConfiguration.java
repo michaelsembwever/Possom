@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * AbstractYahooSearchConfiguration.java
  *
@@ -13,45 +14,45 @@ package no.schibstedsok.front.searchportal.configuration;
  * @version $Id$
  */
 public abstract class AbstractYahooSearchConfiguration extends AbstractSearchConfiguration {
-    
-    
+
+
     // Constants -----------------------------------------------------
-    
+
     // Attributes ----------------------------------------------------
-    
+
     private String partnerId;
-    
+
     /**
      * Holds value of property host.
      */
     private String host;
-    
+
     /**
      * Holds value of property encoding.
      */
     private String encoding;
-    
+
     /**
      * Holds value of property port.
      */
     private int port;
-    
+
     /**
      * Holds value of property url.
      */
     private String url;
-    
+
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     /**
      * Creates a new instance of AbstractYahooSearchConfiguration
      */
     public AbstractYahooSearchConfiguration() {
         super(null);
     }
-    
+
     public AbstractYahooSearchConfiguration(final SearchConfiguration asc){
         super(asc);
         if(asc != null && asc instanceof AbstractYahooSearchConfiguration){
@@ -63,19 +64,19 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
             url = osc.url;
         }
     }
-    
+
     // Public --------------------------------------------------------
-    
+
     // Z implementation ----------------------------------------------
-    
+
     // Y overrides ---------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 
 
@@ -89,10 +90,10 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * @param partnerId New value of property partnerId.
      */
     public void setPartnerId(final String partner) {
-        partnerId = partner; 
+        partnerId = partner;
     }
 
-    
+
 
     /**
      * Getter for property host.
@@ -106,11 +107,11 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * Setter for property host.
      * @param host New value of property host.
      */
-    public void setHost(String host) {
+    public void setHost(final String host) {
         this.host = host;
     }
 
-    
+
 
     /**
      * Getter for property encoding.
@@ -124,11 +125,11 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * Setter for property encoding.
      * @param encoding New value of property encoding.
      */
-    public void setEncoding(String encoding) {
+    public void setEncoding(final String encoding) {
         this.encoding = encoding;
     }
 
-    
+
 
     /**
      * Getter for property port.
@@ -142,11 +143,11 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * Setter for property port.
      * @param port New value of property port.
      */
-    public void setPort(int port) {
+    public void setPort(final int port) {
         this.port = port;
     }
 
-    
+
 
     /**
      * Getter for property url.
@@ -160,7 +161,7 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * Setter for property url.
      * @param url New value of property url.
      */
-    public void setUrl(String url) {
+    public void setUrl(final String url) {
         this.url = url;
     }
 }
