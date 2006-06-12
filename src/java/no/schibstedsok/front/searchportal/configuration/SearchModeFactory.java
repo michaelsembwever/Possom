@@ -466,13 +466,22 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if(sc instanceof NewsSearchConfiguration){
                     final NewsSearchConfiguration nsc = (NewsSearchConfiguration) sc;
                 }
-                if(sc instanceof OverturePPCConfiguration){
-                    final OverturePPCConfiguration osc = (OverturePPCConfiguration) sc;
-                    final OverturePPCConfiguration oscInherit = inherit instanceof OverturePPCConfiguration
-                            ? (OverturePPCConfiguration)inherit
+                if(sc instanceof AbstractYahooSearchConfiguration){
+                    final AbstractYahooSearchConfiguration osc = (AbstractYahooSearchConfiguration) sc;
+                    final AbstractYahooSearchConfiguration oscInherit = inherit instanceof AbstractYahooSearchConfiguration
+                            ? (AbstractYahooSearchConfiguration)inherit
                             : null;
+                    osc.setEncoding(parseString(commandE.getAttribute("encoding"),
+                            oscInherit != null ? oscInherit.getEncoding() : ""));
+                    osc.setHost(parseString(commandE.getAttribute("host"),
+                            oscInherit != null ? oscInherit.getHost() : ""));
                     osc.setPartnerId(parseString(commandE.getAttribute("partner-id"),
                             oscInherit != null ? oscInherit.getPartnerId() : ""));
+                    osc.setPort(parseInt(commandE.getAttribute("port"),
+                            oscInherit != null ? oscInherit.getPort() : 80));
+                    osc.setUrl(parseString(commandE.getAttribute("url"),
+                            oscInherit != null ? oscInherit.getUrl() : ""));
+                    
                 }
                 if(sc instanceof PicSearchConfiguration){
                     final PicSearchConfiguration psc = (PicSearchConfiguration) sc;

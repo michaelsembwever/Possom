@@ -6,7 +6,7 @@ package no.schibstedsok.front.searchportal.configuration;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class OverturePPCConfiguration extends AbstractSearchConfiguration {
+public final class OverturePPCConfiguration extends AbstractYahooSearchConfiguration {
 
     public OverturePPCConfiguration(){
         super(null);
@@ -16,33 +16,24 @@ public class OverturePPCConfiguration extends AbstractSearchConfiguration {
         super(asc);
         if(asc != null && asc instanceof OverturePPCConfiguration){
             final OverturePPCConfiguration osc = (OverturePPCConfiguration) asc;
-            partnerId = osc.partnerId;
+            resultsOnTop = osc.resultsOnTop;
         }
     }
 
-    private static final String DEFAULT_PARTNER_ID = "schibstedsok_xml_no_searchbox_imp1";
+    
 
     private int resultsOnTop;
 
-    private String partnerId;
+    
 
+    /** @deprecated use views.xml instead **/
     public int getResultsOnTop() {
         return resultsOnTop;
     }
 
+    /** @deprecated use views.xml instead **/
     public void setResultsOnTop(final int resultsOnTop) {
         this.resultsOnTop = resultsOnTop;
     }
 
-    public String getPartnerId() {
-        return partnerId == null ? DEFAULT_PARTNER_ID : partnerId;
-    }
-
-    /**
-     * Setter for property partnerId.
-     * @param partnerId New value of property partnerId.
-     */
-    public void setPartnerId(final java.lang.String partner) {
-        partnerId = partner; 
-    }
 }
