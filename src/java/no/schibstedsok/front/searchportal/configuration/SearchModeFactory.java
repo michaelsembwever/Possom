@@ -872,8 +872,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     case TVSEARCH_SORTING:
                         final TvSearchSortingHandler tssh = (TvSearchSortingHandler) handler;
 
-//                        tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
- //                       tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
+                        tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
+                        tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
                         break;
                 }
 
