@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+    TODO define vocabulary indentification
+    PUBLIC ID: -//sesam//Analysis//EN
+    SYSTEM ID: http://sesam.no/dtds/VeryFastEvaluators.dtd
+
+    Author     : <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+    Version    : $Id: RegularExpressionEvaluators.xml 41 2006-02-07 13:41:30Z magnuse $
+
+-->
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT fast-evaluators (list)*>
+
+<!--- Put your DTDDoc comment here. -->
+<!ELEMENT list EMPTY>
+<!ATTLIST list
+    list-name CDATA #IMPLIED
+    token CDATA #IMPLIED
+  >
