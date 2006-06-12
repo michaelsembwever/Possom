@@ -83,7 +83,7 @@ public class TvSearchSortingHandler implements ResultHandler {
                     }
                 }
             } else {
-                joinBlocks(cxt, hm, "channel");
+                joinBlocks(cxt, hm, "channels");
             }
         } else if (sortBy.equals("day")) {
             for (int i = 0; i < 7; i++) {
@@ -101,6 +101,10 @@ public class TvSearchSortingHandler implements ResultHandler {
         final TvSearchConfiguration searchConfiguration = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
         final List<Modifier> modifiers = ((FastSearchResult) cxt.getSearchResult()).getModifiers(modifiersId);
         final SearchResult sr = cxt.getSearchResult();
+        
+        if (modifiers == null) {
+            return sr;
+        }
         
         int i = 0;
         for (Modifier modifier : modifiers) {
