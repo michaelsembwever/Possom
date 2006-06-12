@@ -55,6 +55,8 @@ public class SyndicationGenerator {
     private final String templateDir;
     private final VelocityEngine engine;
     private DateFormat dateFormat;
+    private final String query;
+    private final String uri;
     
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
     
@@ -67,10 +69,14 @@ public class SyndicationGenerator {
     public SyndicationGenerator(final SearchResult result, 
                                 final Site site, 
                                 final String modeId,
-                                final String feedType) {
+                                final String feedType,
+                                final String query,
+                                final String uri) {
         this.result = result;
         this.site = site;
-
+        this.query = query;
+        this.uri = uri;
+        
         if (feedType != null) {
             this.feedType = feedType;
         }
@@ -84,7 +90,7 @@ public class SyndicationGenerator {
         String dfString = DEFAULT_DATE_FORMAT;
 
         try {
-            dfString = render("dateFormat_publishedDate");
+            dfString = render("dateFormat_publishedDate", null);
         } catch (ResourceNotFoundException ex) {}
 
         final DateFormat df = new SimpleDateFormat(dfString);
@@ -93,10 +99,10 @@ public class SyndicationGenerator {
             final SyndFeed feed = new SyndFeedImpl();
 
             feed.setFeedType(feedType);
-            feed.setDescription(render("description"));
-            feed.setTitle(render("title"));
+            feed.setDescription(render("description", null));
+            feed.setTitle(render("title", null));
             feed.setPublishedDate(new Date());
-            feed.setLink(render("link"));
+            feed.setLink(render("link", null));
 
             final List<SyndEntry> entries = new ArrayList<SyndEntry>();
 
@@ -116,10 +122,9 @@ public class SyndicationGenerator {
                     LOG.error("Cannot parse " + publishedDate + " using df " + dfString);
                     entry.setPublishedDate(new Date());
                 }
-                
-                entry.setTitle(render("entryTitle", item));
-                entry.setUri(render("entryUri", item));
 
+                entry.setTitle(render("entryTitle", item));
+                entry.setLink(render("entryUri", item));
                 final List contents = new ArrayList();
                 
                 contents.add(content);
@@ -134,6 +139,7 @@ public class SyndicationGenerator {
             
             final Writer writer = new StringWriter();
             
+            
             final SyndFeedOutput output = new SyndFeedOutput();
             
             return output.outputString(feed);
@@ -144,20 +150,22 @@ public class SyndicationGenerator {
         }
     }
     
-    private String render(final String name, final SearchResultItem item) throws ResourceNotFoundException {
-        final VelocityContext cxt = new VelocityContext();
-        cxt.put("item", item);
-        return render(name, cxt);
-    }
-
-    private String render(final String name) throws ResourceNotFoundException {
-        return render(name, new VelocityContext());
-    }
     
-    private String render(final String name, final VelocityContext cxt) throws ResourceNotFoundException {
+    private String render(final String name, final SearchResultItem item) throws ResourceNotFoundException {
         final String templateUri = templateDir + "/" + name + ".vm";
         
         try {
+            final VelocityContext cxt = new VelocityContext();
+            if (item != null) {
+                cxt.put("item", item);
+            }
+            
+            cxt.put("query", query);
+
+            final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
+            
+            cxt.put("uri", origUri);
+            
             final Template tpl = engine.getTemplate(templateUri);
 
             StringWriter writer = new StringWriter();

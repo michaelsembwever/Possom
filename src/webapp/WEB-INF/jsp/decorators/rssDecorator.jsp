@@ -10,7 +10,7 @@
         final Site site = (Site) request.getAttribute(Site.NAME_KEY);
         final SearchTab searchTab = (SearchTab) request.getAttribute("tab");
         final Map<String, SearchResult> results = (Map<String, SearchResult>) request.getAttribute("results");
-        
-        final SyndicationGenerator generator = new SyndicationGenerator(results.get(searchTab.getRssResultName()), site, searchTab.getId(), request.getParameter("feedtype"));
+   
+        final SyndicationGenerator generator = new SyndicationGenerator(results.get(searchTab.getRssResultName()), site, searchTab.getId(), request.getParameter("feedtype"), request.getParameter("q"), request.getRequestURL().toString() + "?" + request.getQueryString());
 %><%--
 --%><%= generator.generate() %>
