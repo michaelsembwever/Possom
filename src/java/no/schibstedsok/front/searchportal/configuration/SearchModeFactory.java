@@ -430,7 +430,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             ascInherit != null ? ascInherit.getView() : ""));
                     asc.setSortBy(parseString(commandE.getAttribute("sort-by"),
                             ascInherit != null ? ascInherit.getSortBy() : "default"));
-
+                    asc.setCollapsingEnabled(parseBoolean(commandE.getAttribute("collapsing"),
+                            ascInherit != null ? ascInherit.isCollapsingEnabled() : false));
+                    asc.setCollapseOnField(parseString(commandE.getAttribute("collapse-on-field"),
+                            ascInherit != null ? ascInherit.getCollapseOnField() : ""));
+                    
                     final String qrServer = commandE.getAttribute("query-server");
                     final String qrServerValue = parseProperty(cxt, qrServer,
                             ascInherit != null ? ascInherit.getQueryServer() : null);

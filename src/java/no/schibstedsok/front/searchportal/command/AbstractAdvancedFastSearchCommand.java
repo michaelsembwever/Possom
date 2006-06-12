@@ -16,11 +16,13 @@ import com.fastsearch.esp.search.query.BaseParameter;
 import com.fastsearch.esp.search.query.IQuery;
 import com.fastsearch.esp.search.query.Query;
 import com.fastsearch.esp.search.query.SearchParameter;
+import com.fastsearch.esp.search.result.EmptyValueException;
 import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IModifier;
 import com.fastsearch.esp.search.result.INavigator;
 import com.fastsearch.esp.search.result.IQueryResult;
+import com.fastsearch.esp.search.result.IllegalType;
 import com.fastsearch.esp.search.view.ISearchView;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,6 +73,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
             "com.fastsearch.esp.search.http.encoderclass";
     private final static String ENCODER_CLASS = 
             "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
+    private final static String COLLAPSE_PARAMETER="collapse";
     
     private static final Logger LOG = 
             Logger.getLogger(AbstractSimpleFastSearchCommand.class);
@@ -107,13 +110,31 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
 
         try {
 
+            StringBuilder filterBuilder = new StringBuilder();
+            
             final ISearchFactory factory = SearchFactory.newInstance(props);
 
             final String transformedQuery = getTransformedQuery();
             
             LOG.debug("Transformed query is " + transformedQuery);
             
+            final String collapseId = getParameter(COLLAPSE_PARAMETER);
+            
             final IQuery query = new Query(transformedQuery);
+
+            if (cfg.isCollapsingEnabled()) {
+                if (collapseId == null || collapseId.equals("")) {
+                    query.setParameter(new SearchParameter(
+                            BaseParameter.COLLAPSING, true));
+
+                    if (!cfg.getCollapseOnField().equals("")) {
+                        query.setParameter(new SearchParameter(
+                                "collapseon", cfg.getCollapseOnField()));
+                    }
+                } else {
+                    filterBuilder.append("+collapseid:").append(collapseId);
+                }
+            }
 
             query.setParameter(new SearchParameter(
                     BaseParameter.OFFSET, getCurrentOffset(0)));
@@ -121,8 +142,14 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
                     BaseParameter.HITS, cfg.getResultsToReturn()));
             query.setParameter(new SearchParameter(
                     BaseParameter.SORT_BY, cfg.getSortBy()));
-
+            query.setParameter(new SearchParameter(BaseParameter.FILTER, 
+                    filterBuilder.toString()));
+            
             final ISearchView view = factory.getSearchView(cfg.getView());
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Query is " + query);
+            }
 
             final IQueryResult result = view.search(query);
             
@@ -256,9 +283,23 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
                 item.addField(alias, summary.getStringValue().trim());
         }
 
+        
+        
+        if (cfg.isCollapsingEnabled()) {
+            final String currCollapseId = getParameter(COLLAPSE_PARAMETER);
+
+            if (currCollapseId == null || currCollapseId.equals("")) {
+                final String moreHits = document.getSummaryField("morehits").getStringValue();
+                
+                if (moreHits.equals("1")) {
+                    item.addField("moreHits", "true");
+                    item.addField("collapseParameter", COLLAPSE_PARAMETER);
+                    item.addField("collapseId", document.getSummaryField("collapseid").getStringValue());
+                }
+            }
+        }
         return item;
     }
-
 
     // Inner classes -------------------------------------------------
 }

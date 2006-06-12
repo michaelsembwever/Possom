@@ -21,6 +21,24 @@ public class AdvancedFastConfiguration extends AbstractSearchConfiguration {
     private String view;
     private String queryServer;
     private String sortBy;
+    private boolean collapsingEnabled;
+    private String collapseOnField;
+
+    public void setCollapseOnField(String collapseOnField) {
+        this.collapseOnField = collapseOnField;
+    }
+
+    public String getCollapseOnField() {
+        return collapseOnField;
+    }
+    
+    public void setCollapsingEnabled(final boolean collapsingEnabled) {
+        this.collapsingEnabled = collapsingEnabled;
+    }
+
+    public boolean isCollapsingEnabled() {
+        return collapsingEnabled;
+    }
     
     private final Map<String,FastNavigator> navigators = new HashMap<String,FastNavigator>();
 
