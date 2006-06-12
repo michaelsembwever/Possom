@@ -262,7 +262,5 @@ public final class VelocityResultHandler implements ResultHandler {
 
             context.put("pager", pager);
         }
-
-
     }
 }
