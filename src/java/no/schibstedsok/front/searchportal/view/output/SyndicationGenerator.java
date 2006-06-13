@@ -25,10 +25,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
+
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -156,6 +160,11 @@ public class SyndicationGenerator {
         
         try {
             final VelocityContext cxt = new VelocityContext();
+
+            //TODO: figure out textbundling
+//            final TextMessages txtMsgs = TextMessages.valueOf(site);
+//            cxt.put("text", txtMsgs);
+            
             if (item != null) {
                 cxt.put("item", item);
             }
