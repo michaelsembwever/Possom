@@ -93,7 +93,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 </head>
 
 
-<body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") ) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")|| currentC.equals("swip")) {%>init(); checkTab();<% } %>">
+<body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("sw") || currentC.equals("swip")) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
 
     <search:velocity template="/pages/main"/>
 
