@@ -41,11 +41,13 @@ import no.schibstedsok.front.searchportal.query.transform.SimpleSiteSearchTransf
 import no.schibstedsok.front.searchportal.query.transform.SynonymQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.TermPrefixTransformer;
 import no.schibstedsok.front.searchportal.query.transform.TvQueryTransformer;
+import no.schibstedsok.front.searchportal.query.transform.WeatherQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.WeatherInfopageQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.AddDocCountModifier;
 import no.schibstedsok.front.searchportal.result.handler.AgeCalculatorResultHandler;
 import no.schibstedsok.front.searchportal.result.handler.CategorySplitter;
 import no.schibstedsok.front.searchportal.result.handler.ContentSourceCollector;
+import no.schibstedsok.front.searchportal.result.handler.DiscardDuplicatesResultHandler;
 import no.schibstedsok.front.searchportal.result.handler.DiscardOldNewsResultHandler;
 import no.schibstedsok.front.searchportal.result.handler.FieldChooser;
 import no.schibstedsok.front.searchportal.result.handler.FindFileFormat;
@@ -546,7 +548,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         for(String elm : elms){
                             swsc.addElementValue(elm.trim());
                         }
-                    }					
+                    } 
+					
 				}
 
                 if (sc instanceof TvSearchConfiguration) {
@@ -674,6 +677,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private enum QueryTransformerTypes {
         EXACT_TITLE_MATCH (ExactTitleMatchTransformer.class),
         INFOPAGE (InfopageQueryTransformer.class),
+        WEATHER (WeatherQueryTransformer.class),
         WEATHERINFOPAGE (WeatherInfopageQueryTransformer.class),
         NEWS (NewsTransformer.class),
         PREFIX_REMOVER (PrefixRemoverTransformer.class),
@@ -718,6 +722,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     case TVSEARCH:
                         final TvSearchQueryTransformer tsqt = (TvSearchQueryTransformer) transformer;
                         tsqt.setWithEndtime(qt.getAttribute("with-endtime").equals("true"));
+                        break;
+                    case WEATHER:
+                        final WeatherQueryTransformer wqt = (WeatherQueryTransformer) transformer;
+                        wqt.setDefaultLocations(qt.getAttribute("default-locations").split(","));
                 }
                 return transformer;
 
@@ -737,6 +745,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         CONTENT_SOURCE_COLLECTOR (ContentSourceCollector.class),
         DATA_MODEL (DataModelResultHandler.class),
         DISCARD_OLD_NEWS (DiscardOldNewsResultHandler.class),
+        DISCARD_DUPLICATES (DiscardDuplicatesResultHandler.class),
         FIELD_CHOOSER (FieldChooser.class),
         FIND_FILE_FORMAT (FindFileFormat.class),
         IMAGE_HELPER (ImageHelper.class),
@@ -862,6 +871,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         break;
                     case FORECAST_WIND:
                         final ForecastWindHandler wh = (ForecastWindHandler) handler;
+                        break;
+                    case DISCARD_DUPLICATES:	//subclasses must be checked first
+                        final DiscardDuplicatesResultHandler ddh = (DiscardDuplicatesResultHandler) handler;
+                        ddh.setSourceField(rh.getAttribute("key"));
+                        ddh.setDiscardCase(new Boolean(rh.getAttribute("ignorecase")).booleanValue());
                         break;
                     case FORECAST_DATE:	//subclasses must be checked first
                         final ForecastDateHandler sdateh = (ForecastDateHandler) handler;
