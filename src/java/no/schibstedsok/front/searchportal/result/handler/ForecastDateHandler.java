@@ -27,47 +27,52 @@ public class ForecastDateHandler extends WeatherDateHandler {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
         
-        	for(final SearchResultItem forecast : item.getNestedSearchResult("forecasts").getResults()) {
-        		
-            	final String datestring = forecast.getField(sourceField);
-                
-                if(datestring != null){
-                	Date date = null;
-                	Calendar cal = new GregorianCalendar(new Locale("no", "no"));
-                    try {
-                        date = sdf.parse(datestring);
-                        cal.setTime(date);
-                    } catch (ParseException e) {
-                        throw new IllegalArgumentException(e.getMessage());
+        	//see if there are any forecasts for the location.
+        	if(item.getNestedSearchResult("forecasts") != null){
+
+        		for(final SearchResultItem forecast : item.getNestedSearchResult("forecasts").getResults()) {
+            		
+                	final String datestring = forecast.getField(sourceField);
+                    
+                    if(datestring != null){
+                    	Date date = null;
+                    	Calendar cal = new GregorianCalendar(new Locale("no", "no"));
+                        try {
+                            date = sdf.parse(datestring);
+                            cal.setTime(date);
+                        } catch (ParseException e) {
+                            throw new IllegalArgumentException(e.getMessage());
+                        }
+                        forecast.addField("datePart", datePart.format(date));
+                        forecast.addField("timePart", timePart.format(date));
+                        switch (cal.get(Calendar.DAY_OF_WEEK)) {
+    					case 2:
+    	                    forecast.addField("weekday", "day0");
+    						break;
+    					case 3:
+    	                    forecast.addField("weekday", "day1");
+    						break;
+    					case 4:
+    	                    forecast.addField("weekday", "day2");
+    						break;
+    					case 5:
+    	                    forecast.addField("weekday", "day3");
+    						break;
+    					case 6:
+    	                    forecast.addField("weekday", "day4");
+    						break;
+    					case 7:
+    	                    forecast.addField("weekday", "day5");
+    						break;
+    					case 1:
+    	                    forecast.addField("weekday", "day6");
+    						break;
+    					default:
+    						break;
+    					}
                     }
-                    forecast.addField("datePart", datePart.format(date));
-                    forecast.addField("timePart", timePart.format(date));
-                    switch (cal.get(Calendar.DAY_OF_WEEK)) {
-					case 2:
-	                    forecast.addField("weekday", "day0");
-						break;
-					case 3:
-	                    forecast.addField("weekday", "day1");
-						break;
-					case 4:
-	                    forecast.addField("weekday", "day2");
-						break;
-					case 5:
-	                    forecast.addField("weekday", "day3");
-						break;
-					case 6:
-	                    forecast.addField("weekday", "day4");
-						break;
-					case 7:
-	                    forecast.addField("weekday", "day5");
-						break;
-					case 1:
-	                    forecast.addField("weekday", "day6");
-						break;
-					default:
-						break;
-					}
-                }
+            	}
+		
         	}
 
         }
