@@ -71,4 +71,8 @@ public class Channels {
     public String getText(String channel) {
         return keys.getProperty(channel);
     }
+    
+    public boolean hasChannel(String channel) {
+        return keys.containsKey(channel);
+    }
 }
