@@ -504,8 +504,12 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
                 </td>
-            <%}else if (currentC.equals("p") || currentC.equals("pp") ) {%>
+            <%}else if ( currentC.equals("pp") ) {%>
                 <td class="cell_four" valign="top" width="225">
+                    <decorator:getProperty property="page.ads"/>
+                    
+                </td>
+            <%}else if (currentC.equals("p") ) {%>
                     <decorator:getProperty property="page.ads"/>
                     <decorator:getProperty property="page.ads-picsearch-logo"/>
                 </td>
