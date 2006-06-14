@@ -25,6 +25,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
+import no.schibstedsok.front.searchportal.query.transform.AgeFilterTransformer;
 import no.schibstedsok.front.searchportal.query.transform.NowQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
@@ -688,8 +689,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         NOW (NowQueryTransformer.class),
         WEBTV (WebTvQueryTransformer.class),
         TV (TvQueryTransformer.class),
-        TVSEARCH(TvSearchQueryTransformer.class);
-
+        TVSEARCH(TvSearchQueryTransformer.class),
+        AGEFILTER(AgeFilterTransformer.class);
+        
         private final Class<? extends QueryTransformer> clazz;
         private final String xmlName;
 
@@ -728,6 +730,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     case TVSEARCH:
                         final TvSearchQueryTransformer tsqt = (TvSearchQueryTransformer) transformer;
                         tsqt.setWithEndtime(qt.getAttribute("with-endtime").equals("true"));
+                        break;
+                    case AGEFILTER:
+                        final AgeFilterTransformer agft = (AgeFilterTransformer) transformer;
+                        agft.setAgeField(qt.getAttribute("field"));
                         break;
                     case WEATHER:
                         final WeatherQueryTransformer wqt = (WeatherQueryTransformer) transformer;

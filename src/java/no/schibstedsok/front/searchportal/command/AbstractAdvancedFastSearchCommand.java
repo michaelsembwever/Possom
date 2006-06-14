@@ -74,10 +74,9 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     private final static String ENCODER_CLASS = 
             "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
     private final static String COLLAPSE_PARAMETER="collapse";
-    
+     
     private static final Logger LOG = 
             Logger.getLogger(AbstractSimpleFastSearchCommand.class);
-
 
     // Attributes ----------------------------------------------------
     private final AdvancedFastConfiguration cfg;
@@ -111,6 +110,16 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
         try {
 
             StringBuilder filterBuilder = new StringBuilder();
+
+            if (super.getFilter() != null) {
+                filterBuilder.append(getFilter());
+                filterBuilder.append(" ");
+            }
+
+            if (super.getAdditionalFilter() != null) {
+                filterBuilder.append(getAdditionalFilter());
+                filterBuilder.append(" ");
+            }
             
             final ISearchFactory factory = SearchFactory.newInstance(props);
 
@@ -185,13 +194,6 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
         }
     }
 
-    private int getMaxDocIndex(
-            final IQueryResult result, 
-            final int cnt, 
-            final AdvancedFastConfiguration cfg) 
-    {
-        return Math.min(cnt + cfg.getResultsToReturn(), result.getDocCount());
-    }
 
     // Z implementation ----------------------------------------------
 
@@ -268,6 +270,14 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
 
     
     // Private -------------------------------------------------------
+
+    private int getMaxDocIndex(
+            final IQueryResult result, 
+            final int cnt, 
+            final AdvancedFastConfiguration cfg) 
+    {
+        return Math.min(cnt + cfg.getResultsToReturn(), result.getDocCount());
+    }
 
     private SearchResultItem createResultItem(final IDocumentSummary document) {
 

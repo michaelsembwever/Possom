@@ -198,7 +198,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <tr>
 	<%if (q.trim().equals("") && (!currentC.equals("m") && !currentC.equals("t")) ) {%>
 
-	<%}else if ((currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t")) {%>
+	<%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t")) {%>
         <td class="cell_one" valign="top">
             <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
                 <table border="0" cellspacing="0" cellpadding="0" class="menu">
@@ -336,8 +336,13 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
 
             <%}%>
+
+           <decorator:getProperty property="page.blogDateNavigation"/>
+            
             <c:if test='${!(empty tab.rssResultName)}'>
-                <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss">RSS</a> | <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss&feedType=atom_0.3">ATOM</a>
+                <p>
+                    <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss">RSS</a> | <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss&feedType=atom_0.3">ATOM</a>
+                </p>
             </c:if>
         </td>
 	<% } %>
