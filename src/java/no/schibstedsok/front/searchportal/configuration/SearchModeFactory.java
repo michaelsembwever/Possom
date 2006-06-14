@@ -25,6 +25,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
+import no.schibstedsok.front.searchportal.query.transform.NowQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
 import no.schibstedsok.front.searchportal.query.transform.TvSearchQueryTransformer;
@@ -684,6 +685,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SIMPLE_SITE_SEARCH (SimpleSiteSearchTransformer.class),
         SYNONYM (SynonymQueryTransformer.class),
         TERM_PREFIX (TermPrefixTransformer.class),
+        NOW (NowQueryTransformer.class),
         WEBTV (WebTvQueryTransformer.class),
         TV (TvQueryTransformer.class),
         TVSEARCH(TvSearchQueryTransformer.class);
@@ -718,6 +720,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         final TermPrefixTransformer tpqt = (TermPrefixTransformer) transformer;
                         tpqt.setPrefix(qt.getAttribute("prefix"));
                         tpqt.setNumberPrefix(qt.getAttribute("number-prefix"));
+                        break;
+                    case NOW:
+                        final NowQueryTransformer nqt = (NowQueryTransformer) transformer;
+                        nqt.setPrefix(qt.getAttribute("prefix"));
                         break;
                     case TVSEARCH:
                         final TvSearchQueryTransformer tsqt = (TvSearchQueryTransformer) transformer;
