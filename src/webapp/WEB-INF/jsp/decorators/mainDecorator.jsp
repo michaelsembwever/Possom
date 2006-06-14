@@ -73,19 +73,19 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/000/default.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/000/decorator-style.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/000/sitesearch.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/000/front.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/000/ps.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/<c:out value='${startTime}'/>/default.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/<c:out value='${startTime}'/>/decorator-style.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/<c:out value='${startTime}'/>/sitesearch.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/<c:out value='${startTime}'/>/front.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/<c:out value='${startTime}'/>/ps.css" rel="stylesheet" type="text/css" />
     <c:if test='${!(empty tab.rssResultName)}'>
     <link rel="alternate" type="application/rss+xml" title="RSS - Sesam" href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss" />
     </c:if>
     <c:forEach var="t" items="${tab.ancestry}">
-        <link media="screen" href="../css/000/tab/<c:out value='${t.id}'/>.css" rel="stylesheet" type="text/css" />
+        <link media="screen" href="../css/<c:out value='${startTime}'/>/tab/<c:out value='${t.id}'/>.css" rel="stylesheet" type="text/css" />
     </c:forEach>
   
-    <link media="print" href="../css/000/print-style.css" rel="stylesheet" type="text/css" />
+    <link media="print" href="../css/<c:out value='${startTime}'/>/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>
@@ -498,13 +498,14 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
                </td>
 
-	    <%if (q.trim().equals("") && !currentC.equals("t")) {%>
+            <%if (q.trim().equals("") && !currentC.equals("t")) {%>
 
             <%}else if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("pss")) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
                 </td>
-            <%}else if (currentC.equals("p")) {%>
+            <%}else if (currentC.equals("p") || currentC.equals("pp") ) {%>
+                <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
                     <decorator:getProperty property="page.ads-picsearch-logo"/>
                 </td>

@@ -62,6 +62,8 @@ public final class SiteLocatorFilter implements Filter {
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
+    
+    private static final long START_TIME = System.currentTimeMillis();
 
     public SiteLocatorFilter() {
     }
@@ -73,6 +75,7 @@ public final class SiteLocatorFilter implements Filter {
 
         final Site site = getSite(request);
         request.setAttribute(Site.NAME_KEY, site);
+        request.setAttribute("startTime", START_TIME);
         MDC.put(Site.NAME_KEY, site.getName());
     }
 
