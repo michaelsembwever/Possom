@@ -26,11 +26,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 import no.schibstedsok.front.searchportal.site.Site;
+import no.schibstedsok.front.searchportal.util.Channels;
 import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 
 import org.apache.log4j.Logger;
@@ -170,10 +172,17 @@ public class SyndicationGenerator {
             }
             
             cxt.put("query", query);
-
+            
             final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
             
             cxt.put("uri", origUri);
+            
+            final Site cxtSite = this.site;
+            cxt.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, new BaseContext() {
+                public Site getSite() {
+                    return cxtSite;
+                }
+            })));
             
             final Template tpl = engine.getTemplate(templateUri);
 
