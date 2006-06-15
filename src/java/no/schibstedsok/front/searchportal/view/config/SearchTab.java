@@ -226,7 +226,7 @@ public final class SearchTab {
      * Holds value of property rssResultName
      */
     private final String rssResultName;
-    
+
     /**
      * Getter for property rssResultName.
      * @return Value of property rssResultName.
@@ -234,7 +234,7 @@ public final class SearchTab {
     public String getRssResultName() {
         return rssResultName;
     }
-    
+
 
     /**
      * Holds value of property enrichments.
@@ -288,6 +288,7 @@ public final class SearchTab {
     /**
      * Returns the navigator hint matching name. Returns null if no navigator
      * hint matches.
+     * The name parameter passed in is to be the shorter string if a prefix or suffix match is to be found.
      */
     public NavigatorHint getNavigationHint(final String name) {
         for (NavigatorHint hint : navigators) {
@@ -297,10 +298,10 @@ public final class SearchTab {
                         return hint;
                     break;
                 case PREFIX:
-                    if (name.startsWith(hint.name))
+                    if (hint.name.startsWith(name))
                         return hint;
                 case SUFFIX:
-                    if (name.endsWith(hint.name))
+                    if (hint.name.endsWith(name))
                         return hint;
             }
         }
@@ -326,11 +327,11 @@ public final class SearchTab {
     public int getEnrichmentOnTopScore() {
         return this.enrichmentOnTopScore;
     }
-    
+
     public List<SearchTab> getAncestry(){
         // XXX cache result
         final List<SearchTab> ancestry = new ArrayList<SearchTab>();
-        for( SearchTab t = this; t != null; t = t.getInherit()){
+        for(SearchTab t = this; t != null; t = t.getInherit()){
             ancestry.add(t);
         }
         Collections.reverse(ancestry);
@@ -412,6 +413,7 @@ public final class SearchTab {
     public static final class NavigatorHint {
 
         public NavigatorHint(
+                final String id,
                 final String name,
                 final MatchType match,
                 final String tabName,
@@ -419,6 +421,7 @@ public final class SearchTab {
                 final String image,
                 final SearchTabFactory tabFactory){
 
+            this.id = id;
             this.name = name;
             this.match = match;
             this.tabName = tabName;
@@ -435,6 +438,7 @@ public final class SearchTab {
 
         private final SearchTabFactory tabFactory;
 
+        private final String id;
         /**
          * Holds value of property tabName.
          */

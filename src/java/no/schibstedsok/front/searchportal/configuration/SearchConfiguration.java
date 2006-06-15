@@ -4,12 +4,9 @@
  */
 package no.schibstedsok.front.searchportal.configuration;
 
-import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
-import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -76,12 +73,12 @@ public interface SearchConfiguration {
      * @return
      */
 
-    Collection<String> getResultFields();
+    Map<String,String> getResultFields();
 
     /**
      * @param resultField
      */
-    void addResultField(String resultField);
+    void addResultField(String... resultField);
 
     /**
      * Sets the number of results to return. This is typically set to the
@@ -92,7 +89,7 @@ public interface SearchConfiguration {
     void setResultsToReturn(int numberOfResults);
 
     boolean isChild();
-    
+
     public String getUseParameterAsQuery();
 
     boolean isAlwaysRunEnabled();
@@ -100,7 +97,7 @@ public interface SearchConfiguration {
 
     /**
      * Getter for property fieldFilters.
-     * 
+     *
      * @return Value of property fieldFilters.
      */
     Map<String, String> getFieldFilters();

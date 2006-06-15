@@ -19,7 +19,6 @@ import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
 import java.util.Map;
 import java.net.URLEncoder;
 
@@ -59,7 +58,10 @@ public final class PicSearchCommand extends AbstractSearchCommand {
             LOG.error(e);
         }
 
-        final String url = "/query?ie=UTF-8&tldb=" + psConfig.getPicsearchCountry() + "&custid=558735&version=2.6&thumbs=" + getSearchConfiguration().getResultsToReturn() + "&q=" + query + "&start=" + getCurrentOffset(0);
+        final String url = "/query?ie=UTF-8&tldb=" + psConfig.getPicsearchCountry()
+                + "&custid=558735&version=2.6&thumbs=" + psConfig.getResultsToReturn()
+                + "&q=" + query
+                + "&start=" + getCurrentOffset(0);
 
         LOG.debug("Using url " + url);
 
@@ -80,9 +82,9 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
                 final BasicSearchResultItem item = new BasicSearchResultItem();
 
-                for (final String fieldName : getSearchConfiguration().getResultFields()) {
+                for (final Map.Entry<String,String> entry : psConfig.getResultFields().entrySet()) {
 
-                    item.addField(fieldName, picture.getAttribute(fieldName));
+                    item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
                 }
                 searchResult.addResult(item);
 

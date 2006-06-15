@@ -6,6 +6,7 @@ import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
+import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
 
 /**
@@ -20,9 +21,11 @@ public class AddDocCountModifier implements ResultHandler {
 
         final SearchResult result = cxt.getSearchResult();
         final FastNavigator navigator = new FastNavigator();
-        final Modifier mod = new Modifier(modifierName, result.getHitCount(), navigator);
-        if (mod.getCount() >= 0)
+        final SearchTab.NavigatorHint hint = cxt.getSearchTab().getNavigationHint(modifierName);
+        final Modifier mod = new Modifier(hint.getName(), result.getHitCount(), navigator);
+        if (mod.getCount() >= 0){
             cxt.addSource(mod);
+        }
     }
 
     public String getModifierName() {

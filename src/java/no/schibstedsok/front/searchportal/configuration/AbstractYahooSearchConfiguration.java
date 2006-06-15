@@ -37,11 +37,6 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      */
     private int port;
 
-    /**
-     * Holds value of property url.
-     */
-    private String url;
-
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -61,7 +56,6 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
             host = osc.host;
             partnerId = osc.partnerId;
             port = osc.port;
-            url = osc.url;
         }
     }
 
@@ -147,21 +141,4 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
         this.port = port;
     }
 
-
-
-    /**
-     * Getter for property url.
-     * @return Value of property url.
-     */
-    public String getUrl() {
-        return this.url;
-    }
-
-    /**
-     * Setter for property url.
-     * @param url New value of property url.
-     */
-    public void setUrl(final String url) {
-        this.url = url;
-    }
 }

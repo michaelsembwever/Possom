@@ -17,6 +17,7 @@ public final class OverturePPCConfiguration extends AbstractYahooSearchConfigura
         if(asc != null && asc instanceof OverturePPCConfiguration){
             final OverturePPCConfiguration osc = (OverturePPCConfiguration) asc;
             resultsOnTop = osc.resultsOnTop;
+            url = osc.url;
         }
     }
 
@@ -34,6 +35,29 @@ public final class OverturePPCConfiguration extends AbstractYahooSearchConfigura
     /** @deprecated use views.xml instead **/
     public void setResultsOnTop(final int resultsOnTop) {
         this.resultsOnTop = resultsOnTop;
+    }
+
+    /**
+     * Holds value of property url.
+     */
+    private String url;
+
+    /**
+     * Getter for property url.
+     *
+     * @return Value of property url.
+     */
+    public String getUrl() {
+        return this.url;
+    }
+
+    /**
+     * Setter for property url.
+     *
+     * @param url New value of property url.
+     */
+    public void setUrl(final String url) {
+        this.url = url;
     }
 
 }

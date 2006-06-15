@@ -68,7 +68,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
-    
+
     private static final String DEBUG_FAST_SEARCH_ENGINE ="Creating Fast Engine to ";
 
     // Attributes ----------------------------------------------------
@@ -395,11 +395,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             }
 
             return searchResult;
-            
+
         } catch (ConfigurationException e) {
             LOG.error("execute", e);
             throw new InfrastructureException(e);
-            
+
         } catch (MalformedURLException e) {
             LOG.error("execute", e);
             throw new InfrastructureException(e);
@@ -497,7 +497,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         if (!searchEngines.containsKey(getFastConfiguration().getQueryServerURL())) {
             LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getFastConfiguration().getQueryServerURL());
-            final IFastSearchEngine engine 
+            final IFastSearchEngine engine
                     = engineFactory.createSearchEngine(getFastConfiguration().getQueryServerURL());
             searchEngines.put(getFastConfiguration().getQueryServerURL(), engine);
         }
@@ -597,24 +597,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         final SearchResultItem item = new BasicSearchResultItem();
 
-        if (getFastConfiguration().getResultFields() != null) {
+        for (final Map.Entry<String,String> entry : getFastConfiguration().getResultFields().entrySet()) {
+            final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
-            for (final Iterator iterator = getFastConfiguration().getResultFields().iterator(); iterator.hasNext();) {
-                final String field = (String) iterator.next();
-                String name = field;
-                String alias = field;
-                final String aliasSplit[] = field.split("AS");
-
-                if (aliasSplit.length == 2) {
-                    name = aliasSplit[0].trim();
-                    alias = aliasSplit[1].trim();
-                }
-                final IDocumentSummaryField summary = document.getSummaryField(name);
-
-                if (summary != null) {
-                    item.addField(alias, summary.getSummary());
-                } else {
-                }
+            if (summary != null) {
+                item.addField(entry.getValue(), summary.getSummary());
             }
         }
         return item;
@@ -840,7 +827,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private FastNavigator findChildNavigator(FastNavigator nav, String nameToFind) {
 
         if (getParameters().containsKey(nav.getField())) {
-            
+
             navigatedValues.put(nav.getField(), getParameters().get(nav.getField()) instanceof String[]
                     ? (String[])getParameters().get(nav.getField())
                     : new String[]{getParameter(nav.getField())});

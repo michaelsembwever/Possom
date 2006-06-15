@@ -289,9 +289,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private enum CommandTypes {
         COMMAND (AbstractSearchConfiguration.class),
+        ADVANCED_FAST_COMMAND (AdvancedFastConfiguration.class),
         BLENDING_NEWS_COMMAND (BlendingNewsSearchConfiguration.class),
         FAST_COMMAND (FastConfiguration.class),
-        ADVANCED_FAST_COMMAND (AdvancedFastConfiguration.class),
         HITTA_COMMAND (HittaServiceSearchConfiguration.class),
         MATH_COMMAND (MathExpressionConfiguration.class),
         MOBILE_COMMAND(MobileSearchConfiguration.class),
@@ -301,11 +301,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SENSIS_COMMAND(SensisSearchConfiguration.class),
         STATIC_COMMAND(StaticSearchConfiguration.class),
         STOCK_COMMAND(StockSearchConfiguration.class),
-        WEB_COMMAND(WebSearchConfiguration.class),
-        WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
         STORMWEATHER_COMMAND(StormWeatherSearchConfiguration.class),
+        TVSEARCH_COMMAND(TvSearchConfiguration.class),
+        YAHOO_IDP_COMMAND(YahooIdpConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
-        TVSEARCH_COMMAND(TvSearchConfiguration.class);
+        WEB_COMMAND(WebSearchConfiguration.class),
+        WHITEPAGES_COMMAND(WhiteSearchConfiguration.class);
+
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
@@ -368,7 +370,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     if(commandE.getAttribute("result-fields").length() >0){
                         final String[] resultFields = commandE.getAttribute("result-fields").split(",");
                         for(String resultField : resultFields){
-                            asc.addResultField(resultField.trim());
+                            asc.addResultField(resultField.trim().split(" AS "));
                         }
                     }
 
@@ -438,7 +440,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             ascInherit != null ? ascInherit.isCollapsingEnabled() : false));
                     asc.setCollapseOnField(parseString(commandE.getAttribute("collapse-on-field"),
                             ascInherit != null ? ascInherit.getCollapseOnField() : ""));
-                    
+
                     final String qrServer = commandE.getAttribute("query-server");
                     final String qrServerValue = parseProperty(cxt, qrServer,
                             ascInherit != null ? ascInherit.getQueryServer() : null);
@@ -487,9 +489,30 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             oscInherit != null ? oscInherit.getPartnerId() : ""));
                     osc.setPort(parseInt(commandE.getAttribute("port"),
                             oscInherit != null ? oscInherit.getPort() : 80));
+                }
+                if(sc instanceof OverturePPCConfiguration){
+                    final OverturePPCConfiguration osc = (OverturePPCConfiguration) sc;
+                    final OverturePPCConfiguration oscInherit = inherit instanceof OverturePPCConfiguration
+                            ? (OverturePPCConfiguration)inherit
+                            : null;
                     osc.setUrl(parseString(commandE.getAttribute("url"),
                             oscInherit != null ? oscInherit.getUrl() : ""));
-
+                }
+                if(sc instanceof YahooIdpConfiguration){
+                    final YahooIdpConfiguration ysc = (YahooIdpConfiguration) sc;
+                    final YahooIdpConfiguration yscInherit = inherit instanceof YahooIdpConfiguration
+                            ? (YahooIdpConfiguration)inherit
+                            : null;
+                    ysc.setDatabase(parseString(commandE.getAttribute("database"),
+                            yscInherit != null ? yscInherit.getDatabase() : ""));
+                    ysc.setDateRange(parseString(commandE.getAttribute("date-range"),
+                            yscInherit != null ? yscInherit.getDateRange() : ""));
+                    ysc.setRegionMix(parseString(commandE.getAttribute("region-mix"),
+                            yscInherit != null ? yscInherit.getRegionMix() : ""));
+                    ysc.setSpellState(parseString(commandE.getAttribute("spell-state"),
+                            yscInherit != null ? yscInherit.getSpellState() : ""));
+                    ysc.setUnique(parseString(commandE.getAttribute("unique"),
+                            yscInherit != null ? yscInherit.getUnique() : ""));
                 }
                 if(sc instanceof PicSearchConfiguration){
                     final PicSearchConfiguration psc = (PicSearchConfiguration) sc;
@@ -551,7 +574,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         for(String elm : elms){
                             swsc.addElementValue(elm.trim());
                         }
-                    } 
+                    }
 					
 				}
 
@@ -692,7 +715,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         TV (TvQueryTransformer.class),
         TVSEARCH(TvSearchQueryTransformer.class),
         AGEFILTER(AgeFilterTransformer.class);
-        
+
         private final Class<? extends QueryTransformer> clazz;
         private final String xmlName;
 

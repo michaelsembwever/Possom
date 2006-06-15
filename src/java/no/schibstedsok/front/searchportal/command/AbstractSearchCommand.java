@@ -95,6 +95,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
         this.parameters = parameters;
+        // XXX should be null so we know neither applyQueryTransformers or performQueryTranformation has been called
         transformedQuery = context.getQuery().getQueryString();
         final Clause root = context.getQuery().getRootClause();
 
@@ -171,8 +172,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             final String queryToUse = performQueryTransformation();
             final SearchResult result = performExecution(queryToUse);
             performResultHandling(result);
-            
-            
+
+
             completed = true;
             return result;
 
@@ -350,7 +351,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected int getCurrentOffset(final int i) {
         if (getSearchConfiguration().isPagingEnabled()) {
             final Object v = parameters.get("offset");
-            return i + Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
+            return i + Integer.parseInt(v instanceof String[] && ((String[])v).length ==1
                     ? ((String[]) v)[0]
                     : (String) v);
         } else {
@@ -369,19 +370,19 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected String getParameter(final String paramName) {
         if (parameters.containsKey(paramName)) {
-            if( parameters.get(paramName) instanceof String[] ){
+            if(parameters.get(paramName) instanceof String[]){
                 final String val[] = (String[]) parameters.get(paramName);
                 if (val.length > 0 && val[0].length() > 0) {
                     return val[0];
                 }
-            }else if( parameters.get(paramName) instanceof String ){
+            }else if(parameters.get(paramName) instanceof String){
                 return (String)parameters.get(paramName);
-            } 
+            }
         }
         return "";
     }
 
-    protected final synchronized String getQueryRepresentation(final Query query) {
+    protected synchronized String getQueryRepresentation(final Query query) {
 
         final Clause root = query.getRootClause();
         sb.setLength(0);

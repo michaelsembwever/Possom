@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * MobileSearchCommand.java
  *
@@ -6,7 +7,6 @@
  */
 package no.schibstedsok.front.searchportal.command;
 
-import java.util.Properties;
 import no.fast.ds.common.FastException;
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.IDocumentSummary;
@@ -32,7 +32,6 @@ import no.fast.personalization.api.IPersonalizationSpecification;
 
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.MobileSearchConfiguration;
-import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -51,22 +50,22 @@ import org.apache.log4j.Logger;
  * @author magnuse
  */
 public final class MobileSearchCommand extends AbstractSearchCommand {
-    
+
     private static final Logger LOG = Logger.getLogger(MobileSearchCommand.class);
-    
+
     private static final String PERSONALIZATION_GROUP = "aspiro-sesam1";
     private static final String USER_AGENT_PARAMETER="ua";
     private static final String MSEARCH_CLIENT_PROPS = "msearch-client.properties";
     private static final String ORIGINATION_PARAMETER = "originator";
-    
+
     private final MobileSearchConfiguration cfg;
-    
+
     public MobileSearchCommand(final SearchCommand.Context cxt, final Map parameters) {
         super(cxt, parameters);
         cfg = (MobileSearchConfiguration) cxt.getSearchConfiguration();
     }
 
-    
+
     public SearchResult execute() {
         try {
             final IMSearchFactory factory = MSearchFactory.newInstance();
@@ -74,12 +73,12 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             final ISearchParameters params = new SearchParameters();
             final IMSearchInfo searchInfo = MSearchInfoFactory.getMSearchInfo();
             final List sources = new ArrayList();
-            
+
             if (!cfg.getSortBy().equals("")) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY,
                         cfg.getSortBy()));
             }
-            
+
             params.setParameter(new SearchParameter(
                     BaseParameter.QUERY, getTransformedQuery()));
             params.setParameter(new SearchParameter(
@@ -88,47 +87,47 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
                 params.setParameter(new SearchParameter(
                         BaseParameter.FILTER, cfg.getFilter()));
             }
-            
+
             final IDeviceCapabilities cap = getDeviceCapabilities();
 
             String personalizationGroup = cfg.getPersonalizationGroup();
-            
-            if (getParameter(ORIGINATION_PARAMETER).equals("telenor") 
-              && !cfg.getTelenorPersonalizationGroup().equals("")) 
+
+            if (getParameter(ORIGINATION_PARAMETER).equals("telenor")
+              && !cfg.getTelenorPersonalizationGroup().equals(""))
             {
                 personalizationGroup = cfg.getTelenorPersonalizationGroup();
             }
-            
-            IPersonalizationSpecification ps = 
+
+            final IPersonalizationSpecification ps =
                     ExplicitUserGroupPersonalizationFactory.getUserGroupSpecification(personalizationGroup);
-            
-            
+
+
             final IQuery query = new Query(params);
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("mSearch query is " + query);
             }
-            
+
             final List<IMSearchResult> results = cap != null ? engine.search(query, ps, cap) : engine.search(query, ps);
-            
+
             IMSearchResult mResult = null;
-            
+
             for (final IMSearchResult r : results) {
                 if (r.getSource().equals(cfg.getSource())) {
                     mResult = r;
                     break;
                 }
             }
-            
+
             final IQueryResult result = mResult.getResult();
-            
+
             final int cnt = getCurrentOffset(0);
             final int maxIndex = Math.min(cnt + cfg.getResultsToReturn(),
                     result.getDocCount());
-            
+
             final SearchResult searchResult = new BasicSearchResult(this);
             searchResult.setHitCount(result.getDocCount());
-            
+
             for (int i = cnt; i < maxIndex; i++) {
                 //catch nullpointerException because of unaccurate doccount
                 try {
@@ -139,7 +138,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
                     return searchResult;
                 }
             }
-            
+
             return searchResult;
         } catch (ConfigurationException ex) {
             throw new InfrastructureException(ex);
@@ -149,43 +148,31 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             throw new InfrastructureException(ex);
         }
     }
-    
+
     private IDeviceCapabilities getDeviceCapabilities() {
-        
+
         IDeviceCapabilities cap = null;
-        
+
         if (getParameters().containsKey(USER_AGENT_PARAMETER)) {
-            final String userAgent = ( getParameter(USER_AGENT_PARAMETER));
+            final String userAgent = (getParameter(USER_AGENT_PARAMETER));
             cap = DeviceCapabilitiesFactory.getDeviceCapabilities();
             cap.setUserAgent(userAgent);
         }
         return cap;
     }
-    
+
     private SearchResultItem createResultItem(final IDocumentSummary document) {
         final SearchResultItem item = new BasicSearchResultItem();
-        
-        if (cfg.getResultFields() != null) {
-            
-            for (final String field : cfg.getResultFields()) {
-                String name = field;
-                String alias = field;
-                final String[] aliasSplit = field.split("AS");
-                
-                if (aliasSplit.length == 2) {
-                    name = aliasSplit[0].trim();
-                    alias = aliasSplit[1].trim();
-                }
-                
-                final IDocumentSummaryField summary = document.getSummaryField(name);
-                
+
+        for (final Map.Entry<String,String> entry : cfg.getResultFields().entrySet()) {
+
+                final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
+
                 if (summary != null) {
-                    item.addField(alias, summary.getSummary());
-                } else {
+                    item.addField(entry.getValue(), summary.getSummary());
                 }
-            }
         }
-        
+
         return item;
     }
 }

@@ -9,7 +9,6 @@ import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.front.searchportal.util.SearchConstants;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.apache.log4j.Logger;
 
@@ -29,7 +28,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     private final List<QueryTransformer> queryTransformers = new ArrayList<QueryTransformer>();
     private final List<ResultHandler> resultHandlers = new ArrayList<ResultHandler>();
     private int pageSize = SearchConstants.DEFAULT_DOCUMENTS_TO_RETURN;
-    private final Collection<String> resultFields = new ArrayList<String>();
+    private final Map<String,String> resultFields = new HashMap<String,String>();
     private int resultsToReturn;
     private boolean isPagingEnabled = false;
     private boolean child = false;
@@ -47,7 +46,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
             queryTransformers.addAll(asc.queryTransformers);
             resultHandlers.addAll(asc.resultHandlers);
             pageSize = asc.pageSize;
-            resultFields.addAll(asc.resultFields);
+            resultFields.putAll(asc.resultFields);
             fieldFilters.putAll(asc.fieldFilters);
             resultsToReturn = asc.resultsToReturn;
             isPagingEnabled = asc.isPagingEnabled;
@@ -125,12 +124,12 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         return isPagingEnabled;
     }
 
-    public final void addResultField(final String fieldName) {
-        resultFields.add(fieldName);
+    public final void addResultField(final String... fieldName) {
+        resultFields.put(fieldName[0].trim(), (fieldName.length >1 ? fieldName[1] : fieldName[0]).trim());
     }
 
-    public final Collection<String> getResultFields() {
-        return resultFields;
+    public final Map<String,String> getResultFields() {
+        return Collections.unmodifiableMap(resultFields);
     }
 
     public final int getResultsToReturn() {
@@ -168,7 +167,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     public void setStatisticsName(final String name){
         statisticsName = name;
     }
-    
+
     public String toString(){
         return getClass().getSimpleName() + " [" + name + "]";
     }
@@ -177,7 +176,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
      * Holds value of property fieldFilters.
      */
     private final Map<String,String> fieldFilters = new HashMap<String,String>();
-    
+
     void addFieldFilter(final String field, final String filter){
         fieldFilters.put(field, field);
     }

@@ -224,7 +224,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final String urlSuffix = n.getAttribute("url-suffix");
                 final String image = n.getAttribute("image");
                 final SearchTab.NavigatorHint navHint
-                        = new SearchTab.NavigatorHint(name, match, tab, urlSuffix, image, this);
+                        = new SearchTab.NavigatorHint(navId, name, match, tab, urlSuffix, image, this);
                 navigations.add(navHint);
             }
 

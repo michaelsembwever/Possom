@@ -25,6 +25,7 @@ import no.schibstedsok.front.searchportal.command.StormWeatherSearchCommand;
 import no.schibstedsok.front.searchportal.command.TvSearchCommand;
 import no.schibstedsok.front.searchportal.command.WebSearchCommand;
 import no.schibstedsok.front.searchportal.command.WhiteSearchCommand;
+import no.schibstedsok.front.searchportal.command.YahooIdpSearchCommand;
 import no.schibstedsok.front.searchportal.command.YellowGeoSearch;
 import no.schibstedsok.front.searchportal.configuration.AdvancedFastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.BlendingNewsSearchConfiguration;
@@ -43,6 +44,7 @@ import no.schibstedsok.front.searchportal.configuration.StormWeatherSearchConfig
 import no.schibstedsok.front.searchportal.configuration.TvSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.WebSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.WhiteSearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.YahooIdpConfiguration;
 import no.schibstedsok.front.searchportal.configuration.YellowSearchConfiguration;
 
 
@@ -67,25 +69,25 @@ public final class SearchCommandFactory {
         // It is also not as performance savvy as the original implementation.
         // Possibilities are 1) move association to xml (tabs.xml?) or 2) use class naming scheme.
         // An example of (2) would be XXXSearchConfiguration --> XXXSearchCommand
-        
+
         if (config instanceof StormWeatherSearchConfiguration)  {
         	return new StormWeatherSearchCommand(cxt, parameters);
-        } 
+        }
         if (config instanceof BlendingNewsSearchConfiguration) {
             return new BlendingNewsSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof YellowSearchConfiguration) {
             return new YellowGeoSearch(cxt, parameters);
-            
+
         } else if (config instanceof StockSearchConfiguration) {
             return new StockSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof WhiteSearchConfiguration) {
             return new WhiteSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof WebSearchConfiguration) {
             return new WebSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof NewsSearchConfiguration) {
             return new NewsSearchCommand(cxt, parameters);
 
@@ -103,27 +105,30 @@ public final class SearchCommandFactory {
 
         } else if (config instanceof OverturePPCConfiguration) {
             return new OverturePPCCommand(cxt, parameters);
-            
+
+        } else if (config instanceof YahooIdpConfiguration) {
+            return new YahooIdpSearchCommand(cxt, parameters);
+
         } else if (config instanceof PicSearchConfiguration) {
             return new PicSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof SensisSearchConfiguration) {
             return new FastSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof MobileSearchConfiguration)  {
             return new MobileSearchCommand(cxt, parameters);
 
         } else if (config instanceof StaticSearchConfiguration) {
             return new StaticSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof FastConfiguration) {
             return new FastSearchCommand(cxt, parameters);
-            
+
         } else if (config instanceof HittaServiceSearchConfiguration) {
             return new HittaWebServiceSearchCommand(cxt, parameters);
-            
+
         }
-        
+
         throw new UnsupportedOperationException("Cannot find suitable command for " + config.getName());
     }
 }
