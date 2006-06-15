@@ -180,8 +180,8 @@ public final class TestVisitor extends TestCase {
     public void testPhoneNumberAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "+47 9222 1689",
-                "+4792221689",
-                "+4792221689");
+                "92221689",
+                "92221689");
     }
 
     public void testUnicodeAgainstQueryParser3() {
