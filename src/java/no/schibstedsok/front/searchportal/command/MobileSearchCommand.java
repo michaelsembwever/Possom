@@ -80,8 +80,14 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
                         cfg.getSortBy()));
             }
             
-            params.setParameter(new SearchParameter(BaseParameter.QUERY, getTransformedQuery()));
-            params.setParameter(new SearchParameter("offset", getCurrentOffset(0)));
+            params.setParameter(new SearchParameter(
+                    BaseParameter.QUERY, getTransformedQuery()));
+            params.setParameter(new SearchParameter(
+                    "offset", getCurrentOffset(0)));
+            if (!cfg.getFilter().equals("")) {
+                params.setParameter(new SearchParameter(
+                        BaseParameter.FILTER, cfg.getFilter()));
+            }
             
             final IDeviceCapabilities cap = getDeviceCapabilities();
 

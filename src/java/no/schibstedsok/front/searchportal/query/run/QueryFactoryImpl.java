@@ -1,12 +1,9 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.query.run;
 
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import no.schibstedsok.front.searchportal.query.*;
 import no.schibstedsok.front.searchportal.util.QueryStringHelper;
 
 import org.apache.commons.logging.Log;
@@ -66,11 +63,11 @@ public final class QueryFactoryImpl extends QueryFactory {
                 if (request.getParameter("userSortBy") == null
                         || "".equals(request.getParameter("q"))) {
 
-                    query.addParameter("userSortBy", new String[]{"datetime", ""});
+                    query.addParameter("userSortBy", "datetime");
                 }
 
                 if ("".equals(q) && request.getParameter("contentsource") == null) {
-                    query.addParameter("contentsource", new String[]{"Norske Nyheter", ""});
+                    query.addParameter("contentsource", "Norske Nyheter");
                 }
             }
         }

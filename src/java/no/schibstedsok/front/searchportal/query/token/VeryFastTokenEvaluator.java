@@ -166,7 +166,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         LOG.trace("reportToken(" + token + "," + query + ")");
 
         if (evaluateToken(token, null, query)) {
-            final String realTokenFQ = REAL_TOKEN_PREFIX + token + REAL_TOKEN_SUFFIX;
+            final String realTokenFQ = getFastListName(token);
             return analysisResult.get(realTokenFQ);
         } else {
             return Collections.EMPTY_LIST;

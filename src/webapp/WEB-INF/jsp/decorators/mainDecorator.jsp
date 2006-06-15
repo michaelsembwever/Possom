@@ -88,7 +88,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <link media="print" href="../css/<c:out value='${startTime}'/>/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
-    <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>
+    <script type='text/javascript' language='JavaScript' src='../javascript/common.js?x=1'></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 

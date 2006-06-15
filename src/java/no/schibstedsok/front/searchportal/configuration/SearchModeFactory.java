@@ -527,6 +527,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     msc.setTelenorPersonalizationGroup(commandE.getAttribute("telenor-personalization-group"));
                     msc.setSortBy(commandE.getAttribute("sort-by"));
                     msc.setSource(commandE.getAttribute("source"));
+                    msc.setFilter(commandE.getAttribute("filter"));
                 }
                 if (sc instanceof BlendingNewsSearchConfiguration) {
                     final BlendingNewsSearchConfiguration bnsc = (BlendingNewsSearchConfiguration) sc;
