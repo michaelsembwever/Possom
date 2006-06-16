@@ -167,9 +167,20 @@ public final class TextMessages {
     }
 
     private String getMessageImpl(final String key, final Object... arguments){
-        // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
-        final MessageFormat format = new MessageFormat(keys.getProperty(key),context.getSite().getLocale());
-        return format.format(arguments);
+        
+        if( key == null || key.trim().length() == 0 ){
+            return "";
+        }else{
+            // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
+            final String pattern = keys.getProperty(key);
+            if( pattern == null ){
+                // make it visible that this key is not being localised!
+                return "KEY: " + key; 
+            }else{
+                final MessageFormat format = new MessageFormat(pattern, context.getSite().getLocale());
+                return format.format(arguments);
+            }
+        }
     }
 
 }

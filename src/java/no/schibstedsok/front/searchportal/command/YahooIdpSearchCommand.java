@@ -11,6 +11,8 @@
 package no.schibstedsok.front.searchportal.command;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,11 +43,13 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
+    
+    private static final String ERR_FAILED_CREATING_URL = "Failed to create command url";
 
     private static final String COMMAND_URL_PATTERN =
             "/search?Client={0}&Database={1}&DateRange={2}&FirstResult={3}&Numresults={4}&RegionMix={5}&SpellState={6}&"
-            + "QueryEncoding={7}&QueryLanguage=unknown&Fields={8}&"
-            + "Query={9}";
+            + "QueryEncoding={7}&QueryLanguage=unknown&Fields={8}&Unique={9}&"
+            + "Query={10}";
 
     private static final String RESULT_ELEMENT_NAME = "result";
 
@@ -60,14 +64,13 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
 
             if (doc != null) {
-                final Element elem = doc.getDocumentElement();
-                final Element searchResponseE = (Element) elem.getElementsByTagName("SEARCHRESPONSE").item(0);
+                final Element searchResponseE = doc.getDocumentElement();
                 final Element headerE = (Element) searchResponseE.getElementsByTagName("HEADER").item(0);
-                final Element totalHitsE = (Element) headerE.getElementsByTagName("TOTALHITS");
-                searchResult.setHitCount(Integer.parseInt(totalHitsE.getNodeValue()));
+                final Element totalHitsE = (Element) headerE.getElementsByTagName("TOTALHITS").item(0);
+                searchResult.setHitCount(Integer.parseInt(totalHitsE.getTextContent()));
 
                 // build results
-                final NodeList list = elem.getElementsByTagName(RESULT_ELEMENT_NAME);
+                final NodeList list = searchResponseE.getElementsByTagName(RESULT_ELEMENT_NAME);
                 for (int i = 0; i < list.getLength(); ++i) {
                     final Element listing = (Element) list.item(i);
                     final BasicSearchResultItem item = createItem(listing);
@@ -75,7 +78,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                 }
                 // build navigators
 
-                final NodeList wordCountList = elem.getElementsByTagName("WORDCOUNTS");
+                final NodeList wordCountList = searchResponseE.getElementsByTagName("WORDCOUNTS");
                 for (int i = 0; i < wordCountList.getLength(); ++i) {
                     final Element listing = (Element) wordCountList.item(i);
                     // TODO make modifiers fast independant!
@@ -105,21 +108,26 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             fields.append(',');
         }
         fields.setLength(fields.length()-1);
+        try {
 
 
-        return MessageFormat.format(
-                COMMAND_URL_PATTERN,
-                conf.getPartnerId(),
-                conf.getDatabase(),
-                conf.getDateRange().length() >0 ? conf.getDateRange() : dateRange,
-                getParameter("offset"),
-                conf.getResultsToReturn(),
-                conf.getRegionMix(),
-                conf.getSpellState(),
-                conf.getEncoding(),
-                fields.toString(),
-                wrappedTransformedQuery
-                );
+            return MessageFormat.format(
+                    COMMAND_URL_PATTERN,
+                    conf.getPartnerId(),
+                    conf.getDatabase(),
+                    URLEncoder.encode( conf.getDateRange().length() >0 ? conf.getDateRange() : dateRange , "UTF-8"),
+                    getParameter("offset"),
+                    conf.getResultsToReturn(),
+                    conf.getRegionMix(),
+                    conf.getSpellState(),
+                    conf.getEncoding(),
+                    fields.toString(),
+                    conf.getUnique(),
+                    wrappedTransformedQuery
+                    );
+        } catch (UnsupportedEncodingException ex) {
+            throw new InfrastructureException(ERR_FAILED_CREATING_URL, ex);
+        }
     }
 
     /**
@@ -129,7 +137,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         final BasicSearchResultItem item = new BasicSearchResultItem();
 
         for(final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
-            item.addField(entry.getValue(), result.getAttribute(entry.getKey()));
+            item.addField(entry.getValue(), result.getElementsByTagName(entry.getKey()).item(0).getTextContent());
         }
 
         return item;
