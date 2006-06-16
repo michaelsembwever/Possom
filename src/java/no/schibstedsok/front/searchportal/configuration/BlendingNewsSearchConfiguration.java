@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author maek
  */
-public class BlendingNewsSearchConfiguration extends FastConfiguration {
+public class BlendingNewsSearchConfiguration extends FastSearchConfiguration {
 
     private List<String> filtersToBlend;
     private int documentsPerFilter;

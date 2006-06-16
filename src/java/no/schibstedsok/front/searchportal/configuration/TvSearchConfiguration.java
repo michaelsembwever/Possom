@@ -17,7 +17,7 @@ import java.util.List;
  *
  * @author andersjj
  */
-public class TvSearchConfiguration extends FastConfiguration {
+public class TvSearchConfiguration extends FastSearchConfiguration {
     
     /** Filter for use when an empty query is sumbitted or no spesific sorting is used. **/
     private List<String> defaultChannels = new ArrayList<String>();

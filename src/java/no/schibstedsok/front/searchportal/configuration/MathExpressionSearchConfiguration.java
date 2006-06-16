@@ -7,13 +7,13 @@ package no.schibstedsok.front.searchportal.configuration;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class MathExpressionConfiguration extends AbstractSearchConfiguration {
+public class MathExpressionSearchConfiguration extends AbstractSearchConfiguration {
 
-    public MathExpressionConfiguration(){
+    public MathExpressionSearchConfiguration(){
         super(null);
     }
 
-    public MathExpressionConfiguration(final SearchConfiguration asc){
+    public MathExpressionSearchConfiguration(final SearchConfiguration asc){
         super(asc);
     }
 }

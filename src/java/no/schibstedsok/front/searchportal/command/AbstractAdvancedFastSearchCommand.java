@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import no.schibstedsok.front.searchportal.InfrastructureException;
-import no.schibstedsok.front.searchportal.configuration.AdvancedFastConfiguration;
+import no.schibstedsok.front.searchportal.configuration.AdvancedFastSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
@@ -67,7 +67,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
             Logger.getLogger(AbstractSimpleFastSearchCommand.class);
 
     // Attributes ----------------------------------------------------
-    private final AdvancedFastConfiguration cfg;
+    private final AdvancedFastSearchConfiguration cfg;
 
     private Map<String,FastNavigator> navigatedTo = new HashMap<String,FastNavigator>();
     private Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
@@ -83,7 +83,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
 
         super(cxt, parameters);
 
-        cfg = (AdvancedFastConfiguration) getSearchConfiguration();
+        cfg = (AdvancedFastSearchConfiguration) getSearchConfiguration();
     }
 
     // Public --------------------------------------------------------
@@ -262,7 +262,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     private int getMaxDocIndex(
             final IQueryResult result,
             final int cnt,
-            final AdvancedFastConfiguration cfg)
+            final AdvancedFastSearchConfiguration cfg)
     {
         return Math.min(cnt + cfg.getResultsToReturn(), result.getDocCount());
     }

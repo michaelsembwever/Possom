@@ -21,8 +21,8 @@ import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.YellowSearchResult;
 
-public class YellowGeoSearch extends FastSearchCommand {
-    private static Log log = LogFactory.getLog(YellowGeoSearch.class);
+public class YellowSearchCommand extends FastSearchCommand {
+    private static Log log = LogFactory.getLog(YellowSearchCommand.class);
 
     private boolean ignoreGeoNav = false;
 
@@ -34,7 +34,7 @@ public class YellowGeoSearch extends FastSearchCommand {
 
     private StringBuilder filterBuilder = null;
 
-    public YellowGeoSearch(final Context cxt, final Map parameters) {
+    public YellowSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 

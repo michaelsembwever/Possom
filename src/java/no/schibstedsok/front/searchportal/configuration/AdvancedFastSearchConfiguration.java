@@ -16,7 +16,7 @@ import java.util.Map;
  *
  * @author maek
  */
-public class AdvancedFastConfiguration extends AbstractSearchConfiguration {
+public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration {
 
     private String view;
     private String queryServer;
@@ -42,11 +42,11 @@ public class AdvancedFastConfiguration extends AbstractSearchConfiguration {
     
     private final Map<String,FastNavigator> navigators = new HashMap<String,FastNavigator>();
 
-    public AdvancedFastConfiguration(final SearchConfiguration asc){
+    public AdvancedFastSearchConfiguration(final SearchConfiguration asc){
         super(asc);
     }
 
-    public AdvancedFastConfiguration() {
+    public AdvancedFastSearchConfiguration() {
         super(null);
     }
     

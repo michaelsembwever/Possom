@@ -10,7 +10,7 @@ package no.schibstedsok.front.searchportal.configuration;
  * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
  * @version $Revision$
  */
-public class YellowSearchConfiguration extends FastConfiguration {
+public class YellowSearchConfiguration extends FastSearchConfiguration {
 
     public YellowSearchConfiguration(){
         super(null);

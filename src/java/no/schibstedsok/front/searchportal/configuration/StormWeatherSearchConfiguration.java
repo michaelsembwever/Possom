@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author larsj
  */
-public class StormWeatherSearchConfiguration extends FastConfiguration {
+public class StormWeatherSearchConfiguration extends FastSearchConfiguration {
 
 	private List<String> elementValues = new ArrayList<String>();
 	

@@ -12,7 +12,7 @@ package no.schibstedsok.front.searchportal.configuration;
  *
  * @author magnuse
  */
-public class WhiteSearchConfiguration extends FastConfiguration {
+public class WhiteSearchConfiguration extends FastSearchConfiguration {
 
     public WhiteSearchConfiguration(){
         super(null);

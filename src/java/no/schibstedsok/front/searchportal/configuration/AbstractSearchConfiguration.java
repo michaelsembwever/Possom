@@ -81,7 +81,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         if(queryTransformers != null){
             try {
                 for(QueryTransformer qt : queryTransformers){
-                        copy.add((QueryTransformer)qt.clone());
+                    copy.add((QueryTransformer)qt.clone());
                 }
             } catch (CloneNotSupportedException ex) {
                 LOG.error(ERR_FAILED_QUERYTRANSFORMERS_COPY, ex);
@@ -187,5 +187,13 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
      */
     public Map<String,String> getFieldFilters() {
         return Collections.unmodifiableMap(fieldFilters);
+    }
+
+    public void clearQueryTransformers() {
+        queryTransformers.clear();
+    }
+
+    public void clearResultHandlers() {
+        resultHandlers.clear();
     }
 }

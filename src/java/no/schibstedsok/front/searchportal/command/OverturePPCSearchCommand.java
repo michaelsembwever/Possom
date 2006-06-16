@@ -2,7 +2,7 @@
 package no.schibstedsok.front.searchportal.command;
 
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.front.searchportal.configuration.OverturePPCConfiguration;
+import no.schibstedsok.front.searchportal.configuration.OverturePPCSearchConfiguration;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
@@ -29,13 +29,13 @@ import no.schibstedsok.front.searchportal.configuration.AbstractYahooSearchConfi
  * the query to decide if it is a query that yields a high click frequency for
  * the ads. This is done by evaluating the predicate "exact_ppctoplist".
  */
-public final class OverturePPCCommand extends AbstractYahooSearchCommand {
+public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     public static final String OVERTURE_PPC_ELEMENT = "Listing";
 
     private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_sitesearch";
 
-    private static final Logger LOG = Logger.getLogger(OverturePPCCommand.class);
+    private static final Logger LOG = Logger.getLogger(OverturePPCSearchCommand.class);
 
     private boolean top = false;
 
@@ -46,7 +46,7 @@ public final class OverturePPCCommand extends AbstractYahooSearchCommand {
      * @param configuration
      * @param parameters
      */
-    public OverturePPCCommand(final Context cxt,
+    public OverturePPCSearchCommand(final Context cxt,
                              final Map parameters) {
         super(cxt, parameters);
 
@@ -98,8 +98,8 @@ public final class OverturePPCCommand extends AbstractYahooSearchCommand {
 
     protected final String createRequestURL() {
 
-        final OverturePPCConfiguration ppcConfig
-                = (OverturePPCConfiguration) context.getSearchConfiguration();
+        final OverturePPCSearchConfiguration ppcConfig
+                = (OverturePPCSearchConfiguration) context.getSearchConfiguration();
 
         final StringBuilder url = new StringBuilder(ppcConfig.getUrl());
 

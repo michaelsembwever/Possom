@@ -37,7 +37,7 @@ import no.fast.ds.search.Query;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.front.searchportal.InfrastructureException;
-import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
+import no.schibstedsok.front.searchportal.configuration.FastSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
@@ -300,8 +300,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // SearchCommand overrides ----------------------------------------------
 
-    public FastConfiguration getFastConfiguration() {
-        return (FastConfiguration) super.getSearchConfiguration();
+    public FastSearchConfiguration getFastConfiguration() {
+        return (FastSearchConfiguration) super.getSearchConfiguration();
     }
 
     public SearchResult execute() {

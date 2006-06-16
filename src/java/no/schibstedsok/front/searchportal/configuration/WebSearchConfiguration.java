@@ -11,7 +11,7 @@ package no.schibstedsok.front.searchportal.configuration;
  *
  * @author magnuse
  */
-public class WebSearchConfiguration extends FastConfiguration {
+public class WebSearchConfiguration extends FastSearchConfiguration {
 
     public WebSearchConfiguration(){
         super(null);

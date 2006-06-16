@@ -101,4 +101,8 @@ public interface SearchConfiguration {
      * @return Value of property fieldFilters.
      */
     Map<String, String> getFieldFilters();
+
+    void clearQueryTransformers();
+
+    void clearResultHandlers();
 }

@@ -6,16 +6,16 @@ package no.schibstedsok.front.searchportal.configuration;
  * @author mick
  * @version <tt>$Id$</tt>
  */
-public final class YahooIdpConfiguration extends AbstractYahooSearchConfiguration {
+public final class YahooIdpSearchConfiguration extends AbstractYahooSearchConfiguration {
 
-    public YahooIdpConfiguration(){
+    public YahooIdpSearchConfiguration(){
         super(null);
     }
 
-    public YahooIdpConfiguration(final SearchConfiguration asc){
+    public YahooIdpSearchConfiguration(final SearchConfiguration asc){
         super(asc);
-        if(asc != null && asc instanceof YahooIdpConfiguration){
-            final YahooIdpConfiguration ysc = (YahooIdpConfiguration) asc;
+        if(asc != null && asc instanceof YahooIdpSearchConfiguration){
+            final YahooIdpSearchConfiguration ysc = (YahooIdpSearchConfiguration) asc;
             database = ysc.database;
             dateRange = ysc.dateRange;
             regionMix = ysc.regionMix;

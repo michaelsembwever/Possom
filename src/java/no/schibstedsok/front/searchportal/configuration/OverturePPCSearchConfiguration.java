@@ -6,16 +6,16 @@ package no.schibstedsok.front.searchportal.configuration;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public final class OverturePPCConfiguration extends AbstractYahooSearchConfiguration {
+public final class OverturePPCSearchConfiguration extends AbstractYahooSearchConfiguration {
 
-    public OverturePPCConfiguration(){
+    public OverturePPCSearchConfiguration(){
         super(null);
     }
 
-    public OverturePPCConfiguration(final SearchConfiguration asc){
+    public OverturePPCSearchConfiguration(final SearchConfiguration asc){
         super(asc);
-        if(asc != null && asc instanceof OverturePPCConfiguration){
-            final OverturePPCConfiguration osc = (OverturePPCConfiguration) asc;
+        if(asc != null && asc instanceof OverturePPCSearchConfiguration){
+            final OverturePPCSearchConfiguration osc = (OverturePPCSearchConfiguration) asc;
             resultsOnTop = osc.resultsOnTop;
             url = osc.url;
         }

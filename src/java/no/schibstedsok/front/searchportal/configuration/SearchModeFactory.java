@@ -289,21 +289,21 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private enum CommandTypes {
         COMMAND (AbstractSearchConfiguration.class),
-        ADVANCED_FAST_COMMAND (AdvancedFastConfiguration.class),
+        ADVANCED_FAST_COMMAND (AdvancedFastSearchConfiguration.class),
         BLENDING_NEWS_COMMAND (BlendingNewsSearchConfiguration.class),
-        FAST_COMMAND (FastConfiguration.class),
-        HITTA_COMMAND (HittaServiceSearchConfiguration.class),
-        MATH_COMMAND (MathExpressionConfiguration.class),
+        FAST_COMMAND (FastSearchConfiguration.class),
+        HITTA_COMMAND (HittaSearchConfiguration.class),
+        MATH_COMMAND (MathExpressionSearchConfiguration.class),
         MOBILE_COMMAND(MobileSearchConfiguration.class),
         NEWS_COMMAND (NewsSearchConfiguration.class),
-        OVERTURE_PPC_COMMAND(OverturePPCConfiguration.class),
+        OVERTURE_PPC_COMMAND(OverturePPCSearchConfiguration.class),
         PICTURE_COMMAND(PicSearchConfiguration.class),
         SENSIS_COMMAND(SensisSearchConfiguration.class),
         STATIC_COMMAND(StaticSearchConfiguration.class),
         STOCK_COMMAND(StockSearchConfiguration.class),
         STORMWEATHER_COMMAND(StormWeatherSearchConfiguration.class),
         TVSEARCH_COMMAND(TvSearchConfiguration.class),
-        YAHOO_IDP_COMMAND(YahooIdpConfiguration.class),
+        YAHOO_IDP_COMMAND(YahooIdpSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class);
@@ -380,10 +380,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
 
                 }
-                if(sc instanceof FastConfiguration){
-                    final FastConfiguration fsc = (FastConfiguration) sc;
-                    final FastConfiguration fscInherit = inherit instanceof FastConfiguration
-                            ? (FastConfiguration)inherit
+                if(sc instanceof FastSearchConfiguration){
+                    final FastSearchConfiguration fsc = (FastSearchConfiguration) sc;
+                    final FastSearchConfiguration fscInherit = inherit instanceof FastSearchConfiguration
+                            ? (FastSearchConfiguration)inherit
                             : null;
                     fsc.setClusteringEnabled(parseBoolean(commandE.getAttribute("clustering"),
                             fscInherit != null ? fscInherit.isClusteringEnabled() : false));
@@ -427,10 +427,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     }
                 }
-                if (sc instanceof AdvancedFastConfiguration) {
-                    final AdvancedFastConfiguration asc = (AdvancedFastConfiguration) sc;
-                    final AdvancedFastConfiguration ascInherit = inherit instanceof AdvancedFastConfiguration
-                            ? (AdvancedFastConfiguration) inherit
+                if (sc instanceof AdvancedFastSearchConfiguration) {
+                    final AdvancedFastSearchConfiguration asc = (AdvancedFastSearchConfiguration) sc;
+                    final AdvancedFastSearchConfiguration ascInherit = inherit instanceof AdvancedFastSearchConfiguration
+                            ? (AdvancedFastSearchConfiguration) inherit
                             : null;
                     asc.setView(parseString(commandE.getAttribute("view"),
                             ascInherit != null ? ascInherit.getView() : ""));
@@ -460,18 +460,18 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     }
                 }
-                if(sc instanceof HittaServiceSearchConfiguration){
-                    final HittaServiceSearchConfiguration hsc = (HittaServiceSearchConfiguration) sc;
-                    final HittaServiceSearchConfiguration hscInherit = inherit instanceof HittaServiceSearchConfiguration
-                            ? (HittaServiceSearchConfiguration)inherit
+                if(sc instanceof HittaSearchConfiguration){
+                    final HittaSearchConfiguration hsc = (HittaSearchConfiguration) sc;
+                    final HittaSearchConfiguration hscInherit = inherit instanceof HittaSearchConfiguration
+                            ? (HittaSearchConfiguration)inherit
                             : null;
                     hsc.setCatalog(parseString(commandE.getAttribute("catalog"),
                             hscInherit != null ? hscInherit.getCatalog() : ""));
                     hsc.setKey(parseString(commandE.getAttribute("key"),
                             hscInherit != null ? hscInherit.getKey() : ""));
                 }
-                if(sc instanceof MathExpressionConfiguration){
-                    final MathExpressionConfiguration msc = (MathExpressionConfiguration) sc;
+                if(sc instanceof MathExpressionSearchConfiguration){
+                    final MathExpressionSearchConfiguration msc = (MathExpressionSearchConfiguration) sc;
                 }
                 if(sc instanceof NewsSearchConfiguration){
                     final NewsSearchConfiguration nsc = (NewsSearchConfiguration) sc;
@@ -490,18 +490,18 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     osc.setPort(parseInt(commandE.getAttribute("port"),
                             oscInherit != null ? oscInherit.getPort() : 80));
                 }
-                if(sc instanceof OverturePPCConfiguration){
-                    final OverturePPCConfiguration osc = (OverturePPCConfiguration) sc;
-                    final OverturePPCConfiguration oscInherit = inherit instanceof OverturePPCConfiguration
-                            ? (OverturePPCConfiguration)inherit
+                if(sc instanceof OverturePPCSearchConfiguration){
+                    final OverturePPCSearchConfiguration osc = (OverturePPCSearchConfiguration) sc;
+                    final OverturePPCSearchConfiguration oscInherit = inherit instanceof OverturePPCSearchConfiguration
+                            ? (OverturePPCSearchConfiguration)inherit
                             : null;
                     osc.setUrl(parseString(commandE.getAttribute("url"),
                             oscInherit != null ? oscInherit.getUrl() : ""));
                 }
-                if(sc instanceof YahooIdpConfiguration){
-                    final YahooIdpConfiguration ysc = (YahooIdpConfiguration) sc;
-                    final YahooIdpConfiguration yscInherit = inherit instanceof YahooIdpConfiguration
-                            ? (YahooIdpConfiguration)inherit
+                if(sc instanceof YahooIdpSearchConfiguration){
+                    final YahooIdpSearchConfiguration ysc = (YahooIdpSearchConfiguration) sc;
+                    final YahooIdpSearchConfiguration yscInherit = inherit instanceof YahooIdpSearchConfiguration
+                            ? (YahooIdpSearchConfiguration)inherit
                             : null;
                     ysc.setDatabase(parseString(commandE.getAttribute("database"),
                             yscInherit != null ? yscInherit.getDatabase() : ""));
@@ -594,6 +594,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if(qtRootElement != null){
                     qtNodeList = qtRootElement.getChildNodes();
 
+                    // clear all inherited query-transformers
+                    sc.clearQueryTransformers();
+                    
                     for(int i = 0; i < qtNodeList.getLength(); i++) {
                         final Node node = qtNodeList.item(i);
                         if (!(node instanceof Element)) {
@@ -613,6 +616,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Element rhRootElement = (Element) rhNodeList.item(0);
                 if(rhRootElement != null){
                     rhNodeList = rhRootElement.getChildNodes();
+                    
+                    // clear all inherited result handlers
+                    sc.clearResultHandlers();
+                    
                     for(int i = 0; i < rhNodeList.getLength(); i++) {
                         final Node node = rhNodeList.item(i);
                         if (!(node instanceof Element)) {

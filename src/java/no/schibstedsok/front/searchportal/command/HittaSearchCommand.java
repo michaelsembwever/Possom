@@ -1,6 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 /*
- * HittaWebServiceSearchCommand.java
+ * HittaSearchCommand.java
  *
  * Created on May 30, 2006, 3:27 PM
  *
@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 import javax.xml.rpc.ServiceException;
-import no.schibstedsok.front.searchportal.configuration.HittaServiceSearchConfiguration;
+import no.schibstedsok.front.searchportal.configuration.HittaSearchConfiguration;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
@@ -27,12 +27,12 @@ import se.hitta.www.HittaService.HittaServiceSoap;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class HittaWebServiceSearchCommand extends AbstractWebServiceSearchCommand{
+public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
 
     // Constants -----------------------------------------------------
 
-    private static final Logger LOG = Logger.getLogger(HittaWebServiceSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(HittaSearchCommand.class);
     private static final String DEBUG_CONF_NFO = "Conf details --> ";
 
     // Attributes ----------------------------------------------------
@@ -41,8 +41,10 @@ public final class HittaWebServiceSearchCommand extends AbstractWebServiceSearch
 
     // Constructors --------------------------------------------------
 
-    /** Creates a new instance of HittaWebServiceSearchCommand */
-    public HittaWebServiceSearchCommand(final Context cxt, final Map parameters) {
+    /**
+     * Creates a new instance of HittaSearchCommand
+     */
+    public HittaSearchCommand(final Context cxt, final Map parameters) {
         super (cxt, parameters);
 
     }
@@ -55,7 +57,7 @@ public final class HittaWebServiceSearchCommand extends AbstractWebServiceSearch
 
     public SearchResult execute(){
 
-        final HittaServiceSearchConfiguration conf = (HittaServiceSearchConfiguration) context.getSearchConfiguration();
+        final HittaSearchConfiguration conf = (HittaSearchConfiguration) context.getSearchConfiguration();
         int hits = 0;
 
         LOG.debug(DEBUG_CONF_NFO + conf.getCatalog() + ' ' + conf.getKey());

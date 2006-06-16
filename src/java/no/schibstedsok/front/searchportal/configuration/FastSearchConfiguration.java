@@ -16,7 +16,7 @@ import org.apache.commons.lang.StringUtils;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class FastConfiguration extends AbstractSearchConfiguration {
+public class FastSearchConfiguration extends AbstractSearchConfiguration {
 
     private final List<String> collections = new ArrayList<String>();
     private Map searchParameters;
@@ -40,15 +40,15 @@ public class FastConfiguration extends AbstractSearchConfiguration {
 
     private boolean relevantQueriesEnabled = false;
 
-    public FastConfiguration(){
+    public FastSearchConfiguration(){
         super(null);
     }
 
-    public FastConfiguration(final SearchConfiguration asc){
+    public FastSearchConfiguration(final SearchConfiguration asc){
 
         super(asc);
-        if(asc != null && asc instanceof FastConfiguration){
-            final FastConfiguration fsc = (FastConfiguration) asc;
+        if(asc != null && asc instanceof FastSearchConfiguration){
+            final FastSearchConfiguration fsc = (FastSearchConfiguration) asc;
             collections.addAll(fsc.collections);
             searchParameters = fsc.searchParameters;
             lemmatizeEnabled = fsc.lemmatizeEnabled;

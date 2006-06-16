@@ -12,7 +12,7 @@ package no.schibstedsok.front.searchportal.configuration;
  *
  * @author magnuse
  */
-public class NewsSearchConfiguration extends FastConfiguration {
+public class NewsSearchConfiguration extends FastSearchConfiguration {
 
     public NewsSearchConfiguration(){
         super(null);

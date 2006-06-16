@@ -18,9 +18,9 @@ import java.text.NumberFormat;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class MathExpressionCommand extends AbstractSearchCommand {
+public class MathExpressionSearchCommand extends AbstractSearchCommand {
     
-    private static final Logger log = Logger.getLogger(MathExpressionCommand.class);
+    private static final Logger log = Logger.getLogger(MathExpressionSearchCommand.class);
     private static final double ZERO_THREASHOLD = 0.00000001D;
 
     /**
@@ -29,7 +29,7 @@ public class MathExpressionCommand extends AbstractSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public MathExpressionCommand(final Context cxt, final Map parameters) {
+    public MathExpressionSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 

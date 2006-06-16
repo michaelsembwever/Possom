@@ -6,16 +6,16 @@ package no.schibstedsok.front.searchportal.configuration;
 /**
  * @version <tt>$Id $</tt>
  */
-public final class HittaServiceSearchConfiguration extends AbstractWebServiceSearchConfiguration {
+public final class HittaSearchConfiguration extends AbstractWebServiceSearchConfiguration {
 
-    public HittaServiceSearchConfiguration(){
+    public HittaSearchConfiguration(){
         super(null);
     }
 
-    public HittaServiceSearchConfiguration(final SearchConfiguration asc){
+    public HittaSearchConfiguration(final SearchConfiguration asc){
         super(asc);
-        if(asc != null && asc instanceof HittaServiceSearchConfiguration){
-            final HittaServiceSearchConfiguration hssc = (HittaServiceSearchConfiguration)asc;
+        if(asc != null && asc instanceof HittaSearchConfiguration){
+            final HittaSearchConfiguration hssc = (HittaSearchConfiguration)asc;
 
             key = hssc.key;
         }

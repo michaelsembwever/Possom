@@ -25,13 +25,13 @@ public final class YellowGeoSearchTest extends AbstractSearchCommandTest {
 
     private String getParsedQueryAsString(final String query) {
         final SearchCommand.Context cxt = createCommandContext(query, "y", "yellowPages");
-        final YellowGeoSearch command = createSearchCommand(cxt);
+        final YellowSearchCommand command = createSearchCommand(cxt);
         return command.getQueryRepresentation(cxt.getQuery());
 
     }
 
-    private YellowGeoSearch createSearchCommand(final SearchCommand.Context cxt) {
-        return new YellowGeoSearch(cxt, Collections.EMPTY_MAP);
+    private YellowSearchCommand createSearchCommand(final SearchCommand.Context cxt) {
+        return new YellowSearchCommand(cxt, Collections.EMPTY_MAP);
     }
 
 }
