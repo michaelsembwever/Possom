@@ -109,7 +109,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
 
             for (int i = 0; i < modifiers.length; i++) {
-                filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
+                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter"))
+                    filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
             }
         }
 
@@ -612,13 +613,16 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         ISearchParameters params = new SearchParameters();
         params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getFastConfiguration().isLemmatizeEnabled()));
 
-
         if (getFastConfiguration().isSpellcheckEnabled()) {
             params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));
             params.setParameter(new SearchParameter("qtf_spellcheck:addconsidered", "1"));
             params.setParameter(new SearchParameter("qtf_spellcheck:consideredverbose", "1"));
         }
 
+        if (getFastConfiguration().getName() != null && getFastConfiguration().getName().equals("relevantQueries")) {
+            params.setParameter(new SearchParameter("sources", "alone"));
+        }
+        
         String kwString = "";
         String queryString = getTransformedQuery();
 
@@ -720,7 +724,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 LOG.debug("createQuery: SortBY " + sortBy);
             }
             if ("standard".equals(sortBy)) {
-                params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retrievernews+docdatetime"));
+                params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retriever"));
             } else if ("datetime".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "docdatetime+standard"));
             }

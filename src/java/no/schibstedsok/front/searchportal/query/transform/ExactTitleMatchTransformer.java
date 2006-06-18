@@ -12,6 +12,6 @@ public final class ExactTitleMatchTransformer extends AbstractQueryTransformer {
 
         final String originalQuery = getContext().getTransformedQuery();
 
-        return "topics:^\"" + originalQuery + "\"$";
+        return "titles:^\"" + originalQuery + "\"$";
     }
 }

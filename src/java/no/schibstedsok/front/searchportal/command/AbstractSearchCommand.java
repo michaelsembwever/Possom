@@ -2,6 +2,7 @@
 package no.schibstedsok.front.searchportal.command;
 
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
@@ -94,7 +95,23 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
-        this.parameters = parameters;
+
+        // Hack to keep vg site search working. Dependent on old query
+        // parameters. Remove when vg has been reimplented a proper site search.
+        Map<String, Object> m = new HashMap<String, Object>();
+        
+        m.putAll(parameters);
+        
+        if (m.containsKey("nav_newspaperNames")) {
+            m.put("nav_newspaperNames", "newssourcenavigator");
+        }
+
+        if (m.containsKey("ywpopnavn")) {
+            m.put("newssource", m.get("ywpopnavn"));
+            m.remove("ywpopnavn");
+        }
+        
+        this.parameters = m;
         // XXX should be null so we know neither applyQueryTransformers or performQueryTranformation has been called
         transformedQuery = context.getQuery().getQueryString();
         final Clause root = context.getQuery().getRootClause();
@@ -282,7 +299,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             //TODO: Hide this in QueryRule.execute(some parameters)
             boolean executeQuery = queryToUse.length() > 0;
-            if (parameters.get("contentsource") != null) {
+            if (parameters.get("contentsource") != null || parameters.get("newscountry") != null) {
                 LOG.debug("call: Got contentsource, executeQuery=true");
                 executeQuery = true;
             }

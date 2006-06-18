@@ -67,7 +67,7 @@ public final class QueryFactoryImpl extends QueryFactory {
                 }
 
                 if ("".equals(q) && request.getParameter("contentsource") == null) {
-                    query.addParameter("contentsource", "Norske Nyheter");
+                    query.addParameter("newscountry", "Norge");
                 }
             }
         }
