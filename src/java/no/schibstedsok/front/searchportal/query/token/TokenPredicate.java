@@ -56,6 +56,7 @@ public enum TokenPredicate implements Predicate {
     TNS (Type.FAST),
 
     // RegExp TokenPredicates -- magic words
+    BADE_MAGIC(Type.REGEX),
     BOOK_MAGIC (Type.REGEX),
     CATALOGUE_MAGIC (Type.REGEX),
     CULTURE_MAGIC (Type.REGEX),
@@ -72,6 +73,7 @@ public enum TokenPredicate implements Predicate {
     WIKIPEDIA_MAGIC (Type.REGEX),
 
     // RegExp TokenPredicates -- trigger words/phrases
+    BADE_TRIGGER(Type.REGEX),
     CATALOGUE_TRIGGER (Type.REGEX),
     NEWS_TRIGGER (Type.REGEX),
     PICTURE_TRIGGER (Type.REGEX),
