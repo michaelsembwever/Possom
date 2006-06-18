@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * AbstractSearchCommandTest.java
  *
@@ -13,7 +14,6 @@ import javax.xml.parsers.DocumentBuilder;
 import junit.framework.TestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
@@ -33,33 +33,33 @@ import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
  * @version $Id$
  */
 public abstract class AbstractSearchCommandTest extends TestCase {
-    
-    
+
+
     // Constants -----------------------------------------------------
-    
+
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     /** Creates a new instance of AbstractSearchCommandTest */
     public AbstractSearchCommandTest(final String testName) {
         super(testName);
     }
-    
+
     // Public --------------------------------------------------------
-    
+
     // Z implementation ----------------------------------------------
-    
+
     // Y overrides ---------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     protected final RunningQuery.Context createRunningQueryContext(final String key){
-        
+
         return new RunningQuery.Context() {
             private final SearchMode mode = new SearchMode();
 
@@ -88,12 +88,12 @@ public abstract class AbstractSearchCommandTest extends TestCase {
     }
 
     protected final SearchCommand.Context createCommandContext(
-            final String query, 
-            final RunningQuery.Context rqCxt, 
+            final String query,
+            final RunningQuery.Context rqCxt,
             final String conf) {
-        
+
         final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());
-        
+
         return ContextWrapper.wrap(
                 SearchCommand.Context.class,
                 new BaseContext() {
@@ -113,16 +113,16 @@ public abstract class AbstractSearchCommandTest extends TestCase {
     }
 
     protected final SearchCommand.Context createCommandContext(
-            final String query, 
-            final String key, 
+            final String query,
+            final String key,
             final String conf) {
 
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
 
         return createCommandContext(query, rqCxt, conf);
     }
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 }

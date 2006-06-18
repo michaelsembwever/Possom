@@ -32,7 +32,7 @@ public class SearchModeTest extends TestCase {
 
         mode.setExecutor(new ParallelSearchCommandExecutor());
 
-        final FastConfiguration webCrawl = new FastConfiguration();
+        final FastSearchConfiguration webCrawl = new FastSearchConfiguration();
 
         webCrawl.setQueryServerURL("http://localhost:15100");
         webCrawl.addCollection("webcrawlno1");
@@ -85,7 +85,7 @@ public class SearchModeTest extends TestCase {
 
         final SearchMode mode = new SearchMode();
         mode.setExecutor(new ParallelSearchCommandExecutor());
-        final SearchConfiguration searchConfiguration = new OverturePPCConfiguration();
+        final SearchConfiguration searchConfiguration = new OverturePPCSearchConfiguration();
         searchConfiguration.setResultsToReturn(3);
         mode.addSearchConfiguration(searchConfiguration);
 

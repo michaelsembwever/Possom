@@ -8,13 +8,7 @@
 package no.schibstedsok.front.searchportal.command;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
-import junit.framework.TestCase;
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
+import no.schibstedsok.front.searchportal.configuration.FastSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;

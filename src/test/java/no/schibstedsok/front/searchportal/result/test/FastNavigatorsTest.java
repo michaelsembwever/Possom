@@ -13,7 +13,7 @@ import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.front.searchportal.configuration.FastConfiguration;
+import no.schibstedsok.front.searchportal.configuration.FastSearchConfiguration;
 import no.schibstedsok.front.searchportal.configuration.FastNavigator;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.command.FastSearchCommand;
@@ -42,7 +42,7 @@ public final class FastNavigatorsTest extends TestCase {
 
     private static final Logger LOG = Logger.getLogger(FastNavigatorsTest.class);
 
-    FastConfiguration config;
+    FastSearchConfiguration config;
     MockupResultHandler resultHandler;
 
     public SearchConfiguration getSearchConfiguration() {
@@ -51,7 +51,7 @@ public final class FastNavigatorsTest extends TestCase {
 
     protected void setUp() throws Exception {
 
-        final FastConfiguration config = new FastConfiguration();
+        final FastSearchConfiguration config = new FastSearchConfiguration();
         this.config = config;
         config.setResultsToReturn(10);
         resultHandler = new MockupResultHandler();
