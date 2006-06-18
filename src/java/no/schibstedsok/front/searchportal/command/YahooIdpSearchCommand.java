@@ -78,13 +78,13 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                 final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                 final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
                 searchResult.setHitCount(Integer.parseInt(totalHitsE.getTextContent()));
+                LOG.info("hitcount " + searchResult.getHitCount());
 
                 // build results
                 final NodeList list = searchResponseE.getElementsByTagName(RESULT_ELEMENT);
                 for (int i = 0; i < list.getLength(); ++i) {
                     final Element listing = (Element) list.item(i);
                     final BasicSearchResultItem item = createItem(listing);
-                    LOG.info("adding result");
                     searchResult.addResult(item);
                 }
                 // build navigators
