@@ -71,12 +71,16 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         try {
             final Document doc = getXmlResult();
             final SearchResult searchResult = new BasicSearchResult(this);
-
+            
 
             if (doc != null) {
+                LOG.debug("got doc");
                 final Element searchResponseE = doc.getDocumentElement();
+                LOG.debug("got root");
                 final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
+                LOG.debug("got header");
                 final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
+                LOG.debug("got count");
                 searchResult.setHitCount(Integer.parseInt(totalHitsE.getTextContent()));
                 LOG.info("hitcount " + searchResult.getHitCount());
 
