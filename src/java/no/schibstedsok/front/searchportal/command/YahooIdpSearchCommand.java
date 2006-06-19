@@ -80,7 +80,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                 final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                 LOG.debug("got header");
                 final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
-                LOG.debug("got count");
+                LOG.debug("got count " + totalHitsE.getTextContent());
                 searchResult.setHitCount(Integer.parseInt(totalHitsE.getTextContent()));
                 LOG.info("hitcount " + searchResult.getHitCount());
 
