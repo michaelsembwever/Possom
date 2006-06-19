@@ -13,7 +13,9 @@ import no.schibstedsok.front.searchportal.view.config.SearchTab;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class AddDocCountModifier implements ResultHandler {
+public final class AddDocCountModifier implements ResultHandler {
+    
+    private static final String ERR_UNKNOWN_MODIFIER_1 = "NavigationHint does not exist for modifier ";
 
     private String modifierName;
 
@@ -22,9 +24,14 @@ public class AddDocCountModifier implements ResultHandler {
         final SearchResult result = cxt.getSearchResult();
         final FastNavigator navigator = new FastNavigator();
         final SearchTab.NavigatorHint hint = cxt.getSearchTab().getNavigationHint(modifierName);
-        final Modifier mod = new Modifier(hint.getName(), result.getHitCount(), navigator);
-        if (mod.getCount() >= 0){
-            cxt.addSource(mod);
+        if( hint != null ){
+            final Modifier mod = new Modifier(hint.getName(), result.getHitCount(), navigator);
+            if (mod.getCount() >= 0){
+                cxt.addSource(mod);
+            }
+        }else{
+            throw new IllegalStateException(
+                    ERR_UNKNOWN_MODIFIER_1 + modifierName);
         }
     }
 
