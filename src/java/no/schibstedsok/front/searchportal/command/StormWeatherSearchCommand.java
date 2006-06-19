@@ -74,10 +74,10 @@ public class StormWeatherSearchCommand extends FastSearchCommand {
         FastSearchResult fastResult = executeFastCommand();
         
         //on empty queries return only the navigators
-        if(getRunningQuery().getQuery().isBlank()){
-            fastResult.setHitCount(0);
-            return fastResult;
-        }
+//        if(getRunningQuery().getQuery().isBlank()){
+//            fastResult.setHitCount(0);
+//            return fastResult;
+//        }
         
         // "enrich" the Fast result with Storm weather forecasts based on lat/long.
         if(fastResult.getResults().size() > 0){
