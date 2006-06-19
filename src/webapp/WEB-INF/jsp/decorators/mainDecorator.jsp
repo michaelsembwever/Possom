@@ -166,7 +166,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
     <% } else { %>
 
-        <%if (q.trim().equals("") && (currentC.equals("y") || currentC.equals("w") || currentC.equals("p"))) {%>
+        <%if (q.trim().equals("") && (currentC.equals("y") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw"))) {%>
 	<decorator:getProperty property="page.newsearch-bar"/>
 	<% }else{ %>
 	<decorator:getProperty property="page.search-bar"/>
@@ -393,7 +393,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
 
                 <!-- Weather -->
-                <%if (currentC.equals("sw")) {%>
+                <%if (currentC.equals("sw") && !q.trim().equals("")) {%>
                 <decorator:getProperty property="page.weather"/>
                 <%}%>
 
