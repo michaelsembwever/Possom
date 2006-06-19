@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
@@ -57,12 +58,15 @@ public class SyndicationGenerator {
     private static final String RSS_TPL_DIR="rss";
     private final SearchResult result;
     private final Site site;
+    private final TextMessages text;
     private String feedType = "rss_2.0";
     private final String templateDir;
     private final VelocityEngine engine;
     private DateFormat dateFormat;
     private final String query;
     private final String uri;
+    private final Channels channels;
+    private String encoding = "UTF-8";
     
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
     
@@ -73,18 +77,28 @@ public class SyndicationGenerator {
             " Parse error in template: ";
     
     public SyndicationGenerator(final SearchResult result, 
-                                final Site site, 
-                                final String modeId,
-                                final String feedType,
-                                final String query,
-                                final String uri) {
+                                final Site site,
+                                final HttpServletRequest request,
+                                final String modeId
+                                ) {
+        
         this.result = result;
         this.site = site;
-        this.query = query;
-        this.uri = uri;
+        this.text = (TextMessages) request.getAttribute("text");
+        this.channels = (Channels) request.getAttribute("channels");
+        this.query = request.getParameter("q");
+        this.uri = request.getRequestURL().append("?").append(request.getQueryString()).toString();
         
+        String feedType = request.getParameter("feedtype");
         if (feedType != null) {
             this.feedType = feedType;
+        }
+    
+        String encoding = request.getParameter("encoding");
+        if (encoding != null) {
+            if (encoding.equalsIgnoreCase("iso-8859-1")) {
+                this.encoding = "iso-8859-1";
+            }
         }
         
         templateDir = site.getTemplateDir() + "/rss/" + "/" + modeId + "/";
@@ -104,6 +118,7 @@ public class SyndicationGenerator {
         try {
             final SyndFeed feed = new SyndFeedImpl();
 
+            feed.setEncoding(this.encoding);
             feed.setFeedType(feedType);
             feed.setDescription(render("description", null));
             feed.setTitle(render("title", null));
@@ -111,7 +126,7 @@ public class SyndicationGenerator {
             feed.setLink(render("link", null));
 
             final List<SyndEntry> entries = new ArrayList<SyndEntry>();
-
+            
             for (SearchResultItem item : result.getResults()) {
                 final SyndEntry entry = new SyndEntryImpl();
 
@@ -128,7 +143,7 @@ public class SyndicationGenerator {
                     LOG.error("Cannot parse " + publishedDate + " using df " + dfString);
                     entry.setPublishedDate(new Date());
                 }
-
+                
                 entry.setTitle(render("entryTitle", item));
                 entry.setLink(render("entryUri", item));
                 final List contents = new ArrayList();
@@ -165,7 +180,7 @@ public class SyndicationGenerator {
 
             //TODO: figure out textbundling
 //            final TextMessages txtMsgs = TextMessages.valueOf(site);
-//            cxt.put("text", txtMsgs);
+            cxt.put("text", text);
             
             if (item != null) {
                 cxt.put("item", item);
@@ -174,15 +189,10 @@ public class SyndicationGenerator {
             cxt.put("query", query);
             
             final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
-            
             cxt.put("uri", origUri);
             
             final Site cxtSite = this.site;
-            cxt.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, new BaseContext() {
-                public Site getSite() {
-                    return cxtSite;
-                }
-            })));
+            cxt.put("channels", channels);
             
             final Template tpl = engine.getTemplate(templateUri);
 
