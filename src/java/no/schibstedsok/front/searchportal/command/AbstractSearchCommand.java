@@ -96,22 +96,22 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
 
-        // Hack to keep vg site search working. Dependent on old query
+        // TODO: Hack to keep vg site search working. Dependent on old query
         // parameters. Remove when vg has been reimplented a proper site search.
-        Map<String, Object> m = new HashMap<String, Object>();
+        // Map<String, Object> m = new HashMap<String, Object>();
         
-        m.putAll(parameters);
+        // m.putAll(parameters);
         
-        if (m.containsKey("nav_newspaperNames")) {
-            m.put("nav_newspaperNames", "newssourcenavigator");
+        if (parameters.containsKey("nav_newspaperNames")) {
+            parameters.put("nav_newspaperNames", "newssourcenavigator");
         }
 
-        if (m.containsKey("ywpopnavn")) {
-            m.put("newssource", m.get("ywpopnavn"));
-            m.remove("ywpopnavn");
+        if (parameters.containsKey("ywpopnavn")) {
+            parameters.put("newssource", parameters.get("ywpopnavn"));
+            parameters.remove("ywpopnavn");
         }
         
-        this.parameters = m;
+        this.parameters = parameters;
         // XXX should be null so we know neither applyQueryTransformers or performQueryTranformation has been called
         transformedQuery = context.getQuery().getQueryString();
         final Clause root = context.getQuery().getRootClause();
