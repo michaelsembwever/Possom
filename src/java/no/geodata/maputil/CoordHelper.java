@@ -37,8 +37,8 @@ public class CoordHelper {
     public final static int iconPxSizeHeigth = 32;
     public final static int iconPxSizeWidth = 29;
 
-    public final static int iconOffsetHeigth = 34; //plassering av ikon, avvik fra top. Positiv verdi
-    public final static int iconOffsetWidth = 14; //plassering av ikon, avvik fra venstre. Positiv verdi
+    public int iconOffsetHeigth = 34; //plassering av ikon, avvik fra top. Positiv verdi
+    public int iconOffsetWidth = 14; //plassering av ikon, avvik fra venstre. Positiv verdi
     public final static int iconOverlapOffsetWidth = 12; //hvor mange pixler skal ikonet flyttes for å unngå overlap. Verdi 0 tillater at ikonene kan ha samme plassering
     public final static int iconOverlapOffsetHeigth = 12; //hvor mange pixler skal ikonet flyttes for å unngå overlap. Verdi 0 tillater at ikonene kan ha samme plassering
     public int mapCenterPxX = imgWidth / 2; //kartets midtpunkt i pixler, bredde
@@ -690,9 +690,19 @@ public class CoordHelper {
     public double getIconOffsetHeigth() {
         return iconOffsetHeigth;
     }
+    
+    public void setIconOffsetHeigth(final int iconOffsetHeigth) {
+        this.iconOffsetHeigth = iconOffsetHeigth;
+    }
+    
     public double getIconOffsetWidth() {
         return iconOffsetWidth;
     }
+    
+    public void setIconOffsetWidth(final int iconOffsetWidth) {
+        this.iconOffsetWidth = iconOffsetWidth;
+    }
+    
     public double getIconOverlapOffsetWidth() {
         return iconOverlapOffsetWidth;
     }
