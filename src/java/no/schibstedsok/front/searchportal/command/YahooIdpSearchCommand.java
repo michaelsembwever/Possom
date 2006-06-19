@@ -74,13 +74,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             
 
             if (doc != null) {
-                LOG.debug("got doc");
                 final Element searchResponseE = doc.getDocumentElement();
-                LOG.debug("got root");
                 final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
-                LOG.debug("got header");
                 final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
-                LOG.debug("got count " + totalHitsE.getFirstChild().getNodeValue());
                 searchResult.setHitCount(Integer.parseInt(totalHitsE.getFirstChild().getNodeValue()));
                 LOG.info("hitcount " + searchResult.getHitCount());
 
@@ -114,7 +110,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
         final String dateRange = "-" + new SimpleDateFormat(DATE_PATTERN).format(new Date());
 
-        final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + ')';
+        final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + "%20-domain:se)";
 
         final StringBuilder fields = new StringBuilder();
         for(final String field : context.getSearchConfiguration().getResultFields().keySet()){
