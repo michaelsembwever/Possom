@@ -507,6 +507,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             yscInherit != null ? yscInherit.getDatabase() : ""));
                     ysc.setDateRange(parseString(commandE.getAttribute("date-range"),
                             yscInherit != null ? yscInherit.getDateRange() : ""));
+                    ysc.setRegion(parseString(commandE.getAttribute("region"),
+                            yscInherit != null ? yscInherit.getRegion() : ""));
                     ysc.setRegionMix(parseString(commandE.getAttribute("region-mix"),
                             yscInherit != null ? yscInherit.getRegionMix() : ""));
                     ysc.setSpellState(parseString(commandE.getAttribute("spell-state"),

@@ -49,9 +49,11 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String ERR_FAILED_CREATING_URL = "Failed to create command url";
 
     private static final String COMMAND_URL_PATTERN =
-            "/search?Client={0}&Database={1}&DateRange={2}&FirstResult={3}&Numresults={4}&RegionMix={5}&SpellState={6}&"
-            + "QueryEncoding={7}&QueryLanguage=unknown&Fields={8}&Unique={9}&"
-            + "Query={10}";
+            "/search?Client={0}&Database={1}&DateRange={2}&"
+            + "FirstResult={3}&Numresults={4}&"
+            + "Region={5}&RegionMix={6}&SpellState={7}&"
+            + "QueryEncoding={8}&Fields={9}&Unique={10}&"
+            + "Query={11}";
     private static final String DATE_PATTERN = "yyyy/MM/dd";
 
     private static final String HEADER_ELEMENT = "HEADER";
@@ -110,7 +112,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
         final String dateRange = "-" + new SimpleDateFormat(DATE_PATTERN).format(new Date());
 
-        final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + "%20-domain:se)";
+        final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + ")";
 
         final StringBuilder fields = new StringBuilder();
         for(final String field : context.getSearchConfiguration().getResultFields().keySet()){
@@ -128,12 +130,13 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     URLEncoder.encode( conf.getDateRange().length() >0 ? conf.getDateRange() : dateRange , "UTF-8"),
                     getParameter("offset"),
                     conf.getResultsToReturn(),
+                    conf.getRegion(),
                     conf.getRegionMix(),
                     conf.getSpellState(),
                     conf.getEncoding(),
                     fields.toString(),
                     conf.getUnique(),
-                    wrappedTransformedQuery
+                    URLEncoder.encode(wrappedTransformedQuery, "UTF-8")
                     );
         } catch (UnsupportedEncodingException ex) {
             throw new InfrastructureException(ERR_FAILED_CREATING_URL, ex);
@@ -147,9 +150,11 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         final BasicSearchResultItem item = new BasicSearchResultItem();
 
         for(final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
-            item.addField(
-                    entry.getValue(), 
-                    result.getElementsByTagName(entry.getKey().toUpperCase()).item(0).getFirstChild().getNodeValue());
+            
+            final Element fieldE = (Element) result.getElementsByTagName(entry.getKey().toUpperCase()).item(0);
+            if( fieldE.getChildNodes().getLength() >0 ){
+                item.addField(entry.getValue(), fieldE.getFirstChild().getNodeValue());
+            }
         }
 
         return item;

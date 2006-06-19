@@ -129,6 +129,27 @@ public final class YahooIdpSearchConfiguration extends AbstractYahooSearchConfig
         this.unique = unique;
     }
 
+    /**
+     * Holds value of property region.
+     */
+    private String region;
+
+    /**
+     * Getter for property region.
+     * @return Value of property region.
+     */
+    public String getRegion() {
+        return this.region;
+    }
+
+    /**
+     * Setter for property region.
+     * @param region New value of property region.
+     */
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
 
 
 }
