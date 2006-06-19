@@ -27,7 +27,7 @@ public final class WeatherQueryTransformer extends AbstractQueryTransformer {
 
     	if(blankQuery){
 
-        	defaultLocationsFilter.append("+(sgeneric4:By) +(title:");
+            defaultLocationsFilter.append("+(sgeneric4:By) +(title:");
             for (String location : defaultLocations ) {
                 defaultLocationsFilter.append(" ");
                 defaultLocationsFilter.append(location);
