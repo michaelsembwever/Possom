@@ -58,6 +58,11 @@ public class TvSearchSortingHandler implements ResultHandler {
             field = "category";
         }
 
+        /* Return all results if user has chosen to view one channel */
+        if (parameters.get("nav_channels") != null) {
+            return;
+        }
+        
         /* Split search result */
         for (SearchResultItem sri : sr.getResults()) {
             String fieldValue = sri.getField(field);
