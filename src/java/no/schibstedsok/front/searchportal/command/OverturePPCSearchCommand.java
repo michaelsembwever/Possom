@@ -159,7 +159,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         item.addField("siteHost", ppcListing.getAttribute("siteHost"));
 
         if (click.getLength() > 0) {
-            item.addField("clickURL", click.item(0).getChildNodes().item(0).getNodeValue());
+            item.addField("clickURL", click.item(0).getFirstChild().getNodeValue());
         }
 
         return item;

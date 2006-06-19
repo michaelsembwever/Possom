@@ -80,8 +80,8 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                 final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                 LOG.debug("got header");
                 final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
-                LOG.debug("got count " + totalHitsE.getTextContent());
-                searchResult.setHitCount(Integer.parseInt(totalHitsE.getTextContent()));
+                LOG.debug("got count " + totalHitsE.getFirstChild().getNodeValue());
+                searchResult.setHitCount(Integer.parseInt(totalHitsE.getFirstChild().getNodeValue()));
                 LOG.info("hitcount " + searchResult.getHitCount());
 
                 // build results
@@ -153,7 +153,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         for(final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
             item.addField(
                     entry.getValue(), 
-                    result.getElementsByTagName(entry.getKey().toUpperCase()).item(0).getTextContent());
+                    result.getElementsByTagName(entry.getKey().toUpperCase()).item(0).getFirstChild().getNodeValue());
         }
 
         return item;
