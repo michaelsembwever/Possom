@@ -11,6 +11,7 @@ import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
+import no.schibstedsok.front.searchportal.util.Channels;
 import no.schibstedsok.front.searchportal.util.QueryStringHelper;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
@@ -117,7 +118,8 @@ public final class SearchServlet extends HttpServlet {
         }
 
         request.setAttribute("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
-
+        request.setAttribute("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, genericCxt)));
+        
         if (request.getParameter("offset") == null || "".equals(request.getParameter("offset"))) {
             request.setAttribute("offset", "0");
         }
@@ -193,9 +195,17 @@ public final class SearchServlet extends HttpServlet {
             final HttpServletResponse response,
             final HttpServletRequest request){
 
+        /* Setting default encoding */
+        response.setCharacterEncoding("UTF-8");
+        
         // TODO. Any better way to do this. Sitemesh?
         if (request.getParameter("output") != null && request.getParameter("output").equals("rss")) {
-            response.setContentType("text/xml; charset=utf-8");
+            if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){
+                response.setContentType("text/xml; charset=iso-8859-1");
+                response.setCharacterEncoding("iso-8859-1"); // correct encoding
+            } else {
+                response.setContentType("text/xml; charset=utf-8");
+            }
         } else if (site.getName().startsWith("mobil")) {
             response.setContentType("text/xml; charset=utf-8");
             try {
@@ -207,8 +217,5 @@ public final class SearchServlet extends HttpServlet {
         } else {
             response.setContentType("text/html; charset=utf-8");
         }
-
-        response.setCharacterEncoding("UTF-8"); // correct encoding
     }
-
 }
