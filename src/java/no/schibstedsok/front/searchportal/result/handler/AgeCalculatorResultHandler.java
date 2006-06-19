@@ -49,6 +49,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
 
                 try {
                     final long stamp = df.parse(docTime).getTime();
+
                     final long age = System.currentTimeMillis() - stamp;
 
                     if (LOG.isDebugEnabled()) {
@@ -93,7 +94,10 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                         LOG.debug("Resulting age string is " + ageString);
                     }
 
-                    item.addField(getTargetField(), ageString);
+                    if (!ageString.contains("1970")) {
+                        item.addField(getTargetField(), ageString);
+                    }
+                    
                 } catch (ParseException e) {
                     LOG.warn("Unparsable date: " + docTime);
                 }
