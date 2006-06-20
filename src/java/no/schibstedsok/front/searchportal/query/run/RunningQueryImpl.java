@@ -138,7 +138,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     /**
      * First find out if the user types in an advanced search etc by analyzing the queryStr.
-     * Then lookup correct tip using messageresources.
+     * Then lookup correct tip using message resources.
      *
      * @return user tip
      */
@@ -196,7 +196,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 );
 
                 final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
+                
                 if(eHint != null && !queryObj.isBlank()){
+                    
                     final AnalysisRule rule = rules.getRule(eHint.getRule());
 
                     if (context.getSearchMode().isQueryAnalysisEnabled() 
@@ -204,18 +206,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                         ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
                         LOG.debug("Scoring new style for " + eHint.getRule());
-                        final int newScore = rule.evaluate(queryObj, tokenEvaluatorFactory);
+                        final int score = rule.evaluate(queryObj, tokenEvaluatorFactory);
 
-                        LOG.debug("Score for " + searchConfiguration.getName() + " is " + newScore);
+                        LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
 
-                        if(newScore != 0){
-                            ANALYSIS_LOG.info("  <score>" + newScore + "</score>");
+                        if(score != 0){
+                            ANALYSIS_LOG.info("  <score>" + score + "</score>");
                         }
                         ANALYSIS_LOG.info(" </analysis>");
 
-                        scores.put(config.getName(), Integer.valueOf(newScore));
+                        scores.put(config.getName(), Integer.valueOf(score));
 
-                        if (config.isAlwaysRunEnabled() || newScore >= eHint.getThreshold()) {
+                        if (config.isAlwaysRunEnabled() || (score >= eHint.getThreshold() && eHint.getWeight() >0) ) {
                             commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
 

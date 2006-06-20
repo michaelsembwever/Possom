@@ -98,7 +98,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // Hack to keep vg site search working. Dependent on old query
         // parameters. Remove when vg has been reimplented a proper site search.
-        Map<String, Object> m = new HashMap<String, Object>();
+        // XXX This isn't compatable with the data-model, all commands must use one common parameter map.
+        // Map<String, Object> m = new HashMap<String, Object>();
+        Map<String, Object> m = parameters;
         
         m.putAll(parameters);
         
