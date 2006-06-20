@@ -142,6 +142,11 @@ public final class TextMessages {
         loader.getProperties();
     }
 
+    
+    public boolean hasMessage(final String key) {
+        return keys.containsKey(key);
+    }
+    
     public String getMessage(final String key) {
         return getMessageImpl(key);
     }

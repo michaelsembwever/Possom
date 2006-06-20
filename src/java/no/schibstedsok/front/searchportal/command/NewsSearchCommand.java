@@ -9,6 +9,8 @@
 package no.schibstedsok.front.searchportal.command;
 
 import java.util.Map;
+import no.fast.idl.orb.configservice.config;
+import no.fast.idl.orb.statusservice.configuration;
 import no.schibstedsok.front.searchportal.command.SearchCommand.Context;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;

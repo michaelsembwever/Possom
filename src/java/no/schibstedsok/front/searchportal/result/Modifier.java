@@ -10,8 +10,9 @@ import no.schibstedsok.front.searchportal.view.config.SearchTab;
  */
 public class Modifier implements Comparable {
     private int count = 0;
-    private String name;
-    private FastNavigator navigator;
+
+    final private String name;
+    final private FastNavigator navigator;
 
     public Modifier(final String name, final int count, final FastNavigator navigator) {
         this.name = name;
@@ -24,6 +25,7 @@ public class Modifier implements Comparable {
         this.navigator = navigator;
     }
 
+    
     public void addCount(final int count) {
         this.count += count;
     }

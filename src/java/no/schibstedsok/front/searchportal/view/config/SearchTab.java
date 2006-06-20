@@ -415,6 +415,7 @@ public final class SearchTab {
         public NavigatorHint(
                 final String id,
                 final String name,
+                final String displayName,
                 final MatchType match,
                 final String tabName,
                 final String urlSuffix,
@@ -423,6 +424,7 @@ public final class SearchTab {
 
             this.id = id;
             this.name = name;
+            this.displayName = displayName;
             this.match = match;
             this.tabName = tabName;
             this.urlSuffix = urlSuffix;
@@ -472,6 +474,18 @@ public final class SearchTab {
          */
         public String getName() {
             return this.name;
+        }
+        /**
+         * Holds value of property name.
+         */
+        private final String displayName;
+
+        /**
+         * Getter for property name.
+         * @return Value of property name.
+         */
+        public String getDisplayName() {
+            return this.displayName;
         }
 
         /**

@@ -28,6 +28,7 @@ import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecut
 import no.schibstedsok.front.searchportal.query.transform.AgeFilterTransformer;
 import no.schibstedsok.front.searchportal.query.transform.NowQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
+import no.schibstedsok.front.searchportal.result.handler.CombineNavigatorsHandler;
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
 import no.schibstedsok.front.searchportal.query.transform.TvSearchQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.TvSearchSortingHandler;
@@ -806,6 +807,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         FORECAST_WIND (ForecastWindHandler.class),
         MAP_COORD (MapCoordHandler.class),
         TVSEARCH_SORTING (TvSearchSortingHandler.class),
+        COMBINE_NAVIGATORS (CombineNavigatorsHandler.class),
         TEXT_OUTPUT (TextOutputResultHandler.class),
         VELOCITY_OUTPUT (VelocityResultHandler.class),
         XML_OUTPUT (XmlOutputResultHandler.class);
@@ -937,6 +939,23 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                         tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
                         tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
+                        break;
+                    case COMBINE_NAVIGATORS:
+                        final CombineNavigatorsHandler cnh = (CombineNavigatorsHandler) handler;
+                        cnh.setTarget(rh.getAttribute("target"));
+
+                        final NodeList navs = rh.getElementsByTagName("navigator");
+                        
+                        for (int i = 0; i < navs.getLength(); i++) {
+                            final Element nav = (Element) navs.item(i);
+
+                            final NodeList mods = nav.getElementsByTagName("modifier");
+                            for (int j = 0; j < mods.getLength(); j++) {
+                                final Element mod = (Element) mods.item(j);
+                                
+                                cnh.addMapping(nav.getAttribute("name"), mod.getAttribute("name"));
+                            }
+                        }
                         break;
                 }
 

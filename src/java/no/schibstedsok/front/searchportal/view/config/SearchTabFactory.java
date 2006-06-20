@@ -21,6 +21,7 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
@@ -58,6 +59,9 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     private static final String INFO_PARSING_ENRICHMENT = " Parsing enrichment ";
     private static final String INFO_PARSING_NAVIGATION = " Parsing navigation ";
 
+    private static final String MSG_DISPLAY_NAV_PREFIX = "navigation_display_";
+    private static final String MISSING_NAV = "Mo message prop. for ";            
+    
     // Attributes ----------------------------------------------------
 
     private final Map<String,SearchTab> tabsByName = new HashMap<String,SearchTab>();
@@ -218,13 +222,19 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final String navId = n.getAttribute("id");
                 LOG.info(INFO_PARSING_NAVIGATION + navId);
                 final String name = msgs.getMessage(MSG_NAV_PREFIX + navId);
+
+                final String displayName = msgs.hasMessage(MSG_DISPLAY_NAV_PREFIX + navId) ? 
+                    msgs.getMessage(MSG_DISPLAY_NAV_PREFIX + navId) : 
+                    MISSING_NAV + MSG_DISPLAY_NAV_PREFIX + navId;
+                
+                LOG.info(INFO_PARSING_NAVIGATION + name);
                 final SearchTab.NavigatorHint.MatchType match
                         = SearchTab.NavigatorHint.MatchType.valueOf(n.getAttribute("match").toUpperCase());
                 final String tab = n.getAttribute("tab");
                 final String urlSuffix = n.getAttribute("url-suffix");
                 final String image = n.getAttribute("image");
                 final SearchTab.NavigatorHint navHint
-                        = new SearchTab.NavigatorHint(navId, name, match, tab, urlSuffix, image, this);
+                        = new SearchTab.NavigatorHint(navId, name, displayName, match, tab, urlSuffix, image, this);
                 navigations.add(navHint);
             }
 
