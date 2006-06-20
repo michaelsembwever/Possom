@@ -27,9 +27,10 @@ public final class WeatherQueryTransformer extends AbstractQueryTransformer {
 
     	if(blankQuery){
 
-            defaultLocationsFilter.append("+(sgeneric4:By) +(title:");
+        //    defaultLocationsFilter.append("+(sgeneric4:By) +(title:");
+            defaultLocationsFilter.append("+(");
             for (String location : defaultLocations ) {
-                defaultLocationsFilter.append(" ");
+                defaultLocationsFilter.append(" igeneric1:");
                 defaultLocationsFilter.append(location);
             }
             defaultLocationsFilter.append(") ");
@@ -40,9 +41,11 @@ public final class WeatherQueryTransformer extends AbstractQueryTransformer {
     }
 
 	public void setDefaultLocations(String[] strings) {
-		if(strings.length > 0 && strings[0].trim().length() >0){
-			defaultLocations.addAll(Arrays.asList(strings));
-        }	
+            if(strings.length > 0 && strings[0].trim().length() >0){
+                for (String location : strings) {
+                    defaultLocations.add(location.trim());
+                }
+            }	
 	}
 
 	public List<String> getDefaultLocations() {
