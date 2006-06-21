@@ -11,6 +11,8 @@ package no.schibstedsok.front.searchportal.view.output;
 
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
+import com.sun.syndication.feed.synd.SyndEnclosure;
+import com.sun.syndication.feed.synd.SyndEnclosureImpl;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
@@ -35,6 +37,7 @@ import no.schibstedsok.front.searchportal.result.SearchResultItem;
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.util.Channels;
 import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
+import org.apache.commons.lang.StringEscapeUtils;
 
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -133,8 +136,10 @@ public class SyndicationGenerator {
                 final SyndContent content = new SyndContentImpl();
 
                 content.setType("text/html");
-                content.setValue(render("entryDescription", item));
-    
+                final String entryDescription = render("entryDescription", item);
+                
+                content.setValue(StringEscapeUtils.unescapeHtml(entryDescription));
+                
                 final String publishedDate = render("entryPublishedDate", item);
 
                 try {
@@ -146,6 +151,15 @@ public class SyndicationGenerator {
                 
                 entry.setTitle(render("entryTitle", item));
                 entry.setLink(render("entryUri", item));
+                
+                final SyndEnclosure enclosure = new SyndEnclosureImpl();
+                enclosure.setType("image/png");
+                enclosure.setUrl(render("entryEnclosure", item));
+                
+                final List<SyndEnclosure> enclosures = new ArrayList();
+                enclosures.add(enclosure);
+                entry.setEnclosures(enclosures);
+                
                 final List contents = new ArrayList();
                 
                 contents.add(content);
