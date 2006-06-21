@@ -5,18 +5,43 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.front.searchportal.util.SearchConstants;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class FastSearchConfiguration extends AbstractSearchConfiguration {
+    
+    private static final Logger LOG = Logger.getLogger(FastSearchConfiguration.class);
+    
+    private static final String[] ALL_COLLECTIONS = {
+        "tv",
+        "webcrawlno1",
+        "webcrawlno1",
+        "webcrawlno1deep1",
+        "webcrawlno2",
+        "wikipedia",
+        "wikipedia2",
+        "WikipediaSV",
+        "robots",
+        "yellow",
+        "white",
+        "bokkilden",
+        "weather",
+        "carelscrawl",
+        "retriever",
+        "moreover",
+        "retrievernordic",
+        "mano",
+        "skiinfo"
+    };
 
     private final List<String> collections = new ArrayList<String>();
     private Map searchParameters;
@@ -78,51 +103,37 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         collections.add(collectionName);
     }
 
-    /**
-     * Double-checked locking idiom will not work without the volatile keyword and JAVA 5.
-     * (Not a big performance difference to simply making the method synchronized).
-     * See Effective Java -> Item 48: Synchronize access to shared mutable data
-     **/
     public String getCollectionFilterString() {
         if (collectionString == null) {
-            synchronized (this) {
-                if (collectionString == null) {
-                    collectionString = generateFilterString();
-                }
-            }
+            collectionString = createCollectionFilterString();
         }
 
         return collectionString;
     }
 
-    private String generateFilterString() {
+    private String createCollectionFilterString() {
+        
+        String result = "";
+        
+        if (collections.size() > 1) {
 
-        if (collections != null) {
-            if (collections.size() > 1) {
-             final Collection invertedCollection = new ArrayList();
-                for (int i = 0; i < SearchConstants.ALL_COLLECTIONS.length; i++) {
-                    final String c = SearchConstants.ALL_COLLECTIONS[i];
-                    invertedCollection.add(c);
-                }
+            final Collection invertedCollection = new ArrayList(Arrays.asList(ALL_COLLECTIONS));
+            invertedCollection.removeAll(collections);
+            final String [] coll = prependMetaCollection(invertedCollection);
+            result = StringUtils.join(coll, ' ');
 
-                invertedCollection.removeAll(collections);
-
-                final Object [] coll = prependMetaCollection(invertedCollection);
-                return StringUtils.join(coll, ' ');
-            } else if (collections.size() == 1) {
-                return "+meta.collection:" + collections.get(0);
-            }
+        } else if (collections.size() == 1) {
+            result = "+meta.collection:" + collections.get(0);
         }
-        return "";
+        return result;
     }
 
-    private Object[] prependMetaCollection(final Collection collectionStrings) {
-        final Object coll[] =  collectionStrings.toArray();
+    private String[] prependMetaCollection(final Collection<String> collectionStrings) {
+        
+        final String coll[] = collectionStrings.toArray(new String[collectionStrings.size()]);
 
         for (int i = 0; i < coll.length; i++) {
-            final String collectionName = (String) coll[i];
-            final String s = "-meta.collection:" + collectionName;
-            coll[i] = s;
+            coll[i] = "-meta.collection:" + coll[i];
         }
         return coll;
     }

@@ -114,6 +114,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String INFO_PARSING_NAVIGATOR = "  Parsing navigator ";
     private static final String INFO_PARSING_RESULT_HANDLER = "  Parsing result handler ";
     private static final String INFO_PARSING_QUERY_TRANSFORMER = "  Parsing query transformer ";
+    private static final String DEBUG_PARSED_PROPERTY = "  Property property ";
 
    // Attributes ----------------------------------------------------
 
@@ -677,7 +678,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final String value = SiteConfiguration.valueOf(
                     ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
                     .getProperty(key);
-            return value != null ? value : key;
+            final String result = value != null ? value : key;
+            LOG.debug(DEBUG_PARSED_PROPERTY + key + " --> " + result);
+            return result;
         }
 
         private Collection<FastNavigator> parseNavigators(final Element navsE){
