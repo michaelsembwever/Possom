@@ -66,7 +66,7 @@ public final class QueryFactoryImpl extends QueryFactory {
                     query.addParameter("userSortBy", "datetime");
                 }
 
-                if ("".equals(q) && request.getParameter("contentsource") == null) {
+                if ("".equals(q) && request.getParameter("contentsource") == null && (request.getParameter("newscountry") == null || request.getParameter("newscountry").equals(""))) {
                     query.addParameter("newscountry", "Norge");
                 }
             }
