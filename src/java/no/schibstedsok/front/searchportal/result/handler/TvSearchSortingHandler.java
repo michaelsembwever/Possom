@@ -59,9 +59,9 @@ public class TvSearchSortingHandler implements ResultHandler {
         }
 
         /* Return all results if user has chosen to view one channel */
-        if (parameters.get("nav_channels") != null) {
-            return;
-        }
+//        if (parameters.get("nav_channels") != null) {
+//            return;
+//        }
         
         /* Split search result */
         for (SearchResultItem sri : sr.getResults()) {
@@ -86,6 +86,10 @@ public class TvSearchSortingHandler implements ResultHandler {
                     if (hm.containsKey(channel)) {
                         sr.getResults().addAll(hm.get(channel));
                     }
+                }
+                /* Check if the search gave results for the default channels */
+                if (sr.getResults().size() == 0) {
+                    joinBlocks(cxt, hm, "channels");
                 }
             } else {
                 joinBlocks(cxt, hm, "channels");
