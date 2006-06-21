@@ -14,13 +14,18 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class HTTPClient {
-
+    // Constants -----------------------------------------------------
+    private static final Logger LOG = Logger.getLogger(HttpClient.class);
+    private static final String DEBUG_ADDING_CONF =
+            "Adding configuration ";
+    
     private final static Map hostConfigurations = new HashMap();
 
     private ConnectionManagerWithoutKeepAlive cMgr;
@@ -78,6 +83,7 @@ public class HTTPClient {
     private synchronized static void addHostConfiguration(String id, String host, int port) {
         if (! hostConfigurations.containsKey(id)) {
             HostConfiguration conf = new HostConfiguration();
+            LOG.debug(DEBUG_ADDING_CONF + host + ":" + port);
             conf.setHost(host, port, "http");
             hostConfigurations.put(id, conf);
         }
