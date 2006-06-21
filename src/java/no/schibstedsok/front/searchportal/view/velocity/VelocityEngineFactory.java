@@ -16,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
+import static no.schibstedsok.front.searchportal.configuration.SiteConfiguration.*;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
@@ -23,6 +24,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -42,8 +44,26 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     private static final String VELOCITY_LOGGER = "org.apache.velocity";
 
     private static final Map<Site,VelocityEngineFactory> INSTANCES = new HashMap<Site,VelocityEngineFactory>();
-
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
+    
+    private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.SimpleLog4JLogSystem";
+    private static final String LOG_NAME = "runtime.log.logsystem.log4j.category";
+    
+    // TODO change when velocity 1.5 is out
+    //private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.Log4JLogChute";
+    //private static final String LOG_NAME = "runtime.log.logsystem.log4j.logger";
+    
+    private static final String DIRECTIVES = 
+            "no.schibstedsok.front.searchportal.view.velocity.UrlEncodeDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.HtmlEscapeDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.CapitalizeWordsDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.ChopStringDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.PublishDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.AccountingDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.RolesDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.XmlEscapeDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.WikiDirective,"
+            + "no.schibstedsok.front.searchportal.view.velocity.RemovePrefixDirective";
 
     private final VelocityEngine engine;
 
@@ -83,22 +103,24 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
             final Properties props = SiteConfiguration.valueOf(
                     ContextWrapper.wrap(SiteConfiguration.Context.class, cxt)).getProperties();
-            // engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute"); // velocity 1.5
-            engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.SimpleLog4JLogSystem");
-            // engine.setProperty("runtime.log.logsystem.log4j.logger", logger.getName()); // velocity 1.5
-            engine.setProperty("runtime.log.logsystem.log4j.category", logger.getName());
+
+            engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
+            engine.setProperty(LOG_NAME, logger.getName());
             engine.setProperty(Velocity.RESOURCE_LOADER, "url");
-            engine.setProperty("url.resource.loader.class", "no.schibstedsok.front.searchportal.view.velocity.URLVelocityTemplateLoader");
+            engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
             engine.setProperty("url.resource.loader.cache", "true");
             engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
-            engine.setProperty("velocimacro.library", site.getTemplateDir() + "/VM_global_library.vm");
             engine.setProperty(Site.NAME_KEY, site);
             engine.setProperty("site.fallback", Site.DEFAULT);
-            engine.setProperty(SiteConfiguration.PUBLISH_SYSTEM_URL, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL));
-            engine.setProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST));
+            engine.setProperty(PUBLISH_SYSTEM_URL, props.getProperty(PUBLISH_SYSTEM_URL));
+            engine.setProperty(PUBLISH_SYSTEM_HOST, props.getProperty(PUBLISH_SYSTEM_HOST));
             engine.setProperty("input.encoding", "UTF-8");
             engine.setProperty("output.encoding", "UTF-8");
-            engine.setProperty("userdirective", "no.schibstedsok.front.searchportal.view.velocity.UrlEncodeDirective,no.schibstedsok.front.searchportal.view.velocity.HtmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.CapitalizeWordsDirective,no.schibstedsok.front.searchportal.view.velocity.ChopStringDirective,no.schibstedsok.front.searchportal.view.velocity.PublishDirective,no.schibstedsok.front.searchportal.view.velocity.AccountingDirective,no.schibstedsok.front.searchportal.view.velocity.RolesDirective,no.schibstedsok.front.searchportal.view.velocity.XmlEscapeDirective,no.schibstedsok.front.searchportal.view.velocity.WikiDirective,no.schibstedsok.front.searchportal.view.velocity.RemovePrefixDirective");
+            engine.setProperty("userdirective", DIRECTIVES);
+            engine.setProperty(
+                    "velocimacro.library", 
+                    site.getTemplateDir() + "/VM_global_library.vm,"
+                    + site.getTemplateDir() + "/VM_site_library.vm");
             engine.init();
 
         } catch (Exception e) {

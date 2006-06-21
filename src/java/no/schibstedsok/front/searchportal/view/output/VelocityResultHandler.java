@@ -59,7 +59,8 @@ public final class VelocityResultHandler implements ResultHandler {
     private static final String DEBUG_TEMPLATE_SEARCH = "Looking for template ";
     private static final String DEBUG_TEMPLATE_FOUND = "Created template ";
     private static final String ERR_TEMPLATE_NOT_FOUND = "Could not find the template ";
-    private static final String ERR_NP_WRITING_TO_STREAM = "Possible client cancelled request. (NullPointerException writing to response's stream).";
+    private static final String ERR_NP_WRITING_TO_STREAM 
+            = "Possible client cancelled request. (NullPointerException writing to response's stream).";
 
     public static VelocityEngine getEngine(final Context cxt){
 
