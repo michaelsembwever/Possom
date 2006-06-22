@@ -51,7 +51,12 @@ public final class ChopStringDirective extends Directive {
    /**
      * {@inheritDoc}
      */
-    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(
+                final InternalContextAdapter context, 
+                final Writer writer, 
+                final Node node) 
+            throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+        
         if (node.jjtGetNumChildren() != 2 && node.jjtGetNumChildren() != 3) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
@@ -67,11 +72,11 @@ public final class ChopStringDirective extends Directive {
         else {
             final String sub = s.substring(0, length);
             final String lastChar = Character.toString(sub.charAt(sub.length() - 1));
-            if (lastChar.equals("."))
+            if (lastChar.equals(".")){
                 choppedString = sub.substring(0, length) + "..";
-            else if (lastChar.equals(" "))
+            }else if (lastChar.equals(" ")){
                 choppedString = sub.substring(0, length) + " ...";
-            else {
+            }else {
 		        final int lastSpace = sub.lastIndexOf(" ");
 
                 if (lastSpace >= 0) {

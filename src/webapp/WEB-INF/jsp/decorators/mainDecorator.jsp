@@ -341,6 +341,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                                        <c:forEach var="ee" items="${enrichments}" varStatus="i">
                                            <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult <= tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
                                                <c:set var="pageName" value="page.${ee.name}"/>
+                                               <search:velocity template="enrichments/${ee.name}" command="${ee.name}"/>
                                                <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
                                            </c:if>
                                        </c:forEach>

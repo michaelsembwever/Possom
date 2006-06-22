@@ -52,8 +52,8 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             "/search?Client={0}&Database={1}&DateRange={2}&"
             + "FirstResult={3}&Numresults={4}&"
             + "Region={5}&RegionMix={6}&SpellState={7}&"
-            + "QueryEncoding={8}&Fields={9}&Unique={10}&"
-            + "Query={11}";
+            + "QueryEncoding={8}&Fields={9}&Unique={10}&Filter={11}&"
+            + "Query={12}";
     private static final String DATE_PATTERN = "yyyy/MM/dd";
 
     private static final String HEADER_ELEMENT = "HEADER";
@@ -136,6 +136,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     conf.getEncoding(),
                     fields.toString(),
                     conf.getUnique(),
+                    conf.getFilter(),
                     URLEncoder.encode(wrappedTransformedQuery, "UTF-8")
                     );
         } catch (UnsupportedEncodingException ex) {

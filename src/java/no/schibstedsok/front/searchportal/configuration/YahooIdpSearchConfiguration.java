@@ -150,6 +150,27 @@ public final class YahooIdpSearchConfiguration extends AbstractYahooSearchConfig
         this.region = region;
     }
 
+    /**
+     * Holds value of property filter.
+     */
+    private String filter;
+
+    /**
+     * Getter for property filter.
+     * @return Value of property filter.
+     */
+    public String getFilter() {
+        return this.filter;
+    }
+
+    /**
+     * Setter for property filter.
+     * @param filter New value of property filter.
+     */
+    public void setFilter(String filter) {
+        this.filter = filter;
+    }
+
 
 
 }
