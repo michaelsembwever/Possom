@@ -72,7 +72,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final List<Enrichment> enrichments = new ArrayList<Enrichment>();
     private final Map<String,Integer> hits = new HashMap<String,Integer>();
     private final Map<String,Integer> scores = new HashMap<String,Integer>();
-
+    private final Map<String,Integer> scoresByRule = new HashMap<String,Integer>();
 
     /**
      * Create a new Running Query instance.
@@ -202,22 +202,31 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     final AnalysisRule rule = rules.getRule(eHint.getRule());
 
                     if (context.getSearchMode().isQueryAnalysisEnabled() 
-                            && "0".equals(parameters.get("offset")) ) {
+                            && "0".equals(parameters.get("offset"))
+                            && eHint.getWeight() >0) {
 
                         ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
                         LOG.debug("Scoring new style for " + eHint.getRule());
-                        final int score = rule.evaluate(queryObj, tokenEvaluatorFactory);
+                        
+                        int score = 0;
+                        
+                        if( scoresByRule.get(eHint.getRule()) == null ){
+                            score = rule.evaluate(queryObj, tokenEvaluatorFactory);
 
-                        LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
+                            LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
 
-                        if(score != 0){
-                            ANALYSIS_LOG.info("  <score>" + score + "</score>");
+                            if(score != 0){
+                                ANALYSIS_LOG.info("  <score>" + score + "</score>");
+                            }
+                            ANALYSIS_LOG.info(" </analysis>");
+                            
+                        }else{
+                            score = scoresByRule.get(eHint.getRule());
                         }
-                        ANALYSIS_LOG.info(" </analysis>");
+                        
+                        scores.put(config.getName(), score);
 
-                        scores.put(config.getName(), Integer.valueOf(score));
-
-                        if (config.isAlwaysRunEnabled() || (score >= eHint.getThreshold() && eHint.getWeight() >0) ) {
+                        if (config.isAlwaysRunEnabled() || score >= eHint.getThreshold() ) {
                             commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
 
