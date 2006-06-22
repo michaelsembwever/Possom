@@ -153,7 +153,7 @@ public class SyndicationGenerator {
                 entry.setLink(render("entryUri", item));
                 
                 final SyndEnclosure enclosure = new SyndEnclosureImpl();
-                enclosure.setType("image/png");
+                enclosure.setType("image/gif");
                 enclosure.setUrl(render("entryEnclosure", item));
                 
                 final List<SyndEnclosure> enclosures = new ArrayList();
