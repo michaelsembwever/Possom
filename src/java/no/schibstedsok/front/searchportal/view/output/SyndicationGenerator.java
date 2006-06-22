@@ -69,6 +69,7 @@ public class SyndicationGenerator {
     private final String query;
     private final String uri;
     private final Channels channels;
+    private final HttpServletRequest request;
     private String encoding = "UTF-8";
     
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
@@ -91,6 +92,7 @@ public class SyndicationGenerator {
         this.channels = (Channels) request.getAttribute("channels");
         this.query = request.getParameter("q");
         this.uri = request.getRequestURL().append("?").append(request.getQueryString()).toString();
+        this.request = request;
         
         String feedType = request.getParameter("feedtype");
         if (feedType != null) {
@@ -153,7 +155,11 @@ public class SyndicationGenerator {
                 entry.setLink(render("entryUri", item));
                 
                 final SyndEnclosure enclosure = new SyndEnclosureImpl();
-                enclosure.setType("image/gif");
+                if (request.getParameter("c") == "swip") {
+                    enclosure.setType("image/gif");
+                } else {
+                    enclosure.setType("image/png");
+                }
                 enclosure.setUrl(render("entryEnclosure", item));
                 
                 final List<SyndEnclosure> enclosures = new ArrayList();
