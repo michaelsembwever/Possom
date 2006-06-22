@@ -76,14 +76,14 @@ public class WhiteSearchCommand extends FastSearchCommand {
      *
      * An implementation that ignores phrase searches.
      *
-     * Visits only the left clause, unless that clause is a phrase clause, in
-     * which case only the right clause is visited. Phrase searches are not
+     * Visits only the left clause, unless that clause is a phrase or organisation clause, in
+     * which case only the right clause is visited. Phrase and organisation searches are not
      * possible against the white index.
      *
      */
     protected void visitImpl(final XorClause clause) {
 
-       if (clause.getHint() == XorClause.PHRASE_ON_LEFT) {
+       if (clause.getHint() == XorClause.PHRASE_ON_LEFT || clause.getHint() == XorClause.ORGANISATION_NUMBER_ON_LEFT) {
            clause.getSecondClause().accept(this);
        } else {
            clause.getFirstClause().accept(this);
