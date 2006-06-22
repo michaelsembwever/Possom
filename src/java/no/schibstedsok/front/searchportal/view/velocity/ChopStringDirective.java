@@ -3,10 +3,13 @@ package no.schibstedsok.front.searchportal.view.velocity;
 import java.io.IOException;
 
 import java.io.Writer;
+import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import no.schibstedsok.front.searchportal.result.StringChopper;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -27,10 +30,13 @@ import org.apache.velocity.runtime.parser.node.Node;
  *
  *
  * @author thomas
+ * @version $Id$
  */
 public final class ChopStringDirective extends Directive {
 
-    private static transient Log log = LogFactory.getLog(ChopStringDirective.class);
+    private static final Logger LOG = Logger.getLogger(ChopStringDirective.class);
+    
+    
 
     private static final String NAME = "chopString";
 
@@ -65,41 +71,21 @@ public final class ChopStringDirective extends Directive {
         final String s = node.jjtGetChild(0).value(context).toString();
         final int length = Integer.parseInt(node.jjtGetChild(1).value(context).toString());
 
-
-        String choppedString = "";
-        if (s.length() <= length)
-            choppedString = s;
-        else {
-            final String sub = s.substring(0, length);
-            final String lastChar = Character.toString(sub.charAt(sub.length() - 1));
-            if (lastChar.equals(".")){
-                choppedString = sub.substring(0, length) + "..";
-            }else if (lastChar.equals(" ")){
-                choppedString = sub.substring(0, length) + " ...";
-            }else {
-		        final int lastSpace = sub.lastIndexOf(" ");
-
-                if (lastSpace >= 0) {
-                    choppedString = sub.substring(0, sub.lastIndexOf(" ")) + " ...";
-                } else {
-                    choppedString = sub.substring(0, length) + "...";
-                }
-	        }
-        }
-
+        String chopped = StringChopper.chop(s, length);
+        
         if (node.jjtGetNumChildren() > 2) {
-            String htmlescape = node.jjtGetChild(2).value(context).toString();
-            if (htmlescape.equals("esc"))
-                writer.write(StringEscapeUtils.escapeHtml(choppedString));
-            else
-                writer.write(choppedString);
-        } else
-            writer.write(choppedString);
-
+            final String htmlescape = node.jjtGetChild(2).value(context).toString();
+            if (htmlescape.equals("esc")){
+                chopped = StringEscapeUtils.escapeHtml(chopped);
+            }
+        }
+        
+        writer.write(chopped);
+        
         final Token lastToken = node.getLastToken();
 
         if (lastToken.image.endsWith("\n")) {
-            writer.write("\n");
+            writer.write('\n');
         }
 
         return true;

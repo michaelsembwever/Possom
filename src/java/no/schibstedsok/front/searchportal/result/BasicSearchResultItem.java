@@ -50,10 +50,7 @@ public class BasicSearchResultItem implements SearchResultItem {
             if (fieldValue.equals("  ")) {
                 return null;
             } else {
-                if (fieldValue.length() > maxLength) {
-                    return fieldValue.substring(0, maxLength - 2 - 1) + "...";
-                } else {
-                }
+                return StringChopper.chop(fieldValue, maxLength);
             }
         }
         return fieldValue;
