@@ -50,7 +50,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     public static String VERYFAST_EVALUATOR_XMLFILE = "VeryFastEvaluators.xml";
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
     private static final String REAL_TOKEN_SUFFIX = "QM";
-    private static final String EXACT_PREFIX = "EXACT_";
+    private static final String EXACT_PREFIX = "exact_";
     private static final String CGI_PATH = "/cgi-bin/xsearch?sources=alone&qtpipeline=lookupword&query=";
     private static final String ERR_FAILED_TO_ENCODE = "Failed to encode query string: ";
 
