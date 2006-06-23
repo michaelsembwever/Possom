@@ -75,29 +75,31 @@ public class NewsSearchCommand extends FastSearchCommand {
         synchronized (this) {
             if (filterBuilder == null) {
                 filterBuilder = new StringBuilder(super.getAdditionalFilter());
-            }
 
-            // Add filter to retrieve all documents.
-            if (containsJustThePrefix()) {
-                filterBuilder.append(FAST_SIZE_HACK);
-            }
-
-            if (!getFastConfiguration().isIgnoreNavigationEnabled()) {
-
-                final String contentSource = getParameter("contentsource");
-                final String newsCountry = getParameter("newscountry");
-
-                // AAhhrghh. Need to provide backwards compatibility.
-                // People are linking us using contentsource="Norske nyheter"
-                if (contentSource != null && !contentSource.equals("")) {
-                    if (contentSource.equals("Norske nyheter")) {
-                        filterBuilder.append(" +newscountry:Norge");
-                    } else {
-                        filterBuilder.append(" +contentsource:"+ contentSource);
-                    }
+                // Add filter to retrieve all documents.
+                if (containsJustThePrefix() || getTransformedQuery().equals("")) {
+                    filterBuilder.append(FAST_SIZE_HACK);
                 }
-                if (newsCountry != null && !newsCountry.equals("")) {
-                    filterBuilder.append(" +newscountry:"+ newsCountry);
+                
+                
+
+                if (!getFastConfiguration().isIgnoreNavigationEnabled()) {
+
+                    final String contentSource = getParameter("contentsource");
+                    final String newsCountry = getParameter("newscountry");
+
+                    // AAhhrghh. Need to provide backwards compatibility.
+                    // People are linking us using contentsource="Norske nyheter"
+                    if (contentSource != null && !contentSource.equals("")) {
+                        if (contentSource.equals("Norske nyheter")) {
+                            filterBuilder.append(" +newscountry:Norge");
+                        } else {
+                            filterBuilder.append(" +contentsource:"+ contentSource);
+                        }
+                    }
+                    if (newsCountry != null && !newsCountry.equals("")) {
+                        filterBuilder.append(" +newscountry:"+ newsCountry);
+                    }
                 }
             }
         }
