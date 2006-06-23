@@ -124,7 +124,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                     cxt
                 ));
         }
-        Chop
+
         final Site site = cxt.getSite();
         if(LIST_NAMES.get(site) == null){
             // create map entry for this site
