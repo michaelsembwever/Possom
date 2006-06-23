@@ -70,10 +70,10 @@ public final class StringChopper {
             LOG.trace("matched " + matcher.group());
             if( closeTag.matcher(matcher.group()).find() ){
                 LOG.trace("removing");
-                tags.removeLast();
+                tags.removeFirst();
             }else if( !singleTag.matcher(matcher.group()).find() ){
                 LOG.trace("adding");
-                tags.addLast(matcher.group());
+                tags.addFirst(matcher.group());
             }
         }
         
