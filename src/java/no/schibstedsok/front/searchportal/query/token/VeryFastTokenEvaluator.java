@@ -51,6 +51,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
     private static final String ERR_FAILED_INITIALISATION = "Failed reading configuration files";
+    private static final String DEBUG_LISTNAME_FOUND_1 = "List for ";
+    private static final String DEBUG_LISTNAME_FOUND_2 = " is ";
 
     public static String VERYFAST_EVALUATOR_XMLFILE = "VeryFastEvaluators.xml";
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
@@ -122,39 +124,41 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                     cxt
                 ));
         }
-        // initialise this site's configuration
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        final DocumentBuilder builder = factory.newDocumentBuilder();
-        final DocumentLoader loader = cxt.newDocumentLoader(VERYFAST_EVALUATOR_XMLFILE, builder);
-        // create map entry for this site
+        
         final Site site = cxt.getSite();
         if(LIST_NAMES.get(site) == null){
+            // create map entry for this site
+            
             LIST_NAMES.put(site, new HashMap<TokenPredicate,String>());
-        }
         
-        loader.abut();
-        LOG.debug("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
-        final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);
-        final Document doc = loader.getDocument();
-        final Element root = doc.getDocumentElement();
-        final NodeList lists = root.getElementsByTagName("list");
-        for (int i = 0; i < lists.getLength(); ++i) {
+            // initialise this site's configuration
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(false);
+            final DocumentBuilder builder = factory.newDocumentBuilder();
+            final DocumentLoader loader = cxt.newDocumentLoader(VERYFAST_EVALUATOR_XMLFILE, builder);
+            loader.abut();
+            LOG.debug("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
+            final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);
+            final Document doc = loader.getDocument();
+            final Element root = doc.getDocumentElement();
+            final NodeList lists = root.getElementsByTagName("list");
+            for (int i = 0; i < lists.getLength(); ++i) {
 
-            final Element list = (Element) lists.item(i);
+                final Element list = (Element) lists.item(i);
 
-            final String tokenName = list.getAttribute("token");
-            LOG.debug(" ->list@token: " + tokenName);
+                final String tokenName = list.getAttribute("token");
+                LOG.debug(" ->list@token: " + tokenName);
 
-            final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+                final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
-            final String listName = list.getAttribute("list-name");
-            LOG.debug(" ->list: " + listName);
+                final String listName = list.getAttribute("list-name");
+                LOG.debug(" ->list: " + listName);
 
-            listNames.put(token, listName);
+                listNames.put(token, listName);
 
+            }
+            LOG.debug("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
         }
-        LOG.debug("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
     }
 
     /**

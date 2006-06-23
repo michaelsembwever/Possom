@@ -34,6 +34,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
     private static final Logger LOG = Logger.getLogger(HittaSearchCommand.class);
     private static final String DEBUG_CONF_NFO = "Conf details --> ";
+    private static final String DEBUG_SEARCHING = "Searching for ";
 
     // Attributes ----------------------------------------------------
 
@@ -65,12 +66,15 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         try {
             final HittaServiceLocator locator = new HittaServiceLocator();
             final HittaServiceSoap service = locator.getHittaServiceSoap();
+            
+            final String transformedQuery = getTransformedQuery();
+            LOG.debug(DEBUG_SEARCHING + transformedQuery);
 
             if(conf.getCatalog().equalsIgnoreCase("white")){
-                hits = service.getWhiteAmount(getTransformedQuery(), "", conf.getKey())
+                hits = service.getWhiteAmount(transformedQuery, "", conf.getKey())
                         ;//+ service.getWhiteAmount("", getTransformedQuery(), conf.getKey());
             }else if(conf.getCatalog().equalsIgnoreCase("pink")){
-                hits = service.getPinkAmount(getTransformedQuery(), "", conf.getKey())
+                hits = service.getPinkAmount(transformedQuery, "", conf.getKey())
                         ;//+ service.getPinkAmount("", getTransformedQuery(), conf.getKey());
             }
 
