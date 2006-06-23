@@ -64,7 +64,8 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
         final TokenEvaluatorFactory predicate2evaluatorFactory) {
 
         // remove all embedded whitespace
-        final String t = term.replaceAll(" ","").replaceFirst("^(\\+|00)?47","");
+        String t = term.replaceAll(" ","");
+        t = t.length() > 8 ? t.replaceFirst("^(\\+|00)?47","") : t;
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
         // the weakCache to use.
