@@ -170,6 +170,7 @@ public final class VelocityResultHandler implements ResultHandler {
                     response.getWriter().write(w.toString());
 
                 } catch (MethodInvocationException ex) {
+                    LOG.error("Exception for reference: " + ex.getReferenceName());
                     throw new InfrastructureException(ex);
 
                 } catch (ResourceNotFoundException ex) {
