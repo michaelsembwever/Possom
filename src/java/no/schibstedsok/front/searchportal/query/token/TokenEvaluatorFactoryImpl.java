@@ -165,14 +165,10 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         public void run() {
             final String host = getProperties().getProperty("tokenevaluator.host");
             final int port = Integer.parseInt(getProperties().getProperty("tokenevaluator.port"));
-            try {
 
-                fastEvaluator = new VeryFastTokenEvaluator(
-                        HTTPClient.instance("token_evaluator", host, port),
-                        ContextWrapper.wrap(VeryFastTokenEvaluator.Context.class, context));
-            } catch (ParserConfigurationException ex) {
-                LOG.error(ERR_FAILED_CREATING_EVAL, ex);
-            }
+            fastEvaluator = new VeryFastTokenEvaluator(
+                    HTTPClient.instance("token_evaluator", host, port),
+                    ContextWrapper.wrap(VeryFastTokenEvaluator.Context.class, context));
         }
         
     }

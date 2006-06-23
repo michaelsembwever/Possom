@@ -24,6 +24,7 @@ public enum TokenPredicate implements Predicate {
     //  full list can be found at sch-login01.osl.basefarm.net:/www/schibstedsok/home/ssmojaco/analyselister
     // TODO make ExactFast tokens a separate Type referencing the original Fast token.
     ANIMAL (Type.FAST),
+    BADE (Type.FAST),
     CATEGORY (Type.FAST),
     CELEBRITY (Type.FAST),
     CHAIN (Type.FAST),
