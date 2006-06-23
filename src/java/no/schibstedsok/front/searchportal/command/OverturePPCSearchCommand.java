@@ -87,8 +87,11 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                     final BasicSearchResultItem item = createItem(listing);
                     searchResult.addResult(item);
                 }
-                searchResult.setHitCount(Integer.parseInt(
-                        ((Element)elem.getElementsByTagName("ResultSet").item(0)).getAttribute("numResults")));
+                final NodeList resultSetList = elem.getElementsByTagName("ResultSet");
+                if( resultSetList.getLength()>0 ){
+                    searchResult.setHitCount(Integer.parseInt(
+                            ((Element)resultSetList.item(0)).getAttribute("numResults")));
+                }
             }
             
             return searchResult;
