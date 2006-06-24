@@ -36,6 +36,7 @@ public final class Site {
 
     /** Found from the configuration.properties resource found in this class's ClassLoader. **/
     private static final String DEFAULT_SITE_KEY = "site.default";
+    private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
     public static final String NAME_KEY = "site";
 
     /**
@@ -168,6 +169,7 @@ public final class Site {
 
     // should never used except in catastrophe.
     private static final String SITE_DEFAULT_FALLBACK = "sesam.no";
+    private static final String SITE_DEFAULT_LOCALE_FALLBACK = "no";
 
     static {
 
@@ -178,8 +180,9 @@ public final class Site {
             LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
         }
         final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, SITE_DEFAULT_FALLBACK);
+        final String defaultSiteLocaleName = props.getProperty(DEFAULT_SITE_LOCALE_KEY, SITE_DEFAULT_LOCALE_FALLBACK);
 
-        DEFAULT = new Site(defaultSiteName, Locale.getDefault());
+        DEFAULT = new Site(defaultSiteName, new Locale(defaultSiteLocaleName));
     }
 
     /** the default SiteSearch. For example: "sesam.no" or "localhost:8080".
