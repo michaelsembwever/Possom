@@ -67,22 +67,18 @@ public final class StringChopper {
         
         final Matcher matcher = openTag.matcher(choppedString);
         while( matcher.find() ){
-            LOG.trace("matched " + matcher.group());
             if( closeTag.matcher(matcher.group()).find() ){
-                LOG.trace("removing");
                 tags.removeFirst();
             }else if( !singleTag.matcher(matcher.group()).find() ){
-                LOG.trace("adding");
                 tags.addFirst(matcher.group());
             }
         }
         
         for(String tag : tags){
-            LOG.trace("restoring " + tag);
             choppedString.append(tag.replaceFirst("<","</"));
         }
         
-        LOG.debug(DEBUG_CHOPSUEY + choppedString);
+        LOG.trace(DEBUG_CHOPSUEY + choppedString);
         
         return choppedString.toString();
     }
