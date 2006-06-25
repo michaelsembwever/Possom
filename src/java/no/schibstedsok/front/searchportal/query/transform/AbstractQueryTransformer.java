@@ -17,7 +17,7 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
     private static final Logger LOG = Logger.getLogger(AbstractQueryTransformer.class);
 
     private static final String INFO_OLD_IMPLEMENTATION_STILL
-            = "QueryTransformer has not been adapted to Visitor pattern -> ";
+            = " has not been adapted to Visitor pattern";
 
     private Context context;
     
@@ -47,7 +47,7 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
     }
 
     protected void visitImpl(final Object clause) {
-        LOG.info(INFO_OLD_IMPLEMENTATION_STILL + getClass().getName());
+        LOG.info( getClass().getSimpleName() + INFO_OLD_IMPLEMENTATION_STILL);
     }
 
     public Object clone() throws CloneNotSupportedException {

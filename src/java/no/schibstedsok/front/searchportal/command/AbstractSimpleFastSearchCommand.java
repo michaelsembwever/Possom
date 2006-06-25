@@ -8,6 +8,7 @@
 
 package no.schibstedsok.front.searchportal.command;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +35,7 @@ import no.fast.ds.search.IQueryTransformations;
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.NoSuchParameterException;
 import no.fast.ds.search.Query;
+import no.fast.ds.search.SearchEngineException;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.front.searchportal.InfrastructureException;
@@ -68,16 +70,24 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
-
+    private static final String ERR_FAST_FAILURE = " suffered from a FAST error ";
+    private static final String ERR_EXECUTE_FAILURE = "execute() failed";
+    private static final String INFO_CONSTRUCTED_QUERY = "Constructed ";
     private static final String DEBUG_FAST_SEARCH_ENGINE ="Creating Fast Engine to ";
+    private static final String DEBUG_QUERY_DUMP = "QUERY DUMP: ";
+    private static final String DEBUG_EXECUTE_QR_URL = "execute() QueryServerURL=";
+    private static final String DEBUG_EXECUTE_COLLECTIONS = "execute() Collections=";
+    private static final String DEBUG_EXECUTE_QUERY = "execute() Query=";
+    private static final String DEBUG_EXECUTE_FILTER = "execute() Filter="; 
+    private static final String DEBUG_PARAM_NOT_FOUND = "Param not found ";
 
     // Attributes ----------------------------------------------------
-    private Map<String,FastNavigator> navigatedTo = new HashMap<String,FastNavigator>();
-    private Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
+    private final Map<String,FastNavigator> navigatedTo = new HashMap<String,FastNavigator>();
+    private final Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
 
     // Static --------------------------------------------------------
-    private static HashMap searchEngines = new HashMap();
-    private static IFastSearchEngineFactory engineFactory;
+    private static final HashMap searchEngines = new HashMap();
+    private static transient IFastSearchEngineFactory engineFactory;
 
     static {
         try {
@@ -131,7 +141,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return otherNavigators;
     }
 
-    public void setSearchEngineFactory(final IFastSearchEngineFactory factory) {
+    public static void setSearchEngineFactory(final IFastSearchEngineFactory factory) {
         engineFactory = factory;
     }
 
@@ -309,68 +319,40 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         try {
             if (getNavigators() != null) {
-                for (final Iterator iterator = getNavigators().keySet().iterator(); iterator.hasNext();) {
+                for (String navigatorKey : getNavigators().keySet()) {
 
-                    final String navigatorKey = (String) iterator.next();
-
-                    if (getParameters().containsKey("nav_" + navigatorKey)) {
-                        final String navigatedTo = getParameter("nav_" + navigatorKey);
-                        addNavigatedTo(navigatorKey, navigatedTo);
-                    } else {
-                        addNavigatedTo(navigatorKey, null);
-                    }
+                    addNavigatedTo(navigatorKey, getParameters().containsKey("nav_" + navigatorKey)
+                            ? getParameter("nav_" + navigatorKey)
+                            : null);
                 }
             }
 
-            final long start = System.currentTimeMillis();
             final IFastSearchEngine engine = getSearchEngine();
             final IQuery fastQuery = createQuery();
 
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(getSearchConfiguration().getName() + " call: " + fastQuery);
-            }
-
             IQueryResult result = null;
             try {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("engine.search()");
-                    LOG.debug("execute().configuration: QueryServerURL=" + getFastConfiguration().getQueryServerURL());
-                    LOG.debug("execute().configuration: Collections=" + getFastConfiguration().getCollections());
-                    LOG.debug("execute().configuration: Name=" + getFastConfiguration().getName());
-                    LOG.debug("execute().configuration: Query=" + fastQuery.getQueryString());
-                    LOG.debug("execute().configuration: Filter=" + getFastConfiguration().getCollectionFilterString());
-
-                }
+                
+                LOG.debug(DEBUG_EXECUTE_QR_URL + getFastConfiguration().getQueryServerURL());
+                LOG.debug(DEBUG_EXECUTE_COLLECTIONS + getFastConfiguration().getCollections());
+                LOG.debug(DEBUG_EXECUTE_QUERY + fastQuery.getQueryString());
+                LOG.debug(DEBUG_EXECUTE_FILTER + getFastConfiguration().getCollectionFilterString());
 
                 result = engine.search(fastQuery);
 
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("Hits is " + getFastConfiguration().getName() + ":" + result.getDocCount());
-                }
-            } catch (Exception fastException) {
-                LOG.error("An error occured in FAST code " + fastException.getClass().getName());
-                LOG.error("Configuration is " + getFastConfiguration().getName());
+            } catch (IOException ioe) {
+                LOG.error(getFastConfiguration().getName() + ERR_FAST_FAILURE, ioe);
+                return new FastSearchResult(this);
+            } catch (SearchEngineException fastException) {
+                LOG.error(
+                        getFastConfiguration().getName() + ERR_FAST_FAILURE + '[' + fastException.getErrorCode() + ']', 
+                        fastException);
                 return new FastSearchResult(this);
             }
 
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("QUERY DUMPT: " + fastQuery);
-                String filter = null;
-                String query = null;
-
-                try {
-                    filter = fastQuery.getStringParameter("filter");
-                    query = fastQuery.getStringParameter(BaseParameter.QUERY);
-                } catch (NoSuchParameterException e) {
-
-                }
-                LOG.debug("execute:  Filter: " + filter
-                        + " , query=" + query
-                        + ", doc.count= "
-                        + result.getDocCount());
-            }
+            LOG.info(DEBUG_QUERY_DUMP + fastQuery);
+            
             final FastSearchResult searchResult = collectResults(result);
 
             if (getFastConfiguration().isSpellcheckEnabled()) {
@@ -380,29 +362,21 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             if (getFastConfiguration().isRelevantQueriesEnabled() && !getParameters().containsKey("qs")) {
                 collectRelevantQueries(result, searchResult);
-
             }
 
 
             if (getNavigators() != null) {
-
                 collectModifiers(result, searchResult);
-            }
-
-            final long stop = System.currentTimeMillis();
-
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(getFastConfiguration().getName() + " Retrieved all wanted results in " + (stop - start) + "ms");
             }
 
             return searchResult;
 
         } catch (ConfigurationException e) {
-            LOG.error("execute", e);
+            LOG.error(ERR_EXECUTE_FAILURE, e);
             throw new InfrastructureException(e);
 
         } catch (MalformedURLException e) {
-            LOG.error("execute", e);
+            LOG.error(ERR_EXECUTE_FAILURE, e);
             throw new InfrastructureException(e);
         }
     }
@@ -734,7 +708,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         IQuery query = new Query(params);
 
-        LOG.debug("Constructed query: " + query);
+        LOG.info(INFO_CONSTRUCTED_QUERY + query);
 
         return query;
     }

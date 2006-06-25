@@ -29,7 +29,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
-/**
+/** Imports (and merges) a velocity template from a site-config into the jsp. 
  *
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $ID$
@@ -90,7 +90,6 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
                 for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames(); e.hasMoreElements();) {
                     final String attrName = e.nextElement();
                     context.put(attrName, cxt.getRequest().getAttribute(attrName));
-                    LOG.debug("Added to context " + attrName + ", value: " + cxt.getRequest().getAttribute(attrName));
                 }
 
                 // populate modifiers

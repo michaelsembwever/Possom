@@ -294,7 +294,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final SearchResult performExecution(final String queryToUse){
 
         StopWatch watch = null;
-        if (LOG.isDebugEnabled()) {
+        if (LOG.isInfoEnabled()) {
             watch = new StopWatch();
             watch.start();
         }
@@ -320,14 +320,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         + "</search-name>"
                         + "<hits>" + result.getHitCount() + "</hits>"
                     + "</search-command>");
-            LOG.debug("Hits is " + getSearchConfiguration().getName() + ":" + result.getHitCount());
+            LOG.info("Hits is " + getSearchConfiguration().getName() + ':' + result.getHitCount());
 
             return result;
 
         }finally{
-            if (LOG.isDebugEnabled()) {
+            if (LOG.isInfoEnabled()) {
                 watch.stop();
-                LOG.debug("Search " + getSearchConfiguration().getName() + " took " + watch);
+                LOG.info("Search " + getSearchConfiguration().getName() + " took " + watch);
             }
         }
     }
@@ -439,6 +439,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param transformers
      */
     private void applyQueryTransformers(final Query query, final List<QueryTransformer> transformers) {
+        
         if (transformers != null && transformers.size() > 0) {
             boolean touchedTransformedQuery = false;
 
@@ -488,10 +489,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 filterBuilder.append(f == null ? "" : f);
                 filterBuilder.append(' ');
 		
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug("applyQueryTransformers: TransformedQuery=" + transformedQuery);
-                    LOG.debug("applyQueryTransformers: Filter=" + filter);
-                }
+                LOG.debug( transformer.getClass().getSimpleName() + "--> TransformedQuery=" + transformedQuery);
+                LOG.debug( transformer.getClass().getSimpleName() + "--> Filter=" + filter);
             }
             // avoid the trailing space.
             filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)).trim();

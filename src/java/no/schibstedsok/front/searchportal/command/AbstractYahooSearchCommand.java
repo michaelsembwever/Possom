@@ -75,7 +75,7 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
     protected final Document getXmlResult() throws IOException, SAXException {
 
         final String url = createRequestURL();
-        LOG.debug("Using URL " + url);
+        LOG.info("Using " + url);
         return client.getXmlDocument(context.getSearchConfiguration().getName(), url);
     }
 

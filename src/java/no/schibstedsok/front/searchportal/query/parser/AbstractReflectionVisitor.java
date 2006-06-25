@@ -148,7 +148,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 // [RECURSION] Look for super interfaces
                 method = getMethodFromInterface(interfaces[i]);
             }  else  {
-                LOG.debug("Found <" + method + ">");
+                LOG.debug("Found method accepting <" + interfaces[i].getSimpleName() + ">");
             }
         }
 

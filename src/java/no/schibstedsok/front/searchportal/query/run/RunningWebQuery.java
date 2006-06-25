@@ -9,9 +9,8 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringEscapeUtils;
-
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 /*
  * @version <tt>$Revision$</tt>
@@ -19,7 +18,7 @@ import org.apache.commons.logging.Log;
  */
 public final class RunningWebQuery extends RunningQueryImpl {
 
-    private static final Log LOG = LogFactory.getLog(RunningWebQuery.class);
+    private static final Logger LOG = Logger.getLogger(RunningWebQuery.class);
     
     private final HttpServletRequest request;
     private final HttpServletResponse response;
@@ -39,7 +38,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
         super(cxt, query, new Hashtable<String,Object>());
 
-        LOG.trace("RunningWebQuery(mode, query, request, response)");
+        LOG.trace("RunningWebQuery(mode, " + query + ", request, response)");
 
         // Add all request parameters
         for (String parameterName : (Set<String>)request.getParameterMap().keySet()) {
@@ -47,13 +46,8 @@ public final class RunningWebQuery extends RunningQueryImpl {
             final String[] parameterValues = request.getParameterValues(parameterName);
             addParameter(parameterName, parameterValues.length>1 ? parameterValues : parameterValues[0]);
 
-            if (LOG.isDebugEnabled()) {
-                final StringBuilder buff = new StringBuilder();
-
-                for (String s : parameterValues) {
-                    buff.append(s + ", ");
-                }
-                LOG.debug("Added " + parameterName + ", values: " + buff);
+            if (LOG.isInfoEnabled()) {
+                LOG.info("Added " + parameterName + ", values: " + StringUtils.join(parameterValues, ", "));
             }
         }
         
@@ -65,7 +59,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
             //  any attribute that overlaps a parameter's name won't be added!!
             if( !parameters.containsKey(attrName) ){
                 addParameter(attrName, request.getAttribute(attrName));
-                LOG.debug("Added " + attrName + ", value: " + request.getAttribute(attrName));
+                LOG.info("Added " + attrName + ", value: " + request.getAttribute(attrName));
             }
         }
         

@@ -63,7 +63,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
                 + "&q=" + query
                 + "&start=" + getCurrentOffset(0);
 
-        LOG.debug("Using url " + url);
+        LOG.info("Using " + url);
 
         final Document doc = doSearch(url);
 

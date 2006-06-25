@@ -61,6 +61,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_RUN_QUERY = "Failure to run query";
     private static final String ERR_EXECUTION_ERROR = "Failure on a search command: ";
+    private static final String INFO_COMMAND_COUNT = "Commands to invoke ";
 
     private final AnalysisRuleFactory rules;
     private final String queryStr;
@@ -206,14 +207,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             && eHint.getWeight() >0) {
 
                         ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
-                        LOG.debug("Scoring new style for " + eHint.getRule());
                         
                         int score = 0;
                         
                         if( scoresByRule.get(eHint.getRule()) == null ){
                             score = rule.evaluate(queryObj, tokenEvaluatorFactory);
 
-                            LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
+                            LOG.info("Score for " + searchConfiguration.getName() + " is " + score);
 
                             if(score != 0){
                                 ANALYSIS_LOG.info("  <score>" + score + "</score>");
@@ -242,7 +242,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             ANALYSIS_LOG.info("</analyse>");
 
-            LOG.debug("run(): InvokeAll Commands.size=" + commands.size());
+            LOG.info(INFO_COMMAND_COUNT + commands.size());
 
             final List<Future<SearchResult>> results = context.getSearchMode().getExecutor().invokeAll(commands,
                     Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) ?  10000 :  Integer.MAX_VALUE);
