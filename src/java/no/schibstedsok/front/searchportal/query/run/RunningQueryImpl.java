@@ -161,7 +161,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     /**
-     * Thread run
+     * Thread run. Guts of the logic behind this class.
      *
      * @throws InterruptedException
      */
@@ -211,7 +211,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         int score = 0;
                         
                         if( scoresByRule.get(eHint.getRule()) == null ){
+                            
                             score = rule.evaluate(queryObj, tokenEvaluatorFactory);
+                            scoresByRule.put(eHint.getRule(), score);
 
                             LOG.info("Score for " + searchConfiguration.getName() + " is " + score);
 
