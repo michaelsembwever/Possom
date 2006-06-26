@@ -215,7 +215,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                             <td class="nav_pad_icon">
                                 <img src='<c:out value="../images/menu/${hint.image}"/>' class="nav_icon" align="left" alt="" />
                                 <a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>'
-                                    onclick="return strep(this);"><c:out value="${hint.name}"/></a>
+                                    onclick="return strep(this);"><c:out value="${hint.displayName}"/></a>
                             </td>
                             <td class="nav_pad"><search:text key="numberFormat" args="${e.count}"/></td>
                         </tr>

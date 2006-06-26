@@ -223,9 +223,9 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 LOG.info(INFO_PARSING_NAVIGATION + navId);
                 final String name = msgs.getMessage(MSG_NAV_PREFIX + navId);
 
-                final String displayName = msgs.hasMessage(MSG_DISPLAY_NAV_PREFIX + navId) ? 
-                    msgs.getMessage(MSG_DISPLAY_NAV_PREFIX + navId) : 
-                    MISSING_NAV + MSG_DISPLAY_NAV_PREFIX + navId;
+                final String displayName = msgs.hasMessage(MSG_DISPLAY_NAV_PREFIX + navId)
+                    ? msgs.getMessage(MSG_DISPLAY_NAV_PREFIX + navId)
+                    : name;
                 
                 LOG.info(INFO_PARSING_NAVIGATION + name);
                 final SearchTab.NavigatorHint.MatchType match
