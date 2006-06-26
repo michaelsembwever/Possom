@@ -128,7 +128,7 @@ public class AccountingDirective extends Directive {
                 break;
         }
         html += "</table>";
-        html += "<div id=\"lindorff\">* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.<br />* Alle tall i hele 1000 kroner.</div>";
+        html += "<div id=\"lindorff\">* Alle tall i hele 1000 kroner.<br />* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.</div>";
         html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"" + lpUrl + "\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
 
         writer.write(html);
