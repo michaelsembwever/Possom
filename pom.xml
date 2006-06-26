@@ -171,6 +171,7 @@
                 </executions>
                 <configuration>
                     <sourceDirectory>${basedir}/src/javacc</sourceDirectory>
+                    <packageName>no.schibstedsok.front.searchportal.query.parser</packageName>
                 </configuration>
             </plugin>
             <plugin>
