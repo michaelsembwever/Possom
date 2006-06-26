@@ -308,8 +308,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         YAHOO_IDP_COMMAND(YahooIdpSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
         WEB_COMMAND(WebSearchConfiguration.class),
-        WHITEPAGES_COMMAND(WhiteSearchConfiguration.class);
-
+        WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
+        DAILY_WORD_COMMAND(DailyWordConfiguration.class);
+        
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;

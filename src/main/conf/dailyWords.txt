@@ -1,0 +1,41 @@
+2006-06-26;magnus;0001
+2006-06-28;test magnus1 åæø;0001
+2006-06-29;test magnus2 åæø;0002
+2006-06-30;test magnus3 åæø;0003
+2006-07-03;tivoli songbook;2129
+2006-07-04;quartfestivalen;2131
+2006-07-05;kristiansand;8969
+2006-07-06;maria mena;8971
+2006-07-07;ronaldinho;8191
+2006-07-10;fotball-vm;0127
+2006-07-11;agurknytt;1066
+2006-07-12;kongeparken;9041
+2006-07-13;sjøvett;9043
+2006-07-14;stavernfestivalen;3299
+2006-07-17;sting Bergen;4271
+2006-07-18;moldejazz;7211
+2006-07-19;røros;4852
+2006-07-20;slottsfjellfestivalen;3371
+2006-07-21;oppskrift sommermat;6779
+2006-07-24;oppskrift barkebrød;9857
+2006-07-25;nyheter idol;6947
+2006-07-26;26. juli;9857
+2006-07-27;nordkapp;9929
+2006-07-28;tusenfryd;3141
+2006-07-31;norway cup;1345
+2006-08-01;oppskrift hjemmelaget is;5926
+2006-08-02;halden;4003
+2006-08-03;notodden bluesfestival;4001
+2006-08-04;trebåtfestival:0991
+2006-08-07;madonna;0859
+2006-08-08;04400;1089
+2006-08-09;øyafestivalen;7211
+2006-08-10;hammerfest;2748
+2006-08-11;oppskrift agurksuppe;5200
+2006-08-14;mira craig;8924
+2006-08-15;fakta p4;1024
+2006-08-16;nyheter;2048
+2006-08-17;grilltips;8096
+2006-08-18;madrugada;1640
+
+
