@@ -61,12 +61,6 @@ public final class RemovePrefixDirective extends Directive {
             return false;
         }
 
-        /* TODO: Remove this when NRK fix their special character bug or we are no longer linking to NRK search */
-        boolean nrkFix = false;
-        if (node.jjtGetNumChildren() == 4) {
-            nrkFix = node.jjtGetChild(3).value(context).toString().equals("true");
-        }
-        
         /* Encoding from Sesam is always UTF-8 */
         final String s = URLDecoder.decode(node.jjtGetChild(0).value(context).toString(),"UTF-8");
         final String prefix = node.jjtGetChild(1).value(context).toString();
@@ -78,11 +72,6 @@ public final class RemovePrefixDirective extends Directive {
         if (s.toLowerCase().startsWith(prefix)) {
             returnString = s.substring(prefix.length());
             returnString = returnString.trim();
-        }
-        
-        /* TODO: to be removed when above todo is done */
-        if (nrkFix) {
-            returnString = returnString.replaceAll("[&*?<>]", " ");
         }
         
         if ("html".equals(encoding)) {
