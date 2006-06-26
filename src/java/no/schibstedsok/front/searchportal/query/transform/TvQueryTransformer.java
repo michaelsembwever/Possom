@@ -59,7 +59,7 @@ public final class TvQueryTransformer extends AbstractQueryTransformer {
            filter.append("$ ");
         }
 
-        filter.append("+tvendtime:>");
+        filter.append("+starttime:>");
         filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(new Date()));
         
         return filter.toString();
