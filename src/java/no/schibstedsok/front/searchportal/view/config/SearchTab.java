@@ -442,6 +442,14 @@ public final class SearchTab {
 
         private final String id;
         /**
+         * Getter for property id
+         * @return Value of property id.
+         */
+        public String getId() {
+            return id;
+        }
+   
+        /**
          * Holds value of property tabName.
          */
         private final String tabName;
