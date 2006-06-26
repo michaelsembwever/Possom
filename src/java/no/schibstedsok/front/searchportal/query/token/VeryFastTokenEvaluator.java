@@ -263,7 +263,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     }
 
     public boolean isQueryDependant(final TokenPredicate predicate) {
-        return predicate.name().startsWith(EXACT_PREFIX);
+        return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
     }
 
     private void addMatch(final String name, final String match, final String query) {
