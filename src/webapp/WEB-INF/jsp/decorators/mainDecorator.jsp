@@ -54,11 +54,11 @@ final int no_hits = dHits!= null&&dHits > 0 ? dHits.intValue() : gHits!= null&&g
 
 /* TODO: add tvSearch hits */
 /*    final Integer tHits = (Integer) query.getNumberOfHits("tvSearch");
-    final int no_hits = dHits != null && dHits > 0 
-            ? dHits.intValue() 
-            : gHits != null && gHits > 0 ? gHits.intValue() : 
+    final int no_hits = dHits != null && dHits > 0
+            ? dHits.intValue()
+            : gHits != null && gHits > 0 ? gHits.intValue() :
             tHits != null && tHits > 0 ? tHits.intValue() : 0;
-*/  
+*/
 
 pageContext.setAttribute("no_hits", no_hits);
 
@@ -84,7 +84,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <c:forEach var="t" items="${tab.ancestry}">
         <link media="screen" href="../css/<c:out value='${startTime}'/>/tab/<c:out value='${t.id}'/>.css" rel="stylesheet" type="text/css" />
     </c:forEach>
-  
+
     <link media="print" href="../css/<c:out value='${startTime}'/>/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
@@ -200,7 +200,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 	<%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
         <td class="cell_one" valign="top">
-        
+
             <table border="0" cellspacing="0" cellpadding="0" class="menu">
                 <c:set var="rows" value="${0}"/>
                 <c:forEach var="e" items="${sources}">
@@ -222,9 +222,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     </c:if>
                 </c:forEach>
             </table>
-                
+
             <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
-                
+
                 <decorator:getProperty property="page.companies-nav"/>
             <%}else if (currentC.equals("w") || currentC.equals("wip") || currentC.equals("wipgift")) {%>
                 <% if (!currentC.equals("wipgift")) {%>
@@ -240,7 +240,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}else if (currentC.equals("wt")) {%>
                 <decorator:getProperty property="page.webtvNavigator"/>
             <%}else if (currentC.equals("b")) {%>
-            
+
             <% }else{ %>
                 <decorator:getProperty property="page.relevantQueries" />
                 <% if ("true".equals(smart)) { %>
@@ -256,11 +256,26 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}%>
 
            <decorator:getProperty property="page.blogDateNavigation"/>
-            
+
             <c:if test='${!(empty tab.rssResultName)}'>
-                <p>
-                    <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss">RSS</a> | <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss&feedType=atom_0.3">ATOM</a>
-                </p>
+                <div  style="margin-top: 11px;">
+                    <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
+                        <tr>
+                            <td><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        </tr>
+                        <tr>
+                            <td class="geo_header">Abonner på dette søket</td>
+                        </tr>
+                        <tr>
+                            <td><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
+                        </tr>
+                    </table>
+                    <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
+                        <tr>
+                            <td class="nav_pad"><a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss">RSS</a> | <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss&feedType=atom_0.3">ATOM</a></td>
+                        </tr>
+                    </table>
+                </div>
             </c:if>
         </td>
 	<% } %>
@@ -420,7 +435,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%if (currentC.equals("wt")) {%>
                     <decorator:getProperty property="page.webtv-results"/>
                 <%}%>
-                
+
                 <%if (currentC.equals("b")) {%>
                 <decorator:getProperty property="page.blog-search"/>
                 <%}%>
@@ -435,7 +450,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}else if ( currentC.equals("pp") ) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
-                    
+
                 </td>
             <%}else if (currentC.equals("p") ) {%>
                     <decorator:getProperty property="page.ads"/>
@@ -443,7 +458,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 </td>
             <%} else if (currentC.equals("t")) {%>
                 <td class="cell_four" valign="top" width="225">
-                    <decorator:getProperty property="page.tvSearchWebTv"/>        
+                    <decorator:getProperty property="page.tvSearchWebTv"/>
                 </td>
             <%}%>
 
