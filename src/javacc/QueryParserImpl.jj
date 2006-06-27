@@ -71,7 +71,7 @@ public final class QueryParserImpl extends AbstractQueryParser{
         
         // HACK because phone numbers and organisation numbers need to finish
         // with a space. SEARCH-672
-        if( Character.isDigit( query.charAt(query.length()-1) ) ){
+        if( query.length() > 0 && Character.isDigit( query.charAt(query.length()-1) ) ){
             query = query + ' ';
             ReInit(new StringReader(query));
         }
