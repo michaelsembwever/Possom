@@ -193,6 +193,7 @@ public final class SearchServlet extends HttpServlet {
         // should return the first page.
         if (request.getParameter("c") != null && request.getParameter("c").equals("d")) {
             if (request.getParameter("q").trim().length() == 0) {
+                LOG.info("doGet(): Empty Query String redirect=/");
                 response.sendRedirect("/");
             }
             return true;
