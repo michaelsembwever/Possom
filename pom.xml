@@ -263,7 +263,7 @@
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <queryServerURL.2>http://10.16.195.249:15300</queryServerURL.2>
                 <queryServerURL.1>http://10.16.195.250:15100</queryServerURL.1>
-                <msearch.configuration.url>http://mobil.searchdev.schibstedsok.no/mobil.searchdev.schibstedsok.no/conf/msearch-client.properties</msearch.configuration.url> 
+                <msearch.configuration.url>http://mobil.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url> 
                 <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
