@@ -37,17 +37,17 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
         filter.append("");
 
-//        if (blankQuery) {
-//            if (sortBy.equals("channel") || sortBy.equals("category")) {
-//                filter.append(" +starttime:<");
-//                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
-//                filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
-//            } else if (sortBy.equals("day")) {
-//                filter.append(" +starttime:<");
-//                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
-//                filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
-//            }
-//        }
+        if (blankQuery && getWithEndtime()) {
+            if (sortBy.equals("channel") || sortBy.equals("category")) {
+                filter.append(" +starttime:<");
+                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
+                filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
+            } else if (sortBy.equals("day")) {
+                filter.append(" +starttime:<");
+                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
+                filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
+            }
+        }
         if (blankQuery && getWithEndtime()) {
 
 
