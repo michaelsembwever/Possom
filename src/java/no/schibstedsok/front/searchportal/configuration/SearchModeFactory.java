@@ -31,6 +31,7 @@ import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.CombineNavigatorsHandler;
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
 import no.schibstedsok.front.searchportal.query.transform.TvSearchQueryTransformer;
+import no.schibstedsok.front.searchportal.result.handler.FieldEscapeHandler;
 import no.schibstedsok.front.searchportal.result.handler.TvSearchSortingHandler;
 import no.schibstedsok.front.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
@@ -816,6 +817,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         COMBINE_NAVIGATORS (CombineNavigatorsHandler.class),
         TEXT_OUTPUT (TextOutputResultHandler.class),
         VELOCITY_OUTPUT (VelocityResultHandler.class),
+        FIELD_ESCAPE (FieldEscapeHandler.class),
         XML_OUTPUT (XmlOutputResultHandler.class);
 
 
@@ -945,6 +947,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                         tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
                         tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
+                        break;
+                    case FIELD_ESCAPE:
+                        final FieldEscapeHandler feh = (FieldEscapeHandler) handler;
+                        feh.setSourceField(rh.getAttribute("source-field"));
+                        feh.setTargetField(rh.getAttribute("target-field"));
                         break;
                     case COMBINE_NAVIGATORS:
                         final CombineNavigatorsHandler cnh = (CombineNavigatorsHandler) handler;
