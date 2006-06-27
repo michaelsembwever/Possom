@@ -166,7 +166,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
     <% } else { %>
 
-        <%if (q.trim().equals("") && (currentC.equals("y") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw"))) {%>
+        <%if (q.trim().equals("") && (currentC.equals("y") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b"))) {%>
 	<decorator:getProperty property="page.newsearch-bar"/>
 	<% }else{ %>
 	<decorator:getProperty property="page.search-bar"/>
