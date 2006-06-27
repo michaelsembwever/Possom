@@ -195,8 +195,8 @@ public final class SearchServlet extends HttpServlet {
             if (request.getParameter("q").trim().length() == 0) {
                 LOG.info("doGet(): Empty Query String redirect=/");
                 response.sendRedirect("/");
+                return true;
             }
-            return true;
         }
 
         return false;
