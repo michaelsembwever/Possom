@@ -1,6 +1,7 @@
-// Copyright (2006) Schibsted Søk AS
+/*
+ * Copyright (2005-2006) Schibsted Søk AS
+ */
 package no.schibstedsok.front.searchportal.servlet;
-
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
@@ -60,7 +61,7 @@ public final class SearchServlet extends HttpServlet {
                 throws ServletException, IOException {
 
 
-        if ( isEmptyQuery(request, response) ) {
+        if (isEmptyQuery(request, response)) {
             return;
         }
 
@@ -101,9 +102,10 @@ public final class SearchServlet extends HttpServlet {
             searchTabKey = "d";
         }
 
-        final SearchTab searchTab = SearchTabFactory.valueOf(ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)).getTabByKey(searchTabKey);
+        final SearchTab searchTab = SearchTabFactory.valueOf(
+            ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)).getTabByKey(searchTabKey);
 
-        if( searchTab == null ){
+        if (searchTab == null) {
             LOG.error(ERR_MISSING_TAB + searchTabKey);
             throw new UnsupportedOperationException(ERR_MISSING_TAB + searchTabKey);
         }
@@ -112,14 +114,14 @@ public final class SearchServlet extends HttpServlet {
                 ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
                 .getMode(searchTab.getMode());
 
-        if( mode == null ){
+        if (mode == null) {
             LOG.error(ERR_MISSING_MODE + searchTab.getMode());
             throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
         }
 
         request.setAttribute("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
         request.setAttribute("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, genericCxt)));
-        
+
         if (request.getParameter("offset") == null || "".equals(request.getParameter("offset"))) {
             request.setAttribute("offset", "0");
         }
@@ -133,45 +135,44 @@ public final class SearchServlet extends HttpServlet {
 
         try {
 
-                final RunningQuery.Context rqCxt = ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" rqCxt ">
-                        RunningQuery.Context.class,
-                        new BaseContext() {
-                            public SearchMode getSearchMode() {
-                                return mode;
-                            }
-                            public SearchTab getSearchTab() {
-                                return searchTab;
-                            }
-                        },
-                        genericCxt
-                );//</editor-fold>
+            final RunningQuery.Context rqCxt = ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" rqCxt ">
+                    RunningQuery.Context.class,
+                    new BaseContext() {
+                        public SearchMode getSearchMode() {
+                            return mode;
+                        }
+                        public SearchTab getSearchTab() {
+                            return searchTab;
+                        }
+                    },
+                    genericCxt
+            );//</editor-fold>
 
-                final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
-                
-                request.setAttribute("locale", query.getLocale());
-                request.setAttribute("query", query);
-                
-                query.run();
-                
-                if (LOG.isInfoEnabled()) {
-                    stopWatch.stop();
-                    LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
-                }
-                
+            final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
+
+            request.setAttribute("locale", query.getLocale());
+            request.setAttribute("query", query);
+
+            query.run();
+
+            if (LOG.isInfoEnabled()) {
+                stopWatch.stop();
+                LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
+            }
+
         } catch (InterruptedException e) {
             LOG.error("Task timed out");
         }
 
-        
+
     }
 
 
     private boolean isEmptyQuery(
             final HttpServletRequest request,
-            final HttpServletResponse response ) throws IOException{
+            final HttpServletResponse response) throws IOException{
 
         if (request.getParameter("q") == null) {
-
             String redir = request.getContextPath();
             if (redir == null) {
                 redir = "/";
@@ -187,6 +188,16 @@ public final class SearchServlet extends HttpServlet {
             response.sendRedirect(redir);
             return true;
         }
+
+        // Extra check for the Norwegian web search. Search with an empty query string
+        // should return the first page.
+        if (request.getParameter("c") != null && request.getParameter("c").equals("d")) {
+            if (request.getParameter("q").trim().length() == 0) {
+                response.sendRedirect("/");
+            }
+            return true;
+        }
+
         return false;
     }
 
@@ -197,7 +208,7 @@ public final class SearchServlet extends HttpServlet {
 
         /* Setting default encoding */
         response.setCharacterEncoding("UTF-8");
-        
+
         // TODO. Any better way to do this. Sitemesh?
         if (request.getParameter("output") != null && request.getParameter("output").equals("rss")) {
             if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){
@@ -210,7 +221,8 @@ public final class SearchServlet extends HttpServlet {
             response.setContentType("text/xml; charset=utf-8");
             try {
                 // Just can't get sitemesh to work in the way I imagine it works.
-                response.getWriter().write("<html><head><META name=\"decorator\" content=\"mobiledecorator\"/></head></html>");
+                response.getWriter().write(
+                    "<html><head><META name=\"decorator\" content=\"mobiledecorator\"/></head></html>");
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
