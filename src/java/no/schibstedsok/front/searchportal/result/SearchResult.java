@@ -36,4 +36,16 @@ public interface SearchResult {
     List<QuerySuggestion> getQuerySuggestions();
 
     void addQuerySuggestion(QuerySuggestion query);
+
+    /**
+     * Adds a result level (as opposed to item level) field to the search result.
+     *
+     */
+    public void addField(String name, String value);
+    
+    /**
+     * Gets the value of field.
+     */
+    public String getField(String name);
+
 }

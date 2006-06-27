@@ -21,6 +21,7 @@ import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -167,7 +168,17 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
                     return searchResult;
                 }
             }
-
+            
+            if (cfg.isCollapsingEnabled()) {
+                if (collapseId != null && !collapseId.equals("")) {
+                    if (searchResult.getResults().size() > 0) {
+                        final SearchResultItem itm = searchResult.getResults().get(0);
+                        final URL url = new URL(itm.getField("url"));
+                        searchResult.addField("collapsedDomain", url.getHost());
+                    }
+                }
+            }
+            
             return searchResult;
 
         } catch (ConfigurationException ex) {

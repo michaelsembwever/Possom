@@ -26,6 +26,8 @@ public class BasicSearchResult implements SearchResult {
     private final Map<String,List<SpellingSuggestion>> spellingSuggestions = new HashMap<String,List<SpellingSuggestion>>();
     private final List<QuerySuggestion> querySuggestions = new ArrayList<QuerySuggestion>();
 
+    private final Map<String, String> fields = new HashMap();
+    
     public BasicSearchResult(final SearchCommand command) {
         this.searchCommand = command;
     }
@@ -76,4 +78,14 @@ public class BasicSearchResult implements SearchResult {
     public List<SearchResultItem> getResults() {
         return results;
     }
+    
+    public void addField(final String name, final String value) {
+        fields.put(name, value);
+    }
+    
+    public String getField(final String name){
+        return fields.get(name);
+    }
 }
+
+
