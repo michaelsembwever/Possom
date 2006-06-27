@@ -23,9 +23,11 @@ public final class QueryParserImpl extends AbstractQueryParser{
     public QueryParserImpl(final Context cxt){
         this(new StringReader(cxt.getQueryString()));
         context = cxt;
+        //checks Query String is ok
         String qs = cxt.getQueryString();
         qs = balance(qs, '(', ')');
         qs = even(qs, '\"');
+        qs = numberNeedsTrailingSpace(qs);
         token_source.SwitchTo(DEFAULT);
         //LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
@@ -58,8 +60,19 @@ public final class QueryParserImpl extends AbstractQueryParser{
             if( chars[i] == c ){ ++count; }
         }
         if( count % 2 >0 ){
-            // uneven amount of (). Ignore all of them then.
+            // uneven amount of (). Ignore all of them then.    
             query = query.replaceAll("\\" + c, "");
+            ReInit(new StringReader(query));
+        }
+        return query;
+    }
+
+    private String numberNeedsTrailingSpace(String query){
+        
+        // HACK because phone numbers and organisation numbers need to finish
+        // with a space. SEARCH-672
+        if( Character.isDigit( query.charAt(query.length()-1) ) ){
+            query = query + ' ';
             ReInit(new StringReader(query));
         }
         return query;
@@ -90,10 +103,10 @@ TOKEN : { <URL: "http://"<WORD>> }
 TOKEN : { <EMAIL: <WORD>"@"<WORD>> }
 
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,ORGANISATION_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <PHONE_NUMBER: (("+"|"00"(" ")*)?"47"(" ")*)?(<DIGIT>(" ")?){8}> }
+TOKEN : { <PHONE_NUMBER: (("+"|"00"(" ")*)?"47"(" ")*)?(<DIGIT>(" ")?){8}" "> }
 
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <ORGANISATION_NUMBER: (<DIGIT>(" ")*){9}> }
+TOKEN : { <ORGANISATION_NUMBER: (<DIGIT>(" ")*){9}" "> }
 
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,ORGANISATION_NUMBER_DISABLED>
 TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
