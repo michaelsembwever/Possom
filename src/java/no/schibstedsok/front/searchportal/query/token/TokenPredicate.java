@@ -24,7 +24,6 @@ public enum TokenPredicate implements Predicate {
     //  full list can be found at sch-login01.osl.basefarm.net:/www/schibstedsok/home/ssmojaco/analyselister
     // TODO make ExactFast tokens a separate Type referencing the original Fast token.
     ANIMAL (Type.FAST),
-    BADE (Type.FAST),
     CATEGORY (Type.FAST),
     CELEBRITY (Type.FAST),
     CHAIN (Type.FAST),
@@ -46,6 +45,7 @@ public enum TokenPredicate implements Predicate {
     LASTNAME (Type.FAST),
     EXACTLAST (Type.FAST),
     PRIOCOMPANYNAME (Type.FAST),
+    OCEAN (Type.FAST),
     TOP3EXACT (Type.FAST),
     EXACT_PPCTOPLIST (Type.FAST),
     STOCKMARKETTICKERS (Type.FAST),
@@ -57,7 +57,6 @@ public enum TokenPredicate implements Predicate {
     TNS (Type.FAST),
 
     // RegExp TokenPredicates -- magic words
-    BADE_MAGIC(Type.REGEX),
     BOOK_MAGIC (Type.REGEX),
     CATALOGUE_MAGIC (Type.REGEX),
     CULTURE_MAGIC (Type.REGEX),
@@ -74,9 +73,9 @@ public enum TokenPredicate implements Predicate {
     WIKIPEDIA_MAGIC (Type.REGEX),
 
     // RegExp TokenPredicates -- trigger words/phrases
-    BADE_TRIGGER(Type.REGEX),
     CATALOGUE_TRIGGER (Type.REGEX),
     NEWS_TRIGGER (Type.REGEX),
+    OCEAN_TRIGGER(Type.REGEX),
     PICTURE_TRIGGER (Type.REGEX),
     SKIINFO_TRIGGER (Type.REGEX),
     TV_TRIGGER (Type.REGEX),

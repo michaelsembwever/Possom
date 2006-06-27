@@ -38,7 +38,6 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
                 TokenPredicate.CULTURE_MAGIC,
                 TokenPredicate.MOVIE_MAGIC,
                 TokenPredicate.NEWS_MAGIC,
-                TokenPredicate.OCEAN_MAGIC,
                 TokenPredicate.PICTURE_MAGIC,
                 TokenPredicate.STOCK_MAGIC,
                 TokenPredicate.WEBTV_MAGIC,
