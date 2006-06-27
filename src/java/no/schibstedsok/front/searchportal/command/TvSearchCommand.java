@@ -55,8 +55,6 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
     }
     
     public SearchResult execute() {
-        LOG.debug("TV SEARCH COMMAND");
-        
         SearchResult sr = super.execute();
 
         return sr;
@@ -68,7 +66,7 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
 
     protected String getAdditionalFilter() {
         /* Only fetch default channels on blank query */
-        if (getRunningQuery().getQuery().isBlank() && !getParameters().containsKey("nav_channels")) {
+        if (getRunningQuery().getQuery().isBlank() && !getParameters().containsKey("nav_channels") && !getParameters().containsKey("nav_categories")) {
             return defaultChannelFilter.toString();
         }
         return "";
