@@ -36,8 +36,9 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         filter.append("+starttime:>");
         filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
         filter.append("");
-
-        if (blankQuery && getWithEndtime()) {
+        
+        
+        if (blankQuery && getWithEndtime() && parameters.get("nav_days") == null) {
             if (sortBy.equals("channel") || sortBy.equals("category")) {
                 filter.append(" +starttime:<");
                 cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
@@ -47,20 +48,24 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
                 cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
                 filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
             }
+        } else {
+            cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
+            filter.append(" +starttime:<");
+            filter.append(new SimpleDateFormat("yyyy-MM-dd'T'00:00:00'Z'").format(cal.getTime()));
         }
-        if (blankQuery && getWithEndtime()) {
-
-
-            filter.append(" +endtime:<");
-            if (sortBy.equals("day")) {
-                /* Add one week */
-                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
-            } else {
-                /* Add one day */
-                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
-            }
-            filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
-        }
+//        if (blankQuery && getWithEndtime()) {
+//
+//
+//            filter.append(" +endtime:<");
+//            if (sortBy.equals("day")) {
+//                /* Add one week */
+//                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
+//            } else {
+//                /* Add one day */
+//                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
+//            }
+//            filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
+//        }
         return filter.toString();
     }
     
