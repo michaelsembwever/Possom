@@ -125,20 +125,14 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     protected int getResultsToReturn(){
 
-        int resultsToReturn = super.getResultsToReturn();
         final int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
         final int resultsOnTop = context.getRunningQuery().getSearchTab().getAdOnTop();
 
         if (top && (!getParameters().containsKey("ss") && !isVgSiteSearch())) {
-            resultsToReturn += resultsOnTop;
+            return resultsToShow + resultsOnTop;
         } else {
-            if (resultsToReturn >= resultsToShow - resultsOnTop){
-                resultsToReturn = resultsToShow - resultsOnTop;
-            }else{
-                resultsToReturn += resultsOnTop;
-            }
+            return resultsToShow;
         }
-        return resultsToReturn;
     }
 
     protected String getPartnerId(){
