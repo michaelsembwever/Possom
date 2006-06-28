@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.command.SearchCommand;
@@ -44,6 +44,10 @@ public final class FastNavigatorsTest extends TestCase {
 
     FastSearchConfiguration config;
     MockupResultHandler resultHandler;
+    
+    public FastNavigatorsTest(String testName) {
+        super(testName);
+    }    
 
     public SearchConfiguration getSearchConfiguration() {
         return config;

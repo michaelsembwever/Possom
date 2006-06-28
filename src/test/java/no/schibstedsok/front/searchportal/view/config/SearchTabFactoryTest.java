@@ -11,7 +11,7 @@ package no.schibstedsok.front.searchportal.view.config;
 import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;

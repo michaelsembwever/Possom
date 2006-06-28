@@ -11,7 +11,7 @@ package no.schibstedsok.front.searchportal.command;
 import java.util.HashMap;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SearchConfiguration;

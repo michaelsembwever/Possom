@@ -7,7 +7,7 @@ import no.schibstedsok.front.searchportal.query.analyser.AnalysisRule;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
 
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 
 /**
  * A test class for {@link no.schibstedsok.front.searchportal.analyzer.AnalysisRule}.
@@ -21,6 +21,10 @@ public class AnalysisRuleTest extends TestCase {
     private Predicate truePredicate = PredicateUtils.truePredicate();
     private Predicate falsePredicate = PredicateUtils.falsePredicate();
 
+    public AnalysisRuleTest(final String testName) {
+        super(testName);
+    }	 
+    
     protected void setUp() throws Exception {
         super.setUp();
         this.rule = new AnalysisRule();

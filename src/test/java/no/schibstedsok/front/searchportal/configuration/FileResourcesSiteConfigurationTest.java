@@ -9,7 +9,7 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import java.util.Properties;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.site.Site;
@@ -26,7 +26,10 @@ public final class FileResourcesSiteConfigurationTest extends TestCase {
             "\n\n"
             + "Unable to obtain configuration resources from classloader. \n"
             + "\n";
-
+	    
+    public FileResourcesSiteConfigurationTest(final String testName) {
+        super(testName);
+    }	    
 
     /**
      * Test of valueOf method, of class no.schibstedsok.front.searchportal.configuration.SiteConfiguration.

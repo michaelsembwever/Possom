@@ -10,7 +10,7 @@ package no.schibstedsok.front.searchportal.servlet;
 import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.SearchModeFactory;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;

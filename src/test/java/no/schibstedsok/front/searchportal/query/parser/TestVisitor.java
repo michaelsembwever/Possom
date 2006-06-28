@@ -6,7 +6,7 @@ package no.schibstedsok.front.searchportal.query.parser;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryTestContext;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
@@ -36,6 +36,11 @@ import org.apache.commons.logging.LogFactory;
 public final class TestVisitor extends TestCase {
 
     private static final Log LOG = LogFactory.getLog(TestVisitor.class);
+    
+    
+    public TestVisitor(final String testName) {
+        super(testName);
+    }	    
 
     /** test a visitor on a  basic clause heirarchy.
      **/

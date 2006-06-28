@@ -11,7 +11,7 @@ package no.schibstedsok.front.searchportal.query.transform;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.front.searchportal.query.AndClause;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;

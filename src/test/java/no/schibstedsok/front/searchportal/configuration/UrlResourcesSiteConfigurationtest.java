@@ -10,7 +10,7 @@ package no.schibstedsok.front.searchportal.configuration;
 
 
 import java.util.Properties;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**
@@ -28,7 +28,10 @@ public final class UrlResourcesSiteConfigurationtest extends TestCase {
             + "Please start this service before trying to build/deploy search-front-html."
             + "\n";
 
-
+    public UrlResourcesSiteConfigurationtest(final String testName) {
+        super(testName);
+    }	     
+    
     /**
      * Test of valueOf method, of class no.schibstedsok.front.searchportal.configuration.SiteConfiguration.
      */

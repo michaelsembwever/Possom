@@ -15,7 +15,7 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 

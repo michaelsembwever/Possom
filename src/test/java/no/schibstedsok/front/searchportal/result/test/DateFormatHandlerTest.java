@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result.test;
 
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.query.Query;
@@ -26,7 +26,11 @@ public final class DateFormatHandlerTest extends TestCase {
 
     private static final String SOURCE_FIELD = "source_field";
     private static final String FIELD_PREFIX = "prefix";
-            
+
+    public DateFormatHandlerTest(final String testName) {
+        super(testName);
+    }	
+    
     final MockupSearchCommand command = new MockupSearchCommand();
     final BasicSearchResult bsr = new BasicSearchResult(command);
     final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(

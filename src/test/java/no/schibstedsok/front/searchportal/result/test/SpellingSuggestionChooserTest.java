@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.result.test;
 
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
@@ -27,6 +27,10 @@ import no.schibstedsok.front.searchportal.view.config.SearchTab;
  */
 public class SpellingSuggestionChooserTest extends TestCase {
 
+    public SpellingSuggestionChooserTest(final String testName) {
+        super(testName);
+    }
+    
     public void testNoSuggestions() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());

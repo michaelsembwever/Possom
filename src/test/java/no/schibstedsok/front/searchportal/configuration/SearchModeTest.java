@@ -2,7 +2,7 @@
 package no.schibstedsok.front.searchportal.configuration;
 
 import javax.xml.parsers.DocumentBuilder;
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
@@ -24,6 +24,10 @@ import no.schibstedsok.front.searchportal.view.config.SearchTabFactory;
  */
 public class SearchModeTest extends TestCase {
 
+    public SearchModeTest(final String testName) {
+        super(testName);
+    }	
+    
     /** Test the WebCrawl index.
      **/
     public void testWebCrawl() {

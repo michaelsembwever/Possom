@@ -4,7 +4,7 @@
  */
 package no.schibstedsok.front.searchportal.util.test;
 
-import junit.framework.TestCase;
+import no.schibstedsok.front.searchportal.TestCase;
 import no.schibstedsok.front.searchportal.util.PagingDisplayHelper;
 import junit.framework.TestResult;
 
@@ -16,6 +16,10 @@ import junit.framework.TestResult;
 public class PagingDisplayHelperTest extends TestCase {
 
     private PagingDisplayHelper pager;
+    
+    public PagingDisplayHelperTest(final String testName) {
+        super(testName);
+    }	     
 
     protected void setUp() throws Exception {
         super.setUp();
