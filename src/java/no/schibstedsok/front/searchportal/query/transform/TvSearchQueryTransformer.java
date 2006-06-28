@@ -38,7 +38,7 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         filter.append("");
         
         
-        if (blankQuery && getWithEndtime() && parameters.get("nav_days") == null) {
+        if (getWithEndtime() && parameters.get("nav_days") == null) {
             if (sortBy.equals("channel") || sortBy.equals("category")) {
                 filter.append(" +starttime:<");
                 cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
