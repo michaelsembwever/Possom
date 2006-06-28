@@ -143,6 +143,10 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
             query.setParameter(new SearchParameter(BaseParameter.FILTER,
                     filterBuilder.toString()));
 
+            if (! cfg.getQtPipeline().equals("")) {
+                query.setParameter(new SearchParameter(BaseParameter.QT_PIPELINE, cfg.getQtPipeline()));
+            }
+            
             final ISearchView view = factory.getSearchView(cfg.getView());
 
             if (LOG.isDebugEnabled()) {

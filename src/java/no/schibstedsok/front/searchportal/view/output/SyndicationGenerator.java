@@ -145,7 +145,13 @@ public class SyndicationGenerator {
                 final String publishedDate = render("entryPublishedDate", item);
 
                 try {
-                    entry.setPublishedDate(df.parse(publishedDate));
+                    Date date = df.parse(publishedDate);
+                    
+                    if (date.getTime() > 0) {
+                        entry.setPublishedDate(df.parse(publishedDate));
+                    } else {
+                        LOG.debug("Publish date set to epoch. Ignoring");
+                    }
                 } catch (ParseException ex) {
                     LOG.error("Cannot parse " + publishedDate + " using df " + dfString);
                     entry.setPublishedDate(new Date());
@@ -154,17 +160,25 @@ public class SyndicationGenerator {
                 entry.setTitle(render("entryTitle", item));
                 entry.setLink(render("entryUri", item));
                 
-                final SyndEnclosure enclosure = new SyndEnclosureImpl();
-                if (request.getParameter("c") == "swip") {
-                    enclosure.setType("image/gif");
-                } else {
-                    enclosure.setType("image/png");
+
+                try {
+                    final SyndEnclosure enclosure = new SyndEnclosureImpl();
+
+                    enclosure.setUrl(render("entryEnclosure", item));
+
+                    final List<SyndEnclosure> enclosures = new ArrayList();
+                    enclosures.add(enclosure);
+                    entry.setEnclosures(enclosures);
+
+                    if (request.getParameter("c") == "swip") {
+                        enclosure.setType("image/gif");
+                    } else {
+                        enclosure.setType("image/png");
+                    }
+                } catch (ResourceNotFoundException ex) {
+                    LOG.debug("Template for enclosure not found. Skipping.");
                 }
-                enclosure.setUrl(render("entryEnclosure", item));
                 
-                final List<SyndEnclosure> enclosures = new ArrayList();
-                enclosures.add(enclosure);
-                entry.setEnclosures(enclosures);
                 
                 final List contents = new ArrayList();
                 

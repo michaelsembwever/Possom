@@ -23,7 +23,8 @@ public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration
     private String sortBy;
     private boolean collapsingEnabled;
     private String collapseOnField;
-
+    private String qtPipeline;
+    
     public void setCollapseOnField(String collapseOnField) {
         this.collapseOnField = collapseOnField;
     }
@@ -83,5 +84,13 @@ public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration
 
     public FastNavigator getNavigator(final String navigatorKey) {
         return navigators.get(navigatorKey);
+    }
+
+    public void setQtPipeline(final String qtPipeline) {
+        this.qtPipeline = qtPipeline;
+    }
+
+    public String getQtPipeline() {
+        return qtPipeline;
     }
 }
