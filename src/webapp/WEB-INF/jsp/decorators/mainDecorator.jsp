@@ -272,7 +272,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     </table>
                     <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                         <tr>
-                            <td class="nav_pad"><a href="<c:out value='${request.requestURL}' escapeXml="false" />?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss">RSS</a>&nbsp;&nbsp; |&nbsp;&nbsp; <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss&feedType=atom_0.3">ATOM</a></td>
+                            <td class="nav_pad"><a href="<c:out value='${request.requestURL}' escapeXml="false" />?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss" style="display:inline;">RSS</a>&nbsp;&nbsp; |&nbsp;&nbsp; <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss&feedType=atom_0.3" style="display:inline;">ATOM</a></td>
                         </tr>
                         <tr>
                             <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
