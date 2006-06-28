@@ -81,6 +81,8 @@ public enum TokenPredicate implements Predicate {
     TV_TRIGGER (Type.REGEX),
     WEATHER_TRIGGER (Type.REGEX),
     WIKIPEDIA_TRIGGER (Type.REGEX),
+    LOAN_TRIGGER (Type.REGEX),
+    SUDOKU_TRIGGER (Type.REGEX),
 
     // RegExp TokenPredicates -- prefixes
     SITEPREFIX (Type.REGEX),
