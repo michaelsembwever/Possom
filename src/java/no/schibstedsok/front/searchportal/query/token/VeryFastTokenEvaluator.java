@@ -19,8 +19,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentContext;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesContext;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 
@@ -46,7 +48,7 @@ import org.xml.sax.SAXException;
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
 
-    public interface Context extends BaseContext, QueryStringContext, DocumentContext, SiteContext{
+    public interface Context extends BaseContext, QueryStringContext, DocumentContext, PropertiesContext, SiteContext{
     }
 
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
@@ -55,6 +57,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     private static final String DEBUG_LISTNAME_FOUND_2 = " is ";
 
     public static String VERYFAST_EVALUATOR_XMLFILE = "VeryFastEvaluators.xml";
+    private static final String TOKEN_HOST_PROPERTY = "tokenevaluator.host";
+    private static final String TOKEN_PORT_PROPERTY = "tokenevaluator.port";
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
     private static final String REAL_TOKEN_SUFFIX = "QM";
     private static final String EXACT_PREFIX = "exact_";
@@ -68,6 +72,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     private volatile boolean init = false;
 
     private final HTTPClient httpClient;
+    private final String clientConfId;
     private final Context context;
     private final Map<String, List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
@@ -76,14 +81,22 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
      * Search fast and initialize analysis result.
      * @param query
      */
-    VeryFastTokenEvaluator(final HTTPClient client, final Context cxt){
+    VeryFastTokenEvaluator(final Context cxt){
 
         // pre-condition check
-        if (client == null) {
+        
+        context = cxt;
+        
+        final Properties props = SiteConfiguration.valueOf(
+                        ContextWrapper.wrap(SiteConfiguration.Context.class,context)).getProperties();
+        final String host = props.getProperty(TOKEN_HOST_PROPERTY);
+        final int port = Integer.parseInt(props.getProperty(TOKEN_PORT_PROPERTY));
+        clientConfId = "token_evaluator(" + host + ':' + port + ')';
+            
+        httpClient = HTTPClient.instance(clientConfId, host, port);
+        if (httpClient == null) {
             throw new IllegalArgumentException("Not allowed to use null HTTPClient!");
         }
-        this.httpClient = client;
-        context = cxt;
         queryFast(context.getQueryString());
     }
 
@@ -227,7 +240,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
             url = CGI_PATH + token;
 
-            final Document doc = httpClient.getXmlDocument("token_evaluator", url);
+            final Document doc = httpClient.getXmlDocument(clientConfId, url);
 
             NodeList l = doc.getElementsByTagName("QUERYTRANSFORMS");
             final Element e = (Element) l.item(0);

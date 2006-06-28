@@ -4,21 +4,16 @@
 package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
-import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
-import no.schibstedsok.front.searchportal.http.HTTPClient;
-import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 /**
  * TokenEvaluateFactory provides knowledge about which implementation of
  * {@link TokenEvaluator} that can handle a particular token.
@@ -28,8 +23,6 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
-    
-    
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
     
     private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new TokenEvaluator(){
@@ -116,12 +109,6 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
         return context.getQueryString();
     }
 
-    protected Properties getProperties() {
-        
-        return SiteConfiguration.valueOf(
-                        ContextWrapper.wrap(SiteConfiguration.Context.class,context)).getProperties();
-    }
-
     private TokenEvaluator getFastEvaluator() {
         try {
             fastEvaluatorCreator.get();
@@ -163,11 +150,8 @@ public final class TokenEvaluatorFactoryImpl implements TokenEvaluatorFactory {
 
     private final class FastEvaluatorCreator implements Runnable{
         public void run() {
-            final String host = getProperties().getProperty("tokenevaluator.host");
-            final int port = Integer.parseInt(getProperties().getProperty("tokenevaluator.port"));
-
+            
             fastEvaluator = new VeryFastTokenEvaluator(
-                    HTTPClient.instance("token_evaluator", host, port),
                     ContextWrapper.wrap(VeryFastTokenEvaluator.Context.class, context));
         }
         

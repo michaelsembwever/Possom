@@ -1,10 +1,13 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.http;
 
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -18,46 +21,47 @@ import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
-public class HTTPClient {
+public final class HTTPClient {
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(HttpClient.class);
-    private static final String DEBUG_ADDING_CONF =
-            "Adding configuration ";
+    private static final String DEBUG_ADDING_CONF = "Adding configuration ";
     
-    private final static Map hostConfigurations = new HashMap();
+    private static final Map hostConfigurations = new HashMap();
 
-    private ConnectionManagerWithoutKeepAlive cMgr;
+    private static final HttpConnectionManager cMgr = new ConnectionManagerWithoutKeepAlive();
     private HttpClient commonsHttpClient;
 
-    private final static HTTPClient client = new HTTPClient();
+    private static final HTTPClient client = new HTTPClient();
 
 
     private HTTPClient() {
-        cMgr = new ConnectionManagerWithoutKeepAlive();
-        cMgr.setConnectionStaleCheckingEnabled(true);
-        cMgr.setMaxConnectionsPerHost(1);
-        cMgr.setMaxTotalConnections(100);
+        
+        final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+        params.setStaleCheckingEnabled(true);
+        params.setMaxTotalConnections(100);
+        cMgr.setParams(params);
         commonsHttpClient = new HttpClient(cMgr);
     }
 
-    public static HTTPClient instance(String id, String host, int port) {
-        if (hostConfigurations.containsKey(id)) {
-            return client;
+    public static HTTPClient instance(final String id, final String host, final int port) {
+        
+        if (!hostConfigurations.containsKey(id)) {
+            addHostConfiguration(id, host, port);
         }
-        addHostConfiguration(id, host, port);
+        
         return client;
     }
 
-    public HttpMethod executeGet(String id, String path) throws IOException {
+    public HttpMethod executeGet(final String id, final String path) throws IOException {
         HostConfiguration conf = (HostConfiguration) hostConfigurations.get(id);
         HttpMethod method = new GetMethod(path);
         commonsHttpClient.executeMethod(conf, method);
         return method;
     }
 
-    public Document getXmlDocument(String id, String path) throws IOException, SAXException {
+    public Document getXmlDocument(final String id, final String path) throws IOException, SAXException {
         HttpMethod method = null;
         try {
             method = executeGet(id, path);
@@ -76,15 +80,17 @@ public class HTTPClient {
         }
     }
 
-    public void release(HttpMethod method) {
+    public void release(final HttpMethod method) {
         method.releaseConnection();
     }
 
-    private synchronized static void addHostConfiguration(String id, String host, int port) {
+    private synchronized static void addHostConfiguration(final String id, final String host, final int port) {
+        
         if (! hostConfigurations.containsKey(id)) {
             HostConfiguration conf = new HostConfiguration();
             LOG.debug(DEBUG_ADDING_CONF + host + ":" + port);
             conf.setHost(host, port, "http");
+            cMgr.getParams().setMaxConnectionsPerHost(conf, 1);
             hostConfigurations.put(id, conf);
         }
     }
