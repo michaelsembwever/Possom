@@ -33,7 +33,6 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         "robots",
         "yellow",
         "white",
-        "bokkilden",
         "weather",
         "carelscrawl",
         "retriever",
