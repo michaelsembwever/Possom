@@ -49,11 +49,13 @@ public final class StringChopper {
             choppedString.append(s.substring(0, length));
                     
             // if we chopped a tag in half remove the half left over.
-            int laCount = 0;
+            int laCount = 0, raCount = 0, laOriginalCount = 0, raOriginalCount = 0;
             for( Matcher m = la.matcher(choppedString); m.find(); ++laCount);
-            int raCount = 0;
             for( Matcher m = ra.matcher(choppedString); m.find(); ++raCount);
-            if( laCount != raCount ){
+            for( Matcher m = la.matcher(choppedString); m.find(); ++laOriginalCount);
+            for( Matcher m = ra.matcher(choppedString); m.find(); ++raOriginalCount);
+            // if we have more left than right arrows AND the original string was balanced
+            if( laCount > raCount && laOriginalCount == raOriginalCount){
                 choppedString.setLength(choppedString.lastIndexOf("<"));
             }
             
