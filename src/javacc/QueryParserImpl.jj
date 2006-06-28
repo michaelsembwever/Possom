@@ -302,8 +302,9 @@ Clause fieldedLeaf(final Token field) :{
     (<PHONE_NUMBER>) 
         { 
             try{
-                final PhoneNumberClause phClause = context.createPhoneNumberClause(token.image, field == null ? null : field.image);
-                if( token.image.startsWith("+47") || token.image.indexOf(' ') <0 ){ // definitely a phone number.
+                final String term = token.image.trim();
+                final PhoneNumberClause phClause = context.createPhoneNumberClause(term, field == null ? null : field.image);
+                if( term.startsWith("+47") || term.indexOf(' ') <0 ){ // definitely a phone number.
                     return phClause;
                 }else{ // could be individual numbers as well.
                     // Create a XorClause
