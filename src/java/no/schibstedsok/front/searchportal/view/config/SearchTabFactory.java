@@ -107,19 +107,22 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     private SearchTabFactory(final Context cxt) throws ParserConfigurationException {
 
         LOG.trace("SearchTabFactory(cxt)");
-        INSTANCES_LOCK.writeLock().lock();
+        try{
+            INSTANCES_LOCK.writeLock().lock();
 
-        context = cxt;
+            context = cxt;
 
-        // configuration files
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        final DocumentBuilder builder = factory.newDocumentBuilder();
-        loader = context.newDocumentLoader(VIEWS_XMLFILE, builder);
+            // configuration files
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(false);
+            final DocumentBuilder builder = factory.newDocumentBuilder();
+            loader = context.newDocumentLoader(VIEWS_XMLFILE, builder);
 
-        // update the store of factories
-        INSTANCES.put(context.getSite(), this);
-        INSTANCES_LOCK.writeLock().unlock();
+            // update the store of factories
+            INSTANCES.put(context.getSite(), this);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
 
         // start initialisation
         init();
@@ -256,10 +259,14 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     adCommand,
                     parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
                     parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1));
-            tabsLock.writeLock().lock();
-            tabsByName.put(id, tab);
-            tabsByKey.put(key, tab);
-            tabsLock.writeLock().unlock();
+            
+            try{
+                tabsLock.writeLock().lock();
+                tabsByName.put(id, tab);
+                tabsByKey.put(key, tab);
+            }finally{
+                tabsLock.writeLock().unlock();
+            }
         }
 
         // finished

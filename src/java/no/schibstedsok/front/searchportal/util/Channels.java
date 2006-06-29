@@ -42,11 +42,14 @@ public class Channels {
 
     /** Creates a new instance of Channels */
     private Channels(Context cxt) {
-        INSTANCES_LOCK.writeLock().lock();
-        context = cxt;
-        loadChannels();
-        instances.put(cxt.getSite(), this);
-        INSTANCES_LOCK.writeLock().unlock();
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            context = cxt;
+            loadChannels();
+            instances.put(cxt.getSite(), this);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
     }
 
     private void loadChannels() {

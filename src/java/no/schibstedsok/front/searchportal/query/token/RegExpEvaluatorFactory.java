@@ -77,16 +77,18 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     private RegExpEvaluatorFactory(final Context cxt)
             throws ParserConfigurationException {
 
-        
-        INSTANCES_LOCK.writeLock().lock();
-        context = cxt;
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        final DocumentBuilder builder = factory.newDocumentBuilder();
-        loader = context.newDocumentLoader(REGEXP_EVALUATOR_XMLFILE, builder);
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            context = cxt;
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(false);
+            final DocumentBuilder builder = factory.newDocumentBuilder();
+            loader = context.newDocumentLoader(REGEXP_EVALUATOR_XMLFILE, builder);
 
-        INSTANCES.put(context.getSite(), this);
-        INSTANCES_LOCK.writeLock().unlock();
+            INSTANCES.put(context.getSite(), this);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
     }
 
     /** Loads the resource SearchConstants.REGEXP_EVALUATOR_XMLFILE containing all regular expression patterns
@@ -98,50 +100,53 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
      */
     private void init() {
 
-        INSTANCES_LOCK.writeLock().lock();
-        if (!init) {
-            loader.abut();
-            LOG.debug("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
-            final Document doc = loader.getDocument();
-            final Element root = doc.getDocumentElement();
-            final NodeList evaluators = root.getElementsByTagName("evaluator");
-            for (int i = 0; i < evaluators.getLength(); ++i) {
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            if (!init) {
+                loader.abut();
+                LOG.debug("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
+                final Document doc = loader.getDocument();
+                final Element root = doc.getDocumentElement();
+                final NodeList evaluators = root.getElementsByTagName("evaluator");
+                for (int i = 0; i < evaluators.getLength(); ++i) {
 
-                final Element evaluator = (Element) evaluators.item(i);
+                    final Element evaluator = (Element) evaluators.item(i);
 
-                final String tokenName = evaluator.getAttribute("token");
-                LOG.debug(" ->evaluator@token: " + tokenName);
+                    final String tokenName = evaluator.getAttribute("token");
+                    LOG.debug(" ->evaluator@token: " + tokenName);
 
-                final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+                    final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
-                final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
-                LOG.debug(" ->evaluator@query-dependant: " + queryDep);
+                    final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
+                    LOG.debug(" ->evaluator@query-dependant: " + queryDep);
 
-                final Collection compiled = new ArrayList();
+                    final Collection compiled = new ArrayList();
 
-                final NodeList patterns = ((Element) evaluator).getElementsByTagName("pattern");
-                for (int j = 0; j < patterns.getLength(); ++j) {
-                    final Element pattern = (Element) patterns.item(j);
+                    final NodeList patterns = ((Element) evaluator).getElementsByTagName("pattern");
+                    for (int j = 0; j < patterns.getLength(); ++j) {
+                        final Element pattern = (Element) patterns.item(j);
 
-                    final String expression = pattern.getFirstChild().getNodeValue();
-                    LOG.debug(" --->pattern: " + expression);
+                        final String expression = pattern.getFirstChild().getNodeValue();
+                        LOG.debug(" --->pattern: " + expression);
 
-                    // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
-                    final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
-                    final String suffix = expression.endsWith("$") ? "" : "($|\\s)";
-                    // compile pattern
-                    final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
-                    compiled.add(p);
+                        // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
+                        final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
+                        final String suffix = expression.endsWith("$") ? "" : "($|\\s)";
+                        // compile pattern
+                        final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
+                        compiled.add(p);
+                    }
+
+                    final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
+                    regExpEvaluators.put(token, regExpTokenEvaluator);
+
                 }
-
-                final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
-                regExpEvaluators.put(token, regExpTokenEvaluator);
-
+                LOG.debug("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
+                init = true;
             }
-            LOG.debug("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
-            init = true;
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
         }
-        INSTANCES_LOCK.writeLock().unlock();
     }
 
     /** Main method to retrieve the correct RegExpEvaluatorFactory to further obtain

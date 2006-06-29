@@ -242,9 +242,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             // setup new commands list for this mode
             final Map<String,SearchConfiguration> modesCommands = new HashMap<String,SearchConfiguration>();
-            COMMANDS_LOCK.writeLock().lock();
-            COMMANDS.put(mode, modesCommands);
-            COMMANDS_LOCK.writeLock().unlock();
+            try{
+                COMMANDS_LOCK.writeLock().lock();
+                COMMANDS.put(mode, modesCommands);
+            }finally{
+                COMMANDS_LOCK.writeLock().unlock();
+            }
 
             // now loop through commands
             for(CommandTypes commandType : CommandTypes.values()){
@@ -257,9 +260,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
             }
             // add mode
-            modesLock.writeLock().lock();
-            modes.put(id, mode);
-            modesLock.writeLock().unlock();
+            try{
+                modesLock.writeLock().lock();
+                modes.put(id, mode);
+            }finally{
+                modesLock.writeLock().unlock();
+            }
         }
 
         // finished

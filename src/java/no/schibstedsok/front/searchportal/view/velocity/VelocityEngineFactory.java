@@ -79,58 +79,61 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     /** Creates a new instance of VelocityEngineFactory */
     private VelocityEngineFactory(final Context cxt) {
 
-        INSTANCES_LOCK.writeLock().lock();
-        context = cxt;
-        final Site site = cxt.getSite();
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            context = cxt;
+            final Site site = cxt.getSite();
 
-        engine = new VelocityEngine(){
-            /** We override this method to dampen the <ERROR velocity: ResourceManager : unable to find resource ...>
-             * error messages in sesam.error
-             **/
-            public Template getTemplate(final String name) throws ResourceNotFoundException, ParseErrorException, Exception {
+            engine = new VelocityEngine(){
+                /** We override this method to dampen the <ERROR velocity: ResourceManager : unable to find resource ...>
+                 * error messages in sesam.error
+                 **/
+                public Template getTemplate(final String name) throws ResourceNotFoundException, ParseErrorException, Exception {
 
-                final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
-                Logger.getLogger(VELOCITY_LOGGER).setLevel(Level.FATAL);
+                    final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
+                    Logger.getLogger(VELOCITY_LOGGER).setLevel(Level.FATAL);
 
-                final Template retValue = super.getTemplate(name);
+                    final Template retValue = super.getTemplate(name);
 
-                Logger.getLogger(VELOCITY_LOGGER).setLevel(level);
-                return retValue;
+                    Logger.getLogger(VELOCITY_LOGGER).setLevel(level);
+                    return retValue;
+                }
+
+            };
+
+            try  {
+                final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
+                final Properties props = SiteConfiguration.valueOf(
+                        ContextWrapper.wrap(SiteConfiguration.Context.class, cxt)).getProperties();
+
+                engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
+                engine.setProperty(LOG_NAME, logger.getName());
+                engine.setProperty(Velocity.RESOURCE_LOADER, "url");
+                engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
+                engine.setProperty("url.resource.loader.cache", "true");
+                engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
+                engine.setProperty(Site.NAME_KEY, site);
+                engine.setProperty("site.fallback", Site.DEFAULT);
+                engine.setProperty(PUBLISH_SYSTEM_URL, props.getProperty(PUBLISH_SYSTEM_URL));
+                engine.setProperty(PUBLISH_SYSTEM_HOST, props.getProperty(PUBLISH_SYSTEM_HOST));
+                engine.setProperty("input.encoding", "UTF-8");
+                engine.setProperty("output.encoding", "UTF-8");
+                engine.setProperty("userdirective", DIRECTIVES);
+                engine.setProperty(
+                        "velocimacro.library", 
+                        site.getTemplateDir() + "/VM_global_library.vm,"
+                        + site.getTemplateDir() + "/VM_site_library.vm");
+                engine.init();
+
+            } catch (Exception e) {
+                throw new InfrastructureException(e);
             }
 
-        };
 
-        try  {
-            final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
-            final Properties props = SiteConfiguration.valueOf(
-                    ContextWrapper.wrap(SiteConfiguration.Context.class, cxt)).getProperties();
-
-            engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
-            engine.setProperty(LOG_NAME, logger.getName());
-            engine.setProperty(Velocity.RESOURCE_LOADER, "url");
-            engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
-            engine.setProperty("url.resource.loader.cache", "true");
-            engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
-            engine.setProperty(Site.NAME_KEY, site);
-            engine.setProperty("site.fallback", Site.DEFAULT);
-            engine.setProperty(PUBLISH_SYSTEM_URL, props.getProperty(PUBLISH_SYSTEM_URL));
-            engine.setProperty(PUBLISH_SYSTEM_HOST, props.getProperty(PUBLISH_SYSTEM_HOST));
-            engine.setProperty("input.encoding", "UTF-8");
-            engine.setProperty("output.encoding", "UTF-8");
-            engine.setProperty("userdirective", DIRECTIVES);
-            engine.setProperty(
-                    "velocimacro.library", 
-                    site.getTemplateDir() + "/VM_global_library.vm,"
-                    + site.getTemplateDir() + "/VM_site_library.vm");
-            engine.init();
-
-        } catch (Exception e) {
-            throw new InfrastructureException(e);
+            INSTANCES.put(site, this);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
         }
-
-
-        INSTANCES.put(site, this);
-        INSTANCES_LOCK.writeLock().unlock();
     }
 
     public VelocityEngine getEngine() {

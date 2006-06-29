@@ -45,14 +45,17 @@ public final class SiteConfiguration implements SiteKeyedFactory{
 
     private SiteConfiguration(final Context cxt) {
 
-        INSTANCES_LOCK.writeLock().lock();
-        LOG.trace("Configuration(cxt)");
-        context = cxt;
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            LOG.trace("Configuration(cxt)");
+            context = cxt;
 
-        propertyLoader = context.newPropertiesLoader(CONFIGURATION_FILE, properties);
+            propertyLoader = context.newPropertiesLoader(CONFIGURATION_FILE, properties);
 
-        INSTANCES.put(context.getSite(), this);
-        INSTANCES_LOCK.writeLock().unlock();
+            INSTANCES.put(context.getSite(), this);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
     }
 
     public Properties getProperties() {

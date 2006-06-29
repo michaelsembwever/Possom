@@ -84,38 +84,41 @@ public final class TextMessages {
     private TextMessages(final Context cxt) {
 
         LOG.trace("TextMessages(cxt)");
-        INSTANCES_LOCK.writeLock().lock();
-        context = cxt;
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            context = cxt;
 
-        // import browser-applicable text messages
-        loadKeys(cxt.getSite().getLocale());
+            // import browser-applicable text messages
+            loadKeys(cxt.getSite().getLocale());
 
-        // import messages from site's preferred locale [will not override already loaded messages]
-        final String[] prefLocale = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
-                .getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
+            // import messages from site's preferred locale [will not override already loaded messages]
+            final String[] prefLocale = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
+                    .getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
 
 
-        switch(prefLocale.length){
-            case 1:
-                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE
-                        + prefLocale[0]);
-                loadKeys(new Locale(prefLocale[0]));
-                break;
-            case 2:
-                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE
-                        + prefLocale[0] + '_' + prefLocale[1]);
-                loadKeys(new Locale(prefLocale[0],prefLocale[1]));
-                break;
-            case 3:
-                LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
-                        + '_' + prefLocale[1] + '_' + prefLocale[2]);
-                loadKeys(new Locale(prefLocale[0],prefLocale[1],prefLocale[2]));
-                break;
+            switch(prefLocale.length){
+                case 1:
+                    LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE
+                            + prefLocale[0]);
+                    loadKeys(new Locale(prefLocale[0]));
+                    break;
+                case 2:
+                    LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE
+                            + prefLocale[0] + '_' + prefLocale[1]);
+                    loadKeys(new Locale(prefLocale[0],prefLocale[1]));
+                    break;
+                case 3:
+                    LOG.info(cxt.getSite()+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
+                            + '_' + prefLocale[1] + '_' + prefLocale[2]);
+                    loadKeys(new Locale(prefLocale[0],prefLocale[1],prefLocale[2]));
+                    break;
+            }
+
+
+            INSTANCES.put(cxt.getSite(),this);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
         }
-
-
-        INSTANCES.put(cxt.getSite(),this);
-        INSTANCES_LOCK.writeLock().unlock();
     }
 
     private void loadKeys(final Locale l) {

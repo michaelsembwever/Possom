@@ -102,18 +102,20 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
     private void init() {
 
-        LIST_NAMES_LOCK.writeLock().lock();
-        
-        if (!init) {
-            try {
-                initImpl(context);
-            } catch (ParserConfigurationException ex) {
-                LOG.error(ERR_FAILED_INITIALISATION, ex);
-            }
-            init = true;
-        }
+        try{
+            LIST_NAMES_LOCK.writeLock().lock();
 
-        LIST_NAMES_LOCK.writeLock().unlock();
+            if (!init) {
+                try {
+                    initImpl(context);
+                } catch (ParserConfigurationException ex) {
+                    LOG.error(ERR_FAILED_INITIALISATION, ex);
+                }
+                init = true;
+            }
+        }finally{
+            LIST_NAMES_LOCK.writeLock().unlock();
+        }
     }
     
     private static void initImpl(final Context cxt) throws ParserConfigurationException  {
