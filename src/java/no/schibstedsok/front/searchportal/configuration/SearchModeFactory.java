@@ -32,6 +32,7 @@ import no.schibstedsok.front.searchportal.result.handler.CombineNavigatorsHandle
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
 import no.schibstedsok.front.searchportal.query.transform.TvSearchQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.FieldEscapeHandler;
+import no.schibstedsok.front.searchportal.result.handler.NumberOperationHandler;
 import no.schibstedsok.front.searchportal.result.handler.TvSearchSortingHandler;
 import no.schibstedsok.front.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.front.searchportal.view.output.VelocityResultHandler;
@@ -811,6 +812,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         FIND_FILE_FORMAT (FindFileFormat.class),
         IMAGE_HELPER (ImageHelper.class),
         MULTIVALUED_FIELD_COLLECTOR (MultiValuedFieldCollector.class),
+        NUMBER_OPERATION (NumberOperationHandler.class),
         PHONE_NUMBER_CHOOSER (PhoneNumberChooser.class),
         PHONE_NUMBER_FORMATTER (PhoneNumberFormatter.class),
         SPELLING_SUGGESTION_CHOOSER (SpellingSuggestionChooser.class),
@@ -880,6 +882,23 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                                     }
                                 }
                             }
+                        }
+                        break;
+                    case NUMBER_OPERATION:
+                        final NumberOperationHandler noh = (NumberOperationHandler)handler;
+                        {
+                            if(rh.getAttribute("fields").length() >0){
+                                final String[] fields = rh.getAttribute("fields").split(",");
+                                for(String field : fields){
+                                    noh.addField(field);
+                                }
+                            }
+                            noh.setTarget(parseString(rh.getAttribute("target"), ""));
+                            noh.setOperation(parseString(rh.getAttribute("operation"), ""));
+                            noh.setMinDigits(parseInt(rh.getAttribute("min-digits"), 1));
+                            noh.setMaxDigits(parseInt(rh.getAttribute("max-digits"), 99));
+                            noh.setMinFractionDigits(parseInt(rh.getAttribute("min-fraction-digits"), 0));
+                            noh.setMaxFractionDigits(parseInt(rh.getAttribute("max-fraction-digits"), 99));
                         }
                         break;
                     case IMAGE_HELPER:
