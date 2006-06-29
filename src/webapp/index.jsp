@@ -120,9 +120,9 @@
                 <tr>
                     <td><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
-                <tr>
-                    <td class="bg"><img src="images/index/tv.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TVs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
-                </tr>
+                <!--<tr>-->
+                    <!--<td class="bg"><img src="images/index/tv.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TVs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>-->
+                <!--</tr>-->
                 <tr>
                     <td><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
