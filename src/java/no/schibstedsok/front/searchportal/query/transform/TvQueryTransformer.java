@@ -54,9 +54,9 @@ public final class TvQueryTransformer extends AbstractQueryTransformer {
         
         // Special case to choose channel.
         if (origQuery.startsWith("tv_")) {
-           filter.append("+wpfornavn:^");
+           filter.append("+sgeneric11:'");
            filter.append(origQuery.substring(3));
-           filter.append("$ ");
+           filter.append("' ");
         }
 
         filter.append("+starttime:>");
