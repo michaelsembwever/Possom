@@ -255,7 +255,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
             <%}%>
 
-           <decorator:getProperty property="page.blogDateNavigation"/>
+            <search:velocity template="navigators/scanpix" command="scanpix"/>
+            <decorator:getProperty property="page.blogDateNavigation"/>
 
             <c:if test='${!(empty tab.rssResultName)}'>
                 <div  style="margin-top: 11px;">
