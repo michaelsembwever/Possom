@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.result.SearchResult;
+import no.schibstedsok.front.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
 import org.nfunk.jep.JEP;
 import org.nfunk.jep.type.Complex;
@@ -27,26 +28,31 @@ public final class NumberOperationHandler implements ResultHandler {
 
         final SearchResult result = cxt.getSearchResult();
         
-        final JEP parser = new JEP();
-
-        parser.addStandardConstants();
-        parser.addStandardFunctions();
-        parser.addComplex();
-        for(String field : fields){
-            final String value = result.getField(field);
-            parser.addVariable(field, value != null && value.length()>0 ? Double.parseDouble(value) : 0D);
-        }
-
-        parser.parseExpression(operation);
         final NumberFormat formatter = NumberFormat.getInstance(cxt.getSite().getLocale());
         formatter.setMinimumIntegerDigits(minDigits);
         formatter.setMaximumIntegerDigits(maxDigits);
         formatter.setMinimumFractionDigits(minFractionDigits);
         formatter.setMaximumFractionDigits(maxFractionDigits);
         
-        final String r = formatter.format(parser.getValue());
-        LOG.debug(operation + '=' + r);
-        result.addField(target, r);
+        final JEP parser = new JEP();
+
+        parser.addStandardConstants();
+        parser.addStandardFunctions();
+        parser.addComplex();
+        
+        for(SearchResultItem item : result.getResults()){
+            
+            for(String field : fields){
+                final String value = item.getField(field);
+                parser.addVariable(field, value != null && value.length()>0 ? Double.parseDouble(value) : 0D);
+            }
+
+            parser.parseExpression(operation);
+
+            final String r = formatter.format(parser.getValue());
+            LOG.debug(operation + '=' + r);
+            item.addField(target, r);
+        }
     }
 
     public void addField(final String field) {
