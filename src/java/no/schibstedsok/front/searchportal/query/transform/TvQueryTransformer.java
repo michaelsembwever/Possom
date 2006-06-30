@@ -52,16 +52,22 @@ public final class TvQueryTransformer extends AbstractQueryTransformer {
 
         final StringBuilder filter = new StringBuilder();
         
-        // Special case to choose channel.
+        // Special case to choose channel. Mobile only.
+        // TODO: we're now using tv data from two different indices. The new
+        // is used by web & and the old one is used by mobile.
         if (origQuery.startsWith("tv_")) {
-           filter.append("+sgeneric11:'");
+           filter.append("+wpfornavn:^");
            filter.append(origQuery.substring(3));
-           filter.append("' ");
-        }
+           filter.append("$ ");
+           filter.append("+tvstarttime:>");
+           filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(new Date()));
+           return filter.toString();
+        } else {
 
-        filter.append("+starttime:>");
-        filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(new Date()));
+            filter.append("+starttime:>");
+            filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(new Date()));
         
-        return filter.toString();
+            return filter.toString();
+        }
     }
 }
