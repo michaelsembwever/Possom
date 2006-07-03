@@ -29,7 +29,17 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
     public String getFilter(final Map parameters) {
 
         final boolean blankQuery = getContext().getQuery().isBlank();
-        final String sortBy = parameters.get("userSortBy") != null ? (String) parameters.get("userSortBy") : "channel";
+        
+        final boolean navChannels = parameters.get("nav_channels") != null ? true : false;
+        final boolean navDays = parameters.get("nav_days") != null ? true : false;
+        final boolean navCategories = parameters.get("nav_categories") != null ? true : false;
+        final boolean noNav = !(navChannels || navDays || navCategories); 
+        
+        final String sortByString = parameters.get("userSortBy") != null ? (String) parameters.get("userSortBy") : "channel";
+        
+        final boolean sortByChannel = "channel".equals(sortByString);
+        final boolean sortByDay = "day".equals(sortByString);
+        final boolean sortByCategory = "category".equals(sortByString);
         
         Calendar cal = Calendar.getInstance();
         final StringBuilder filter = new StringBuilder();
@@ -37,14 +47,20 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
         filter.append("");
         
-        filter.append(" +igeneric3:>14 ");
+        if (blankQuery) {
+            if (noNav 
+                    || (navDays && !navChannels && !sortByDay)
+                    || (navChannels && !sortByChannel)) {
+                filter.append(" +igeneric3:>14 ");
+            }
+        }
         
         if (getWithEndtime() && parameters.get("nav_days") == null) {
-            if (sortBy.equals("channel") || sortBy.equals("category")) {
+            if (sortByChannel || sortByCategory) {
                 filter.append(" +starttime:<");
                 cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
                 filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
-            } else if (sortBy.equals("day")) {
+            } else if (sortByDay) {
                 filter.append(" +starttime:<");
                 cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
                 filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
@@ -54,19 +70,6 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
             filter.append(" +starttime:<");
             filter.append(new SimpleDateFormat("yyyy-MM-dd'T'00:00:00'Z'").format(cal.getTime()));
         }
-//        if (blankQuery && getWithEndtime()) {
-//
-//
-//            filter.append(" +endtime:<");
-//            if (sortBy.equals("day")) {
-//                /* Add one week */
-//                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
-//            } else {
-//                /* Add one day */
-//                cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
-//            }
-//            filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
-//        }
         return filter.toString();
     }
     
