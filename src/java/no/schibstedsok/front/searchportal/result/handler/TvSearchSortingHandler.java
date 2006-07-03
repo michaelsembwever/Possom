@@ -71,6 +71,10 @@ public class TvSearchSortingHandler implements ResultHandler {
             return;
         }
         
+        if (parameters.get("nav_days") != null && sortBy.equals("day")) {
+            return;
+        }
+        
         /* Split search result */
         for (SearchResultItem sri : sr.getResults()) {
             String fieldValue = sri.getField(field);
