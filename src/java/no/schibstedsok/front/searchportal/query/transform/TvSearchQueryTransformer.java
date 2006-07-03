@@ -33,10 +33,11 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         
         Calendar cal = Calendar.getInstance();
         final StringBuilder filter = new StringBuilder();
-        filter.append("+starttime:>");
+        filter.append("+endtime:>");
         filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
         filter.append("");
         
+        filter.append(" +igeneric3:>14 ");
         
         if (getWithEndtime() && parameters.get("nav_days") == null) {
             if (sortBy.equals("channel") || sortBy.equals("category")) {
