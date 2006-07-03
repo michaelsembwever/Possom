@@ -422,7 +422,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.persons-results"/>
                 <%}%>
 
-                <%if (currentC.equals("p") || currentC.equals("pp") ) {%>
+                <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") ) {%>
                     <div>
                         <decorator:getProperty property="page.picsearch-results"/>
                         <search:velocity template="results/scanpix" command="scanpix"/>
@@ -430,7 +430,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
                         <div class="clearFloat">&nbsp;</div>
                     </div>
-                <%}%>
+                <%}%>                
 
                 <%if (currentC.equals("t")) {%>
                     <decorator:getProperty property="page.tv-results"/>
@@ -451,7 +451,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
                 </td>
-            <%}else if ( currentC.equals("pp") ) {%>
+            <%}else if ( currentC.equals("pp") || currentC.equals("pip")) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
 
