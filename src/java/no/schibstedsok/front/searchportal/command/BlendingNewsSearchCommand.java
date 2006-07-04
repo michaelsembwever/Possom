@@ -23,6 +23,9 @@ import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 
 /**
+ * Temporary search command while we wait for neo-collapsing functionality
+ * to be available in fast. This command is used to get the latest news article 
+ * from a number of selected sources. A separate search is done for each source.
  *
  * @author maek
  */
@@ -33,6 +36,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
     private final BlendingNewsSearchConfiguration cfg;
     private String additionalFilter;
     private boolean fakeResultsToReturn = false;
+    private SearchResult result;
     
     
     /** Creates a new instance of NewsSearchCommand
@@ -76,7 +80,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
     }
     
     protected String getAdditionalFilter() {
-        return additionalFilter;
+        return super.getAdditionalFilter() + " " + additionalFilter;
     }
     
     private void setAdditionalFilter(final String filter) {
