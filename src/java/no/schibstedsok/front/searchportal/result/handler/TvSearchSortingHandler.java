@@ -4,6 +4,7 @@ package no.schibstedsok.front.searchportal.result.handler;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -107,8 +108,11 @@ public class TvSearchSortingHandler implements ResultHandler {
                 joinBlocks(cxt, hm, "channels");
             }
         } else if (sortBy.equals("day")) {
+            Calendar cal = Calendar.getInstance();
+            int startDay = (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7;
+            
             for (int i = 0; i < 7; i++) {
-                String weekDay = Integer.toString(i);
+                String weekDay = Integer.toString((startDay + i) % 7);
                 if (hm.containsKey(weekDay)) {
                     sr.getResults().addAll(hm.get(weekDay));
                 }
