@@ -4,6 +4,7 @@ package no.schibstedsok.front.searchportal.command;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -146,7 +147,21 @@ public class StormWeatherSearchCommand extends FastSearchCommand {
                 if (doc != null) {
                     NodeList nl = doc.getElementsByTagName("pointforecast");
                     if(nl != null && nl.getLength() > 0) {
-                        Element el = (Element)nl.item(1);	// current forecast
+                        Calendar cal = Calendar.getInstance();
+                        int hour = cal.get(Calendar.HOUR_OF_DAY);
+                        int idx = 0;
+                        
+                        if (hour >= 21) {
+                            idx = 3;
+                        } else if (hour >= 15) {
+                            idx = 2;
+                        } else if (hour >= 9) {
+                            idx = 1;
+                        } else {
+                            idx = 0;
+                        }
+                        
+                        Element el = (Element)nl.item(idx);	// current forecast
                         e = getItem(el);
                     }
                 }
