@@ -69,6 +69,11 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
         if (getRunningQuery().getQuery().isBlank() && !getParameters().containsKey("nav_channels") && !getParameters().containsKey("nav_categories")) {
             return defaultChannelFilter.toString();
         }
+        
+        if (getRunningQuery().getQuery().isBlank() && getParameters().containsKey("output") && getParameters().get("output").equals("rss")) {
+            return defaultChannelFilter.toString();
+        }
+        
         return "";
     }
 }
