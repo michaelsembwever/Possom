@@ -34,6 +34,8 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         final boolean navDays = parameters.get("nav_days") != null ? true : false;
         final boolean navCategories = parameters.get("nav_categories") != null ? true : false;
         final boolean noNav = !(navChannels || navDays || navCategories); 
+
+        final boolean isRSS = parameters.get("output") != null && parameters.get("output").equals("rss");
         
         final String sortByString = parameters.get("userSortBy") != null ? (String) parameters.get("userSortBy") : "channel";
         
@@ -47,7 +49,7 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime()));
         filter.append("");
         
-        if (blankQuery) {
+        if (blankQuery && !isRSS) {
             if (noNav 
                     || (navDays && !navChannels && !sortByDay)
                     || (navChannels && !sortByChannel)) {
