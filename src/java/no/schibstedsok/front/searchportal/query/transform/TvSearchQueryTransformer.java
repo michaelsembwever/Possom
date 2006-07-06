@@ -55,6 +55,13 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
                     || (navChannels && !sortByChannel)) {
                 filter.append(" +igeneric3:>17 ");
             }
+            if (noNav && sortByDay) {
+                Calendar todayCal = Calendar.getInstance();
+                todayCal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60);
+                filter.append(" +(starttime:<");
+                filter.append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(todayCal.getTime()));
+                filter.append(" or igeneric3:<19)");
+            }
         }
         
         if (getWithEndtime() && parameters.get("nav_days") == null) {
@@ -70,7 +77,7 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
         } else {
             cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
             filter.append(" +starttime:<");
-            filter.append(new SimpleDateFormat("yyyy-MM-dd'T'00:00:00'Z'").format(cal.getTime()));
+            filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
         }
         return filter.toString();
     }
