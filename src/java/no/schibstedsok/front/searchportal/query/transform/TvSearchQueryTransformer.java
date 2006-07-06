@@ -53,7 +53,7 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
             if (noNav 
                     || (navDays && !navChannels && !sortByDay)
                     || (navChannels && !sortByChannel)) {
-                filter.append(" +igeneric3:>14 ");
+                filter.append(" +igeneric3:>17 ");
             }
         }
         
