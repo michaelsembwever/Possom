@@ -1,5 +1,8 @@
 document.write('<form name="tipsform" method="get" action="http://www.sesam.no/psearch/">');
 document.write('<input name="lan" value="en" type="hidden" />');
+document.write('<input name="ss_lt" value="searchbox" type="hidden"/>');
+document.write('<input name="ss_ss" value="' + location.host + '" type="hidden"/>');
+document.write('<input name="ss_pid" value="sesamvenn" type="hidden"/>');
 document.write('<table border="0" cellpadding="0" cellspacing="0" style="width: 178px; height: 83px; margin:5px 0px; background: #F3F3F3; border: 1px solid #A63F83;">');
 document.write('<tr><td valign="middle" style="padding-left:5px;"><img src="http://www.sesam.no/export/js/logo.gif" alt="logo" /></td></tr>');
 document.write('<tr>');
