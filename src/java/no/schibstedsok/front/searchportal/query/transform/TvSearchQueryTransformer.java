@@ -37,6 +37,10 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
 
         final boolean isRSS = parameters.get("output") != null && parameters.get("output").equals("rss");
         
+        if (parameters.get("userSortBy") == null && !blankQuery) {
+            parameters.put("userSortBy", "day");
+        }
+        
         final String sortByString = parameters.get("userSortBy") != null ? (String) parameters.get("userSortBy") : "channel";
         
         final boolean sortByChannel = "channel".equals(sortByString);
