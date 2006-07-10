@@ -1,0 +1,16 @@
+document.write('<div id="sesamsok" style="background:url(http://www.sesam.no/export/pss/pssbg_110x115.gif) no-repeat; height:115px; width:110px; position:relative; text-align:left; font:11px Arial, Helvetica, sans-serif; color:#686663; line-height:1em;">');
+document.write('  <form name="search" action="http://www.sesam.no/search/" method="get" >');
+document.write('    <ul style="margin:0; padding:0; position:absolute; left:10px; top:3px; list-style:none; font-weight:bold; color:#87005B;">');
+document.write('    	<li style="margin:0; padding:0;"><label><input type="radio" name="c" value="pss" checked="checked" />');
+document.write(location.host);
+document.write('</label></li>');
+document.write('      	<li style="margin:0; margin-top:-5px; padding:0;"><label><input type="radio" name="c" value="d" /> Netts&oslash;k </label></li>');
+document.write('    </ul>');
+document.write('<input name="ss_lt" value="searchbox" type="hidden"/>');
+document.write('<input name="ss_ss" value="' + location.host + '" type="hidden"/>');
+document.write('<input name="ss_pid" value="sesamvenn" type="hidden"/>');
+document.write('<input name="sitesearch" value="' + location.host + '" type="hidden"/>');
+document.write('    <input type="text" name="q" style="width:80px; position:absolute; padding:1px 0 1px 3px; font-weight:bold; left:13px; top:45px;" />');
+document.write('    <input type="image" style="position:absolute; left:13px; top:70px;" value="submit" src="http://www.sesam.no/export/pss/sokButton.gif" alt="S&oslash;k" />');
+document.write('  </form>');
+document.write('</div>');
