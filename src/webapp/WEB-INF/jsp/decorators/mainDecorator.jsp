@@ -200,7 +200,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 	<%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
         <td class="cell_one" valign="top">
-
             <table border="0" cellspacing="0" cellpadding="0" class="menu">
                 <c:set var="rows" value="${0}"/>
                 <c:forEach var="e" items="${sources}">
@@ -273,7 +272,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     </table>
                     <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                         <tr>
-                            <td class="nav_pad"><a href="<c:out value='${request.requestURL}' escapeXml="false" />?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss" style="display:inline;">RSS</a>&nbsp;&nbsp; |&nbsp;&nbsp; <a href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss&feedtype=atom_0.3" style="display:inline;">ATOM</a></td>
+                            <td class="nav_pad"><a href="<search:linkPulse url="${request.requestURL}?${request.queryString}&output=rss" param="category:static;subcategory:left" index=""/>" style="display:inline;">RSS</a>&nbsp;&nbsp; |&nbsp;&nbsp; <a href="<search:linkPulse url="${request.requestURL}?${request.queryString}&output=rss&feedtype=atom_0.3" param="category:static;subcategory:left" index=""/>" style="display:inline;">ATOM</a></td>
                         </tr>
                         <tr>
                             <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
