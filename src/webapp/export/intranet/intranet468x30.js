@@ -1,4 +1,4 @@
-document.write('<div id="sesamsok" style="width:468px; height:30px; background-image:url(http://www.sesam.no/export/intranett/intranetbg_468x30.jpg); background-color:#000000; font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#686663; margin:0px 0px 0px 0px;">');
+document.write('<div id="sesamsok" style="width:468px; height:30px; background-image:url(http://www.sesam.no/export/intranet/intranetbg_468x30.jpg); background-color:#000000; font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#686663; margin:0px 0px 0px 0px;">');
 document.write('<table width="465" height="30" border="0" cellspacing="0" cellpadding="0" style="margin:0 0 0 3px;">');
 document.write('<form name="input" action="http://www.sesam.no/search/" method="get" style="margin:0px 0px 0px 7px;">');
 document.write('<tr>');
@@ -11,8 +11,8 @@ document.write('<input name="ss_lt" value="searchbox" type="hidden"/>');
 document.write('<input name="ss_ss" value="' + location.host + '" type="hidden"/>');
 document.write('<input name="ss_pid" value="sesamvenn" type="hidden"/>');
 document.write('</td>');
-document.write('<td width="51"><input type="image" name="" value="" src="http://www.sesam.no/export/intranett/sokButtonsmall.gif" width="45" height="18" border="0" alt="Submit" style="margin:3px 3px 2px 3px; "/></td>');
-document.write('<td width="18"><img src="http://www.sesam.no/export/intranett/ikonNyhet.jpg" alt="" width="15" height="15" align="absbottom" style="margin:2px 3px 0 0;" /></td>');
+document.write('<td width="51"><input type="image" name="" value="" src="http://www.sesam.no/export/intranet/sokButtonsmall.gif" width="45" height="18" border="0" alt="Submit" style="margin:3px 3px 2px 3px; "/></td>');
+document.write('<td width="18"><img src="http://www.sesam.no/export/intranet/ikonNyhet.jpg" alt="" width="15" height="15" align="absbottom" style="margin:2px 3px 0 0;" /></td>');
 document.write('<td width="116"><span style="color:#7568AD; "><a href="http://www.sesam.no/search/?nav_sources=contentsourcenavigator&c=m&contentsource=Norske%20nyheter&userSortBy=datetime&q=" style="color:#7568AD; text-decoration:none;"><b><u>Nyheter</u></b></a></span></td>');
 document.write('</form>');
 document.write('<td>');
