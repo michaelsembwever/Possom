@@ -66,7 +66,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final AnalysisRuleFactory rules;
     private final String queryStr;
     private final Query queryObj;
-    protected volatile Map<String,Object> parameters = new Hashtable<String,Object>();
+    protected final Map<String,Object> parameters;
     private final Locale locale = new Locale("no", "NO");
     private final List<Modifier> sources = new Vector<Modifier>();
     private final TokenEvaluatorFactory tokenEvaluatorFactory;
@@ -287,7 +287,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             }
                         }
                     }catch(ExecutionException ee){
-                        LOG.error(ERR_EXECUTION_ERROR, ee.getCause());
+                        LOG.error(ERR_EXECUTION_ERROR, ee);
                     }
                 }
             }

@@ -51,6 +51,17 @@ public final class RunningWebQuery extends RunningQueryImpl {
             }
         }
         
+        // Hack to keep vg site search working. Dependent on old query
+        // parameters. Remove when vg has been reimplented a proper site search.
+        if (parameters.containsKey("nav_newspaperNames")) {
+            parameters.put("nav_newspaperNames", "newssourcenavigator");
+        }
+
+        if (parameters.containsKey("ywpopnavn")) {
+            parameters.put("newssource", parameters.get("ywpopnavn"));
+            parameters.remove("ywpopnavn");
+        }
+        
         // Add all request attributes (servlet may have added some things already)...
         for (Enumeration<String> e = (Enumeration<String>)request.getAttributeNames(); e.hasMoreElements();) {
 

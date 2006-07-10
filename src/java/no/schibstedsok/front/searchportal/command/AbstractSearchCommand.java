@@ -78,7 +78,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final String additionalFilter;
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
-    private volatile Map<String,Object> parameters;
+    private final Map<String,Object> parameters;
     private volatile boolean completed = false;
 
 
@@ -96,24 +96,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
 
-        // Hack to keep vg site search working. Dependent on old query
-        // parameters. Remove when vg has been reimplented a proper site search.
-        // XXX This isn't compatable with the data-model, all commands must use one common parameter map.
-        // Map<String, Object> m = new HashMap<String, Object>();
-        Map<String, Object> m = parameters;
-        
-        m.putAll(parameters);
-        
-        if (m.containsKey("nav_newspaperNames")) {
-            m.put("nav_newspaperNames", "newssourcenavigator");
-        }
-
-        if (m.containsKey("ywpopnavn")) {
-            m.put("newssource", m.get("ywpopnavn"));
-            m.remove("ywpopnavn");
-        }
-        
-        this.parameters = m;
+        this.parameters = parameters;
 
         // XXX should be null so we know neither applyQueryTransformers or performQueryTranformation has been called
         transformedQuery = context.getQuery().getQueryString();

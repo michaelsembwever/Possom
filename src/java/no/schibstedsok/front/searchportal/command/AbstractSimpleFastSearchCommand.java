@@ -499,7 +499,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                     final SpellingSuggestion suggestion = createSpellingSuggestion(custom);
                     searchResult.addSpellingSuggestion(suggestion);
                 }
-/*
+
                 if (transformation.getName().equals("FastQT_ProperName")) {
                     String custom = transformation.getCustom();
                     SpellingSuggestion suggestion = createProperNameSuggestion(custom);
@@ -507,8 +507,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                         searchResult.addSpellingSuggestion(suggestion);
                     }
                 }
- */
-            }
+             }
         }
 
         if (context.getRunningQuery().getQueryString().equals("42")) {
