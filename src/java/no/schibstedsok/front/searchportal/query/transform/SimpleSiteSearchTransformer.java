@@ -83,9 +83,9 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
             }
 
             // The site is given in the site parameter
-            final String privateSite = parameters.get("site") instanceof String[]
-                ? ((String[])parameters.get("site"))[0]
-                : parameters.get("site") instanceof String ? (String)parameters.get("site") : null;
+            final String privateSite = parameters.get("sitesearch") instanceof String[]
+                ? ((String[])parameters.get("sitesearch"))[0]
+                : parameters.get("sitesearch") instanceof String ? (String)parameters.get("sitesearch") : null;
             
             if (privateSite != null && privateSite.length() > 0) {
                 final String collection = parameters.get("c") instanceof String[]
