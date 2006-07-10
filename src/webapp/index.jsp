@@ -97,7 +97,7 @@
         <td valign="top" align="left">
             <table id="front_menu" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td class="bg"><img src="images/index/nyheter_20_20.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?nav_sources=contentsourcenavigator&amp;c=m&amp;contentsource=Norske nyheter&amp;userSortBy=datetime&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
+                    <td class="bg"><img src="images/index/nyheter_20_20.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=m&amp;newscountry=Norge&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
                 </tr>
                 <tr>
                     <td><img src="images/index/dottedline.gif" alt="" /></td>
