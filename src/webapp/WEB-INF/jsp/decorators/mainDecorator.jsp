@@ -295,32 +295,32 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
 
 
-                        <%--  Header  --%>
-                        <% if ("true".equals(smart)) { %>
-                            <decorator:getProperty property="page.greybar_smart"/>
-                        <% } else if ("true".equals(help)) { %>
-                            <decorator:getProperty property="page.greybar_help"/>
-                        <% } %>  <%--  Help header  --%>
+                    <%--  Header  --%>
+                    <% if ("true".equals(smart)) { %>
+                        <decorator:getProperty property="page.greybar_smart"/>
+                    <% } else if ("true".equals(help)) { %>
+                        <decorator:getProperty property="page.greybar_help"/>
+                    <% } %>  <%--  Help header  --%>
 
 
-                         <%--  Sok smart  --%>
-                         <% if ( publish ) { %>
-                            <decorator:getProperty property="page.publishing_page"/>
-                         <% } else if ("true".equals(smart)) { %>
-                            <decorator:getProperty property="page.smart"/>
-                         <% } else if ("true".equals(help)) { %>
-                             <decorator:getProperty property="page.help"/>
-                         <% } else if ("true".equals(about)) { %>
-                            <decorator:getProperty property="page.about"/>
-                         <% } else if ("true".equals(ads_help)) { %>
-                            <decorator:getProperty property="page.ads_help"/>
-                         <% } else if ("true".equals(box)) { %>
-                            <decorator:getProperty property="page.searchbox"/>
-                         <% } else if ("true".equals(toolbar)) { %>
-                            <decorator:getProperty property="page.toolbar"/>
-                         <% } else if ("true".equals(tradedoubler)) { %>
-                         	<decorator:getProperty property="page.tradedoubler"/>
-                         <% } else { %>
+                     <%--  Sok smart  --%>
+                     <% if ( publish ) { %>
+                        <decorator:getProperty property="page.publishing_page"/>
+                     <% } else if ("true".equals(smart)) { %>
+                        <decorator:getProperty property="page.smart"/>
+                     <% } else if ("true".equals(help)) { %>
+                         <decorator:getProperty property="page.help"/>
+                     <% } else if ("true".equals(about)) { %>
+                        <decorator:getProperty property="page.about"/>
+                     <% } else if ("true".equals(ads_help)) { %>
+                        <decorator:getProperty property="page.ads_help"/>
+                     <% } else if ("true".equals(box)) { %>
+                        <decorator:getProperty property="page.searchbox"/>
+                     <% } else if ("true".equals(toolbar)) { %>
+                        <decorator:getProperty property="page.toolbar"/>
+                     <% } else if ("true".equals(tradedoubler)) { %>
+                        <decorator:getProperty property="page.tradedoubler"/>
+                     <% } else { %>
 
 			<table border="0" width="100%">
 			<tr>
@@ -379,7 +379,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                      </c:choose>
                 </td>
 			</tr>
-			</table>
+            </table>
                         <% } %>  <%-- Sok smart --%>
                 <%}%>
 
@@ -447,6 +447,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%if (currentC.equals("b")) {%>
                 <decorator:getProperty property="page.blog-search"/>
                 <%}%>
+
+                    <%--  offset  --%>
+                    <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
+                    <decorator:getProperty property="page.offsetPager"/>
+                    <%}%>
                </td>
 
             <%if (q.trim().equals("") && !currentC.equals("t")) {%>
