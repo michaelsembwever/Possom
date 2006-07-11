@@ -51,23 +51,26 @@ public class DateFormatHandler implements ResultHandler {
 
             final String docDateTime = item.getField(sourceField);
 
-            String year = docDateTime.substring(0,4);
-            item.addField(fieldPrefix + Fields.YEAR.name(), year);
-            
-            String month = docDateTime.substring(5,7);
-            item.addField(fieldPrefix + Fields.MONTH.name(), month);
-            
-            String day = docDateTime.substring(8,10); 
-            item.addField(fieldPrefix + Fields.DAY.name(), day);
-            
-            String hour = docDateTime.substring(11, 13);
-            item.addField(fieldPrefix + Fields.HOUR.name(), hour);
-            
-            String minute = docDateTime.substring(14, 16);
-            item.addField(fieldPrefix + Fields.MINUTE.name(), minute);
-            
-            String second = docDateTime.substring(17, 19);
-            item.addField(fieldPrefix + Fields.SECOND.name(), second);
+            if (docDateTime != null) {
+                String year = docDateTime.substring(0,4);
+                item.addField(fieldPrefix + Fields.YEAR.name(), year);
+
+                String month = docDateTime.substring(5,7);
+                item.addField(fieldPrefix + Fields.MONTH.name(), month);
+
+                String day = docDateTime.substring(8,10);
+                item.addField(fieldPrefix + Fields.DAY.name(), day);
+
+                String hour = docDateTime.substring(11, 13);
+                item.addField(fieldPrefix + Fields.HOUR.name(), hour);
+
+                String minute = docDateTime.substring(14, 16);
+                item.addField(fieldPrefix + Fields.MINUTE.name(), minute);
+
+                String second = docDateTime.substring(17, 19);
+                item.addField(fieldPrefix + Fields.SECOND.name(), second);
+            }
+
         }
     }
 }
