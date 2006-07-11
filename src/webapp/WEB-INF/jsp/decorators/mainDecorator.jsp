@@ -471,6 +471,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%} else if (currentC.equals("t")) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.tvSearchWebTv"/>
+                    <decorator:getProperty property="page.ads"/>
                 </td>
             <%}%>
 
