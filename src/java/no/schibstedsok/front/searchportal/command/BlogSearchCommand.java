@@ -37,7 +37,10 @@ public class BlogSearchCommand extends AdvancedFastSearchCommand {
     }
 
     protected void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null) {
+
+        if (clause.getField() == null 
+                && !getTransformedTerm(clause).trim().equals("")) 
+        {
             appendToQueryRepresentation("(");
             appendToQueryRepresentation("content:");
             appendToQueryRepresentation(getTransformedTerm(clause));
