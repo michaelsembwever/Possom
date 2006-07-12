@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilderFactory;
 import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.SiteKeyedFactory;
@@ -58,10 +59,11 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     private static final String ERR_WHILE_READING_ELEMENT = "Error while reading element ";
     private static final String ERR_TOO_MANY_PREDICATES_IN_NOT
             = "Illegal to have more than one predicate inside a <not> element. Occurred under ";
+    private static final String WARN_RULE_NOT_FOUND = "Unable to find rule: ";
     private static final String DEBUG_CREATED_PREDICATE = "Parsed predicate ";
     private static final String DEBUG_STARTING_RULE = "Parsing rule ";
     private static final String DEBUG_FINISHED_RULE = "Parsed rule ";
-
+    
     /**
      * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
      * time. But only one will persist in the map.
@@ -282,18 +284,6 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
     /**
      *
-     * Returns a map of all the rules. The key is the name of the rule
-     *
-     * @return all rules.
-     */
-    public Map getRules() {
-        init();
-        return rules;
-    }
-
-
-    /**
-     *
      * Returns the rule with the name <code>ruleName</code>.
      *
      * @param   ruleName    the name of the rule
@@ -301,10 +291,32 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      */
     public AnalysisRule getRule(final String ruleName) {
         LOG.trace("getRule(" + ruleName + ")");
-
+        
         init();
-        final AnalysisRule rule = (AnalysisRule) rules.get(ruleName);
-
+        AnalysisRule rule = (AnalysisRule) rules.get(ruleName);
+        
+        if(rule == null) {
+            rule = valueOf(ContextWrapper.wrap(
+                    Context.class,
+                    new SiteContext() {
+                public Site getSite() {
+                    return context.getSite().getParent();
+                }
+                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                    return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                }
+                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                    return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+                }
+            },
+                    context
+                    )).getRule(ruleName);
+            
+            if (rule == null) {
+                LOG.warn(WARN_RULE_NOT_FOUND + ruleName);
+            }
+        }
+        
         return rule;
     }
 
