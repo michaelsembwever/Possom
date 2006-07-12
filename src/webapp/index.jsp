@@ -70,7 +70,7 @@
             </div>
         </td>
         <td valign="middle" align="left">
-            <form name="sf" action="search/" onsubmit='return check();'>
+            <form name="sf" action="<search:linkPulse url="" param="category:front_search" index="true"/>" onsubmit='return check();'>
                 <div style="margin-top: 6px">
                     <input type="text" name="q" class="input_main" onfocus="this.form.q.select();" /> &nbsp;
                     <script type="text/javascript"><!--
