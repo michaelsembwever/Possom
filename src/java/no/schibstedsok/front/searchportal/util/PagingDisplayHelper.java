@@ -68,14 +68,19 @@ public class PagingDisplayHelper {
     }
 
     public int getFirstVisiblePage() {
+
         int firstPage = 0;
-        if (getCurrentPage() >= 7) {
-            if (((numberOfResults + pageSize - 1) / pageSize) > (getCurrentPage() + 4))
-                firstPage = getCurrentPage() - 5;
-            else
-                firstPage = ((numberOfResults + pageSize - 1) / pageSize) - 9;
-        } else
+        int n = (getCurrentOffset()/pageSize);
+        if (n > 5)
+            if ( ( getNumberOfPages() - getCurrentPage() ) < 5) {
+                firstPage = getNumberOfPages() - 9;
+                if (firstPage <= 0)
+                    firstPage = 1;
+            } else
+                firstPage = (n - 5 + 1);
+        else
             firstPage = 1;
+
         return firstPage;
     }
 
