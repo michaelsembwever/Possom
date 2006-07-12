@@ -317,7 +317,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
-        DAILY_WORD_COMMAND(DailyWordConfiguration.class);
+        DAILY_WORD_COMMAND(DailyWordConfiguration.class),
+        BLOG_COMMAND(BlogSearchConfiguration.class);
         
 
         private final Class<? extends SearchConfiguration> clazz;
@@ -604,7 +605,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     tssc.setResultsToFetch(Integer.parseInt(commandE.getAttribute("results-to-fetch")));
 
                 }
-
+                if (sc instanceof BlogSearchConfiguration) {
+                    final BlogSearchConfiguration bsc = (BlogSearchConfiguration) sc;
+                }
+                
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);
