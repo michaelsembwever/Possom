@@ -181,7 +181,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     </tr>
     <% }else{ %>
     <tr>
-        <td class="cell_one"><span class="pad_5l"><%=text.getMessage("naviger") %></span></td>
+        <td class="cell_one"><span class="pad_5l"><%if (!currentC.equals("l")) { %><%=text.getMessage("naviger") %><% } %></span></td>
         <td class="cell_three"><decorator:getProperty property="page.middle-bar"/></td>
         <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
     </tr>
@@ -488,9 +488,14 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     </table>
 
     <%--  footer  --%>
-    <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
+    <%if (q==null || !q.trim().equals("") || "m".equals(currentC) ) {%>
     <decorator:getProperty property="page.verbosePager"/>
     <%}%>
+
+    <%if ("l".equals(currentC) ) {%>
+    <decorator:getProperty property="page.verbosePager"/>
+    <%}%>
+
 
     <decorator:getProperty property="page.footer"/>
 
