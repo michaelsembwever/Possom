@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copy|ight (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.command;
 
 
@@ -123,6 +123,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @return The transformed query.
      */
     public String getTransformedQuery() {
+        System.out.println("** transformedquery " + transformedQuery);
         return transformedQuery;
     }
 
@@ -285,8 +286,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             //TODO: Hide this in QueryRule.execute(some parameters)
             boolean executeQuery = queryToUse.length() > 0;
-            if (parameters.get("contentsource") != null || parameters.get("newscountry") != null) {
-                LOG.debug("call: Got contentsource, executeQuery=true");
+            if (parameters.get("contentsource") != null || parameters.get("newscountry") != null || parameters.get("c").equals("n")) {
+                if (parameters.get("c").equals("n"))
+                    LOG.debug("call: Got sitesearch, executeQuery=true");
+                else
+                    LOG.debug("call: Got contentsource, executeQuery=true");
                 executeQuery = true;
             }
 
