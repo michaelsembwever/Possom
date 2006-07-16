@@ -117,6 +117,15 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                 + super.getResource();
     }
 
+    private String getResource(final Site site) {
+        
+        return "http://"
+                + site.getName()
+                + site.getConfigContext()
+                + "conf/"
+                + super.getResource();
+    }
+    
     public static String getHostHeader(final String resource){
         return resource.substring(7,resource.indexOf('/',8));
     }
@@ -128,29 +137,33 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
 
     /** {@inheritDoc}
      */
-    protected String getFallbackResource() {
-        final Site fallback = Site.DEFAULT;
-
-        return "http://"
-                + fallback.getName()
-                + fallback.getConfigContext()
-                + "conf/"
-                + super.getResource();
-    }
-
-    /** {@inheritDoc}
-     */
     public void run() {
         if(props != null){
             // Properties inherent through the fallback process. Keys are *not* overridden.
-            loadResource(getResource());
-            loadResource(getFallbackResource());
 
+            Site site = getContext().getSite();
+            
+            do {
+                loadResource(getResource(site));
+                site = site.getParent();
+                
+            } while (site != null);
+            
         }else{
             // Default behavour: only load first found resource
             if (!loadResource(getResource())) {
+                Site site = getContext().getSite();
                 LOG.warn(WARN_USING_FALLBACK + getResource());
-                if (!loadResource(getFallbackResource())) {
+
+                do {
+                    if (loadResource(getResource(site))) {
+                        break;
+                    } else {
+                        site = site.getParent();
+                    }
+                } while (site != null);
+
+                if (site == null) {
                     LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
                 }
             }
