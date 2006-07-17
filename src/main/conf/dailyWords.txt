@@ -12,7 +12,7 @@
 2006-07-12;kongeparken;9041
 2006-07-13;sjøvett;9043
 2006-07-14;stavernfestivalen;3299
-2006-07-17;sting Bergen;4271
+2006-07-17;sting bergen;4271
 2006-07-18;moldejazz;7211
 2006-07-19;røros;4852
 2006-07-20;slottsfjellfestivalen;3371
