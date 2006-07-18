@@ -159,7 +159,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             </div>
 
             <div id="footer_ss">
-                <decorator:getProperty property="page.verbosePager"/>
+                <decorator:getProperty property="page.offsetPager"/>
             </div>
         </div>
 
