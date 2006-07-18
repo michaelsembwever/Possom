@@ -123,7 +123,7 @@ public final class SiteLocatorFilter implements Filter {
                 if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
 
                     // This URL does not belong to search-front-html
-                    Site site = (Site) req.getAttribute(Site.NAME_KEY);
+                    final Site site = (Site) req.getAttribute(Site.NAME_KEY);
                     String url = "";
 
                     if (resource.startsWith(PUBLISH_DIR)) { // publishing system
@@ -138,18 +138,14 @@ public final class SiteLocatorFilter implements Filter {
                         final String noVersionRsc = resource.replaceFirst("/(\\d)+/","/");
                         // search-front-config is responsible for this.
                         // But first we must find which layer will serve it.
-
                         url = HTTP + site.getName() + site.getConfigContext() + noVersionRsc;
-                        
-                        while (!UrlResourceLoader.urlExists(url) && site.getParent() != null) {
-                            site = site.getParent();
-                            url = HTTP + site.getName() + site.getConfigContext() + noVersionRsc;
-                        }
-
-                        if (url == null && site.getParent() == null) {
-                            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                            url = null;
-                            LOG.error(ERR_NOT_FOUND + resource);
+                        if (!UrlResourceLoader.urlExists(url)) {
+                            url = HTTP + Site.DEFAULT.getName() + Site.DEFAULT.getConfigContext() + noVersionRsc;
+                            if (!UrlResourceLoader.urlExists(url)) {
+                                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                                url = null;
+                                LOG.error(ERR_NOT_FOUND + resource);
+                            }
                         }
                     }
 
