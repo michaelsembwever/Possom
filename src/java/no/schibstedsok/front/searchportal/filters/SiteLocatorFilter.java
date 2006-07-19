@@ -123,7 +123,7 @@ public final class SiteLocatorFilter implements Filter {
                 if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
 
                     // This URL does not belong to search-front-html
-                    final Site site = (Site) req.getAttribute(Site.NAME_KEY);
+                    Site site = (Site) req.getAttribute(Site.NAME_KEY);
                     String url = "";
 
                     if (resource.startsWith(PUBLISH_DIR)) { // publishing system
@@ -136,16 +136,15 @@ public final class SiteLocatorFilter implements Filter {
                     }  else  {
                         // TODO strip the version number out of the resource
                         final String noVersionRsc = resource.replaceFirst("/(\\d)+/","/");
-                        // search-front-config is responsible for this.
-                        // But first we must find which layer will serve it.
-                        url = HTTP + site.getName() + site.getConfigContext() + noVersionRsc;
-                        if (!UrlResourceLoader.urlExists(url)) {
-                            url = HTTP + Site.DEFAULT.getName() + Site.DEFAULT.getConfigContext() + noVersionRsc;
-                            if (!UrlResourceLoader.urlExists(url)) {
-                                res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                                url = null;
-                                LOG.error(ERR_NOT_FOUND + resource);
-                            }
+
+                        // Find resource in current site or any of its
+                        // ancestors
+                        url = recursivelyFindResource(noVersionRsc, site);
+                        
+                        if (url == null) {
+                            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                            url = null;
+                            LOG.error(ERR_NOT_FOUND + resource);
                         }
                     }
 
@@ -178,6 +177,18 @@ public final class SiteLocatorFilter implements Filter {
 
     }
 
+    
+    private String recursivelyFindResource(final String resource, final Site site) {
+        final String url = HTTP + site.getName() + site.getConfigContext() + resource;
+
+        if (UrlResourceLoader.urlExists(url)) {
+            return url;
+        } else if (site.getParent() != null) {
+            return recursivelyFindResource(resource, site.getParent());
+        } else {
+            return null;
+        }
+    }
 
     /**
      * Return the filter configuration object for this filter.

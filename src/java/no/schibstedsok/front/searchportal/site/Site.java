@@ -14,6 +14,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
+import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -36,6 +38,7 @@ public final class Site {
 
     /** Found from the configuration.properties resource found in this class's ClassLoader. **/
     private static final String DEFAULT_SITE_KEY = "site.default";
+    private static final String PARENT_SITE_KEY = "site.parent";
     private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
     public static final String NAME_KEY = "site";
 
@@ -64,13 +67,16 @@ public final class Site {
      */
     private final String uniqueName;
 
+   /**
+    * Holds value of property parent.
+    */
+    private final Site parent;
+    
     /** Creates a new instance of Site. */
     private Site(final String _siteName, final Locale _locale) {
-
         // siteName must finish with a '\'
-        siteName = _siteName.endsWith("/")
-            ? _siteName
-            : _siteName + '/';
+        siteName = ensureTrailingSlash(_siteName);
+
         cxtName = siteName.indexOf(':') >= 0
             ? siteName.substring(0, siteName.indexOf(':')) + '/' // don't include the port in the cxtName.
             : siteName;
@@ -78,15 +84,28 @@ public final class Site {
         uniqueName = getUniqueName(siteName, locale);
         // register in global pool.
         INSTANCES.put(uniqueName, this);
+
+        final Site _this = this;
+        
+        final SiteContext siteContext = new SiteContext() {
+            public Site getSite() {
+                return _this;
+            }
+        };
+
+        final String parentSiteName = getParentSiteName(siteContext);
+        
+        parent = ensureTrailingSlash(parentSiteName).equals(siteName) ?
+            null :
+            Site.valueOf(parentSiteName, _locale);
     }
 
+
     /** the parent to this site.
-     *      not properly implemented yet.
      * returns null if we are the DEFAULT site.
-     * otherwise, currently, return the DEFAULT site.
      **/
     public Site getParent(){
-        return this == DEFAULT ? null : DEFAULT;
+        return parent;
     }
 
     /**
@@ -156,9 +175,8 @@ public final class Site {
     public static Site valueOf(final String siteName, final Locale locale) {
 
         // Strip www. from siteName
-        final String shortSiteName = siteName.endsWith("/")
-            ? siteName.replaceAll("www.","")
-            : siteName.replaceAll("www.","") + '/';
+        final String shortSiteName = 
+                ensureTrailingSlash(siteName.replaceAll("www.", ""));
 
         Site site = INSTANCES.get(getUniqueName(shortSiteName,locale));
         if (site == null) {
@@ -193,5 +211,28 @@ public final class Site {
         return siteName+"["+locale.getDisplayName()+"]";
     }
 
+    private static String ensureTrailingSlash(final String _siteName) {
+        return _siteName.endsWith("/")
+            ? _siteName
+            : _siteName + '/';
+    }
+
+    private String getParentSiteName(final SiteContext siteContext) {
+
+        final Properties engineProps = new Properties();
+
+        try  {
+            engineProps.load(Site.class.getResourceAsStream('/' + SiteConfiguration.CONFIGURATION_FILE));
+        }  catch (IOException ex) {
+            LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
+        }
+
+        final String defaultSiteName = engineProps.getProperty(DEFAULT_SITE_KEY, SITE_DEFAULT_FALLBACK);
+        final Properties props = new Properties();
+        final PropertiesLoader loader = UrlResourceLoader.newPropertiesLoader(
+                siteContext, SiteConfiguration.CONFIGURATION_FILE, props);
+        loader.abut();
+        return props.getProperty("site.parent", defaultSiteName);
+    }
 
 }

@@ -46,14 +46,12 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     private static final String DEBUG_DOESNT_EXIST = "Using fallback URL";
 
     private Site site;
-    private Site fallbackSite;
 
     /** {@inheritDoc}
      */
     public void init(final ExtendedProperties configuration) {
         // the engine's properties actually come from the RuntimeServices *not* the ExtendedProperties
         site = (Site)rsvc.getProperty(Site.NAME_KEY);
-        fallbackSite = (Site)rsvc.getProperty("site.fallback");
     }
 
     /**
@@ -113,35 +111,43 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     private URLConnection getResourceURLConnection( final String url )
         throws ResourceNotFoundException{
 
-        URLConnection conn = null;
-
         try{
             LOG.trace(DEBUG_LOOKING_FOR + url );
-
-            if( UrlResourceLoader.urlExists(url) ){
-
-                conn = getURLConnection(url);
-
-            }else if( UrlResourceLoader.urlExists(getFallbackURL( url )) ){
-
-                LOG.trace(DEBUG_DOESNT_EXIST);
-                conn = getURLConnection(getFallbackURL( url ));
-
-            }else{
-                throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
-            }
-
+            return doGetResourceURLConnection(url, site);
         }catch( IOException e ){
-
             LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
-        return conn;
     }
 
-    private String getFallbackURL(final String url){
-        final String oldUrl = site.getName() + site.getConfigContext();
-        final String newUrl = fallbackSite.getName() + fallbackSite.getConfigContext();
+    private URLConnection doGetResourceURLConnection(
+            final String url, final Site currentSite)
+            throws IOException, ResourceNotFoundException {
+
+        if (UrlResourceLoader.urlExists(url)) {
+            return getURLConnection(url);
+        } else {
+            final Site parent = currentSite.getParent();
+
+            if (parent == null) {
+                throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
+            }
+
+            if (LOG.isTraceEnabled()) {
+                LOG.trace(DEBUG_DOESNT_EXIST + parent.getName());
+            }
+
+            // Recursively look for the resource in ancestor sites.
+            return doGetResourceURLConnection(
+                    getFallbackURL(url, currentSite, parent), parent);
+        }
+    }
+
+    private String getFallbackURL(
+            final String url, final Site currSite, final Site ancestorSite) {
+
+        final String oldUrl = currSite.getName() + currSite.getConfigContext();
+        final String newUrl = ancestorSite.getName() + ancestorSite.getConfigContext();
 
         return url.replaceFirst(oldUrl, newUrl);
     }
