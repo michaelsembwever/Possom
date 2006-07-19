@@ -96,7 +96,7 @@ PARSER_END(QueryParserImpl)
     | < [ "\u00f7" ] >
 }
 
-
+/* These are the the above skip characters */
 /* # % & ' */	
 /* * + , */	
 /* . / */
