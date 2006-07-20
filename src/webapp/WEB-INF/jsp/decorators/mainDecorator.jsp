@@ -527,7 +527,7 @@ tmsec[0]="tmsec=sesam";
 <% } else if (currentC.equals("swip")) { %> tmsec[1]="tmsec=weathersok_info";
 <% } else if (currentC.equals("p")) { %> tmsec[1]="tmsec=bildesok";
 <% } else if (currentC.equals("b")) { %> tmsec[1]="tmsec=bloggsok";
-<% } else if (currentC.equals("n")) { %> tmsec[1]="tmsec=siteN24";
+<% } else if (currentC.equals("n")) { %> tmsec[1]="tmsec=<search:velocity template="/pages/tns"/>";
 <% } else { %> tmsec[1]="tmsec=xxx";
 <% } %>
 getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
@@ -547,10 +547,11 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } else if (currentC.equals("wip")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=personsok_info" alt="" /></noscript>
 <% } else if (currentC.equals("p")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bildesok" alt="" /></noscript>
 <% } else if (currentC.equals("b")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bloggesok" alt="" /></noscript>
-<% } else if (currentC.equals("n")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=siteN24" alt="" /></noscript>
+<% } else if (currentC.equals("n")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=<search:velocity template="/pages/tns"/>" alt="" /></noscript>
 <% } %>
 
 <!-- end gallup -->
+
 
 </body>
 </html>
