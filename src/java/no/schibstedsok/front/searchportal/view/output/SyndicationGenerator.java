@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.result.SearchResult;
@@ -120,6 +120,12 @@ public class SyndicationGenerator {
 
         final DateFormat df = new SimpleDateFormat(dfString);
 
+        // Zulu time is UTC. But java doesn't know that.
+        if (dfString.endsWith("'Z'")) {
+            df.setTimeZone(TimeZone.getTimeZone("UTC"));
+        }
+
+        
         try {
             final SyndFeed feed = new SyndFeedImpl();
 
