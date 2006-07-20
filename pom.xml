@@ -174,12 +174,6 @@
                     <packageName>no.schibstedsok.front.searchportal.query.parser</packageName>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-site-plugin</artifactId>
-                <configuration>
-                    <locales>en</locales>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <profiles>
@@ -544,6 +538,12 @@
                 <version>2.0</version>
                 <configuration>
                     <sourceDirectory>${basedir}/src/javacc</sourceDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <locales>en</locales>
                 </configuration>
             </plugin>
         </plugins>
