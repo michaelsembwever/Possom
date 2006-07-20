@@ -27,10 +27,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
-
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
@@ -46,7 +44,6 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
-import org.w3c.dom.Document;
 
 /**
  * 
@@ -71,6 +68,9 @@ public class SyndicationGenerator {
     private final Channels channels;
     private final HttpServletRequest request;
     private String encoding = "UTF-8";
+
+    // Any other way to get rid of the dc:date tags that ROME generates.
+    private static final String DCDATE_PATTERN = "<dc:date>[^<]+</dc:date>";
     
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
     
@@ -197,7 +197,7 @@ public class SyndicationGenerator {
             
             final SyndFeedOutput output = new SyndFeedOutput();
             
-            return output.outputString(feed);
+            return output.outputString(feed).replaceAll(DCDATE_PATTERN, "");
         } catch (ResourceNotFoundException ex) {
             throw new RuntimeException(ex);
         } catch (FeedException ex) {
