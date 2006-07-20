@@ -551,7 +551,8 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } %>
 
 <!-- end gallup -->
-
-
+<% if (currentC.equals("n") && site.getConfigContext().equals("vg.sesam.no/")) { %>
+    <img src="http://interaktiv.vg.no/OMeasure/sesam.no/Sesam/Site" width="1" height="1" alt="" />
+<% } %>
 </body>
 </html>
