@@ -38,7 +38,7 @@ public class WeatherCelciusHandler2 implements ResultHandler  {
             } catch (ParseException e) {
                 newVal = celcius;
             }
-            System.out.println("New Celcisu Val put " + newVal);
+
             if ("-0".equals(newVal)) { newVal = "0"; }
             item.addField(targetField, newVal);
         }

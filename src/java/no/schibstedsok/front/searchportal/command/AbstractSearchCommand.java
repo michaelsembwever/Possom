@@ -123,7 +123,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @return The transformed query.
      */
     public String getTransformedQuery() {
-        System.out.println("** transformedquery " + transformedQuery);
+
         return transformedQuery;
     }
 
