@@ -1,10 +1,7 @@
-/*
+/* Copyright (2006) Schibsted Søk AS
  * SyndicationGenerator.java
  *
  * Created on June 7, 2006, 2:39 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.front.searchportal.view.output;
@@ -45,16 +42,18 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
-/**
- * 
+/** Used by the rssDecorator.jsp to print out the results in rss format.
+ *
  * @author maek
- * @todo Consider rewriting this as a bean to be used by a jsp (rssDecorator.jsp). <jsp:useBean...> 
- * This would make it possible to render the templates using the ImportVelocityTemplateTag and simplify other things as well (such as date handling)
- * The only problem is to get rid of leading whitespace generated before the xml declaration by the jsp. JSP 2.1 has page property to do this.
- * 
+ * @todo Consider rewriting this as a bean to be used by a jsp (rssDecorator.jsp). <jsp:useBean.../>
+ * This would make it possible to render the templates using the ImportVelocityTemplateTag
+ * and simplify other things as well (such as date handling)
+ * The only problem is to get rid of leading whitespace generated before the xml declaration
+ * by the jsp. JSP 2.1 has page property to do this.
+ *
  */
-public class SyndicationGenerator {
-    
+public final class SyndicationGenerator {
+
     private static final String RSS_TPL_DIR="rss";
     private final SearchResult result;
     private final Site site;
@@ -62,7 +61,6 @@ public class SyndicationGenerator {
     private String feedType = "rss_2.0";
     private final String templateDir;
     private final VelocityEngine engine;
-    private DateFormat dateFormat;
     private final String query;
     private final String uri;
     private final Channels channels;
@@ -71,21 +69,23 @@ public class SyndicationGenerator {
 
     // Any other way to get rid of the dc:date tags that ROME generates.
     private static final String DCDATE_PATTERN = "<dc:date>[^<]+</dc:date>";
-    
+
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
-    
+
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private static final String ERR_TEMPLATE_NOT_FOUND =
             " Unable to find template for rss field: ";
     private static final String ERR_TEMPLATE_ERR =
             " Parse error in template: ";
-    
-    public SyndicationGenerator(final SearchResult result, 
+    private static final String DEBUG_TEMPLATE_NOT_FOUND = "Could not find template ";
+    private static final String DEBUG_USING_DEFAULT_DATE_FORMAT = "Using default date format";
+
+    public SyndicationGenerator(final SearchResult result,
                                 final Site site,
                                 final HttpServletRequest request,
                                 final String modeId
                                 ) {
-        
+
         this.result = result;
         this.site = site;
         this.text = (TextMessages) request.getAttribute("text");
@@ -93,30 +93,33 @@ public class SyndicationGenerator {
         this.query = request.getParameter("q");
         this.uri = request.getRequestURL().append("?").append(request.getQueryString()).toString();
         this.request = request;
-        
-        String feedType = request.getParameter("feedtype");
+
+        final String feedType = request.getParameter("feedtype");
         if (feedType != null) {
             this.feedType = feedType;
         }
-    
-        String encoding = request.getParameter("encoding");
+
+        final String encoding = request.getParameter("encoding");
         if (encoding != null) {
             if (encoding.equalsIgnoreCase("iso-8859-1")) {
                 this.encoding = "iso-8859-1";
             }
         }
-        
-        templateDir = site.getTemplateDir() + "/rss/" + "/" + modeId + "/";
+
+        templateDir = "rss/" + modeId + "/";
         engine = VelocityResultHandler.getEngine(site);
     }
-    
+
+    /** TODO comment me. **/
     public String generate() {
 
         String dfString = DEFAULT_DATE_FORMAT;
 
         try {
-            dfString = render("dateFormat_publishedDate", null);
-        } catch (ResourceNotFoundException ex) {}
+            dfString = render("dateFormat_publishedDate", null, 0);
+        } catch (ResourceNotFoundException ex) {
+            LOG.trace(DEBUG_USING_DEFAULT_DATE_FORMAT);
+        }
 
         final DateFormat df = new SimpleDateFormat(dfString);
 
@@ -125,34 +128,36 @@ public class SyndicationGenerator {
             df.setTimeZone(TimeZone.getTimeZone("UTC"));
         }
 
-        
+
         try {
             final SyndFeed feed = new SyndFeedImpl();
 
             feed.setEncoding(this.encoding);
             feed.setFeedType(feedType);
-            feed.setDescription(render("description", null));
-            feed.setTitle(render("title", null));
+            feed.setDescription(render("description", null, 0));
+            feed.setTitle(render("title", null, 0));
             feed.setPublishedDate(new Date());
-            feed.setLink(render("link", null));
+            feed.setLink(render("link", null, 0));
 
             final List<SyndEntry> entries = new ArrayList<SyndEntry>();
-            
+
+            int idx = 0;
             for (SearchResultItem item : result.getResults()) {
+                ++idx;
                 final SyndEntry entry = new SyndEntryImpl();
 
                 final SyndContent content = new SyndContentImpl();
 
                 content.setType("text/html");
-                final String entryDescription = render("entryDescription", item);
-                
+                final String entryDescription = render("entryDescription", item, idx);
+
                 content.setValue(StringEscapeUtils.unescapeHtml(entryDescription));
-                
-                final String publishedDate = render("entryPublishedDate", item);
+
+                final String publishedDate = render("entryPublishedDate", item, idx);
 
                 try {
-                    Date date = df.parse(publishedDate);
-                    
+                    final Date date = df.parse(publishedDate);
+
                     if (date.getTime() > 0) {
                         entry.setPublishedDate(df.parse(publishedDate));
                     } else {
@@ -162,17 +167,17 @@ public class SyndicationGenerator {
                     LOG.error("Cannot parse " + publishedDate + " using df " + dfString);
                     entry.setPublishedDate(new Date());
                 }
-                
-                entry.setTitle(render("entryTitle", item));
-                entry.setLink(render("entryUri", item));
-                
+
+                entry.setTitle(render("entryTitle", item, idx));
+                entry.setLink(render("entryUri", item, idx));
+
 
                 try {
                     final SyndEnclosure enclosure = new SyndEnclosureImpl();
 
-                    enclosure.setUrl(render("entryEnclosure", item));
+                    enclosure.setUrl(render("entryEnclosure", item, idx));
 
-                    final List<SyndEnclosure> enclosures = new ArrayList();
+                    final List<SyndEnclosure> enclosures = new ArrayList<SyndEnclosure>();
                     enclosures.add(enclosure);
                     entry.setEnclosures(enclosures);
 
@@ -184,25 +189,25 @@ public class SyndicationGenerator {
                 } catch (ResourceNotFoundException ex) {
                     LOG.debug("Template for enclosure not found. Skipping.");
                 }
-                
-                
-                final List contents = new ArrayList();
-                
+
+
+                final List<SyndContent> contents = new ArrayList<SyndContent>();
+
                 contents.add(content);
-                
+
                 entry.setContents(contents);
                 entry.setDescription(content);
-                
+
                 entries.add(entry);
             }
-            
+
             feed.setEntries(entries);
-            
+
             final Writer writer = new StringWriter();
-            
-            
+
+
             final SyndFeedOutput output = new SyndFeedOutput();
-            
+
             return output.outputString(feed).replaceAll(DCDATE_PATTERN, "");
         } catch (ResourceNotFoundException ex) {
             throw new RuntimeException(ex);
@@ -210,46 +215,56 @@ public class SyndicationGenerator {
             throw new RuntimeException(ex);
         }
     }
-    
-    
-    private String render(final String name, final SearchResultItem item) throws ResourceNotFoundException {
-        final String templateUri = templateDir + "/" + name + ".vm";
-        
-        try {
-            final VelocityContext cxt = new VelocityContext();
 
-            //TODO: figure out textbundling
-//            final TextMessages txtMsgs = TextMessages.valueOf(site);
+
+    private String render(
+            final String name,
+            final SearchResultItem item,
+            final int itemIdx) throws ResourceNotFoundException {
+
+        final String templateUri = templateDir + name;
+
+        try {
+            final VelocityContext cxt = VelocityResultHandler.newContextInstance(engine);
+
             cxt.put("text", text);
-            
+
             if (item != null) {
                 cxt.put("item", item);
+                cxt.put("itemIdx", itemIdx);
             }
-            
+
             cxt.put("query", query);
-            
+
             final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
             cxt.put("uri", origUri);
-            
-            final Site cxtSite = this.site;
-            cxt.put("channels", channels);
-            
-            final Template tpl = engine.getTemplate(templateUri);
 
-            StringWriter writer = new StringWriter();
+            cxt.put("channels", channels);
+
+            final Template tpl = VelocityResultHandler.getTemplate(engine, site, templateUri);
+
+            if(tpl == null){
+                throw new ResourceNotFoundException(DEBUG_TEMPLATE_NOT_FOUND + templateUri);
+            }
+
+            final StringWriter writer = new StringWriter();
             tpl.merge(cxt, writer);
-            
+
             return writer.toString();
+
         } catch (ParseErrorException ex) {
             LOG.error(ERR_TEMPLATE_ERR + templateUri);
-            throw new RuntimeException(ex);
+            throw new InfrastructureException(ex);
+
         } catch (MethodInvocationException ex) {
             throw new InfrastructureException(ex);
+
         } catch (ResourceNotFoundException ex) {
-            LOG.error(ERR_TEMPLATE_NOT_FOUND + templateUri);
+            LOG.debug(ERR_TEMPLATE_NOT_FOUND + templateUri);
             throw ex;
+
         } catch (Exception ex) {
-            throw new RuntimeException(ex);
+            throw new InfrastructureException(ex);
         }
-    }        
+    }
 }
