@@ -40,7 +40,7 @@ import no.schibstedsok.front.searchportal.view.output.XmlOutputResultHandler;
 import no.schibstedsok.front.searchportal.query.transform.ExactTitleMatchTransformer;
 import no.schibstedsok.front.searchportal.query.transform.InfopageQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.NewsTransformer;
-import no.schibstedsok.front.searchportal.query.transform.TokenRemoverTransformer;
+import no.schibstedsok.front.searchportal.query.transform.TokenMaskTransformer;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.SimpleSiteSearchTransformer;
 import no.schibstedsok.front.searchportal.query.transform.SynonymQueryTransformer;
@@ -91,11 +91,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
      */
     public interface Context extends BaseContext, ResourceContext, SiteContext {}
 
-   // Constants -----------------------------------------------------
+    // Constants -----------------------------------------------------
 
     private static final Map<Site, SearchModeFactory> INSTANCES = new HashMap<Site,SearchModeFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
+    /** TODO comment me. **/
     public static final String MODES_XMLFILE = "modes.xml";
 
 
@@ -109,7 +110,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String ERR_MISSING_IMPLEMENTATION = "Missing implementation case in CommandTypes";
     private static final String ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED
             = "Each FastNavigator is only allowed to have one child. Parent was ";
-    private static final String ERR_FAST_EPS_QR_SERVER = "" +
+    private static final String ERR_FAST_EPS_QR_SERVER =
             "Query server adressen cannot contain the scheme (http://): ";
     private static final String INFO_PARSING_MODE = "Parsing mode ";
     private static final String INFO_PARSING_CONFIGURATION = " Parsing configuration ";
@@ -118,7 +119,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String INFO_PARSING_QUERY_TRANSFORMER = "  Parsing query transformer ";
     private static final String DEBUG_PARSED_PROPERTY = "  Property property ";
 
-   // Attributes ----------------------------------------------------
+    // Attributes ----------------------------------------------------
 
     private final Map<String,SearchMode> modes = new HashMap<String,SearchMode>();
     private final ReentrantReadWriteLock modesLock = new ReentrantReadWriteLock();
@@ -128,8 +129,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private String templatePrefix;
 
-   // Static --------------------------------------------------------
+    // Static --------------------------------------------------------
 
+    /** TODO comment me. **/
     public static SearchModeFactory valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
@@ -148,6 +150,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         return instance;
     }
 
+    /** TODO comment me. **/
     public boolean remove(final Site site){
 
         try{
@@ -158,7 +161,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
-   // Constructors --------------------------------------------------
+    // Constructors --------------------------------------------------
 
     /** Creates a new instance of ModeFactoryImpl */
     private SearchModeFactory(final Context cxt)
@@ -183,8 +186,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     }
 
-   // Public --------------------------------------------------------
+    // Public --------------------------------------------------------
 
+    /** TODO comment me. **/
     public SearchMode getMode(final String id){
 
         LOG.trace("getMode(" + id + ")");
@@ -195,28 +199,28 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchModeFactory factory = valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
-                        public Site getSite(){
-                            return context.getSite().getParent();
-                        }
-                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                        }
-                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                        }
-                    },
+                public Site getSite(){
+                    return context.getSite().getParent();
+                }
+                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                    return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                }
+                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                    return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+                }
+            },
                     context
-                ));
+                    ));
             mode = factory.getMode(id);
         }
         return mode;
     }
 
-   // Package protected ---------------------------------------------
+    // Package protected ---------------------------------------------
 
-   // Protected -----------------------------------------------------
+    // Protected -----------------------------------------------------
 
-   // Private -------------------------------------------------------
+    // Private -------------------------------------------------------
 
     private void init(){
 
@@ -295,17 +299,17 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
-   // Inner classes -------------------------------------------------
+    // Inner classes -------------------------------------------------
 
     private enum CommandTypes {
-        COMMAND (AbstractSearchConfiguration.class),
-        ADVANCED_FAST_COMMAND (AdvancedFastSearchConfiguration.class),
-        BLENDING_NEWS_COMMAND (BlendingNewsSearchConfiguration.class),
-        FAST_COMMAND (FastSearchConfiguration.class),
-        HITTA_COMMAND (HittaSearchConfiguration.class),
-        MATH_COMMAND (MathExpressionSearchConfiguration.class),
+        COMMAND(AbstractSearchConfiguration.class),
+        ADVANCED_FAST_COMMAND(AdvancedFastSearchConfiguration.class),
+        BLENDING_NEWS_COMMAND(BlendingNewsSearchConfiguration.class),
+        FAST_COMMAND(FastSearchConfiguration.class),
+        HITTA_COMMAND(HittaSearchConfiguration.class),
+        MATH_COMMAND(MathExpressionSearchConfiguration.class),
         MOBILE_COMMAND(MobileSearchConfiguration.class),
-        NEWS_COMMAND (NewsSearchConfiguration.class),
+        NEWS_COMMAND(NewsSearchConfiguration.class),
         OVERTURE_PPC_COMMAND(OverturePPCSearchConfiguration.class),
         PICTURE_COMMAND(PicSearchConfiguration.class),
         SENSIS_COMMAND(SensisSearchConfiguration.class),
@@ -319,7 +323,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
         DAILY_WORD_COMMAND(DailyWordConfiguration.class),
         BLOG_COMMAND(BlogSearchConfiguration.class);
-        
+
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
@@ -426,7 +430,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fsc.setSpamScoreLimit(parseInt(commandE.getAttribute("spam-score-limit"),
                             fscInherit != null ? fscInherit.getSpamScoreLimit() : -1));
                     fsc.setSpellcheckEnabled(parseBoolean(commandE.getAttribute("spellcheck"),
-                             fscInherit != null ? fscInherit.isSpellcheckEnabled() : false));
+                            fscInherit != null ? fscInherit.isSpellcheckEnabled() : false));
                     //fsc.setSynonymEnabled(Boolean.parseBoolean(commandE.getAttribute("synonyms"))); // FIXME !!
 
                     // navigators
@@ -460,7 +464,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             ascInherit != null ? ascInherit.getQueryServer() : null);
 
                     if (qrServerValue.startsWith("http://")) {
-                       throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + qrServerValue);
+                        throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + qrServerValue);
                     }
 
                     asc.setQueryServer(qrServerValue);
@@ -573,7 +577,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if (sc instanceof BlendingNewsSearchConfiguration) {
                     final BlendingNewsSearchConfiguration bnsc = (BlendingNewsSearchConfiguration) sc;
 
-                    final String filters[] = commandE.getAttribute("filters").split(",");
+                    final String[] filters = commandE.getAttribute("filters").split(",");
 
                     final List<String> filterList = new ArrayList<String>();
 
@@ -586,15 +590,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
 
                 if (sc instanceof StormWeatherSearchConfiguration) {
-					final StormWeatherSearchConfiguration swsc = (StormWeatherSearchConfiguration) sc;
-					if(commandE.getAttribute("xml-elements").length() >0){
+                    final StormWeatherSearchConfiguration swsc = (StormWeatherSearchConfiguration) sc;
+                    if(commandE.getAttribute("xml-elements").length() >0){
                         final String[] elms = commandE.getAttribute("xml-elements").split(",");
                         for(String elm : elms){
                             swsc.addElementValue(elm.trim());
                         }
                     }
-					
-				}
+                }
 
                 if (sc instanceof TvSearchConfiguration) {
                     final TvSearchConfiguration tssc = (TvSearchConfiguration) sc;
@@ -608,7 +611,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if (sc instanceof BlogSearchConfiguration) {
                     final BlogSearchConfiguration bsc = (BlogSearchConfiguration) sc;
                 }
-                
+
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
                 final Element qtRootElement = (Element) qtNodeList.item(0);
@@ -617,7 +620,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     // clear all inherited query-transformers
                     sc.clearQueryTransformers();
-                    
+
                     for(int i = 0; i < qtNodeList.getLength(); i++) {
                         final Node node = qtNodeList.item(i);
                         if (!(node instanceof Element)) {
@@ -637,10 +640,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Element rhRootElement = (Element) rhNodeList.item(0);
                 if(rhRootElement != null){
                     rhNodeList = rhRootElement.getChildNodes();
-                    
+
                     // clear all inherited result handlers
                     sc.clearResultHandlers();
-                    
+
                     for(int i = 0; i < rhNodeList.getLength(); i++) {
                         final Node node = rhNodeList.item(i);
                         if (!(node instanceof Element)) {
@@ -731,20 +734,20 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
     private enum QueryTransformerTypes {
-        EXACT_TITLE_MATCH (ExactTitleMatchTransformer.class),
-        INFOPAGE (InfopageQueryTransformer.class),
-        WEATHER (WeatherQueryTransformer.class),
-        WEATHERINFOPAGE (WeatherInfopageQueryTransformer.class),
-        NEWS (NewsTransformer.class),
+        EXACT_TITLE_MATCH(ExactTitleMatchTransformer.class),
+        INFOPAGE(InfopageQueryTransformer.class),
+        WEATHER(WeatherQueryTransformer.class),
+        WEATHERINFOPAGE(WeatherInfopageQueryTransformer.class),
+        NEWS(NewsTransformer.class),
         // deprecated. use token-remover match="prefix" instead.
-        PREFIX_REMOVER (TokenRemoverTransformer.class),
-        SIMPLE_SITE_SEARCH (SimpleSiteSearchTransformer.class),
-        SYNONYM (SynonymQueryTransformer.class),
-        TERM_PREFIX (TermPrefixTransformer.class),
-        TOKEN_REMOVER (TokenRemoverTransformer.class),
-        NOW (NowQueryTransformer.class),
-        WEBTV (WebTvQueryTransformer.class),
-        TV (TvQueryTransformer.class),
+        PREFIX_REMOVER(TokenMaskTransformer.class),
+        SIMPLE_SITE_SEARCH(SimpleSiteSearchTransformer.class),
+        SYNONYM(SynonymQueryTransformer.class),
+        TERM_PREFIX(TermPrefixTransformer.class),
+        TOKEN_MASK(TokenMaskTransformer.class),
+        NOW(NowQueryTransformer.class),
+        WEBTV(WebTvQueryTransformer.class),
+        TV(TvQueryTransformer.class),
         TVSEARCH(TvSearchQueryTransformer.class),
         AGEFILTER(AgeFilterTransformer.class);
 
@@ -770,14 +773,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         final AgeFilterTransformer agft = (AgeFilterTransformer) transformer;
                         agft.setAgeField(qt.getAttribute("field"));
                         break;
-                        case NOW:
+                    case NOW:
                         final NowQueryTransformer nqt = (NowQueryTransformer) transformer;
                         nqt.setPrefix(qt.getAttribute("prefix"));
                         break;
                     case PREFIX_REMOVER:
-                        final TokenRemoverTransformer prqt = (TokenRemoverTransformer) transformer;
+                        final TokenMaskTransformer prqt = (TokenMaskTransformer) transformer;
                         prqt.addPrefixes(qt.getAttribute("prefixes").split(","));
-                        prqt.setMatch(TokenRemoverTransformer.MatchType.PREFIX);
+                        prqt.setMatch(TokenMaskTransformer.Match.PREFIX);
                         break;
                     case SIMPLE_SITE_SEARCH:
                         final SimpleSiteSearchTransformer ssqt = (SimpleSiteSearchTransformer) transformer;
@@ -788,11 +791,17 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         tpqt.setPrefix(qt.getAttribute("prefix"));
                         tpqt.setNumberPrefix(qt.getAttribute("number-prefix"));
                         break;
-                    case TOKEN_REMOVER:
-                        final TokenRemoverTransformer trqt = (TokenRemoverTransformer) transformer;
+                    case TOKEN_MASK:
+                        final TokenMaskTransformer trqt = (TokenMaskTransformer) transformer;
                         trqt.addPrefixes(qt.getAttribute("prefixes").split(","));
-                        trqt.setMatch(
-                                TokenRemoverTransformer.MatchType.valueOf(qt.getAttribute("match").toUpperCase()));
+                        if(qt.getAttribute("match").length() > 0){
+                            trqt.setMatch(
+                                    TokenMaskTransformer.Match.valueOf(qt.getAttribute("match").toUpperCase()));
+                        }
+                        if(qt.getAttribute("mask").length() >0){
+                            trqt.setMask(
+                                    TokenMaskTransformer.Mask.valueOf(qt.getAttribute("mask").toUpperCase()));
+                        }
                         break;
                     case TVSEARCH:
                         final TvSearchQueryTransformer tsqt = (TvSearchQueryTransformer) transformer;
@@ -801,6 +810,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     case WEATHER:
                         final WeatherQueryTransformer wqt = (WeatherQueryTransformer) transformer;
                         wqt.setDefaultLocations(qt.getAttribute("default-locations").split(","));
+                    default:
+                        break;
                 }
                 return transformer;
 
@@ -814,34 +825,34 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
     private enum ResultHandlerTypes {
-        ADD_DOC_COUNT (AddDocCountModifier.class),
-        AGE_CALCULATOR (AgeCalculatorResultHandler.class),
-        CATEGORY_SPLITTER (CategorySplitter.class),
-        CONTENT_SOURCE_COLLECTOR (ContentSourceCollector.class),
-        DATA_MODEL (DataModelResultHandler.class),
-        DISCARD_OLD_NEWS (DiscardOldNewsResultHandler.class),
-        DISCARD_DUPLICATES (DiscardDuplicatesResultHandler.class),
-        FIELD_CHOOSER (FieldChooser.class),
-        FIND_FILE_FORMAT (FindFileFormat.class),
-        IMAGE_HELPER (ImageHelper.class),
-        MULTIVALUED_FIELD_COLLECTOR (MultiValuedFieldCollector.class),
-        NUMBER_OPERATION (NumberOperationHandler.class),
-        PHONE_NUMBER_CHOOSER (PhoneNumberChooser.class),
-        PHONE_NUMBER_FORMATTER (PhoneNumberFormatter.class),
-        SPELLING_SUGGESTION_CHOOSER (SpellingSuggestionChooser.class),
-        SUM (SumFastModifiers.class),
-        DATE_FORMAT (DateFormatHandler.class),
-        WEATHER_CELCIUS (WeatherCelciusHandler.class),
-        WEATHER_DATE (WeatherDateHandler.class),
-        FORECAST_DATE (ForecastDateHandler.class),
-        FORECAST_WIND (ForecastWindHandler.class),
-        MAP_COORD (MapCoordHandler.class),
-        TVSEARCH_SORTING (TvSearchSortingHandler.class),
-        COMBINE_NAVIGATORS (CombineNavigatorsHandler.class),
-        TEXT_OUTPUT (TextOutputResultHandler.class),
-        VELOCITY_OUTPUT (VelocityResultHandler.class),
-        FIELD_ESCAPE (FieldEscapeHandler.class),
-        XML_OUTPUT (XmlOutputResultHandler.class);
+        ADD_DOC_COUNT(AddDocCountModifier.class),
+        AGE_CALCULATOR(AgeCalculatorResultHandler.class),
+        CATEGORY_SPLITTER(CategorySplitter.class),
+        CONTENT_SOURCE_COLLECTOR(ContentSourceCollector.class),
+        DATA_MODEL(DataModelResultHandler.class),
+        DISCARD_OLD_NEWS(DiscardOldNewsResultHandler.class),
+        DISCARD_DUPLICATES(DiscardDuplicatesResultHandler.class),
+        FIELD_CHOOSER(FieldChooser.class),
+        FIND_FILE_FORMAT(FindFileFormat.class),
+        IMAGE_HELPER(ImageHelper.class),
+        MULTIVALUED_FIELD_COLLECTOR(MultiValuedFieldCollector.class),
+        NUMBER_OPERATION(NumberOperationHandler.class),
+        PHONE_NUMBER_CHOOSER(PhoneNumberChooser.class),
+        PHONE_NUMBER_FORMATTER(PhoneNumberFormatter.class),
+        SPELLING_SUGGESTION_CHOOSER(SpellingSuggestionChooser.class),
+        SUM(SumFastModifiers.class),
+        DATE_FORMAT(DateFormatHandler.class),
+        WEATHER_CELCIUS(WeatherCelciusHandler.class),
+        WEATHER_DATE(WeatherDateHandler.class),
+        FORECAST_DATE(ForecastDateHandler.class),
+        FORECAST_WIND(ForecastWindHandler.class),
+        MAP_COORD(MapCoordHandler.class),
+        TVSEARCH_SORTING(TvSearchSortingHandler.class),
+        COMBINE_NAVIGATORS(CombineNavigatorsHandler.class),
+        TEXT_OUTPUT(TextOutputResultHandler.class),
+        VELOCITY_OUTPUT(VelocityResultHandler.class),
+        FIELD_ESCAPE(FieldEscapeHandler.class),
+        XML_OUTPUT(XmlOutputResultHandler.class);
 
 
         private final Class<? extends ResultHandler> clazz;
@@ -967,12 +978,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     case FORECAST_WIND:
                         final ForecastWindHandler wh = (ForecastWindHandler) handler;
                         break;
-                    case DISCARD_DUPLICATES:	//subclasses must be checked first
+                    case DISCARD_DUPLICATES:    //subclasses must be checked first
                         final DiscardDuplicatesResultHandler ddh = (DiscardDuplicatesResultHandler) handler;
                         ddh.setSourceField(rh.getAttribute("key"));
                         ddh.setDiscardCase(new Boolean(rh.getAttribute("ignorecase")).booleanValue());
                         break;
-                    case FORECAST_DATE:	//subclasses must be checked first
+                    case FORECAST_DATE:    //subclasses must be checked first
                         final ForecastDateHandler sdateh = (ForecastDateHandler) handler;
                         sdateh.setTargetField(rh.getAttribute("target"));
                         sdateh.setSourceField(rh.getAttribute("source"));
@@ -998,14 +1009,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         cnh.setTarget(rh.getAttribute("target"));
 
                         final NodeList navs = rh.getElementsByTagName("navigator");
-                        
+
                         for (int i = 0; i < navs.getLength(); i++) {
                             final Element nav = (Element) navs.item(i);
 
                             final NodeList mods = nav.getElementsByTagName("modifier");
                             for (int j = 0; j < mods.getLength(); j++) {
                                 final Element mod = (Element) mods.item(j);
-                                
+
                                 cnh.addMapping(nav.getAttribute("name"), mod.getAttribute("name"));
                             }
                         }

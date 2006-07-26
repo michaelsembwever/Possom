@@ -9,7 +9,6 @@
 package no.schibstedsok.front.searchportal.query.analyser;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.AndClause;
@@ -48,7 +47,8 @@ public final class Scorer extends AbstractReflectionVisitor {
          **/
         TokenEvaluatorFactory getTokenEvaluatorFactory();
 
-        String getNameForAnonymousPredicate(Predicate predicate);
+        /** TODO comment me. **/
+    String getNameForAnonymousPredicate(Predicate predicate);
 
     }
 
@@ -75,6 +75,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         return score;
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
         final boolean originalAdditivity = additivity;
         additivity = true;
@@ -84,6 +85,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         additivity = originalAdditivity;
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         final boolean originalAdditivity = additivity;
         additivity = true;
@@ -93,12 +95,14 @@ public final class Scorer extends AbstractReflectionVisitor {
         additivity = originalAdditivity;
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
         scoreClause(clause);
         clause.getSecondClause().accept(this);
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final NotClause clause) {
         final boolean originalAdditivity = additivity;
         additivity = false;
@@ -107,6 +111,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         additivity = originalAdditivity;
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final AndNotClause clause) {
         final boolean originalAdditivity = additivity;
         additivity = false;
@@ -115,6 +120,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         additivity = originalAdditivity;
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final Clause clause) {
         scoreClause(clause);
     }
@@ -128,7 +134,7 @@ public final class Scorer extends AbstractReflectionVisitor {
     private void scoreClause(final Clause clause) {
         final Set<TokenPredicate> knownPredicates = clause.getKnownPredicates();
         final Set<TokenPredicate> possiblePredicates = clause.getPossiblePredicates();
-        
+
         // update the factory with the predicate sets that can be used to improve evaluation performance.
         final TokenEvaluatorFactory factory = context.getTokenEvaluatorFactory();
         factory.setClausesKnownPredicates(knownPredicates);
@@ -142,11 +148,13 @@ public final class Scorer extends AbstractReflectionVisitor {
             // check we haven't already scored with this predicate.
             if (!touchedPredicates.contains(predicate)) {
 
-                if (knownPredicates.contains(predicate)
-                        // OR if this is a possiblePredicate or a all|any|none|not predicate
-                        //  find out if it is now applicable...
-                        || ((possiblePredicates.contains(predicate) || !(predicate instanceof TokenPredicate))
-                                && predicate.evaluate(factory))) {
+                // if this is a possiblePredicate or a all|any|none|not predicate
+                //  find out if it is now applicable...
+                boolean match = possiblePredicates.contains(predicate) || !(predicate instanceof TokenPredicate);
+                match &= predicate.evaluate(factory);
+                match |= knownPredicates.contains(predicate);
+
+                if (match) {
 
                     if (additivity) {
                         addScore(predicateScore);

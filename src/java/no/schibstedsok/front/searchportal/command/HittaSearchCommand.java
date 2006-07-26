@@ -9,6 +9,9 @@
 package no.schibstedsok.front.searchportal.command;
 
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.xml.rpc.ServiceException;
@@ -41,6 +44,13 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
 
     // Constants -----------------------------------------------------
+
+    private static final Collection<TokenPredicate> WHO_PREDICATES = Collections.unmodifiableCollection(
+            Arrays.asList(
+            TokenPredicate.COMPANYENRICHMENT,
+            TokenPredicate.FIRSTNAME,
+            TokenPredicate.LASTNAME
+            ));
 
     private static final Logger LOG = Logger.getLogger(HittaSearchCommand.class);
     private static final String ERR_FAILED_HITTA_SEARCH = "Failed Hitta search command";
@@ -80,22 +90,29 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             final HittaServiceLocator locator = new HittaServiceLocator();
             final HittaServiceSoap service = locator.getHittaServiceSoap();
             final GeoQueryTransformer geoTransformer = new GeoQueryTransformer();
+            final NameOrCompanyMatch nameOrCompanyMatch = new NameOrCompanyMatch();
 
+            // This blanks out the terms before checking that only name or company terms remain
             final String transformedQuery = getTransformedQuery();
-            final String transformedGeoQuery = geoTransformer.getQuery();
-            
-            getParameters().put("hittaWho", transformedQuery);
-            getParameters().put("hittaWhere", transformedGeoQuery);
-            
-            LOG.debug(DEBUG_SEARCHING_1 + transformedQuery);
-            LOG.debug(DEBUG_SEARCHING_2 + transformedGeoQuery);
 
-            if(conf.getCatalog().equalsIgnoreCase("white")){
-                hits = service.getWhiteAmount(transformedQuery, transformedGeoQuery, conf.getKey());
+            if(nameOrCompanyMatch.is()){
 
-            }else if(conf.getCatalog().equalsIgnoreCase("pink")){
-                hits = service.getPinkAmount(transformedQuery, transformedGeoQuery, conf.getKey());
 
+                final String transformedGeoQuery = geoTransformer.getQuery();
+
+                getParameters().put("hittaWho", transformedQuery);
+                getParameters().put("hittaWhere", transformedGeoQuery);
+
+                LOG.debug(DEBUG_SEARCHING_1 + transformedQuery);
+                LOG.debug(DEBUG_SEARCHING_2 + transformedGeoQuery);
+
+                if(conf.getCatalog().equalsIgnoreCase("white")){
+                    hits = service.getWhiteAmount(transformedQuery, transformedGeoQuery, conf.getKey());
+
+                }else if(conf.getCatalog().equalsIgnoreCase("pink")){
+                    hits = service.getPinkAmount(transformedQuery, transformedGeoQuery, conf.getKey());
+
+                }
             }
 
         } catch (ServiceException ex) {
@@ -215,6 +232,80 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             //  Both branches to a XorClause should never be used.
             clause.getFirstClause().accept(this);
             // clause.getSecondClause().accept(this);
+        }
+    }
+
+    private final class NameOrCompanyMatch extends AbstractReflectionVisitor{
+
+
+        private Boolean exactlyNameOrCompany = null;
+
+        public boolean is(){
+
+            if(exactlyNameOrCompany == null){
+                exactlyNameOrCompany = Boolean.TRUE;
+                visit(context.getQuery().getRootClause());
+            }
+
+            return exactlyNameOrCompany;
+        }
+
+        protected void visitImpl(final LeafClause clause) {
+
+            for(TokenPredicate predicate : WHO_PREDICATES){
+                if(exactlyNameOrCompany){
+                    boolean match = clause.getPossiblePredicates().contains(predicate);
+                    match &= predicate.evaluate(context.getRunningQuery().getTokenEvaluatorFactory());
+                    match |= clause.getKnownPredicates().contains(predicate);
+                    // also check that the term hasn't been blanked
+                    match |= getTransformedTerm(clause).length() == 0;
+
+                    if(!match){
+                        exactlyNameOrCompany = Boolean.FALSE;
+                    }
+                }
+            }
+        }
+
+        protected void visitImpl(final OperationClause clause) {
+            if(exactlyNameOrCompany){
+                clause.getFirstClause().accept(this);
+            }
+        }
+
+        protected void visitImpl(final AndClause clause) {
+            if(exactlyNameOrCompany){
+                clause.getFirstClause().accept(this);
+                clause.getSecondClause().accept(this);
+            }
+        }
+
+        protected void visitImpl(final OrClause clause) {
+            if(exactlyNameOrCompany){
+                clause.getFirstClause().accept(this);
+                clause.getSecondClause().accept(this);
+            }
+        }
+
+        protected void visitImpl(final DefaultOperatorClause clause) {
+            if(exactlyNameOrCompany){
+                clause.getFirstClause().accept(this);
+                clause.getSecondClause().accept(this);
+            }
+        }
+
+        protected void visitImpl(final NotClause clause) {
+        }
+
+        protected void visitImpl(final AndNotClause clause) {
+
+        }
+
+        protected void visitImpl(final XorClause clause) {
+            if(exactlyNameOrCompany){
+                clause.getFirstClause().accept(this);
+                clause.getSecondClause().accept(this);
+            }
         }
     }
 }
