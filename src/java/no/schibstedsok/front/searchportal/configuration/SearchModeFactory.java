@@ -40,7 +40,7 @@ import no.schibstedsok.front.searchportal.view.output.XmlOutputResultHandler;
 import no.schibstedsok.front.searchportal.query.transform.ExactTitleMatchTransformer;
 import no.schibstedsok.front.searchportal.query.transform.InfopageQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.NewsTransformer;
-import no.schibstedsok.front.searchportal.query.transform.PrefixRemoverTransformer;
+import no.schibstedsok.front.searchportal.query.transform.TokenRemoverTransformer;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.SimpleSiteSearchTransformer;
 import no.schibstedsok.front.searchportal.query.transform.SynonymQueryTransformer;
@@ -736,10 +736,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         WEATHER (WeatherQueryTransformer.class),
         WEATHERINFOPAGE (WeatherInfopageQueryTransformer.class),
         NEWS (NewsTransformer.class),
-        PREFIX_REMOVER (PrefixRemoverTransformer.class),
+        // deprecated. use token-remover match="prefix" instead.
+        PREFIX_REMOVER (TokenRemoverTransformer.class),
         SIMPLE_SITE_SEARCH (SimpleSiteSearchTransformer.class),
         SYNONYM (SynonymQueryTransformer.class),
         TERM_PREFIX (TermPrefixTransformer.class),
+        TOKEN_REMOVER (TokenRemoverTransformer.class),
         NOW (NowQueryTransformer.class),
         WEBTV (WebTvQueryTransformer.class),
         TV (TvQueryTransformer.class),
@@ -764,9 +766,18 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 LOG.info(INFO_PARSING_QUERY_TRANSFORMER + xmlName);
                 final QueryTransformer transformer = clazz.newInstance();
                 switch(this){
+                    case AGEFILTER:
+                        final AgeFilterTransformer agft = (AgeFilterTransformer) transformer;
+                        agft.setAgeField(qt.getAttribute("field"));
+                        break;
+                        case NOW:
+                        final NowQueryTransformer nqt = (NowQueryTransformer) transformer;
+                        nqt.setPrefix(qt.getAttribute("prefix"));
+                        break;
                     case PREFIX_REMOVER:
-                        final PrefixRemoverTransformer prqt = (PrefixRemoverTransformer) transformer;
+                        final TokenRemoverTransformer prqt = (TokenRemoverTransformer) transformer;
                         prqt.addPrefixes(qt.getAttribute("prefixes").split(","));
+                        prqt.setMatch(TokenRemoverTransformer.MatchType.PREFIX);
                         break;
                     case SIMPLE_SITE_SEARCH:
                         final SimpleSiteSearchTransformer ssqt = (SimpleSiteSearchTransformer) transformer;
@@ -777,17 +788,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         tpqt.setPrefix(qt.getAttribute("prefix"));
                         tpqt.setNumberPrefix(qt.getAttribute("number-prefix"));
                         break;
-                    case NOW:
-                        final NowQueryTransformer nqt = (NowQueryTransformer) transformer;
-                        nqt.setPrefix(qt.getAttribute("prefix"));
+                    case TOKEN_REMOVER:
+                        final TokenRemoverTransformer trqt = (TokenRemoverTransformer) transformer;
+                        trqt.addPrefixes(qt.getAttribute("prefixes").split(","));
+                        trqt.setMatch(
+                                TokenRemoverTransformer.MatchType.valueOf(qt.getAttribute("match").toUpperCase()));
                         break;
                     case TVSEARCH:
                         final TvSearchQueryTransformer tsqt = (TvSearchQueryTransformer) transformer;
                         tsqt.setWithEndtime(qt.getAttribute("with-endtime").equals("true"));
-                        break;
-                    case AGEFILTER:
-                        final AgeFilterTransformer agft = (AgeFilterTransformer) transformer;
-                        agft.setAgeField(qt.getAttribute("field"));
                         break;
                     case WEATHER:
                         final WeatherQueryTransformer wqt = (WeatherQueryTransformer) transformer;

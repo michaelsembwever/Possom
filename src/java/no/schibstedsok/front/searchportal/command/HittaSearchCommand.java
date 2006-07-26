@@ -13,6 +13,16 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.rpc.ServiceException;
 import no.schibstedsok.front.searchportal.configuration.HittaSearchConfiguration;
+import no.schibstedsok.front.searchportal.query.AndClause;
+import no.schibstedsok.front.searchportal.query.AndNotClause;
+import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.front.searchportal.query.LeafClause;
+import no.schibstedsok.front.searchportal.query.NotClause;
+import no.schibstedsok.front.searchportal.query.OperationClause;
+import no.schibstedsok.front.searchportal.query.OrClause;
+import no.schibstedsok.front.searchportal.query.XorClause;
+import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
@@ -22,7 +32,7 @@ import org.apache.log4j.Logger;
 import se.hitta.www.HittaService.HittaServiceLocator;
 import se.hitta.www.HittaService.HittaServiceSoap;
 
-/**
+/** Search against the Swedish Hitta WebService.
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -33,8 +43,10 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(HittaSearchCommand.class);
+    private static final String ERR_FAILED_HITTA_SEARCH = "Failed Hitta search command";
     private static final String DEBUG_CONF_NFO = "Conf details --> ";
-    private static final String DEBUG_SEARCHING = "Searching for ";
+    private static final String DEBUG_SEARCHING_1 = "Searching for who->";
+    private static final String DEBUG_SEARCHING_2 = "Searching for where->";
 
     // Attributes ----------------------------------------------------
 
@@ -43,7 +55,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
     // Constructors --------------------------------------------------
 
     /**
-     * Creates a new instance of HittaSearchCommand
+     * Creates a new instance of HittaSearchCommand.
      */
     public HittaSearchCommand(final Context cxt, final Map parameters) {
         super (cxt, parameters);
@@ -56,6 +68,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
     // Y overrides ---------------------------------------------------
 
+    /** @inherit **/
     public SearchResult execute(){
 
         final HittaSearchConfiguration conf = (HittaSearchConfiguration) context.getSearchConfiguration();
@@ -66,22 +79,29 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         try {
             final HittaServiceLocator locator = new HittaServiceLocator();
             final HittaServiceSoap service = locator.getHittaServiceSoap();
-            
+            final GeoQueryTransformer geoTransformer = new GeoQueryTransformer();
+
             final String transformedQuery = getTransformedQuery();
-            LOG.debug(DEBUG_SEARCHING + transformedQuery);
+            final String transformedGeoQuery = geoTransformer.getQuery();
+            
+            getParameters().put("hittaWho", transformedQuery);
+            getParameters().put("hittaWhere", transformedGeoQuery);
+            
+            LOG.debug(DEBUG_SEARCHING_1 + transformedQuery);
+            LOG.debug(DEBUG_SEARCHING_2 + transformedGeoQuery);
 
             if(conf.getCatalog().equalsIgnoreCase("white")){
-                hits = service.getWhiteAmount(transformedQuery, "", conf.getKey())
-                        ;//+ service.getWhiteAmount("", getTransformedQuery(), conf.getKey());
+                hits = service.getWhiteAmount(transformedQuery, transformedGeoQuery, conf.getKey());
+
             }else if(conf.getCatalog().equalsIgnoreCase("pink")){
-                hits = service.getPinkAmount(transformedQuery, "", conf.getKey())
-                        ;//+ service.getPinkAmount("", getTransformedQuery(), conf.getKey());
+                hits = service.getPinkAmount(transformedQuery, transformedGeoQuery, conf.getKey());
+
             }
 
         } catch (ServiceException ex) {
-            LOG.error("", ex);
+            LOG.error(ERR_FAILED_HITTA_SEARCH, ex);
         } catch (RemoteException ex) {
-            LOG.error("", ex);
+            LOG.error(ERR_FAILED_HITTA_SEARCH, ex);
         }
 
         final SearchResult result = new WebServiceSearchResult(this);
@@ -96,6 +116,9 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
+
+
+
 
     // Inner classes -------------------------------------------------
 
@@ -131,5 +154,67 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
+    }
+
+    private final class GeoQueryTransformer extends AbstractReflectionVisitor{
+
+        private StringBuilder sb;
+
+        public String getQuery(){
+
+            if(sb == null){
+                sb = new StringBuilder();
+                visit(context.getQuery().getRootClause());
+            }
+
+            return sb.toString().trim();
+        }
+
+        protected void visitImpl(final LeafClause clause) {
+
+            boolean include = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL);
+            include |= clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
+            include &= clause.getField() == null;
+
+            if (include) {
+                // go back to using the clause as the transformed term will be blank
+                sb.append(clause.getTerm());
+            }
+        }
+
+        protected void visitImpl(final OperationClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+
+        protected void visitImpl(final AndClause clause) {
+            clause.getFirstClause().accept(this);
+            sb.append(' ');
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final OrClause clause) {
+            clause.getFirstClause().accept(this);
+            sb.append(' ');
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final DefaultOperatorClause clause) {
+            clause.getFirstClause().accept(this);
+            sb.append(' ');
+            clause.getSecondClause().accept(this);
+        }
+
+        protected void visitImpl(final NotClause clause) {
+        }
+
+        protected void visitImpl(final AndNotClause clause) {
+        }
+
+        protected void visitImpl(final XorClause clause) {
+            // [TODO] we need to determine which branch in the query-tree we want to use.
+            //  Both branches to a XorClause should never be used.
+            clause.getFirstClause().accept(this);
+            // clause.getSecondClause().accept(this);
+        }
     }
 }

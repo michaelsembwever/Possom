@@ -20,13 +20,15 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 
 /**
+ * 
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@sesam.no">Mick Wever</a>
  * @version <tt>$Id$</tt>
  */
-public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
+public final class TokenRemoverTransformer extends AbstractQueryTransformer {
 
-    private static final Logger LOG = Logger.getLogger(PrefixRemoverTransformer.class);
+    private static final Logger LOG = Logger.getLogger(TokenRemoverTransformer.class);
 
     private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
             Arrays.asList(
@@ -49,6 +51,7 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
 
     private Collection<String> prefixes = new ArrayList<String>();
     private Collection<TokenPredicate> customPrefixes;
+    private MatchType match = MatchType.ANY;
 
     private Set<TokenPredicate> insidePrefixes = new HashSet<TokenPredicate>();
     private StringBuilder prefixBuilder = new StringBuilder();
@@ -62,13 +65,14 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     }
 
     protected void visitImpl(final DefaultOperatorClause clause) {
+        
         for (TokenPredicate predicate : getPrefixes()) {
             if (clause.getPossiblePredicates().contains(predicate)) {
                 insidePrefixes.add(predicate);
             }
         }
         clause.getFirstClause().accept(this);
-        if(insidePrefixes.size() > 0){
+        if(insidePrefixes.size() > 0 || MatchType.ANY == match){
             clause.getSecondClause().accept(this);
         }
     }
@@ -78,16 +82,18 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     }
 
     protected void visitImpl(final LeafClause clause) {
+        
         // Do not remove if the query is just the prefix.
         if (getContext().getQuery().getTermCount() > 1) {
 
             if(insidePrefixes.size() > 0){
-                if(prefixBuilder.length()>0){
-                    prefixBuilder.append(' ');
-                }
+                
                 if(clause.getField() != null){
                     clearInsidePrefixState();
                 }else{
+                    if(prefixBuilder.length()>0){
+                        prefixBuilder.append(' ');
+                    }
                     prefixBuilder.append(clause.getTerm());
                     leafList.add(clause);
                 }
@@ -104,8 +110,11 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
                     }
                 }
             }
+            
+            boolean check = MatchType.ANY == match;
+            check |= MatchType.PREFIX == match && clause == getContext().getQuery().getFirstLeafClause();
 
-            if (clause == getContext().getQuery().getFirstLeafClause()) {
+            if (check) {
                 for (TokenPredicate predicate : getPrefixes()) {
 
                     if (clause.getPossiblePredicates().contains(predicate)
@@ -146,13 +155,14 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
     }
 
     public Object clone() throws CloneNotSupportedException {
-        final PrefixRemoverTransformer retValue = (PrefixRemoverTransformer)super.clone();
+        final TokenRemoverTransformer retValue = (TokenRemoverTransformer)super.clone();
         retValue.customPrefixes = customPrefixes;
 
         retValue.prefixes = prefixes;
         retValue.insidePrefixes = new HashSet<TokenPredicate>();
         retValue.prefixBuilder = new StringBuilder();
         retValue.leafList = new ArrayList<LeafClause>();
+        retValue.match = match;
 
         return retValue;
     }
@@ -173,4 +183,24 @@ public final class PrefixRemoverTransformer extends AbstractQueryTransformer {
             prefixes.addAll(Arrays.asList(pArr));
         }
     }
+
+    
+
+    /**
+     * Getter for property match.
+     * @return Value of property match.
+     */
+    public MatchType getMatch() {
+        return match;
+    }
+
+    /**
+     * Setter for property match.
+     * @param match New value of property match.
+     */
+    public void setMatch(MatchType match) {
+        this.match = match;
+    }
+    
+    public enum MatchType {PREFIX,ANY};
 }
