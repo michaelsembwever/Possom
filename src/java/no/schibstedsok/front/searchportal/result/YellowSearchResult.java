@@ -21,22 +21,21 @@ import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import no.schibstedsok.front.searchportal.command.SearchCommand;
+import org.apache.log4j.Logger;
 
-public class YellowSearchResult extends FastSearchResult {
+public final class YellowSearchResult extends FastSearchResult {
 
     private int pseudoLocalHitCount;
-    Collection pseudoLocalResults = new ArrayList();
+    private final Collection<SearchResultItem> pseudoLocalResults = new ArrayList<SearchResultItem>();
     private FastSearchResult localResult;
     private FastSearchResult pseudoLocalResult;
     private boolean local;
     private FastSearchResult top3;
     private int addedTop3 = 0;
 
-    private static Log log = LogFactory.getLog(YellowSearchResult.class);
+    private static final Logger LOG = Logger.getLogger(YellowSearchResult.class);
 
     public YellowSearchResult(final SearchCommand command, final FastSearchResult localResult, final FastSearchResult pseudoLocalResult, final FastSearchResult top3, final boolean local) {
         super(command);
@@ -99,7 +98,7 @@ public class YellowSearchResult extends FastSearchResult {
         return pseudoLocalHitCount;
     }
 
-    public Collection getPseudoLocalResults() {
+    public Collection<SearchResultItem> getPseudoLocalResults() {
         return pseudoLocalResults;
     }
 
