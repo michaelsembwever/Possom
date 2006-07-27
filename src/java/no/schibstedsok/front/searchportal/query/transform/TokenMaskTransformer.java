@@ -21,8 +21,10 @@ import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 
 /**
+ * Mask (inclusively or exclusively) terms in the query that
+ * positionally (prefix or anywhere) contains TokenPredicates.
  *
- *
+ * <b>Note</b> Using <code>position="prefix" predicates="*_MAGIC"</code> is kinda pointless but is often done anyway.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@sesam.no">Mick Wever</a>
@@ -30,15 +32,15 @@ import org.apache.log4j.Logger;
  */
 public final class TokenMaskTransformer extends AbstractQueryTransformer {
 
-    /** TODO comment me. **/
-    public enum Match {
+    /** Position restrictions when searching for matching predicates. **/
+    public enum Position {
         /** TODO comment me. **/
         PREFIX,
         /** TODO comment me. **/
         ANY
     };
 
-    /** TODO comment me. **/
+    /** Types of masking to perform during transformation. **/
     public enum Mask {
         /** TODO comment me. **/
         INCLUDE,
@@ -48,32 +50,18 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
 
     private static final Logger LOG = Logger.getLogger(TokenMaskTransformer.class);
 
-    private static final Collection<TokenPredicate> DEFAULT_PREFIXES = Collections.unmodifiableCollection(
-            Arrays.asList(
-            // Special case
-            TokenPredicate.SITEPREFIX,
-            // All magic words
-            TokenPredicate.BOOK_MAGIC,
-            TokenPredicate.CATALOGUE_MAGIC,
-            TokenPredicate.CULTURE_MAGIC,
-            TokenPredicate.MOVIE_MAGIC,
-            TokenPredicate.NEWS_MAGIC,
-            TokenPredicate.PICTURE_MAGIC,
-            TokenPredicate.STOCK_MAGIC,
-            TokenPredicate.WEBTV_MAGIC,
-            TokenPredicate.WIKIPEDIA_MAGIC
-            ));
-
+    // do not remove token predicates by default any more
+    private static final Collection<TokenPredicate> DEFAULT_PREDICATES = Collections.EMPTY_SET;
 
     private static final String BLANK = "";
 
     private Collection<String> prefixes = new ArrayList<String>();
-    private Collection<TokenPredicate> customPrefixes;
-    private Match match = Match.ANY;
+    private Collection<TokenPredicate> customPredicates;
+    private Position position = Position.ANY;
     private Mask mask = Mask.EXCLUDE;
 
-    private Set<TokenPredicate> insidePrefixes = new HashSet<TokenPredicate>();
-    private StringBuilder prefixBuilder = new StringBuilder();
+    private Set<TokenPredicate> insidePredicates = new HashSet<TokenPredicate>();
+    private StringBuilder predicateBuilder = new StringBuilder();
     private Map<LeafClause,String> leaves = new HashMap<LeafClause,String>();
     private RegExpEvaluatorFactory regExpFactory = null;
 
@@ -88,16 +76,16 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
     protected void visitImpl(final DefaultOperatorClause clause) {
 
         // -->HACK while AlternationRotation is in implementation
-        for (TokenPredicate predicate : getPrefixes()) {
+        for (TokenPredicate predicate : getPredicates()) {
             if (clause.getPossiblePredicates().contains(predicate)) {
-                insidePrefixes.add(predicate);
+                insidePredicates.add(predicate);
             }
         }
         clause.getFirstClause().accept(this);
 
-        if(insidePrefixes.size() > 0
+        if(insidePredicates.size() > 0
         // <--HACK
-                || Match.ANY == match || Mask.INCLUDE == mask){
+                || Position.ANY == position || Mask.INCLUDE == mask){
             clause.getSecondClause().accept(this);
         }
     }
@@ -120,23 +108,23 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
         if (getContext().getQuery().getTermCount() > 1) {
 
             // -->HACK while AlternationRotation is in implementation
-            if(insidePrefixes.size() > 0){
+            if(insidePredicates.size() > 0){
 
                 if(clause.getField() != null){
                     clearInsidePrefixState();
                 }else{
-                    if(prefixBuilder.length()>0){
-                        prefixBuilder.append(' ');
+                    if(predicateBuilder.length()>0){
+                        predicateBuilder.append(' ');
                     }
-                    prefixBuilder.append(clause.getTerm());
+                    predicateBuilder.append(clause.getTerm());
                     leaves.put(clause, getContext().getTransformedTerms().get(clause));
                 }
-                for(TokenPredicate predicate : insidePrefixes){
+                for(TokenPredicate predicate : insidePredicates){
 
                     final TokenEvaluator eval = regExpFactory.getEvaluator(predicate);
                     // HACK. if it isn't a RegExpTokenEvaluator it won't remove the prefix.
                     if(eval instanceof RegExpTokenEvaluator
-                            && ((RegExpTokenEvaluator)eval).evaluateToken(null, prefixBuilder.toString(), null, true)){
+                            && ((RegExpTokenEvaluator)eval).evaluateToken(null, predicateBuilder.toString(), null, true)){
 
                         for(LeafClause c : leaves.keySet()){
                             getContext().getTransformedTerms().put(c, Mask.INCLUDE == mask ? leaves.get(c) : BLANK);
@@ -146,11 +134,11 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
             }
             // <--HACK
 
-            boolean check = Match.ANY == match;
-            check |= Match.PREFIX == match && clause == getContext().getQuery().getFirstLeafClause();
+            boolean check = Position.ANY == position;
+            check |= Position.PREFIX == position && clause == getContext().getQuery().getFirstLeafClause();
 
             if (check) {
-                for (TokenPredicate predicate : getPrefixes()) {
+                for (TokenPredicate predicate : getPredicates()) {
 
                     boolean transform = clause.getPossiblePredicates().contains(predicate);
                     transform &= predicate.evaluate(getContext().getTokenEvaluatorFactory()); // XXX maybe not needed
@@ -168,15 +156,15 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
 
     private void clearInsidePrefixState(){
         // reset. not that it will be used again anyway ;-)
-        insidePrefixes.clear();
-        prefixBuilder.setLength(0);
+        insidePredicates.clear();
+        predicateBuilder.setLength(0);
         leaves.clear();
     }
 
-    private Collection<TokenPredicate> getPrefixes() {
+    private Collection<TokenPredicate> getPredicates() {
         synchronized (this) {
-            if (customPrefixes == null && prefixes != null && prefixes.size() > 0) {
-                final Collection<TokenPredicate> cp = new ArrayList(DEFAULT_PREFIXES);
+            if (customPredicates == null && prefixes != null && prefixes.size() > 0) {
+                final Collection<TokenPredicate> cp = new ArrayList(DEFAULT_PREDICATES);
                 for (String tp : prefixes) {
                     try{
                         cp.add(TokenPredicate.valueOf(tp));
@@ -184,25 +172,25 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
                         LOG.error(ERR_PREFIX_NOT_FOUND + tp, iae);
                     }
                 }
-                customPrefixes = Collections.unmodifiableCollection(cp);
+                customPredicates = Collections.unmodifiableCollection(cp);
             }
         }
         return prefixes != null && prefixes.size() > 0
-                ? customPrefixes
-                : DEFAULT_PREFIXES;
+                ? customPredicates
+                : DEFAULT_PREDICATES;
     }
 
     /** TODO comment me. **/
     public Object clone() throws CloneNotSupportedException {
 
         final TokenMaskTransformer retValue = (TokenMaskTransformer)super.clone();
-        retValue.customPrefixes = customPrefixes;
+        retValue.customPredicates = customPredicates;
 
         retValue.prefixes = prefixes;
-        retValue.insidePrefixes = new HashSet<TokenPredicate>();
-        retValue.prefixBuilder = new StringBuilder();
+        retValue.insidePredicates = new HashSet<TokenPredicate>();
+        retValue.predicateBuilder = new StringBuilder();
         retValue.leaves = new HashMap<LeafClause,String>();
-        retValue.match = match;
+        retValue.position = position;
         retValue.mask = mask;
 
         return retValue;
@@ -220,32 +208,30 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
     }
 
     /** TODO comment me. **/
-    public void addPrefixes(final String[] pArr) {
+    public void addPredicates(final String[] pArr) {
 
         if(pArr.length > 0 && pArr[0].trim().length() >0){
             prefixes.addAll(Arrays.asList(pArr));
         }
     }
 
-
-
     /**
-     * Getter for property match.
-     * @return Value of property match.
+     * Getter for property position.
+     *
+     * @return Value of property position.
      */
-    public Match getMatch() {
-        return match;
+    public Position getMatch() {
+        return position;
     }
 
     /**
-     * Setter for property match.
-     * @param match New value of property match.
+     * Setter for property position.
+     *
+     * @param position New value of property position.
      */
-    public void setMatch(final Match match) {
-        this.match = match;
+    public void setMatch(final Position match) {
+        this.position = match;
     }
-
-
 
     /**
      * Getter for property mask.

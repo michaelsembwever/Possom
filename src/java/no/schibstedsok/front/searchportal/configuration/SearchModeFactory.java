@@ -26,8 +26,6 @@ import no.schibstedsok.front.searchportal.executor.ParallelSearchCommandExecutor
 import no.schibstedsok.front.searchportal.executor.SearchCommandExecutor;
 import no.schibstedsok.front.searchportal.executor.SequentialSearchCommandExecutor;
 import no.schibstedsok.front.searchportal.query.transform.AgeFilterTransformer;
-import no.schibstedsok.front.searchportal.query.transform.NowQueryTransformer;
-import no.schibstedsok.front.searchportal.query.transform.WebTvQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.CombineNavigatorsHandler;
 import no.schibstedsok.front.searchportal.result.handler.DataModelResultHandler;
 import no.schibstedsok.front.searchportal.query.transform.TvSearchQueryTransformer;
@@ -45,7 +43,6 @@ import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.SimpleSiteSearchTransformer;
 import no.schibstedsok.front.searchportal.query.transform.SynonymQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.TermPrefixTransformer;
-import no.schibstedsok.front.searchportal.query.transform.TvQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.WeatherQueryTransformer;
 import no.schibstedsok.front.searchportal.query.transform.WeatherInfopageQueryTransformer;
 import no.schibstedsok.front.searchportal.result.handler.AddDocCountModifier;
@@ -745,9 +742,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         SYNONYM(SynonymQueryTransformer.class),
         TERM_PREFIX(TermPrefixTransformer.class),
         TOKEN_MASK(TokenMaskTransformer.class),
-        NOW(NowQueryTransformer.class),
-        WEBTV(WebTvQueryTransformer.class),
-        TV(TvQueryTransformer.class),
         TVSEARCH(TvSearchQueryTransformer.class),
         AGEFILTER(AgeFilterTransformer.class);
 
@@ -773,14 +767,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         final AgeFilterTransformer agft = (AgeFilterTransformer) transformer;
                         agft.setAgeField(qt.getAttribute("field"));
                         break;
-                    case NOW:
-                        final NowQueryTransformer nqt = (NowQueryTransformer) transformer;
-                        nqt.setPrefix(qt.getAttribute("prefix"));
-                        break;
                     case PREFIX_REMOVER:
                         final TokenMaskTransformer prqt = (TokenMaskTransformer) transformer;
-                        prqt.addPrefixes(qt.getAttribute("prefixes").split(","));
-                        prqt.setMatch(TokenMaskTransformer.Match.PREFIX);
+                        prqt.addPredicates(qt.getAttribute("prefixes").split(","));
+                        prqt.setMatch(TokenMaskTransformer.Position.PREFIX);
                         break;
                     case SIMPLE_SITE_SEARCH:
                         final SimpleSiteSearchTransformer ssqt = (SimpleSiteSearchTransformer) transformer;
@@ -793,10 +783,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         break;
                     case TOKEN_MASK:
                         final TokenMaskTransformer trqt = (TokenMaskTransformer) transformer;
-                        trqt.addPrefixes(qt.getAttribute("prefixes").split(","));
+                        trqt.addPredicates(qt.getAttribute("predicates").split(","));
                         if(qt.getAttribute("match").length() > 0){
                             trqt.setMatch(
-                                    TokenMaskTransformer.Match.valueOf(qt.getAttribute("match").toUpperCase()));
+                                    TokenMaskTransformer.Position.valueOf(qt.getAttribute("position").toUpperCase()));
                         }
                         if(qt.getAttribute("mask").length() >0){
                             trqt.setMask(
@@ -1020,6 +1010,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                                 cnh.addMapping(nav.getAttribute("name"), mod.getAttribute("name"));
                             }
                         }
+                        break;
+                    default:
                         break;
                 }
 

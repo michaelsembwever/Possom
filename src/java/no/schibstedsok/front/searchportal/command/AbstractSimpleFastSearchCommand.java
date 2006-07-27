@@ -10,7 +10,9 @@ package no.schibstedsok.front.searchportal.command;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,7 +64,7 @@ import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-/**
+/** Handles the basic implementation of the Simple FAST search.
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
@@ -78,7 +80,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private static final String DEBUG_EXECUTE_QR_URL = "execute() QueryServerURL=";
     private static final String DEBUG_EXECUTE_COLLECTIONS = "execute() Collections=";
     private static final String DEBUG_EXECUTE_QUERY = "execute() Query=";
-    private static final String DEBUG_EXECUTE_FILTER = "execute() Filter="; 
+    private static final String DEBUG_EXECUTE_FILTER = "execute() Filter=";
     private static final String DEBUG_PARAM_NOT_FOUND = "Param not found ";
 
     // Attributes ----------------------------------------------------
@@ -86,7 +88,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private final Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
 
     // Static --------------------------------------------------------
-    private static final HashMap searchEngines = new HashMap();
+    private static final Map<String,IFastSearchEngine> SEARCH_ENGINES = new HashMap<String,IFastSearchEngine>();
     private static transient IFastSearchEngineFactory engineFactory;
 
     static {
@@ -109,6 +111,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // Public --------------------------------------------------------
 
+    /** TODO comment me. **/
     public Collection createNavigationFilterStrings() {
         final Collection filterStrings = new ArrayList();
 
@@ -119,14 +122,16 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
 
             for (int i = 0; i < modifiers.length; i++) {
-                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter"))
+                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")){
                     filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
+                }
             }
         }
 
         return filterStrings;
     }
 
+    /** TODO comment me. **/
     public Map getOtherNavigators(final String navigatorKey) {
 
         final Map<String,String> otherNavigators = new HashMap<String,String>();
@@ -141,10 +146,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return otherNavigators;
     }
 
+    /** TODO comment me. **/
     public static void setSearchEngineFactory(final IFastSearchEngineFactory factory) {
         engineFactory = factory;
     }
 
+    /** TODO comment me. **/
     public void addNavigatedTo(final String navigatorKey, final String navigatorName) {
 
         final FastNavigator navigator = (FastNavigator) getNavigators().get(navigatorKey);
@@ -156,11 +163,13 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
+    /** TODO comment me. **/
     public FastNavigator getNavigatedTo(final String navigatorKey) {
         return (FastNavigator) navigatedTo.get(navigatorKey);
     }
 
 
+    /** TODO comment me. **/
     public FastNavigator getParentNavigator(final String navigatorKey) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
             final String navName =  getParameter("nav_" + navigatorKey);
@@ -172,6 +181,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
+    /** TODO comment me. **/
     public FastNavigator getParentNavigator(final String navigatorKey, final String name) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
 
@@ -182,6 +192,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
+    /** TODO comment me. **/
     public FastNavigator findParentNavigator(final FastNavigator navigator, final String navigatorName) {
         if (navigator.getChildNavigator() == null) {
             return null;
@@ -198,10 +209,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
+    /** TODO comment me. **/
     public Map getNavigatedValues() {
         return navigatedValues;
     }
 
+    /** TODO comment me. **/
     public String getNavigatedValue(final String fieldName) {
         final String[] singleValue = (String[]) navigatedValues.get(fieldName);
 
@@ -212,14 +225,17 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
+    /** TODO comment me. **/
     public boolean isTopLevelNavigator(final String navigatorKey) {
         return !getParameters().containsKey("nav_" + navigatorKey);
     }
 
+    /** TODO comment me. **/
     public Map getNavigatedTo() {
         return navigatedTo;
     }
 
+    /** TODO comment me. **/
     public String getNavigatorTitle(final String navigatorKey) {
 
         LOG.trace("getNavigatorTitle("+navigatorKey+")");
@@ -255,6 +271,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     }
 
+    /** TODO comment me. **/
     public String getNavigatorTitle(final FastNavigator navigator) {
 
         final String value = getNavigatedValue(navigator.getField());
@@ -266,6 +283,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
+    /** TODO comment me. **/
     public List getNavigatorBackLinks(final String navigatorKey) {
 
         final List backLinks = addNavigatorBackLinks(getFastConfiguration().getNavigator(navigatorKey), new ArrayList(), navigatorKey);
@@ -277,6 +295,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return backLinks;
     }
 
+    /** TODO comment me. **/
     public List addNavigatorBackLinks(final FastNavigator navigator, final List links, final String navigatorKey) {
 
         final String a = getParameter(navigator.getField());
@@ -311,10 +330,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // SearchCommand overrides ----------------------------------------------
 
+    /** TODO comment me. **/
     public FastSearchConfiguration getFastConfiguration() {
         return (FastSearchConfiguration) super.getSearchConfiguration();
     }
 
+    /** TODO comment me. **/
     public SearchResult execute() {
 
         try {
@@ -387,6 +408,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private boolean insideNot = false;
     private Boolean writeAnd = null;
 
+    /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
         if (clause.getField() == null) {
             final String transformedTerm = (String) getTransformedTerm(clause);
@@ -400,9 +422,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             }
         }
     }
+    /** TODO comment me. **/
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
         final Boolean originalWriteAnd = writeAnd;
         writeAnd = Boolean.TRUE;
@@ -411,6 +435,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         clause.getSecondClause().accept(this);
         writeAnd = originalWriteAnd;
     }
+    /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         final Boolean originalWriteAnd = writeAnd;
         writeAnd = Boolean.FALSE;
@@ -421,11 +446,13 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         appendToQueryRepresentation(") ");
         writeAnd = originalWriteAnd;
     }
+    /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
         appendToQueryRepresentation(" ");
         clause.getSecondClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final NotClause clause) {
         if (writeAnd == null) {
             // must start prefixing terms with +
@@ -437,6 +464,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         insideNot = originalInsideAndNot;
 
     }
+    /** TODO comment me. **/
     protected void visitImpl(final AndNotClause clause) {
         if (writeAnd == null) {
             // must start prefixing terms with +
@@ -447,6 +475,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         clause.getFirstClause().accept(this);
         insideNot = originalInsideAndNot;
     }
+    /** TODO comment me. **/
     protected void visitImpl(final XorClause clause) {
         // [TODO] we need to determine which branch in the query-tree we want to use.
         //  Both branches to a XorClause should never be used.
@@ -458,25 +487,28 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // Protected -----------------------------------------------------
 
+    /** TODO comment me. **/
     protected Map<String,FastNavigator> getNavigators() {
 
         return getFastConfiguration().getNavigators();
     }
 
+    /** TODO comment me. **/
     protected int getResultsToReturn() {
 
         return getFastConfiguration().getResultsToReturn();
     }
 
+    /** TODO comment me. **/
     protected IFastSearchEngine getSearchEngine() throws ConfigurationException, MalformedURLException {
 
-        if (!searchEngines.containsKey(getFastConfiguration().getQueryServerURL())) {
+        if (!SEARCH_ENGINES.containsKey(getFastConfiguration().getQueryServerURL())) {
             LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getFastConfiguration().getQueryServerURL());
             final IFastSearchEngine engine
                     = engineFactory.createSearchEngine(getFastConfiguration().getQueryServerURL());
-            searchEngines.put(getFastConfiguration().getQueryServerURL(), engine);
+            SEARCH_ENGINES.put(getFastConfiguration().getQueryServerURL(), engine);
         }
-        return (IFastSearchEngine) searchEngines.get(getFastConfiguration().getQueryServerURL());
+        return (IFastSearchEngine) SEARCH_ENGINES.get(getFastConfiguration().getQueryServerURL());
     }
 
     protected String getSortBy() {
@@ -638,8 +670,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         if (getFastConfiguration().getFilter() != null && getFastConfiguration().getFilter().length() >0) {
 
-            filter.append(" ");
-            filter.append(getFastConfiguration().getFilter());
+            final Calendar c = Calendar.getInstance();
+            final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+            final String updatedFilter = getFastConfiguration().getFilter()
+                    .replaceAll("\\{NOW\\}", sdf.format(c.getTime()));
+            
+            filter.append(' ' + updatedFilter);
         }
 
         // Init dynamic filters
