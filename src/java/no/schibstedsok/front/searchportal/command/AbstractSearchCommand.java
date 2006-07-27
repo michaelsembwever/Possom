@@ -2,7 +2,6 @@
 package no.schibstedsok.front.searchportal.command;
 
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
@@ -52,6 +51,8 @@ import org.apache.log4j.MDC;
 public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand {
 
    // Constants -----------------------------------------------------
+    
+    private static final String FIELD_TRANSFORMED_QUERY = "transformedQuery";
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
     private static final Logger STATISTICS_LOG = Logger.getLogger("no.schibstedsok.Statistics");
@@ -320,7 +321,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     protected final void performResultHandling(final SearchResult result){
+        
+        // add some general properties first from the command
+        result.addField(FIELD_TRANSFORMED_QUERY, getTransformedQuery());
 
+        // process listed result handlers
         for (ResultHandler resultHandler : getSearchConfiguration().getResultHandlers()) {
 
             final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
@@ -344,6 +349,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             );
             resultHandler.handleResult(resultHandlerContext, parameters);
         }
+        
+        
     }
 
 
