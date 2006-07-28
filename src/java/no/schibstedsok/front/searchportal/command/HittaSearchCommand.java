@@ -68,7 +68,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
      * Creates a new instance of HittaSearchCommand.
      */
     public HittaSearchCommand(final Context cxt, final Map parameters) {
-        super (cxt, parameters);
+        super(cxt, parameters);
 
     }
 
@@ -90,12 +90,11 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             final HittaServiceLocator locator = new HittaServiceLocator();
             final HittaServiceSoap service = locator.getHittaServiceSoap();
             final GeoQueryTransformer geoTransformer = new GeoQueryTransformer();
-            final NameOrCompanyMatch nameOrCompanyMatch = new NameOrCompanyMatch();
 
             // This blanks out the terms before checking that only name or company terms remain
             final String transformedQuery = getTransformedQuery();
 
-            if(nameOrCompanyMatch.is()){
+            if(transformedQuery.length() >0){
 
 
                 final String transformedGeoQuery = geoTransformer.getQuery();
@@ -235,77 +234,4 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         }
     }
 
-    private final class NameOrCompanyMatch extends AbstractReflectionVisitor{
-
-
-        private Boolean exactlyNameOrCompany = null;
-
-        public boolean is(){
-
-            if(exactlyNameOrCompany == null){
-                exactlyNameOrCompany = Boolean.TRUE;
-                visit(context.getQuery().getRootClause());
-            }
-
-            return exactlyNameOrCompany;
-        }
-
-        protected void visitImpl(final LeafClause clause) {
-
-            for(TokenPredicate predicate : WHO_PREDICATES){
-                if(exactlyNameOrCompany){
-                    boolean match = clause.getPossiblePredicates().contains(predicate);
-                    match &= predicate.evaluate(context.getRunningQuery().getTokenEvaluatorFactory());
-                    match |= clause.getKnownPredicates().contains(predicate);
-                    // also check that the term hasn't been blanked
-                    match |= getTransformedTerm(clause).length() == 0;
-
-                    if(!match){
-                        exactlyNameOrCompany = Boolean.FALSE;
-                    }
-                }
-            }
-        }
-
-        protected void visitImpl(final OperationClause clause) {
-            if(exactlyNameOrCompany){
-                clause.getFirstClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final AndClause clause) {
-            if(exactlyNameOrCompany){
-                clause.getFirstClause().accept(this);
-                clause.getSecondClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final OrClause clause) {
-            if(exactlyNameOrCompany){
-                clause.getFirstClause().accept(this);
-                clause.getSecondClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final DefaultOperatorClause clause) {
-            if(exactlyNameOrCompany){
-                clause.getFirstClause().accept(this);
-                clause.getSecondClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final NotClause clause) {
-        }
-
-        protected void visitImpl(final AndNotClause clause) {
-
-        }
-
-        protected void visitImpl(final XorClause clause) {
-            if(exactlyNameOrCompany){
-                clause.getFirstClause().accept(this);
-                clause.getSecondClause().accept(this);
-            }
-        }
-    }
 }

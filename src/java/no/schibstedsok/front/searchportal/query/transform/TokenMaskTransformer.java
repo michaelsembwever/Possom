@@ -104,8 +104,8 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
             getContext().getTransformedTerms().put(clause, BLANK);
         }
 
-        // Do not remove if the query is just the prefix.
-        if (getContext().getQuery().getTermCount() > 1) {
+        // Do not remove if the query is just the prefix and we're in prefix exclude mode.
+        if (Position.ANY == position || Mask.INCLUDE == mask || getContext().getQuery().getTermCount() > 1) {
 
             // -->HACK while AlternationRotation is in implementation
             if(insidePredicates.size() > 0){
@@ -229,8 +229,8 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
      *
      * @param position New value of property position.
      */
-    public void setMatch(final Position match) {
-        this.position = match;
+    public void setMatch(final Position position) {
+        this.position = position;
     }
 
     /**
