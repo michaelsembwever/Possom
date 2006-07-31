@@ -253,11 +253,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final String performQueryTransformation(){
 
         // use the query or something search-command specific
-        final boolean useParameterAsQuery = getSearchConfiguration().getUseParameterAsQuery() != null
-                && getSearchConfiguration().getUseParameterAsQuery().length() >0;
+        final boolean useParameterAsQuery = getSearchConfiguration().getQueryParameter() != null
+                && getSearchConfiguration().getQueryParameter().length() >0;
         // so what query string is it then
         final String queryToUse = useParameterAsQuery
-                ? getSingleParameter(getSearchConfiguration().getUseParameterAsQuery())
+                ? getSingleParameter(getSearchConfiguration().getQueryParameter())
                 : context.getQuery().getQueryString();
 
         if (useParameterAsQuery) {

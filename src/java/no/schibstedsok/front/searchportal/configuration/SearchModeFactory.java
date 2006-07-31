@@ -369,8 +369,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         }
                     }
                     fillBeanProperty(sc, inherit, "paging", ParseType.Boolean , commandE, "false");
-
-                    asc.setUseParameterAsQuery(commandE.getAttribute("queryParameter"));
+                    fillBeanProperty(sc, inherit, "queryParameter", ParseType.String , commandE, "");
 
                     if(commandE.getAttribute("result-fields").length() >0){
                         final String[] resultFields = commandE.getAttribute("result-fields").split(",");

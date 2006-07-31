@@ -90,7 +90,7 @@ public interface SearchConfiguration {
 
     boolean isChild();
 
-    public String getUseParameterAsQuery();
+    public String getQueryParameter();
 
     boolean isAlwaysRun();
     String getStatisticalName();

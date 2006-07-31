@@ -34,7 +34,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     private boolean child = false;
     private String rule;
     private int ruleThreshold = -1;
-    private String useParameterAsQuery;
+    private String queryParameter;
     private boolean alwaysRun = false;
 
     private String statisticalName;
@@ -51,7 +51,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
             resultsToReturn = asc.resultsToReturn;
             paging = asc.paging;
             child = asc.child;
-            useParameterAsQuery = asc.useParameterAsQuery;
+            queryParameter = asc.queryParameter;
             alwaysRun = asc.alwaysRun;
         }
     }
@@ -144,8 +144,8 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         return child;
     }
 
-    public String getUseParameterAsQuery() {
-        return useParameterAsQuery;
+    public String getQueryParameter() {
+        return queryParameter;
     }
 
     public boolean isAlwaysRun() {
@@ -156,8 +156,8 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         alwaysRun = enable;
     }
 
-    public void setUseParameterAsQuery(final String useParameterAsQuery) {
-        this.useParameterAsQuery = useParameterAsQuery;
+    public void setQueryParameter(final String useParameterAsQuery) {
+        this.queryParameter = useParameterAsQuery;
     }
 
     public String getStatisticalName() {
