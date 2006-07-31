@@ -126,12 +126,12 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
     | <ANDNOT: ("ANDNOT")>
     | <INTEGER: ((<DIGIT>)+)>
     | <WORD: (<LETTER>|<DIGIT>|<WORD_SYMBOL_PREFIX>)(<LETTER>|<DIGIT>|<WORD_SYMBOL_MIDDLE>)*("*")?>
+    | <FIELD_SUFFIX: ":">
     | <#WORD_SYMBOL_PREFIX: (".")|("<")|("=")|(">")>
     | <#WORD_SYMBOL_MIDDLE: (".")|("-")|("_")>
     | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration.
             " ", "!", 
-            "\u0023"-"\u002f",
-            "\u003b"-"\u0040",
+            "\u0023"-"\u0040",
             "\u005b"-"\u0060",
             "\u007b"-"\u00bf",
             "\u00d7",
@@ -293,11 +293,15 @@ NotClause notOperation() :{
 
 Clause leaf() :{
     Token field = null;
-    Clause clause = null;
+    Clause clause, left, right = null;
     enterMethod("leaf()");
 }{
-
-    (field=<WORD>":")(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
+    // A real field
+    ((field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
+    |
+    // An accidential field. 
+    // XXX This could cause problems as it destroys the contruction of a right-leaning forests.
+    (left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null)) {try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();}}
     |
     (clause = fieldedLeaf(null)) {try{return clause;}finally{exitMethod();}}
 }
