@@ -164,9 +164,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         MDC.put(Site.NAME_KEY, context.getSite().getName());
 
         final String thread = Thread.currentThread().getName();
-        final String statName = getSearchConfiguration().getStatisticsName();
+        final String statName = getSearchConfiguration().getStatisticalName();
         if (statName != null && statName.length()>0) {
-            Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticsName() + "]");
+            Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticalName() + "]");
         }  else  {
             Thread.currentThread().setName(thread + " [" + getClass().getSimpleName() + "]");
         }
@@ -301,7 +301,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
 
             STATISTICS_LOG.info(
-                    "<search-command name=\"" + getSearchConfiguration().getStatisticsName() + "\">"
+                    "<search-command name=\"" + getSearchConfiguration().getStatisticalName() + "\">"
                         + "<query>" + context.getQuery().getQueryString() + "</query>"
                         + "<search-name>"
                         + getClass().getSimpleName()
@@ -363,7 +363,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @return i plus the offset of the current page.
      */
     protected int getCurrentOffset(final int i) {
-        if (getSearchConfiguration().isPagingEnabled()) {
+        if (getSearchConfiguration().isPaging()) {
             final Object v = parameters.get("offset");
             return i + Integer.parseInt(v instanceof String[] && ((String[])v).length ==1
                     ? ((String[]) v)[0]

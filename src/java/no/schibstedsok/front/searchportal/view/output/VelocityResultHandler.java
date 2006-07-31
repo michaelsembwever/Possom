@@ -251,7 +251,7 @@ public final class VelocityResultHandler implements ResultHandler {
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
-        if (config.isPagingEnabled()) {
+        if (config.isPaging()) {
             final PagingDisplayHelper pager = new PagingDisplayHelper(
                     cxt.getSearchResult().getHitCount(),
                     config.getResultsToReturn(),

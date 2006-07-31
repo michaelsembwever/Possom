@@ -30,14 +30,14 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     private int pageSize = SearchConstants.DEFAULT_DOCUMENTS_TO_RETURN;
     private final Map<String,String> resultFields = new HashMap<String,String>();
     private int resultsToReturn;
-    private boolean isPagingEnabled = false;
+    private boolean paging = false;
     private boolean child = false;
     private String rule;
     private int ruleThreshold = -1;
     private String useParameterAsQuery;
-    private boolean isAlwaysRunEnabled = false;
+    private boolean alwaysRun = false;
 
-    private String statisticsName;
+    private String statisticalName;
 
     public AbstractSearchConfiguration(final SearchConfiguration sc){
         if(sc != null && sc instanceof AbstractSearchConfiguration){
@@ -49,10 +49,10 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
             resultFields.putAll(asc.resultFields);
             fieldFilters.putAll(asc.fieldFilters);
             resultsToReturn = asc.resultsToReturn;
-            isPagingEnabled = asc.isPagingEnabled;
+            paging = asc.paging;
             child = asc.child;
             useParameterAsQuery = asc.useParameterAsQuery;
-            isAlwaysRunEnabled = asc.isAlwaysRunEnabled;
+            alwaysRun = asc.alwaysRun;
         }
     }
 
@@ -62,10 +62,10 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
      *
      * @param pagingEnabled
      */
-    public final void setPagingEnabled(final boolean pagingEnabled) {
+    public final void setPaging(final boolean pagingEnabled) {
 
         LOG.trace("setPagingEnabled() " + pagingEnabled);
-        this.isPagingEnabled = pagingEnabled;
+        this.paging = pagingEnabled;
     }
 
     /**
@@ -120,8 +120,8 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         this.pageSize = pageSize;
     }
 
-    public final boolean isPagingEnabled() {
-        return isPagingEnabled;
+    public final boolean isPaging() {
+        return paging;
     }
 
     public final void addResultField(final String... fieldName) {
@@ -148,24 +148,24 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         return useParameterAsQuery;
     }
 
-    public boolean isAlwaysRunEnabled() {
-        return isAlwaysRunEnabled;
+    public boolean isAlwaysRun() {
+        return alwaysRun;
     }
 
-    public void setAlwaysRunEnabled(final boolean enable){
-        isAlwaysRunEnabled = enable;
+    public void setAlwaysRun(final boolean enable){
+        alwaysRun = enable;
     }
 
     public void setUseParameterAsQuery(final String useParameterAsQuery) {
         this.useParameterAsQuery = useParameterAsQuery;
     }
 
-    public String getStatisticsName() {
-        return statisticsName;
+    public String getStatisticalName() {
+        return statisticalName;
     }
 
-    public void setStatisticsName(final String name){
-        statisticsName = name;
+    public void setStatisticalName(final String name){
+        statisticalName = name;
     }
 
     public String toString(){

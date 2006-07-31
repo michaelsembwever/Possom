@@ -65,7 +65,7 @@ public final class DataModelResultHandler implements ResultHandler{
         results.put(config.getName(), cxt.getSearchResult());
         
         // Paging helper
-        if (config.isPagingEnabled()) {
+        if (config.isPaging()) {
             final PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), 
                     config.getResultsToReturn(), tab.getPageSize());
 

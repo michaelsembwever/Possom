@@ -202,7 +202,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     
                     final AnalysisRule rule = rules.getRule(eHint.getRule());
 
-                    if (context.getSearchMode().isQueryAnalysisEnabled() 
+                    if (context.getSearchMode().isAnalysis() 
                             && "0".equals(parameters.get("offset"))
                             && eHint.getWeight() >0) {
 
@@ -228,11 +228,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         
                         scores.put(config.getName(), score);
 
-                        if (config.isAlwaysRunEnabled() || score >= eHint.getThreshold() ) {
+                        if (config.isAlwaysRun() || score >= eHint.getThreshold() ) {
                             commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
 
-                    } else if (config.isAlwaysRunEnabled()) {
+                    } else if (config.isAlwaysRun()) {
                         commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                     }
 

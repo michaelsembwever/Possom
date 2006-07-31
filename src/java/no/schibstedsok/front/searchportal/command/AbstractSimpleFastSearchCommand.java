@@ -376,12 +376,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             
             final FastSearchResult searchResult = collectResults(result);
 
-            if (getFastConfiguration().isSpellcheckEnabled()) {
+            if (getFastConfiguration().isSpellcheck()) {
                 collectSpellingSuggestions(result, searchResult);
             }
 
 
-            if (getFastConfiguration().isRelevantQueriesEnabled() && !getParameters().containsKey("qs")) {
+            if (getFastConfiguration().isRelevantQueries() && !getParameters().containsKey("qs")) {
                 collectRelevantQueries(result, searchResult);
             }
 
@@ -618,7 +618,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         ISearchParameters params = new SearchParameters();
         params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getFastConfiguration().isLemmatizeEnabled()));
 
-        if (getFastConfiguration().isSpellcheckEnabled()) {
+        if (getFastConfiguration().isSpellcheck()) {
             params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));
             params.setParameter(new SearchParameter("qtf_spellcheck:addconsidered", "1"));
             params.setParameter(new SearchParameter("qtf_spellcheck:consideredverbose", "1"));
@@ -647,7 +647,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         final StringBuilder filter = new StringBuilder(getFastConfiguration().getCollectionFilterString());
 
 
-        if (!getFastConfiguration().isIgnoreNavigationEnabled() && getNavigators() != null) {
+        if (!getFastConfiguration().isIgnoreNavigation() && getNavigators() != null) {
 
             Collection navStrings = createNavigationFilterStrings();
             filter.append(" ");
@@ -705,7 +705,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                     getFastConfiguration().getQtPipeline()));
         }
         params.setParameter(new SearchParameter(BaseParameter.QUERY, queryString));
-        params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, getFastConfiguration().isCollapsingEnabled()));
+        params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, getFastConfiguration().isCollapsing()));
 
         params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, "no"));
 
@@ -715,7 +715,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
 
         params.setParameter(new SearchParameter("hits", getResultsToReturn()));
-        params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, getFastConfiguration().isClusteringEnabled()));
+        params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, getFastConfiguration().isClustering()));
 
         if (getFastConfiguration().getResultView() != null && getFastConfiguration().getResultView().length() >0) {
             params.setParameter(new SearchParameter(BaseParameter.RESULT_VIEW, getFastConfiguration().getResultView()));

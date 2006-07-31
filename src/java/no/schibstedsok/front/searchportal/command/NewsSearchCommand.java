@@ -83,7 +83,7 @@ public class NewsSearchCommand extends FastSearchCommand {
                 
                 
 
-                if (!getFastConfiguration().isIgnoreNavigationEnabled()) {
+                if (!getFastConfiguration().isIgnoreNavigation()) {
 
                     final String contentSource = getParameter("contentsource");
                     final String newsCountry = getParameter("newscountry");

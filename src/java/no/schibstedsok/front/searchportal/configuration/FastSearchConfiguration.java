@@ -45,24 +45,24 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private final List<String> collections = new ArrayList<String>();
     private Map searchParameters;
     private boolean lemmatizeEnabled;
-    private boolean spellcheckEnabled;
+    private boolean spellcheck;
     private final Map<String,FastNavigator> navigators = new HashMap<String,FastNavigator>();
     private String sortBy;
-    private boolean collapsingEnabled;
+    private boolean collapsing;
     private String queryServerURL;
     private boolean keywordClusteringEnabled = false;
     private String qtPipeline;
     private volatile transient String collectionString;
 
     private String resultView;
-    private boolean clusteringEnabled = false;
-    private boolean ignoreNavigationEnabled = false;
+    private boolean clustering = false;
+    private boolean ignoreNavigation = false;
     private int offensiveScoreLimit = 0;
     private int spamScoreLimit = 0;
 
     private String filter;
 
-    private boolean relevantQueriesEnabled = false;
+    private boolean relevantQueries = false;
 
     public FastSearchConfiguration(){
         super(null);
@@ -76,21 +76,21 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
             collections.addAll(fsc.collections);
             searchParameters = fsc.searchParameters;
             lemmatizeEnabled = fsc.lemmatizeEnabled;
-            spellcheckEnabled = fsc.spellcheckEnabled;
+            spellcheck = fsc.spellcheck;
             navigators.putAll(fsc.navigators);
             sortBy = fsc.sortBy;
-            collapsingEnabled = fsc.collapsingEnabled;
+            collapsing = fsc.collapsing;
             queryServerURL = fsc.queryServerURL;
             keywordClusteringEnabled = fsc.keywordClusteringEnabled;
             qtPipeline = fsc.qtPipeline;
             collectionString = fsc.collectionString;
             resultView = fsc.resultView;
-            clusteringEnabled = fsc.clusteringEnabled;
-            ignoreNavigationEnabled = fsc.ignoreNavigationEnabled;
+            clustering = fsc.clustering;
+            ignoreNavigation = fsc.ignoreNavigation;
             offensiveScoreLimit = fsc.offensiveScoreLimit;
             spamScoreLimit = fsc.spamScoreLimit;
             filter = fsc.filter;
-            relevantQueriesEnabled = fsc.relevantQueriesEnabled;
+            relevantQueries = fsc.relevantQueries;
         }
     }
 
@@ -161,12 +161,12 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         this.lemmatizeEnabled = lemmatizeEnabled;
     }
 
-    public boolean isSpellcheckEnabled() {
-        return spellcheckEnabled;
+    public boolean isSpellcheck() {
+        return spellcheck;
     }
 
-    public void setSpellcheckEnabled(final boolean spellcheckEnabled) {
-        this.spellcheckEnabled = spellcheckEnabled;
+    public void setSpellcheck(final boolean spellcheckEnabled) {
+        this.spellcheck = spellcheckEnabled;
     }
 
     public Map<String,FastNavigator> getNavigators() {
@@ -189,12 +189,12 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         this.sortBy = sortBy;
     }
 
-    public boolean isCollapsingEnabled() {
-        return collapsingEnabled;
+    public boolean isCollapsing() {
+        return collapsing;
     }
 
-    public void setCollapsingEnabled(final boolean collapsingEnabled) {
-        this.collapsingEnabled = collapsingEnabled;
+    public void setCollapsing(final boolean collapsingEnabled) {
+        this.collapsing = collapsingEnabled;
     }
 
     public String getResultView() {
@@ -225,16 +225,16 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         this.qtPipeline = qtPipeline;
     }
 
-    public boolean isClusteringEnabled() {
-        return clusteringEnabled;
+    public boolean isClustering() {
+        return clustering;
     }
 
-    public boolean isIgnoreNavigationEnabled() {
-        return ignoreNavigationEnabled;
+    public boolean isIgnoreNavigation() {
+        return ignoreNavigation;
     }
 
-    public void setIgnoreNavigationEnabled(final boolean ignoreNavigationEnabled) {
-        this.ignoreNavigationEnabled = ignoreNavigationEnabled;
+    public void setIgnoreNavigation(final boolean ignoreNavigationEnabled) {
+        this.ignoreNavigation = ignoreNavigationEnabled;
     }
 
     public int getOffensiveScoreLimit() {
@@ -245,8 +245,8 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         return spamScoreLimit;
     }
 
-    public boolean isRelevantQueriesEnabled() {
-        return relevantQueriesEnabled;
+    public boolean isRelevantQueries() {
+        return relevantQueries;
     }
 
     public String getFilter() {
@@ -258,11 +258,12 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     }
 
     /**
-     * Setter for property clusteringEnabled.
-     * @param clusteringEnabled New value of property clusteringEnabled.
+     * Setter for property clustering.
+     * 
+     * @param clustering New value of property clustering.
      */
-    public void setClusteringEnabled(final boolean clusteringEnabled) {
-        this.clusteringEnabled = clusteringEnabled;
+    public void setClustering(final boolean clusteringEnabled) {
+        this.clustering = clusteringEnabled;
     }
 
     /**
@@ -290,10 +291,11 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     }
 
     /**
-     * Setter for property relevantQueriesEnabled.
-     * @param relevantQueriesEnabled New value of property relevantQueriesEnabled.
+     * Setter for property relevantQueries.
+     * 
+     * @param relevantQueries New value of property relevantQueries.
      */
-    public void setRelevantQueriesEnabled(final boolean relevantQueriesEnabled) {
-        this.relevantQueriesEnabled = relevantQueriesEnabled;
+    public void setRelevantQueries(final boolean relevantQueriesEnabled) {
+        this.relevantQueries = relevantQueriesEnabled;
     }
 }

@@ -90,7 +90,7 @@ public final class SearchMode {
      *
      * @return the queryAnalysisEnabled.
      */
-    public boolean isQueryAnalysisEnabled() {
+    public boolean isAnalysis() {
         return queryAnalysisEnabled;
     }
 
@@ -99,7 +99,7 @@ public final class SearchMode {
      *
      * @param queryAnalysisEnabled The queryAnalysisEnabled to set.
      */
-    public void setQueryAnalysisEnabled(boolean queryAnalysisEnabled) {
+    public void setAnalysis(boolean queryAnalysisEnabled) {
         this.queryAnalysisEnabled = queryAnalysisEnabled;
     }
 

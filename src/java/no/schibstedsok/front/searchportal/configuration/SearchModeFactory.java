@@ -239,8 +239,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             mode.setId(id);
             mode.setExecutor(parseExecutor(modeE.getAttribute("executor"),
                     inherit != null ? inherit.getExecutor() : new SequentialSearchCommandExecutor()));
-            mode.setQueryAnalysisEnabled(parseBoolean(modeE.getAttribute("analysis"),
-                    inherit != null ? inherit.isQueryAnalysisEnabled() : false));
+            fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
 
             // setup new commands list for this mode
             final Map<String,SearchConfiguration> modesCommands = new HashMap<String,SearchConfiguration>();
@@ -349,20 +348,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 con = clazz.getConstructor(SearchConfiguration.class);
                 final SearchConfiguration sc;
                 sc = con.newInstance(inherit);
-                sc.setResultsToReturn(parseInt(commandE.getAttribute("results-to-return"),
-                        inherit != null ? inherit.getResultsToReturn() : -1));
+                fillBeanProperty(sc, inherit, "resultsToReturn", ParseType.Int, commandE, "-1");
 
                 if(sc instanceof AbstractSearchConfiguration){
                     // everything extends AbstractSearchConfiguration
                     final AbstractSearchConfiguration asc = (AbstractSearchConfiguration) sc;
-                    final AbstractSearchConfiguration ascInherit = inherit instanceof AbstractSearchConfiguration
-                            ? (AbstractSearchConfiguration)inherit
-                            : null;
 
                     asc.setName(id);
-
-                    asc.setAlwaysRunEnabled(parseBoolean(commandE.getAttribute("always-run"),
-                            ascInherit != null ? ascInherit.isAlwaysRunEnabled() : false));
+                    fillBeanProperty(sc, inherit, "alwaysRun", ParseType.Boolean , commandE, "false");
 
                     if(commandE.getAttribute("field-filters").length() >0){
                         final String[] fieldFilters = commandE.getAttribute("field-filters").split(",");
@@ -375,10 +368,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             }
                         }
                     }
-                    asc.setPagingEnabled(parseBoolean(commandE.getAttribute("paging"),
-                            ascInherit != null ? ascInherit.isPagingEnabled() : false));
+                    fillBeanProperty(sc, inherit, "paging", ParseType.Boolean , commandE, "false");
 
-                    asc.setUseParameterAsQuery(commandE.getAttribute("query-parameter"));
+                    asc.setUseParameterAsQuery(commandE.getAttribute("queryParameter"));
 
                     if(commandE.getAttribute("result-fields").length() >0){
                         final String[] resultFields = commandE.getAttribute("result-fields").split(",");
@@ -386,11 +378,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             asc.addResultField(resultField.trim().split(" AS "));
                         }
                     }
-
-                    asc.setStatisticsName(parseString(commandE.getAttribute("statistical-name"),
-                            ascInherit != null ? ascInherit.getStatisticsName() : ""));
-
-
+                    
+                    fillBeanProperty(sc, inherit, "statisticalName", ParseType.String , commandE, "");
 
                 }
                 if(sc instanceof FastSearchConfiguration){
@@ -398,37 +387,26 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final FastSearchConfiguration fscInherit = inherit instanceof FastSearchConfiguration
                             ? (FastSearchConfiguration)inherit
                             : null;
-                    fsc.setClusteringEnabled(parseBoolean(commandE.getAttribute("clustering"),
-                            fscInherit != null ? fscInherit.isClusteringEnabled() : false));
-                    fsc.setCollapsingEnabled(parseBoolean(commandE.getAttribute("collapsing"),
-                            fscInherit != null ? fscInherit.isCollapsingEnabled() : false));
-                    //fsc.setCollectionFilterString(commandE.getAttribute("collection-filter-string")); // FIXME !!
+                    fillBeanProperty(sc, inherit, "clustering", ParseType.Boolean , commandE, "false");
+                    fillBeanProperty(sc, inherit, "collapsing", ParseType.Boolean , commandE, "false");
                     if(commandE.getAttribute("collections").length() >0){
                         final String[] collections = commandE.getAttribute("collections").split(",");
                         for(String collection : collections){
                             fsc.addCollection(collection);
                         }
                     }
-                    fsc.setFilter(parseString(commandE.getAttribute("filter"),
-                            fscInherit != null ? fscInherit.getFilter() : ""));
-                    fsc.setIgnoreNavigationEnabled(parseBoolean(commandE.getAttribute("ignore-navigation"),
-                            fscInherit != null ? fscInherit.isIgnoreNavigationEnabled() : false));
-                    fsc.setOffensiveScoreLimit(parseInt(commandE.getAttribute("offensive-score-limit"),
-                            fscInherit != null ? fscInherit.getOffensiveScoreLimit() : -1));
-                    fsc.setQtPipeline(parseString(commandE.getAttribute("qt-pipeline"),
-                            fscInherit != null ? fscInherit.getQtPipeline() : ""));
+                    fillBeanProperty(sc, inherit, "filter", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "ignoreNavigation", ParseType.Boolean , commandE, "false");
+                    fillBeanProperty(sc, inherit, "offensiveScoreLimit", ParseType.Int , commandE, "-1");
+                    fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
                     final String queryServerUrl = commandE.getAttribute("query-server-url");
+                    // TODO use fillBeanProperty pattern instead
                     fsc.setQueryServerURL(parseProperty(cxt, queryServerUrl,
                             fscInherit != null ? fscInherit.getQueryServerURL() : null));
-                    fsc.setRelevantQueriesEnabled(parseBoolean(commandE.getAttribute("relevant-queries"),
-                            fscInherit != null ? fscInherit.isRelevantQueriesEnabled() : false));
-                    fsc.setSortBy(parseString(commandE.getAttribute("sort-by"),
-                            fscInherit != null ? fscInherit.getSortBy() : ""));
-                    fsc.setSpamScoreLimit(parseInt(commandE.getAttribute("spam-score-limit"),
-                            fscInherit != null ? fscInherit.getSpamScoreLimit() : -1));
-                    fsc.setSpellcheckEnabled(parseBoolean(commandE.getAttribute("spellcheck"),
-                            fscInherit != null ? fscInherit.isSpellcheckEnabled() : false));
-                    //fsc.setSynonymEnabled(Boolean.parseBoolean(commandE.getAttribute("synonyms"))); // FIXME !!
+                    fillBeanProperty(sc, inherit, "relevantQueries", ParseType.Boolean , commandE, "false");
+                    fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "spamScoreLimit", ParseType.Int , commandE, "-1");
+                    fillBeanProperty(sc, inherit, "spellcheck", ParseType.Boolean , commandE, "false");
 
                     // navigators
                     final NodeList nList = commandE.getElementsByTagName("navigators");
@@ -445,14 +423,19 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final AdvancedFastSearchConfiguration ascInherit = inherit instanceof AdvancedFastSearchConfiguration
                             ? (AdvancedFastSearchConfiguration) inherit
                             : null;
+                    // TODO use fillBeanProperty pattern instead
                     asc.setView(parseString(commandE.getAttribute("view"),
                             ascInherit != null ? ascInherit.getView() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     asc.setSortBy(parseString(commandE.getAttribute("sort-by"),
                             ascInherit != null ? ascInherit.getSortBy() : "default"));
+                    // TODO use fillBeanProperty pattern instead
                     asc.setCollapsingEnabled(parseBoolean(commandE.getAttribute("collapsing"),
                             ascInherit != null ? ascInherit.isCollapsingEnabled() : false));
+                    // TODO use fillBeanProperty pattern instead
                     asc.setCollapseOnField(parseString(commandE.getAttribute("collapse-on-field"),
                             ascInherit != null ? ascInherit.getCollapseOnField() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     asc.setQtPipeline(parseString(commandE.getAttribute("qt-pipeline"),
                             ascInherit != null ? ascInherit.getQtPipeline() : ""));
 
@@ -480,8 +463,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final HittaSearchConfiguration hscInherit = inherit instanceof HittaSearchConfiguration
                             ? (HittaSearchConfiguration)inherit
                             : null;
+                    // TODO use fillBeanProperty pattern instead
                     hsc.setCatalog(parseString(commandE.getAttribute("catalog"),
                             hscInherit != null ? hscInherit.getCatalog() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     hsc.setKey(parseString(commandE.getAttribute("key"),
                             hscInherit != null ? hscInherit.getKey() : ""));
                 }
@@ -496,12 +481,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final AbstractYahooSearchConfiguration oscInherit = inherit instanceof AbstractYahooSearchConfiguration
                             ? (AbstractYahooSearchConfiguration)inherit
                             : null;
+                    // TODO use fillBeanProperty pattern instead
                     osc.setEncoding(parseString(commandE.getAttribute("encoding"),
                             oscInherit != null ? oscInherit.getEncoding() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     osc.setHost(parseString(commandE.getAttribute("host"),
                             oscInherit != null ? oscInherit.getHost() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     osc.setPartnerId(parseString(commandE.getAttribute("partner-id"),
                             oscInherit != null ? oscInherit.getPartnerId() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     osc.setPort(parseInt(commandE.getAttribute("port"),
                             oscInherit != null ? oscInherit.getPort() : 80));
                 }
@@ -518,18 +507,25 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final YahooIdpSearchConfiguration yscInherit = inherit instanceof YahooIdpSearchConfiguration
                             ? (YahooIdpSearchConfiguration)inherit
                             : null;
+                    // TODO use fillBeanProperty pattern instead
                     ysc.setDatabase(parseString(commandE.getAttribute("database"),
                             yscInherit != null ? yscInherit.getDatabase() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     ysc.setDateRange(parseString(commandE.getAttribute("date-range"),
                             yscInherit != null ? yscInherit.getDateRange() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     ysc.setFilter(parseString(commandE.getAttribute("filter"),
                             yscInherit != null ? yscInherit.getFilter() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     ysc.setRegion(parseString(commandE.getAttribute("region"),
                             yscInherit != null ? yscInherit.getRegion() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     ysc.setRegionMix(parseString(commandE.getAttribute("region-mix"),
                             yscInherit != null ? yscInherit.getRegionMix() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     ysc.setSpellState(parseString(commandE.getAttribute("spell-state"),
                             yscInherit != null ? yscInherit.getSpellState() : ""));
+                    // TODO use fillBeanProperty pattern instead
                     ysc.setUnique(parseString(commandE.getAttribute("unique"),
                             yscInherit != null ? yscInherit.getUnique() : ""));
                 }
@@ -539,11 +535,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             ? (PicSearchConfiguration)inherit
                             : null;
                     final String queryServerHost = commandE.getAttribute("query-server-host");
+                    // TODO use fillBeanProperty pattern instead
                     psc.setQueryServerHost(parseProperty(cxt, queryServerHost,
                             pscInherit != null ? pscInherit.getQueryServerHost() : null));
+                    // TODO use fillBeanProperty pattern instead
                     final String queryServerPort = commandE.getAttribute("query-server-port");
+                    // TODO use fillBeanProperty pattern instead
                     psc.setQueryServerPort(Integer.valueOf(parseProperty(cxt, queryServerPort,
                             pscInherit != null ? String.valueOf(pscInherit.getQueryServerPort()) : "0")));
+                    // TODO use fillBeanProperty pattern instead
                     psc.setPicsearchCountry(parseString(commandE.getAttribute("picsearchCountry"),
                             pscInherit != null ? pscInherit.getPicsearchCountry() : "no"));
                 }
@@ -565,10 +565,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if (sc instanceof MobileSearchConfiguration) {
                     final MobileSearchConfiguration msc = (MobileSearchConfiguration) sc;
 
+                    // TODO use fillBeanProperty pattern instead
                     msc.setPersonalizationGroup(commandE.getAttribute("personalization-group"));
+                    // TODO use fillBeanProperty pattern instead
                     msc.setTelenorPersonalizationGroup(commandE.getAttribute("telenor-personalization-group"));
+                    // TODO use fillBeanProperty pattern instead
                     msc.setSortBy(commandE.getAttribute("sort-by"));
+                    // TODO use fillBeanProperty pattern instead
                     msc.setSource(commandE.getAttribute("source"));
+                    // TODO use fillBeanProperty pattern instead
                     msc.setFilter(commandE.getAttribute("filter"));
                 }
                 if (sc instanceof BlendingNewsSearchConfiguration) {
@@ -581,8 +586,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     for (int i = 0; i < filters.length; i++) {
                         filterList.add(filters[i].trim());
                     }
-
+                    // TODO use fillBeanProperty pattern instead
                     bnsc.setFiltersToBlend(filterList);
+                    // TODO use fillBeanProperty pattern instead
                     bnsc.setDocumentsPerFilter(Integer.parseInt(commandE.getAttribute("documentsPerFilter")));
                 }
 
@@ -602,6 +608,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     for (String channel : defaultChannels) {
                         tssc.addDefaultChannel(channel.trim());
                     }
+                    // TODO use fillBeanProperty pattern instead
                     tssc.setResultsToFetch(Integer.parseInt(commandE.getAttribute("results-to-fetch")));
 
                 }

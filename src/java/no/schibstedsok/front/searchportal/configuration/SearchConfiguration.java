@@ -67,7 +67,7 @@ public interface SearchConfiguration {
      *
      * @return
      */
-    boolean isPagingEnabled();
+    boolean isPaging();
 
     /**
      * @return
@@ -92,8 +92,8 @@ public interface SearchConfiguration {
 
     public String getUseParameterAsQuery();
 
-    boolean isAlwaysRunEnabled();
-    String getStatisticsName();
+    boolean isAlwaysRun();
+    String getStatisticalName();
 
     /**
      * Getter for property fieldFilters.

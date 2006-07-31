@@ -8,7 +8,6 @@
 package no.schibstedsok.front.searchportal.util.config;
 
 import java.lang.reflect.InvocationTargetException;
-import no.schibstedsok.front.searchportal.configuration.loader.PropertiesContext;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
@@ -20,38 +19,46 @@ import org.w3c.dom.Element;
  * @version $Id$
  */
 public abstract class AbstractDocumentFactory {
-    
-    
+
+
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(AbstractDocumentFactory.class);
     private static final String ERR_FILL_PROPERTY = "Could not set javabean property";
-    
+    private static final String DEBUG_UNABLE_TO_INHERIT_VALUE_1 = "Could not inherit value ";
+    private static final String DEBUG_UNABLE_TO_INHERIT_VALUE_2 = " from ";
+
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     /** Creates a new instance of AbstractDocumentFactory */
-    public AbstractDocumentFactory() {
+    protected AbstractDocumentFactory() {
     }
-    
+
     // Public --------------------------------------------------------
-    
+
     // Z implementation ----------------------------------------------
-    
+
     // Y overrides ---------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
-    // Private -------------------------------------------------------
-    
-    enum ParseType{
-        Boolean, Int, Float, String, Property
+
+
+
+    protected enum ParseType{
+        /** TODO comment me. **/
+        Boolean, 
+        Int, 
+        Float, 
+        String, 
+        Property
     };
     
+    /** TODO implement Type.Property. **/
     protected static final void fillBeanProperty(
             final Object beanObj, 
             final Object beanParent, 
@@ -59,7 +66,7 @@ public abstract class AbstractDocumentFactory {
             final ParseType type,
             final Element element,
             final String def){
-        
+
       try {
             
             final StringBuilder attributeName = new StringBuilder(property);
@@ -72,42 +79,58 @@ public abstract class AbstractDocumentFactory {
             }
             
             final String attributeValue = element.getAttribute(attributeName.toString());
-            final String inheritedValue = BeanUtils.getProperty(beanParent, property);
             
-            if( attributeValue != null && attributeValue.length()>0 ){
+            if(attributeValue != null && attributeValue.length()>0 ){
                 BeanUtils.setProperty(beanObj, property, attributeValue);
-            }else if( inheritedValue != null && inheritedValue.length()>0 ){
-                BeanUtils.setProperty(beanObj, property, inheritedValue);
             }else{
-                BeanUtils.setProperty(beanObj, property, def);
+                
+                String inheritedValue = null;
+                if( beanParent != null ){
+                    try{
+                        inheritedValue = BeanUtils.getProperty(beanParent, property);
+                    }catch(NoSuchMethodException nsme){
+                        // normal occurance when the bean to inherit values from is not of the same class
+                        LOG.debug(DEBUG_UNABLE_TO_INHERIT_VALUE_1 + property
+                                + DEBUG_UNABLE_TO_INHERIT_VALUE_1 + beanParent);
+                    }
+                }
+                
+                if(inheritedValue != null && inheritedValue.length()>0 ){
+                    BeanUtils.setProperty(beanObj, property, inheritedValue);
+                }else{
+                    BeanUtils.setProperty(beanObj, property, def);
+                }
             }
             
         } catch (IllegalAccessException ex) {
             LOG.error(ERR_FILL_PROPERTY, ex);
-        } catch (NoSuchMethodException ex) {
-            LOG.error(ERR_FILL_PROPERTY, ex);
         } catch (InvocationTargetException ex) {
             LOG.error(ERR_FILL_PROPERTY, ex);
-        }        
+        }
     }
     
+    /** @deprecated use fillBeanProperty instead. **/
     protected static final boolean parseBoolean(final String s, final boolean def){
         return s.trim().length() == 0 ? def : Boolean.parseBoolean(s);
     }
     
+    /** @deprecated use fillBeanProperty instead. **/
     protected static final float parseFloat(final String s, final float def){
         return s.trim().length() == 0 ? def : Float.parseFloat(s);
     }
-    
+
+    /** @deprecated use fillBeanProperty instead. **/
     protected static final int parseInt(final String s, final int def){
         return s.trim().length() == 0 ? def : Integer.parseInt(s);
     }
     
+    /** @deprecated use fillBeanProperty instead. **/
     protected static final String parseString(final String s, final String def){
         return s.trim().length() == 0 ? def : s;
     }
     
 
+    // Private -------------------------------------------------------
     
     // Inner classes -------------------------------------------------
     
