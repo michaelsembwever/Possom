@@ -89,27 +89,24 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         try {
             final HittaServiceLocator locator = new HittaServiceLocator();
             final HittaServiceSoap service = locator.getHittaServiceSoap();
-            final GeoQueryTransformer geoTransformer = new GeoQueryTransformer();
+            final SplitQueryTransformer splitter = new SplitQueryTransformer();
 
-            // This blanks out the terms before checking that only name or company terms remain
-            final String transformedQuery = getTransformedQuery();
+            if(getTransformedQuery().equals(context.getQuery().getQueryString())){
 
-            if(transformedQuery.length() >0){
+                
+                final String[] splitQuery = splitter.getQuery();
 
+                getParameters().put("hittaWho", splitQuery[0]);
+                getParameters().put("hittaWhere", splitQuery[1]);
 
-                final String transformedGeoQuery = geoTransformer.getQuery();
-
-                getParameters().put("hittaWho", transformedQuery);
-                getParameters().put("hittaWhere", transformedGeoQuery);
-
-                LOG.debug(DEBUG_SEARCHING_1 + transformedQuery);
-                LOG.debug(DEBUG_SEARCHING_2 + transformedGeoQuery);
+                LOG.debug(DEBUG_SEARCHING_1 + splitQuery[0]);
+                LOG.debug(DEBUG_SEARCHING_2 + splitQuery[1]);
 
                 if(conf.getCatalog().equalsIgnoreCase("white")){
-                    hits = service.getWhiteAmount(transformedQuery, transformedGeoQuery, conf.getKey());
+                    hits = service.getWhiteAmount(splitQuery[0], splitQuery[1], conf.getKey());
 
                 }else if(conf.getCatalog().equalsIgnoreCase("pink")){
-                    hits = service.getPinkAmount(transformedQuery, transformedGeoQuery, conf.getKey());
+                    hits = service.getPinkAmount(splitQuery[0], splitQuery[1], conf.getKey());
 
                 }
             }
@@ -172,29 +169,41 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
     }
 
-    private final class GeoQueryTransformer extends AbstractReflectionVisitor{
+    private final class SplitQueryTransformer extends AbstractReflectionVisitor{
 
-        private StringBuilder sb;
+        private StringBuilder who;
+        private StringBuilder where;
+        
 
-        public String getQuery(){
+        public String[] getQuery(){
 
-            if(sb == null){
-                sb = new StringBuilder();
+            if(where == null){
+                who = new StringBuilder();
+                where = new StringBuilder();
                 visit(context.getQuery().getRootClause());
             }
 
-            return sb.toString().trim();
+            return new String[]{
+                who.toString().trim(),
+                where.toString().trim()
+            };
         }
 
         protected void visitImpl(final LeafClause clause) {
 
-            boolean include = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL);
-            include |= clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
-            include &= clause.getField() == null;
+            boolean onlyGeo = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL);
+            onlyGeo |= clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
+            onlyGeo &= clause.getField() == null;
 
-            if (include) {
-                // go back to using the clause as the transformed term will be blank
-                sb.append(clause.getTerm());
+            onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
+            onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
+            onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
+            
+            if (onlyGeo) {
+                // add this term to the geo query string
+                where.append(getTransformedTerm(clause));
+            }else{
+                who.append(getTransformedTerm(clause));
             }
         }
 
@@ -204,19 +213,22 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
         protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
-            sb.append(' ');
+            where.append(' ');
+            who.append(' ');
             clause.getSecondClause().accept(this);
         }
 
         protected void visitImpl(final OrClause clause) {
             clause.getFirstClause().accept(this);
-            sb.append(' ');
+            where.append(' ');
+            who.append(' ');
             clause.getSecondClause().accept(this);
         }
 
         protected void visitImpl(final DefaultOperatorClause clause) {
             clause.getFirstClause().accept(this);
-            sb.append(' ');
+            where.append(' ');
+            who.append(' ');
             clause.getSecondClause().accept(this);
         }
 
