@@ -17,8 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.site.SiteContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 
 /** Utility class to handle loading different types of resources in a background thread.
@@ -33,7 +32,7 @@ public abstract class AbstractResourceLoader
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
-    private static final Log LOG = LogFactory.getLog(AbstractResourceLoader.class);
+    private static final Logger LOG = Logger.getLogger(AbstractResourceLoader.class);
 
     private final SiteContext context;
     private volatile String resource;

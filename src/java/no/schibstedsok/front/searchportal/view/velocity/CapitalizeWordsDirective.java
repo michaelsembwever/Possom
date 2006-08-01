@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * CapitalizeWordsDirective.java
  *
@@ -9,9 +10,8 @@ package no.schibstedsok.front.searchportal.view.velocity;
 
 import java.io.IOException;
 import java.io.Writer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.WordUtils;
+import org.apache.log4j.Logger;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -34,7 +34,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  */
 public final class CapitalizeWordsDirective extends Directive {
 
-    private static transient Log log = LogFactory.getLog(CapitalizeWordsDirective.class);
+    private static final Logger LOG = Logger.getLogger(CapitalizeWordsDirective.class);
 
     private static final String NAME = "capitalizeWords";
 

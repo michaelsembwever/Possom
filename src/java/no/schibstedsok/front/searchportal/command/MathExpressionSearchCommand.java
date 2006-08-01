@@ -37,7 +37,7 @@ public class MathExpressionSearchCommand extends AbstractSearchCommand {
     public SearchResult execute() {
 
         final Complex result = ((JepTokenEvaluator)context.getRunningQuery()
-                .getTokenEvaluatorFactory()
+                .getTokenEvaluationEngine()
                 .getEvaluator(TokenPredicate.MATHPREDICATE))
                 .getComplex();
         final NumberFormat f = NumberFormat.getInstance();

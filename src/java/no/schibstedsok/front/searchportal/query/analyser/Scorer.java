@@ -18,7 +18,7 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.NotClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
@@ -42,10 +42,12 @@ public final class Scorer extends AbstractReflectionVisitor {
          **/
         Map<PredicateScore,Predicate> getPredicates();
 
-        /** The TokenEvaluatorFactory we will use to obtain evaluators for each Predicate.
-         * @return the tokenEvaluatorFactory.
-         **/
-        TokenEvaluatorFactory getTokenEvaluatorFactory();
+        /**
+         * The TokenEvaluationEngine we will use to obtain evaluators for each Predicate.
+         *
+         * @return the TokenEvaluationEngine.
+         */
+        TokenEvaluationEngine getTokenEvaluationEngine();
 
         /** TODO comment me. **/
     String getNameForAnonymousPredicate(Predicate predicate);
@@ -135,10 +137,10 @@ public final class Scorer extends AbstractReflectionVisitor {
         final Set<TokenPredicate> knownPredicates = clause.getKnownPredicates();
         final Set<TokenPredicate> possiblePredicates = clause.getPossiblePredicates();
 
-        // update the factory with the predicate sets that can be used to improve evaluation performance.
-        final TokenEvaluatorFactory factory = context.getTokenEvaluatorFactory();
-        factory.setClausesKnownPredicates(knownPredicates);
-        factory.setClausesPossiblePredicates(possiblePredicates);
+        // update the engine with the predicate sets that can be used to improve evaluation performance.
+        final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
+        engine.setClausesKnownPredicates(knownPredicates);
+        engine.setClausesPossiblePredicates(possiblePredicates);
 
         // XXX Couldn't find the set algorythm for joining two set in Core Java or Commons Collections :-/
         for (PredicateScore predicateScore : context.getPredicates().keySet()) {
@@ -150,11 +152,12 @@ public final class Scorer extends AbstractReflectionVisitor {
 
                 // if this is a possiblePredicate or a all|any|none|not predicate
                 //  find out if it is now applicable...
-                boolean match = possiblePredicates.contains(predicate) || !(predicate instanceof TokenPredicate);
-                match &= predicate.evaluate(factory);
-                match |= knownPredicates.contains(predicate);
+                boolean applicable = clause.getKnownPredicates().contains(predicate);
+                applicable |=
+                        clause.getPossiblePredicates().contains(predicate) || !(predicate instanceof TokenPredicate)
+                        && predicate.evaluate(engine);
 
-                if (match) {
+                if (applicable) {
 
                     if (additivity) {
                         addScore(predicateScore);

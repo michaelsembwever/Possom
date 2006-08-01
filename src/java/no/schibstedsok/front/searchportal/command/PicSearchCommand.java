@@ -10,8 +10,7 @@ import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.configuration.PicSearchConfiguration;
 import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -28,7 +27,7 @@ import java.net.URLEncoder;
  */
 public final class PicSearchCommand extends AbstractSearchCommand {
 
-    private static final Log LOG = LogFactory.getLog(PicSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(PicSearchCommand.class);
     private final HTTPClient client;
 
     /**
@@ -47,6 +46,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
                 Integer.valueOf(siteConfig.getProperty("picsearch.port")));
     }
 
+    /** @inherit **/
     public SearchResult execute() {
 
         String query = getTransformedQuery().replace(' ', '+');

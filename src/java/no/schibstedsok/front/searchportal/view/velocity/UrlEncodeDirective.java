@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * UrlEncodeDirective.java
  *
@@ -10,9 +11,8 @@ package no.schibstedsok.front.searchportal.view.velocity;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.URLEncoder;
+import org.apache.log4j.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -36,7 +36,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  */
 public final class UrlEncodeDirective extends Directive {
 
-    private static transient Log log = LogFactory.getLog(UrlEncodeDirective.class);
+    private static final Logger LOG = Logger.getLogger(UrlEncodeDirective.class);
 
     private static final String NAME = "urlencode";
     private static final String DEFAULT_CHARSET = "utf-8";

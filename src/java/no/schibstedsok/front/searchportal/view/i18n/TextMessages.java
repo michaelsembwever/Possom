@@ -15,8 +15,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader
 
 import no.schibstedsok.front.searchportal.site.Site;
 import no.schibstedsok.front.searchportal.site.SiteContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 
 /** Wrapper to the MessageResources for a corresponding site.
@@ -30,7 +29,7 @@ public final class TextMessages {
 
     public interface Context extends SiteContext, PropertiesContext { };
 
-    private static final Log LOG = LogFactory.getLog(TextMessages.class);
+    private static final Logger LOG = Logger.getLogger(TextMessages.class);
 
     private static final String MESSAGE_RESOURCE = "messages";
 
@@ -145,45 +144,52 @@ public final class TextMessages {
         loader.getProperties();
     }
 
-    
+
+    /** TODO comment me. **/
     public boolean hasMessage(final String key) {
         return keys.containsKey(key);
     }
-    
+
+    /** TODO comment me. **/
     public String getMessage(final String key) {
         return getMessageImpl(key);
     }
 
+    /** TODO comment me. **/
     public String getMessage(final String key, final Object arg0) {
         return getMessageImpl(key, arg0);
     }
 
+    /** TODO comment me. **/
     public String getMessage(final String key, final Object arg0, final Object arg1) {
         return getMessageImpl(key, arg0, arg1);
     }
 
+    /** TODO comment me. **/
     public String getMessage(final String key, final Object arg0, final Object arg1, final Object arg2) {
         return getMessageImpl(key, arg0, arg1, arg2);
     }
 
+    /** TODO comment me. **/
     public String getMessage(final String key, final Object arg0, final Object arg1, final Object arg2, final Object arg3) {
         return getMessageImpl(key, arg0, arg1, arg3);
     }
 
+    /** TODO comment me. **/
     public String getMessage(final String key, final Object... arguments){
         return getMessageImpl(key, arguments);
     }
 
     private String getMessageImpl(final String key, final Object... arguments){
-        
-        if( key == null || key.trim().length() == 0 ){
+
+        if(key == null || key.trim().length() == 0){
             return "";
         }else{
             // XXX Struts caches the MessageFormats. Is constructing a MessageFormat really slower than the synchronization?
             final String pattern = keys.getProperty(key);
-            if( pattern == null ){
+            if(pattern == null){
                 // make it visible that this key is not being localised!
-                return "KEY: " + key; 
+                return "KEY: " + key;
             }else{
                 final MessageFormat format = new MessageFormat(pattern, context.getSite().getLocale());
                 return format.format(arguments);

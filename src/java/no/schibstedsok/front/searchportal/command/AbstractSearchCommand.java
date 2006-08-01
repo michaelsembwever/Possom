@@ -1,4 +1,4 @@
-// Copy|ight (2006) Schibsted Søk AS
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.command;
 
 
@@ -24,8 +24,9 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.front.searchportal.query.parser.TokenMgrError;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.front.searchportal.query.run.RunningQuery;
 import no.schibstedsok.front.searchportal.result.Modifier;
@@ -51,7 +52,7 @@ import org.apache.log4j.MDC;
 public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand {
 
    // Constants -----------------------------------------------------
-    
+
     private static final String FIELD_TRANSFORMED_QUERY = "transformedQuery";
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
@@ -62,6 +63,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             = "Cannot use transformedTerms Map once deprecated getTransformedQuery as been used";
     private static final String ERR_HANDLING_CANCELLATION
             = "Cancellation (and now handling of) occurred to ";
+    private static final String TRACE_NOT_TOKEN_PREDICATE = "Not a TokenPredicate ";
 
     static{
 
@@ -74,6 +76,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
    // Attributes ----------------------------------------------------
 
+    /** TODO comment me. **/
     protected final Context context;
     private String filter = "";
     private final String additionalFilter;
@@ -115,6 +118,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
    // Public --------------------------------------------------------
 
+    /** TODO comment me. **/
     public abstract SearchResult execute();
 
     /**
@@ -130,10 +134,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
 
 
+    /** TODO comment me. **/
     public String toString() {
         return getSearchConfiguration().getName() + " " + context.getRunningQuery().getQueryString();
     }
 
+    /** TODO comment me. **/
     public String getFilter() {
         return filter;
     }
@@ -141,6 +147,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
    // SearchCommand overrides ---------------------------------------------------
 
+    /** TODO comment me. **/
     public SearchConfiguration getSearchConfiguration() {
         return context.getSearchConfiguration();
     }
@@ -188,6 +195,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
+    /** TODO comment me. **/
     public void handleCancellation(){
 
         if(!completed){
@@ -201,31 +209,39 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // AbstractReflectionVisitor overrides ----------------------------------------------
 
-    private final StringBuffer sb = new StringBuffer();
+    private final StringBuilder sb = new StringBuilder();
 
+    /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null) {
+
+        final String field = clause.getField();
+        if (field == null) {
             sb.append(transformedTerms.get(clause));
         }
     }
+    /** TODO comment me. **/
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
         clause.getFirstClause().accept(this);
         sb.append(" AND ");
         clause.getSecondClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         clause.getFirstClause().accept(this);
         sb.append(" OR ");
         clause.getSecondClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
         sb.append(' ');
         clause.getSecondClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final NotClause clause) {
         final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
@@ -233,6 +249,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getFirstClause().accept(this);
         }
     }
+    /** TODO comment me. **/
     protected void visitImpl(final AndNotClause clause) {
         final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
@@ -240,6 +257,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getFirstClause().accept(this);
         }
     }
+    /** TODO comment me. **/
     protected void visitImpl(final XorClause clause) {
         // [TODO] we need to determine which branch in the query-tree we want to use.
         //  Both branches to a XorClause should never be used.
@@ -250,6 +268,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
    // Protected -----------------------------------------------------
 
 
+    /** TODO comment me. **/
     protected final String performQueryTransformation(){
 
         // use the query or something search-command specific
@@ -276,6 +295,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return queryToUse;
     }
 
+    /** TODO comment me. **/
     protected final SearchResult performExecution(final String queryToUse){
 
         StopWatch watch = null;
@@ -287,16 +307,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             //TODO: Hide this in QueryRule.execute(some parameters)
             boolean executeQuery = queryToUse.length() > 0;
-            if (parameters.get("contentsource") != null || parameters.get("newscountry") != null || parameters.get("c").equals("n")) {
-                if (parameters.get("c").equals("n"))
-                    LOG.debug("call: Got sitesearch, executeQuery=true");
-                else
-                    LOG.debug("call: Got contentsource, executeQuery=true");
-                executeQuery = true;
-            }
+            executeQuery |= parameters.get("contentsource") != null;
+            executeQuery |= parameters.get("newscountry") != null;
+            executeQuery |= parameters.get("c").equals("n");
 
             executeQuery |= filter != null && filter.length() > 0;
-            LOG.debug("executeQuery==" + executeQuery + " ; queryToUse:" + queryToUse + "; filter:" + filter + ";");
+            LOG.debug("executeQuery==" + executeQuery
+                    + " ; queryToUse:" + queryToUse
+                    + "; filter:" + filter
+                    + "; tabKey:" + parameters.get("c") + ';');
 
             final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
 
@@ -320,10 +339,13 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
+    /** TODO comment me. **/
     protected final void performResultHandling(final SearchResult result){
-        
+
         // add some general properties first from the command
-        result.addField(FIELD_TRANSFORMED_QUERY, getTransformedQuery());
+        //  if we've somehow blanked out the query altogether then revert to the user's origianl query string
+        result.addField(FIELD_TRANSFORMED_QUERY, 
+                getTransformedQuery().length()>0 ? getTransformedQuery() : context.getQuery().getQueryString());
 
         // process listed result handlers
         for (ResultHandler resultHandler : getSearchConfiguration().getResultHandlers()) {
@@ -349,8 +371,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             );
             resultHandler.handleResult(resultHandlerContext, parameters);
         }
-        
-        
+
+
     }
 
 
@@ -373,6 +395,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
+    /** TODO comment me. **/
     protected Map getParameters() {
         return parameters;
     }
@@ -396,6 +419,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return "";
     }
 
+    /** TODO comment me. **/
     protected synchronized String getQueryRepresentation(final Query query) {
 
         final Clause root = query.getRootClause();
@@ -404,10 +428,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return sb.toString().trim();
     }
 
+    /** TODO comment me. **/
     protected final void appendToQueryRepresentation(final CharSequence addition) {
         sb.append(addition);
     }
 
+    /** TODO comment me. **/
     protected final String getTransformedTerm(final Clause clause) {
         return (String) transformedTerms.get(clause);
     }
@@ -422,6 +448,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         this.filter = filter;
     }
 
+    /** TODO comment me. **/
     protected String getAdditionalFilter() {
         return additionalFilter;
     }
@@ -433,7 +460,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param transformers
      */
     private void applyQueryTransformers(final Query query, final List<QueryTransformer> transformers) {
-        
+
         if (transformers != null && transformers.size() > 0) {
             boolean touchedTransformedQuery = false;
 
@@ -458,8 +485,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                             public Query getQuery() {
                                 return query;
                             }
-                            public TokenEvaluatorFactory getTokenEvaluatorFactory(){
-                                return context.getRunningQuery().getTokenEvaluatorFactory();
+                            public TokenEvaluationEngine getTokenEvaluationEngine(){
+                                return context.getRunningQuery().getTokenEvaluationEngine();
                             }
                         },
                         context);
@@ -483,8 +510,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 filterBuilder.append(f == null ? "" : f);
                 filterBuilder.append(' ');
 		
-                LOG.debug( transformer.getClass().getSimpleName() + "--> TransformedQuery=" + transformedQuery);
-                LOG.debug( transformer.getClass().getSimpleName() + "--> Filter=" + filter);
+                LOG.debug(transformer.getClass().getSimpleName() + "--> TransformedQuery=" + transformedQuery);
+                LOG.debug(transformer.getClass().getSimpleName() + "--> Filter=" + filter);
             }
             // avoid the trailing space.
             filter = filterBuilder.substring(0, Math.max(0, filterBuilder.length() - 2)).trim();
@@ -503,8 +530,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private Query createQuery(final String queryString) {
 
 
-        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                TokenEvaluatorFactoryImpl.Context.class,
+        final TokenEvaluationEngineImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                TokenEvaluationEngineImpl.Context.class,
                     context,
                     new QueryStringContext() {
                         public String getQueryString() {
@@ -515,12 +542,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // This will among other things perform the initial fast search
         // for textual analysis.
-        final TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
+        final TokenEvaluationEngine tokenEvaluationEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
         // queryStr parser
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-            public TokenEvaluatorFactory getTokenEvaluatorFactory() {
-                return tokenEvaluatorFactory;
+            public TokenEvaluationEngine getTokenEvaluationEngine() {
+                return tokenEvaluationEngine;
             }
         });
 
@@ -584,17 +611,17 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         protected void visitImpl(final LeafClause clause) {
 
-            final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
-            if (fieldFilters.containsKey(clause.getField())) {
-                appendFilter(clause);
+            final String field = getFieldFilter(clause);
+            if (null != field) {
+                appendFilter(clause.getTerm(), field);
             }
         }
 
         protected void visitImpl(final PhraseClause clause) {
 
-            final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
-            if (fieldFilters.containsKey(clause.getField())) {
-                appendFilter(clause);
+            final String field = getFieldFilter(clause);
+            if (null != field) {
+                appendFilter(clause.getTerm(), field);
             }
         }
 
@@ -617,16 +644,45 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getFirstClause().accept(this);
         }
 
-        private final void appendFilter(final LeafClause clause) {
+        private final void appendFilter(String term, final String field) {
 
             final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
-            if("site".equals(clause.getField())){
+            if("site".equals(field)){
                 // site fields do not accept quotes
-                final String term = clause.getTerm().replaceAll("\"","");
-                filterBuilder.append(" +" + fieldFilters.get(clause.getField()) + ":" + term);
-            }else{
-                filterBuilder.append(" +" + fieldFilters.get(clause.getField()) + ":" + clause.getTerm());
+                term = term.replaceAll("\"","");
             }
+            final String fieldAs = fieldFilters.get(field);
+            filterBuilder.append(" +" + (fieldAs.length() >0 ?  fieldAs + ':' + term : term));
+        }
+
+        /** Returns null when no field exists. **/
+        private String getFieldFilter(final LeafClause clause){
+
+            String field = null;
+            if(null != clause.getField()){
+                final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
+                if(fieldFilters.containsKey(clause.getField())){
+                    field = clause.getField();
+                }else{
+                    final TokenEvaluationEngine evalEngine = context.getRunningQuery().getTokenEvaluationEngine();
+                    for(String fieldFilter : fieldFilters.keySet() ){
+                        try{
+                            final TokenPredicate tp = TokenPredicate.valueOf(fieldFilter);
+                            // if the field is the token then mask the field and include the term.
+                            boolean result = clause.getKnownPredicates().contains(tp);
+                            result |= clause.getPossiblePredicates().contains(tp);
+                            result &= evalEngine.evaluateTerm(tp, clause.getField());
+                            if( result ){
+                                field = fieldFilter;
+                                break;
+                            }
+                        }catch(IllegalArgumentException iae){
+                            LOG.trace(TRACE_NOT_TOKEN_PREDICATE + filter);
+                        }
+                    }
+                }
+            }
+            return field;
         }
     }
 

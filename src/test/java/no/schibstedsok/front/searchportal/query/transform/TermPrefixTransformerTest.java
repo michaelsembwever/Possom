@@ -39,10 +39,9 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor
 import no.schibstedsok.front.searchportal.query.parser.ParseException;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryTestContext;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineTestContext;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.front.searchportal.site.Site;
 
 import org.apache.log4j.Logger;
@@ -73,8 +72,8 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
     public void testTwoSameWordsQuery() throws ParseException {
 
         final String queryString = QUERY_WORD + " " + QUERY_WORD;
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map trans = applyTransformer(new TermPrefixTransformer(), query, tefCxt, tef);
@@ -88,8 +87,8 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
 
         final String queryString = QUERY_WORD + " " + QUERY_WORD_2;
 
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map trans = applyTransformer(new TermPrefixTransformer(), query, tefCxt, tef);
@@ -103,8 +102,8 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
     public void testPhoneNumber() throws ParseException {
 
         final String queryString = QUERY_PHONE_NUMBER;
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map trans = applyTransformer(new TermPrefixTransformer(), query, tefCxt, tef);
@@ -117,8 +116,8 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
     public void testPhoneNumberSpaces() throws ParseException {
 
         final String queryString = QUERY_PHONE_NUMBER_SPACES;
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map trans = applyTransformer(new TermPrefixTransformer(), query, tefCxt, tef);
@@ -130,8 +129,8 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
     public void testOrgNr() throws ParseException {
 
         final String queryString = QUERY_ORG_NR;
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map trans = applyTransformer(new TermPrefixTransformer(), query, tefCxt, tef);
@@ -144,8 +143,8 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
     public void testInteger() throws ParseException {
 
         final String queryString = QUERY_INTEGER;
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map trans = applyTransformer(new TermPrefixTransformer(), query, tefCxt, tef);
@@ -158,8 +157,8 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
     protected Map<Clause, String> applyTransformer(
             final TermPrefixTransformer t,
             final Query query,
-            final TokenEvaluatorFactoryImpl.Context tefCxt,
-            final TokenEvaluatorFactory tef) {
+            final TokenEvaluationEngineImpl.Context tefCxt,
+            final TokenEvaluationEngine tef) {
 
         t.setPrefix(PREFIX_WORD);
         t.setNumberPrefix(PREFIX_INTEGER);
@@ -170,7 +169,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
     public static final class QueryBuilder extends AbstractReflectionVisitor {
         private final Query query;
         private final Map map;
-        private final StringBuffer sb = new StringBuffer();
+        private final StringBuilder sb = new StringBuilder();
 
         public QueryBuilder(final Query q, final Map m) {
             query = q;

@@ -362,7 +362,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         for(String fieldFilter : fieldFilters){
                             if(fieldFilter.contains(" AS ")){
                                 final String[] ff = fieldFilter.split(" AS ");
-                                asc.addFieldFilter(ff[0], ff[1]);
+                                asc.addFieldFilter(ff[0].trim(), ff[1].trim());
                             }else{
                                 asc.addFieldFilter(fieldFilter, fieldFilter);
                             }
@@ -377,7 +377,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             asc.addResultField(resultField.trim().split(" AS "));
                         }
                     }
-                    
+
                     fillBeanProperty(sc, inherit, "statisticalName", ParseType.String , commandE, "");
 
                 }

@@ -13,7 +13,6 @@ import java.io.StringReader;
 import java.util.List;
 import java.util.ArrayList;
 import no.schibstedsok.front.searchportal.query.*;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
 
 /** This class is NOT synchronized. You must use a separate instance for each query. 
  *

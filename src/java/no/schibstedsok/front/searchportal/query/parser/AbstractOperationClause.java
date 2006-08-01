@@ -16,10 +16,9 @@ import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.OperationClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Basic implementation of the OperationClause interface.
@@ -31,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractOperationClause extends AbstractClause implements OperationClause {
 
-    private static final Log LOG = LogFactory.getLog(AbstractLeafClause.class);
+    private static final Logger LOG = Logger.getLogger(AbstractLeafClause.class);
 
     /**
      * Works off the assumption that OperationClause constructor's have the exact parameter list:
@@ -57,7 +56,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
             final String term,
             final Clause left,
             final Clause right,
-            final TokenEvaluatorFactory predicate2evaluatorFactory,
+            final TokenEvaluationEngine predicate2evaluatorFactory,
             final Collection<TokenPredicate> predicates2check,
             final Map<String,WeakReference<T>> weakCache) {
 
@@ -71,7 +70,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
 
         if (clause == null) {
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
-            
+
             // create predicate sets
             predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet<TokenPredicate>());
             predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet<TokenPredicate>());
@@ -84,10 +83,10 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
                 );
                 // use the constructor...
                 clause = constructor.newInstance(
-                    term, 
-                    left, 
-                    right, 
-                    predicate2evaluatorFactory.getClausesKnownPredicates(), 
+                    term,
+                    left,
+                    right,
+                    predicate2evaluatorFactory.getClausesKnownPredicates(),
                     predicate2evaluatorFactory.getClausesPossiblePredicates()
                 );
 
@@ -136,6 +135,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
 
 
 
+    /** TODO comment me. **/
     protected final Clause firstClause;
 
 

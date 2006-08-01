@@ -1,5 +1,7 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.view.velocity;
 
+import org.apache.log4j.Logger;
 import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.runtime.parser.Token;
@@ -7,8 +9,6 @@ import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.Writer;
 import java.io.IOException;
@@ -29,7 +29,7 @@ import java.net.URLDecoder;
  */
 public final class UrlDecodeDirective extends Directive {
 
-    private static transient Log log = LogFactory.getLog(UrlEncodeDirective.class);
+    private static final Logger LOG = Logger.getLogger(UrlEncodeDirective.class);
 
     private static final String NAME = "urldecode";
     private static final String DEFAULT_CHARSET = "utf-8";

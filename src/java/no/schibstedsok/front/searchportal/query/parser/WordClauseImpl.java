@@ -11,14 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.WordClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 /**
  * Represent a word in the query. May contain the optional field (field:word).
  * May contain both character and digits but cannot contain only digits
  * (a IntegerClause will be used instead then).
- * 
+ *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
@@ -27,7 +27,7 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<WordClauseImpl>>> WEAK_CACHE 
+    private static final Map<Site,Map<String,WeakReference<WordClauseImpl>>> WEAK_CACHE
             = new HashMap<Site,Map<String,WeakReference<WordClauseImpl>>>();
 
     /* A WordClauseImpl specific collection of TokenPredicates that *could* apply to this Clause type. */
@@ -43,7 +43,7 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
 
         predicates.add(TokenPredicate.COMPANYSUFFIX);
         predicates.add(TokenPredicate.ORGNR);
-        predicates.add(TokenPredicate.SITEPREFIX);        
+        predicates.add(TokenPredicate.SITEPREFIX);
 
         // Add all FastTokenPredicates
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
@@ -57,7 +57,7 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
      * them.
      * The methods also allow a chunk of creation logic for the WordClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
+     *
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
@@ -68,17 +68,15 @@ public final class WordClauseImpl extends AbstractLeafClause implements WordClau
     public static WordClauseImpl createWordClause(
             final String term,
             final String field,
-            final TokenEvaluatorFactory predicate2evaluatorFactory) {
+            final TokenEvaluationEngine predicate2evaluatorFactory) {
 
-        // update the factory with what the current term is
-        predicate2evaluatorFactory.setCurrentTerm(term);
         // the weakCache to use.
         Map<String,WeakReference<WordClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
-        if( weakCache == null ){
+        if(weakCache == null ){
             weakCache = new HashMap<String,WeakReference<WordClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
         }
-        
+
         // use helper method from AbstractLeafClause
         return createClause(
                 WordClauseImpl.class,

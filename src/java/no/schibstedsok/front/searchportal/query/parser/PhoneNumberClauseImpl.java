@@ -11,13 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**
- * 
- * 
+ *
+ *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
@@ -26,9 +26,9 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<PhoneNumberClauseImpl>>> WEAK_CACHE 
+    private static final Map<Site,Map<String,WeakReference<PhoneNumberClauseImpl>>> WEAK_CACHE
             = new HashMap<Site,Map<String,WeakReference<PhoneNumberClauseImpl>>>();
-    
+
     /* A IntegerClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -50,7 +50,7 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
      * them.
      * The methods also allow a chunk of creation logic for the PhoneNumberClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
+     *
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
@@ -61,20 +61,20 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
     public static PhoneNumberClauseImpl createPhoneNumberClause(
         final String term,
         final String field,
-        final TokenEvaluatorFactory predicate2evaluatorFactory) {
+        final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // remove all embedded whitespace
         String t = term.replaceAll(" ","");
         t = t.length() > 8 ? t.replaceFirst("^(\\+|00)?47","") : t;
-        // update the factory with what the current term is
-        predicate2evaluatorFactory.setCurrentTerm(term);
+
         // the weakCache to use.
-        Map<String,WeakReference<PhoneNumberClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
-        if( weakCache == null ){
+        Map<String,WeakReference<PhoneNumberClauseImpl>> weakCache
+                = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<PhoneNumberClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
         }
-        
+
         // use helper method from AbstractLeafClause
         return createClause(
                 PhoneNumberClauseImpl.class,

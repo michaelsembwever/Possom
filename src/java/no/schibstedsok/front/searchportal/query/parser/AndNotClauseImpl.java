@@ -13,7 +13,7 @@ import java.util.Set;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 
@@ -65,7 +65,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      */
     public static AndNotClauseImpl createAndNotClause(
         final Clause first,
-        final TokenEvaluatorFactory predicate2evaluatorFactory) {
+        final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.

@@ -79,10 +79,12 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
     private StringBuilder builder = new StringBuilder();
 
+    /** TODO comment me. **/
     void addPredicateName(final String name) {
         predicateNames.add(name);
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
 
         LOG.trace("visitImpl(" + clause + ")");
@@ -102,6 +104,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
 
         LOG.trace("visitImpl(" + clause + ")");
@@ -109,16 +112,12 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         if (!matchingPredicates.isEmpty() && !expanded.contains(clause)) {
             for (final TokenPredicate p : matchingPredicates) {
 
-                if (matchingPredicates.size() > 0) {
-                    builder.append(' ');
-                }
-
                 if (isSynonym(builder.toString() + clause.getTerm())) {
 
                     LOG.debug("adding to builder " + clause.getTerm());
                     builder.append(clause.getTerm());
                     leafs.add(clause);
-                } else {
+                } //else {
 //                    if (!leafs.isEmpty()) {
 //
 //                        expandSynonym(leafs, getSynonym(builder.toString()));
@@ -127,19 +126,18 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 //                        matchingPredicates.clear();
 //                        builder.setLength(0);
 //                    }
-                }
+//                }
             }
         }
 
         for (TokenPredicate predicate : getPredicates()) {
 
             boolean applicable = clause.getKnownPredicates().contains(predicate);
-            if(!applicable && clause.getPossiblePredicates().contains(predicate)){
-                // possible predicates depend on placement of terms within the query.
-                //  this state can't be assigned to the terms as they are immutable and
-                //   re-used across multiple queries at any given time.
-                applicable |= predicate.evaluate(getContext().getTokenEvaluatorFactory());
-            }
+            // possible predicates depend on placement of terms within the query.
+            //  this state can't be assigned to the terms as they are immutable and
+            //   re-used across multiple queries at any given time.
+            applicable |= clause.getPossiblePredicates().contains(predicate)
+                    && predicate.evaluate(getContext().getTokenEvaluationEngine());
 
             if (applicable) {
 
@@ -192,24 +190,28 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     }
 
 
+    /** TODO comment me. **/
     public static boolean isTicker(final String string){
 
         final String s = string.toLowerCase();
         return SYNONYMS.containsKey(s);
     }
 
+    /** TODO comment me. **/
     public static boolean isTickersFullname(final String string){
 
         final String s = string.toLowerCase();
         return REVERSE_SYNONYMS.containsKey(s);
     }
 
+    /** TODO comment me. **/
     public static boolean isSynonym(final String string) {
 
         final String s = string.toLowerCase();
         return SYNONYMS.containsKey(s) || REVERSE_SYNONYMS.containsKey(s);
     }
 
+    /** TODO comment me. **/
     public static String getSynonym(final String string) {
 
         final String s = string.toLowerCase();
@@ -218,6 +220,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
                 : REVERSE_SYNONYMS.get(s);
     }
 
+    /** TODO comment me. **/
     public Object clone() throws CloneNotSupportedException {
         final SynonymQueryTransformer retValue = (SynonymQueryTransformer)super.clone();
 
@@ -230,6 +233,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         return retValue;
     }
 
+    /** TODO comment me. **/
     public StringBuilder getBuilder() {
         return builder;
     }

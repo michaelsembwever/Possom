@@ -14,11 +14,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.LeafClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /**
  * Basic implementation of the LeafClause interface.
@@ -29,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractLeafClause extends AbstractClause implements LeafClause {
 
-    private static final Log LOG = LogFactory.getLog(AbstractLeafClause.class);
+    private static final Logger LOG = Logger.getLogger(AbstractLeafClause.class);
 
     /**
      * Works off the assumption that LeafClause constructor's have the exact parameter list:
@@ -53,12 +51,18 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
             final Class<T> clauseClass,
             final String term,
             final String field,
-            final TokenEvaluatorFactory predicate2evaluatorFactory,
+            final TokenEvaluationEngine predicate2evaluatorFactory,
             final Collection<TokenPredicate> predicates2check,
             final Map<String,WeakReference<T>> weakCache) {
 
 
-        final String key = field + ":" + term; // important that the key argument is unique to this object.
+        // important that the key argument is unique to this object.
+        final String key = field != null
+            ? field + ':' + term
+            : term;
+
+        // update the factory with what the current term is
+        predicate2evaluatorFactory.setCurrentTerm(key);
 
         // check weak reference cache of immutable wordClauses here.
         // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
@@ -78,9 +82,9 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
                 );
                 // use the constructor...
                 clause = constructor.newInstance(
-                    term, 
-                    field, 
-                    predicate2evaluatorFactory.getClausesKnownPredicates(), 
+                    term,
+                    field,
+                    predicate2evaluatorFactory.getClausesKnownPredicates(),
                     predicate2evaluatorFactory.getClausesPossiblePredicates()
                 );
 
@@ -128,6 +132,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
     }
 
 
+    /** TODO comment me. **/
     protected final String field;
 
 
@@ -139,7 +144,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
     public String getField() {
         return field;
     }
-    
+
     /** {@inheritDoc}
      */
     public String toString() {

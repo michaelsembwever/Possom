@@ -26,7 +26,7 @@ import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.UrlClause;
 import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.query.XorClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 
 
 /** Parser responsible for building the Query and its clause heirarchy.
@@ -49,9 +49,9 @@ public interface QueryParser {
          * Responsible for  handing out evaluators against TokenPredicates.
          * Also holds state information about the current term/clause we are finding predicates against.
          *
-         * @return the tokenEvaluatorFactory this Parser will use.
+         * @return the TokenEvaluationEngine this Parser will use.
          */
-        TokenEvaluatorFactory getTokenEvaluatorFactory();
+        TokenEvaluationEngine getTokenEvaluationEngine();
 
         //// Operation creators
 

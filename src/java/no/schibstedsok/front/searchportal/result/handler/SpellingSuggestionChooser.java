@@ -9,9 +9,8 @@ import java.util.Map;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.spell.QuerySuggestion;
 import no.schibstedsok.front.searchportal.spell.SpellingSuggestion;
+import org.apache.log4j.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -19,33 +18,44 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class SpellingSuggestionChooser implements ResultHandler {
 
-    private static transient Log log = LogFactory.getLog(SpellingSuggestionChooser.class);
+    private static final Logger LOG = Logger.getLogger(SpellingSuggestionChooser.class);
 
+    /** TODO comment me. **/
     int minimumScore = -1;
+    /** TODO comment me. **/
     int maxSuggestions = 3;
+    /** TODO comment me. **/
     int maxDistance = 0;
+    /** TODO comment me. **/
     int muchBetter = 5;
+    /** TODO comment me. **/
     int maxSuggestionsForLongQueries = 2;
+    /** TODO comment me. **/
     int longQuery = 2;
+    /** TODO comment me. **/
     int veryLongQuery = 3;
 
+    /** TODO comment me. **/
     public SpellingSuggestionChooser() {
     }
 
+    /** TODO comment me. **/
     public SpellingSuggestionChooser(final int minimumScore) {
         this.minimumScore = minimumScore;
     }
 
+    /** TODO comment me. **/
     public SpellingSuggestionChooser(final int minimumScore, final int maxSuggestions) {
         this.minimumScore = minimumScore;
         this.maxSuggestions = maxSuggestions;
     }
 
+    /** @inherit **/
     public void handleResult(final Context cxt, final Map parameters) {
 
         final SearchResult result = cxt.getSearchResult();
-        if (log.isDebugEnabled()) {
-            log.debug("Number of corrected terms are " + numberOfCorrectedTerms(result.getSpellingSuggestions()));
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Number of corrected terms are " + numberOfCorrectedTerms(result.getSpellingSuggestions()));
         }
 
         final int numberOfTermsInQuery = result.getSearchCommand().getRunningQuery().getNumberOfTerms();
@@ -119,16 +129,16 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
         if (best.getScore() < nextBest.getScore() + muchBetter) {
             suggestionList.clear();
-            if (log.isDebugEnabled()) {
-                log.debug("All suggestions removed because the best is not much better than second best");
-                log.debug("Best " + best);
-                log.debug("Second best " + nextBest);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("All suggestions removed because the best is not much better than second best");
+                LOG.debug("Best " + best);
+                LOG.debug("Second best " + nextBest);
             }
         } else {
             suggestionList.clear();
             suggestionList.add(best);
-            if (log.isDebugEnabled()) {
-                log.debug("Only the best suggestion kept");
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Only the best suggestion kept");
             }
         }
     }
@@ -145,7 +155,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
             if (suggestion.getScore() + maxDistance < lastScore) {
                 iterator.remove();
-                log.debug("Suggestion " + suggestion + " because difference too high");
+                LOG.debug("Suggestion " + suggestion + " because difference too high");
 
             } else {
                 lastScore = suggestion.getScore();
@@ -159,8 +169,8 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
             for (int i = 0; i < numberToRemove; i++) {
                 final SpellingSuggestion removed =  suggestionList.remove(suggestionList.size() - 1);
-                if (log.isDebugEnabled()) {
-                    log.debug("Suggestion " + removed + " to reach maximum number of suggestions");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Suggestion " + removed + " to reach maximum number of suggestions");
                 }
             }
         }
@@ -171,38 +181,45 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             final SpellingSuggestion suggestion =   suggestions.next();
             if (suggestion.getScore() < minimumScore) {
                 suggestions.remove();
-                if (log.isDebugEnabled()) {
-                    log.debug("Suggestion " + suggestion + " removed due to low score");
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("Suggestion " + suggestion + " removed due to low score");
                 }
             }
         }
     }
 
-    public void setMinScore(int i) {
+    /** TODO comment me. **/
+    public void setMinScore(final int i) {
         minimumScore = i;
     }
 
-    public void setMaxSuggestions(int i) {
+    /** TODO comment me. **/
+    public void setMaxSuggestions(final int i) {
         maxSuggestions = i;
     }
 
-    public void setMaxDistance(int i) {
+    /** TODO comment me. **/
+    public void setMaxDistance(final int i) {
         maxDistance = i;
     }
 
-    public void setMuchBetter(int i) {
+    /** TODO comment me. **/
+    public void setMuchBetter(final int i) {
         muchBetter = i;
     }
 
-    public void setLongQuery(int i) {
+    /** TODO comment me. **/
+    public void setLongQuery(final int i) {
         longQuery = i;
     }
 
-    public void setVeryLongQuery(int i) {
+    /** TODO comment me. **/
+    public void setVeryLongQuery(final int i) {
         veryLongQuery = i;
     }
 
-    public void setLongQueryMaxSuggestions(int i) {
+    /** TODO comment me. **/
+    public void setLongQueryMaxSuggestions(final int i) {
         maxSuggestionsForLongQueries = i;
     }
 }

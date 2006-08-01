@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.EmailClause;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 
@@ -63,7 +63,7 @@ public final class EmailClauseImpl extends AbstractLeafClause implements EmailCl
     public static EmailClauseImpl createEmailClause(
         final String term,
         final String field,
-        final TokenEvaluatorFactory predicate2evaluatorFactory) {
+        final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);

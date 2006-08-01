@@ -62,7 +62,6 @@ public final class SearchConstants {
     public static final String NORDIC_NEWS_COLLECTION = "retrievernordic";
     public static final String PIC_SEARCH_HOST = "license.picsearch.com";
     public static final String WEATHER_SEARCH_HOST = "www.storm.no/kunder/schibsted";
-    public static final String STORM_WEATHER_SEARCH_HOST = "www.storm.no";
     
     public static final Object REQUEST_PARAM_PICTURE_SEARCH = "p";
 

@@ -10,19 +10,18 @@ import no.schibstedsok.front.searchportal.query.IntegerClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.front.searchportal.query.PhoneNumberClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import no.schibstedsok.front.searchportal.query.token.TokenMatch;
 import no.schibstedsok.front.searchportal.result.FastSearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.YellowSearchResult;
+import org.apache.log4j.Logger;
 
-public class YellowSearchCommand extends FastSearchCommand {
-    private static Log log = LogFactory.getLog(YellowSearchCommand.class);
+public final class YellowSearchCommand extends FastSearchCommand {
+
+    private static final Logger LOG = Logger.getLogger(YellowSearchCommand.class);
 
     private boolean ignoreGeoNav = false;
 
@@ -34,10 +33,12 @@ public class YellowSearchCommand extends FastSearchCommand {
 
     private StringBuilder filterBuilder = null;
 
+    /** TODO comment me. **/
     public YellowSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 
+    /** TODO comment me. **/
     protected Map getNavigators() {
 
         if (ignoreGeoNav && super.getNavigators() != null) {
@@ -50,6 +51,7 @@ public class YellowSearchCommand extends FastSearchCommand {
         return super.getNavigators();
     }
 
+    /** TODO comment me. **/
     public SearchResult execute() {
 
         boolean viewAll = false;
@@ -59,7 +61,7 @@ public class YellowSearchCommand extends FastSearchCommand {
         }
 
         if (isLocalSearch() && !viewAll) {
-            log.debug("Search is local");
+            LOG.debug("Search is local");
 
             // The search containing all hits. Including non-local.
             ignoreGeoNav = true;
@@ -132,9 +134,10 @@ public class YellowSearchCommand extends FastSearchCommand {
     }
 
 
+    /** TODO comment me. **/
     public String getTransformedQuery() {
-        final TokenEvaluatorFactory factory = getRunningQuery().getTokenEvaluatorFactory();
-        final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(factory);
+        final TokenEvaluationEngine engine = getRunningQuery().getTokenEvaluationEngine();
+        final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(engine);
 
         if (exactCompany && !isTop3) {
             return super.getTransformedQuery().replaceAll("yellowphon", "yellownamephon");
@@ -151,6 +154,7 @@ public class YellowSearchCommand extends FastSearchCommand {
         }
     }
 
+    /** TODO comment me. **/
     protected int getResultsToReturn() {
         if (isTop3) {
             return 3;
@@ -159,6 +163,7 @@ public class YellowSearchCommand extends FastSearchCommand {
         }
     }
 
+    /** TODO comment me. **/
     protected String getAdditionalFilter() {
 
         synchronized (this) {
@@ -172,9 +177,10 @@ public class YellowSearchCommand extends FastSearchCommand {
         }
     }
 
+    /** TODO comment me. **/
     protected String getSortBy() {
-        final TokenEvaluatorFactory factory = getRunningQuery().getTokenEvaluatorFactory();
-        final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(factory);
+        final TokenEvaluationEngine engine = getRunningQuery().getTokenEvaluationEngine();
+        final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(engine);
 
         if (exactCompany) {
             return "yellowname";
@@ -183,6 +189,7 @@ public class YellowSearchCommand extends FastSearchCommand {
         return (isLocal ? "yellowpages2new +ypnavn" : "yellowpages2geo +ypnavn");
     }
 
+    /** TODO comment me. **/
     public String getQueryInfo() {
         return getTransformedQuery() + " " + getSortBy() + " " + getAdditionalFilter();
     }

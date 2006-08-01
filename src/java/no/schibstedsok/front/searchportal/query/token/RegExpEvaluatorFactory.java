@@ -131,7 +131,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
 
                         // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
                         final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
-                        final String suffix = expression.endsWith("$") ? "" : "($|\\s)";
+                        final String suffix = expression.endsWith("$") ? "" : "(\\:|$|\\s)";
                         // compile pattern
                         final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
                         compiled.add(p);
@@ -226,7 +226,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
         if( result == null ){
             // if we cannot find an evaulator, then awlways fail evaluation. 
             //  Rather than encourage a NullPointerException
-            result = TokenEvaluatorFactoryImpl.ALWAYS_FALSE_EVALUATOR;
+            result = TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR;
         }
         return result;
     }

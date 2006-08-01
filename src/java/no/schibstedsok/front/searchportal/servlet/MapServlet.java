@@ -1,6 +1,6 @@
 /*
- * Copyright (2005) Schibsted Søk AS
- * 
+ * Copyright (2005-2006) Schibsted Søk AS
+ *
  */
 package no.schibstedsok.front.searchportal.servlet;
 
@@ -9,7 +9,6 @@ import no.geodata.arcweb.AuthenticationSoap;
 import no.geodata.maputil.CoordHelper;
 import no.geodata.maputil.MapEnvelope;
 import no.geodata.maputil.MapPoint;
-import no.geodata.prod.webservices.arcweb.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,9 +18,14 @@ import javax.xml.rpc.ServiceException;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Vector;
+import no.geodata.prod.webservices.arcweb.Envelope;
+import no.geodata.prod.webservices.arcweb.MapImageInfo;
+import no.geodata.prod.webservices.arcweb.MapImageLocator;
+import no.geodata.prod.webservices.arcweb.MapImageOptions;
+import no.geodata.prod.webservices.arcweb.MapImageSize;
+import no.geodata.prod.webservices.arcweb.MapImageSoap;
+import org.apache.log4j.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  *
@@ -29,7 +33,7 @@ import org.apache.commons.logging.LogFactory;
  * @version
  *
  */
-public class MapServlet extends HttpServlet {
+public final class MapServlet extends HttpServlet {
     /** The serialVersionUID */
     private static final long serialVersionUID = -5879777378093939926L;
 
@@ -43,16 +47,21 @@ public class MapServlet extends HttpServlet {
     //final static double envFactor = 1.2; //faktor for å lage rom rundt envelope
     //final static int imgWidth = 350;//bildestørrelse i pixler, bredde
     //final static int imgHeigth = 400;//bildestørrelse i pixler, høyde
+    /** TODO comment me. **/
     final static String datasource = "GEODATA.N50";
+    /** TODO comment me. **/
     final static String imgFormat = "png8";
 
+    /** TODO comment me. **/
     int zoomnivaa = 2;//default zoomnivaa, brukes når ikke annet er angitt
 
+    /** TODO comment me. **/
     String token;
+    /** TODO comment me. **/
     long tokenTimeStamp = 0;
     private static final long TOKEN_REFRESH_INTERVAL = 10 * 60 * 1000;
 
-    private static Log log = LogFactory.getLog(SearchServlet.class);
+    private static Logger LOG = Logger.getLogger(SearchServlet.class);
 
     private String authenticate() throws RemoteException, ServiceException{
 
@@ -93,7 +102,7 @@ public class MapServlet extends HttpServlet {
          MapImageSoap mapImage = mapimageLocator.getMapImageSoap();
          MapImageInfo result = mapImage.getMap(envelope, mapOptions, token);
          URL = result.getMapURL();
-         log.info(URL);
+         LOG.info(URL);
          return URL;
     }
 

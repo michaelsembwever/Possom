@@ -3,7 +3,6 @@ package no.schibstedsok.front.searchportal.query.token;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import org.apache.log4j.Logger;
@@ -71,19 +70,20 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
             final String term,
             final String query,
             final boolean exactMatchRequired) {
-        
+
         for (final Pattern p : expressions) {
             final Matcher m = term == null ? p.matcher(query) : p.matcher(term);
             final int stringLength = term == null ? query.length() : term.length();
 
-            if( m.find() && (!exactMatchRequired || (m.start() == 0 && m.end() == stringLength)) ){
+            if(m.find() && (!exactMatchRequired || (m.start() == 0 && m.end() == stringLength))){
                     return true;
             }
         }
         return false;
     }
 
-    public boolean isQueryDependant(TokenPredicate predicate) {
+    /** TODO comment me. **/
+    public boolean isQueryDependant(final TokenPredicate predicate) {
         return queryDependant;
     }
 }

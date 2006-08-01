@@ -11,9 +11,8 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 
 import no.schibstedsok.front.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
+import org.apache.log4j.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -29,8 +28,9 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
     private boolean asDate = false;
     private String ageMessageFormat;
 
-    private static final Log LOG = LogFactory.getLog(AgeCalculatorResultHandler.class);
+    private static final Logger LOG = Logger.getLogger(AgeCalculatorResultHandler.class);
 
+    /** @inherit **/
     public void handleResult(final Context cxt, final Map parameters) {
 
         final String fmt = dateFormat != null ? dateFormat : FAST_DATE_FMT;
@@ -63,18 +63,18 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     dateParts[2] = Long.valueOf(age / (60 * 1000) % 60);
 
                     String ageString = ""; // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
-                    final String  s = parameters.get("contentsource") instanceof String[] 
-                            ? ((String[])parameters.get("contentsource"))[0] 
+                    final String  s = parameters.get("contentsource") instanceof String[]
+                            ? ((String[])parameters.get("contentsource"))[0]
                             : (String)parameters.get("contentsource");
 
                     final TextMessages txtMsgs = TextMessages.valueOf(
                             ContextWrapper.wrap(TextMessages.Context.class, cxt));
 
                     //older than 3 days or source is Mediearkivet, show dd.mm.yyyy
-                    if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || asDate == true)
+                    if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || asDate){
                         ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
                     //more than 1 day, show days
-                    else if (dateParts[0].longValue() > 0) {
+                    }else if (dateParts[0].longValue() > 0) {
                         dateParts[1] = Long.valueOf(0);
                         dateParts[2] = Long.valueOf(0);
                         ageString = txtMsgs.getMessage(ageFormatKey, (Object[])  dateParts);
@@ -87,9 +87,9 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                         dateParts[0] = Long.valueOf(0);
                         dateParts[1] = Long.valueOf(0);
                         ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
-                    } else
+                    } else{
                         ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
-
+                    }
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Resulting age string is " + ageString);
                     }
@@ -97,7 +97,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     if (!ageString.contains("1970")) {
                         item.addField(getTargetField(), ageString);
                     }
-                    
+
                 } catch (ParseException e) {
                     LOG.warn("Unparsable date: " + docTime);
                 }
@@ -108,14 +108,17 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
 
     }
 
+    /** TODO comment me. **/
     public String getTargetField() {
         return targetField;
     }
 
+    /** TODO comment me. **/
     public void setTargetField(final String targetField) {
         this.targetField = targetField;
     }
 
+    /** TODO comment me. **/
     public void setSourceField(final String string) {
         sourceField = string;
     }

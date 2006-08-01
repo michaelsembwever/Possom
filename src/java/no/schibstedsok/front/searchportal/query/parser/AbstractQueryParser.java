@@ -26,7 +26,7 @@ import no.schibstedsok.front.searchportal.query.Query;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
 import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.query.parser.alt.RotationAlternation;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import org.apache.log4j.Logger;
 
 /** Abstract helper for implementing a QueryParser
@@ -79,7 +79,7 @@ public abstract class AbstractQueryParser implements QueryParser {
             }
             try{
                 if( queryStr != null && queryStr.trim().length()>0 ){
-                    
+
                     final Clause root = parse();
                     //final Clause root = alterations( parse() );
 
@@ -89,7 +89,7 @@ public abstract class AbstractQueryParser implements QueryParser {
                         }
                     };
                 }
-                
+
             }catch(ParseException pe){
                 LOG.warn(ERR_PARSING + queryStr, pe);
                 // also let product department know these queries are not working
@@ -99,7 +99,7 @@ public abstract class AbstractQueryParser implements QueryParser {
                 // also let product department know these queries are not working
                 PRODUCT_LOG.info("<invalid-query type=\"TokenMgrError\">" + queryStr + "</invalid-query>");
             }
-            
+
             if( query == null ){
                 final Clause empty = context.createWordClause("",null);
                 // common post-exception handling
@@ -117,15 +117,15 @@ public abstract class AbstractQueryParser implements QueryParser {
     }
 
     private Clause alterations(final Clause original){
-        
+
         // rotation alterations
-        final RotationAlternation rotator 
+        final RotationAlternation rotator
                 = new RotationAlternation(ContextWrapper.wrap(RotationAlternation.Context.class,context));
         return rotator.createRotations(original);
     }
-    
+
     protected final Context createContext(final String input){
-        
+
         return ContextWrapper.wrap(
             QueryParser.Context.class,
             new QueryStringContext(){
@@ -135,13 +135,13 @@ public abstract class AbstractQueryParser implements QueryParser {
             },
             context
         );
-        
+
     }
 
     protected final void enterMethod(final String method){
         if( LOG.isTraceEnabled() ){
             METHOD_STACK.push(method);
-            final StringBuffer sb = new StringBuffer();
+            final StringBuilder sb = new StringBuilder();
             for( Iterator it = METHOD_STACK.iterator(); it.hasNext(); ){
                 final String m = (String)it.next();
                 sb.append("." + m );

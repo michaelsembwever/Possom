@@ -88,11 +88,15 @@ public interface SearchConfiguration {
      */
     void setResultsToReturn(int numberOfResults);
 
+    /** TODO comment me. **/
     boolean isChild();
 
+    /** TODO comment me. **/
     public String getQueryParameter();
 
+    /** TODO comment me. **/
     boolean isAlwaysRun();
+    /** TODO comment me. **/
     String getStatisticalName();
 
     /**
@@ -102,7 +106,9 @@ public interface SearchConfiguration {
      */
     Map<String, String> getFieldFilters();
 
+    /** TODO comment me. **/
     void clearQueryTransformers();
 
+    /** TODO comment me. **/
     void clearResultHandlers();
 }

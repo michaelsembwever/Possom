@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 
@@ -65,7 +65,7 @@ public final class PhraseClauseImpl extends AbstractLeafClause implements Phrase
     public static PhraseClauseImpl createPhraseClause(
             final String term,
             final String field,
-            final TokenEvaluatorFactory predicate2evaluatorFactory) {
+            final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);

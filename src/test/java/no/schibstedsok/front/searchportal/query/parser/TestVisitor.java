@@ -7,14 +7,14 @@ package no.schibstedsok.front.searchportal.query.parser;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.TestCase;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryTestContext;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineTestContext;
 import no.schibstedsok.front.searchportal.query.AndNotClause;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.Query;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.front.searchportal.configuration.FileResourcesSiteConfigurationTest;
 import no.schibstedsok.front.searchportal.configuration.loader.DocumentLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoader;
@@ -25,8 +25,7 @@ import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.WordClause;
 import no.schibstedsok.front.searchportal.site.Site;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** Test the QueryParser and it's generated visitor pattern.
  *
@@ -35,12 +34,13 @@ import org.apache.commons.logging.LogFactory;
  **/
 public final class TestVisitor extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(TestVisitor.class);
-    
-    
+    private static final Logger LOG = Logger.getLogger(TestVisitor.class);
+
+
+    /** TODO comment me. **/
     public TestVisitor(final String testName) {
         super(testName);
-    }	    
+    }	
 
     /** test a visitor on a  basic clause heirarchy.
      **/
@@ -48,8 +48,8 @@ public final class TestVisitor extends TestCase {
         final TestVisitorImpl visitor = new TestVisitorImpl();
         final String queryStr = "firstName:magnus eklund \"schibsted sok\"";
 
-        final TokenEvaluatorFactory tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
-                new TokenEvaluatorFactoryImpl.Context() {
+        final TokenEvaluationEngine tokenEvaluationEngine  = new TokenEvaluationEngineImpl(
+                new TokenEvaluationEngineImpl.Context() {
                     public String getQueryString() {
                         return queryStr;
                     }
@@ -70,13 +70,13 @@ public final class TestVisitor extends TestCase {
                     }
                 });
 
-        final LeafClause magnus = WordClauseImpl.createWordClause("magnus", "firstName", tokenEvaluatorFactory);
-        final LeafClause eklund = WordClauseImpl.createWordClause("eklund", null, tokenEvaluatorFactory);
-        final LeafClause ss = PhraseClauseImpl.createPhraseClause("\"schibsted sok\"", null, tokenEvaluatorFactory);
+        final LeafClause magnus = WordClauseImpl.createWordClause("magnus", "firstName", tokenEvaluationEngine);
+        final LeafClause eklund = WordClauseImpl.createWordClause("eklund", null, tokenEvaluationEngine);
+        final LeafClause ss = PhraseClauseImpl.createPhraseClause("\"schibsted sok\"", null, tokenEvaluationEngine);
 
         // build right-leaning tree. requirement of current Clause/QueryParser implementation.
-        final Clause a = AndClauseImpl.createAndClause(eklund, ss, tokenEvaluatorFactory);
-        final Clause andClause = AndClauseImpl.createAndClause(magnus, a, tokenEvaluatorFactory);
+        final Clause a = AndClauseImpl.createAndClause(eklund, ss, tokenEvaluationEngine);
+        final Clause andClause = AndClauseImpl.createAndClause(magnus, a, tokenEvaluationEngine);
 
 
         visitor.visit(andClause);
@@ -98,6 +98,7 @@ public final class TestVisitor extends TestCase {
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" magnus eklund OR 123");
     }
 
+    /** TODO comment me. **/
     public void testAndOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
@@ -105,6 +106,7 @@ public final class TestVisitor extends TestCase {
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123");
     }
 
+    /** TODO comment me. **/
     public void testAndOrNotAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus eklund oslo magnus AND eklund NOT 123",
@@ -112,6 +114,7 @@ public final class TestVisitor extends TestCase {
                 "firstname:magnus eklund oslo magnus AND eklund NOT 123");
     }
 
+    /** TODO comment me. **/
     public void testOrAgainstQueryParser() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
@@ -119,6 +122,7 @@ public final class TestVisitor extends TestCase {
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys");
     }
 
+    /** TODO comment me. **/
     public void testNotOrAgainstQueryParser() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
@@ -126,6 +130,7 @@ public final class TestVisitor extends TestCase {
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys");
     }
 
+    /** TODO comment me. **/
     public void testAndNotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys",
@@ -133,6 +138,7 @@ public final class TestVisitor extends TestCase {
                 "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys");
     }
 
+    /** TODO comment me. **/
     public void testAndNotOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
@@ -140,6 +146,7 @@ public final class TestVisitor extends TestCase {
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys");
     }
 
+    /** TODO comment me. **/
     public void testAndnotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys",
@@ -147,6 +154,7 @@ public final class TestVisitor extends TestCase {
                 "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys");
     }
 
+    /** TODO comment me. **/
     public void testAndAndnotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys",
@@ -154,6 +162,7 @@ public final class TestVisitor extends TestCase {
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys");
     }
 
+    /** TODO comment me. **/
     public void testAndAndnotNotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys",
@@ -161,6 +170,7 @@ public final class TestVisitor extends TestCase {
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys");
     }
 
+    /** TODO comment me. **/
     public void testAndAndnotNotOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys",
@@ -168,6 +178,7 @@ public final class TestVisitor extends TestCase {
                 "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys");
     }
 
+    /** TODO comment me. **/
     public void testPhoneNumberAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "92221689",
@@ -175,6 +186,7 @@ public final class TestVisitor extends TestCase {
                 "92221689");
     }
 
+    /** TODO comment me. **/
     public void testPhoneNumberAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "9222 1689",
@@ -182,6 +194,7 @@ public final class TestVisitor extends TestCase {
                 "92221689 9222 1689");
     }
 
+    /** TODO comment me. **/
     public void testPhoneNumberAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "+47 9222 1689",
@@ -189,6 +202,7 @@ public final class TestVisitor extends TestCase {
                 "92221689");
     }
 
+    /** TODO comment me. **/
     public void testUnicodeAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "सिद्धार्थ गौतम",
@@ -204,12 +218,12 @@ public final class TestVisitor extends TestCase {
 
         LOG.info("Starting testBasicQueryParser with input: " + queryInput);
 
-        final TokenEvaluatorFactory tokenEvaluatorFactory
-                = new TokenEvaluatorFactoryImpl(new TokenEvaluatorFactoryTestContext(queryInput));
+        final TokenEvaluationEngine tokenEvaluationEngine
+                = new TokenEvaluationEngineImpl(new TokenEvaluationEngineTestContext(queryInput));
 
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-                public TokenEvaluatorFactory getTokenEvaluatorFactory() {
-                    return tokenEvaluatorFactory;
+                public TokenEvaluationEngine getTokenEvaluationEngine() {
+                    return tokenEvaluationEngine;
                 }
             });
 
@@ -233,10 +247,10 @@ public final class TestVisitor extends TestCase {
      */
     private static class TestVisitorImpl extends AbstractReflectionVisitor {
 
-        private final StringBuffer sb;
+        private final StringBuilder sb;
 
         public TestVisitorImpl() {
-            sb = new StringBuffer();
+            sb = new StringBuilder();
         }
 
         public String getParsedQueryString() {

@@ -39,9 +39,9 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor
 import no.schibstedsok.front.searchportal.query.parser.ParseException;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryTestContext;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineTestContext;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 
@@ -65,8 +65,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     public void testOneWordExact() throws ParseException {
 
         final String queryString = "sch";
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
 
@@ -87,8 +87,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     public void testOneWord() throws ParseException {
 
         final String queryString = "sch";
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
@@ -108,8 +108,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     public void testTwoWords() throws ParseException {
 
         final String queryString = "oslo sch schibsted";
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
@@ -130,8 +130,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
         // Not Exact match. Don't do expansion.
         final String queryString = "oslo sch schibsted";
-        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
         final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
@@ -149,8 +149,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 //    public void testMultiWordOriginalWithOtherTermAtEnd() throws ParseException {
 //
 //        final String queryString = "schibsted asa oslo";
-//        final TokenEvaluatorFactoryImpl.Context tefCxt = new TokenEvaluatorFactoryTestContext(queryString);
-//        final TokenEvaluatorFactory tef = new TokenEvaluatorFactoryImpl(tefCxt);
+//        final TokenEvaluationEngineImpl.Context tefCxt = new TokenEvaluationEngineTestContext(queryString);
+//        final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 //
 //        final Query query = parseQuery(tef);
 //        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
@@ -171,8 +171,8 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
             final SynonymQueryTransformer t,
             final Query query,
             final String predicateName,
-            final TokenEvaluatorFactoryImpl.Context tefCxt,
-            final TokenEvaluatorFactory tef) {
+            final TokenEvaluationEngineImpl.Context tefCxt,
+            final TokenEvaluationEngine tef) {
 
         t.addPredicateName(predicateName);
         return super.applyTransformer(t,query,tefCxt,tef);
@@ -182,7 +182,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     public static final class QueryBuilder extends AbstractReflectionVisitor {
         private final Query query;
         private final Map map;
-        private final StringBuffer sb = new StringBuffer();
+        private final StringBuilder sb = new StringBuilder();
 
         public QueryBuilder(final Query q, final Map m) {
             query = q;

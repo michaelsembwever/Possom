@@ -40,6 +40,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
             + "Was trying to visit object ";
     private static final String DEBUG_LOOKING_AT = "Looking for method "
             + VISIT_METHOD_IMPL + "(";
+    private static final String TRACE_KEEP_LOOKING = "keep looking";
     private static final String RB = ")";
 
 
@@ -81,7 +82,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
     }
 
     private Method getMethod(final Class clauseClass) {
-        
+
         // XXX This is one of the applications performance hotspots.
         //  It could be benefit to keep a weak reference map to remember what method to use.
 
@@ -148,7 +149,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 // [RECURSION] Look for super interfaces
                 method = getMethodFromInterface(interfaces[i]);
             }  else  {
-                LOG.debug("Found method accepting <" + interfaces[i].getSimpleName() 
+                LOG.debug("Found method accepting <" + interfaces[i].getSimpleName()
                         + "> in " + method.getDeclaringClass().getSimpleName());
             }
         }
@@ -170,7 +171,7 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                     return cls.getDeclaredMethod(VISIT_METHOD_IMPL, new Class[] {clauseClass});
 
                 } catch (NoSuchMethodException e) {
-                    // acceptable. keep looking.
+                    LOG.trace(TRACE_KEEP_LOOKING);
                 }
             }  else  {
                 return null;

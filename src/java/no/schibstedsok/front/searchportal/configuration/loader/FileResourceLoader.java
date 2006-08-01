@@ -14,8 +14,7 @@ import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.front.searchportal.InfrastructureException;
 import no.schibstedsok.front.searchportal.site.SiteContext;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -26,7 +25,7 @@ import org.xml.sax.SAXException;
  */
 public final class FileResourceLoader extends AbstractResourceLoader {
 
-    private static final Log LOG = LogFactory.getLog(FileResourceLoader.class);
+    private static final Logger LOG = Logger.getLogger(FileResourceLoader.class);
 
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.

@@ -123,7 +123,7 @@ public enum TokenPredicate implements Predicate {
 
 
     private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
-            = "Argument to evuluate must be an instance of a TokenEvaluatorFactory";
+            = "Argument to evuluate must be an instance of a TokenEvaluationEngine";
     private static final String ERR_TOKEN_NOT_FOUND = "Token argument not found ";
 
 
@@ -184,35 +184,34 @@ public enum TokenPredicate implements Predicate {
 
     /**
      * Evaluates to true if fastListName occurs in the query. This method uses a
-     * TokenEvaluatorFactory to get a TokenEvaluator
-     *
+     * TokenEvaluationEngine to get a TokenEvaluator
+     * 
      * @param evalFactory
-     *            The TokenEvaluatorFactory used to get a TokenEvaluator for
+     *            The TTokenEvaluationEngineused to get a TokenEvaluator for
      *            this fastListName, AND to get the current term in the query being tokenised.
-     *
      * @return true if, according to the TokenEvaluator provided by the
-     *         TokenEvaluatorFactory, fastListName evaluates to true.
+     *         TokTokenEvaluationEngineastListName evaluates to true.
      */
     public boolean evaluate(final Object evalFactory) {
         // pre-condition check
-        if (! (evalFactory instanceof TokenEvaluatorFactory)) {
+        if (! (evalFactory instanceof TokenEvaluationEngine)) {
             throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
         }
         // process
-        final TokenEvaluatorFactory factory = (TokenEvaluatorFactory) evalFactory;
+        final TokenEvaluationEngine engine = (TokenEvaluationEngine) evalFactory;
 
         // check that the evaluation hasn't already been done
         // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
         //  the evaluation is for the building of the known and possible predicate list (during query parsing)(in which
         //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
         //  applicable now (in the context of the whole query).
-        final Set<TokenPredicate> knownPredicates = factory.getClausesKnownPredicates();
+        final Set<TokenPredicate> knownPredicates = engine.getClausesKnownPredicates();
         if(null != knownPredicates && knownPredicates.contains(this)){
             return true;
         }
 
-        final TokenEvaluator evaluator = factory.getEvaluator(this);
-        return evaluator.evaluateToken(this, factory.getCurrentTerm(), factory.getQueryString());
+        final TokenEvaluator evaluator = engine.getEvaluator(this);
+        return evaluator.evaluateToken(this, engine.getCurrentTerm(), engine.getQueryString());
     }
 
 }

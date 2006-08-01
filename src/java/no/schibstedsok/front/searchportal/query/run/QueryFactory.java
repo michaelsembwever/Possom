@@ -4,10 +4,7 @@ package no.schibstedsok.front.searchportal.query.run;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import no.schibstedsok.front.searchportal.query.*;
-
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.Log;
+import org.apache.log4j.Logger;
 
 /**
  * QueryFactory is part of no.schibstedsok.front.searchportal.query.
@@ -20,11 +17,11 @@ import org.apache.commons.logging.Log;
  */
 public abstract class QueryFactory {
 
-    private static final Log LOG = LogFactory.getLog(QueryFactory.class);
+    private static final Logger LOG = Logger.getLogger(QueryFactory.class);
     private static QueryFactory instance;
 
     /**
-     * Create a new instance of QueryFactory
+     * Create a new instance of QueryFactory.
      * @return instance
      */
     public static QueryFactory getInstance() {

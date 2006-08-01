@@ -1,8 +1,8 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.view.velocity;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.runtime.parser.Token;
@@ -17,7 +17,6 @@ import java.net.URLEncoder;
 
 import no.schibstedsok.front.searchportal.security.MD5Generator;
 import no.schibstedsok.front.searchportal.result.Linkpulse;
-import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 
 /**
  * Created by IntelliJ IDEA.
@@ -26,8 +25,8 @@ import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
  * Time: 15:34:43
  * To change this template use File | Settings | File Templates.
  */
-public class RolesDirective extends Directive {
-    private static transient Log log = LogFactory.getLog(RolesDirective.class);
+public final class RolesDirective extends Directive {
+    private static final Logger LOG = Logger.getLogger(RolesDirective.class);
 
 
     private static final String NAME = "roles";
@@ -68,20 +67,25 @@ public class RolesDirective extends Directive {
      * @throws org.apache.velocity.exception.MethodInvocationException
      * @return the encoded string.
      */
-    public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(
+            final InternalContextAdapter context,
+            final Writer writer,
+            final Node node)
+            throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+
         if (node.jjtGetNumChildren() != 2) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
 
         // The text string from datafield which all the roledata is stored
-        String s = node.jjtGetChild(0).value(context).toString();
+        final String s = node.jjtGetChild(0).value(context).toString();
 
         // Yellow or Person page (used for linking)
-        String page = node.jjtGetChild(1).value(context).toString();
+        final String page = node.jjtGetChild(1).value(context).toString();
 
         // New line seperator
-        String[] row = s.split("#sepnl#");
+        final String[] row = s.split("#sepnl#");
         String[] col;
         boolean bgcolor = false;
         String text = "";
@@ -89,10 +93,10 @@ public class RolesDirective extends Directive {
         String recordid = "";
 
         // Needs this for link, find a way to import password..
-        MD5Generator md5 = new MD5Generator("S3SAM rockz");
+        final MD5Generator md5 = new MD5Generator("S3SAM rockz");
 
-        // use linkpulse to log roles click
-        Linkpulse linkpulse = (Linkpulse) context.get("linkpulse");
+        // use linkpulse to LOG roles click
+        final Linkpulse linkpulse = (Linkpulse) context.get("linkpulse");
         String html = "";
 
         html = "<div><table class=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
@@ -162,7 +166,7 @@ public class RolesDirective extends Directive {
         html += "<div id=\"hide_roles\" style=\"display: none\"><a href=\"#\" onclick=\"javascript:document.getElementById('more_roles').style.display='none'; document.getElementById('expand_roles').style.display='block'; document.getElementById('hide_roles').style.display='none'\">Skjul</a></div>";
 
         writer.write(html);
-        Token lastToken = node.getLastToken();
+        final Token lastToken = node.getLastToken();
 
         if (lastToken.image.endsWith("\n")) {
             writer.write("\n");

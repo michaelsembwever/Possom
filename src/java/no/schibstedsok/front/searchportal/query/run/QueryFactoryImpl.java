@@ -5,9 +5,8 @@ package no.schibstedsok.front.searchportal.query.run;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import no.schibstedsok.front.searchportal.util.QueryStringHelper;
+import org.apache.log4j.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * QueryFactoryImpl is part of no.schibstedsok.front.searchportal.query.
@@ -18,7 +17,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class QueryFactoryImpl extends QueryFactory {
 
-    private static final Log LOG = LogFactory.getLog(QueryFactoryImpl.class);
+    private static final Logger LOG = Logger.getLogger(QueryFactoryImpl.class);
 
     /**
      * Create a new instance of running query. The implementation can

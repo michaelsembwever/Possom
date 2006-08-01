@@ -11,17 +11,14 @@ package no.schibstedsok.front.searchportal.query.parser;
 import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.Visitor;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluator;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 
 /** Basic implementation of the Clause interface.
@@ -34,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AbstractClause implements Clause {
 
-    private static final Log LOG = LogFactory.getLog(AbstractClause.class);
+    private static final Logger LOG = Logger.getLogger(AbstractClause.class);
     private static final String INFO_WEAK_CACHE_SIZE ="WeakCache size at ";
     private static final String DEBUG_REFERENCE_REUSED = "Gjenbruk weakReference. Størrelse: ";
 
@@ -77,37 +74,36 @@ public abstract class AbstractClause implements Clause {
             final Map<String,WeakReference<T>> weakCache) {
 
         weakCache.put(key, new WeakClauseReference<T>(key, clause, weakCache));
-        
+
         // log weakCache size every 100 increments
-        if( weakCache.size() % 100 == 0){
+        if(weakCache.size() % 100 == 0){
             LOG.info(INFO_WEAK_CACHE_SIZE +  weakCache.size());
         }
     }
 
     /**
      * Find the predicates that are applicable to the clause.
-     * (Only the clause's term is known and is kept in state inside the TokenEvaluatorFactory).
+     * (Only the clause's term is known and is kept in state inside the TokenEvaluationEngine).
      * Add known predicates to <CODE>knownPredicates</CODE>.
      * Add possible (requires further checking against the whole query heirarchy) predicates to <CODE>possiblePredicates</CODE>.
+     *
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @param predicates2check the complete list of predicates that could apply to the current clause we are finding predicates for.
-     * @param knownPredicates the set to fill out with known predicates.
-     * @param possiblePredicates the set to fill out with possible predicates.
      */
     protected static final void findPredicates(
-            final TokenEvaluatorFactory predicate2evaluatorFactory,
+            final TokenEvaluationEngine predicate2evaluatorFactory,
             final Collection<TokenPredicate> predicates2check) {
 
         final Set<TokenPredicate> knownPredicates = predicate2evaluatorFactory.getClausesKnownPredicates();
         final Set<TokenPredicate> possiblePredicates = predicate2evaluatorFactory.getClausesPossiblePredicates();
         final String currTerm = predicate2evaluatorFactory.getCurrentTerm();
-        
-        
+
+
         for (TokenPredicate token : predicates2check) {
 
             // check it hasn't already been added
-            if( !(knownPredicates.contains(token) || possiblePredicates.contains(token)) ){
+            if(!(knownPredicates.contains(token) || possiblePredicates.contains(token))){
 
                 if (token.evaluate(predicate2evaluatorFactory)) {
                     final TokenEvaluator evaluator = predicate2evaluatorFactory.getEvaluator(token);
@@ -179,7 +175,7 @@ public abstract class AbstractClause implements Clause {
     public void accept(final Visitor visitor) {
         visitor.visit(this);
     }
-    
+
     /** {@inheritDoc}
      */
     public String toString() {
@@ -200,21 +196,21 @@ public abstract class AbstractClause implements Clause {
     private static final String DEBUG_FOUND_PREDICATE_POSSIBLE = "\") possible ";
 
 
-    private final static class WeakClauseReference<T> extends WeakReference{
-        
+    private static final class WeakClauseReference<T> extends WeakReference{
+
         private final Map<String,WeakReference<T>> weakCache;
         private final String key;
-        
+
         WeakClauseReference(
                 final String key,
                 final T clause,
                 final Map<String,WeakReference<T>> weakCache){
-            
+
             super(clause);
             this.key = key;
             this.weakCache = weakCache;
         }
-        
+
         public void clear() {
             // clear the hashmap entry too!
             weakCache.remove(key);

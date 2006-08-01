@@ -41,7 +41,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
     /** {@inheritDoc}
      */
     public final String getQueryString() {
-        return getTokenEvaluatorFactory().getQueryString();
+        return getTokenEvaluationEngine().getQueryString();
     }
 
 
@@ -49,9 +49,9 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
     /** {@inheritDoc}
      */
     public DefaultOperatorClause createDefaultOperatorClause(final Clause first, final Clause second){
-        
+
         LOG.debug("createDefaultOperatorClause(" + first + "," + second + ")");
-        return DefaultOperatorClauseImpl.createDefaultOperatorClause(first, second, getTokenEvaluatorFactory());
+        return DefaultOperatorClauseImpl.createDefaultOperatorClause(first, second, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -61,7 +61,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final Clause second) {
 
         LOG.debug("createAndClause(" + first + "," + second + ")");
-        return AndClauseImpl.createAndClause(first, second, getTokenEvaluatorFactory());
+        return AndClauseImpl.createAndClause(first, second, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -71,9 +71,9 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final Clause second) {
 
         LOG.debug("createOrClause(" + first + "," + second + ")");
-        return OrClauseImpl.createOrClause(first, second, getTokenEvaluatorFactory());
+        return OrClauseImpl.createOrClause(first, second, getTokenEvaluationEngine());
     }
-    
+
     /** {@inheritDoc}
      */
     public final XorClause createXorClause(
@@ -82,7 +82,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final XorClause.Hint hint) {
 
         LOG.debug("createXorClause(" + first + "," + second + "," + hint + ")");
-        return XorClauseImpl.createXorClause(first, second, hint, getTokenEvaluatorFactory());
+        return XorClauseImpl.createXorClause(first, second, hint, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -91,7 +91,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final Clause first) {
 
         LOG.debug("createAndNotClause(" + first + ")");
-        return AndNotClauseImpl.createAndNotClause(first, getTokenEvaluatorFactory());
+        return AndNotClauseImpl.createAndNotClause(first, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -100,7 +100,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final Clause first) {
 
         LOG.debug("createNotClause(" + first + ")");
-        return NotClauseImpl.createNotClause(first, getTokenEvaluatorFactory());
+        return NotClauseImpl.createNotClause(first, getTokenEvaluationEngine());
     }
 
 
@@ -113,7 +113,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String field) {
 
         LOG.debug("createWordClause(" + term + "," + field + ")");
-        return WordClauseImpl.createWordClause(term, field, getTokenEvaluatorFactory());
+        return WordClauseImpl.createWordClause(term, field, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -123,7 +123,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String field) {
 
         LOG.debug("createPhraseClause(" + term + "," + field + ")");
-        return PhraseClauseImpl.createPhraseClause(term, field, getTokenEvaluatorFactory());
+        return PhraseClauseImpl.createPhraseClause(term, field, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -133,7 +133,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String field) {
 
         LOG.debug("createIntegerClause(" + term + "," + field + ")");
-        return IntegerClauseImpl.createIntegerClause(term, field, getTokenEvaluatorFactory());
+        return IntegerClauseImpl.createIntegerClause(term, field, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -143,7 +143,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String field) {
 
         LOG.debug("createPhoneNumberClause(" + term + "," + field + ")");
-        return PhoneNumberClauseImpl.createPhoneNumberClause(term, field, getTokenEvaluatorFactory());
+        return PhoneNumberClauseImpl.createPhoneNumberClause(term, field, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -153,7 +153,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String field) {
 
         LOG.debug("createOrganisationNumberClause(" + term + "," + field + ")");
-        return OrganisationNumberClauseImpl.createOrganisationNumberClause(term, field, getTokenEvaluatorFactory());
+        return OrganisationNumberClauseImpl.createOrganisationNumberClause(term, field, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}
@@ -161,13 +161,13 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
     public final UrlClause createUrlClause(final String term, final String field){
 
         LOG.debug("createUrlClause(" + term + "," + field + ")");
-        return UrlClauseImpl.createUrlClause(term, field, getTokenEvaluatorFactory());        
+        return UrlClauseImpl.createUrlClause(term, field, getTokenEvaluationEngine());
     }
     /** {@inheritDoc}
      */
     public final EmailClause createEmailClause(final String term, final String field){
 
         LOG.debug("createEmailClause(" + term + "," + field + ")");
-        return EmailClauseImpl.createEmailClause(term, field, getTokenEvaluatorFactory());        
-    }   
+        return EmailClauseImpl.createEmailClause(term, field, getTokenEvaluationEngine());
+    }
 }

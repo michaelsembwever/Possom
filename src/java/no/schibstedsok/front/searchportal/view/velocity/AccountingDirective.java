@@ -1,5 +1,7 @@
+// Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.front.searchportal.view.velocity;
 
+import org.apache.log4j.Logger;
 import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.runtime.parser.Token;
@@ -7,8 +9,6 @@ import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.Writer;
 import java.io.IOException;
@@ -22,9 +22,9 @@ import no.schibstedsok.front.searchportal.result.Linkpulse;
  * Time: 09:21:04
  * To change this template use File | Settings | File Templates.
  */
-public class AccountingDirective extends Directive {
+public final class AccountingDirective extends Directive {
 
-    private static transient Log log = LogFactory.getLog(AccountingDirective.class);
+    private static final Logger LOG = Logger.getLogger(AccountingDirective.class);
 
 
     private static final String NAME = "accounting";
@@ -61,28 +61,28 @@ public class AccountingDirective extends Directive {
      * @throws org.apache.velocity.exception.MethodInvocationException
      * @return the encoded string.
      */
-    public boolean render(InternalContextAdapter context, Writer writer, Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
         if (node.jjtGetNumChildren() != 1) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
 
         // The text string from datafield which all the accountingsnumber is stored
-        String s = node.jjtGetChild(0).value(context).toString();
+        final String s = node.jjtGetChild(0).value(context).toString();
 
         String html = "";
         html = "<table bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
 
         // New line seperator
-        String[] row = s.split("#sepnl#");
+        final String[] row = s.split("#sepnl#");
         String[] col;
         boolean bgcolor = false;
         String text = "";
         boolean quitLoop = false;
 
-        // use linkpulse to log lindorff logo click
-        Linkpulse linkpulse = (Linkpulse) context.get("linkpulse");
-        String lpUrl = linkpulse.getUrl("http://www.lindorff.no/", "category:static;subcategory:provider", "sgo", "ext");
+        // use linkpulse to LOG lindorff logo click
+        final Linkpulse linkpulse = (Linkpulse) context.get("linkpulse");
+        final String lpUrl = linkpulse.getUrl("http://www.lindorff.no/", "category:static;subcategory:provider", "sgo", "ext");
 
         //print rows
         for (int i = 0; i < row.length; i++) {
@@ -132,7 +132,7 @@ public class AccountingDirective extends Directive {
         html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"" + lpUrl + "\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
 
         writer.write(html);
-        Token lastToken = node.getLastToken();
+        final Token lastToken = node.getLastToken();
 
         if (lastToken.image.endsWith("\n")) {
             writer.write("\n");

@@ -17,6 +17,7 @@ import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.front.searchportal.query.token.RegExpTokenEvaluator;
 import no.schibstedsok.front.searchportal.query.token.TokenEvaluator;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 
@@ -138,16 +139,37 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
             check |= Position.PREFIX == position && clause == getContext().getQuery().getFirstLeafClause();
 
             if (check) {
+                final TokenEvaluationEngine evalEngine = getContext().getTokenEvaluationEngine();
+
                 for (TokenPredicate predicate : getPredicates()) {
 
-                    boolean transform = clause.getPossiblePredicates().contains(predicate);
-                    transform &= predicate.evaluate(getContext().getTokenEvaluatorFactory()); // XXX maybe not needed
-                    transform |= clause.getKnownPredicates().contains(predicate);
+                    // if the field is the token then mask the field and include the term.
+                    boolean transform = false;
+                    if(null != clause.getField()){
+                        transform = clause.getKnownPredicates().contains(predicate);
+                        transform |= clause.getPossiblePredicates().contains(predicate);
+                        transform &= evalEngine.evaluateTerm(predicate, clause.getField());
+                        if(transform){
+                            // this resets the the term to the clause's field or term
+                            getContext().getTransformedTerms().put(
+                                    clause,
+                                    Mask.INCLUDE == mask ? clause.getField() : clause.getTerm());
+                            return;
+                        }
+                    }
+                    if(!transform){
+                        // otherwise perform the mask check on just the term.
+                        transform = clause.getKnownPredicates().contains(predicate);
+                        transform |= clause.getPossiblePredicates().contains(predicate)
+                            && predicate.evaluate(evalEngine);
 
-                    if (transform) {
+                        if (transform) {
 
-                        getContext().getTransformedTerms().put(clause, Mask.INCLUDE == mask ? transformedTerm : BLANK);
-                        return;
+                            getContext().getTransformedTerms().put(
+                                    clause,
+                                    Mask.INCLUDE == mask ? transformedTerm : BLANK);
+                            return;
+                        }
                     }
                 }
             }

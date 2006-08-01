@@ -22,30 +22,31 @@ import javax.xml.transform.stream.StreamResult;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import no.schibstedsok.front.searchportal.result.SearchResultItem;
 import no.schibstedsok.front.searchportal.result.handler.ResultHandler;
+import org.apache.log4j.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
-public class XmlOutputResultHandler implements ResultHandler {
+public final class XmlOutputResultHandler implements ResultHandler {
 
-    private static Log log = LogFactory.getLog(XmlOutputResultHandler.class);
+    private static final Logger LOG = Logger.getLogger(XmlOutputResultHandler.class);
 
+    /** TODO comment me. **/
     public XmlOutputResultHandler() {
     }
 
+    /** @inherit **/
     public void handleResult(final Context cxt, final Map parameters) {
 
         final SearchResult result = cxt.getSearchResult();
 
-        String[] xmlParam = (String[]) parameters.get("xml");
+        final String[] xmlParam = (String[]) parameters.get("xml");
 
         if (xmlParam != null && xmlParam[0].equals("yes")) {
-            HttpServletRequest request = (HttpServletRequest) parameters
+            final HttpServletRequest request = (HttpServletRequest) parameters
                     .get("request");
-            HttpServletResponse response = (HttpServletResponse) parameters
+            final HttpServletResponse response = (HttpServletResponse) parameters
                     .get("response");
 
             if (request == null || response == null) {
@@ -55,35 +56,35 @@ public class XmlOutputResultHandler implements ResultHandler {
 
             // PrintWriter from a Servlet
             try {
-                PrintWriter out = response.getWriter();
-                StreamResult streamResult = new StreamResult(out);
-                SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory
+                final PrintWriter out = response.getWriter();
+                final StreamResult streamResult = new StreamResult(out);
+                final SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory
                         .newInstance();
                 // SAX2.0 ContentHandler.
-                TransformerHandler hd = tf.newTransformerHandler();
-                Transformer serializer = hd.getTransformer();
+                final TransformerHandler hd = tf.newTransformerHandler();
+                final Transformer serializer = hd.getTransformer();
                 serializer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
                 serializer.setOutputProperty(OutputKeys.INDENT, "yes");
 
                 hd.setResult(streamResult);
                 hd.startDocument();
-                AttributesImpl atts = new AttributesImpl();
+                final AttributesImpl atts = new AttributesImpl();
 
                 atts.addAttribute("", "hits", "hits", "", String.valueOf(result.getHitCount()));
 
                 hd.startElement("", "", "searchResult", atts);
 
-                Attributes emptyAtts = new AttributesImpl();
+                final Attributes emptyAtts = new AttributesImpl();
 
-                 for (Iterator iter = result.getResults().iterator(); iter.hasNext();) {
-                    SearchResultItem item = (SearchResultItem) iter.next();
+                 for (final Iterator iter = result.getResults().iterator(); iter.hasNext();) {
+                    final SearchResultItem item = (SearchResultItem) iter.next();
                     hd.startElement("", "", "resultItem", emptyAtts);
-                    for (Iterator iterator = item.getFieldNames().iterator(); iterator.hasNext();) {
-                        String field = (String) iterator.next();
+                    for (final Iterator iterator = item.getFieldNames().iterator(); iterator.hasNext();) {
+                        final String field = (String) iterator.next();
 
-                        log.debug("field name is " + field);
+                        LOG.debug("field name is " + field);
 
-                        Object fieldValue = item.getFieldAsObject(field);
+                        final Object fieldValue = item.getFieldAsObject(field);
 
 
                         if (fieldValue != null) {
@@ -92,10 +93,10 @@ public class XmlOutputResultHandler implements ResultHandler {
                             if (!(fieldValue instanceof ArrayList)) {
                                 hd.characters(fieldValue.toString().toCharArray(), 0, fieldValue.toString().length());
                             } else {
-                                Collection valueArray = (Collection) fieldValue;
+                                final Collection valueArray = (Collection) fieldValue;
 
-                                for (Iterator valueIterator = valueArray.iterator(); valueIterator.hasNext();) {
-                                    String singleValue = (String) valueIterator.next();
+                                for (final Iterator valueIterator = valueArray.iterator(); valueIterator.hasNext();) {
+                                    final String singleValue = (String) valueIterator.next();
                                     hd.startElement("", "", "value", emptyAtts);
                                     hd.characters(singleValue.toCharArray(), 0, singleValue.length());
                                     hd.endElement("", "", "value");
@@ -114,19 +115,19 @@ public class XmlOutputResultHandler implements ResultHandler {
                 out.flush();
             } catch (TransformerConfigurationException e) {
                 // FIXME
-                log.error("Error", e);
+                LOG.error("Error", e);
             } catch (IllegalArgumentException e) {
                 // FIXME
-                log.error("Error", e);
+                LOG.error("Error", e);
             } catch (IOException e) {
                 // FIXME
-                log.error("Error", e);
+                LOG.error("Error", e);
             } catch (TransformerFactoryConfigurationError e) {
                 // FIXME
-                log.error("Error", e);
+                LOG.error("Error", e);
             } catch (SAXException e) {
                 // FIXME
-                log.error("Error", e);
+                LOG.error("Error", e);
             }
         }
 

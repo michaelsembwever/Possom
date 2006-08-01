@@ -1,3 +1,4 @@
+// Copyright (2006) Schibsted Søk AS
 /*
  * AbstractTransformerTestCase.java
  *
@@ -28,8 +29,8 @@ import no.schibstedsok.front.searchportal.query.parser.AbstractReflectionVisitor
 import no.schibstedsok.front.searchportal.query.parser.ParseException;
 import no.schibstedsok.front.searchportal.query.parser.QueryParser;
 import no.schibstedsok.front.searchportal.query.parser.QueryParserImpl;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineImpl;
 import org.apache.log4j.Logger;
 
 /**
@@ -40,18 +41,19 @@ abstract class AbstractTransformerTestCase extends TestCase {
 
     private static final Logger LOG =
             Logger.getLogger(AbstractTransformerTestCase.class);
-    
+
     /** Creates a new instance of AbstractTransformerTestCase */
     public AbstractTransformerTestCase(final String testName) {
         super(testName);
     }
 
 
+    /** TODO comment me. **/
     protected Map<Clause, String> applyTransformer(
             final QueryTransformer t,
             final Query query,
-            final TokenEvaluatorFactoryImpl.Context tefCxt,
-            final TokenEvaluatorFactory tef) {
+            final TokenEvaluationEngineImpl.Context tefCxt,
+            final TokenEvaluationEngine tef) {
 
         final Map<Clause, String> transformedTerms = new LinkedHashMap<Clause,String>();
         final QueryTransformer.Context qtCxt = new QueryTransformerTestContext(query,transformedTerms,tef);
@@ -63,10 +65,11 @@ abstract class AbstractTransformerTestCase extends TestCase {
         return transformedTerms;
     }
 
-    protected Query parseQuery(final TokenEvaluatorFactory tef) throws ParseException {
+    /** TODO comment me. **/
+    protected Query parseQuery(final TokenEvaluationEngine tef) throws ParseException {
 
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-            public TokenEvaluatorFactory getTokenEvaluatorFactory() {
+            public TokenEvaluationEngine getTokenEvaluationEngine() {
                 return tef;
             }
         });
@@ -79,7 +82,7 @@ abstract class AbstractTransformerTestCase extends TestCase {
     protected static final class QueryBuilder extends AbstractReflectionVisitor {
         private final Query query;
         private final Map map;
-        private final StringBuffer sb = new StringBuffer();
+        private final StringBuilder sb = new StringBuilder();
 
         public QueryBuilder(final Query q, final Map m) {
             query = q;

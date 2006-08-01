@@ -62,9 +62,10 @@ public final class SiteLocatorFilter implements Filter {
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
-    
+
     private static final long START_TIME = System.currentTimeMillis();
 
+    /** TODO comment me. **/
     public SiteLocatorFilter() {
     }
 
@@ -123,7 +124,7 @@ public final class SiteLocatorFilter implements Filter {
                 if (rscDir != null && EXTERNAL_DIRS.contains(rscDir)) {
 
                     // This URL does not belong to search-front-html
-                    Site site = (Site) req.getAttribute(Site.NAME_KEY);
+                    final Site site = (Site) req.getAttribute(Site.NAME_KEY);
                     String url = "";
 
                     if (resource.startsWith(PUBLISH_DIR)) { // publishing system
@@ -144,7 +145,11 @@ public final class SiteLocatorFilter implements Filter {
                         if (url == null) {
                             res.sendError(HttpServletResponse.SC_NOT_FOUND);
                             url = null;
-                            LOG.error(ERR_NOT_FOUND + resource);
+                            if(resource.endsWith(".css")){
+                                LOG.info(ERR_NOT_FOUND + resource);
+                            }else{
+                                LOG.error(ERR_NOT_FOUND + resource);
+                            }
                         }
                     }
 

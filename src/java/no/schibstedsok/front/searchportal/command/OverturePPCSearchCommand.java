@@ -4,8 +4,8 @@ package no.schibstedsok.front.searchportal.command;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.front.searchportal.configuration.OverturePPCSearchConfiguration;
 import no.schibstedsok.front.searchportal.query.QueryStringContext;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.front.searchportal.result.OvertureSearchResult;
@@ -31,6 +31,7 @@ import no.schibstedsok.front.searchportal.configuration.AbstractYahooSearchConfi
  */
 public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
+    /** TODO comment me. **/
     public static final String OVERTURE_PPC_ELEMENT = "Listing";
 
     private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_sitesearch";
@@ -60,8 +61,8 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
-        final TokenEvaluatorFactoryImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                TokenEvaluatorFactoryImpl.Context.class,
+        final TokenEvaluationEngineImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                TokenEvaluationEngineImpl.Context.class,
                     new QueryStringContext() {
                         public String getQueryString() {
                             return getTransformedQuery();
@@ -70,10 +71,10 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                     context
         );
 
-        final TokenEvaluatorFactory tokenEvaluatorFactory = new TokenEvaluatorFactoryImpl(tokenEvalFactoryCxt);
+        final TokenEvaluationEngine tokenEvaluationEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
-        top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluatorFactory) && 
-                !(TokenPredicate.LOAN_TRIGGER.evaluate(tokenEvaluatorFactory) || TokenPredicate.SUDOKU_TRIGGER.evaluate(tokenEvaluatorFactory));
+        top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluationEngine)
+                 && !(TokenPredicate.LOAN_TRIGGER.evaluate(tokenEvaluationEngine) || TokenPredicate.SUDOKU_TRIGGER.evaluate(tokenEvaluationEngine));
 
         try {
             final Document doc = getXmlResult();
@@ -89,12 +90,12 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                     searchResult.addResult(item);
                 }
                 final NodeList resultSetList = elem.getElementsByTagName("ResultSet");
-                if( resultSetList.getLength()>0 ){
+                if(resultSetList.getLength()>0){
                     searchResult.setHitCount(Integer.parseInt(
                             ((Element)resultSetList.item(0)).getAttribute("numResults")));
                 }
             }
-            
+
             return searchResult;
         } catch (IOException e) {
             throw new InfrastructureException(e);
@@ -103,7 +104,8 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
-    protected final String createRequestURL() {
+    /** TODO comment me. **/
+    protected String createRequestURL() {
 
         final OverturePPCSearchConfiguration ppcConfig
                 = (OverturePPCSearchConfiguration) context.getSearchConfiguration();
@@ -123,6 +125,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
     }
 
 
+    /** TODO comment me. **/
     protected int getResultsToReturn(){
 
         final int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
@@ -135,6 +138,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
+    /** TODO comment me. **/
     protected String getPartnerId(){
 
         final AbstractYahooSearchConfiguration conf

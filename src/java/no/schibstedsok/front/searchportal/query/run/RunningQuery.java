@@ -15,7 +15,7 @@ import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.front.searchportal.configuration.SearchMode;
 import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.query.Query;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 import no.schibstedsok.front.searchportal.view.config.SearchTab;
@@ -29,14 +29,22 @@ import no.schibstedsok.front.searchportal.view.config.SearchTab;
 public interface RunningQuery {
 
     public interface Context extends BaseContext, ResourceContext, SiteContext {
-        SearchMode getSearchMode();
-        SearchTab getSearchTab();
+        /** TODO comment me. **/
+    /** TODO comment me. **/
+    SearchMode getSearchMode();
+        /** TODO comment me. **/
+    /** TODO comment me. **/
+    /** TODO comment me. **/
+    SearchTab getSearchTab();
     }
 
+    /** TODO comment me. **/
     void addSource(final Modifier modifier);
 
+    /** TODO comment me. **/
     List getEnrichments();
 
+    /** TODO comment me. **/
     List getGeographicMatches();
 
     /**
@@ -47,23 +55,32 @@ public interface RunningQuery {
      */
     String getGlobalSearchTips();
 
+    /** TODO comment me. **/
     Locale getLocale();
 
+    /** TODO comment me. **/
     Integer getNumberOfHits(final String configName);
 
+    /** TODO comment me. **/
     int getNumberOfTerms();
-    
+
+    /** TODO comment me. **/
     Query getQuery();
 
+    /** TODO comment me. **/
     String getQueryString();
 
+    /** TODO comment me. **/
     SearchMode getSearchMode();
-    
+
+    /** TODO comment me. **/
     SearchTab getSearchTab();
 
+    /** TODO comment me. **/
     List<Modifier> getSources();
 
-    TokenEvaluatorFactory getTokenEvaluatorFactory();
+    /** TODO comment me. **/
+    TokenEvaluationEngine getTokenEvaluationEngine();
 
     /**
      * Thread run

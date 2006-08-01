@@ -10,7 +10,7 @@ import no.schibstedsok.front.searchportal.configuration.loader.ResourceContext;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.QueryContext;
 import no.schibstedsok.front.searchportal.query.Visitor;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.site.SiteContext;
 
 
@@ -36,9 +36,10 @@ public interface QueryTransformer extends Visitor, Cloneable{
 
         /** For evaluation acitions on individual (or the whole query) terms.
          **/
-        TokenEvaluatorFactory getTokenEvaluatorFactory();
+        TokenEvaluationEngine getTokenEvaluationEngine();
     }
 
+    /** TODO comment me. **/
     void setContext(final Context cxt);
 
     /**
@@ -73,7 +74,7 @@ public interface QueryTransformer extends Visitor, Cloneable{
      * @return filterstring
      */
     String getFilter();
-    
+
     /** Force public implementation of Clonable. **/
     Object clone() throws CloneNotSupportedException ;
 }

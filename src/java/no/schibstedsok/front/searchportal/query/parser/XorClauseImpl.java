@@ -15,7 +15,7 @@ import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.LeafClause;
 import no.schibstedsok.front.searchportal.query.OrClause;
 import no.schibstedsok.front.searchportal.query.XorClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 import org.apache.commons.collections.Predicate;
@@ -64,7 +64,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
         final Clause first,
         final Clause second,
         final Hint hint,
-        final TokenEvaluatorFactory predicate2evaluatorFactory) {
+        final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.

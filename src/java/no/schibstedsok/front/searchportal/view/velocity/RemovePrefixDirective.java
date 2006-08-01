@@ -9,9 +9,8 @@ import java.io.Writer;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
@@ -34,7 +33,7 @@ import org.apache.velocity.runtime.parser.node.Node;
 public final class RemovePrefixDirective extends Directive {
 
     /** Logger. */
-    private static transient Log log = LogFactory.getLog(RemovePrefixDirective.class);
+    private static final Logger LOG = Logger.getLogger(RemovePrefixDirective.class);
 
     /** Name of directive. */
     private static final String NAME = "removePrefix";

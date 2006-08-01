@@ -5,10 +5,9 @@ package no.schibstedsok.front.searchportal.query.analyser;
 
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import no.schibstedsok.front.searchportal.query.Query;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
 
@@ -34,7 +33,7 @@ public final class AnalysisRule {
 
     /**
      * Adds a {@link Predicate} and an accompanying score. The predicate will at
-     * evaluation time be evaluated with a {@link TokenEvaluatorFactory} as
+     * evaluation time be evaluated with a {@link TokenEvaluationEngine} as
      * input.
      *
      * @param predicate
@@ -56,11 +55,11 @@ public final class AnalysisRule {
      * @param query
      *            the query to apply the rule to.
      * @param evalFactory
-     *            the {@link TokenEvaluatorFactoryImpl} used as input to the
+     *            the {@link TokenEvaluationEngineImpl} used as input to the
      *            predicates.
      * @return the score of this rule when applied to query.
      */
-    public int evaluate(final Query query, final TokenEvaluatorFactory evalFactory) {
+    public int evaluate(final Query query, final TokenEvaluationEngine evalFactory) {
         int score = 0;
 
         // we're done with parsing individual terms.
@@ -69,7 +68,7 @@ public final class AnalysisRule {
 
         // New (post-QueryParser) implementation.
         final Scorer scorer = new Scorer(new Scorer.Context() {
-            public TokenEvaluatorFactory getTokenEvaluatorFactory() {
+            public TokenEvaluationEngine getTokenEvaluationEngine() {
                 return evalFactory;
             }
 
@@ -91,6 +90,7 @@ public final class AnalysisRule {
         return score;
     }
 
+    /** TODO comment me. **/
     void setPredicateNameMap(final Map<Predicate,String> predicateNames) {
         this.predicateNames = predicateNames;
     }

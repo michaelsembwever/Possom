@@ -21,9 +21,9 @@ import no.schibstedsok.front.searchportal.configuration.loader.FileResourceLoade
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.query.Clause;
 import no.schibstedsok.front.searchportal.query.Query;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryTestContext;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactoryImpl;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineTestContext;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**
@@ -34,7 +34,7 @@ public final class QueryTransformerTestContext implements QueryTransformer.Conte
 
     private final Query query;
     private final Map<Clause,String> transformedTerms;
-    private final TokenEvaluatorFactory tokenEvaluatorFactory;
+    private final TokenEvaluationEngine tokenEvaluationEngine;
 
     /**
      * Creates a new instance of TestQueryTransformerContextProvider
@@ -45,8 +45,8 @@ public final class QueryTransformerTestContext implements QueryTransformer.Conte
 
         query = q;
         transformedTerms = t;
-        tokenEvaluatorFactory  = new TokenEvaluatorFactoryImpl(
-            new TokenEvaluatorFactoryTestContext(query.getQueryString()));
+        tokenEvaluationEngine  = new TokenEvaluationEngineImpl(
+            new TokenEvaluationEngineTestContext(query.getQueryString()));
     }
 
     /**
@@ -55,35 +55,42 @@ public final class QueryTransformerTestContext implements QueryTransformer.Conte
     public QueryTransformerTestContext(
             final Query q,
             final Map<Clause,String> t,
-            final TokenEvaluatorFactory tokenEvaluatorFactory){
+            final TokenEvaluationEngine tokenEvaluationEngine){
 
         query = q;
         transformedTerms = t;
-        this.tokenEvaluatorFactory = tokenEvaluatorFactory;
+        this.tokenEvaluationEngine = tokenEvaluationEngine;
     }
 
 
+    /** TODO comment me. **/
     public Map<Clause,String> getTransformedTerms() {
         return transformedTerms;
     }
+    /** TODO comment me. **/
     public Site getSite() {
         return Site.DEFAULT;
     }
 
+    /** TODO comment me. **/
     public Query getQuery() {
         return query;
     }
+    /** TODO comment me. **/
     public String getTransformedQuery() {
         return query.getQueryString();
     }
+    /** TODO comment me. **/
     public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
         return FileResourceLoader.newPropertiesLoader(this, resource, properties);
     }
 
+    /** TODO comment me. **/
     public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
         return FileResourceLoader.newDocumentLoader(this, resource, builder);
     }
-    public TokenEvaluatorFactory getTokenEvaluatorFactory(){
-        return tokenEvaluatorFactory;
+    /** TODO comment me. **/
+    public TokenEvaluationEngine getTokenEvaluationEngine(){
+        return tokenEvaluationEngine;
     }
 }

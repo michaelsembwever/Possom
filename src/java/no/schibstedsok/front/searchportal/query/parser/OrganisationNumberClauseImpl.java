@@ -11,16 +11,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.OrganisationNumberClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * Nine digit organisation clause.
  * May contain spaces.
- * 
+ *
  * <b>Objects of this class are immutable</b>
- * 
+ *
  * @author <a hrefOrganisationNumberClauseImpl>Michael Semb Wever</a>
  * @version $Id$
  */
@@ -29,9 +29,9 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<OrganisationNumberClauseImpl>>> WEAK_CACHE 
+    private static final Map<Site,Map<String,WeakReference<OrganisationNumberClauseImpl>>> WEAK_CACHE
             = new HashMap<Site,Map<String,WeakReference<OrganisationNumberClauseImpl>>>();
-    
+
     /* A IntegerClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -52,7 +52,7 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
      * them.
      * The methods also allow a chunk of creation logic for the OrganisationNumberClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
+     *
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
@@ -63,19 +63,19 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
     public static OrganisationNumberClauseImpl createOrganisationNumberClause(
         final String term,
         final String field,
-        final TokenEvaluatorFactory predicate2evaluatorFactory) {
+        final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // remove all embedded whitespace
         final String t = term.replaceAll(" ","");
-        // update the factory with what the current term is
-        predicate2evaluatorFactory.setCurrentTerm(t);
+
         // the weakCache to use.
-        Map<String,WeakReference<OrganisationNumberClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
-        if( weakCache == null ){
+        Map<String,WeakReference<OrganisationNumberClauseImpl>> weakCache
+                = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<OrganisationNumberClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
         }
-        
+
         // use helper method from AbstractLeafClause
         return createClause(
                 OrganisationNumberClauseImpl.class,

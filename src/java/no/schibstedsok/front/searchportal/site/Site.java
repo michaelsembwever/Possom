@@ -16,8 +16,7 @@ import java.util.Properties;
 import no.schibstedsok.front.searchportal.configuration.SiteConfiguration;
 import no.schibstedsok.front.searchportal.configuration.loader.PropertiesLoader;
 import no.schibstedsok.front.searchportal.configuration.loader.UrlResourceLoader;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.log4j.Logger;
 
 /** A Site object idenetifies an unique SiteSearch implementation.
  * This bean holds nothing more than the name of the virtual host used to access this SiteSearch.
@@ -30,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public final class Site {
 
-    private static final Log LOG = LogFactory.getLog(Site.class);
+    private static final Logger LOG = Logger.getLogger(Site.class);
 
     private static final String FATAL_CANT_FIND_DEFAULT_SITE
             = "Could not load the property \"site.default\" from configuration.properties"
@@ -40,6 +39,7 @@ public final class Site {
     private static final String DEFAULT_SITE_KEY = "site.default";
     private static final String PARENT_SITE_KEY = "site.parent";
     private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
+    /** TODO comment me. **/
     public static final String NAME_KEY = "site";
 
     /**
@@ -71,33 +71,33 @@ public final class Site {
     * Holds value of property parent.
     */
     private final Site parent;
-    
+
     /** Creates a new instance of Site. */
-    private Site(final String _siteName, final Locale _locale) {
+    private Site(final String theSiteName, final Locale theLlocale) {
         // siteName must finish with a '\'
-        siteName = ensureTrailingSlash(_siteName);
+        siteName = ensureTrailingSlash(theSiteName);
 
         cxtName = siteName.indexOf(':') >= 0
             ? siteName.substring(0, siteName.indexOf(':')) + '/' // don't include the port in the cxtName.
             : siteName;
-        locale = _locale;
+        locale = theLlocale;
         uniqueName = getUniqueName(siteName, locale);
         // register in global pool.
         INSTANCES.put(uniqueName, this);
 
-        final Site _this = this;
-        
+        final Site thisSite = this;
+
         final SiteContext siteContext = new SiteContext() {
             public Site getSite() {
-                return _this;
+                return thisSite;
             }
         };
 
         final String parentSiteName = getParentSiteName(siteContext);
-        
-        parent = ensureTrailingSlash(parentSiteName).equals(siteName) ?
-            null :
-            Site.valueOf(parentSiteName, _locale);
+
+        parent = ensureTrailingSlash(parentSiteName).equals(siteName)
+            ? null
+            : Site.valueOf(parentSiteName, theLlocale);
     }
 
 
@@ -175,7 +175,7 @@ public final class Site {
     public static Site valueOf(final String siteName, final Locale locale) {
 
         // Strip www. from siteName
-        final String shortSiteName = 
+        final String shortSiteName =
                 ensureTrailingSlash(siteName.replaceAll("www.", ""));
 
         Site site = INSTANCES.get(getUniqueName(shortSiteName,locale));
@@ -207,14 +207,15 @@ public final class Site {
      */
     public static final Site DEFAULT;
 
+    /** TODO comment me. **/
     public static String getUniqueName(final String siteName, final Locale locale) {
         return siteName+"["+locale.getDisplayName()+"]";
     }
 
-    private static String ensureTrailingSlash(final String _siteName) {
-        return _siteName.endsWith("/")
-            ? _siteName
-            : _siteName + '/';
+    private static String ensureTrailingSlash(final String theSiteName) {
+        return theSiteName.endsWith("/")
+            ? theSiteName
+            : theSiteName + '/';
     }
 
     private String getParentSiteName(final SiteContext siteContext) {

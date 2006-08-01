@@ -11,15 +11,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.front.searchportal.query.IntegerClause;
-import no.schibstedsok.front.searchportal.query.token.TokenEvaluatorFactory;
+import no.schibstedsok.front.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.front.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.front.searchportal.site.Site;
 
 /**
  * IntegerClauseImpl. Contains only digits.
- * 
+ *
  * <b>Objects of this class are immutable</b>
- * 
+ *
  * @author <a hrefIntegerClauseImpl@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
@@ -28,9 +28,9 @@ public final class IntegerClauseImpl extends AbstractLeafClause implements Integ
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<IntegerClauseImpl>>> WEAK_CACHE 
+    private static final Map<Site,Map<String,WeakReference<IntegerClauseImpl>>> WEAK_CACHE
             = new HashMap<Site,Map<String,WeakReference<IntegerClauseImpl>>>();
-    
+
     /* A IntegerClauseImpl specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -51,7 +51,7 @@ public final class IntegerClauseImpl extends AbstractLeafClause implements Integ
      * them.
      * The methods also allow a chunk of creation logic for the IntegerClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
+     *
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
@@ -62,17 +62,15 @@ public final class IntegerClauseImpl extends AbstractLeafClause implements Integ
     public static IntegerClauseImpl createIntegerClause(
         final String term,
         final String field,
-        final TokenEvaluatorFactory predicate2evaluatorFactory) {
+        final TokenEvaluationEngine predicate2evaluatorFactory) {
 
-        // update the factory with what the current term is
-        predicate2evaluatorFactory.setCurrentTerm(term);
         // the weakCache to use.
         Map<String,WeakReference<IntegerClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
-        if( weakCache == null ){
+        if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<IntegerClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
         }
-        
+
         // use helper method from AbstractLeafClause
         return createClause(
                 IntegerClauseImpl.class,
