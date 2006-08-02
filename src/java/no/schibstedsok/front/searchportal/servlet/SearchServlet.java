@@ -191,7 +191,7 @@ public final class SearchServlet extends HttpServlet {
 
         // Extra check for the Norwegian web search. Search with an empty query string
         // should return the first page.
-        if (request.getParameter("c") != null && request.getParameter("c").equals("d")) {
+        if (request.getParameter("c") != null && (request.getParameter("c").equals("d") || request.getParameter("c").equals("g")) ) {
             if (request.getParameter("q").trim().length() == 0) {
                 LOG.info("doGet(): Empty Query String redirect=/");
                 response.sendRedirect("/");
