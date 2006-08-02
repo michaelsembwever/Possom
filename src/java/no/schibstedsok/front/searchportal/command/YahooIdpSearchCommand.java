@@ -30,6 +30,7 @@ import no.schibstedsok.front.searchportal.query.PhraseClause;
 import no.schibstedsok.front.searchportal.query.XorClause;
 import no.schibstedsok.front.searchportal.result.BasicSearchResult;
 import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.front.searchportal.result.Modifier;
 import no.schibstedsok.front.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -80,6 +81,8 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                 final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                 final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
                 searchResult.setHitCount(Integer.parseInt(totalHitsE.getFirstChild().getNodeValue()));
+                final Modifier modifier = new Modifier(context.getSearchConfiguration().getName(), searchResult.getHitCount(), null);
+                context.getRunningQuery().addSource(modifier);
                 LOG.info("hitcount " + searchResult.getHitCount());
 
                 // build results
