@@ -307,11 +307,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             //TODO: Hide this in QueryRule.execute(some parameters)
             boolean executeQuery = queryToUse.length() > 0;
-            executeQuery |= parameters.get("contentsource") != null;
-            executeQuery |= parameters.get("newscountry") != null;
-            executeQuery |= parameters.get("c").equals("n");
+            executeQuery |= null != parameters.get("contentsource");
+            executeQuery |= null != parameters.get("newscountry");
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
 
-            executeQuery |= filter != null && filter.length() > 0;
+            executeQuery |= null != filter && filter.length() > 0;
             LOG.debug("executeQuery==" + executeQuery
                     + " ; queryToUse:" + queryToUse
                     + "; filter:" + filter

@@ -16,7 +16,7 @@ public class FastNavigator implements Serializable {
     private FastNavigator childNavigator;
     private String displayName;
 
-    public FastNavigator(String name, String field, String displayName) {
+    public FastNavigator(final String name, final String field, final String displayName) {
         this.name = name;
         this.field = field;
         this.displayName = displayName;

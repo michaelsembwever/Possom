@@ -143,6 +143,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         engine.setClausesPossiblePredicates(possiblePredicates);
 
         // XXX Couldn't find the set algorythm for joining two set in Core Java or Commons Collections :-/
+        //  List.retainAll might work
         for (PredicateScore predicateScore : context.getPredicates().keySet()) {
 
             final Predicate predicate = predicateScore.getPredicate();
