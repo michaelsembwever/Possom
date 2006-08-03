@@ -52,7 +52,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private String queryServerURL;
     private boolean keywordClusteringEnabled = false;
     private String qtPipeline;
-    private volatile transient String collectionString;
+    private transient volatile String collectionString;
 
     private String resultView;
     private boolean clustering = false;
