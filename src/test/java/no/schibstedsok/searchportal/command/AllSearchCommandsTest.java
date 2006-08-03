@@ -34,12 +34,11 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         super(name);
     }
 
-    public void testAllNorskNettsøkSearchCommands() {
-
+    public void testAllNorskNettsokSearchCommands() {
         executeTestOfQuery("linux", "d");
     }
 
-    public void testAllInternasjonalNettsøkSearchCommands() {
+    public void testAllInternasjonalNettsokSearchCommands() {
 
         executeTestOfQuery("linux", "g");
     }
