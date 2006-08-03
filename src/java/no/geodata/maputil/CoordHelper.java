@@ -8,8 +8,8 @@
 
 package no.geodata.maputil;
 
-import no.schibstedsok.front.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.front.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.SearchResultItem;
 
 import java.util.*;
 

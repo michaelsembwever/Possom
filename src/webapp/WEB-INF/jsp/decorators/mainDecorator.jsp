@@ -4,14 +4,14 @@
 <%@ page import="java.util.Map"%>
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
-<%@ page import="no.schibstedsok.front.searchportal.view.config.SearchTab"%>
-<%@ page import="no.schibstedsok.front.searchportal.view.i18n.TextMessages"%>
-<%@ page import="no.schibstedsok.front.searchportal.result.Enrichment"%>
-<%@ page import="no.schibstedsok.front.searchportal.result.Modifier"%>
-<%@ page import="no.schibstedsok.front.searchportal.site.Site"%>
-<%@ page import="no.schibstedsok.front.searchportal.result.Linkpulse"%>
-<%@ page import="no.schibstedsok.front.searchportal.configuration.SiteConfiguration"%>
-<%@ page import="no.schibstedsok.front.searchportal.view.config.SearchTab" %>
+<%@ page import="no.schibstedsok.searchportal.view.config.SearchTab"%>
+<%@ page import="no.schibstedsok.searchportal.view.i18n.TextMessages"%>
+<%@ page import="no.schibstedsok.searchportal.result.Enrichment"%>
+<%@ page import="no.schibstedsok.searchportal.result.Modifier"%>
+<%@ page import="no.schibstedsok.searchportal.site.Site"%>
+<%@ page import="no.schibstedsok.searchportal.result.Linkpulse"%>
+<%@ page import="no.schibstedsok.searchportal.configuration.SiteConfiguration"%>
+<%@ page import="no.schibstedsok.searchportal.view.config.SearchTab" %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>

@@ -128,7 +128,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <appender-ref ref="STATISTICS_APPEND"/>
     </logger>
     
-    <logger name="no.schibstedsok.front.searchportal.analyzer.Analysis" additivity="false">
+    <logger name="no.schibstedsok.searchportal.analyzer.Analysis" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="ANALYSIS_APPEND"/>
     </logger>
@@ -138,7 +138,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <appender-ref ref="PRODUCT_APPEND"/>
     </logger>
     
-    <logger name="no.schibstedsok.front.searchportal.TestCase" additivity="false">
+    <logger name="no.schibstedsok.searchportal.TestCase" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="TEST_APPEND"/>
     </logger>

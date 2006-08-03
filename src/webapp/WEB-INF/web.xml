@@ -44,7 +44,7 @@
 
     <filter>
         <filter-name>md5ProtectParameters</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.MD5ProtectedParametersFilter</filter-class>
+        <filter-class>no.schibstedsok.searchportal.filters.MD5ProtectedParametersFilter</filter-class>
         <init-param>
             <param-name>secret</param-name>
             <param-value>S3SAM rockz</param-value>
@@ -57,7 +57,7 @@
 
     <filter>
         <filter-name>CacheFilter</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.SesamCacheFilter</filter-class>
+        <filter-class>no.schibstedsok.searchportal.filters.SesamCacheFilter</filter-class>
         <init-param>
             <param-name>time</param-name>
             <param-value>600</param-value>
@@ -83,7 +83,7 @@
     <!-- SITMESH END -->
     <filter>
         <filter-name>SiteLocatorFilter</filter-name>
-        <filter-class>no.schibstedsok.front.searchportal.filters.SiteLocatorFilter</filter-class>
+        <filter-class>no.schibstedsok.searchportal.filters.SiteLocatorFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>SiteLocatorFilter</filter-name>
@@ -99,7 +99,7 @@
     </filter-mapping>
     <servlet>
         <servlet-name>search servlet</servlet-name>
-        <servlet-class>no.schibstedsok.front.searchportal.servlet.SearchServlet</servlet-class>
+        <servlet-class>no.schibstedsok.searchportal.servlet.SearchServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
@@ -124,7 +124,7 @@
 
     <servlet>
         <servlet-name>MapServlet</servlet-name>
-        <servlet-class>no.schibstedsok.front.searchportal.servlet.MapServlet</servlet-class>
+        <servlet-class>no.schibstedsok.searchportal.servlet.MapServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
@@ -145,7 +145,7 @@
 
     <servlet>
         <servlet-name>RetrieverLog</servlet-name>
-        <servlet-class>no.schibstedsok.front.searchportal.servlet.RetrieverLogServlet</servlet-class>
+        <servlet-class>no.schibstedsok.searchportal.servlet.RetrieverLogServlet</servlet-class>
     </servlet>
     
     <servlet-mapping>
@@ -155,7 +155,7 @@
 
     <servlet>
         <servlet-name>SendMail</servlet-name>
-        <servlet-class>no.schibstedsok.front.searchportal.servlet.SendMailServlet</servlet-class>
+        <servlet-class>no.schibstedsok.searchportal.servlet.SendMailServlet</servlet-class>
     </servlet>
 
     <servlet-mapping>

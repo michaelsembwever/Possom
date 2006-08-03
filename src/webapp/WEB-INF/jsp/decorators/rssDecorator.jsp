@@ -1,9 +1,9 @@
-<%@ page import="no.schibstedsok.front.searchportal.result.BasicSearchResult"%><%--
---%><%@ page import="no.schibstedsok.front.searchportal.view.config.SearchTab"%><%--
+<%@ page import="no.schibstedsok.searchportal.result.BasicSearchResult"%><%--
+--%><%@ page import="no.schibstedsok.searchportal.view.config.SearchTab"%><%--
 --%><%@ page import="java.util.Map"%><%--
---%><%@ page import="no.schibstedsok.front.searchportal.result.SearchResult"%><%--
---%><%@ page import="no.schibstedsok.front.searchportal.view.output.SyndicationGenerator"%><%--
---%><%@ page import="no.schibstedsok.front.searchportal.site.Site"%><%--
+--%><%@ page import="no.schibstedsok.searchportal.result.SearchResult"%><%--
+--%><%@ page import="no.schibstedsok.searchportal.view.output.SyndicationGenerator"%><%--
+--%><%@ page import="no.schibstedsok.searchportal.site.Site"%><%--
 --%><%@page contentType="text/xml"%><%@page pageEncoding="UTF-8"%><%--
 
 --%><%

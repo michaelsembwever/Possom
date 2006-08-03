@@ -5,7 +5,7 @@
   <uri>/WEB-INF/SearchPortal</uri>
   <tag>
     <name>velocity</name>
-    <tag-class>no.schibstedsok.front.searchportal.view.taglib.ImportVelocityTemplateTag</tag-class>
+    <tag-class>no.schibstedsok.searchportal.view.taglib.ImportVelocityTemplateTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>template</name>
@@ -21,7 +21,7 @@
   </tag>
   <tag>
     <name>publish</name>
-    <tag-class>no.schibstedsok.front.searchportal.view.taglib.ImportPublishingPageTag</tag-class>
+    <tag-class>no.schibstedsok.searchportal.view.taglib.ImportPublishingPageTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>page</name>
@@ -32,7 +32,7 @@
   </tag>
   <tag>
     <name>linkPulse</name>
-    <tag-class>no.schibstedsok.front.searchportal.view.taglib.LinkPulseTag</tag-class>
+    <tag-class>no.schibstedsok.searchportal.view.taglib.LinkPulseTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>url</name>
@@ -61,7 +61,7 @@
   </tag>
   <tag>
     <name>text</name>
-    <tag-class>no.schibstedsok.front.searchportal.view.taglib.TextMessageTag</tag-class>
+    <tag-class>no.schibstedsok.searchportal.view.taglib.TextMessageTag</tag-class>
     <body-content>empty</body-content>
     <attribute>
       <name>key</name>

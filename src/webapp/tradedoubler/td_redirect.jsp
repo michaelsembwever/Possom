@@ -1,4 +1,4 @@
-<%@page import="no.schibstedsok.front.searchportal.util.TradeDoubler,no.schibstedsok.front.searchportal.util.QueryStringHelper,java.net.URLEncoder" %>
+<%@page import="no.schibstedsok.searchportal.util.TradeDoubler,no.schibstedsok.searchportal.util.QueryStringHelper,java.net.URLEncoder" %>
 <%
 //	session.setAttribute("TDUID", request.getParameter("tduid"));
 	Cookie cookie = new Cookie ("TRADEDOUBLER", request.getParameter("tduid"));
