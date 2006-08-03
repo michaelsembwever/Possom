@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.command.FastSearchCommand;
-import no.schibstedsok.searchportal.command.SearchCommand;
-import no.schibstedsok.searchportal.spell.RelevantQuery;
-import no.schibstedsok.searchportal.configuration.FastNavigator;
+import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
+import no.schibstedsok.searchportal.mode.command.SearchCommand;
+import no.schibstedsok.searchportal.view.spell.RelevantQuery;
+import no.schibstedsok.searchportal.mode.config.FastNavigator;
 
 
 /**

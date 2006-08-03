@@ -19,12 +19,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.configuration.SiteConfiguration;
-import no.schibstedsok.searchportal.configuration.loader.DocumentContext;
-import no.schibstedsok.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.searchportal.configuration.loader.PropertiesContext;
-import no.schibstedsok.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.searchportal.configuration.loader.UrlResourceLoader;
+import no.schibstedsok.searchportal.mode.SiteConfiguration;
+import no.schibstedsok.searchportal.util.config.DocumentContext;
+import no.schibstedsok.searchportal.util.config.DocumentLoader;
+import no.schibstedsok.searchportal.util.config.PropertiesContext;
+import no.schibstedsok.searchportal.util.config.PropertiesLoader;
+import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
 
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.query.QueryStringContext;

@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.configuration.TvSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;

@@ -2,9 +2,9 @@
 package no.schibstedsok.searchportal.result;
 
 import java.util.Map;
-import no.schibstedsok.searchportal.command.SearchCommand;
-import no.schibstedsok.searchportal.spell.SpellingSuggestion;
-import no.schibstedsok.searchportal.spell.QuerySuggestion;
+import no.schibstedsok.searchportal.mode.command.SearchCommand;
+import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
 
 import java.util.ArrayList;
 import java.util.List;

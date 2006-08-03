@@ -1,8 +1,8 @@
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.command.SearchCommand;
-import no.schibstedsok.searchportal.spell.QuerySuggestion;
-import no.schibstedsok.searchportal.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.mode.command.SearchCommand;
+import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
+import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 
 import java.util.List;
 import java.util.Map;

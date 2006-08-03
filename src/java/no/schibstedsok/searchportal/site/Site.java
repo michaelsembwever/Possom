@@ -13,9 +13,9 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import no.schibstedsok.searchportal.configuration.SiteConfiguration;
-import no.schibstedsok.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.searchportal.configuration.loader.UrlResourceLoader;
+import no.schibstedsok.searchportal.mode.SiteConfiguration;
+import no.schibstedsok.searchportal.util.config.PropertiesLoader;
+import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
 import org.apache.log4j.Logger;
 
 /** A Site object idenetifies an unique SiteSearch implementation.

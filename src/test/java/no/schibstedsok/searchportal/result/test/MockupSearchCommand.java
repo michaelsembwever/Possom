@@ -3,18 +3,18 @@ package no.schibstedsok.searchportal.result.test;
 
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.command.SearchCommand;
-import no.schibstedsok.searchportal.configuration.SearchConfiguration;
-import no.schibstedsok.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.searchportal.query.run.RunningQuery;
-import no.schibstedsok.searchportal.query.run.RunningQueryImpl;
+import no.schibstedsok.searchportal.mode.command.SearchCommand;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
+import no.schibstedsok.searchportal.util.config.DocumentLoader;
+import no.schibstedsok.searchportal.run.RunningQuery;
+import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import no.schibstedsok.searchportal.result.SearchResult;
 
 import java.util.HashMap;
 import java.util.Properties;
-import no.schibstedsok.searchportal.configuration.SearchMode;
-import no.schibstedsok.searchportal.configuration.loader.FileResourceLoader;
-import no.schibstedsok.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.searchportal.mode.SearchMode;
+import no.schibstedsok.searchportal.util.config.FileResourceLoader;
+import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;

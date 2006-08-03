@@ -9,7 +9,7 @@ package no.schibstedsok.searchportal.result.handler;
 
 import java.util.Hashtable;
 import java.util.Map;
-import no.schibstedsok.searchportal.configuration.SearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.searchportal.view.config.SearchTab;

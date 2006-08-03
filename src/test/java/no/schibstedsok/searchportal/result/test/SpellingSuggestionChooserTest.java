@@ -9,15 +9,15 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.handler.SpellingSuggestionChooser;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.searchportal.configuration.loader.FileResourceLoader;
-import no.schibstedsok.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.searchportal.util.config.DocumentLoader;
+import no.schibstedsok.searchportal.util.config.FileResourceLoader;
+import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
 

@@ -6,7 +6,7 @@
  */
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.command.SearchCommand;
+import no.schibstedsok.searchportal.mode.command.SearchCommand;
 
 /**
  *

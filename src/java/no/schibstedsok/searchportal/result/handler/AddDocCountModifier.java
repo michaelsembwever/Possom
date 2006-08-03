@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import no.schibstedsok.searchportal.configuration.FastNavigator;
+import no.schibstedsok.searchportal.mode.config.FastNavigator;
 
 import java.util.Map;
 import no.schibstedsok.searchportal.result.Modifier;

@@ -10,7 +10,7 @@
 <%@ page import="no.schibstedsok.searchportal.result.Modifier"%>
 <%@ page import="no.schibstedsok.searchportal.site.Site"%>
 <%@ page import="no.schibstedsok.searchportal.result.Linkpulse"%>
-<%@ page import="no.schibstedsok.searchportal.configuration.SiteConfiguration"%>
+<%@ page import="no.schibstedsok.searchportal.mode.SiteConfiguration"%>
 <%@ page import="no.schibstedsok.searchportal.view.config.SearchTab" %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>

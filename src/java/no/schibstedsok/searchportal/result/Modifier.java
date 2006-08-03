@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.configuration.FastNavigator;
+import no.schibstedsok.searchportal.mode.config.FastNavigator;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
 /**

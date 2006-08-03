@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 
 import no.geodata.maputil.MapCoordCalc;
 import no.geodata.maputil.MapPoint;
-import no.schibstedsok.searchportal.command.FastSearchCommand;
+import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**

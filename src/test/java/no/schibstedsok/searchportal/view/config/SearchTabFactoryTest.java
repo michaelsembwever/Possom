@@ -12,9 +12,9 @@ import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
-import no.schibstedsok.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.searchportal.configuration.loader.FileResourceLoader;
-import no.schibstedsok.searchportal.configuration.loader.PropertiesLoader;
+import no.schibstedsok.searchportal.util.config.DocumentLoader;
+import no.schibstedsok.searchportal.util.config.FileResourceLoader;
+import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
 

@@ -10,9 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.configuration.loader.DocumentLoader;
-import no.schibstedsok.searchportal.configuration.loader.PropertiesLoader;
-import no.schibstedsok.searchportal.configuration.loader.UrlResourceLoader;
+import no.schibstedsok.searchportal.util.config.DocumentLoader;
+import no.schibstedsok.searchportal.util.config.PropertiesLoader;
+import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.handler.PhoneNumberChooser;
 import no.schibstedsok.searchportal.result.handler.PhoneNumberFormatter;
@@ -22,7 +22,7 @@ import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
 
-import no.schibstedsok.searchportal.command.SearchCommand;
+import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import org.apache.log4j.Logger;
 
 public final class YellowSearchResult extends FastSearchResult {

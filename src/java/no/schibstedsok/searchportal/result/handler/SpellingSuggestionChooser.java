@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.spell.QuerySuggestion;
-import no.schibstedsok.searchportal.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
+import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 import org.apache.log4j.Logger;
 
 
