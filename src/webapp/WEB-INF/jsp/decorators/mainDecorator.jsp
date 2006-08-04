@@ -272,7 +272,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     </table>
                     <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
                         <tr>
-                            <td class="nav_pad"><a href="<search:linkPulse url="${request.requestURL}?${request.queryString}&output=rss" param="category:static;subcategory:left" index=""/>" style="display:inline;">RSS</a>&nbsp;&nbsp; |&nbsp;&nbsp; <a href="<search:linkPulse url="${request.requestURL}?${request.queryString}&output=rss&feedtype=atom_0.3" param="category:static;subcategory:left" index=""/>" style="display:inline;">ATOM</a><br/><a href="http://sesam.no/search/?q=&page=/pages/7/69" style="display:inline;">Hva er dette?</a></td>
+                            <td class="nav_pad"><a href="<search:linkPulse url="${request.requestURL}?${request.queryString}&output=rss" param="category:static;subcategory:left" index="ext"/>" style="display:inline;">RSS</a>&nbsp;&nbsp; |&nbsp;&nbsp; <a href="<search:linkPulse url="${request.requestURL}?${request.queryString}&output=rss&feedtype=atom_0.3" param="category:static;subcategory:left" index="ext"/>" style="display:inline;">ATOM</a><br/><a href="http://sesam.no/search/?q=&page=/pages/7/69" style="display:inline;">Hva er dette?</a></td>
                         </tr>
                         <tr>
                             <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
