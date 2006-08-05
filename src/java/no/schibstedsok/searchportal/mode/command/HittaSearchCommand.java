@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import javax.xml.rpc.ServiceException;
 import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
@@ -138,7 +137,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
     private static final class WebServiceSearchResult extends BasicSearchResult{
 
-        private static final String ERR_NOT_SUPPORTED ="Not part of this implementation";
+        private static final String ERR_NOT_SUPPORTED = "Not part of this implementation";
 
         public WebServiceSearchResult(final SearchCommand command) {
             super(command);

@@ -61,16 +61,14 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
      * May be either newly created or reused.
      */
     public static OrganisationNumberClauseImpl createOrganisationNumberClause(
-        final String term,
-        final String field,
-        final TokenEvaluationEngine predicate2evaluatorFactory) {
-
-        // remove all embedded whitespace
-        final String t = term.replaceAll(" ","");
+            final String term,
+            final String field,
+            final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // the weakCache to use.
         Map<String,WeakReference<OrganisationNumberClauseImpl>> weakCache
                 = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        
         if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<OrganisationNumberClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
@@ -79,7 +77,7 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
         // use helper method from AbstractLeafClause
         return createClause(
                 OrganisationNumberClauseImpl.class,
-                t,
+                term,
                 field,
                 predicate2evaluatorFactory,
                 PREDICATES_APPLICABLE, weakCache);

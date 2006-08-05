@@ -94,24 +94,24 @@ public final class TestVisitor extends TestCase {
     public void testAndOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123",
-                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR magnus eklund OR 123",
-                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" magnus eklund OR 123");
+                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR magnus eklund OR 123 OR 123",
+                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" magnus eklund OR 123 123");
     }
 
     /** TODO comment me. **/
     public void testAndOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" OR magnus eklund 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123");
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" OR magnus eklund 123 OR 123",
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" magnus eklund 123 123");
     }
 
     /** TODO comment me. **/
     public void testAndOrNotAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus eklund oslo magnus AND eklund NOT 123",
-                "firstname:magnus eklund oslo magnus AND eklund NOT 123",
-                "firstname:magnus eklund oslo magnus AND eklund NOT 123");
+                "firstname:magnus eklund oslo magnus AND eklund NOT 123 OR 123",
+                "firstname:magnus eklund oslo magnus AND eklund NOT 123 123");
     }
 
     /** TODO comment me. **/
@@ -182,8 +182,8 @@ public final class TestVisitor extends TestCase {
     public void testPhoneNumberAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "92221689",
-                "92221689",
-                "92221689");
+                "92221689 OR 92221689",
+                "92221689 92221689");
     }
 
     /** TODO comment me. **/
@@ -198,8 +198,8 @@ public final class TestVisitor extends TestCase {
     public void testPhoneNumberAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "+47 9222 1689",
-                "92221689",
-                "92221689");
+                "92221689 OR 47 9222 1689",
+                "92221689 47 9222 1689");
     }
 
     /** TODO comment me. **/

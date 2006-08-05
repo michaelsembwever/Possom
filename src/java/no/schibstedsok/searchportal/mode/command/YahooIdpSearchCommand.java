@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.Map;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
@@ -46,7 +45,7 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
-    
+
     private static final Logger LOG = Logger.getLogger(YahooIdpSearchCommand.class);
     private static final String ERR_FAILED_CREATING_URL = "Failed to create command url";
 
@@ -62,28 +61,33 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String TOTALHITS_ELEMENT ="TOTALHITS";
     private static final String RESULT_ELEMENT = "RESULT";
     private static final String WORDCOUNTS_ELEMENT = "WORDCOUNTS";
-    
+
     private static final String ALLWORDS = "ALLWORDS(";
     private static final String ANYWORDS = "ANYWORDS(";
     private static final String PHRASEWORDS = "PHRASEWORDS(";
 
+    /** TODO comment me. **/
     public YahooIdpSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 
+    /** TODO comment me. **/
     public SearchResult execute() {
         try {
             final Document doc = getXmlResult();
             final SearchResult searchResult = new BasicSearchResult(this);
-            
+
 
             if (doc != null) {
                 final Element searchResponseE = doc.getDocumentElement();
                 final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                 final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
                 searchResult.setHitCount(Integer.parseInt(totalHitsE.getFirstChild().getNodeValue()));
-                final Modifier modifier = new Modifier(context.getSearchConfiguration().getName(), searchResult.getHitCount(), null);
-                context.getRunningQuery().addSource(modifier);
+                if(!context.getSearchConfiguration().isPaging()){
+                    context.getRunningQuery().addSource(new Modifier(
+                            context.getSearchConfiguration().getName(),
+                            searchResult.getHitCount(), null));
+                }
                 LOG.info("hitcount " + searchResult.getHitCount());
 
                 // build results
@@ -110,6 +114,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
+    /** TODO comment me. **/
     protected String createRequestURL() {
 
         final YahooIdpSearchConfiguration conf = (YahooIdpSearchConfiguration) context.getSearchConfiguration();
@@ -131,7 +136,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     COMMAND_URL_PATTERN,
                     conf.getPartnerId(),
                     conf.getDatabase(),
-                    URLEncoder.encode( conf.getDateRange().length() >0 ? conf.getDateRange() : dateRange , "UTF-8"),
+                    URLEncoder.encode(conf.getDateRange().length() >0 ? conf.getDateRange() : dateRange , "UTF-8"),
                     getParameter("offset"),
                     conf.getResultsToReturn(),
                     conf.getRegion(),
@@ -155,9 +160,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         final BasicSearchResultItem item = new BasicSearchResultItem();
 
         for(final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
-            
+
             final Element fieldE = (Element) result.getElementsByTagName(entry.getKey().toUpperCase()).item(0);
-            if( fieldE.getChildNodes().getLength() >0 ){
+            if(fieldE.getChildNodes().getLength() >0){
                 item.addField(entry.getValue(), fieldE.getFirstChild().getNodeValue());
             }
         }
@@ -165,19 +170,23 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         return item;
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
         if (clause.getField() == null) {
             appendToQueryRepresentation(getTransformedTerm(clause));
         }
     }
+    /** TODO comment me. **/
     protected void visitImpl(final PhraseClause clause) {
         if (clause.getField() == null) {
             appendToQueryRepresentation(PHRASEWORDS + getTransformedTerm(clause) + ')');
         }
     }
+    /** TODO comment me. **/
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
         appendToQueryRepresentation(ALLWORDS);
         clause.getFirstClause().accept(this);
@@ -185,6 +194,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         clause.getSecondClause().accept(this);
         appendToQueryRepresentation(")");
     }
+    /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         appendToQueryRepresentation(ANYWORDS);
         clause.getFirstClause().accept(this);
@@ -192,11 +202,13 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         clause.getSecondClause().accept(this);
         appendToQueryRepresentation(")");
     }
+    /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
         appendToQueryRepresentation(" ");
         clause.getSecondClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final NotClause clause) {
         final String childsTerm = getTransformedTerm(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
@@ -204,6 +216,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
+    /** TODO comment me. **/
     protected void visitImpl(final AndNotClause clause) {
         final String childsTerm = getTransformedTerm(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
@@ -211,6 +224,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
+    /** TODO comment me. **/
     protected void visitImpl(final XorClause clause) {
         // [TODO] we need to determine which branch in the query-tree we want to use.
         //  Both branches to a XorClause should never be used.

@@ -1,5 +1,4 @@
 #!/bin/bash
-echo $1
 
 # Description of port mappings for the development profile. PELASE KEEP UPTODATE.
 # 15000 ---> queryServerURL.3  

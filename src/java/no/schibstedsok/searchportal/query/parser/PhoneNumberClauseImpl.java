@@ -59,17 +59,17 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
      * May be either newly created or reused.
      */
     public static PhoneNumberClauseImpl createPhoneNumberClause(
-        final String term,
-        final String field,
-        final TokenEvaluationEngine predicate2evaluatorFactory) {
+            final String term,
+            final String field,
+            final TokenEvaluationEngine predicate2evaluatorFactory) {
 
-        // remove all embedded whitespace
-        String t = term.replaceAll(" ","");
-        t = t.length() > 8 ? t.replaceFirst("^(\\+|00)?47","") : t;
+        // this needs to be moved to a query transformer as it is collection (country) dependant.
+        final String t = term.length() > 8 ? term.replaceFirst("^(\\+|00)?47","") : term;
 
         // the weakCache to use.
         Map<String,WeakReference<PhoneNumberClauseImpl>> weakCache
                 = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        
         if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<PhoneNumberClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);

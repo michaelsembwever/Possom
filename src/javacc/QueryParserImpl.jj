@@ -16,6 +16,8 @@ import no.schibstedsok.searchportal.query.*;
 
 /** This class is NOT synchronized. You must use a separate instance for each query. 
  *
+ * @version $Id$
+ * @author <a href="mailto:mick@wever.org>mick</a>
  **/
 public final class QueryParserImpl extends AbstractQueryParser{
 
@@ -28,7 +30,7 @@ public final class QueryParserImpl extends AbstractQueryParser{
         qs = even(qs, '\"');
         qs = numberNeedsTrailingSpace(qs);
         token_source.SwitchTo(DEFAULT);
-        //LOG.setLevel(org.apache.log4j.Level.TRACE);
+        LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
 
     public QueryParserImpl(final Context cxt, final int lexicalState){
@@ -106,12 +108,15 @@ PARSER_END(QueryParserImpl)
 TOKEN : { <URL: "http://"<WORD>> }
 
 <DEFAULT,URL_DISABLED,PHONE_NUMBER_DISABLED,ORGANISATION_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <EMAIL: <WORD>"@"<WORD>> }
+TOKEN : { <EMAIL: <WORD>"@"<WORD>"."<WORD>> }
 
+// Very generic to match any Internation Phone Number !! Based off example from http://www.weberdev.com/ViewArticle/461
+//   TODO deal with optional area codes. eg australian numbers can be written (02) 4878 9336
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,ORGANISATION_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <PHONE_NUMBER: (("+"|"00"(" ")*)?"47"(" ")*)?(<DIGIT>(" ")?){8}" "> }
+TOKEN : { <PHONE_NUMBER: (("+"|"00"(<PHONE_MIDDLE>)?)?((<DIGIT>){1,3}(<PHONE_MIDDLE>)?)?((<DIGIT>){1,5}(<PHONE_MIDDLE>)?){1,3})" "> }
 
-<DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
+// Also prevent organisation numbers when phone numbers are disabled. Prevents a cyclic loop.
+<DEFAULT,URL_DISABLED,EMAIL_DISABLED,QUOTED_WORD_DISABLED>
 TOKEN : { <ORGANISATION_NUMBER: (<DIGIT>(" ")*){9}" "> }
 
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,ORGANISATION_NUMBER_DISABLED>
@@ -126,6 +131,9 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
     | <INTEGER: ((<DIGIT>)+)>
     | <WORD: (<LETTER>|<DIGIT>|<WORD_SYMBOL_PREFIX>)(<LETTER>|<DIGIT>|<WORD_SYMBOL_MIDDLE>)*("*")?>
     | <FIELD_SUFFIX: ":">
+        // remember to remove these when constructing the PhoneClause
+    | <#PHONE_MIDDLE: ((" ")*<PHONE_SYMBOL>(" ")*)|(" ")+>
+    | <#PHONE_SYMBOL: (".")|("-")|("/")>
     | <#WORD_SYMBOL_PREFIX: (".")|("<")|("=")|(">")>
     | <#WORD_SYMBOL_MIDDLE: (".")|("-")|("_")>
     | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration.
@@ -228,7 +236,8 @@ DefaultOperatorClause hiddenDefaultOperation() :{
     Clause left,right;
     enterMethod("hiddenDefaultOperation()");
 }{
-    ((left = looseJoinPrecedence())(right = noPrecedence())) { try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();} }
+    ((left = looseJoinPrecedence())(right = noPrecedence())) 
+        { try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();} }
 }
 
 
@@ -246,23 +255,27 @@ Clause orOperation() :{
 }{
     ("("(clause = hiddenOrOperation())")") { try{return clause;}finally{exitMethod();} }
     |
-    ((left = strongJoinPrecedence())<OR>(right = looseJoinPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
+    ((left = strongJoinPrecedence())<OR>(right = looseJoinPrecedence())) 
+        { try{return context.createOrClause(left,right);}finally{exitMethod();} }
 }
 
 AndClause andOperation() :{
     Clause left,right;
     enterMethod("andOperation()");
 }{
-    ((left = leafPrecedence())<AND>(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+    ((left = leafPrecedence())<AND>(right = strongJoinPrecedence())) 
+        { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
 AndClause hiddenAndOperation() :{
     Clause left,right;
     enterMethod("hiddenAndOperation()");
 }{
-    ((left = leafPrecedence())(right = hiddenAndOperation())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+    ((left = leafPrecedence())(right = hiddenAndOperation())) 
+        { try{return context.createAndClause(left,right);}finally{exitMethod();} }
     |
-    ((left = leafPrecedence())(right = strongJoinPrecedence())) { try{return context.createAndClause(left,right);}finally{exitMethod();} }
+    ((left = leafPrecedence())(right = strongJoinPrecedence())) 
+        { try{return context.createAndClause(left,right);}finally{exitMethod();} }
 }
 
 Clause hiddenOrOperation() :{
@@ -271,9 +284,11 @@ Clause hiddenOrOperation() :{
 }{
     
     // These are the real hidden or operands
-    ((left = leafPrecedence())(right = hiddenOrOperation())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
+    ((left = leafPrecedence())(right = hiddenOrOperation())) 
+        { try{return context.createOrClause(left,right);}finally{exitMethod();} }
     |
-    ((left = strongJoinPrecedence())(right = looseJoinPrecedence())) { try{return context.createOrClause(left,right);}finally{exitMethod();} }
+    ((left = strongJoinPrecedence())(right = looseJoinPrecedence())) 
+        { try{return context.createOrClause(left,right);}finally{exitMethod();} }
     |
     // Not really an OR clause. Just () wrapped around something else. Therefore ignore the ()'s
     (left = leafPrecedence()) { try{return left;}finally{exitMethod();} }
@@ -299,8 +314,9 @@ Clause leaf() :{
     ((field=<WORD>)<FIELD_SUFFIX>)(clause = fieldedLeaf(field)) {try{return clause;}finally{exitMethod();}}
     |
     // An accidential field. 
-    // XXX This could cause problems as it destroys the contruction of a right-leaning forests.
-    (left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null)) {try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();}}
+    // XXX This could cause problems as it destroys the construction of a right-leaning forests.
+    (left = fieldedLeaf(null)<FIELD_SUFFIX>)(right = fieldedLeaf(null)) 
+        {try{return context.createDefaultOperatorClause(left,right);}finally{exitMethod();}}
     |
     (clause = fieldedLeaf(null)) {try{return clause;}finally{exitMethod();}}
 }
@@ -309,62 +325,87 @@ Clause leaf() :{
 Clause fieldedLeaf(final Token field) :{
     enterMethod("fieldedLeaf()");
 }{
-    (<PHONE_NUMBER>) 
-        { 
-            try{
-                final String term = token.image.trim();
-                final PhoneNumberClause phClause = context.createPhoneNumberClause(term, field == null ? null : field.image);
-                if( term.startsWith("+47") || term.indexOf(' ') <0 ){ // definitely a phone number.
-                    return phClause;
-                }else{ // could be individual numbers as well.
-                    // Create a XorClause
-                    final QueryParserImpl parser = new QueryParserImpl(createContext(token.image),PHONE_NUMBER_DISABLED);
-                    final Clause altClause = parser.parse();
-                    return context.createXorClause(phClause, altClause, XorClause.PHONE_NUMBER_ON_LEFT);
-                }
-            }finally{exitMethod();}
-        }
-    | 
     (<ORGANISATION_NUMBER>) 
         { 
             try{
+                // Remove whitespace
+                final String term = token.image.trim().replaceAll(" ","");
+                final String f = field == null ? null : field.image;
+                final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(term, f);
+
                 // Create a XorClause
-                final OrganisationNumberClause orgClause = context.createOrganisationNumberClause(token.image, field == null ? null : field.image);
-                final QueryParserImpl parser = new QueryParserImpl(createContext(token.image),ORGANISATION_NUMBER_DISABLED);
-                final Clause altClause = parser.parse();
+                final QueryParserImpl p = new QueryParserImpl(createContext(token.image), ORGANISATION_NUMBER_DISABLED);
+                final Clause altClause = p.parse();
                 return context.createXorClause(orgClause, altClause, XorClause.ORGANISATION_NUMBER_ON_LEFT);
+
             }finally{exitMethod();}
         }
     |
+    (<PHONE_NUMBER>) 
+        { 
+            try{
+                // remove the PHONE_SYMBOL sub-tokens
+                final String term = token.image.replaceAll("\\.|-|/| ","");
+                final String f = field == null ? null : field.image;
+                final PhoneNumberClause phClause = context.createPhoneNumberClause(term, f);
+
+                // Create a XorClause
+                final QueryParserImpl p = new QueryParserImpl(createContext(token.image), PHONE_NUMBER_DISABLED);
+                final Clause altClause = p.parse();
+                return context.createXorClause(phClause, altClause, XorClause.PHONE_NUMBER_ON_LEFT);
+
+            }finally{exitMethod();}
+        }
+    | 
     <QUOTED_WORD>
         { 
             try{
+                final String f = field == null ? null : field.image;
+                final PhraseClause phClause = context.createPhraseClause(token.image, f );
+
                 // Create a XorClause
-                final PhraseClause phClause = context.createPhraseClause( token.image, field == null ? null : field.image );
-                final QueryParserImpl parser = new QueryParserImpl(createContext(token.image.replaceAll("\"","")),QUOTED_WORD_DISABLED);
-                final Clause altClause = parser.parse();
+                final String term = token.image.trim().replaceAll("\"","");
+                final QueryParserImpl p = new QueryParserImpl(createContext(term), QUOTED_WORD_DISABLED);
+                final Clause altClause = p.parse();
                 return context.createXorClause(phClause, altClause, XorClause.PHRASE_ON_LEFT);
+
             }finally{exitMethod();}
         }
     | 
     <WORD>
         { 
-            try{return context.createWordClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
+            try{
+                final String f = field == null ? null : field.image;
+                return context.createWordClause(token.image, f);
+
+            }finally{exitMethod();}
         }
     | 
     <INTEGER>
         { 
-            try{return context.createIntegerClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
+            try{
+                final String f = field == null ? null : field.image;
+                return context.createIntegerClause(token.image, f);
+
+            }finally{exitMethod();}
         }
     |
     <URL>
         { 
-            try{return context.createUrlClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
+            try{
+                final String f = field == null ? null : field.image;
+                return context.createUrlClause(token.image, f);
+
+            }finally{exitMethod();}
         }
     | 
     <EMAIL>
         { 
-            try{return context.createEmailClause( token.image, field == null ? null : field.image );}finally{exitMethod();}
+            try{
+                final String f = field == null ? null : field.image;
+                return context.createEmailClause(token.image, f);
+
+            }finally{exitMethod();}
         }
 
 }
