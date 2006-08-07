@@ -63,13 +63,10 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
             final String field,
             final TokenEvaluationEngine predicate2evaluatorFactory) {
 
-        // this needs to be moved to a query transformer as it is collection (country) dependant.
-        final String t = term.length() > 8 ? term.replaceFirst("^(\\+|00)?47","") : term;
-
         // the weakCache to use.
         Map<String,WeakReference<PhoneNumberClauseImpl>> weakCache
                 = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
-        
+
         if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<PhoneNumberClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
@@ -78,7 +75,7 @@ public final class PhoneNumberClauseImpl extends AbstractLeafClause implements P
         // use helper method from AbstractLeafClause
         return createClause(
                 PhoneNumberClauseImpl.class,
-                t,
+                term,
                 field,
                 predicate2evaluatorFactory,
                 PREDICATES_APPLICABLE, weakCache);

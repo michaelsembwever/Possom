@@ -19,6 +19,7 @@ import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.*;
+import no.schibstedsok.searchportal.query.transform.RegExpTransformer;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.util.config.ResourceContext;
@@ -739,19 +740,20 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
     private enum QueryTransformerTypes {
+        AGEFILTER(AgeFilterTransformer.class),
         EXACT_TITLE_MATCH(ExactTitleMatchTransformer.class),
         INFOPAGE(InfopageQueryTransformer.class),
-        WEATHER(WeatherQueryTransformer.class),
-        WEATHERINFOPAGE(WeatherInfopageQueryTransformer.class),
         NEWS(NewsTransformer.class),
-        // deprecated. use token-remover match="prefix" instead.
+        // @deprecated use token-remover match="prefix" instead.
         PREFIX_REMOVER(TokenMaskTransformer.class),
+        REGEXP(RegExpTransformer.class),
         SIMPLE_SITE_SEARCH(SimpleSiteSearchTransformer.class),
         SYNONYM(SynonymQueryTransformer.class),
         TERM_PREFIX(TermPrefixTransformer.class),
         TOKEN_MASK(TokenMaskTransformer.class),
         TVSEARCH(TvSearchQueryTransformer.class),
-        AGEFILTER(AgeFilterTransformer.class);
+        WEATHER(WeatherQueryTransformer.class),
+        WEATHERINFOPAGE(WeatherInfopageQueryTransformer.class);
 
         private final Class<? extends QueryTransformer> clazz;
         private final String xmlName;
@@ -780,14 +782,17 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         prqt.addPredicates(qt.getAttribute("prefixes").split(","));
                         prqt.setMatch(TokenMaskTransformer.Position.PREFIX);
                         break;
+                    case REGEXP:
+                        fillBeanProperty(transformer, null, "regexp", ParseType.String, qt, "");
+                        fillBeanProperty(transformer, null, "replacement", ParseType.String, qt, "");
+                        break;
                     case SIMPLE_SITE_SEARCH:
                         final SimpleSiteSearchTransformer ssqt = (SimpleSiteSearchTransformer) transformer;
                         ssqt.setParameterName(qt.getAttribute("parameter"));
                         break;
                     case TERM_PREFIX:
-                        final TermPrefixTransformer tpqt = (TermPrefixTransformer) transformer;
-                        tpqt.setPrefix(qt.getAttribute("prefix"));
-                        tpqt.setNumberPrefix(qt.getAttribute("number-prefix"));
+                        fillBeanProperty(transformer, null, "prefix", ParseType.String, qt, "");
+                        fillBeanProperty(transformer, null, "number-prefix", ParseType.String, qt, "");
                         break;
                     case TOKEN_MASK:
                         final TokenMaskTransformer trqt = (TokenMaskTransformer) transformer;
@@ -802,8 +807,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         }
                         break;
                     case TVSEARCH:
-                        final TvSearchQueryTransformer tsqt = (TvSearchQueryTransformer) transformer;
-                        tsqt.setWithEndtime(qt.getAttribute("with-endtime").equals("true"));
+                        fillBeanProperty(transformer, null, "with-endtime", ParseType.Boolean, qt, "");
                         break;
                     case WEATHER:
                         final WeatherQueryTransformer wqt = (WeatherQueryTransformer) transformer;
