@@ -198,8 +198,8 @@ public final class TestVisitor extends TestCase {
     public void testPhoneNumberAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "+47 9222 1689",
-                "92221689 OR 47 9222 1689",
-                "92221689 47 9222 1689");
+                "+4792221689 OR 47 9222 1689",
+                "+4792221689 47 9222 1689");
     }
 
     /** TODO comment me. **/
