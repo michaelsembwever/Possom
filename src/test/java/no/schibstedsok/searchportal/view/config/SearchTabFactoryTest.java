@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
@@ -27,13 +28,16 @@ public final class SearchTabFactoryTest extends TestCase {
 
     private static final Logger LOG = Logger.getLogger(SearchTabFactoryTest.class);
 
+    /** TODO comment me. **/
     public SearchTabFactoryTest(final String testName) {
         super(testName);
     }
 
+    /** TODO comment me. **/
     protected void setUp() throws Exception {
     }
 
+    /** TODO comment me. **/
     protected void tearDown() throws Exception {
     }
 
@@ -102,6 +106,13 @@ public final class SearchTabFactoryTest extends TestCase {
         LOG.trace("getModeFactory");
 
         final SearchTabFactory.Context cxt = new SearchTabFactory.Context(){
+
+            private final Site.Context siteConstructorContext = new Site.Context(){
+                public String getParentSiteName(final SiteContext siteContext){
+                    return Site.DEFAULT.getName();
+                }
+            };
+
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
@@ -109,7 +120,9 @@ public final class SearchTabFactoryTest extends TestCase {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
             public Site getSite()  {
-                return locale == null ? Site.DEFAULT :Site.valueOf(Site.DEFAULT.getName(), locale);
+                return locale == null
+                        ? Site.DEFAULT
+                        : Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), locale);
             }
         };
 

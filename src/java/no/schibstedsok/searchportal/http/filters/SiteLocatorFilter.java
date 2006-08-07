@@ -23,7 +23,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.util.config.PropertiesContext;
+import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
@@ -62,6 +66,23 @@ public final class SiteLocatorFilter implements Filter {
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
+
+    /** TODO comment me. **/
+    public static final Site.Context SITE_CONTEXT = new Site.Context(){
+        public String getParentSiteName(final SiteContext siteContext) {
+
+            return SiteConfiguration.valueOf(
+                    ContextWrapper.wrap(SiteConfiguration.Context.class,
+                    siteContext,
+                    new PropertiesContext() {
+                        public PropertiesLoader newPropertiesLoader(
+                                final String resource,
+                                final Properties properties) {
+                            return UrlResourceLoader.newPropertiesLoader(siteContext, resource, properties);
+                        }
+                    })).getProperty(Site.PARENT_SITE_KEY);
+             }
+    };
 
     private static final long START_TIME = System.currentTimeMillis();
 
@@ -141,7 +162,7 @@ public final class SiteLocatorFilter implements Filter {
                         // Find resource in current site or any of its
                         // ancestors
                         url = recursivelyFindResource(noVersionRsc, site);
-                        
+
                         if (url == null) {
                             res.sendError(HttpServletResponse.SC_NOT_FOUND);
                             url = null;
@@ -182,7 +203,7 @@ public final class SiteLocatorFilter implements Filter {
 
     }
 
-    
+
     private String recursivelyFindResource(final String resource, final Site site) {
         final String url = HTTP + site.getName() + site.getConfigContext() + resource;
 
@@ -261,7 +282,7 @@ public final class SiteLocatorFilter implements Filter {
 
         LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
 
-        final Site result = Site.valueOf(vhost, locale);
+        final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
 
         final String[] locales = SiteConfiguration.valueOf(result).getProperty(SITE_LOCALE_SUPPORTED).split(",");
         for(String l : locales){
@@ -278,16 +299,16 @@ public final class SiteLocatorFilter implements Filter {
             case 3:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
                         + '_' + prefLocale[1] + '_' + prefLocale[2]);
-                return Site.valueOf(vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
+                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
             case 2:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0] + '_' + prefLocale[1]);
-                return Site.valueOf(vhost, new Locale(prefLocale[0], prefLocale[1]));
+                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1]));
             case 1:
             default:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0]);
-                return Site.valueOf(vhost, new Locale(prefLocale[0]));
+                return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0]));
         }
 
 

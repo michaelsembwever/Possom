@@ -24,9 +24,12 @@ import org.apache.log4j.Logger;
  */
 public final class SiteConfiguration implements SiteKeyedFactory{
 
-    public static final String CONFIGURATION_FILE = "configuration.properties";
+
+    /** TODO comment me. **/
     public static final String SITE_LOCALE_DEFAULT = "site.locale.default";
+    /** TODO comment me. **/
     public static final String PUBLISH_SYSTEM_URL = "publishing.system.baseURL";
+    /** TODO comment me. **/
     public static final String PUBLISH_SYSTEM_HOST = "publishing.system.host-header";
 
     public interface Context extends BaseContext, PropertiesContext, SiteContext {
@@ -50,7 +53,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
             LOG.trace("Configuration(cxt)");
             context = cxt;
 
-            propertyLoader = context.newPropertiesLoader(CONFIGURATION_FILE, properties);
+            propertyLoader = context.newPropertiesLoader(Site.CONFIGURATION_FILE, properties);
 
             INSTANCES.put(context.getSite(), this);
         }finally{
@@ -58,6 +61,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
         }
     }
 
+    /** TODO comment me. **/
     public Properties getProperties() {
 
         if(properties.size() == 0){
@@ -66,6 +70,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
         return properties;
     }
 
+    /** TODO comment me. **/
     public String getProperty(final String key) {
 
         if(properties.size() == 0){
@@ -108,6 +113,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
         return stc;
     }
 
+    /** TODO comment me. **/
     public boolean remove(final Site site){
 
         try{

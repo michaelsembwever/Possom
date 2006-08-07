@@ -21,6 +21,7 @@ import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.*;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
+import no.schibstedsok.searchportal.query.transform.MobileTvQueryTransformer;
 import no.schibstedsok.searchportal.query.transform.RegExpTransformer;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
@@ -692,6 +693,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         AGEFILTER(AgeFilterTransformer.class),
         EXACT_TITLE_MATCH(ExactTitleMatchTransformer.class),
         INFOPAGE(InfopageQueryTransformer.class),
+        // @deprecated see deprecated note in class
+        MOBILE_TV(MobileTvQueryTransformer.class),
         NEWS(NewsTransformer.class),
         // @deprecated use token-remover match="prefix" instead.
         PREFIX_REMOVER(TokenMaskTransformer.class),
