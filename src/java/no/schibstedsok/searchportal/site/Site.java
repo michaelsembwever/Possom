@@ -108,7 +108,7 @@ public final class Site {
         
         final String parentSiteName = null != cxt ? cxt.getParentSiteName(siteContext) : siteName;
 
-        parent = ensureTrailingSlash(parentSiteName).equals(siteName)
+        parent = null == parentSiteName || ensureTrailingSlash(parentSiteName).equals(siteName)
             ? null
             : Site.valueOf(cxt, parentSiteName, theLlocale);
     }
