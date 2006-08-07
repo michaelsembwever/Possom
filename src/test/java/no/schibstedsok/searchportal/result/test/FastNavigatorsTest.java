@@ -14,7 +14,7 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.FastNavigator;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
@@ -68,7 +68,7 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testOneNavigator() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
         config.addNavigator(navigator, "geographic");
 
@@ -79,10 +79,10 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testHierarchicalNavigator() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
 
-        final FastNavigator child = new FastNavigator();
+        final Navigator child = new Navigator();
         child.setName("ywkommunenavigator");
 
         navigator.setChildNavigator(child);
@@ -95,7 +95,7 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testTopLevelModifiers() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
         navigator.setDisplayName("Fylken");
 
@@ -118,9 +118,9 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testTopLevelModifiersWithChild() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
-        final FastNavigator child = new FastNavigator();
+        final Navigator child = new Navigator();
         child.setName("ywkommunenavigator");
         navigator.setChildNavigator(child);
 
@@ -144,9 +144,9 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testSecondLevelModifiersWithChild() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
-        final FastNavigator child = new FastNavigator();
+        final Navigator child = new Navigator();
         child.setName("ywkommunenavigator");
         navigator.setChildNavigator(child);
 
@@ -174,7 +174,7 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testSecondLevelModifiersWithoutChild() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
 
         final String navigated[] = new String[1];
@@ -201,13 +201,13 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testThreeLevelNavigator() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
 
-        final FastNavigator child = new FastNavigator();
+        final Navigator child = new Navigator();
         child.setName("ywkommunenavigator");
 
-        final FastNavigator childsChild = new FastNavigator();
+        final Navigator childsChild = new Navigator();
         childsChild.setName("ywsted");
 
         navigator.setChildNavigator(child);
@@ -251,7 +251,7 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testModifiersOneLevel() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
         navigator.setField("ywfylke");
 
@@ -277,11 +277,11 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testModifiersTwoLevels() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
         navigator.setField("ywfylke");
 
-        final FastNavigator child = new FastNavigator();
+        final Navigator child = new Navigator();
         child.setName("ywkommunenavigator");
         child.setField("ywkommune");
 
@@ -331,11 +331,11 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testModifiersX() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
         navigator.setField("ywfylke");
 
-        final FastNavigator child = new FastNavigator();
+        final Navigator child = new Navigator();
         child.setName("ywkommunenavigator");
         child.setField("ywkommune");
 
@@ -357,7 +357,7 @@ public final class FastNavigatorsTest extends TestCase {
 
         final FastSearchResult result = (FastSearchResult) command.call();
 
-        final FastNavigator nav = command.getNavigatedTo("geographic");
+        final Navigator nav = command.getNavigatedTo("geographic");
 
         for (final Iterator iterator = result.getModifiers("geographic").iterator(); iterator.hasNext();) {
             final Modifier modifier = (Modifier) iterator.next();
@@ -367,15 +367,15 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void testHeading() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
         navigator.setField("ywfylke");
 
-        final FastNavigator child = new FastNavigator();
+        final Navigator child = new Navigator();
         child.setName("ywkommunenavigator");
         child.setField("ywkommune");
 
-        final FastNavigator child2 = new FastNavigator();
+        final Navigator child2 = new Navigator();
         child2.setName("ywbydelnavigator");
         child2.setField("ywbydel");
 
@@ -434,17 +434,17 @@ public final class FastNavigatorsTest extends TestCase {
 
     public void tBackLinks() {
 
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
         navigator.setField("ywfylke");
         navigator.setDisplayName("Fylken");
         config.addNavigator(navigator, "geographic");
-        final FastNavigator child = new FastNavigator();
+        final Navigator child = new Navigator();
         child.setName("ywkommunenavigator");
         child.setField("ywkommune");
         navigator.setChildNavigator(child);
 
-        final FastNavigator child2 = new FastNavigator();
+        final Navigator child2 = new Navigator();
         child2.setName("ywbydelnavigator");
         child2.setField("ywbydel");
         child.setChildNavigator(child2);

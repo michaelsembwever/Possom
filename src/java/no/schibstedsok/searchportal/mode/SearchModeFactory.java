@@ -23,6 +23,7 @@ import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.query.transform.MobileTvQueryTransformer;
 import no.schibstedsok.searchportal.query.transform.RegExpTransformer;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.util.config.ResourceContext;
@@ -416,8 +417,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     // navigators
                     final NodeList nList = commandE.getElementsByTagName("navigators");
                     for(int i = 0; i < nList.getLength(); ++i){
-                        final Collection<FastNavigator> navigators = parseNavigators((Element)nList.item(i));
-                        for(FastNavigator navigator : navigators){
+                        final Collection<Navigator> navigators = parseNavigators((Element)nList.item(i));
+                        for(Navigator navigator : navigators){
                             fsc.addNavigator(navigator, navigator.getId());
                         }
 
@@ -448,8 +449,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     // navigators
                     final NodeList nList = commandE.getElementsByTagName("navigators");
                     for(int i = 0; i < nList.getLength(); ++i){
-                        final Collection<FastNavigator> navigators = parseNavigators((Element)nList.item(i));
-                        for(FastNavigator navigator : navigators){
+                        final Collection<Navigator> navigators = parseNavigators((Element)nList.item(i));
+                        for(Navigator navigator : navigators){
                             asc.addNavigator(navigator, navigator.getId());
                         }
 
@@ -659,9 +660,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             return result;
         }
 
-        private Collection<FastNavigator> parseNavigators(final Element navsE){
+        private Collection<Navigator> parseNavigators(final Element navsE){
 
-            final Collection<FastNavigator> navigators = new ArrayList<FastNavigator>();
+            final Collection<Navigator> navigators = new ArrayList<Navigator>();
             final NodeList children = navsE.getChildNodes();
             for(int i = 0; i < children.getLength(); ++i){
                 final Node child = children.item(i);
@@ -670,12 +671,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final String id = navE.getAttribute("id");
                     final String name = navE.getAttribute("name");
                     LOG.info(INFO_PARSING_NAVIGATOR + id + " [" + name + "]");
-                    final FastNavigator nav = new FastNavigator(
+                    final Navigator nav = new Navigator(
                             name,
                             navE.getAttribute("field"),
                             navE.getAttribute("display-name"));
                     nav.setId(id);
-                    final Collection<FastNavigator> childNavigators = parseNavigators(navE);
+                    final Collection<Navigator> childNavigators = parseNavigators(navE);
                     if(childNavigators.size() > 1){
                         throw new IllegalStateException(ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED + id);
                     }else if(childNavigators.size() == 1){

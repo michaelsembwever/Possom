@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.config.FastNavigator;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -49,7 +49,7 @@ public final class SumFastModifiers implements ResultHandler {
 
             final FastSearchResult fastResult = (FastSearchResult) result;
 
-            final FastNavigator navigator = fastResult.getNavigatedTo(navigatorName);
+            final Navigator navigator = fastResult.getNavigatedTo(navigatorName);
 
             final Modifier modifier = new Modifier(targetModifier, navigator);
 

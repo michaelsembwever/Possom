@@ -11,6 +11,7 @@ package no.schibstedsok.searchportal.mode.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import no.schibstedsok.searchportal.result.Navigator;
 
 /**
  *
@@ -41,7 +42,7 @@ public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration
         return collapsingEnabled;
     }
     
-    private final Map<String,FastNavigator> navigators = new HashMap<String,FastNavigator>();
+    private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();
 
     public AdvancedFastSearchConfiguration(final SearchConfiguration asc){
         super(asc);
@@ -75,14 +76,14 @@ public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration
         this.sortBy = sortBy;
     }
     
-    public Map<String,FastNavigator> getNavigators() {
+    public Map<String, Navigator> getNavigators() {
         return navigators;
     }
-    public void addNavigator(final FastNavigator navigator, final String navKey) {
+    public void addNavigator(final Navigator navigator, final String navKey) {
         navigators.put(navKey, navigator);
     }
 
-    public FastNavigator getNavigator(final String navigatorKey) {
+    public Navigator getNavigator(final String navigatorKey) {
         return navigators.get(navigatorKey);
     }
 

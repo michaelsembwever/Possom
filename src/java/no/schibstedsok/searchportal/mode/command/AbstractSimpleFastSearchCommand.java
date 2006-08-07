@@ -42,7 +42,7 @@ import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.FastNavigator;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -85,7 +85,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private static final String DEBUG_PARAM_NOT_FOUND = "Param not found ";
 
     // Attributes ----------------------------------------------------
-    private final Map<String,FastNavigator> navigatedTo = new HashMap<String,FastNavigator>();
+    private final Map<String, Navigator> navigatedTo = new HashMap<String,Navigator>();
     private final Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
 
     // Static --------------------------------------------------------
@@ -155,7 +155,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     /** TODO comment me. **/
     public void addNavigatedTo(final String navigatorKey, final String navigatorName) {
 
-        final FastNavigator navigator = (FastNavigator) getNavigators().get(navigatorKey);
+        final Navigator navigator = (Navigator) getNavigators().get(navigatorKey);
 
         if (navigatorName == null) {
             navigatedTo.put(navigatorKey, navigator);
@@ -165,17 +165,17 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     /** TODO comment me. **/
-    public FastNavigator getNavigatedTo(final String navigatorKey) {
-        return (FastNavigator) navigatedTo.get(navigatorKey);
+    public Navigator getNavigatedTo(final String navigatorKey) {
+        return (Navigator) navigatedTo.get(navigatorKey);
     }
 
 
     /** TODO comment me. **/
-    public FastNavigator getParentNavigator(final String navigatorKey) {
+    public Navigator getParentNavigator(final String navigatorKey) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
             final String navName =  getParameter("nav_" + navigatorKey);
 
-            return findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), navName);
+            return findParentNavigator((Navigator) getNavigators().get(navigatorKey), navName);
 
         } else {
             return null;
@@ -183,10 +183,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     /** TODO comment me. **/
-    public FastNavigator getParentNavigator(final String navigatorKey, final String name) {
+    public Navigator getParentNavigator(final String navigatorKey, final String name) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
 
-            return findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), name);
+            return findParentNavigator((Navigator) getNavigators().get(navigatorKey), name);
 
         } else {
             return null;
@@ -194,7 +194,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     /** TODO comment me. **/
-    public FastNavigator findParentNavigator(final FastNavigator navigator, final String navigatorName) {
+    public Navigator findParentNavigator(final Navigator navigator, final String navigatorName) {
         if (navigator.getChildNavigator() == null) {
             return null;
         } else if (navigator.getChildNavigator().getName().equals(navigatorName)) {
@@ -240,9 +240,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     public String getNavigatorTitle(final String navigatorKey) {
 
         LOG.trace("getNavigatorTitle("+navigatorKey+")");
-        final FastNavigator nav = getNavigatedTo(navigatorKey);
+        final Navigator nav = getNavigatedTo(navigatorKey);
 
-        FastNavigator parent = findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), nav.getName());
+        Navigator parent = findParentNavigator((Navigator) getNavigators().get(navigatorKey), nav.getName());
 
         String value = getNavigatedValue(nav.getField());
 
@@ -252,7 +252,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             if (value == null) {
 
-                parent = findParentNavigator((FastNavigator) getNavigators().get(navigatorKey), parent.getName());
+                parent = findParentNavigator((Navigator) getNavigators().get(navigatorKey), parent.getName());
 
 
                 if (parent != null) {
@@ -273,7 +273,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     /** TODO comment me. **/
-    public String getNavigatorTitle(final FastNavigator navigator) {
+    public String getNavigatorTitle(final Navigator navigator) {
 
         final String value = getNavigatedValue(navigator.getField());
 
@@ -297,7 +297,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     }
 
     /** TODO comment me. **/
-    public List addNavigatorBackLinks(final FastNavigator navigator, final List links, final String navigatorKey) {
+    public List addNavigatorBackLinks(final Navigator navigator, final List links, final String navigatorKey) {
 
         final String a = getParameter(navigator.getField());
 
@@ -336,7 +336,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return (FastSearchConfiguration) super.getSearchConfiguration();
     }
 
-    /** TODO comment me. **/
+    /** @inherit **/
     public SearchResult execute() {
 
         try {
@@ -489,7 +489,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     // Protected -----------------------------------------------------
 
     /** TODO comment me. **/
-    protected Map<String,FastNavigator> getNavigators() {
+    protected Map<String, Navigator> getNavigators() {
 
         return getSearchConfiguration().getNavigators();
     }
@@ -781,7 +781,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             Collection allFlattened = new ArrayList();
 
 
-            for (FastNavigator navigator : getNavigators().values()) {
+            for (Navigator navigator : getNavigators().values()) {
 
                 allFlattened.addAll(flattenNavigators(new ArrayList(), navigator));
             }
@@ -792,7 +792,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
-    private Collection flattenNavigators(Collection soFar, FastNavigator nav) {
+    private Collection flattenNavigators(Collection soFar, Navigator nav) {
 
         soFar.add(nav);
 
@@ -814,7 +814,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
 
-        final FastNavigator nav = (FastNavigator) navigatedTo.get(navigatorKey);
+        final Navigator nav = (Navigator) navigatedTo.get(navigatorKey);
 
         INavigator navigator = result.getNavigator(nav.getName());
 
@@ -838,7 +838,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
     }
 
-    private FastNavigator findChildNavigator(FastNavigator nav, String nameToFind) {
+    private Navigator findChildNavigator(Navigator nav, String nameToFind) {
 
         if (getParameters().containsKey(nav.getField())) {
 

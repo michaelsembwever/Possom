@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.mode.config.FastNavigator;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
 /**
@@ -12,15 +12,15 @@ public class Modifier implements Comparable {
     private int count = 0;
 
     final private String name;
-    final private FastNavigator navigator;
+    final private Navigator navigator;
 
-    public Modifier(final String name, final int count, final FastNavigator navigator) {
+    public Modifier(final String name, final int count, final Navigator navigator) {
         this.name = name;
         this.count = count;
         this.navigator = navigator;
     }
 
-    public Modifier(final String name, final FastNavigator navigator) {
+    public Modifier(final String name, final Navigator navigator) {
         this.name = name;
         this.navigator = navigator;
     }
@@ -30,7 +30,7 @@ public class Modifier implements Comparable {
         this.count += count;
     }
 
-    public FastNavigator getNavigator() {
+    public Navigator getNavigator() {
         return navigator;
     }
 

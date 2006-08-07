@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import no.schibstedsok.searchportal.mode.config.FastNavigator;
+import no.schibstedsok.searchportal.result.Navigator;
 
 import java.util.Map;
 import no.schibstedsok.searchportal.result.Modifier;
@@ -22,7 +22,7 @@ public final class AddDocCountModifier implements ResultHandler {
     public void handleResult(final Context cxt, final Map parameters) {
 
         final SearchResult result = cxt.getSearchResult();
-        final FastNavigator navigator = new FastNavigator();
+        final Navigator navigator = new Navigator();
         final SearchTab.NavigatorHint hint = cxt.getSearchTab().getNavigationHint(modifierName);
         if( hint != null ){
             final Modifier mod = new Modifier(hint.getName(), result.getHitCount(), navigator);

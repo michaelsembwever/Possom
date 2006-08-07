@@ -16,7 +16,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand;
-import no.schibstedsok.searchportal.mode.config.FastNavigator;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import org.apache.log4j.Logger;
@@ -57,7 +57,7 @@ public class CombineNavigatorsHandler implements ResultHandler {
                 final Modifier modifier = result.getModifier(nav, mod);
 
                 if (modifier != null) {
-                    final FastNavigator navigator = new FastNavigator();
+                    final Navigator navigator = new Navigator();
                     final Modifier newMod = new Modifier(mod, modifier.getCount(), navigator);
 
                     newMod.setNavigationHint(cxt.getSearchTab().getNavigationHint(newMod.getName()));

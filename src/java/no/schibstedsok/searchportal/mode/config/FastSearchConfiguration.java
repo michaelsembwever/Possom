@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.result.Navigator;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -46,7 +47,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private Map searchParameters;
     private boolean lemmatizeEnabled;
     private boolean spellcheck;
-    private final Map<String,FastNavigator> navigators = new HashMap<String,FastNavigator>();
+    private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();
     private String sortBy;
     private boolean collapsing;
     private String queryServerURL;
@@ -169,15 +170,15 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         this.spellcheck = spellcheckEnabled;
     }
 
-    public Map<String,FastNavigator> getNavigators() {
+    public Map<String, Navigator> getNavigators() {
         return navigators;
     }
 
-    public void addNavigator(final FastNavigator navigator, final String navKey) {
+    public void addNavigator(final Navigator navigator, final String navKey) {
         navigators.put(navKey, navigator);
     }
 
-    public FastNavigator getNavigator(final String navigatorKey) {
+    public Navigator getNavigator(final String navigatorKey) {
         return navigators.get(navigatorKey);
     }
 

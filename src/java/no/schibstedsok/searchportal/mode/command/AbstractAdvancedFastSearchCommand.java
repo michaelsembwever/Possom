@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.FastNavigator;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
@@ -70,7 +70,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     // Attributes ----------------------------------------------------
     private final AdvancedFastSearchConfiguration cfg;
 
-    private Map<String,FastNavigator> navigatedTo = new HashMap<String,FastNavigator>();
+    private Map<String, Navigator> navigatedTo = new HashMap<String,Navigator>();
     private Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
 
     // Static --------------------------------------------------------
@@ -267,7 +267,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
         }
     }
 
-    protected Map<String,FastNavigator> getNavigators() {
+    protected Map<String, Navigator> getNavigators() {
         return cfg.getNavigators();
     }
 

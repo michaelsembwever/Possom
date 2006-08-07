@@ -10,7 +10,7 @@ import java.util.Map;
 import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.view.spell.RelevantQuery;
-import no.schibstedsok.searchportal.mode.config.FastNavigator;
+import no.schibstedsok.searchportal.result.Navigator;
 
 
 /**
@@ -27,7 +27,7 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         super(command);
     }
 
-    public FastNavigator getNavigatedTo(final String navigatorName) {
+    public Navigator getNavigatedTo(final String navigatorName) {
         return ((FastSearchCommand) getSearchCommand()).getNavigatedTo(navigatorName);
     }
 
@@ -75,12 +75,12 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         }
     }
 
-    public void addCurrentNavigator(final FastNavigator currentNavigator, final String navKey) {
+    public void addCurrentNavigator(final Navigator currentNavigator, final String navKey) {
         currentNavigators.put(navKey, currentNavigator);
     }
 
-    public FastNavigator getCurrentNavigator(final String navigatorName) {
-        return (FastNavigator) currentNavigators.get(navigatorName);
+    public Navigator getCurrentNavigator(final String navigatorName) {
+        return (Navigator) currentNavigators.get(navigatorName);
     }
 
     public void addRelevantQuery(final RelevantQuery query) {

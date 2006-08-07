@@ -1,63 +1,74 @@
 // Copyright (2006) Schibsted Søk AS
-package no.schibstedsok.searchportal.mode.config;
+package no.schibstedsok.searchportal.result;
 
 import java.io.Serializable;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Revision: 3361 $</tt>
  */
-public class FastNavigator implements Serializable {
+public final class Navigator implements Serializable {
 
     /** The serialVersionUID */
     private static final long serialVersionUID = -3135641813818854457L;
     private String name;
     private String field;
-    private FastNavigator childNavigator;
+    private Navigator childNavigator;
     private String displayName;
 
-    public FastNavigator(final String name, final String field, final String displayName) {
+    /** TODO comment me. **/
+    public Navigator(final String name, final String field, final String displayName) {
         this.name = name;
         this.field = field;
         this.displayName = displayName;
     }
 
-    public FastNavigator() {
+    /** TODO comment me. **/
+    public Navigator() {
     }
 
-    public FastNavigator getChildNavigator() {
+    /** TODO comment me. **/
+    public Navigator getChildNavigator() {
         return childNavigator;
     }
 
-    public void setChildNavigator(FastNavigator childNavigator) {
+    /** TODO comment me. **/
+    public void setChildNavigator(final Navigator childNavigator) {
         this.childNavigator = childNavigator;
     }
 
+    /** TODO comment me. **/
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    /** TODO comment me. **/
+    public void setName(final String name) {
         this.name = name;
     }
 
+    /** TODO comment me. **/
     public String toString() {
         return name;
     }
 
+    /** TODO comment me. **/
     public String getField() {
         return field;
     }
 
-    public void setField(String field) {
+    /** TODO comment me. **/
+    public void setField(final String field) {
         this.field = field;
     }
 
+    /** TODO comment me. **/
     public String getDisplayName() {
         return displayName;
     }
 
-    public void setDisplayName(String displayName) {
+    /** TODO comment me. **/
+    public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
 
@@ -78,7 +89,7 @@ public class FastNavigator implements Serializable {
      * Setter for property id.
      * @param id New value of property id.
      */
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 }
