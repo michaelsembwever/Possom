@@ -23,10 +23,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.util.config.PropertiesContext;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
@@ -70,18 +68,14 @@ public final class SiteLocatorFilter implements Filter {
     /** TODO comment me. **/
     public static final Site.Context SITE_CONTEXT = new Site.Context(){
         public String getParentSiteName(final SiteContext siteContext) {
-
-            return SiteConfiguration.valueOf(
-                    ContextWrapper.wrap(SiteConfiguration.Context.class,
-                    siteContext,
-                    new PropertiesContext() {
-                        public PropertiesLoader newPropertiesLoader(
-                                final String resource,
-                                final Properties properties) {
-                            return UrlResourceLoader.newPropertiesLoader(siteContext, resource, properties);
-                        }
-                    })).getProperty(Site.PARENT_SITE_KEY);
-             }
+            // we have to do this manually instead of using SiteConfiguration,
+            //  because SiteConfiguration relies on the parent site that we haven't get initialised.
+            final Properties props = new Properties();
+            final PropertiesLoader loader
+                    = UrlResourceLoader.newPropertiesLoader(siteContext, Site.CONFIGURATION_FILE, props);
+            loader.abut();
+            return props.getProperty(Site.PARENT_SITE_KEY);
+        }
     };
 
     private static final long START_TIME = System.currentTimeMillis();

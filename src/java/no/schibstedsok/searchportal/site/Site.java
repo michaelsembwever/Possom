@@ -60,6 +60,8 @@ public final class Site {
      */
     private static final Map<String,Site> INSTANCES = new HashMap<String,Site>();
 
+    private static volatile boolean constructingDefault = false;
+
      /**
      * Holds value of property siteName.
      */
@@ -82,7 +84,7 @@ public final class Site {
     */
     private final Site parent;
 
-    /** Creates a new instance of Site. 
+    /** Creates a new instance of Site.
      * A null Context will result in a parentSiteName == siteName
      */
     private Site(final Context cxt, final String theSiteName, final Locale theLlocale) {
@@ -105,11 +107,11 @@ public final class Site {
             }
         };
 
-        
+
         final String parentSiteName = null != cxt ? cxt.getParentSiteName(siteContext) : siteName;
 
         parent = null == parentSiteName || ensureTrailingSlash(parentSiteName).equals(siteName)
-            ? null
+            ? constructingDefault ? null : DEFAULT
             : Site.valueOf(cxt, parentSiteName, theLlocale);
     }
 
@@ -214,7 +216,9 @@ public final class Site {
         final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, SITE_DEFAULT_FALLBACK);
         final String defaultSiteLocaleName = props.getProperty(DEFAULT_SITE_LOCALE_KEY, SITE_DEFAULT_LOCALE_FALLBACK);
 
+        constructingDefault = true;
         DEFAULT = new Site(null, defaultSiteName, new Locale(defaultSiteLocaleName));
+        constructingDefault = false;
     }
 
     /** the default SiteSearch. For example: "sesam.no" or "localhost:8080".
@@ -232,6 +236,6 @@ public final class Site {
             : theSiteName + '/';
     }
 
-    
+
 
 }
