@@ -182,7 +182,13 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% }else{ %>
     <tr>
         <td class="cell_one"><span class="pad_5l"><%if (!currentC.equals("l")) { %><%=text.getMessage("naviger") %><% } %></span></td>
-        <td class="cell_three"><decorator:getProperty property="page.middle-bar"/></td>
+        <td class="cell_three">
+                <%if (currentC.equals("pp") || currentC.equals("pip")) {%>
+                        <search:velocity template="results/middlebar" command="scanpix"/>
+                <%} else { %>        
+                    <decorator:getProperty property="page.middle-bar"/>
+                <% } %>
+        </td>
         <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
     </tr>
     <tr>
