@@ -12,6 +12,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
@@ -95,7 +96,12 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                 for (int i = 0; i < list.getLength(); ++i) {
                     final Element listing = (Element) list.item(i);
                     final BasicSearchResultItem item = createItem(listing);
-                    searchResult.addResult(item);
+                    // HACK to certain hide domains
+                    final String hideDomain = getSearchConfiguration().getHideDomain();
+                    final String host = new URL(item.getField("clickurl")).getHost().replaceAll("/$","");
+                    if(hideDomain.length() == 0 || !host.endsWith(hideDomain)){
+                        searchResult.addResult(item);
+                    }
                 }
                 // build navigators
                 final NodeList wordCountList = searchResponseE.getElementsByTagName(WORDCOUNTS_ELEMENT);
@@ -230,6 +236,12 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         //  Both branches to a XorClause should never be used.
         clause.getFirstClause().accept(this);
         // clause.getSecondClause().accept(this);
+    }
+
+    /** Assured that associated SearchConfiguration is always of this type. **/
+    public YahooIdpSearchConfiguration getSearchConfiguration() {
+
+        return (YahooIdpSearchConfiguration)super.getSearchConfiguration();
     }
 
 }

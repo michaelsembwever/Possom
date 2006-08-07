@@ -287,7 +287,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     /** TODO comment me. **/
     public List getNavigatorBackLinks(final String navigatorKey) {
 
-        final List backLinks = addNavigatorBackLinks(getFastConfiguration().getNavigator(navigatorKey), new ArrayList(), navigatorKey);
+        final List backLinks = addNavigatorBackLinks(getSearchConfiguration().getNavigator(navigatorKey), new ArrayList(), navigatorKey);
 
         if (backLinks.size() > 0) {
             backLinks.remove(backLinks.size() - 1);
@@ -331,8 +331,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     // SearchCommand overrides ----------------------------------------------
 
-    /** TODO comment me. **/
-    public FastSearchConfiguration getFastConfiguration() {
+    /** Assured associated search configuration will always be of this type. **/
+    public FastSearchConfiguration getSearchConfiguration() {
         return (FastSearchConfiguration) super.getSearchConfiguration();
     }
 
@@ -355,19 +355,19 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             IQueryResult result = null;
             try {
                 
-                LOG.debug(DEBUG_EXECUTE_QR_URL + getFastConfiguration().getQueryServerURL());
-                LOG.debug(DEBUG_EXECUTE_COLLECTIONS + getFastConfiguration().getCollections());
+                LOG.debug(DEBUG_EXECUTE_QR_URL + getSearchConfiguration().getQueryServerURL());
+                LOG.debug(DEBUG_EXECUTE_COLLECTIONS + getSearchConfiguration().getCollections());
                 LOG.debug(DEBUG_EXECUTE_QUERY + fastQuery.getQueryString());
-                LOG.debug(DEBUG_EXECUTE_FILTER + getFastConfiguration().getCollectionFilterString());
+                LOG.debug(DEBUG_EXECUTE_FILTER + getSearchConfiguration().getCollectionFilterString());
 
                 result = engine.search(fastQuery);
 
             } catch (IOException ioe) {
-                LOG.error(getFastConfiguration().getName() + ERR_FAST_FAILURE, ioe);
+                LOG.error(getSearchConfiguration().getName() + ERR_FAST_FAILURE, ioe);
                 return new FastSearchResult(this);
             } catch (SearchEngineException fastException) {
                 LOG.error(
-                        getFastConfiguration().getName() + ERR_FAST_FAILURE + '[' + fastException.getErrorCode() + ']', 
+                        getSearchConfiguration().getName() + ERR_FAST_FAILURE + '[' + fastException.getErrorCode() + ']', 
                         fastException);
                 return new FastSearchResult(this);
             }
@@ -377,12 +377,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             
             final FastSearchResult searchResult = collectResults(result);
 
-            if (getFastConfiguration().isSpellcheck()) {
+            if (getSearchConfiguration().isSpellcheck()) {
                 collectSpellingSuggestions(result, searchResult);
             }
 
 
-            if (getFastConfiguration().isRelevantQueries() && !getParameters().containsKey("qs")) {
+            if (getSearchConfiguration().isRelevantQueries() && !getParameters().containsKey("qs")) {
                 collectRelevantQueries(result, searchResult);
             }
 
@@ -491,30 +491,30 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     /** TODO comment me. **/
     protected Map<String,FastNavigator> getNavigators() {
 
-        return getFastConfiguration().getNavigators();
+        return getSearchConfiguration().getNavigators();
     }
 
     /** TODO comment me. **/
     protected int getResultsToReturn() {
 
-        return getFastConfiguration().getResultsToReturn();
+        return getSearchConfiguration().getResultsToReturn();
     }
 
     /** TODO comment me. **/
     protected IFastSearchEngine getSearchEngine() throws ConfigurationException, MalformedURLException {
 
-        if (!SEARCH_ENGINES.containsKey(getFastConfiguration().getQueryServerURL())) {
-            LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getFastConfiguration().getQueryServerURL());
+        if (!SEARCH_ENGINES.containsKey(getSearchConfiguration().getQueryServerURL())) {
+            LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getSearchConfiguration().getQueryServerURL());
             final IFastSearchEngine engine
-                    = engineFactory.createSearchEngine(getFastConfiguration().getQueryServerURL());
-            SEARCH_ENGINES.put(getFastConfiguration().getQueryServerURL(), engine);
+                    = engineFactory.createSearchEngine(getSearchConfiguration().getQueryServerURL());
+            SEARCH_ENGINES.put(getSearchConfiguration().getQueryServerURL(), engine);
         }
-        return (IFastSearchEngine) SEARCH_ENGINES.get(getFastConfiguration().getQueryServerURL());
+        return (IFastSearchEngine) SEARCH_ENGINES.get(getSearchConfiguration().getQueryServerURL());
     }
 
     protected String getSortBy() {
 
-        return getFastConfiguration().getSortBy();
+        return getSearchConfiguration().getSortBy();
     }
 
 
@@ -574,8 +574,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         if (LOG.isDebugEnabled()) {
 
-            LOG.debug(getFastConfiguration().getName() + " Collecting results. There are " + result.getDocCount());
-            LOG.debug(getFastConfiguration().getName() + " Number of results to collect: " + getFastConfiguration().getResultsToReturn());
+            LOG.debug(getSearchConfiguration().getName() + " Collecting results. There are " + result.getDocCount());
+            LOG.debug(getSearchConfiguration().getName() + " Number of results to collect: " + getSearchConfiguration().getResultsToReturn());
 
         }
 
@@ -604,7 +604,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         final SearchResultItem item = new BasicSearchResultItem();
 
-        for (final Map.Entry<String,String> entry : getFastConfiguration().getResultFields().entrySet()) {
+        for (final Map.Entry<String,String> entry : getSearchConfiguration().getResultFields().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
             if (summary != null) {
@@ -617,22 +617,22 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private IQuery createQuery() {
 
         ISearchParameters params = new SearchParameters();
-        params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getFastConfiguration().isLemmatizeEnabled()));
+        params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getSearchConfiguration().isLemmatizeEnabled()));
 
-        if (getFastConfiguration().isSpellcheck()) {
+        if (getSearchConfiguration().isSpellcheck()) {
             params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));
             params.setParameter(new SearchParameter("qtf_spellcheck:addconsidered", "1"));
             params.setParameter(new SearchParameter("qtf_spellcheck:consideredverbose", "1"));
         }
 
-        if (getFastConfiguration().getName() != null && getFastConfiguration().getName().equals("relevantQueries")) {
+        if (getSearchConfiguration().getName() != null && getSearchConfiguration().getName().equals("relevantQueries")) {
             params.setParameter(new SearchParameter("sources", "alone"));
         }
         
         String kwString = "";
         String queryString = getTransformedQuery();
 
-        if (getFastConfiguration().isKeywordClusteringEnabled()) {
+        if (getSearchConfiguration().isKeywordClusteringEnabled()) {
             if (getParameters().containsKey("kw")) {
                 kwString =  getParameters().get("kw") instanceof String[]
                         ? StringUtils.join((String[]) getParameters().get("kw"), " ")
@@ -645,23 +645,23 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
         // TODO: This is a little bit messy
         // Set filter, the filtertype may be adv
-        final StringBuilder filter = new StringBuilder(getFastConfiguration().getCollectionFilterString());
+        final StringBuilder filter = new StringBuilder(getSearchConfiguration().getCollectionFilterString());
 
 
-        if (!getFastConfiguration().isIgnoreNavigation() && getNavigators() != null) {
+        if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
 
             Collection navStrings = createNavigationFilterStrings();
             filter.append(" ");
             filter.append(" ").append(StringUtils.join(navStrings.iterator(), " "));
         }
 
-        if (getFastConfiguration().getOffensiveScoreLimit() > 0) {
-            filter.append(" ").append("-ocfscore:>").append(getFastConfiguration().getOffensiveScoreLimit());
+        if (getSearchConfiguration().getOffensiveScoreLimit() > 0) {
+            filter.append(" ").append("-ocfscore:>").append(getSearchConfiguration().getOffensiveScoreLimit());
 
         }
 
-        if (getFastConfiguration().getSpamScoreLimit() > 0) {
-            filter.append(" ").append("+spamscore:<").append(getFastConfiguration().getSpamScoreLimit());
+        if (getSearchConfiguration().getSpamScoreLimit() > 0) {
+            filter.append(" ").append("+spamscore:<").append(getSearchConfiguration().getSpamScoreLimit());
         }
 
         if (getAdditionalFilter() != null) {
@@ -669,11 +669,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             filter.append(getAdditionalFilter());
         }
 
-        if (getFastConfiguration().getFilter() != null && getFastConfiguration().getFilter().length() >0) {
+        if (getSearchConfiguration().getFilter() != null && getSearchConfiguration().getFilter().length() >0) {
 
             final Calendar c = Calendar.getInstance();
             final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
-            final String updatedFilter = getFastConfiguration().getFilter()
+            final String updatedFilter = getSearchConfiguration().getFilter()
                     .replaceAll("\\{NOW\\}", sdf.format(c.getTime()));
             
             filter.append(' ' + updatedFilter);
@@ -701,12 +701,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         params.setParameter(new SearchParameter(BaseParameter.FILTER,
                 filter.toString() + " " + dynamicLanguage + " " + superFilter));
 
-        if (getFastConfiguration().getQtPipeline() != null && getFastConfiguration().getQtPipeline().length() >0) {
+        if (getSearchConfiguration().getQtPipeline() != null && getSearchConfiguration().getQtPipeline().length() >0) {
             params.setParameter(new SearchParameter(BaseParameter.QTPIPELINE,
-                    getFastConfiguration().getQtPipeline()));
+                    getSearchConfiguration().getQtPipeline()));
         }
         params.setParameter(new SearchParameter(BaseParameter.QUERY, queryString));
-        params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, getFastConfiguration().isCollapsing()));
+        params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, getSearchConfiguration().isCollapsing()));
 
         params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, "no"));
 
@@ -716,10 +716,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
 
         params.setParameter(new SearchParameter("hits", getResultsToReturn()));
-        params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, getFastConfiguration().isClustering()));
+        params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, getSearchConfiguration().isClustering()));
 
-        if (getFastConfiguration().getResultView() != null && getFastConfiguration().getResultView().length() >0) {
-            params.setParameter(new SearchParameter(BaseParameter.RESULT_VIEW, getFastConfiguration().getResultView()));
+        if (getSearchConfiguration().getResultView() != null && getSearchConfiguration().getResultView().length() >0) {
+            params.setParameter(new SearchParameter(BaseParameter.RESULT_VIEW, getSearchConfiguration().getResultView()));
         }
 
         if (getSortBy() != null && getSortBy().length() >0) {

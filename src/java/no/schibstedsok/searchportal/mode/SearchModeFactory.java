@@ -425,21 +425,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final AdvancedFastSearchConfiguration ascInherit = inherit instanceof AdvancedFastSearchConfiguration
                             ? (AdvancedFastSearchConfiguration) inherit
                             : null;
-                    // TODO use fillBeanProperty pattern instead
-                    asc.setView(parseString(commandE.getAttribute("view"),
-                            ascInherit != null ? ascInherit.getView() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    asc.setSortBy(parseString(commandE.getAttribute("sort-by"),
-                            ascInherit != null ? ascInherit.getSortBy() : "default"));
+                    fillBeanProperty(sc, inherit, "view", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "default");
                     // TODO use fillBeanProperty pattern instead
                     asc.setCollapsingEnabled(parseBoolean(commandE.getAttribute("collapsing"),
                             ascInherit != null ? ascInherit.isCollapsingEnabled() : false));
-                    // TODO use fillBeanProperty pattern instead
-                    asc.setCollapseOnField(parseString(commandE.getAttribute("collapse-on-field"),
-                            ascInherit != null ? ascInherit.getCollapseOnField() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    asc.setQtPipeline(parseString(commandE.getAttribute("qt-pipeline"),
-                            ascInherit != null ? ascInherit.getQtPipeline() : ""));
+                    fillBeanProperty(sc, inherit, "collapseOnField", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
 
                     final String qrServer = commandE.getAttribute("query-server");
                     final String qrServerValue = parseProperty(cxt, qrServer,
@@ -461,75 +453,32 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     }
                 }
                 if(sc instanceof HittaSearchConfiguration){
-                    final HittaSearchConfiguration hsc = (HittaSearchConfiguration) sc;
-                    final HittaSearchConfiguration hscInherit = inherit instanceof HittaSearchConfiguration
-                            ? (HittaSearchConfiguration)inherit
-                            : null;
-                    // TODO use fillBeanProperty pattern instead
-                    hsc.setCatalog(parseString(commandE.getAttribute("catalog"),
-                            hscInherit != null ? hscInherit.getCatalog() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    hsc.setKey(parseString(commandE.getAttribute("key"),
-                            hscInherit != null ? hscInherit.getKey() : ""));
+                    fillBeanProperty(sc, inherit, "catalog", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "key", ParseType.String , commandE, "");
                 }
                 if(sc instanceof MathExpressionSearchConfiguration){
                     final MathExpressionSearchConfiguration msc = (MathExpressionSearchConfiguration) sc;
                 }
                 if(sc instanceof NewsSearchConfiguration){
-                    final NewsSearchConfiguration nsc = (NewsSearchConfiguration) sc;
                 }
                 if(sc instanceof AbstractYahooSearchConfiguration){
-                    final AbstractYahooSearchConfiguration osc = (AbstractYahooSearchConfiguration) sc;
-                    final AbstractYahooSearchConfiguration oscInherit = inherit instanceof AbstractYahooSearchConfiguration
-                            ? (AbstractYahooSearchConfiguration)inherit
-                            : null;
-                    // TODO use fillBeanProperty pattern instead
-                    osc.setEncoding(parseString(commandE.getAttribute("encoding"),
-                            oscInherit != null ? oscInherit.getEncoding() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    osc.setHost(parseString(commandE.getAttribute("host"),
-                            oscInherit != null ? oscInherit.getHost() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    osc.setPartnerId(parseString(commandE.getAttribute("partner-id"),
-                            oscInherit != null ? oscInherit.getPartnerId() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    osc.setPort(parseInt(commandE.getAttribute("port"),
-                            oscInherit != null ? oscInherit.getPort() : 80));
+                    fillBeanProperty(sc, inherit, "encoding", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "host", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "partnerId", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "port", ParseType.Int , commandE, "80");
                 }
                 if(sc instanceof OverturePPCSearchConfiguration){
-                    final OverturePPCSearchConfiguration osc = (OverturePPCSearchConfiguration) sc;
-                    final OverturePPCSearchConfiguration oscInherit = inherit instanceof OverturePPCSearchConfiguration
-                            ? (OverturePPCSearchConfiguration)inherit
-                            : null;
-                    osc.setUrl(parseString(commandE.getAttribute("url"),
-                            oscInherit != null ? oscInherit.getUrl() : ""));
+                    fillBeanProperty(sc, inherit, "url", ParseType.String , commandE, "");
                 }
                 if(sc instanceof YahooIdpSearchConfiguration){
-                    final YahooIdpSearchConfiguration ysc = (YahooIdpSearchConfiguration) sc;
-                    final YahooIdpSearchConfiguration yscInherit = inherit instanceof YahooIdpSearchConfiguration
-                            ? (YahooIdpSearchConfiguration)inherit
-                            : null;
-                    // TODO use fillBeanProperty pattern instead
-                    ysc.setDatabase(parseString(commandE.getAttribute("database"),
-                            yscInherit != null ? yscInherit.getDatabase() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    ysc.setDateRange(parseString(commandE.getAttribute("date-range"),
-                            yscInherit != null ? yscInherit.getDateRange() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    ysc.setFilter(parseString(commandE.getAttribute("filter"),
-                            yscInherit != null ? yscInherit.getFilter() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    ysc.setRegion(parseString(commandE.getAttribute("region"),
-                            yscInherit != null ? yscInherit.getRegion() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    ysc.setRegionMix(parseString(commandE.getAttribute("region-mix"),
-                            yscInherit != null ? yscInherit.getRegionMix() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    ysc.setSpellState(parseString(commandE.getAttribute("spell-state"),
-                            yscInherit != null ? yscInherit.getSpellState() : ""));
-                    // TODO use fillBeanProperty pattern instead
-                    ysc.setUnique(parseString(commandE.getAttribute("unique"),
-                            yscInherit != null ? yscInherit.getUnique() : ""));
+                    fillBeanProperty(sc, inherit, "database", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "dateRange", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "filter", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "hideDomain", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "region", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "regionMix", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "spellState", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "unique", ParseType.String , commandE, "");
                 }
                 if(sc instanceof PicSearchConfiguration){
                     final PicSearchConfiguration psc = (PicSearchConfiguration) sc;
@@ -545,9 +494,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     // TODO use fillBeanProperty pattern instead
                     psc.setQueryServerPort(Integer.valueOf(parseProperty(cxt, queryServerPort,
                             pscInherit != null ? String.valueOf(pscInherit.getQueryServerPort()) : "0")));
-                    // TODO use fillBeanProperty pattern instead
-                    psc.setPicsearchCountry(parseString(commandE.getAttribute("picsearchCountry"),
-                            pscInherit != null ? pscInherit.getPicsearchCountry() : "no"));
+                    fillBeanProperty(sc, inherit, "picsearchCountry", ParseType.String , commandE, "no");
                 }
                 if(sc instanceof SensisSearchConfiguration){
                     final SensisSearchConfiguration ssc = (SensisSearchConfiguration) sc;

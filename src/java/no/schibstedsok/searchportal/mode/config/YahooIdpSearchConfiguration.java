@@ -8,10 +8,12 @@ package no.schibstedsok.searchportal.mode.config;
  */
 public final class YahooIdpSearchConfiguration extends AbstractYahooSearchConfiguration {
 
+    /** TODO comment me. **/
     public YahooIdpSearchConfiguration(){
         super(null);
     }
 
+    /** TODO comment me. **/
     public YahooIdpSearchConfiguration(final SearchConfiguration asc){
         super(asc);
         if(asc != null && asc instanceof YahooIdpSearchConfiguration){
@@ -146,7 +148,7 @@ public final class YahooIdpSearchConfiguration extends AbstractYahooSearchConfig
      * Setter for property region.
      * @param region New value of property region.
      */
-    public void setRegion(String region) {
+    public void setRegion(final String region) {
         this.region = region;
     }
 
@@ -167,8 +169,30 @@ public final class YahooIdpSearchConfiguration extends AbstractYahooSearchConfig
      * Setter for property filter.
      * @param filter New value of property filter.
      */
-    public void setFilter(String filter) {
+    public void setFilter(final String filter) {
         this.filter = filter;
+    }
+
+    /**
+     * Holds value of property hideDomain.
+     */
+    private String hideDomain;
+
+    /**
+     * Getter for property hideDomain.
+     * @return Value of property hideDomain.
+     */
+    public String getHideDomain() {
+        return this.hideDomain;
+    }
+
+    /**
+     * Setter for property hideDomain.
+     * Because Yahoo IDP does not supply domain exclusion without ruining the relevance.
+     * @param hideDomain New value of property hideDomain.
+     */
+    public void setHideDomain(final String hideDomain) {
+        this.hideDomain = hideDomain;
     }
 
 
