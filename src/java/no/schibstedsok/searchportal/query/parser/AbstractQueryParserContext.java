@@ -16,7 +16,7 @@ import no.schibstedsok.searchportal.query.EmailClause;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.OrganisationNumberClause;
+import no.schibstedsok.searchportal.query.NumberGroupClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.UrlClause;
@@ -148,12 +148,12 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
 
     /** {@inheritDoc}
      */
-    public final OrganisationNumberClause createOrganisationNumberClause(
+    public final NumberGroupClause createNumberGroupClause(
         final String term,
         final String field) {
 
         LOG.debug("createOrganisationNumberClause(" + term + "," + field + ")");
-        return OrganisationNumberClauseImpl.createOrganisationNumberClause(term, field, getTokenEvaluationEngine());
+        return NumberGroupClauseImpl.createNumberGroupClause(term, field, getTokenEvaluationEngine());
     }
 
     /** {@inheritDoc}

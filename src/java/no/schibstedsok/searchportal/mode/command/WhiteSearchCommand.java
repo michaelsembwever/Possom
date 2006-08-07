@@ -84,7 +84,7 @@ public class WhiteSearchCommand extends FastSearchCommand {
      */
     protected void visitImpl(final XorClause clause) {
 
-       if (clause.getHint() == XorClause.PHRASE_ON_LEFT || clause.getHint() == XorClause.ORGANISATION_NUMBER_ON_LEFT) {
+       if (clause.getHint() == XorClause.PHRASE_ON_LEFT || clause.getHint() == XorClause.NUMBER_GROUP_ON_LEFT) {
            clause.getSecondClause().accept(this);
        } else {
            clause.getFirstClause().accept(this);

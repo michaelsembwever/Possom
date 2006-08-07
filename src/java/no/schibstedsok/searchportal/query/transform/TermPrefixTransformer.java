@@ -11,7 +11,6 @@ import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import org.apache.log4j.Logger;
 
@@ -101,15 +100,6 @@ public final class TermPrefixTransformer extends AbstractQueryTransformer {
      * @param clause  The clause to prefix.
      */
     public void visitImpl(final PhoneNumberClause clause) {
-        addPrefix(clause, getNumberPrefix());
-    }
-
-    /**
-     * Prefix a org. number clause with the number prefix.
-     *
-     * @param clause  The clause to prefix.
-     */
-    public void visitImpl(final OrganisationNumberClause clause) {
         addPrefix(clause, getNumberPrefix());
     }
 

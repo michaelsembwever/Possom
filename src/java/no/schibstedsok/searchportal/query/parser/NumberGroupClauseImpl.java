@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.searchportal.query.OrganisationNumberClause;
+import no.schibstedsok.searchportal.query.NumberGroupClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.site.Site;
@@ -18,19 +18,19 @@ import no.schibstedsok.searchportal.site.Site;
 /**
  * Nine digit organisation clause.
  * May contain spaces.
- *
+ * 
  * <b>Objects of this class are immutable</b>
- *
+ * 
  * @author <a hrefOrganisationNumberClauseImpl>Michael Semb Wever</a>
  * @version $Id$
  */
-public final class OrganisationNumberClauseImpl extends AbstractLeafClause implements OrganisationNumberClause {
+public final class NumberGroupClauseImpl extends AbstractLeafClause implements NumberGroupClause {
 
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<OrganisationNumberClauseImpl>>> WEAK_CACHE
-            = new HashMap<Site,Map<String,WeakReference<OrganisationNumberClauseImpl>>>();
+    private static final Map<Site, Map<String, WeakReference<NumberGroupClauseImpl>>> WEAK_CACHE
+            = new HashMap<Site,Map<String,WeakReference<NumberGroupClauseImpl>>>();
 
     /* A IntegerClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -46,13 +46,13 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
     }
 
     /**
-     * Creator method for OrganisationNumberClauseImpl objects. By avoiding the constructors,
-     * and assuming all OrganisationNumberClauseImpl objects are immutable, we can keep track
+     * Creator method for NumberGroupClauseImpl objects. By avoiding the constructors,
+     * and assuming all NumberGroupClauseImpl objects are immutable, we can keep track
      * (via a weak reference map) of instances already in use in this JVM and reuse
      * them.
-     * The methods also allow a chunk of creation logic for the OrganisationNumberClauseImpl to be moved
+     * The methods also allow a chunk of creation logic for the NumberGroupClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     *
+     * 
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
@@ -60,23 +60,23 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
      * @return returns a OrgOrganisationNumberClauseImplstance matching the term, left and right child clauses.
      * May be either newly created or reused.
      */
-    public static OrganisationNumberClauseImpl createOrganisationNumberClause(
+    public static NumberGroupClauseImpl createNumberGroupClause(
             final String term,
             final String field,
             final TokenEvaluationEngine predicate2evaluatorFactory) {
 
         // the weakCache to use.
-        Map<String,WeakReference<OrganisationNumberClauseImpl>> weakCache
+        Map<String,WeakReference<NumberGroupClauseImpl>> weakCache
                 = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
         
         if(weakCache == null){
-            weakCache = new HashMap<String,WeakReference<OrganisationNumberClauseImpl>>();
+            weakCache = new HashMap<String,WeakReference<NumberGroupClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
         }
 
         // use helper method from AbstractLeafClause
         return createClause(
-                OrganisationNumberClauseImpl.class,
+                NumberGroupClauseImpl.class,
                 term,
                 field,
                 predicate2evaluatorFactory,
@@ -90,7 +90,7 @@ public final class OrganisationNumberClauseImpl extends AbstractLeafClause imple
      * @param knownPredicates the set of known predicates for this clause.
      * @param possiblePredicates the set of possible predicates for this clause.
      */
-    protected OrganisationNumberClauseImpl(
+    protected NumberGroupClauseImpl(
             final String term,
             final String field,
             final Set<TokenPredicate> knownPredicates,

@@ -19,7 +19,6 @@ import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.Query;

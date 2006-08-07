@@ -9,7 +9,6 @@ import java.util.Map;
 import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.OrganisationNumberClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
@@ -239,17 +238,6 @@ public final class YellowSearchCommand extends FastSearchCommand {
             }
 
             appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.", ""));
-        }
-    }
-
-    /**
-     * Add integer prefix to the organisation number.
-     *
-     * @param clause The clause to prefix.
-     */
-    protected void visitImpl(final OrganisationNumberClause clause) {
-        if (!getTransformedTerm(clause).equals("")) {
-            appendToQueryRepresentation(PREFIX_INTEGER + getTransformedTerm(clause));
         }
     }
 

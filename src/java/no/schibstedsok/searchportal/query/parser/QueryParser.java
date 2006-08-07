@@ -18,7 +18,7 @@ import no.schibstedsok.searchportal.query.EmailClause;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.OrganisationNumberClause;
+import no.schibstedsok.searchportal.query.NumberGroupClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.Query;
@@ -157,15 +157,15 @@ public interface QueryParser {
          */
         PhoneNumberClause createPhoneNumberClause(final String term, final String field);
         /**
-         * Creator wrapper method for OrganisationNumberClause objects.
-         * The methods also allow a chunk of creation logic for the OrganisationNumberClause to be moved
+         * Creator wrapper method for NumberGroupClause objects.
+         * The methods also allow a chunk of creation logic for the NumberGroupClause to be moved
          * out of the QueryParserImpl.jj file to here.
-         *
+         * 
          * @param term the term this clause represents.
          * @param field any field this clause was specified against.
          * @return returns a OrOrganisationNumberClauseImplnstance matching the term, left and right child clauses.
          */
-        OrganisationNumberClause createOrganisationNumberClause(final String term, final String field);
+        NumberGroupClause createNumberGroupClause(final String term, final String field);
         /**
          * Creator wrapper method for UrlClause objects.
          * The methods also allow a chunk of creation logic for the UrlClause to be moved

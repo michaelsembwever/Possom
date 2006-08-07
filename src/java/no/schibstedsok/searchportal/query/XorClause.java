@@ -19,7 +19,7 @@ public interface XorClause extends OrClause {
     
     Hint PHRASE_ON_LEFT = new Hint(){};
     Hint PHONE_NUMBER_ON_LEFT = new Hint(){};
-    Hint ORGANISATION_NUMBER_ON_LEFT = new Hint(){};
+    Hint NUMBER_GROUP_ON_LEFT = new Hint(){};
     Hint ROTATION_ALTERNATION = new Hint(){};
     
     interface Hint{}
