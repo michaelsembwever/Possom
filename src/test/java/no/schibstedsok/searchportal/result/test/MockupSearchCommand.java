@@ -12,7 +12,7 @@ import no.schibstedsok.searchportal.result.SearchResult;
 
 import java.util.HashMap;
 import java.util.Properties;
-import no.schibstedsok.searchportal.mode.SearchMode;
+import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;

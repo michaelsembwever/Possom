@@ -13,7 +13,7 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
-import no.schibstedsok.searchportal.mode.SiteConfiguration;
+import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;

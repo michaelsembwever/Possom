@@ -2,9 +2,8 @@
  * Copyright (2005) Schibsted Søk AS
  *
  */
-package no.schibstedsok.searchportal.mode;
+package no.schibstedsok.searchportal.mode.config;
 
-import no.schibstedsok.searchportal.mode.config.*;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
 
@@ -13,7 +12,7 @@ import java.util.ArrayList;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision: 3359 $</tt>
+ * @version <tt>$Revision$</tt>
  */
 public final class SearchMode {
 

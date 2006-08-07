@@ -23,7 +23,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import no.schibstedsok.searchportal.mode.SiteConfiguration;
+import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;

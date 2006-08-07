@@ -4,7 +4,7 @@ package no.schibstedsok.searchportal.mode.config;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.mode.SearchMode;
+import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;

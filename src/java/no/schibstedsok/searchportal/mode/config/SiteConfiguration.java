@@ -1,12 +1,11 @@
 // Copyright (2006) Schibsted Søk AS
-package no.schibstedsok.searchportal.mode;
+package no.schibstedsok.searchportal.mode.config;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.searchportal.mode.config.*;
 import no.schibstedsok.searchportal.util.config.PropertiesContext;
 
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;

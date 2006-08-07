@@ -11,7 +11,7 @@ package no.schibstedsok.searchportal.mode.config;
 
 import java.util.Properties;
 import no.schibstedsok.searchportal.TestCase;
-import no.schibstedsok.searchportal.mode.SiteConfiguration;
+import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.Site;
 
 /**

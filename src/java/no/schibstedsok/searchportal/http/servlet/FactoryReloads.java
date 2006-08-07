@@ -10,7 +10,7 @@ package no.schibstedsok.searchportal.http.servlet;
 import java.util.Locale;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
-import no.schibstedsok.searchportal.mode.SiteConfiguration;
+import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.searchportal.site.Site;
