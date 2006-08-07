@@ -264,27 +264,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <decorator:getProperty property="page.blogDateNavigation"/>
 
             <c:if test='${!(empty tab.rssResultName)}'>
-                <div  style="margin-top: 11px;">
-                    <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
-                        <tr>
-                            <td><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
-                        </tr>
-                        <tr>
-                            <td class="geo_header"><%=text.getMessage("rssTitle") %></td>
-                        </tr>
-                        <tr>
-                            <td><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
-                        </tr>
-                    </table>
-                    <table border="0" cellspacing="0" cellpadding="0" class="navbar_table">
-                        <tr>
-                            <td class="nav_pad"><a href="<search:linkPulse url="${request.requestURL}?${request.queryString}&output=rss" param="category:static;subcategory:left" index="ext"/>" style="display:inline;">RSS</a>&nbsp;&nbsp; |&nbsp;&nbsp; <a href="<search:linkPulse url="${request.requestURL}?${request.queryString}&output=rss&feedtype=atom_0.3" param="category:static;subcategory:left" index="ext"/>" style="display:inline;">ATOM</a><br/><a href="http://sesam.no/search/?q=&page=/pages/7/69" style="display:inline;">Hva er dette?</a></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" class="dots" alt="" /></td>
-                        </tr>
-                    </table>
-                </div>
+                <decorator:getProperty property="page.rss-nav"/>
             </c:if>
         </td>
 	<% } %>
