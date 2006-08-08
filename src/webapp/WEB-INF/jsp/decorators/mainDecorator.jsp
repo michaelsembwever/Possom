@@ -73,7 +73,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/<c:out value='${startTime}'/>/default.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/<c:out value='${startTime}'/>/decorator-style.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/<c:out value='${startTime}'/>/sitesearch.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/<c:out value='${startTime}'/>/ps.css" rel="stylesheet" type="text/css" />
