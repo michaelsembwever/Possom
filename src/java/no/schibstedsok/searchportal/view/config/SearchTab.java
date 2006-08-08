@@ -54,7 +54,8 @@ public final class SearchTab {
                 final Collection<EnrichmentHint> enrichments,
                 final String adCommand,
                 final int adLimit,
-                final int adOnTop){
+                final int adOnTop,
+                final List<String> css){
 
         this.inherit = inherit;
         this.id = id;
@@ -81,8 +82,10 @@ public final class SearchTab {
         if(inherit != null){
             this.navigators.addAll(inherit.navigators);
             this.enrichments.addAll(inherit.enrichments);
+            this.css.addAll(inherit.css);
         }
         this.rssResultName = rssResultName;
+        this.css.addAll(css);
     }
 
     // Getters --------------------------------------------------------
@@ -538,6 +541,20 @@ public final class SearchTab {
 
 
     }
+
+    /**
+     * Holds value of property css.
+     */
+    private final List<String> css = new ArrayList<String>();
+
+    /**
+     * Getter for property css.
+     * @return Value of property css.
+     */
+    public List<String> getCss() {
+        return Collections.unmodifiableList(css);
+    }
+
 
 
 }

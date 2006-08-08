@@ -8,6 +8,7 @@
 package no.schibstedsok.searchportal.view.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -200,7 +201,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     inherit != null ? inherit.getParentKey() : "");
             final String adCommand = parseString(tabE.getAttribute("ad-command"),
                     inherit != null ? inherit.getAdCommand() : "");
-
+            final String allCss = parseString(tabE.getAttribute("css"), null);
+            final String[] css = allCss != null ? allCss.split(",") : new String[]{};
 
             // enrichment hints
             final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");
@@ -258,7 +260,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     enrichments,
                     adCommand,
                     parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
-                    parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1));
+                    parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
+                    Arrays.asList(css));
             
             try{
                 tabsLock.writeLock().lock();
