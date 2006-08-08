@@ -76,7 +76,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <link media="screen" href="../css/<c:out value='${startTime}'/>/default.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/<c:out value='${startTime}'/>/decorator-style.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/<c:out value='${startTime}'/>/sitesearch.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/<c:out value='${startTime}'/>/front.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/<c:out value='${startTime}'/>/ps.css" rel="stylesheet" type="text/css" />
     <c:if test='${!(empty tab.rssResultName)}'>
     <link rel="alternate" type="application/rss+xml" title="RSS - Sesam" href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss" />
