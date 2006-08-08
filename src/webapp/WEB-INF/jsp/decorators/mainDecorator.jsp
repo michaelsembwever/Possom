@@ -82,6 +82,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <c:forEach var="t" items="${tab.ancestry}">
         <link media="screen" href="../css/<c:out value='${startTime}'/>/tab/<c:out value='${t.id}'/>.css" rel="stylesheet" type="text/css" />
     </c:forEach>
+    <c:forEach var="css" items="${tab.css}">
+        <link media="screen" href="../css/<c:out value='${startTime}'/>/tab/<c:out value='${css}'/>.css" rel="stylesheet" type="text/css" />
+    </c:forEach>
 
     <link media="print" href="../css/<c:out value='${startTime}'/>/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
