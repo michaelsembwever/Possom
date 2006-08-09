@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -299,11 +298,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /** TODO comment me. **/
     protected final SearchResult performExecution(final String queryToUse){
 
-        StopWatch watch = null;
-        if (LOG.isInfoEnabled()) {
-            watch = new StopWatch();
-            watch.start();
-        }
+        final StopWatch watch = new StopWatch();
+        watch.start();
+        Integer hitCount = null;
+        
         try{
 
             //TODO: Hide this in QueryRule.execute(some parameters)
@@ -319,24 +317,24 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     + "; tabKey:" + parameters.get("c") + ';');
 
             final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
-
-            STATISTICS_LOG.info(
-                    "<search-command name=\"" + getSearchConfiguration().getStatisticalName() + "\">"
-                        + "<query>" + context.getQuery().getQueryString() + "</query>"
-                        + "<search-name>"
-                        + getClass().getSimpleName()
-                        + "</search-name>"
-                        + "<hits>" + result.getHitCount() + "</hits>"
-                    + "</search-command>");
-            LOG.info("Hits is " + getSearchConfiguration().getName() + ':' + result.getHitCount());
+            hitCount = result.getHitCount();
+            
+            LOG.info("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
 
             return result;
 
         }finally{
-            if (LOG.isInfoEnabled()) {
-                watch.stop();
-                LOG.info("Search " + getSearchConfiguration().getName() + " took " + watch);
-            }
+
+            watch.stop();
+            LOG.info("Search " + getSearchConfiguration().getName() + " took " + watch);
+
+            STATISTICS_LOG.info(
+                "<search-command name=\"" + getSearchConfiguration().getStatisticalName() + "\">"
+                    + "<query>" + context.getQuery().getQueryString() + "</query>"
+                    + "<search-name>" + getClass().getSimpleName() + "</search-name>"
+                    + (hitCount != null ? "<hits>" + hitCount + "</hits>" : "<failure/>")
+                    + "<time>" + watch + "</time>"
+                + "</search-command>");
         }
     }
 
