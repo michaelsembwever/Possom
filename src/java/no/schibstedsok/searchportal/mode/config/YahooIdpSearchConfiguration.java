@@ -195,6 +195,27 @@ public final class YahooIdpSearchConfiguration extends AbstractYahooSearchConfig
         this.hideDomain = hideDomain;
     }
 
+    /**
+     * Holds value of property language.
+     */
+    private String language;
+
+    /**
+     * Getter for property language.
+     * @return Value of property language.
+     */
+    public String getLanguage() {
+        return this.language;
+    }
+
+    /**
+     * Setter for property language.
+     * @param language New value of property language.
+     */
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
 
 
 }
