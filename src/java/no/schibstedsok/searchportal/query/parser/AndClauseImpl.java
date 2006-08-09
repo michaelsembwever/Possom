@@ -21,7 +21,7 @@ import no.schibstedsok.searchportal.site.Site;
  * The AndClauseImpl represents a joining clause between two terms in the query.
  * For example: "term1 AND term2".
  * <b>Objects of this class are immutable</b>
- * 
+ *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
@@ -30,9 +30,9 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<AndClauseImpl>>> WEAK_CACHE 
+    private static final Map<Site,Map<String,WeakReference<AndClauseImpl>>> WEAK_CACHE
             = new HashMap<Site,Map<String,WeakReference<AndClauseImpl>>>();
-    
+
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -43,7 +43,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
         predicates.addAll(TokenPredicate.getFastTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
     }
-    
+
     private final Clause secondClause;
 
     /**
@@ -53,7 +53,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
      * them.
      * The methods also allow a chunk of creation logic for the AndClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
+     *
      * @param first the left child clause of the operation clause we are about to create (or find).
      * @param second the right child clause of the operation clause we are about to create (or find).
      * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
@@ -68,7 +68,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
-        final String term = 
+        final String term =
                 (first instanceof LeafClause && ((LeafClause) first).getField() != null
                     ?  ((LeafClause) first).getField() + ":"
                     : "")
@@ -81,10 +81,12 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
-        
+
+        final String unique = '(' + term + ')';
+
         // the weakCache to use.
         Map<String,WeakReference<AndClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
-        if( weakCache == null ){
+        if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<AndClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
         }
@@ -92,7 +94,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
         // use helper method from AbstractLeafClause
         return createClause(
                 AndClauseImpl.class,
-                term,
+                unique,
                 first,
                 second,
                 predicate2evaluatorFactory,
@@ -109,7 +111,7 @@ public final class AndClauseImpl extends AbstractOperationClause implements AndC
      */
     protected AndClauseImpl(
             final String term,
-            final Clause first, 
+            final Clause first,
             final Clause second,
             final Set<TokenPredicate> knownPredicates,
             final Set<TokenPredicate> possiblePredicates) {

@@ -15,5 +15,5 @@ package no.schibstedsok.searchportal.query;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface AndNotClause extends OperationClause {
-    
+
 }

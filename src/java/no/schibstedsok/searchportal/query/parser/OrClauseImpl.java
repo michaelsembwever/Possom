@@ -30,9 +30,9 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<OrClauseImpl>>> WEAK_CACHE 
+    private static final Map<Site,Map<String,WeakReference<OrClauseImpl>>> WEAK_CACHE
             = new HashMap<Site,Map<String,WeakReference<OrClauseImpl>>>();
-    
+
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -81,9 +81,12 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
 
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
+
+        final String unique = '(' + term + ')';
+
         // the weakCache to use.
         Map<String,WeakReference<OrClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
-        if( weakCache == null ){
+        if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<OrClauseImpl>>();
             WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
         }
@@ -91,7 +94,7 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
         // use helper method from AbstractLeafClause
         return createClause(
                 OrClauseImpl.class,
-                term,
+                unique,
                 first,
                 second,
                 predicate2evaluatorFactory,

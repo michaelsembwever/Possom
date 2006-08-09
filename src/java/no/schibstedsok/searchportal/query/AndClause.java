@@ -13,13 +13,6 @@ package no.schibstedsok.searchportal.query;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface AndClause extends OperationClause{
+public interface AndClause extends DoubleOperatorClause{
 
-    /**
-     * Get the secondClause.
-     * 
-     * @return the secondClause.
-     */
-    Clause getSecondClause();
-    
 }

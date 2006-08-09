@@ -83,17 +83,22 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
         // update the factory with what the current term is
         predicate2evaluatorFactory.setCurrentTerm(term);
 
+
+        final String unique = '(' + term + ')';
+
         // the weakCache to use.
-        Map<String,WeakReference<DefaultOperatorClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        Map<String,WeakReference<DefaultOperatorClauseImpl>> weakCache
+                = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+
         if(weakCache == null){
             weakCache = new HashMap<String,WeakReference<DefaultOperatorClauseImpl>>();
-            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(), weakCache);
         }
 
         // use helper method from AbstractLeafClause
         return createClause(
                 DefaultOperatorClauseImpl.class,
-                term,
+                unique,
                 first,
                 second,
                 predicate2evaluatorFactory,

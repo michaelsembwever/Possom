@@ -15,12 +15,17 @@ package no.schibstedsok.searchportal.query;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface XorClause extends OrClause {
+    /** TODO comment me. **/
     Hint getHint();
-    
+
+    /** TODO comment me. **/
     Hint PHRASE_ON_LEFT = new Hint(){};
+    /** TODO comment me. **/
     Hint PHONE_NUMBER_ON_LEFT = new Hint(){};
+    /** TODO comment me. **/
     Hint NUMBER_GROUP_ON_LEFT = new Hint(){};
+    /** TODO comment me. **/
     Hint ROTATION_ALTERNATION = new Hint(){};
-    
+
     interface Hint{}
 }
