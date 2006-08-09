@@ -42,6 +42,8 @@ public final class SearchServlet extends HttpServlet {
     private static final long serialVersionUID = 3068140845772756438L;
 
     private static final Logger LOG = Logger.getLogger(SearchServlet.class);
+    private static final Logger STATISTICS_LOG = Logger.getLogger("no.schibstedsok.Statistics");
+    
     private static final String ERR_MISSING_TAB = "No existing implementation for tab ";
     private static final String ERR_MISSING_MODE = "No existing implementation for mode ";
 
@@ -65,16 +67,11 @@ public final class SearchServlet extends HttpServlet {
             return;
         }
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: doGet()");
-            LOG.debug("Character encoding ="  + request.getCharacterEncoding());
-        }
+        LOG.trace("ENTR: doGet()");
+        LOG.debug("Character encoding ="  + request.getCharacterEncoding());
 
-        StopWatch stopWatch = null;
-        if (LOG.isInfoEnabled()) {
-            stopWatch = new StopWatch();
-            stopWatch.start();
-        }
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
 
         final Site site = (Site) request.getAttribute(Site.NAME_KEY);
         // BaseContext providing SiteContext and ResourceContext.
@@ -155,10 +152,13 @@ public final class SearchServlet extends HttpServlet {
 
             query.run();
 
-            if (LOG.isInfoEnabled()) {
-                stopWatch.stop();
-                LOG.info("doGet(): Search took " + stopWatch + " " + query.getQueryString());
-            }
+            stopWatch.stop();
+            LOG.info("Search took " + stopWatch + " " + query.getQueryString());
+            STATISTICS_LOG.info(
+                "<search-servlet>"
+                    + "<query>" + query.getQueryString() + "</query>"
+                    + "<time>" + stopWatch + "</time>"
+                + "</search-servlet>");
 
         } catch (InterruptedException e) {
             LOG.error("Task timed out");
