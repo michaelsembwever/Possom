@@ -76,7 +76,7 @@ public final class RotationAlternation {
     /** TODO comment me. **/
     public Clause createRotations(final Clause originalRoot) {
         
-        DoubleOperatorClause root = (DoubleOperatorClause) originalRoot;
+        Clause rotated = originalRoot;
         
         // find forests (subtrees) of AndClauses and OrClauses.
         // TODO handle forests hidden behind SingleOperatorClauses (NOT and ANDNO)
@@ -84,6 +84,7 @@ public final class RotationAlternation {
         if(originalRoot instanceof DoubleOperatorClause){
 
             LOG.debug("**** STARTING ROTATION ALTERNATION ****");
+            DoubleOperatorClause root = (DoubleOperatorClause) originalRoot;
             
             final Set<DoubleOperatorClause> forestRoots = new ForestFinder().findForestRoots(root);
             LOG.debug(DEBUG_FOUND_FORESTS + forestRoots.size());
@@ -110,8 +111,9 @@ public final class RotationAlternation {
             LOG.info("RotationAlternation produced " + root);
             LOG.debug("**** FINISHED ROTATION ALTERNATION ****");
             
+            rotated = root;
         }
-        return root;
+        return rotated;
     }
 
     // Z implementation ----------------------------------------------
