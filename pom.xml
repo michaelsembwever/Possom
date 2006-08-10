@@ -194,7 +194,7 @@
                 <msearch.configuration.url>http://mobile:8080/mobile/conf/msearch-client.properties</msearch.configuration.url>
                 <mail.smtp.host>ssmail.schibstedsok.no</mail.smtp.host>
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam.develop</log.file>
+                <log.file>sesam</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
                 <log.directory>${basedir}/logs</log.directory>
                 <log.level>DEBUG</log.level>
