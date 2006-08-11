@@ -56,7 +56,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     private static final String DEBUG_LISTNAME_FOUND_1 = "List for ";
     private static final String DEBUG_LISTNAME_FOUND_2 = " is ";
 
-    public static String VERYFAST_EVALUATOR_XMLFILE = "VeryFastEvaluators.xml";
+    /** TODO comment me. **/
+    public static final String VERYFAST_EVALUATOR_XMLFILE = "VeryFastEvaluators.xml";
     private static final String TOKEN_HOST_PROPERTY = "tokenevaluator.host";
     private static final String TOKEN_PORT_PROPERTY = "tokenevaluator.port";
     private static final String REAL_TOKEN_PREFIX = "FastQT_";
@@ -68,7 +69,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     private static final Map<Site,Map<TokenPredicate,String>> LIST_NAMES
             = new HashMap<Site,Map<TokenPredicate,String>>();
     private static final ReentrantReadWriteLock LIST_NAMES_LOCK = new ReentrantReadWriteLock();
-    
+
     private volatile boolean init = false;
 
     private final HTTPClient httpClient;
@@ -84,15 +85,15 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     VeryFastTokenEvaluator(final Context cxt){
 
         // pre-condition check
-        
+
         context = cxt;
-        
+
         final Properties props = SiteConfiguration.valueOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class,context)).getProperties();
         final String host = props.getProperty(TOKEN_HOST_PROPERTY);
         final int port = Integer.parseInt(props.getProperty(TOKEN_PORT_PROPERTY));
         clientConfId = "token_evaluator(" + host + ':' + port + ')';
-            
+
         httpClient = HTTPClient.instance(clientConfId, host, port);
         if (httpClient == null) {
             throw new IllegalArgumentException("Not allowed to use null HTTPClient!");
@@ -117,12 +118,12 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             LIST_NAMES_LOCK.writeLock().unlock();
         }
     }
-    
+
     private static void initImpl(final Context cxt) throws ParserConfigurationException  {
 
         // initialise the parent site's configuration
         final Site parent = cxt.getSite().getParent();
-        if( parent != null && LIST_NAMES.get(parent) == null ){
+        if(parent != null && LIST_NAMES.get(parent) == null){
             initImpl(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
@@ -143,16 +144,16 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         final Site site = cxt.getSite();
         if(LIST_NAMES.get(site) == null){
             // create map entry for this site
-            
+
             LIST_NAMES.put(site, new HashMap<TokenPredicate,String>());
-        
+
             // initialise this site's configuration
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             final DocumentBuilder builder = factory.newDocumentBuilder();
             final DocumentLoader loader = cxt.newDocumentLoader(VERYFAST_EVALUATOR_XMLFILE, builder);
             loader.abut();
-            LOG.debug("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
+            LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
             final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);
             final Document doc = loader.getDocument();
             final Element root = doc.getDocumentElement();
@@ -162,17 +163,17 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                 final Element list = (Element) lists.item(i);
 
                 final String tokenName = list.getAttribute("token");
-                LOG.debug(" ->list@token: " + tokenName);
+                LOG.info(" ->list@token: " + tokenName);
 
                 final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
                 final String listName = list.getAttribute("list-name");
-                LOG.debug(" ->list: " + listName);
+                LOG.info(" ->list: " + listName);
 
                 listNames.put(token, listName);
 
             }
-            LOG.debug("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
+            LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
         }
     }
 
@@ -212,6 +213,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         return evaluation;
     }
 
+    /** TODO comment me. **/
     public List<TokenMatch> reportToken(final TokenPredicate token, final String query) {
 
         LOG.trace("reportToken(" + token + "," + query + ")");
@@ -277,6 +279,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         }
     }
 
+    /** TODO comment me. **/
     public boolean isQueryDependant(final TokenPredicate predicate) {
         return predicate.name().startsWith(EXACT_PREFIX.toUpperCase());
     }
@@ -310,9 +313,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         LIST_NAMES_LOCK.readLock().unlock();
         return REAL_TOKEN_PREFIX + listName + REAL_TOKEN_SUFFIX;
     }
-       
+
     private static String getFastListNameImpl(final TokenPredicate token, final Site site){
-        
+
         final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);
         return listNames.get(token);
     }

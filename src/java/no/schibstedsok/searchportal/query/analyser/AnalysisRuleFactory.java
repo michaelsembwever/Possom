@@ -14,7 +14,6 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.searchportal.util.SearchConstants;
 import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
 
@@ -37,8 +36,8 @@ import org.w3c.dom.NodeList;
 
 /**  Responsible for loading and serving all the AnalysisRule instances.
  * These rules consisting of score sets come from the configuration file SearchConstants.ANALYSIS_RULES_XMLFILE.
- * Rules are inherited on a per-rule basis. Global predicates are inherited as well. Inherited global predicates can 
- * only be overidden by global predicates. Private predicates does no 
+ * Rules are inherited on a per-rule basis. Global predicates are inherited as well. Inherited global predicates can
+ * only be overidden by global predicates. Private predicates does no
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -65,9 +64,9 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     private static final String DEBUG_CREATED_PREDICATE = "Parsed predicate ";
     private static final String DEBUG_STARTING_RULE = "Parsing rule ";
     private static final String DEBUG_FINISHED_RULE = "Parsed rule ";
-    private static final String DEBUG_PREDICATE_NOT_INHERITED = 
+    private static final String DEBUG_PREDICATE_NOT_INHERITED =
             "Predicate not inherited: ";
-    
+
     /**
      * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
      * time. But only one will persist in the map.
@@ -76,12 +75,13 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      */
     private static final Map<Site,AnalysisRuleFactory> INSTANCES = new HashMap<Site,AnalysisRuleFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
-    
+
+    /** TODO comment me. **/
     public static final String ANALYSIS_RULES_XMLFILE = "AnalysisRules.xml";
 
     private final Map predicateIds = new HashMap();
     private final Map<String, Predicate> globalPredicates = new HashMap();
-    
+
 
     private final Map rules = new HashMap();
 
@@ -112,16 +112,16 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     private void init() {
         if (!init) {
             loader.abut();
-            LOG.debug("Parsing " + ANALYSIS_RULES_XMLFILE + " started");
+            LOG.info("Parsing " + ANALYSIS_RULES_XMLFILE + " started");
             final Document doc = loader.getDocument();
             final Element root = doc.getDocumentElement();
 
             final AnalysisRuleFactory parentFactory = getParentFactory();
 
-            final Map inheritedPredicates = parentFactory != null ?
-                parentFactory.getGlobalPredicates() :
-                Collections.EMPTY_MAP;
-                
+            final Map inheritedPredicates = parentFactory != null
+                ? parentFactory.getGlobalPredicates()
+                : Collections.EMPTY_MAP;
+
             readPredicates(root, globalPredicates, inheritedPredicates);
 
             // ruleList
@@ -130,7 +130,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                 final Element rule = (Element) ruleList.item(i);
                 final String id = rule.getAttribute("id");
                 final AnalysisRule analysisRule = new AnalysisRule();
-                LOG.debug(DEBUG_STARTING_RULE + id + " " + analysisRule);
+                LOG.info(DEBUG_STARTING_RULE + id + " " + analysisRule);
 
                 // private predicates
                 final Map privatePredicates = new HashMap(globalPredicates);
@@ -149,17 +149,17 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                     analysisRule.setPredicateNameMap(Collections.unmodifiableMap(predicateIds));
                 }
                 rules.put(id, analysisRule);
-                LOG.debug(DEBUG_FINISHED_RULE + id + " " + analysisRule);
+                LOG.info(DEBUG_FINISHED_RULE + id + " " + analysisRule);
             }
-            LOG.debug("Parsing " + ANALYSIS_RULES_XMLFILE + " finished");
+            LOG.info("Parsing " + ANALYSIS_RULES_XMLFILE + " finished");
         }
         init = true;
     }
 
     private AnalysisRuleFactory getParentFactory() {
-        
+
         if (context.getSite().getParent() != null) {
-        
+
             return valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext() {
@@ -178,10 +178,10 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     }
 
     private Map readPredicates(
-            final Element element, 
+            final Element element,
             final Map predicateMap,
-            final Map inheritedPredicates) 
-    {
+            final Map inheritedPredicates){
+
         final NodeList predicates = element.getChildNodes(); //ElementsByTagName("predicate");
 
         for (int i = 0; i < predicates.getLength(); ++i) {
@@ -197,7 +197,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     }
 
     private Predicate readPredicate(
-            final Element element, 
+            final Element element,
             final Map predicateMap,
             final Map inheritedPredicates) {
         Predicate result = null;
@@ -236,7 +236,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     }
 
     private Predicate findPredicate(
-            final String name, 
+            final String name,
             final Map predicateMap,
             final Map parentPredicateMap) {
 
@@ -334,10 +334,10 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      */
     public AnalysisRule getRule(final String ruleName) {
         LOG.trace("getRule(" + ruleName + ")");
-        
+
         init();
         AnalysisRule rule = (AnalysisRule) rules.get(ruleName);
-        
+
         if(rule == null) {
             rule = valueOf(ContextWrapper.wrap(
                     Context.class,
@@ -354,12 +354,12 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             },
                     context
                     )).getRule(ruleName);
-            
+
             if (rule == null) {
                 LOG.warn(WARN_RULE_NOT_FOUND + ruleName);
             }
         }
-        
+
         return rule;
     }
 
@@ -371,12 +371,12 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      * @return AnalysisRuleFactory for this site.
      */
     public static AnalysisRuleFactory valueOf(final Context cxt) {
-        
+
         final Site site = cxt.getSite();
         INSTANCES_LOCK.readLock().lock();
         AnalysisRuleFactory instance = INSTANCES.get(site);
         INSTANCES_LOCK.readLock().unlock();
-        
+
         if (instance == null) {
             try {
                 instance = new AnalysisRuleFactory(cxt);
@@ -413,7 +413,8 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         });
         return instance;
     }
-    
+
+    /** TODO comment me. **/
     public boolean remove(final Site site){
 
         try{
@@ -423,7 +424,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             INSTANCES_LOCK.writeLock().unlock();
         }
     }
-    
+
     private Map<String, Predicate> getGlobalPredicates() {
         init();
         return globalPredicates;

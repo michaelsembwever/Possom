@@ -11,7 +11,6 @@ import no.schibstedsok.searchportal.util.config.ResourceContext;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.searchportal.util.SearchConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,10 +44,13 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     private static final Logger LOG = Logger.getLogger(RegExpEvaluatorFactory.class);
 
     private static final String ERR_MUST_USE_CONTEXT_CONSTRUCTOR = "Must use constructor that supplies a context!";
-    private static final String ERR_DOC_BUILDER_CREATION = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
+    private static final String ERR_DOC_BUILDER_CREATION
+            = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String ERR_COULD_NOT_FIND_TOKEN_PREDICATE = "Failed to find TokenPredicate.";
 
+    /** TODO comment me. **/
     static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+    /** TODO comment me. **/
     public static final String REGEXP_EVALUATOR_XMLFILE = "RegularExpressionEvaluators.xml";
 
     /**
@@ -64,7 +66,8 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     private final DocumentLoader loader;
     private volatile boolean init = false;
 
-    private Map<TokenPredicate,RegExpTokenEvaluator> regExpEvaluators = new HashMap<TokenPredicate,RegExpTokenEvaluator>();
+    private Map<TokenPredicate,RegExpTokenEvaluator> regExpEvaluators
+            = new HashMap<TokenPredicate,RegExpTokenEvaluator>();
 
     /**
      * Illegal Constructor. Must use RegExpEvaluatorFactory(SiteContext).
@@ -95,8 +98,8 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
      *   for all the RegExpTokenEvaluators we will be using.
      *  Keeps thread-safe state so that this method can be called multiple times with the resource only loaded once.
      *  ( Truth is that it may run more than once, in parallel during the first call, but because regExpEvaluators uses
-     *    the TokenPredicates as keys there will not be differing states. Just a small performance lost during this first
-     *    call. )
+     *    the TokenPredicates as keys there will not be differing states.
+     *    Just a small performance lost during this first call. )
      */
     private void init() {
 
@@ -104,7 +107,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
             INSTANCES_LOCK.writeLock().lock();
             if (!init) {
                 loader.abut();
-                LOG.debug("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
+                LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
                 final Document doc = loader.getDocument();
                 final Element root = doc.getDocumentElement();
                 final NodeList evaluators = root.getElementsByTagName("evaluator");
@@ -113,12 +116,12 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                     final Element evaluator = (Element) evaluators.item(i);
 
                     final String tokenName = evaluator.getAttribute("token");
-                    LOG.debug(" ->evaluator@token: " + tokenName);
+                    LOG.info(" ->evaluator@token: " + tokenName);
 
                     final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
                     final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
-                    LOG.debug(" ->evaluator@query-dependant: " + queryDep);
+                    LOG.info(" ->evaluator@query-dependant: " + queryDep);
 
                     final Collection compiled = new ArrayList();
 
@@ -127,7 +130,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                         final Element pattern = (Element) patterns.item(j);
 
                         final String expression = pattern.getFirstChild().getNodeValue();
-                        LOG.debug(" --->pattern: " + expression);
+                        LOG.info(" --->pattern: " + expression);
 
                         // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
                         final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
@@ -141,7 +144,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                     regExpEvaluators.put(token, regExpTokenEvaluator);
 
                 }
-                LOG.debug("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
+                LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
                 init = true;
             }
         }finally{
@@ -155,12 +158,12 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
      * @return RegExpEvaluatorFactory for this site.
      */
     public static RegExpEvaluatorFactory valueOf(final Context cxt) {
-        
+
         final Site site = cxt.getSite();
         INSTANCES_LOCK.readLock().lock();
         RegExpEvaluatorFactory instance = INSTANCES.get(site);
         INSTANCES_LOCK.readLock().unlock();
-        
+
         if (instance == null) {
             try {
                 instance = new RegExpEvaluatorFactory(cxt);
@@ -197,7 +200,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
         return instance;
     }
 
-    /** 
+    /**
      * If the regular expression is not found in this site's RegularExpressionEvaluators.xml file
      * it will fallback and look in the parent site.
      * @param token the predicate the evaluator is to be used for
@@ -206,33 +209,38 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     public TokenEvaluator getEvaluator(final TokenPredicate token) {
         init();
         TokenEvaluator result = regExpEvaluators.get(token);
-        if( result == null ){
+        if(result == null){
             result = valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
                         public Site getSite(){
                             return context.getSite().getParent();
                         }
-                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                        public PropertiesLoader newPropertiesLoader(
+                                final String resource,
+                                final Properties properties) {
                             return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
                         }
-                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                        public DocumentLoader newDocumentLoader(
+                                final String resource,
+                                final DocumentBuilder builder) {
                             return UrlResourceLoader.newDocumentLoader(this, resource, builder);
                         }
                     },
                     context
                 )).getEvaluator(token);
         }
-        if( result == null ){
-            // if we cannot find an evaulator, then awlways fail evaluation. 
+        if(result == null){
+            // if we cannot find an evaulator, then awlways fail evaluation.
             //  Rather than encourage a NullPointerException
             result = TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR;
         }
         return result;
     }
 
+    /** TODO comment me. **/
     public boolean remove(final Site site) {
-        
+
         try{
             INSTANCES_LOCK.writeLock().lock();
             return null != INSTANCES.remove(site);
