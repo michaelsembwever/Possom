@@ -75,8 +75,8 @@ public final class TestVisitor extends TestCase {
         final LeafClause ss = PhraseClauseImpl.createPhraseClause("\"schibsted sok\"", null, tokenEvaluationEngine);
 
         // build right-leaning tree. requirement of current Clause/QueryParser implementation.
-        final Clause a = AndClauseImpl.createAndClause(eklund, ss, tokenEvaluationEngine);
-        final Clause andClause = AndClauseImpl.createAndClause(magnus, a, tokenEvaluationEngine);
+        Clause andClause = AndClauseImpl.createAndClause(eklund, ss, tokenEvaluationEngine);
+        andClause = AndClauseImpl.createAndClause(magnus, andClause, tokenEvaluationEngine);
 
 
         visitor.visit(andClause);
@@ -86,7 +86,7 @@ public final class TestVisitor extends TestCase {
         // assert test
         assertNotNull(visitor.getParsedQueryString());
         assertEquals(goldenResult, visitor.getParsedQueryString());
-        assertEquals(goldenResult, andClause.getTerm());
+        assertEquals(goldenResult, andClause.getTerm().replaceAll("\\(|\\)",""));
     }
 
     /** test a visitor on a QuerParser built clause heirarchy.
@@ -237,7 +237,7 @@ public final class TestVisitor extends TestCase {
         // assert test
         assertNotNull(visitor.getParsedQueryString());
         assertEquals(visitorResult, visitor.getParsedQueryString());
-        assertEquals(rootTerm, q.getRootClause().getTerm());
+        assertEquals(rootTerm, q.getRootClause().getTerm().replaceAll("\\(|\\)",""));
 
     }
 
@@ -290,14 +290,14 @@ public final class TestVisitor extends TestCase {
 
         protected void visitImpl(final DefaultOperatorClause clause) {
             clause.getFirstClause().accept(this);
-            sb.append(" ");
+            sb.append(' ');
             clause.getSecondClause().accept(this);
         }
 
         protected void visitImpl(final PhraseClause clause) {
             if (clause.getField() != null) {
                 sb.append(clause.getField());
-                sb.append(":");
+                sb.append(':');
             }
 
             sb.append(clause.getTerm());
