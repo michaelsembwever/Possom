@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Properties;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
+import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -65,7 +66,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     private final static String COLLAPSE_PARAMETER="collapse";
 
     private static final Logger LOG =
-            Logger.getLogger(AbstractSimpleFastSearchCommand.class);
+            Logger.getLogger(AbstractAdvancedFastSearchCommand.class);
 
     // Attributes ----------------------------------------------------
     private final AdvancedFastSearchConfiguration cfg;
@@ -215,16 +216,28 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     protected void visitImpl(final LeafClause clause) {
         if (clause.getField() == null) {
             appendToQueryRepresentation(getTransformedTerm(clause));
-        }
+        } 
     }
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
     protected void visitImpl(final AndClause clause) {
+        // The leaf clauses might not produce any output. For example terms 
+        // having a site: field. In these cases we should not output the 
+        // operator keyword.
+        boolean hasEmptyLeaf = false;
+
+        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
+        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
+        
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" and ");
+
+        if (! hasEmptyLeaf) 
+            appendToQueryRepresentation(" and ");
+
         clause.getSecondClause().accept(this);
     }
+
     protected void visitImpl(final OrClause clause) {
         appendToQueryRepresentation(" (");
         clause.getFirstClause().accept(this);
@@ -233,11 +246,16 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
         appendToQueryRepresentation(") ");
     }
     protected void visitImpl(final DefaultOperatorClause clause) {
+        boolean hasEmptyLeaf = false;
 
-
+        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
+        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
 
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" and ");
+        
+        if (! hasEmptyLeaf)
+            appendToQueryRepresentation(" and ");
+
         clause.getSecondClause().accept(this);
     }
     protected void visitImpl(final NotClause clause) {
@@ -252,6 +270,15 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
         appendToQueryRepresentation("(");
         clause.getFirstClause().accept(this);
         appendToQueryRepresentation(")");
+    }
+
+    private boolean isEmptyLeaf(final Clause clause) {
+        if (clause instanceof LeafClause) {
+            final LeafClause leaf = (LeafClause) clause;
+            return leaf.getField() != null;
+        }
+
+        return false;
     }
     /**
      *
