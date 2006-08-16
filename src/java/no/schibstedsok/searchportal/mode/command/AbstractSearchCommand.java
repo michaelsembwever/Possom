@@ -10,6 +10,7 @@ import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
@@ -624,23 +625,21 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             }
         }
 
-        protected void visitImpl(final DefaultOperatorClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final OrClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final AndClause clause) {
+        protected void visitImpl(final DoubleOperatorClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
 
         protected void visitImpl(final XorClause clause) {
             clause.getFirstClause().accept(this);
+        }
+        
+        private void visitImpl(final NotClause clause){
+            // ignore fields inside NOTs for now
+        }
+        
+        private void visitImpl(final AndNotClause clause){
+            // ignore fields inside NOTs for now
         }
 
         private final void appendFilter(String term, final String field) {
