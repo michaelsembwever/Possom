@@ -52,8 +52,8 @@ public final class StringChopper {
             int laCount = 0, raCount = 0, laOriginalCount = 0, raOriginalCount = 0;
             for( Matcher m = la.matcher(choppedString); m.find(); ++laCount);
             for( Matcher m = ra.matcher(choppedString); m.find(); ++raCount);
-            for( Matcher m = la.matcher(choppedString); m.find(); ++laOriginalCount);
-            for( Matcher m = ra.matcher(choppedString); m.find(); ++raOriginalCount);
+            for( Matcher m = la.matcher(s); m.find(); ++laOriginalCount);
+            for( Matcher m = ra.matcher(s); m.find(); ++raOriginalCount);
             // if we have more left than right arrows AND the original string was balanced
             if( laCount > raCount && laOriginalCount == raOriginalCount){
                 choppedString.setLength(choppedString.lastIndexOf("<"));
@@ -62,20 +62,21 @@ public final class StringChopper {
             // append the dot-dot-dot
             switch( choppedString.charAt( choppedString.length() - 1 ) ){
                 case '.':
-                    choppedString.append("..");
-                    break;
-                case ' ':
-                    choppedString.append(" ...");
+                    if( !choppedString.toString().endsWith("...")){
+                        if( choppedString.toString().endsWith("..")){
+                            choppedString.append(".");
+                        }else {
+                            choppedString.append("..");
+                        }
+                    }
                     break;
                 default:
                     final int lastSpace = choppedString.lastIndexOf(" ");
 
                     if (lastSpace >= 0) {
-                        choppedString.setLength(lastSpace);
-                        choppedString.append(" ...");
-                    } else {
-                        choppedString.append("...");
+                        choppedString.setLength(lastSpace+1);
                     }
+                    choppedString.append("...");
                     break;
 	        }
             
