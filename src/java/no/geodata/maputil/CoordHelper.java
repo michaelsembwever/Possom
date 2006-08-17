@@ -349,6 +349,9 @@ public class CoordHelper {
                 if (deltaX == 0 && deltaY == 0) { //dersom deltax og deltay er null, betyr det at alle punkt har samme koordinater.
                     me = makeEnvelope(me.centerX, me.centerY, zoomlevel);
                     return me;
+                } else if (deltaX < 20) {
+                    me = makeEnvelope(me.centerX, me.centerY, getDefaultZoomlevel() - 1);
+                    return me;
                 }
                 else  {
                     if (deltaX == 0)//kan ikke ha nullverdi for deltaverdiene. Alle treff med koordinater m� i dette tilfelle ha forskjellig X men lik Y, eller omvendt. Skal litt til f�r dette sl�r til, men kj�rer allikevel en sjekk.
