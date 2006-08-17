@@ -75,7 +75,7 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
                 cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24 * 7);
                 filter.append(new SimpleDateFormat("yyyy-MM-dd'T00:00:00Z'").format(cal.getTime()));
             }
-        } else if (isRSS && parameters.get("nav_categories") != null) {
+        } else if (!navDays && parameters.get("nav_categories") != null) {
             cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
             filter.append(" +starttime:<");
             filter.append(new SimpleDateFormat("yyyy-MM-dd'T03:00:00Z'").format(cal.getTime()));
