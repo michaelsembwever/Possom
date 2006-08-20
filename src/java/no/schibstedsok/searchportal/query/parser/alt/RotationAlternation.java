@@ -8,13 +8,13 @@
 
 package no.schibstedsok.searchportal.query.parser.alt;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -28,16 +28,26 @@ import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
 import org.apache.log4j.Logger;
 
-/**
+/** SEARCH-439 - Rotation Alternation.
+ *
+ * Variable notation:
+ *  oXX -> original XX clause
+ *  rXX -> XX clause from last rotation
+ *  nXX -> newly rotated XX clause
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public final class RotationAlternation {
 
+    /** Context to work within. **/
     public interface Context extends BaseContext, QueryParser.Context {  }
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(RotationAlternation.class);
+    private static final String INFO_ROTATIONS_RESULT = "RotationAlternation produced ";
+    private static final String DEBUG_STARTING_ROTATIONS = "**** STARTING ROTATION ALTERNATION ****";
+    private static final String DEBUG_FINISHED_ROTATIONS = "**** FINISHED ROTATION ALTERNATION ****";
     private static final String DEBUG_ROOT_NOT_OPERATION = "Root is not an OperationClause";
     private static final String DEBUG_FOUND_FORESTS = "Numer of forests found in query ";
     private static final String DEBUG_ORIGINAL_BRANCH_ADD = "Adding to original branch ";
@@ -65,7 +75,7 @@ public final class RotationAlternation {
     // Constructors --------------------------------------------------
 
     /**
-     * Creates a new instance of RotationAlternation
+     * Creates a new instance of RotationAlternation.
      */
     public RotationAlternation(final Context cxt) {
         context = cxt;
@@ -75,45 +85,46 @@ public final class RotationAlternation {
 
     /** TODO comment me. **/
     public Clause createRotations(final Clause originalRoot) {
-        
-        Clause rotated = originalRoot;
-        
+
         // find forests (subtrees) of AndClauses and OrClauses.
         // TODO handle forests hidden behind SingleOperatorClauses (NOT and ANDNO)
         //  although queries rarely start with such clauses.
+        // XXX This implementation only handles forests that exist down the right branch only.
         if(originalRoot instanceof DoubleOperatorClause){
 
-            LOG.debug("**** STARTING ROTATION ALTERNATION ****");
+            LOG.debug(DEBUG_STARTING_ROTATIONS);
             DoubleOperatorClause root = (DoubleOperatorClause) originalRoot;
-            
-            final Set<DoubleOperatorClause> forestRoots = new ForestFinder().findForestRoots(root);
+
+            final List<DoubleOperatorClause> forestRoots = new ForestFinder().findForestRoots(root);
             LOG.debug(DEBUG_FOUND_FORESTS + forestRoots.size());
 
             for(DoubleOperatorClause clause : forestRoots){
 
                 final LinkedList<? extends DoubleOperatorClause> rotations = createForestRotation(clause);
 
-//                if(clause instanceof AndClause){
-//                    rotations = createForestRotation((AndClause) clause);
-//
-//                }else if(clause instanceof OrClause){
-//                    rotations = createForestRotation((OrClause) clause);
-//
-//                }else if(clause instanceof DefaultOperatorClause){
-//                    rotations = createForestRotation((DefaultOperatorClause) clause);
-//
-//                }
-
                 final XorClause result = createXorClause(rotations);
-                root = root != clause ? replaceDescendant(root, result, clause) : result;
+                // search in root for all occurances of clause and 'replaceDescendant' on each.
+                if(root == clause){
+                    root = result;
+                }else{
+                    // search in root for all occurances of clause and 'replaceDescendant' on each.
+                    final List<DoubleOperatorClause> parents = parents(root, clause);
+                    for(DoubleOperatorClause clauseParent : parents){
+                        root = replaceDescendant(root, result, clause, clauseParent);
+                    }
+                }
 
+                originalFromNew.clear();
+                newFromOriginal.clear();
+                beforeRotationFromNew.clear();
+                beforeRotationFromOriginal.clear();
             }
-            LOG.info("RotationAlternation produced " + root);
-            LOG.debug("**** FINISHED ROTATION ALTERNATION ****");
-            
-            rotated = root;
+            LOG.info(INFO_ROTATIONS_RESULT + root);
+            LOG.debug(DEBUG_FINISHED_ROTATIONS);
+
+            return root;
         }
-        return rotated;
+        return originalRoot;
     }
 
     // Z implementation ----------------------------------------------
@@ -156,7 +167,7 @@ public final class RotationAlternation {
             beforeRotationFromOriginal.clear();
             for (Entry<DoubleOperatorClause,DoubleOperatorClause> entry : beforeRotationFromNew.entrySet()) {
 
-                // reverse key to values in each entry 
+                // reverse key to values in each entry
                 // entry.getValue() is NOT new!!
                 beforeRotationFromOriginal.put(originalFromNew.get(entry.getKey()), entry.getKey());
             }
@@ -208,7 +219,7 @@ public final class RotationAlternation {
         // the first nOrphan is the exception because it is always a leaf that's free to re-use.
         Clause nOrphan = leftChild(beforeRotationFromOriginal.get(oIterate));
 
-        T oC = oIterate;//parent(oForestRoot, oIterate);
+        T oC = oIterate;
         do{
             oC = parent(oForestRoot, oC);
             LOG.debug(" orpan--> " + nOrphan);
@@ -218,7 +229,6 @@ public final class RotationAlternation {
             nOrphan = createOperatorClause(leftChild(oC), nOrphan, oC);
             LOG.debug("  result--> " + nOrphan);
 
-        //}while(beforeRotationFromOriginal.get(oC) != rTop && beforeRotationFromOriginal.get(oC) != rightOpChild(rTop)); // we have just rotated the rTop clause. getthefuckout.
         }while(beforeRotationFromOriginal.get(oC) != rTop); // we have just rotated the rTop clause. getthefuckout.
 
         // LEFT-LEANING-UPPER-BRANCH ROTATION
@@ -226,7 +236,7 @@ public final class RotationAlternation {
         LOG.debug("--- LEFT-LEANING-UPPER-BRANCH ROTATION ---");
         oC = rightOpChild((T)originalFromNew.get(nOrphan));
         // first find the first right child that's not yet been orphaned.
-        while (newFromOriginal.get(oC) != null /*orphanage.contains( newFromOriginal.get(oC))*/) {
+        while (newFromOriginal.get(oC) != null) {
             oC = rightOpChild(oC);
         }
 
@@ -241,7 +251,6 @@ public final class RotationAlternation {
             LOG.debug("  result--> " + nOrphan);
             oC = rightOpChild(oC);
 
-        //}while(oC != null && beforeRotationFromOriginal.get(oC) != rBottom); // we have just rotated the rBottom. getthefuckout.
         }while(oC != null); // we have just rotated the rBottom. getthefuckout.
 
         // ORIGINAL TREE ROOT ROTATION
@@ -249,8 +258,8 @@ public final class RotationAlternation {
         // keep rotating above the centre of rotation
             // loop rebuilding the tree, only replacing old instances with new instances.
         final T rForestRoot = (T) beforeRotationFromOriginal.get(oForestRoot);
-        if( beforeRotationFromNew.size() != beforeRotationFromOriginal.size() ){
-            nOrphan = replaceDescendant(rForestRoot, (DoubleOperatorClause) nOrphan, rTop); // XXX last argument needs to be from orginal branch
+        if(beforeRotationFromNew.size() != beforeRotationFromOriginal.size()){
+            nOrphan = replaceDescendant(rForestRoot, (DoubleOperatorClause) nOrphan, rTop, parent(rForestRoot,rTop)); // XXX last argument needs to be from orginal branch
         }
         return (T) nOrphan;
     }
@@ -292,27 +301,54 @@ public final class RotationAlternation {
         return parentFinder.getParent(root, child);
     }
 
+    /** return all parents operation clauses of the given child. **/
+    private <T extends DoubleOperatorClause> List<T> parents(final T root, final Clause child) {
+
+        return parentFinder.getParents(root, child);
+    }
+
+    /** Build new DoubleOperatorClauses from newChild all the way back up to the root.
+     * XXX Only handles single splits, or one layer of variations, denoted by the childsParentBeforeRotation argument.
+     *      This could be solved by using an array, specifying ancestry line, for the argument instead.
+     **/
     private DoubleOperatorClause replaceDescendant(
             final DoubleOperatorClause root,
             final DoubleOperatorClause newChild,
-            final DoubleOperatorClause replacementFor){
+            final DoubleOperatorClause childBeforeRotation,
+            final DoubleOperatorClause childsParentBeforeRotation){
 
         DoubleOperatorClause nC = newChild;
-        DoubleOperatorClause rR = replacementFor;
-        for(nC = replaceOperatorClause(nC, rR); root != rR; rR = parent(root, rR)){ // XXX last argument needs to be from orginal branch
-            nC = replaceOperatorClause(nC, rR); // XXX last argument needs to be from orginal branch
-        }
+        DoubleOperatorClause rC = childBeforeRotation;
+        DoubleOperatorClause rCParent = childsParentBeforeRotation;
+
+        do{
+            nC = replaceOperatorClause(root, nC, rC, rCParent);
+            for(DoubleOperatorClause parent : parents(root, rC)){
+                if(rCParent == parent){
+                    rC = parent;
+                    rCParent = root == rCParent ? rCParent : parent(root, rCParent);
+                    break;
+                }
+            }
+        }while(root != rC);
+
         return nC;
     }
 
     private <T extends DoubleOperatorClause> T replaceOperatorClause(
+            final DoubleOperatorClause root,
             final Clause newChild,
-            final T replacementFor) {
+            final T childBeforeRotation,
+            final DoubleOperatorClause childsParentBeforeRotation) {
 
         return createOperatorClause(
-                    leftChild(replacementFor) instanceof LeafClause ? leftChild(replacementFor) : newChild,
-                    rightChild(replacementFor) instanceof LeafClause ? rightChild(replacementFor) : newChild,
-                    replacementFor); // XXX last argument needs to be from orginal branch
+                    leftChild(childsParentBeforeRotation) == childBeforeRotation
+                        ? newChild
+                        : leftChild(childsParentBeforeRotation),
+                    rightChild(childsParentBeforeRotation) == childBeforeRotation
+                        ? newChild
+                        : rightChild(childsParentBeforeRotation),
+                    (T)childsParentBeforeRotation); // XXX last argument needs to be from orginal branch
     }
 
     /** Create a new operator clause, of type opCls, with the left and right children.
@@ -329,6 +365,9 @@ public final class RotationAlternation {
 
         if (AndClause.class.isAssignableFrom(replacementFor.getClass())) {
             clause = (T) context.createAndClause(left, right);
+
+        } else if (XorClause.class.isAssignableFrom(replacementFor.getClass())) {
+            clause = (T) context.createXorClause(left, right, ((XorClause)replacementFor).getHint());
 
         } else if (OrClause.class.isAssignableFrom(replacementFor.getClass())) {
             clause = (T) context.createOrClause(left, right);
@@ -353,46 +392,91 @@ public final class RotationAlternation {
                 XorClause.ROTATION_ALTERNATION);
     }
 
+    /** TODO comment me. **/
+    public Map<DoubleOperatorClause, DoubleOperatorClause> getBeforeRotationFromNew() {
+        return beforeRotationFromNew;
+    }
+
     // Inner classes -------------------------------------------------
 
     private static final class ParentFinder extends AbstractReflectionVisitor {
+
         private boolean searching = false;
-        private DoubleOperatorClause parent;
+        private boolean singleMode = false;
+        private List<DoubleOperatorClause> parents = new ArrayList<DoubleOperatorClause>();
         private Clause child;
+        private final Map<DoubleOperatorClause,Map<Clause,List<DoubleOperatorClause>>> cache
+                = new HashMap<DoubleOperatorClause,Map<Clause,List<DoubleOperatorClause>>>();
 
         private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY
                 = "visit(object) can't be called directly on this visitor!";
         private static final String ERR_CHILD_NOT_IN_HEIRARCHY
                 = "The child is not part of this clause family!";
 
-        public synchronized <T extends DoubleOperatorClause> T getParent(final T root, final Clause child) {
+        private synchronized <T extends DoubleOperatorClause> void findParentsImpl(final T root, final Clause child) {
 
             this.child = child;
             if (searching || child == null) {
                 throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
             }
             searching = true;
-            parent = null;
-            visit(root);
+            parents.clear();
+            if(null == findInCache(root)){
+                visit(root);
+                updateCache(root);
+            }else{
+                parents.addAll(findInCache(root));
+            }
             searching = false;
             this.child = null;
-            if (parent == null) {
-                throw new IllegalArgumentException(ERR_CHILD_NOT_IN_HEIRARCHY);
-            }
-            return (T)parent;
         }
 
+        public synchronized <T extends DoubleOperatorClause> List<T> getParents(final T root, final Clause child) {
+            findParentsImpl(root, child);
+            return Collections.unmodifiableList(new ArrayList<T>((List<T>)parents));
+        }
+
+        public synchronized <T extends DoubleOperatorClause> T getParent(final T root, final Clause child) {
+
+            singleMode = true;
+            findParentsImpl(root, child);
+            singleMode = false;
+            if (parents.size() == 0) {
+                throw new IllegalArgumentException(ERR_CHILD_NOT_IN_HEIRARCHY);
+            }
+            return (T)parents.get(0);
+        }
+
+        private <T extends DoubleOperatorClause> List<DoubleOperatorClause> findInCache(final T root){
+
+            Map<Clause,List<DoubleOperatorClause>> innerCache = cache.get(root);
+            if(innerCache == null){
+                innerCache = new HashMap<Clause,List<DoubleOperatorClause>>();
+                cache.put(root, innerCache);
+            }
+            return innerCache.get(child);
+        }
+
+        private <T extends DoubleOperatorClause> void updateCache(final T root){
+
+            Map<Clause,List<DoubleOperatorClause>> innerCache = cache.get(root);
+            if(innerCache == null){
+                innerCache = new HashMap<Clause,List<DoubleOperatorClause>>();
+                cache.put(root, innerCache);
+            }
+            innerCache.put(child, new ArrayList<DoubleOperatorClause>(parents));
+        }
 
         protected void visitImpl(final OperationClause clause) {
-            if (parent == null) {
+            if (!singleMode || parents.size() == 0) {
                 clause.getFirstClause().accept(this);
             }
         }
 
         protected void visitImpl(final DoubleOperatorClause clause) {
-            if (parent == null) {
+            if (!singleMode || parents.size() == 0) {
                 if (clause.getFirstClause() == child || clause.getSecondClause() == child) {
-                    parent = clause;
+                    parents.add(clause);
                 }  else  {
                     clause.getFirstClause().accept(this);
                     clause.getSecondClause().accept(this);
@@ -412,12 +496,12 @@ public final class RotationAlternation {
         private static final Logger LOG = Logger.getLogger(ForestFinder.class);
         private static final String DEBUG_COUNT_TO = " trees in forest ";
         private boolean searching = false;
-        private final Set<DoubleOperatorClause> roots = new HashSet<DoubleOperatorClause>();
+        private final List<DoubleOperatorClause> roots = new ArrayList<DoubleOperatorClause>();
 
         private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY
                 = "visit(object) can't be called directly on this visitor!";
 
-        public synchronized Set<DoubleOperatorClause> findForestRoots(final OperationClause root) {
+        public synchronized List<DoubleOperatorClause> findForestRoots(final OperationClause root) {
 
             if (searching) {
                 throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
@@ -425,8 +509,9 @@ public final class RotationAlternation {
             searching = true;
             roots.clear();
             visit(root);
+            //Collections.reverse(roots);
             searching = false;
-            return Collections.unmodifiableSet(roots);
+            return Collections.unmodifiableList(roots);
         }
 
 

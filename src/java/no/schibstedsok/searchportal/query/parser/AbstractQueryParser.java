@@ -79,8 +79,9 @@ public abstract class AbstractQueryParser implements QueryParser {
             try{
                 if( queryStr != null && queryStr.trim().length()>0 ){
 
-                    final Clause root = parse();
-                    //final Clause root = alterations( parse() );
+                    // Uncomment the following line, and comment the line after than, to disable RotationAlternation.
+                    //final Clause root = parse();
+                    final Clause root = alterations( parse() );
 
                     query = new AbstractQuery(context.getQueryString()){
                         public Clause getRootClause(){
