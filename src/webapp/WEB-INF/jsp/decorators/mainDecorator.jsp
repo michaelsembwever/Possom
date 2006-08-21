@@ -94,7 +94,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 </head>
 
 
-<body onload="<%if (currentC.equals("y") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("sw") || currentC.equals("swip")) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
+<body onload="<%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("sw") || currentC.equals("swip")) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
 
     <search:velocity template="/pages/main"/>
 
@@ -167,7 +167,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
     <% } else { %>
 
-        <%if (q.trim().equals("") && (currentC.equals("y") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b"))) {%>
+        <%if (q.trim().equals("") && (currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b"))) {%>
 	<decorator:getProperty property="page.newsearch-bar"/>
 	<% }else{ %>
 	<decorator:getProperty property="page.search-bar"/>
@@ -229,7 +229,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 </c:forEach>
             </table>
 
-            <%if (currentC.equals("y") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
+            <%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
 
                 <decorator:getProperty property="page.companies-nav"/>
             <%}else if (currentC.equals("w") || currentC.equals("wip") || currentC.equals("wipgift")) {%>
@@ -395,7 +395,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
 
                 <!-- Companies -->
-                <%if (currentC.equals("y")) {%>
+                <%if (currentC.equals("y") || currentC.equals("yg")) {%>
                 <%if (request.getParameter("companyId") != null) {%>
                 <%} else {%>
                 <decorator:getProperty property="page.pseudo-local"/>
@@ -437,7 +437,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
                     <%--  offset  --%>
                     <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
-                    <decorator:getProperty property="page.offsetPager"/>
+                        <%if (currentC.equals("pp")) {%>
+                                <search:velocity template="results/offsetPager" command="scanpix"/>
+                        <% } else { %>
+                            <decorator:getProperty property="page.offsetPager"/>
+                         <% } %>
                     <%}%>
                </td>
 
