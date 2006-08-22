@@ -396,9 +396,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             final String collapseId = getParameter(COLLAPSE_PARAMETER);
 
-            LOG.debug("Expansion " + getSearchConfiguration().isExpansionEnabled());
-            LOG.debug("Collapsing " + getSearchConfiguration().isCollapsing());
-            
             if (getSearchConfiguration().isCollapsing() 
             && getSearchConfiguration().isExpansionEnabled()) {
                 if (collapseId != null && !collapseId.equals("")) {
