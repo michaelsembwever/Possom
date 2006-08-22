@@ -725,6 +725,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (getSortBy() != null && getSortBy().length() >0) {
             params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getSortBy()));
         }
+        
+        if (getParameter("c").equals("yg")) {
+            params.setParameter(new SearchParameter("qtf_geosearch:center", "(" + getParameter("cla") + "," + getParameter("clo")));
+            params.setParameter(new SearchParameter("qtf_geosearch:filterbox", "[(" + getParameter("la1") + "," + getParameter("lo1") + ");(" + getParameter("la2") + "," + getParameter("lo2") + ")]"));            
+        }
 
         // TODO: Refactor
         if (getParameters().containsKey("userSortBy")) {
