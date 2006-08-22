@@ -23,16 +23,8 @@ public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration
     private String queryServer;
     private String sortBy;
     private boolean collapsingEnabled;
-    private String collapseOnField;
+    private boolean expansionEnabled;
     private String qtPipeline;
-    
-    public void setCollapseOnField(String collapseOnField) {
-        this.collapseOnField = collapseOnField;
-    }
-
-    public String getCollapseOnField() {
-        return collapseOnField;
-    }
     
     public void setCollapsingEnabled(final boolean collapsingEnabled) {
         this.collapsingEnabled = collapsingEnabled;
@@ -41,7 +33,28 @@ public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration
     public boolean isCollapsingEnabled() {
         return collapsingEnabled;
     }
-    
+
+    /**
+     * Returns true if expansion is enabled. Expansion means the possibility 
+     * to retrieve all of the documents that has been collapsed for a domain. If
+     * this is set to false the templates won't get the information that there
+     * are collapsed documents.
+     *
+     * @return true if expansion is enabled.
+     */
+    public boolean isExpansionEnabled() {
+        return expansionEnabled;
+    }
+
+    /**
+     * Setter for the expansionEnabled property.
+     *
+     * @param expansionEnabled 
+     */
+    public void setExpansionEnabled(final boolean expansionEnabled) {
+        this.expansionEnabled = expansionEnabled;
+    }
+
     private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();
 
     public AdvancedFastSearchConfiguration(final SearchConfiguration asc){

@@ -25,7 +25,7 @@ import no.schibstedsok.searchportal.query.LeafClause;
  *
  * @author maek
  */
-public class BlogSearchCommand extends AdvancedFastSearchCommand {
+public class BlogSearchCommand extends NavigatableAdvancedFastCommand {
 
     /** Creates a new instance of FastSearchCommand
      *

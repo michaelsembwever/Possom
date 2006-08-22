@@ -64,7 +64,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     private final static String ENCODER_CLASS =
             "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
     private final static String COLLAPSE_PARAMETER="collapse";
-
+    
     private static final Logger LOG =
             Logger.getLogger(AbstractAdvancedFastSearchCommand.class);
 
@@ -74,6 +74,8 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     private Map<String, Navigator> navigatedTo = new HashMap<String,Navigator>();
     private Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
 
+    private IQueryResult result;
+    
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
@@ -101,12 +103,12 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
 
             final StringBuilder filterBuilder = new StringBuilder();
 
-            if (super.getFilter() != null) {
+            if (getFilter() != null) {
                 filterBuilder.append(getFilter());
                 filterBuilder.append(" ");
             }
 
-            if (super.getAdditionalFilter() != null) {
+            if (getAdditionalFilter() != null) {
                 filterBuilder.append(getAdditionalFilter());
                 filterBuilder.append(" ");
             }
@@ -125,11 +127,6 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
                 if (collapseId == null || collapseId.equals("")) {
                     query.setParameter(new SearchParameter(
                             BaseParameter.COLLAPSING, true));
-
-                    if (!cfg.getCollapseOnField().equals("")) {
-                        query.setParameter(new SearchParameter(
-                                "collapseon", cfg.getCollapseOnField()));
-                    }
                 } else {
                     filterBuilder.append("+collapseid:").append(collapseId);
                 }
@@ -147,14 +144,14 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
             if (! cfg.getQtPipeline().equals("")) {
                 query.setParameter(new SearchParameter(BaseParameter.QT_PIPELINE, cfg.getQtPipeline()));
             }
-            
+
             final ISearchView view = factory.getSearchView(cfg.getView());
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Query is " + query);
             }
 
-            final IQueryResult result = view.search(query);
+            result = view.search(query);
 
             final FastSearchResult searchResult = new FastSearchResult(this);
 
@@ -174,7 +171,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
                 }
             }
             
-            if (cfg.isCollapsingEnabled()) {
+            if (cfg.isCollapsingEnabled() && cfg.isExpansionEnabled()) {
                 if (collapseId != null && !collapseId.equals("")) {
                     if (searchResult.getResults().size() > 0) {
                         final SearchResultItem itm = searchResult.getResults().get(0);
@@ -190,8 +187,8 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
             LOG.error("exeute ", ex);
             throw new InfrastructureException(ex);
         } catch (SearchEngineException ex) {
-            LOG.error("exeute ", ex);
-            throw new InfrastructureException(ex);
+            LOG.error(ex.getMessage() + " " + ex.getCause());
+            return new FastSearchResult(this);
         } catch (IOException ex) {
             LOG.error("exeute ", ex);
             throw new InfrastructureException(ex);
@@ -294,13 +291,13 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
         }
     }
 
-    protected Map<String, Navigator> getNavigators() {
-        return cfg.getNavigators();
+    
+    protected IQueryResult getIQueryResult() {
+        return result;
     }
-
-
+    
     // Private -------------------------------------------------------
-
+    
     private int getMaxDocIndex(
             final IQueryResult result,
             final int cnt,

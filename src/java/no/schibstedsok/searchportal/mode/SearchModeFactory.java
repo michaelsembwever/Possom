@@ -306,6 +306,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private enum CommandTypes {
         COMMAND(AbstractSearchConfiguration.class),
         ADVANCED_FAST_COMMAND(AdvancedFastSearchConfiguration.class),
+        NAVIGATABLE_FAST_COMMAND(NavigatableAdvancedFastConfiguration.class),
         BLENDING_NEWS_COMMAND(BlendingNewsSearchConfiguration.class),
         FAST_COMMAND(FastSearchConfiguration.class),
         HITTA_COMMAND(HittaSearchConfiguration.class),
@@ -395,6 +396,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             : null;
                     fillBeanProperty(sc, inherit, "clustering", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "collapsing", ParseType.Boolean , commandE, "false");
+                    // TODO use fillBeanProperty pattern instead
+                    fsc.setExpansionEnabled(parseBoolean(commandE.getAttribute("expansion"),
+                            fscInherit != null ? fscInherit.isExpansionEnabled() : false));
+
                     if(commandE.getAttribute("collections").length() >0){
                         fsc.getCollections().clear();
                         final String[] collections = commandE.getAttribute("collections").split(",");
@@ -435,7 +440,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     // TODO use fillBeanProperty pattern instead
                     asc.setCollapsingEnabled(parseBoolean(commandE.getAttribute("collapsing"),
                             ascInherit != null ? ascInherit.isCollapsingEnabled() : false));
-                    fillBeanProperty(sc, inherit, "collapseOnField", ParseType.String , commandE, "");
+                    // TODO use fillBeanProperty pattern instead
+                    asc.setExpansionEnabled(parseBoolean(commandE.getAttribute("expansion"),
+                            ascInherit != null ? ascInherit.isExpansionEnabled() : false));
+
                     fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
 
                     final String qrServer = commandE.getAttribute("query-server");
@@ -455,6 +463,17 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             asc.addNavigator(navigator, navigator.getId());
                         }
 
+                    }
+                }
+                if (sc instanceof NavigatableAdvancedFastConfiguration) {
+                    final NavigatableAdvancedFastConfiguration nasc = (NavigatableAdvancedFastConfiguration) sc;
+                    // navigators
+                    final NodeList nList = commandE.getElementsByTagName("navigators");
+                    for(int i = 0; i < nList.getLength(); ++i){
+                        final Collection<Navigator> navigators = parseNavigators((Element)nList.item(i));
+                        for(Navigator navigator : navigators){
+                            nasc.addNavigator(navigator, navigator.getId());
+                        }
                     }
                 }
                 if(sc instanceof HittaSearchConfiguration){

@@ -10,6 +10,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -83,6 +84,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private static final String DEBUG_EXECUTE_QUERY = "execute() Query=";
     private static final String DEBUG_EXECUTE_FILTER = "execute() Filter=";
     private static final String DEBUG_PARAM_NOT_FOUND = "Param not found ";
+    private static final String COLLAPSE_PARAMETER="collapse";
 
     // Attributes ----------------------------------------------------
     private final Map<String, Navigator> navigatedTo = new HashMap<String,Navigator>();
@@ -350,6 +352,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             }
 
             final IFastSearchEngine engine = getSearchEngine();
+
             final IQuery fastQuery = createQuery();
 
             IQueryResult result = null;
@@ -389,6 +392,22 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             if (getNavigators() != null) {
                 collectModifiers(result, searchResult);
+            }
+
+            final String collapseId = getParameter(COLLAPSE_PARAMETER);
+
+            LOG.debug("Expansion " + getSearchConfiguration().isExpansionEnabled());
+            LOG.debug("Collapsing " + getSearchConfiguration().isCollapsing());
+            
+            if (getSearchConfiguration().isCollapsing() 
+            && getSearchConfiguration().isExpansionEnabled()) {
+                if (collapseId != null && !collapseId.equals("")) {
+                    if (searchResult.getResults().size() > 0) {
+                        final SearchResultItem itm = searchResult.getResults().get(0);
+                        final URL url = new URL(itm.getField("url"));
+                        searchResult.addField("collapsedDomain", url.getHost());
+                    }
+                }
             }
 
             return searchResult;
@@ -611,6 +630,22 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 item.addField(entry.getValue(), summary.getSummary());
             }
         }
+        
+        
+        if (getSearchConfiguration().isCollapsing() && getSearchConfiguration().isExpansionEnabled()) {
+            final String currCollapseId = getParameter(COLLAPSE_PARAMETER);
+
+            if (currCollapseId == null || currCollapseId.equals("")) {
+                final String moreHits = document.getSummaryField("morehits").getSummary();
+                
+                if (moreHits.equals("1")) {
+                    item.addField("moreHits", "true");
+                    item.addField("collapseParameter", COLLAPSE_PARAMETER);
+                    item.addField("collapseId", document.getSummaryField("collapseid").getSummary());
+                }
+            }
+        }
+
         return item;
     }
 
@@ -662,6 +697,20 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         if (getSearchConfiguration().getSpamScoreLimit() > 0) {
             filter.append(" ").append("+spamscore:<").append(getSearchConfiguration().getSpamScoreLimit());
+        }
+        
+        
+        final String collapseId = getParameter(COLLAPSE_PARAMETER);
+
+        if (getSearchConfiguration().isCollapsing()) {
+            if (collapseId == null || collapseId.equals("")) {
+                params.setParameter(new SearchParameter(
+                        BaseParameter.COLLAPSING, true));
+            } else {
+                params.setParameter(new SearchParameter(
+                        BaseParameter.COLLAPSING, false));
+                filter.append(" +collapseid:").append(collapseId);
+            }
         }
 
         if (getAdditionalFilter() != null) {

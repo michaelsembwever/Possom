@@ -54,7 +54,8 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private boolean keywordClusteringEnabled = false;
     private String qtPipeline;
     private transient volatile String collectionString;
-
+    private boolean expansionEnabled;
+    
     private String resultView;
     private boolean clustering = false;
     private boolean ignoreNavigation = false;
@@ -298,5 +299,26 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
      */
     public void setRelevantQueries(final boolean relevantQueriesEnabled) {
         this.relevantQueries = relevantQueriesEnabled;
+    }
+    
+        /**
+     * Returns true if expansion is enabled. Expansion means the possibility 
+     * to retrieve all of the documents that has been collapsed for a domain. If
+     * this is set to false the templates won't get the information that there
+     * are collapsed documents.
+     *
+     * @return true if expansion is enabled.
+     */
+    public boolean isExpansionEnabled() {
+        return expansionEnabled;
+    }
+
+    /**
+     * Setter for the expansionEnabled property.
+     *
+     * @param expansionEnabled 
+     */
+    public void setExpansionEnabled(final boolean expansionEnabled) {
+        this.expansionEnabled = expansionEnabled;
     }
 }
