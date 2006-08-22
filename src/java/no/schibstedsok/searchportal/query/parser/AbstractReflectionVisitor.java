@@ -149,7 +149,9 @@ public abstract class AbstractReflectionVisitor implements Visitor {
                 // [RECURSION] Look for super interfaces
                 method = getMethodFromInterface(interfaces[i]);
             }  else  {
-                LOG.debug("Found method accepting <" + interfaces[i].getSimpleName()
+                // This is the most useful log statement in this file, 
+                //  but gets called too many times per request to be promoted to debug.
+                LOG.trace("Found method accepting <" + interfaces[i].getSimpleName()
                         + "> in " + method.getDeclaringClass().getSimpleName());
             }
         }
