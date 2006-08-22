@@ -19,7 +19,7 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.YellowSearchResult;
 import org.apache.log4j.Logger;
 
-public final class YellowSearchCommand extends FastSearchCommand {
+public class YellowSearchCommand extends FastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(YellowSearchCommand.class);
 
