@@ -321,6 +321,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         TVSEARCH_COMMAND(TvSearchConfiguration.class),
         YAHOO_IDP_COMMAND(YahooIdpSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
+        YELLOWGEOPAGES_COMMAND(YellowGeoSearchConfiguration.class),
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
         DAILY_WORD_COMMAND(DailyWordConfiguration.class),
@@ -516,6 +517,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if(sc instanceof YellowSearchConfiguration){
                     final YellowSearchConfiguration ysc = (YellowSearchConfiguration) sc;
                 }
+                if(sc instanceof YellowGeoSearchConfiguration){
+                    final YellowGeoSearchConfiguration ysc = (YellowGeoSearchConfiguration) sc;
+                }                
                 if (sc instanceof MobileSearchConfiguration) {
                     final MobileSearchConfiguration msc = (MobileSearchConfiguration) sc;
 
