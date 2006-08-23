@@ -498,6 +498,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <decorator:getProperty property="page.map-script"/>
 
 <!-- start Gallup -->
+<% if ( !"se".equals(site.getLocale()) ) { %>
 <script type='text/javascript' language='JavaScript' src='../javascript/tmv11.js'></script>
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -542,6 +543,7 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } else if (currentC.equals("n")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=<search:velocity template="/pages/tns"/>" alt="" /></noscript>
 <% } %>
 
+<% } %>
 <!-- end gallup -->
 
 </body>
