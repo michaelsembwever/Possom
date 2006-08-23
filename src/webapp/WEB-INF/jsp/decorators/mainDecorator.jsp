@@ -26,6 +26,7 @@ String currentC = "d";    //default collection
 currentC = (String) request.getAttribute("c");
 String q = (String) request.getAttribute("q");
 final String contentsource = (String) request.getParameter("contentsource");
+final String newscountry = (String) request.getParameter("newscountry");
 final String qURLEncoded = URLEncoder.encode(q, "utf-8");
 q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
@@ -184,7 +185,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <tr>
         <td class="cell_one"><span class="pad_5l"><%if (!currentC.equals("l")) { %><%=text.getMessage("naviger") %><% } %></span></td>
         <td class="cell_three">
-                <%if (currentC.equals("pp") || currentC.equals("pip")) {%>
+                <%if (currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
                         <search:velocity template="results/middlebar" command="scanpix"/>
                 <%} else { %>        
                     <decorator:getProperty property="page.middle-bar"/>
@@ -413,7 +414,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.persons-results"/>
                 <%}%>
 
-                <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
+                <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
                     <div>
                         <decorator:getProperty property="page.picsearch-results"/>
                         <search:velocity template="results/scanpix" command="scanpix"/>
@@ -451,7 +452,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
                 </td>
-            <%}else if ( currentC.equals("pp") || currentC.equals("pip")) {%>
+            <%}else if ( currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
 
@@ -504,12 +505,12 @@ var tmsec = new Array(2);
 tmsec[0]="tmsec=sesam";
 <% if (currentC.equals("g")) { %> tmsec[1]="tmsec=sesamsok_verden";
 <% } else if (currentC.equals("d")) { %> tmsec[1]="tmsec=sesamsok";
-<% } else if (currentC.equals("m") && "Norske nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_norske";
+<% } else if (currentC.equals("m") && "Norge".equals(newscountry)) { %> tmsec[1]="tmsec=nyhetssok_norske";
 <% } else if (currentC.equals("m") && "Internasjonale nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_internasjonale";
-<% } else if (currentC.equals("m") && "Nordiske nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_nordiske";
+<% } else if (currentC.equals("m") && "Norden-no".equals(newscountry)) { %> tmsec[1]="tmsec=nyhetssok_nordiske";
 <% } else if (currentC.equals("m") && "Mediearkivet".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_papir";
 <% } else if (currentC.equals("m")) { %> tmsec[1]="tmsec=nyhetssok";
-<% } else if (currentC.equals("l")) { %> tmsec[1]="tmsec=nyhetssok";
+<% } else if (currentC.equals("l")) { %> tmsec[1]="tmsec=nyhetssok_siste";
 <% } else if (currentC.equals("y")) { %> tmsec[1]="tmsec=bedriftssok";
 <% } else if (currentC.equals("yip")) { %> tmsec[1]="tmsec=bedriftssok_info";
 <% } else if (currentC.equals("w")) { %> tmsec[1]="tmsec=personsok";
@@ -526,12 +527,12 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 </script>
 <% if (currentC.equals("g") ) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok_verden" alt="" /></noscript>
 <% } else if (currentC.equals("d")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok" alt="" /></noscript>
-<% } else if (currentC.equals("m") && "Norske nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_norske" alt="" /></noscript>
+<% } else if (currentC.equals("m") && "Norge".equals(newscountry)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_norske" alt="" /></noscript>
 <% } else if (currentC.equals("m") && "Internasjonale nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_internasjonale" alt="" /></noscript>
-<% } else if (currentC.equals("m") && "Nordiske nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_nordiske" alt="" /></noscript>
+<% } else if (currentC.equals("m") && "Norden-no".equals(newscountry)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_nordiske" alt="" /></noscript>
 <% } else if (currentC.equals("m") && "Mediearkivet".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_papir" alt="" /></noscript>
 <% } else if (currentC.equals("m")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok" alt="" /></noscript>
-<% } else if (currentC.equals("l")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok" alt="" /></noscript>
+<% } else if (currentC.equals("l")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_siste" alt="" /></noscript>
 <% } else if (currentC.equals("y")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bedriftssok" alt="" /></noscript>
 <% } else if (currentC.equals("yip")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bedriftssok_info" alt="" /></noscript>
 <% } else if (currentC.equals("w")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=personsok" alt="" /></noscript>
