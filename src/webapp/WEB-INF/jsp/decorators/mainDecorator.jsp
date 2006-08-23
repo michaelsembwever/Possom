@@ -498,6 +498,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <decorator:getProperty property="page.map-script"/>
 
 <!-- start Gallup -->
+<!-- <% site.getLocale() %> -->
 <% if ( "no".equals(site.getLocale()) ) { %>
 <script type='text/javascript' language='JavaScript' src='../javascript/tmv11.js'></script>
 <script type="text/javascript" language="JavaScript">
