@@ -27,6 +27,7 @@ currentC = (String) request.getAttribute("c");
 String q = (String) request.getAttribute("q");
 final String contentsource = (String) request.getParameter("contentsource");
 final String newscountry = (String) request.getParameter("newscountry");
+String locale = site.getLocale().toString();
 final String qURLEncoded = URLEncoder.encode(q, "utf-8");
 q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
@@ -497,9 +498,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 <decorator:getProperty property="page.map-script"/>
 
-<!-- start Gallup -->
-<!-- <%= site.getLocale() %> -->
-<% if ( "no".equals(site.getLocale()) ) { %>
+<!-- start Gallup (no TNS for sweden -->
+
+<% if ( "no".equals(locale) ) { %>
 <script type='text/javascript' language='JavaScript' src='../javascript/tmv11.js'></script>
 <script type="text/javascript" language="JavaScript">
 <!--

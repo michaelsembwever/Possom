@@ -7,6 +7,11 @@
         %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
+<%@ page import="no.schibstedsok.searchportal.site.Site"%>
+<% 
+    final Site site = (Site)request.getAttribute(Site.NAME_KEY);
+    String locale = site.getLocale().toString();
+%>
 
 <search:velocity template="/pages/index"/>
 
@@ -161,6 +166,7 @@
 
 
         <!-- start Gallup -->
+        <% if ( "no".equals(locale) ) { %>        
         <script type='text/javascript' language='JavaScript' src='javascript/tmv11.js'></script>
         <script type="text/javascript" language="JavaScript"><!--
             var tmsec = new Array(2);
@@ -170,6 +176,7 @@
             //-->
         </script>
         <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamforside" alt="" /></noscript>
+        <% } %>
         <!-- end gallup -->
 
     </body>
