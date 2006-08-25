@@ -26,8 +26,6 @@ String currentC = "d";    //default collection
 currentC = (String) request.getAttribute("c");
 String q = (String) request.getAttribute("q");
 final String contentsource = (String) request.getParameter("contentsource");
-final String newscountry = (String) request.getParameter("newscountry");
-String locale = site.getLocale().toString();
 final String qURLEncoded = URLEncoder.encode(q, "utf-8");
 q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
@@ -77,6 +75,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
     <link media="screen" href="../css/<c:out value='${startTime}'/>/decorator-style.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/<c:out value='${startTime}'/>/sitesearch.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/<c:out value='${startTime}'/>/front.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/<c:out value='${startTime}'/>/ps.css" rel="stylesheet" type="text/css" />
     <c:if test='${!(empty tab.rssResultName)}'>
     <link rel="alternate" type="application/rss+xml" title="RSS - Sesam" href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss" />
@@ -91,7 +90,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <link media="print" href="../css/<c:out value='${startTime}'/>/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
-    <script type='text/javascript' language='JavaScript' src='../javascript/common.js?x=1'></script>
+    <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 
@@ -184,32 +183,17 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     </tr>
     <% }else{ %>
     <tr>
-        <td class="cell_one"><span class="pad_5l"><%if (!currentC.equals("l")) { %><%=text.getMessage("naviger") %><% } %></span></td>
-        <td class="cell_three">
-                <%if (currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
-                        <search:velocity template="results/middlebar" command="scanpix"/>
-                <%} else { %>        
-                    <decorator:getProperty property="page.middle-bar"/>
-                <% } %>
-        </td>
-        <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
-    </tr>
-    <tr>
-	<td colspan="3"><img src="../images/pix.gif" width="100%" height="1" class="lightdots" alt="" /></td>
-    </tr>
-    <tr>
-	<td><img src="../images/pix.gif" border="0" width="204" height="12" alt="" /></td>
-	<td><img src="../images/pix.gif" border="0" width="100%" height="12" alt="" /></td>
-	<td><img src="../images/pix.gif" border="0" width="204" height="12" alt="" /></td>
-    </tr>
-    <% } %>
-
-    <tr>
-	<%if (q.trim().equals("") && (!currentC.equals("l") && !currentC.equals("m") && !currentC.equals("t") && !currentC.equals("wt")) ) {%>
-
-	<%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
-        <td class="cell_one" valign="top">
-            <table border="0" cellspacing="0" cellpadding="0" class="menu">
+	<%if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
+        <td class="cell_one" valign="top" rowspan="4">
+	<script type="text/javascript" language="JavaScript">
+	    var menuCookie = getCookie("sesam_menu");
+	    if(menuCookie == "closed"){
+	      document.write('<div id="menutable" style="display:none;">'); 
+	    }else{
+	      document.write('<div id="menutable">');	
+	    }
+	</script>
+            <table border="0" cellspacing="0" cellpadding="0" class="navbar2_toptable">
                 <c:set var="rows" value="${0}"/>
                 <c:forEach var="e" items="${sources}">
                     <c:set var="hint" value="${e.navigationHint}"/>
@@ -217,20 +201,34 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <c:set var="rows" value="${rows +1}"/>
                         <c:set var="navUrl" value="?q=${q}&c=${hint.tab.key}${hint.urlSuffix}"/>
                         <c:if test="${rows > 1}">
-                            <tr><td colspan="2" class="nopad"><img src="../images/pix.gif" width="100%" height="1" alt="" /></td></tr>
+                            <tr><td colspan="3"><img src="../images/index/dottedline2.gif" alt="" /></td></tr>
                         </c:if>
                         <tr onclick='strepRollover("<c:out value='${navUrl}'/>");'>
-                            <td class="nav_pad_icon">
-                                <img src='<c:out value="../images/menu/${hint.image}"/>' class="nav_icon" align="left" alt="" />
-                                <a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>'
-                                    onclick="return strep(this);"><c:out value="${hint.displayName}"/></a>
-                            </td>
-                            <td class="nav_pad"><search:text key="numberFormat" args="${e.count}"/></td>
+                            <td class="navbar2_imgpad"><img src='<c:out value="../images/menu/icons/${hint.image}"/>' class="nav_icon" align="left" alt="" /></td>
+			    <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
+                            <td class="navbar2_menupad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
                         </tr>
                     </c:if>
                 </c:forEach>
+               	<tr>
+               	    <td colspan="3" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="../images/index/skjul_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></td>
+                </tr>
             </table>
-
+            </div>
+	    <script type="text/javascript" language="JavaScript">
+	    	var menuCookie = getCookie("sesam_menu");
+	    	if(menuCookie == "closed"){
+	      	  document.write('<div id="menuopen">'); 
+	    	}else{
+	      	  document.write('<div id="menuopen" style="display: none;">');	
+	    	}
+    	    </script>
+            <table class="navbar2_toptable" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td><a href="#" onclick='deleteCookie("sesam_menu", "/");document.getElementById("menutable").style.display="block";document.getElementById("menuopen").style.display="none";'><img src="../images/index/vis_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Vis meny</div></td>
+                </tr>
+            </table>
+            </div>
             <%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
 
                 <decorator:getProperty property="page.companies-nav"/>
@@ -271,7 +269,21 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             </c:if>
         </td>
 	<% } %>
+	<td height="6"><img src="../images/pix.gif" border="0" width="100%" height="6" alt="" /></td>
+	<td><img src="../images/pix.gif" border="0" width="204" height="6" alt="" /></td>
+    </tr>
+    <tr>
+        <td class="cell_three" height="6"><decorator:getProperty property="page.middle-bar"/></td>
+        <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
+    </tr>
+    <tr>
+	<td height="6"><img src="../images/pix.gif" border="0" width="100%" height="6" alt="" /></td>
+	<td><img src="../images/pix.gif" border="0" width="204" height="6" alt="" /></td>
+    </tr>
+    <% } %>
 
+
+    <tr>
         <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("wt")) {%>
             <td valign="top" colspan="3">
         <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")&& !currentC.equals("swip") && !currentC.equals("wipgift")) {%>
@@ -415,7 +427,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.persons-results"/>
                 <%}%>
 
-                <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
+                <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
                     <div>
                         <decorator:getProperty property="page.picsearch-results"/>
                         <search:velocity template="results/scanpix" command="scanpix"/>
@@ -453,7 +465,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
                 </td>
-            <%}else if ( currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
+            <%}else if ( currentC.equals("pp") || currentC.equals("pip")) {%>
                 <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
 
@@ -498,9 +510,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 <decorator:getProperty property="page.map-script"/>
 
-<!-- start Gallup (no TNS for sweden -->
-
-<% if ( "no".equals(locale) ) { %>
+<!-- start Gallup -->
 <script type='text/javascript' language='JavaScript' src='../javascript/tmv11.js'></script>
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -508,12 +518,12 @@ var tmsec = new Array(2);
 tmsec[0]="tmsec=sesam";
 <% if (currentC.equals("g")) { %> tmsec[1]="tmsec=sesamsok_verden";
 <% } else if (currentC.equals("d")) { %> tmsec[1]="tmsec=sesamsok";
-<% } else if (currentC.equals("m") && "Norge".equals(newscountry)) { %> tmsec[1]="tmsec=nyhetssok_norske";
+<% } else if (currentC.equals("m") && "Norske nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_norske";
 <% } else if (currentC.equals("m") && "Internasjonale nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_internasjonale";
-<% } else if (currentC.equals("m") && "Norden-no".equals(newscountry)) { %> tmsec[1]="tmsec=nyhetssok_nordiske";
+<% } else if (currentC.equals("m") && "Nordiske nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_nordiske";
 <% } else if (currentC.equals("m") && "Mediearkivet".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_papir";
 <% } else if (currentC.equals("m")) { %> tmsec[1]="tmsec=nyhetssok";
-<% } else if (currentC.equals("l")) { %> tmsec[1]="tmsec=nyhetssok_siste";
+<% } else if (currentC.equals("l")) { %> tmsec[1]="tmsec=nyhetssok";
 <% } else if (currentC.equals("y")) { %> tmsec[1]="tmsec=bedriftssok";
 <% } else if (currentC.equals("yip")) { %> tmsec[1]="tmsec=bedriftssok_info";
 <% } else if (currentC.equals("w")) { %> tmsec[1]="tmsec=personsok";
@@ -530,12 +540,12 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 </script>
 <% if (currentC.equals("g") ) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok_verden" alt="" /></noscript>
 <% } else if (currentC.equals("d")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok" alt="" /></noscript>
-<% } else if (currentC.equals("m") && "Norge".equals(newscountry)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_norske" alt="" /></noscript>
+<% } else if (currentC.equals("m") && "Norske nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_norske" alt="" /></noscript>
 <% } else if (currentC.equals("m") && "Internasjonale nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_internasjonale" alt="" /></noscript>
-<% } else if (currentC.equals("m") && "Norden-no".equals(newscountry)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_nordiske" alt="" /></noscript>
+<% } else if (currentC.equals("m") && "Nordiske nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_nordiske" alt="" /></noscript>
 <% } else if (currentC.equals("m") && "Mediearkivet".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_papir" alt="" /></noscript>
 <% } else if (currentC.equals("m")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok" alt="" /></noscript>
-<% } else if (currentC.equals("l")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_siste" alt="" /></noscript>
+<% } else if (currentC.equals("l")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok" alt="" /></noscript>
 <% } else if (currentC.equals("y")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bedriftssok" alt="" /></noscript>
 <% } else if (currentC.equals("yip")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bedriftssok_info" alt="" /></noscript>
 <% } else if (currentC.equals("w")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=personsok" alt="" /></noscript>
@@ -545,7 +555,6 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } else if (currentC.equals("n")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=<search:velocity template="/pages/tns"/>" alt="" /></noscript>
 <% } %>
 
-<% } %>
 <!-- end gallup -->
 
 </body>

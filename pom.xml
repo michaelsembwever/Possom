@@ -196,7 +196,7 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
-                <log.directory>${basedir}/logs</log.directory>
+                <log.directory>xxlogs</log.directory>
                 <log.level>DEBUG</log.level>
                 <tokenevaluator.host>localhost</tokenevaluator.host>
                 <tokenevaluator.port>15400</tokenevaluator.port>

@@ -27,6 +27,7 @@
         <link href="css/ps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <script type="text/javascript" language="JavaScript" src="javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
             function strep(qtag) {
             if (window.RegExp && window.encodeURIComponent) {
@@ -84,7 +85,7 @@
                             focusControl.focus();
                         } // -->
                     </script>
-                    <input type="image" id="index_submit" src="images/searchbar/nettsok_knapp.gif" />
+                    <input type="image" id="index_submit" src="images/searchbar/nettsok_knapp.png" />
                     &nbsp;
                     <a id="searchtip_front" href='<search:linkPulse url="?q=&amp;page=/pages/7/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a>
                 </div>
@@ -100,6 +101,14 @@
     </tr>
     <tr>
         <td valign="top" align="left">
+	<script type="text/javascript" language="JavaScript">
+	    var menuCookie = getCookie("sesam_menu");
+	    if(menuCookie == "closed"){
+	      document.write('<div id="menutable" style="display:none;">'); 
+	    }else{
+	      document.write('<div id="menutable">');	
+	    }
+	</script>
             <table id="front_menu" cellspacing="0" cellpadding="0">
                 <tr>
                     <td class="bg"><img src="images/index/nyheter_20_20.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=m&amp;newscountry=Norge&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
@@ -128,8 +137,7 @@
                 <tr>
                     <td class="bg"><img src="images/menu/blogg.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
                 </tr>
-
-                                <tr>
+                <tr>
                     <td><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
@@ -141,8 +149,25 @@
                 <tr>
                     <td class="bg"><img src="images/index/ver.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
                 </tr>
-                
+                <tr>
+                    <td style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="images/index/skjul_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></td>
+                </tr>
             </table>
+            </div>
+	    <script type="text/javascript" language="JavaScript">
+	    	var menuCookie = getCookie("sesam_menu");
+	    	if(menuCookie == "closed"){
+	      	  document.write('<div id="menuopen">'); 
+	    	}else{
+	      	  document.write('<div id="menuopen" style="display: none;">');	
+	    	}
+	    </script>
+            <table id="front_menu" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td><a href="#" onclick='deleteCookie("sesam_menu", "/");document.getElementById("menutable").style.display="block";document.getElementById("menuopen").style.display="none";'><img src="images/index/vis_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Vis meny</div></td>
+                </tr>
+            </table>
+            </div>
         </td>
         <td valign="top" align="left">
             <search:publish page="/pages/front"/>
