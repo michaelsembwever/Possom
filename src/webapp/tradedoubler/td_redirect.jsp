@@ -44,6 +44,11 @@
 		if (alt == null || alt.length() == 0){
 			alt = "";
 		}
+                
+                String sitesearch = request.getParameter("sitesearch");
+                if (sitesearch == null || sitesearch.length() == 0){
+                    sitesearch = "";
+                }
 %>
 <html>
 <head><title>Sesam</title></head>
@@ -51,7 +56,7 @@
 <img src="http://tbs.tradedoubler.com/report?organization=<%=organization%>&event=<%=event%>&leadNumber=<%=orderNumber%>&orderValue=<%=value%>&currency=<%=currency%>&checksum=v04<%=checksum%>&tduid=<%=tduid%>" alt="">
 <script type="text/javascript" language="JavaScript">
 	function goSesam() {
-		document.location="http://www.sesam.no/search/?c=<%= c %>&lang=<%= lang %>&s=<%= s %>&q=<%= q %>&ss_ss=<%= affId %>&ss_lt=tradedoubler&ss_pid=ad_td&ss_sec=<%= alt %>";
+		document.location="http://www.sesam.no/search/?c=<%= c %>&lang=<%= lang %>&s=<%= s %>&q=<%= q %>&ss_ss=<%= affId %>&ss_lt=tradedoubler&ss_pid=ad_td&ss_sec=<%= alt %>&sitesearch=<%= sitesearch %>";
 	}
 </script>
 </body>
