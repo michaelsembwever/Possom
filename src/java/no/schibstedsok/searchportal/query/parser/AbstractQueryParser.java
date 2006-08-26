@@ -8,13 +8,16 @@
 
 package no.schibstedsok.searchportal.query.parser;
 
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Stack;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
@@ -24,6 +27,7 @@ import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.WordClause;
+import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.parser.alt.RotationAlternation;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import org.apache.log4j.Logger;
@@ -60,13 +64,13 @@ public abstract class AbstractQueryParser implements QueryParser {
      * do the actual parsing.
      * This method shouldn't be public but that's the way javacc creates it unfortunately.
      * @throws ParseException   when parsing the inputted query string.
-     * @return the clause heirachy ready to wrap a Query around.
+     * @return the clause hierarchy ready to wrap a Query around.
      */
     public abstract Clause parse() throws ParseException;
 
     /**
      * Get the query object.
-     * A call to this method initates the parse() method if the query hasn't already been built.
+     * A call to this method initiates the parse() method if the query hasn't already been built.
      * @return the Query object, ready to use.
      * @throws ParseException  when parsing the inputted query string.
      */
@@ -76,16 +80,20 @@ public abstract class AbstractQueryParser implements QueryParser {
             if( context == null ){
                 throw new IllegalStateException(ERR_EMPTY_CONTEXT);
             }
+            final ParentFinder parentFinder = new ParentFinder();
             try{
                 if( queryStr != null && queryStr.trim().length()>0 ){
 
                     // Uncomment the following line, and comment the line after than, to disable RotationAlternation.
                     //final Clause root = parse();
-                    final Clause root = alterations( parse() );
+                    final Clause root = alterations( parse(), parentFinder );
 
                     query = new AbstractQuery(context.getQueryString()){
                         public Clause getRootClause(){
                             return root;
+                        }
+                        public ParentFinder getParentFinder(){
+                            return parentFinder;
                         }
                     };
                 }
@@ -110,17 +118,28 @@ public abstract class AbstractQueryParser implements QueryParser {
                     public boolean isBlank(){
                         return true;
                     }
+                    public ParentFinder getParentFinder(){
+                        return parentFinder;
+                    }
                 };
             }
         }
         return query;
     }
 
-    private Clause alterations(final Clause original){
+
+    private Clause alterations(final Clause original, final ParentFinder parentFinder){
 
         // rotation alterations
-        final RotationAlternation rotator
-                = new RotationAlternation(ContextWrapper.wrap(RotationAlternation.Context.class,context));
+        final RotationAlternation rotator = new RotationAlternation(
+                ContextWrapper.wrap(RotationAlternation.Context.class,
+                new BaseContext(){
+                        public ParentFinder getParentFinder(){
+                            return parentFinder;
+                        }
+                },
+                context));
+
         return rotator.createRotations(original);
     }
 

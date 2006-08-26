@@ -49,33 +49,11 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
      */
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
 
-        return evaluateToken(token, term, query, false);
-    }
-
-    /**
-     * Returns true if any of the patterns matches the query.
-     *
-     * @param token
-     *            not used by this implementation.
-     * @param term
-     *            the term currently parsing.
-     * @param query
-     *            the query to find matches in.
-     *              can be null. this indicates we can just use the term.
-     * @param exactMatchRequired only complete string matches count
-     * @return true if any of the patterns matches.
-     */
-    public boolean evaluateToken(
-            final TokenPredicate token,
-            final String term,
-            final String query,
-            final boolean exactMatchRequired) {
-
         for (final Pattern p : expressions) {
             final Matcher m = term == null ? p.matcher(query) : p.matcher(term);
             final int stringLength = term == null ? query.length() : term.length();
 
-            if(m.find() && (!exactMatchRequired || (m.start() == 0 && m.end() == stringLength))){
+            if(m.find() && (m.start() == 0 && m.end() == stringLength)){
                     return true;
             }
         }

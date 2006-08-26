@@ -302,7 +302,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         final StopWatch watch = new StopWatch();
         watch.start();
         Integer hitCount = null;
-        
+
         try{
 
             //TODO: Hide this in QueryRule.execute(some parameters)
@@ -320,7 +320,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
             hitCount = result.getHitCount();
-            
+
             LOG.info("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
 
             return result;
@@ -345,7 +345,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // add some general properties first from the command
         //  if we've somehow blanked out the query altogether then revert to the user's origianl query string
-        result.addField(FIELD_TRANSFORMED_QUERY, 
+        result.addField(FIELD_TRANSFORMED_QUERY,
                 getTransformedQuery().length()>0 ? getTransformedQuery() : context.getQuery().getQueryString());
 
         // process listed result handlers
@@ -409,7 +409,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected String getParameter(final String paramName) {
         if (parameters.containsKey(paramName)) {
             if(parameters.get(paramName) instanceof String[]){
-                final String val[] = (String[]) parameters.get(paramName);
+                final String[] val = (String[]) parameters.get(paramName);
                 if (val.length > 0 && val[0].length() > 0) {
                     return val[0];
                 }
@@ -467,6 +467,18 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             final StringBuilder filterBuilder = new StringBuilder(filter);
 
+            final BaseContext baseQtCxt = new BaseContext(){
+                public String getTransformedQuery() {
+                    return transformedQuery;
+                }
+                public Query getQuery() {
+                    return query;
+                }
+                public TokenEvaluationEngine getTokenEvaluationEngine(){
+                    return context.getRunningQuery().getTokenEvaluationEngine();
+                }
+            };
+
             for (QueryTransformer transformer : transformers) {
 
                 final boolean ttq = touchedTransformedQuery;
@@ -474,23 +486,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 final QueryTransformer.Context qtCxt = ContextWrapper.wrap(
                         QueryTransformer.Context.class,
                         new BaseContext(){
-                            public String getTransformedQuery() {
-                                return transformedQuery;
-                            }
                             public Map<Clause,String> getTransformedTerms() {
                                 if (ttq) {
                                     throw new IllegalStateException(ERR_TRANSFORMED_QUERY_USED);
                                 }
                                 return transformedTerms;
                             }
-                            public Query getQuery() {
-                                return query;
-                            }
-                            public TokenEvaluationEngine getTokenEvaluationEngine(){
-                                return context.getRunningQuery().getTokenEvaluationEngine();
-                            }
                         },
+                        baseQtCxt,
                         context);
+
                 transformer.setContext(qtCxt);
 
                 final String newTransformedQuery = transformer.getTransformedQuery();
@@ -510,7 +515,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 final String f = transformer.getFilter();
                 filterBuilder.append(f == null ? "" : f);
                 filterBuilder.append(' ');
-		
+
                 LOG.debug(transformer.getClass().getSimpleName() + "--> TransformedQuery=" + transformedQuery);
                 LOG.debug(transformer.getClass().getSimpleName() + "--> Filter=" + filter);
             }
@@ -634,16 +639,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         protected void visitImpl(final XorClause clause) {
             clause.getFirstClause().accept(this);
         }
-        
+
         private void visitImpl(final NotClause clause){
             // ignore fields inside NOTs for now
         }
-        
+
         private void visitImpl(final AndNotClause clause){
             // ignore fields inside NOTs for now
         }
 
-        private final void appendFilter(String term, final String field) {
+        private void appendFilter(String term, final String field) {
 
             final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
             if("site".equals(field)){
@@ -664,14 +669,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     field = clause.getField();
                 }else{
                     final TokenEvaluationEngine evalEngine = context.getRunningQuery().getTokenEvaluationEngine();
-                    for(String fieldFilter : fieldFilters.keySet() ){
+                    for(String fieldFilter : fieldFilters.keySet()){
                         try{
                             final TokenPredicate tp = TokenPredicate.valueOf(fieldFilter);
                             // if the field is the token then mask the field and include the term.
                             boolean result = clause.getKnownPredicates().contains(tp);
                             result |= clause.getPossiblePredicates().contains(tp);
                             result &= evalEngine.evaluateTerm(tp, clause.getField());
-                            if( result ){
+                            if(result){
                                 field = fieldFilter;
                                 break;
                             }

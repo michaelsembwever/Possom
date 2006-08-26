@@ -3,6 +3,9 @@
  */
 package no.schibstedsok.searchportal.query;
 
+import java.util.Set;
+import no.schibstedsok.searchportal.query.finder.ParentFinder;
+
 
 /** A Query represents a users inputted query string.
  * The query contains an heirarchy of Clause objects implemented against a visitor pattern
@@ -41,4 +44,5 @@ public interface Query {
     /** Is the query blank (or just full of useless symbols). **/
     boolean isBlank();
 
+    ParentFinder getParentFinder();
 }

@@ -11,13 +11,11 @@ package no.schibstedsok.searchportal.query.analyser;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
@@ -78,27 +76,7 @@ public final class Scorer extends AbstractReflectionVisitor {
     }
 
     /** TODO comment me. **/
-    protected void visitImpl(final AndClause clause) {
-        final boolean originalAdditivity = additivity;
-        additivity = true;
-        clause.getFirstClause().accept(this);
-        scoreClause(clause);
-        clause.getSecondClause().accept(this);
-        additivity = originalAdditivity;
-    }
-
-    /** TODO comment me. **/
-    protected void visitImpl(final OrClause clause) {
-        final boolean originalAdditivity = additivity;
-        additivity = true;
-        clause.getFirstClause().accept(this);
-        scoreClause(clause);
-        clause.getSecondClause().accept(this);
-        additivity = originalAdditivity;
-    }
-
-    /** TODO comment me. **/
-    protected void visitImpl(final DefaultOperatorClause clause) {
+    protected void visitImpl(final DoubleOperatorClause clause) {
         clause.getFirstClause().accept(this);
         scoreClause(clause);
         clause.getSecondClause().accept(this);
@@ -127,7 +105,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         scoreClause(clause);
     }
 
-    /** Find if this clause contains (either known, possible, or custom joined) predicates correspondng to
+    /** Find if this clause contains (either known, possible, or custom joined) predicates corresponding to
      * PredicateScores listed in the context.
      * Avoid scoring predicates already matched.
      * @param the clause we are scoring.

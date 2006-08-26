@@ -10,13 +10,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
+import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.RegExpEvaluatorFactory;
-import no.schibstedsok.searchportal.query.token.RegExpTokenEvaluator;
-import no.schibstedsok.searchportal.query.token.TokenEvaluator;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
@@ -69,32 +69,46 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
     private static final String ERR_PREFIX_NOT_FOUND = "No such TokenPredicate ";
 
     /** TODO comment me. **/
-    protected void visitImpl(final OperationClause clause) {
-        clause.getFirstClause().accept(this);
-    }
+    protected void visitImpl(final DoubleOperatorClause clause) {
 
-    /** TODO comment me. **/
-    protected void visitImpl(final DefaultOperatorClause clause) {
-
-        // -->HACK while AlternationRotation is in implementation
-        for (TokenPredicate predicate : getPredicates()) {
-            if (clause.getPossiblePredicates().contains(predicate)) {
-                insidePredicates.add(predicate);
-            }
-        }
         clause.getFirstClause().accept(this);
 
-        if(insidePredicates.size() > 0
-        // <--HACK
-                || Position.ANY == position || Mask.INCLUDE == mask){
+        if(Position.ANY == position || Mask.INCLUDE == mask){
             clause.getSecondClause().accept(this);
         }
     }
 
     /** TODO comment me. **/
-    protected void visitImpl(final PhraseClause clause) {
-        // don't remove prefix if it is infact a phrase.
+    protected void visitImpl(final XorClause clause) {
+
+        clause.getFirstClause().accept(this);
+        clause.getSecondClause().accept(this);
+
     }
+
+    /** TODO comment me. **/
+    boolean insideMaskClause = false;
+
+    /** TODO comment me. **/
+    protected void visitImpl(final DefaultOperatorClause clause) {
+
+        if(maskClause(clause)){ // XXX must ensure that this won't ignore children's fields
+            insideMaskClause = true;
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+            insideMaskClause = false;
+        }else{
+
+            clause.getFirstClause().accept(this);
+
+            if(Position.ANY == position || Mask.INCLUDE == mask){
+                clause.getSecondClause().accept(this);
+            }
+        }
+    }
+
+    /** don't remove prefix if it is in fact a phrase. **/
+    protected void visitImpl(final PhraseClause clause) {}
 
     /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
@@ -108,82 +122,77 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
         // Do not remove if the query is just the prefix and we're in prefix exclude mode.
         if (Position.ANY == position || Mask.INCLUDE == mask || getContext().getQuery().getTermCount() > 1) {
 
-            // -->HACK while AlternationRotation is in implementation
-            if(insidePredicates.size() > 0){
+            if(maskField(clause)){
+                // this resets the the term to the clause's field or term
+                getContext().getTransformedTerms().put(clause,
+                        Mask.INCLUDE == mask ? clause.getField() : clause.getTerm());
 
-                if(clause.getField() != null){
-                    clearInsidePrefixState();
-                }else{
-                    if(predicateBuilder.length()>0){
-                        predicateBuilder.append(' ');
-                    }
-                    predicateBuilder.append(clause.getTerm());
-                    leaves.put(clause, getContext().getTransformedTerms().get(clause));
-                }
-                for(TokenPredicate predicate : insidePredicates){
+            }else if(insideMaskClause || maskClause(clause)){
 
-                    final TokenEvaluator eval = regExpFactory.getEvaluator(predicate);
-                    // HACK. if it isn't a RegExpTokenEvaluator it won't remove the prefix.
-                    if(eval instanceof RegExpTokenEvaluator
-                            && ((RegExpTokenEvaluator)eval).evaluateToken(null, predicateBuilder.toString(), null, true)){
-
-                        for(LeafClause c : leaves.keySet()){
-                            getContext().getTransformedTerms().put(c, Mask.INCLUDE == mask ? leaves.get(c) : BLANK);
-                        }
-                    }
-                }
-            }
-            // <--HACK
-
-            boolean check = Position.ANY == position;
-            check |= Position.PREFIX == position && clause == getContext().getQuery().getFirstLeafClause();
-
-            if (check) {
-                final TokenEvaluationEngine evalEngine = getContext().getTokenEvaluationEngine();
-
-                for (TokenPredicate predicate : getPredicates()) {
-
-                    // if the field is the token then mask the field and include the term.
-                    boolean transform = false;
-                    if(null != clause.getField()){
-                        transform = clause.getKnownPredicates().contains(predicate);
-                        transform |= clause.getPossiblePredicates().contains(predicate);
-                        transform &= evalEngine.evaluateTerm(predicate, clause.getField());
-                        if(transform){
-                            // this resets the the term to the clause's field or term
-                            getContext().getTransformedTerms().put(
-                                    clause,
-                                    Mask.INCLUDE == mask ? clause.getField() : clause.getTerm());
-                            return;
-                        }
-                    }
-                    if(!transform){
-                        // otherwise perform the mask check on just the term.
-                        transform = clause.getKnownPredicates().contains(predicate);
-                        transform |= clause.getPossiblePredicates().contains(predicate)
-                            && predicate.evaluate(evalEngine);
-
-                        if (transform) {
-
-                            getContext().getTransformedTerms().put(
-                                    clause,
-                                    Mask.INCLUDE == mask ? transformedTerm : BLANK);
-                            return;
-                        }
-                    }
-                }
+                getContext().getTransformedTerms().put(clause, Mask.INCLUDE == mask ? transformedTerm : BLANK);
             }
         }
     }
 
-    private void clearInsidePrefixState(){
-        // reset. not that it will be used again anyway ;-)
-        insidePredicates.clear();
-        predicateBuilder.setLength(0);
-        leaves.clear();
+    /** TODO comment me. **/
+    protected boolean maskClause(final Clause clause){
+
+        boolean transform = false;
+
+        boolean check = Position.ANY == position;
+        check |= Position.PREFIX == position && clause == getContext().getQuery().getFirstLeafClause();
+
+        if (check) {
+            final TokenEvaluationEngine evalEngine = getContext().getTokenEvaluationEngine();
+
+            for (TokenPredicate predicate : getPredicates()) {
+
+                // otherwise perform the mask check on just the term.
+                transform = clause.getKnownPredicates().contains(predicate);
+                transform |= clause.getPossiblePredicates().contains(predicate) && predicate.evaluate(evalEngine);
+
+                if (transform) {
+                    break;
+                }
+            }
+        }
+
+        return transform;
+    }
+
+    /** TODO comment me. **/
+    protected boolean maskField(final LeafClause clause){
+
+        boolean transform = false;
+
+        boolean check = Position.ANY == position;
+        check |= Position.PREFIX == position && clause == getContext().getQuery().getFirstLeafClause();
+
+        if (check) {
+            final TokenEvaluationEngine evalEngine = getContext().getTokenEvaluationEngine();
+
+            for (TokenPredicate predicate : getPredicates()) {
+
+                // if the field is the token then mask the field and include the term.
+
+                if(null != clause.getField()){
+
+                    transform = clause.getKnownPredicates().contains(predicate);
+                    transform |= clause.getPossiblePredicates().contains(predicate);
+                    transform &= evalEngine.evaluateTerm(predicate, clause.getField());
+
+                    if(transform){
+                        break;
+                    }
+                }
+            }
+        }
+
+        return transform;
     }
 
     private Collection<TokenPredicate> getPredicates() {
+
         synchronized (this) {
             if (customPredicates == null && prefixes != null && prefixes.size() > 0) {
                 final Collection<TokenPredicate> cp = new ArrayList(DEFAULT_PREDICATES);

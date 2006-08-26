@@ -24,7 +24,9 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
+import no.schibstedsok.searchportal.query.finder.ForestFinder;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
 import org.apache.log4j.Logger;
 
@@ -41,7 +43,9 @@ import org.apache.log4j.Logger;
 public final class RotationAlternation {
 
     /** Context to work within. **/
-    public interface Context extends BaseContext, QueryParser.Context {  }
+    public interface Context extends BaseContext, QueryParser.Context { 
+        ParentFinder getParentFinder();
+    }
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(RotationAlternation.class);
@@ -55,7 +59,6 @@ public final class RotationAlternation {
     // Attributes ----------------------------------------------------
 
     private final Context context;
-    private final ParentFinder parentFinder = new ParentFinder();
 
     /** mappings from the newly rotated clause to the same original clause **/
     private final Map<DoubleOperatorClause,DoubleOperatorClause> originalFromNew
@@ -296,15 +299,15 @@ public final class RotationAlternation {
 
     /** return the parent operation clause of the given child.
      * And the child must be a descendant of the root. **/
-    private <T extends DoubleOperatorClause> T parent(final T root, final Clause child) {
+    private <T extends OperationClause> T parent(final T root, final Clause child) {
 
-        return parentFinder.getParent(root, child);
+        return (T) context.getParentFinder().getParent(root, child);
     }
 
     /** return all parents operation clauses of the given child. **/
-    private <T extends DoubleOperatorClause> List<T> parents(final T root, final Clause child) {
+    private <T extends OperationClause> List<T> parents(final T root, final Clause child) {
 
-        return parentFinder.getParents(root, child);
+        return (List<T>) context.getParentFinder().getParents(root, child);
     }
 
     /** Build new DoubleOperatorClauses from newChild all the way back up to the root.
@@ -399,177 +402,6 @@ public final class RotationAlternation {
 
     // Inner classes -------------------------------------------------
 
-    private static final class ParentFinder extends AbstractReflectionVisitor {
 
-        private boolean searching = false;
-        private boolean singleMode = false;
-        private List<DoubleOperatorClause> parents = new ArrayList<DoubleOperatorClause>();
-        private Clause child;
-        private final Map<DoubleOperatorClause,Map<Clause,List<DoubleOperatorClause>>> cache
-                = new HashMap<DoubleOperatorClause,Map<Clause,List<DoubleOperatorClause>>>();
-
-        private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY
-                = "visit(object) can't be called directly on this visitor!";
-        private static final String ERR_CHILD_NOT_IN_HEIRARCHY
-                = "The child is not part of this clause family!";
-
-        private synchronized <T extends DoubleOperatorClause> void findParentsImpl(final T root, final Clause child) {
-
-            this.child = child;
-            if (searching || child == null) {
-                throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
-            }
-            searching = true;
-            parents.clear();
-            if(null == findInCache(root)){
-                visit(root);
-                updateCache(root);
-            }else{
-                parents.addAll(findInCache(root));
-            }
-            searching = false;
-            this.child = null;
-        }
-
-        public synchronized <T extends DoubleOperatorClause> List<T> getParents(final T root, final Clause child) {
-            findParentsImpl(root, child);
-            return Collections.unmodifiableList(new ArrayList<T>((List<T>)parents));
-        }
-
-        public synchronized <T extends DoubleOperatorClause> T getParent(final T root, final Clause child) {
-
-            singleMode = true;
-            findParentsImpl(root, child);
-            singleMode = false;
-            if (parents.size() == 0) {
-                throw new IllegalArgumentException(ERR_CHILD_NOT_IN_HEIRARCHY);
-            }
-            return (T)parents.get(0);
-        }
-
-        private <T extends DoubleOperatorClause> List<DoubleOperatorClause> findInCache(final T root){
-
-            Map<Clause,List<DoubleOperatorClause>> innerCache = cache.get(root);
-            if(innerCache == null){
-                innerCache = new HashMap<Clause,List<DoubleOperatorClause>>();
-                cache.put(root, innerCache);
-            }
-            return innerCache.get(child);
-        }
-
-        private <T extends DoubleOperatorClause> void updateCache(final T root){
-
-            Map<Clause,List<DoubleOperatorClause>> innerCache = cache.get(root);
-            if(innerCache == null){
-                innerCache = new HashMap<Clause,List<DoubleOperatorClause>>();
-                cache.put(root, innerCache);
-            }
-            innerCache.put(child, new ArrayList<DoubleOperatorClause>(parents));
-        }
-
-        protected void visitImpl(final OperationClause clause) {
-            if (!singleMode || parents.size() == 0) {
-                clause.getFirstClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final DoubleOperatorClause clause) {
-            if (!singleMode || parents.size() == 0) {
-                if (clause.getFirstClause() == child || clause.getSecondClause() == child) {
-                    parents.add(clause);
-                }  else  {
-                    clause.getFirstClause().accept(this);
-                    clause.getSecondClause().accept(this);
-                }
-            }
-        }
-
-        protected void visitImpl(final LeafClause clause) {
-            // leaves can't be parents :-)
-        }
-
-    }
-
-    private static final class ForestFinder extends AbstractReflectionVisitor {
-
-
-        private static final Logger LOG = Logger.getLogger(ForestFinder.class);
-        private static final String DEBUG_COUNT_TO = " trees in forest ";
-        private boolean searching = false;
-        private final List<DoubleOperatorClause> roots = new ArrayList<DoubleOperatorClause>();
-
-        private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY
-                = "visit(object) can't be called directly on this visitor!";
-
-        public synchronized List<DoubleOperatorClause> findForestRoots(final OperationClause root) {
-
-            if (searching) {
-                throw new IllegalStateException(ERR_CANNOT_CALL_VISIT_DIRECTLY);
-            }
-            searching = true;
-            roots.clear();
-            visit(root);
-            //Collections.reverse(roots);
-            searching = false;
-            return Collections.unmodifiableList(roots);
-        }
-
-
-        protected void visitImpl(final OperationClause clause) {
-
-            clause.getFirstClause().accept(this);
-        }
-
-        protected void visitImpl(final XorClause clause) {
-
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final DoubleOperatorClause clause) {
-
-            final DoubleOperatorClause forestDepth = forestWalk(clause);
-            clause.getFirstClause().accept(this);
-            forestDepth.getSecondClause().accept(this);
-        }
-
-//        protected void visitImpl(final AndClause clause) {
-//
-//            final AndClause forestDepth = forestWalk(clause);
-//            clause.getFirstClause().accept(this);
-//            forestDepth.getSecondClause().accept(this);
-//        }
-//
-//        protected void visitImpl(final DefaultOperatorClause clause) {
-//
-//            final DefaultOperatorClause forestDepth = forestWalk(clause);
-//            clause.getFirstClause().accept(this);
-//            forestDepth.getSecondClause().accept(this);
-//        }
-
-        protected void visitImpl(final LeafClause clause) {
-            // leaves can't be forest roots :-)
-        }
-
-        /** Returns the deepest tree in the forest.
-         * And adds the forest to the roots if it contains more than one tree.
-         **/
-        private <T extends DoubleOperatorClause> T forestWalk(final T clause){
-
-            int count = 1;
-            T forestDepth = clause;
-            // presumption below is that forests can't mix implementation classes, not just interfaces.
-            for( ;  forestDepth.getSecondClause().getClass() == clause.getClass();
-                    forestDepth = (T) forestDepth.getSecondClause()){
-                ++count;
-            }
-            LOG.debug(count + DEBUG_COUNT_TO + clause);
-            if(count >1){
-                roots.add(clause);
-            }
-            return forestDepth;
-        }
-
-    }
 
 }

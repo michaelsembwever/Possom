@@ -8,19 +8,14 @@
 
 package no.schibstedsok.searchportal.query.parser;
 
-import no.schibstedsok.searchportal.query.AndClause;
-import no.schibstedsok.searchportal.query.AndNotClause;
-import no.schibstedsok.searchportal.query.Clause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OperationClause;
-import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Query;
+import no.schibstedsok.searchportal.query.finder.Counter;
+import no.schibstedsok.searchportal.query.finder.FirstLeafFinder;
 
 
 /** Abstract helper for implementing a Query class.
- * Handles input of the query string and finding the first leaf clause (term) in the clause heirarchy.
+ * Handles input of the query string and finding the first leaf clause (term) in the clause hierarchy.
  * Is thread safe. No methods return null.
  *
  * @version $Id$
@@ -51,98 +46,18 @@ public abstract class AbstractQuery implements Query {
      * {@inheritDoc}
      */
     public LeafClause getFirstLeafClause() {
-        return finder.getFirstLeaf();
+        return finder.getFirstLeaf(getRootClause());
     }
 
+    /** TODO comment me. **/
     public int getTermCount() {
-        return counter.getTermCount();
+        return counter.getTermCount(getRootClause());
     }
 
+    /** TODO comment me. **/
     public boolean isBlank(){
         return false;
     }
-    
-    private final class FirstLeafFinder extends AbstractReflectionVisitor {
-        private boolean searching = true;
-        private LeafClause firstLeaf;
 
-        public synchronized LeafClause getFirstLeaf() {
-            if( firstLeaf == null ){
-                // hasn't been run yet.
-                visit(getRootClause());
-            }
-            return firstLeaf;
-        }
-
-        protected void visitImpl(final OperationClause clause) {
-            if (searching) { // still looking
-                clause.getFirstClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final NotClause clause) {
-            // this cancels the search for a firstLeafClause...
-            searching = false;
-        }
-
-        protected void visitImpl(final AndNotClause clause) {
-            // this cancels the search for a firstLeafClause...
-            searching = false;
-        }
-
-        protected void visitImpl(final LeafClause clause) {
-            // Bingo! Goto "Go". Collect $200.
-            firstLeaf = clause;
-            searching = false;
-        }
-
-    }
-
-    private final class Counter extends AbstractReflectionVisitor {
-
-        private int termCount = 0;
-
-        public synchronized int getTermCount() {
-            if(termCount == 0){
-                // hasn't been run yet.
-                visit(getRootClause());
-            }
-            return termCount;
-        }
-
-
-        protected void visitImpl(final OperationClause clause) {
-            clause.getFirstClause().accept(this);
-        }
-
-        protected void visitImpl(final OrClause clause) {
-            // Avoid counting the first term in a "Possibility" OrClause
-            //  A "Possibility" OrClause is something that the QueryParser
-            //   generates when it detects a possible subclause type, eg PhoneNumberClause or OrganisationNumberClause.
-            if (!clause.getFirstClause().getTerm().equals(clause.getSecondClause().getTerm())) {
-                clause.getSecondClause().accept(this);
-            }
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final AndNotClause clause) {
-            clause.getFirstClause().accept(this);
-        }
-
-        protected void visitImpl(final AndClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final DefaultOperatorClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final LeafClause clause) {
-            ++termCount;
-        }
-
-    }
 
 }

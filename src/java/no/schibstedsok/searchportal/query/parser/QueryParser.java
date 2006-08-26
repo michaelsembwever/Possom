@@ -9,11 +9,13 @@
 
 package no.schibstedsok.searchportal.query.parser;
 
+import java.util.Set;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.EmailClause;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.NotClause;
@@ -194,6 +196,5 @@ public interface QueryParser {
      *@return the Query object.
      **/
     Query getQuery();
-
 
 }

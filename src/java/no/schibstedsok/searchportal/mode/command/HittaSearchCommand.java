@@ -14,15 +14,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.xml.rpc.ServiceException;
 import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
-import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
-import no.schibstedsok.searchportal.query.OrClause;
+import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
@@ -174,12 +175,15 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         private StringBuilder who;
         private StringBuilder where;
 
+        private boolean queryContainsFullnameOrCompany = false;
+        private FullnameOrCompanyFinder fullnameOrCompanyFinder = new FullnameOrCompanyFinder();
 
         public String[] getQuery(){
 
             if(where == null){
                 who = new StringBuilder();
                 where = new StringBuilder();
+                fullnameOrCompanyFinder.visit(context.getQuery().getRootClause());
                 visit(context.getQuery().getRootClause());
             }
 
@@ -195,9 +199,25 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             onlyGeo |= clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
             onlyGeo &= clause.getField() == null;
 
-            onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
-            onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
-            onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
+            if(queryContainsFullnameOrCompany){
+
+                // check if any possible parents of this clause match the fullname predicate.
+                final Query query = context.getQuery();
+                final List<OperationClause> parents
+                        = query.getParentFinder().getParents(query.getRootClause(), clause);
+
+                for(OperationClause oc : parents){
+                    onlyGeo &= !oc.getKnownPredicates().contains(TokenPredicate.FULLNAME);
+                }
+
+                // and check for company
+                onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
+
+            }else{
+                // no fullname or company exists in the query, so firstname or lastname will do
+                onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
+                onlyGeo &= !clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
+            }
 
             if (onlyGeo) {
                 // add this term to the geo query string
@@ -211,21 +231,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             clause.getFirstClause().accept(this);
         }
 
-        protected void visitImpl(final AndClause clause) {
-            clause.getFirstClause().accept(this);
-            where.append(' ');
-            who.append(' ');
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final OrClause clause) {
-            clause.getFirstClause().accept(this);
-            where.append(' ');
-            who.append(' ');
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final DefaultOperatorClause clause) {
+        protected void visitImpl(final DoubleOperatorClause clause) {
             clause.getFirstClause().accept(this);
             where.append(' ');
             who.append(' ');
@@ -239,10 +245,51 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         }
 
         protected void visitImpl(final XorClause clause) {
-            // [TODO] we need to determine which branch in the query-tree we want to use.
-            //  Both branches to a XorClause should never be used.
             clause.getFirstClause().accept(this);
-            // clause.getSecondClause().accept(this);
+        }
+
+        private final class FullnameOrCompanyFinder extends AbstractReflectionVisitor{
+
+            protected void visitImpl(final LeafClause clause) {
+
+                final Set<TokenPredicate> predicates = clause.getKnownPredicates();
+                queryContainsFullnameOrCompany |= predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+            }
+
+            protected void visitImpl(final OperationClause clause) {
+                if(!queryContainsFullnameOrCompany){
+                    clause.getFirstClause().accept(this);
+                }
+            }
+
+            protected void visitImpl(final DoubleOperatorClause clause) {
+                if(!queryContainsFullnameOrCompany){
+                    clause.getFirstClause().accept(this);
+                    clause.getSecondClause().accept(this);
+                }
+            }
+
+            protected void visitImpl(final DefaultOperatorClause clause) {
+
+                final Set<TokenPredicate> predicates = clause.getKnownPredicates();
+                queryContainsFullnameOrCompany |= predicates.contains(TokenPredicate.FULLNAME);
+                if(!queryContainsFullnameOrCompany){
+                    clause.getFirstClause().accept(this);
+                    clause.getSecondClause().accept(this);
+                }
+
+            }
+            protected void visitImpl(final NotClause clause) {
+            }
+
+            protected void visitImpl(final AndNotClause clause) {
+            }
+
+            protected void visitImpl(final XorClause clause) {
+                if(!queryContainsFullnameOrCompany){
+                    clause.getFirstClause().accept(this);
+                }
+            }
         }
     }
 

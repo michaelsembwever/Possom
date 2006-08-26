@@ -48,6 +48,7 @@ import org.xml.sax.SAXException;
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
 
+    /** The context required by this class. **/
     public interface Context extends BaseContext, QueryStringContext, DocumentContext, PropertiesContext, SiteContext{
     }
 
@@ -130,8 +131,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                         public Site getSite(){
                             return parent;
                         }
-                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties props) {
+                            return UrlResourceLoader.newPropertiesLoader(this, resource, props);
                         }
                         public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                             return UrlResourceLoader.newDocumentLoader(this, resource, builder);
@@ -199,8 +200,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             if (term == null) {
                 evaluation = true;
             }  else  {
+
                 for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
-                    evaluation = occurance.getMatcher(term).find();
+
+                    final Matcher m =occurance.getMatcher(term);
+                    evaluation = m.find() && m.start() == 0 && m.end() == term.length();
 
                     // keep track of which TokenMatch's we've used.
                     if (evaluation) {

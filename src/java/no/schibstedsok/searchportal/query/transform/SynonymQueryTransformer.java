@@ -21,7 +21,11 @@ import java.util.Properties;
 import java.util.Set;
 
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.query.OperationClause;
+import no.schibstedsok.searchportal.query.Query;
+import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 /** XXX This will get largely rewritten when alternation rotation comes into play.
@@ -85,18 +89,41 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     }
 
     /** TODO comment me. **/
+    protected void visitImpl(final DoubleOperatorClause clause) {
+
+        LOG.trace("visitImpl(" + clause + ')');
+
+        clause.getFirstClause().accept(this);
+        clause.getSecondClause().accept(this);
+
+    }
+
+    /** TODO comment me. **/
+    protected void visitImpl(final XorClause clause) {
+
+        LOG.trace("visitImpl(" + clause + ')');
+
+        clause.getFirstClause().accept(this);
+
+    }
+
+    /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
 
-        LOG.trace("visitImpl(" + clause + ")");
+        LOG.trace("visitImpl(" + clause + ')');
 
         for (final TokenPredicate p : getPredicates()) {
 
-            if (clause.getKnownPredicates().contains(p)
-                    || clause.getPossiblePredicates().contains(p)) {
+                final Query query = getContext().getQuery();
+                final List<OperationClause> parents
+                        = query.getParentFinder().getParents(query.getRootClause(), clause);
 
-                LOG.debug("adding to matchingPredicates " + p);
-                matchingPredicates.add(p);
-            }
+                for(OperationClause oc : parents){
+                    if(oc.getKnownPredicates().contains(p) || oc.getPossiblePredicates().contains(p)){
+                        LOG.debug("adding to matchingPredicates " + p);
+                        matchingPredicates.add(p);
+                    }
+                }
         }
 
         clause.getFirstClause().accept(this);
@@ -107,7 +134,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
 
-        LOG.trace("visitImpl(" + clause + ")");
+        LOG.trace("visitImpl(" + clause + ')');
 
         if (!matchingPredicates.isEmpty() && !expanded.contains(clause)) {
             for (final TokenPredicate p : matchingPredicates) {
