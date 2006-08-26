@@ -314,6 +314,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         MOBILE_COMMAND(MobileSearchConfiguration.class),
         NEWS_COMMAND(NewsSearchConfiguration.class),
         OVERTURE_PPC_COMMAND(OverturePPCSearchConfiguration.class),
+        PLATEFOOD_PPC_COMMAND(PlatefoodPPCSearchConfiguration.class),
         PICTURE_COMMAND(PicSearchConfiguration.class),
         SENSIS_COMMAND(SensisSearchConfiguration.class),
         STATIC_COMMAND(StaticSearchConfiguration.class),
@@ -492,6 +493,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "port", ParseType.Int , commandE, "80");
                 }
                 if(sc instanceof OverturePPCSearchConfiguration){
+                    fillBeanProperty(sc, inherit, "url", ParseType.String , commandE, "");
+                }
+                if(sc instanceof PlatefoodPPCSearchConfiguration){
                     fillBeanProperty(sc, inherit, "url", ParseType.String , commandE, "");
                 }
                 if(sc instanceof YahooIdpSearchConfiguration){
