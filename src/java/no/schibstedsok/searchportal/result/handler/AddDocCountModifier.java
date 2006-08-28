@@ -26,9 +26,7 @@ public final class AddDocCountModifier implements ResultHandler {
         final SearchTab.NavigatorHint hint = cxt.getSearchTab().getNavigationHint(modifierName);
         if( hint != null ){
             final Modifier mod = new Modifier(hint.getName(), result.getHitCount(), navigator);
-            if (mod.getCount() >= 0){
-                cxt.addSource(mod);
-            }
+            cxt.addSource(mod);
         }else{
             throw new IllegalStateException(
                     ERR_UNKNOWN_MODIFIER_1 + modifierName);
