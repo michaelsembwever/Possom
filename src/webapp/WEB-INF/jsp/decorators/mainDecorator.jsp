@@ -273,7 +273,13 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	<td><img src="../images/pix.gif" border="0" width="204" height="6" alt="" /></td>
     </tr>
     <tr>
-        <td class="cell_three" height="6"><decorator:getProperty property="page.middle-bar"/></td>
+        <td class="cell_three" height="6">
+            <%if (currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
+                <search:velocity template="results/middlebar" command="scanpix"/>
+            <% } else { %>
+                <decorator:getProperty property="page.middle-bar"/>
+            <% } %>
+        </td>
         <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
     </tr>
     <tr>
