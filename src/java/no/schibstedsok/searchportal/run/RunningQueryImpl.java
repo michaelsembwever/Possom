@@ -422,12 +422,17 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     private void performModifierHandling(){
-
         Collections.sort(sources);
+
         final List<Modifier> toRemove = new ArrayList<Modifier>();
         for(Modifier m : sources){
+            if( m.getCount() > -1 ){
                 m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
+            }else{
+                toRemove.add(m);
+            }
         }
+        sources.removeAll(toRemove);
     }
 
     private String getSingleParameter(final String paramName) {
