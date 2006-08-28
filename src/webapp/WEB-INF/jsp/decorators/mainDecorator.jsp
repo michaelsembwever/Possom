@@ -199,7 +199,14 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     <c:set var="hint" value="${e.navigationHint}"/>
                     <c:if test="${!empty hint && !empty hint.tab}">
                         <c:set var="rows" value="${rows +1}"/>
+                        <c:choose>
+                        <c:when test="${e.count > 0}">
                         <c:set var="navUrl" value="?q=${q}&c=${hint.tab.key}${hint.urlSuffix}"/>
+                        </c:when>
+                        <c:otherwise>
+                        <c:set var="navUrl" value="?c=${hint.tab.key}${hint.urlSuffix}"/>
+                        </c:otherwise>
+                        </c:choose>
                         <c:if test="${rows > 1}">
                             <tr><td colspan="3"><img src="../images/index/dottedline2.gif" alt="" /></td></tr>
                         </c:if>
