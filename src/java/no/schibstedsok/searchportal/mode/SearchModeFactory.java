@@ -581,6 +581,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             swsc.addElementValue(elm.trim());
                         }
                     }
+
+                    // Add inherited xml elemts.
+                    if (inherit instanceof StormWeatherSearchConfiguration) {
+                        final StormWeatherSearchConfiguration swsi = (StormWeatherSearchConfiguration) inherit;
+                        for (String elm : swsi.getElementValues()) {
+                            swsc.addElementValue(elm);
+                        }
+                    }
                 }
 
                 if (sc instanceof TvSearchConfiguration) {
