@@ -204,7 +204,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                                 <c:set var="navUrl" value="?q=${q}&c=${hint.tab.key}${hint.urlSuffix}"/>
                             </c:when>
                             <c:otherwise>
-                                <c:set var="navUrl" value="?c=${hint.tab.key}${hint.urlSuffix}"/>
+                                <c:set var="navUrl" value="?q=&c=${hint.tab.key}${hint.urlSuffix}"/>
                             </c:otherwise>
                         </c:choose>
                         <c:if test="${rows > 1}">
