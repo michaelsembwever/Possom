@@ -10,6 +10,7 @@ import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
+import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 
@@ -239,6 +240,16 @@ public class YellowSearchCommand extends FastSearchCommand {
 
             appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.", ""));
         }
+    }
+
+    protected void visitImpl(final XorClause clause) {
+        
+        if( XorClause.PHRASE_ON_LEFT == clause.getHint()){
+            clause.getSecondClause().accept(this);
+        }else{
+            super.visitImpl(clause);
+        }
+        
     }
 
 }
