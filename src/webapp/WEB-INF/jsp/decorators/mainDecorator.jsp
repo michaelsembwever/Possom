@@ -210,10 +210,10 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <c:if test="${rows > 1}">
                             <tr><td colspan="3"><img src="../images/index/dottedline2.gif" alt="" /></td></tr>
                         </c:if>
-                        <tr onclick='strepRollover("<c:out value='${navUrl}'/>");'>
+                        <tr>
                             <td class="navbar2_imgpad"><img src='<c:out value="../images/menu/icons/${hint.image}"/>' class="nav_icon" align="left" alt="" /></td>
 			    <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
-                            <td class="navbar2_menupad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
+                            <td class="navbar2_rightpad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
                         </tr>
                     </c:if>
                 </c:forEach>

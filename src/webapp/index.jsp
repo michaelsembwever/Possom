@@ -111,46 +111,53 @@
 	</script>
             <table id="front_menu" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td class="bg"><img src="images/index/nyheter_20_20.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=m&amp;newscountry=Norge&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
+                    <td class="imgpad"><img src="images/menu/icons/nyheter.png" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=m&amp;newscountry=Norge&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
                 </tr>
                 <tr>
-                    <td><img src="images/index/dottedline.gif" alt="" /></td>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
-                    <td class="bg"><img src="images/index/bedrift_20_20.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a></td>
+                    <td class="imgpad"><img src="images/menu/icons/bedrift.png" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a></td>
                 </tr>
                 <tr>
-                    <td><img src="images/index/dottedline.gif" alt="" /></td>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
-                    <td class="bg"><img src="images/index/person_20_20.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a></td>
+                    <td class="imgpad"><img src="images/menu/icons/person.png" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a></td>
                 </tr>
                 <tr>
-                    <td><img src="images/index/dottedline.gif" alt="" /></td>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
-                    <td class="bg"><img src="images/index/bilder_20_20.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a></td>
+                    <td class="imgpad"><img src="images/menu/icons/bilde.png" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a></td>
                 </tr>
                 <tr>
-                    <td><img src="images/index/dottedline.gif" alt="" /></td>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
-                    <td class="bg"><img src="images/menu/blogg.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+                    <td class="imgpad"><img src="images/menu/icons/blogg.png" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
                 </tr>
                 <tr>
-                    <td><img src="images/index/dottedline.gif" alt="" /></td>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
-                    <td class="bg"><img src="images/index/tv.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TVs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+                    <td class="imgpad"><img src="images/menu/icons/tv.png" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TVs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
                 </tr>
-<tr>
-                    <td><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="bg"><img src="images/index/ver.gif" alt="" align="left" /> &nbsp; <a href='<search:linkPulse url="?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+		<tr>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
-                    <td style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="images/index/skjul_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></td>
+                    <td class="imgpad"><img src="images/menu/icons/ver.png" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="images/index/skjul_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></td>
                 </tr>
             </table>
             </div>
