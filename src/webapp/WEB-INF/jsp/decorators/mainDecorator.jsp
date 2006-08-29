@@ -20,12 +20,14 @@
 <%
 final TextMessages text = (TextMessages) request.getAttribute("text");
 final Site site = (Site)request.getAttribute(Site.NAME_KEY);
+String locale = site.getLocale().toString();
 final SearchTab tab = (SearchTab)request.getAttribute("tab");
 
 String currentC = "d";    //default collection
 currentC = (String) request.getAttribute("c");
 String q = (String) request.getAttribute("q");
 final String contentsource = (String) request.getParameter("contentsource");
+final String newscountry = (String) request.getParameter("newscountry");
 final String qURLEncoded = URLEncoder.encode(q, "utf-8");
 q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
@@ -213,7 +215,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <tr>
                             <td class="navbar2_imgpad"><img src='<c:out value="../images/menu/icons/${hint.image}"/>' class="nav_icon" align="left" alt="" /></td>
 			    <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
-                            <td class="navbar2_rightpad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
+                            <% if ( q.trim().equals("") && currentC.equals("m") ) { %>
+                                <td class="navbar2_rightpad" align="right">&nbsp;</td>
+                            <% } else { %>
+                                <td class="navbar2_rightpad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
+                            <% } %>
                         </tr>
                     </c:if>
                 </c:forEach>
@@ -523,7 +529,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 <decorator:getProperty property="page.map-script"/>
 
-<!-- start Gallup -->
+<!-- start Gallup <%=locale  %> -->
+<% if ( "no".equals(locale) ) { %>
 <script type='text/javascript' language='JavaScript' src='../javascript/tmv11.js'></script>
 <script type="text/javascript" language="JavaScript">
 <!--
@@ -531,9 +538,9 @@ var tmsec = new Array(2);
 tmsec[0]="tmsec=sesam";
 <% if (currentC.equals("g")) { %> tmsec[1]="tmsec=sesamsok_verden";
 <% } else if (currentC.equals("d")) { %> tmsec[1]="tmsec=sesamsok";
-<% } else if (currentC.equals("m") && "Norske nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_norske";
+<% } else if (currentC.equals("m") && "Norge".equals(newscountry)) { %> tmsec[1]="tmsec=nyhetssok_norske";
 <% } else if (currentC.equals("m") && "Internasjonale nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_internasjonale";
-<% } else if (currentC.equals("m") && "Nordiske nyheter".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_nordiske";
+<% } else if (currentC.equals("m") && "Norden-no".equals(newscountry)) { %> tmsec[1]="tmsec=nyhetssok_nordiske";
 <% } else if (currentC.equals("m") && "Mediearkivet".equals(contentsource)) { %> tmsec[1]="tmsec=nyhetssok_papir";
 <% } else if (currentC.equals("m")) { %> tmsec[1]="tmsec=nyhetssok";
 <% } else if (currentC.equals("l")) { %> tmsec[1]="tmsec=nyhetssok";
@@ -553,9 +560,9 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 </script>
 <% if (currentC.equals("g") ) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok_verden" alt="" /></noscript>
 <% } else if (currentC.equals("d")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamsok" alt="" /></noscript>
-<% } else if (currentC.equals("m") && "Norske nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_norske" alt="" /></noscript>
+<% } else if (currentC.equals("m") && "Norge".equals(newscountry)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_norske" alt="" /></noscript>
 <% } else if (currentC.equals("m") && "Internasjonale nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_internasjonale" alt="" /></noscript>
-<% } else if (currentC.equals("m") && "Nordiske nyheter".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_nordiske" alt="" /></noscript>
+<% } else if (currentC.equals("m") && "Norden-no".equals(newscountry)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_nordiske" alt="" /></noscript>
 <% } else if (currentC.equals("m") && "Mediearkivet".equals(contentsource)) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok_papir" alt="" /></noscript>
 <% } else if (currentC.equals("m")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok" alt="" /></noscript>
 <% } else if (currentC.equals("l")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=nyhetssok" alt="" /></noscript>
@@ -568,6 +575,7 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } else if (currentC.equals("n")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=<search:velocity template="/pages/tns"/>" alt="" /></noscript>
 <% } %>
 
+<% } %>
 <!-- end gallup -->
 
 </body>
