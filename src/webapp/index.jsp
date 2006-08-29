@@ -85,7 +85,7 @@
                             focusControl.focus();
                         } // -->
                     </script>
-                    <input type="image" id="index_submit" src="images/searchbar/nettsok_knapp.png" />
+                    <input type="image" id="index_submit" src="images/index/nettsok_forside.png" />
                     &nbsp;
                     <a id="searchtip_front" href='<search:linkPulse url="?q=&amp;page=/pages/7/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a>
                 </div>
