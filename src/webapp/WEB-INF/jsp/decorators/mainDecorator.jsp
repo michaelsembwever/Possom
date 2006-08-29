@@ -73,21 +73,21 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <html>
 <head>
     <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/<c:out value='${startTime}'/>/decorator-style.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/<c:out value='${startTime}'/>/sitesearch.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/<c:out value='${startTime}'/>/front.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/<c:out value='${startTime}'/>/ps.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/sitesearch.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/front.css" rel="stylesheet" type="text/css" />
+    <link media="screen" href="../css/ps.css" rel="stylesheet" type="text/css" />
     <c:if test='${!(empty tab.rssResultName)}'>
     <link rel="alternate" type="application/rss+xml" title="RSS - Sesam" href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss" />
     </c:if>
     <c:forEach var="t" items="${tab.ancestry}">
-        <link media="screen" href="../css/<c:out value='${startTime}'/>/tab/<c:out value='${t.id}'/>.css" rel="stylesheet" type="text/css" />
+        <link media="screen" href="../css/tab/<c:out value='${t.id}'/>.css" rel="stylesheet" type="text/css" />
     </c:forEach>
     <c:forEach var="css" items="${tab.css}">
-        <link media="screen" href="../css/<c:out value='${startTime}'/>/tab/<c:out value='${css}'/>.css" rel="stylesheet" type="text/css" />
+        <link media="screen" href="../css/tab/<c:out value='${css}'/>.css" rel="stylesheet" type="text/css" />
     </c:forEach>
 
-    <link media="print" href="../css/<c:out value='${startTime}'/>/print-style.css" rel="stylesheet" type="text/css" />
+    <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>

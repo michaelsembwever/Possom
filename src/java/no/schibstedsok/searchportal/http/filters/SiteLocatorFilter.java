@@ -131,7 +131,7 @@ public final class SiteLocatorFilter implements Filter {
                 final HttpServletRequest req = (HttpServletRequest) request;
                 final HttpServletResponse res = (HttpServletResponse) response;
                 final String uri = req.getRequestURI();
-                final String resource = uri;//.substring(uri.indexOf('/', 1) + 1);
+                final String resource = uri;
                 final String rscDir = resource != null && resource.indexOf('/',1) >= 0
                         ? resource.substring(0, resource.indexOf('/',1)+1)
                         : null;
@@ -150,7 +150,7 @@ public final class SiteLocatorFilter implements Filter {
                             + '/' + resource;
 
                     }  else  {
-                        // TODO strip the version number out of the resource
+                        // strip the version number out of the resource
                         final String noVersionRsc = resource.replaceFirst("/(\\d)+/","/");
 
                         // Find resource in current site or any of its
@@ -199,7 +199,12 @@ public final class SiteLocatorFilter implements Filter {
 
 
     private String recursivelyFindResource(final String resource, final Site site) {
-        final String url = HTTP + site.getName() + site.getConfigContext() + resource;
+        
+        final String datedResource = resource
+                .replaceAll("/", "/" + START_TIME + "/")
+                .replaceFirst("/" + START_TIME + "/", "");
+        
+        final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
 
         if (UrlResourceLoader.urlExists(url)) {
             return url;
