@@ -55,7 +55,8 @@ public final class SearchTab {
                 final String adCommand,
                 final int adLimit,
                 final int adOnTop,
-                final List<String> css){
+                final List<String> css,
+                final boolean absoluteOrdering){
 
         this.inherit = inherit;
         this.id = id;
@@ -86,6 +87,7 @@ public final class SearchTab {
         }
         this.rssResultName = rssResultName;
         this.css.addAll(css);
+        this.absoluteOrdering = absoluteOrdering;
     }
 
     // Getters --------------------------------------------------------
@@ -239,6 +241,19 @@ public final class SearchTab {
     }
 
 
+    /**
+     * Holds the value of property absoluteOrdering
+     */
+    private final boolean absoluteOrdering;
+    
+    /**
+     * Getter for property absoluteOrdering
+     */
+    public boolean getAbsoluteOrdering() {
+        return absoluteOrdering;
+    }
+    
+    
     /**
      * Holds value of property enrichments.
      */
@@ -414,7 +429,6 @@ public final class SearchTab {
 
     /** Immutable POJO holding navigation information for a given tab **/
     public static final class NavigatorHint {
-
         public NavigatorHint(
                 final String id,
                 final String name,
@@ -423,6 +437,7 @@ public final class SearchTab {
                 final String tabName,
                 final String urlSuffix,
                 final String image,
+                final int priority,
                 final SearchTabFactory tabFactory){
 
             this.id = id;
@@ -432,6 +447,7 @@ public final class SearchTab {
             this.tabName = tabName;
             this.urlSuffix = urlSuffix;
             this.image = image;
+            this.priority = priority;
             this.tabFactory = tabFactory;
         }
 
@@ -538,8 +554,15 @@ public final class SearchTab {
             return this.image;
         }
 
+        private final int priority;
 
-
+        /**
+         * Getter for  property priority.
+         * @return Value of property priority.
+         */
+        public int getPriority() {
+            return this.priority;
+        }
     }
 
     /**

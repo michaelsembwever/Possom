@@ -5,6 +5,7 @@
 package no.schibstedsok.searchportal.run;
 
 
+import java.util.Comparator;
 import java.util.concurrent.Callable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -422,8 +423,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     private void performModifierHandling(){
-        Collections.sort(sources);
-
+        
         final List<Modifier> toRemove = new ArrayList<Modifier>();
         for(Modifier m : sources){
             if( m.getCount() > -1 ){
@@ -433,6 +433,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
         }
         sources.removeAll(toRemove);
+
+        if (getSearchTab().getAbsoluteOrdering()) {
+            Collections.sort(sources, Modifier.getHintPriorityComparator());
+        } else {
+            Collections.sort(sources);
+        }
     }
 
     private String getSingleParameter(final String paramName) {

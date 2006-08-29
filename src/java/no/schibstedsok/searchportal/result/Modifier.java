@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.result.Navigator;
+import java.util.Comparator;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
 /**
@@ -13,6 +13,25 @@ public class Modifier implements Comparable {
 
     final private String name;
     final private Navigator navigator;
+
+    private static final Comparator<Modifier> HINT_PRIO_COMPARATOR =
+            new Comparator<Modifier>() {
+
+        public int compare(final Modifier m1, final Modifier m2) {
+            if (m1.getNavigationHint() == null || m2.getNavigationHint() == null) {
+                return 0;
+            }
+
+            int p1 = m1.getNavigationHint().getPriority();
+            int p2 = m2.getNavigationHint().getPriority();
+             
+             if (p1 == p2) {
+                 return 0;
+             }
+             
+             return p1 > p2 ? 1 : -1;
+        }
+    };
 
     public Modifier(final String name, final int count, final Navigator navigator) {
         this.name = name;
@@ -76,4 +95,7 @@ public class Modifier implements Comparable {
         this.navigationHint = navigationHint;
     }
 
+    public static Comparator<Modifier> getHintPriorityComparator() {
+        return HINT_PRIO_COMPARATOR;
+    }
 }

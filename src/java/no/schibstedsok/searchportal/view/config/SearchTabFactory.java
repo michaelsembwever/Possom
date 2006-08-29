@@ -238,8 +238,9 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final String tab = n.getAttribute("tab");
                 final String urlSuffix = n.getAttribute("url-suffix");
                 final String image = n.getAttribute("image");
+                final int priority = parseInt(n.getAttribute("priority"), 0);
                 final SearchTab.NavigatorHint navHint
-                        = new SearchTab.NavigatorHint(navId, name, displayName, match, tab, urlSuffix, image, this);
+                        = new SearchTab.NavigatorHint(navId, name, displayName, match, tab, urlSuffix, image, priority, this);
                 navigations.add(navHint);
             }
 
@@ -261,7 +262,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     adCommand,
                     parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
                     parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
-                    Arrays.asList(css));
+                    Arrays.asList(css),
+                    parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null ? inherit.getAbsoluteOrdering() : false));
             
             try{
                 tabsLock.writeLock().lock();
