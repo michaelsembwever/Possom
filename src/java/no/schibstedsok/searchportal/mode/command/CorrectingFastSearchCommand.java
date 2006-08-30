@@ -272,7 +272,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
     
     private String correctQuery(
             final Map<String, List<SpellingSuggestion>> suggestions,
-            final String q) {
+            String q) {
 
         for (final List<SpellingSuggestion> suggestionList : suggestions.values()) {
             for (final SpellingSuggestion s : suggestionList) {
