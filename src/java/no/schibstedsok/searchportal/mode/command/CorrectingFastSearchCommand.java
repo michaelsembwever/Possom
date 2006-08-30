@@ -78,11 +78,16 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
      * @inherit
      */
     public SearchResult execute() {
-        FastSearchResult originalResult = (FastSearchResult) super.execute();
-        
+        final FastSearchResult originalResult = (FastSearchResult) super.execute();
         final Map suggestions = originalResult.getSpellingSuggestions();
         
         // Rerun command?
+        // TODO Consider moving the isCorrectionEnabled() call after the 
+        // correction has been made and then discarding the result 
+        // should the call return false.
+        // Sub classes might not know if the corrected query should be used
+        // until after the query has been run. or at least not after a token 
+        // evaluation has been run on the corrected query.
         if (isCorrectionEnabled() && correct && originalResult.getHitCount() == 0 && !suggestions.isEmpty()) {
             // Correct spelling suggestions and parse the resulting query string.
             final String oldQuery = context.getRunningQuery().getQueryString();
@@ -170,7 +175,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
     }
 
     // Implementation of advanced query language. The spelling suggestions for
-    // yellow and white only works as is should when the advanced query language
+    // yellow and white only works as it should when the advanced query language
     // is used.
     protected void visitImpl(final AndClause clause) {
         // The leaf clauses might not produce any output. For example terms 

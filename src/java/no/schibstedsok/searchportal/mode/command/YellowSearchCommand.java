@@ -22,6 +22,9 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.YellowSearchResult;
 import org.apache.log4j.Logger;
 
+/**
+ * TODO. Rewrite from scratch. This class is insane.
+ */
 public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(YellowSearchCommand.class);
@@ -36,8 +39,10 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
     private StringBuilder filterBuilder = null;
 
+    private boolean correct = false;
+    
     /** Creates a new yellow search command.
-     *
+     * TODO. Rewrite from scratch. This is insane.
      **/
     public YellowSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
@@ -66,22 +71,21 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
         }
 
         if (isLocalSearch() && !viewAll) {
-            LOG.debug("Search is local");
-
-            // The search containing all hits. Including non-local.
+            correct = false;
             ignoreGeoNav = true;
             isLocal = false;
-
             ypkeywordsgeo = true;
             final FastSearchResult nationalHits = (FastSearchResult) super.execute();
             ypkeywordsgeo = false;
 
+            correct = false;
             ignoreGeoNav = false;
             isTop3 = true;
             final FastSearchResult top3 = (FastSearchResult) super.execute();
             isTop3 = false;
 
             // Perform local search.
+            correct = true;
             ignoreGeoNav = false;
             isLocal = true;
             final FastSearchResult localResult = (FastSearchResult) super.execute();
@@ -91,18 +95,19 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
         } else if (!viewAll) {
             isLocal = false;
             isTop3 = true;
+            correct = false;
             final FastSearchResult top3 = (FastSearchResult) super.execute();
             isTop3 = false;
             ypkeywordsgeo = true;
+            correct = true;
             final FastSearchResult nationalHits = (FastSearchResult) super.execute();
             ypkeywordsgeo = false;
 
             final YellowSearchResult result = new YellowSearchResult(this, null, nationalHits, top3, false);
             return result;
         } else {
-
+            correct = true;
             ypkeywordsgeo = false;
-
             isLocal = true;
             ignoreGeoNav = true;
             final FastSearchResult localResult = (FastSearchResult) super.execute();
@@ -110,11 +115,13 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             isLocal = false;
 
             isTop3 = true;
+            correct = false;
             final FastSearchResult top3 = (FastSearchResult) super.execute();
             isTop3 = false;
 
             isLocal = false;
             ypkeywordsgeo = true;
+            correct = false;
             final FastSearchResult nationalHits = (FastSearchResult) super.execute();
             ypkeywordsgeo = false;
 
@@ -169,7 +176,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
     /** TODO comment me. **/
     protected boolean isCorrectionEnabled() {
-        return isLocal;
+        return correct;
     }
 
     /** TODO comment me. **/
