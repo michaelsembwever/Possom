@@ -83,7 +83,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         final Map suggestions = originalResult.getSpellingSuggestions();
         
         // Rerun command?
-        if (correct && originalResult.getHitCount() == 0 && !suggestions.isEmpty()) {
+        if (isCorrectionEnabled() && correct && originalResult.getHitCount() == 0 && !suggestions.isEmpty()) {
             // Correct spelling suggestions and parse the resulting query string.
             final String oldQuery = context.getRunningQuery().getQueryString();
             final String newQuery = correctQuery(suggestions, oldQuery);
@@ -151,6 +151,16 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
      */
     protected TokenEvaluationEngine getTokenEvaluationEngine() {
         return tokenEvaluationEngine;
+    }
+
+    /**
+     * Correction will only be enabled if this method returns true. Override
+     * this to dynamically turn correction on and off. 
+     *
+     * @return true
+     */
+    protected boolean isCorrectionEnabled() {
+        return true;
     }
 
     // TODO comment me.

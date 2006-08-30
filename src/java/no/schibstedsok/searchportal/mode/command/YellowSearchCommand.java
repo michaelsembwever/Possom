@@ -166,6 +166,12 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
         }
     }
 
+
+    /** TODO comment me. **/
+    protected boolean isCorrectionEnabled() {
+        return isLocal;
+    }
+
     /** TODO comment me. **/
     protected int getResultsToReturn() {
         if (isTop3) {
@@ -174,7 +180,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             return super.getResultsToReturn();
         }
     }
-
+    
     /** TODO comment me. **/
     protected String getAdditionalFilter() {
 
@@ -252,10 +258,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.", ""));
         }
     }
-    protected void setAdditionalParameters(final ISearchParameters params) {
-        super.setAdditionalParameters(params);
-        params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
-    }
+
     protected void visitImpl(final XorClause clause) {
         
         if( XorClause.PHRASE_ON_LEFT == clause.getHint()){
