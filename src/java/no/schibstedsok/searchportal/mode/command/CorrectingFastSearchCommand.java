@@ -273,16 +273,13 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
     private String correctQuery(
             final Map<String, List<SpellingSuggestion>> suggestions,
             final String q) {
-        
-        String newQ = q;
-        
+
         for (final List<SpellingSuggestion> suggestionList : suggestions.values()) {
             for (final SpellingSuggestion s : suggestionList) {
-                newQ = newQ.replaceAll(s.getOriginal(), s.getSuggestion());
+                q = q.replaceAll(s.getOriginal(), s.getSuggestion());
             }
         }
         
-        final String fixedQueryString = newQ;
-        return fixedQueryString;
+        return q;
     }
 }
