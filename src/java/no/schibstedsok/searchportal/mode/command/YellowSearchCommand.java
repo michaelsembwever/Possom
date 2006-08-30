@@ -6,21 +6,23 @@ package no.schibstedsok.searchportal.mode.command;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.*;
+import no.fast.ds.search.BaseParameter;
+import no.fast.ds.search.ISearchParameters;
+import no.fast.ds.search.SearchParameter;
+import no.fast.ds.search.SearchType;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
-import no.schibstedsok.searchportal.query.token.TokenPredicate;
-
 import no.schibstedsok.searchportal.query.token.TokenMatch;
+import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.YellowSearchResult;
 import org.apache.log4j.Logger;
 
-public class YellowSearchCommand extends FastSearchCommand {
+public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(YellowSearchCommand.class);
 
@@ -34,7 +36,9 @@ public class YellowSearchCommand extends FastSearchCommand {
 
     private StringBuilder filterBuilder = null;
 
-    /** TODO comment me. **/
+    /** Creates a new yellow search command.
+     *
+     **/
     public YellowSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
@@ -137,21 +141,28 @@ public class YellowSearchCommand extends FastSearchCommand {
 
     /** TODO comment me. **/
     public String getTransformedQuery() {
-        final TokenEvaluationEngine engine = getRunningQuery().getTokenEvaluationEngine();
+
+        String t = super.getTransformedQuery();
+        
+        final TokenEvaluationEngine engine 
+                = getTokenEvaluationEngine() != null ? 
+            getTokenEvaluationEngine() :
+            context.getRunningQuery().getTokenEvaluationEngine();
+
         final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(engine);
 
         if (exactCompany && !isTop3) {
-            return super.getTransformedQuery().replaceAll("yellowphon", "yellownamephon");
+            return t.replaceAll("yellowphon", "yellownamephon");
         }
 
         if (isTop3) {
-            return super.getTransformedQuery().replaceAll("yellowphon:", "").replaceAll("-", " ");
+            return t.replaceAll("yellowphon:", "").replaceAll("-", " ");
         }
 
         if (isLocal) {
-            return super.getTransformedQuery().replaceAll("-", " ");
+            return t.replaceAll("-", " ");
         } else {
-            return super.getTransformedQuery().replaceAll("yellowphon", "yellowgeophon").replaceAll("-", " ");
+            return t.replaceAll("yellowphon", "yellowgeophon").replaceAll("-", " ");
         }
     }
 
@@ -241,7 +252,10 @@ public class YellowSearchCommand extends FastSearchCommand {
             appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.", ""));
         }
     }
-
+    protected void setAdditionalParameters(final ISearchParameters params) {
+        super.setAdditionalParameters(params);
+        params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
+    }
     protected void visitImpl(final XorClause clause) {
         
         if( XorClause.PHRASE_ON_LEFT == clause.getHint()){
@@ -249,7 +263,5 @@ public class YellowSearchCommand extends FastSearchCommand {
         }else{
             super.visitImpl(clause);
         }
-        
     }
-
 }

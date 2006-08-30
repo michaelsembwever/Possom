@@ -9,9 +9,18 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.*;
+import no.fast.ds.search.BaseParameter;
+import no.fast.ds.search.ISearchParameters;
+import no.fast.ds.search.SearchParameter;
+import no.fast.ds.search.SearchType;
+import no.schibstedsok.searchportal.query.AndClause;
+import no.schibstedsok.searchportal.query.AndNotClause;
+import no.schibstedsok.searchportal.query.Clause;
+import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.query.NotClause;
+import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.XorClause;
 
@@ -19,7 +28,7 @@ import no.schibstedsok.searchportal.query.XorClause;
  *
  * @author magnuse
  */
-public class WhiteSearchCommand extends FastSearchCommand {
+public class WhiteSearchCommand extends CorrectingFastSearchCommand {
 
     private static final String PREFIX_INTEGER="whitepages:";
     private static final String PREFIX_PHONETIC="whitephon:";
@@ -90,4 +99,72 @@ public class WhiteSearchCommand extends FastSearchCommand {
            clause.getFirstClause().accept(this);
        }
     }
+    
+        protected void setAdditionalParameters(final ISearchParameters params) {
+        super.setAdditionalParameters(params);
+        params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
+    }
+    
+    // Implementation of advanced query language.
+    protected void visitImpl(final AndClause clause) {
+        // The leaf clauses might not produce any output. For example terms 
+        // having a site: field. In these cases we should not output the 
+        // operator keyword.
+        boolean hasEmptyLeaf = false;
+
+        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
+        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
+        
+        clause.getFirstClause().accept(this);
+
+        if (! hasEmptyLeaf) 
+            appendToQueryRepresentation(" AND ");
+
+        clause.getSecondClause().accept(this);
+    }
+
+    protected void visitImpl(final OrClause clause) {
+        appendToQueryRepresentation(" (");
+        clause.getFirstClause().accept(this);
+        appendToQueryRepresentation(" OR ");
+        clause.getSecondClause().accept(this);
+        appendToQueryRepresentation(") ");
+    }
+
+    protected void visitImpl(final DefaultOperatorClause clause) {
+        boolean hasEmptyLeaf = false;
+
+        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
+        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
+
+        clause.getFirstClause().accept(this);
+        
+        if (! hasEmptyLeaf)
+            appendToQueryRepresentation(" AND ");
+
+        clause.getSecondClause().accept(this);
+    }
+    protected void visitImpl(final NotClause clause) {
+        appendToQueryRepresentation(" ANDNOT ");
+        appendToQueryRepresentation("(");
+        clause.getFirstClause().accept(this);
+        appendToQueryRepresentation(")");
+
+    }
+    protected void visitImpl(final AndNotClause clause) {
+        appendToQueryRepresentation("ANDNOT ");
+        appendToQueryRepresentation("(");
+        clause.getFirstClause().accept(this);
+        appendToQueryRepresentation(")");
+    }
+
+    private boolean isEmptyLeaf(final Clause clause) {
+        if (clause instanceof LeafClause) {
+            final LeafClause leaf = (LeafClause) clause;
+            return leaf.getField() != null;
+        }
+
+        return false;
+    }
+
 }

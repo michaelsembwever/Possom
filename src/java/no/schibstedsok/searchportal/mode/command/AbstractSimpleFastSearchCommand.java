@@ -532,6 +532,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         return getSearchConfiguration().getSortBy();
     }
+    /** TODO comment me */
+    protected void setAdditionalParameters(final ISearchParameters params) {
+    }
+    
 
 
     // Private -------------------------------------------------------
@@ -727,9 +731,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         // Init dynamic filters
         // TODO: Is the following used anywhere?
-        String dynamicLanguage = getDynamicParams(getParameters(), "language", "");
-        String dynamicFilterType = getDynamicParams(getParameters(), "filtertype", "any");
-        String dynamicType = getDynamicParams(getParameters(), "type", "all");
         String superFilter = super.getFilter();
 
         if (superFilter == null) {
@@ -740,12 +741,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (LOG.isDebugEnabled()) {
             LOG.debug("createQuery: superFilter=" + superFilter);
         }
-        params.setParameter(new SearchParameter("filtertype", dynamicFilterType));
+        params.setParameter(new SearchParameter("filtertype", "any"));
 
-        params.setParameter(new SearchParameter(BaseParameter.TYPE, dynamicType));
+        params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
 
         params.setParameter(new SearchParameter(BaseParameter.FILTER,
-                filter.toString() + " " + dynamicLanguage + " " + superFilter));
+                filter.toString() + " " + superFilter));
 
         if (getSearchConfiguration().getQtPipeline() != null && getSearchConfiguration().getQtPipeline().length() >0) {
             params.setParameter(new SearchParameter(BaseParameter.QTPIPELINE,
@@ -794,10 +795,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         params.setParameter(new SearchParameter(BaseParameter.NAVIGATORS, getNavigatorsString()));
 
+        setAdditionalParameters(params);
+        
         IQuery query = new Query(params);
 
         LOG.info(INFO_CONSTRUCTED_QUERY + query);
-
         return query;
     }
 

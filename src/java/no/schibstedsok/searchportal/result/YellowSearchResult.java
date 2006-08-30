@@ -29,10 +29,10 @@ public final class YellowSearchResult extends FastSearchResult {
 
     private int pseudoLocalHitCount;
     private final Collection<SearchResultItem> pseudoLocalResults = new ArrayList<SearchResultItem>();
-    private FastSearchResult localResult;
-    private FastSearchResult pseudoLocalResult;
-    private boolean local;
-    private FastSearchResult top3;
+    private final FastSearchResult localResult;
+    private final FastSearchResult pseudoLocalResult;
+    private final boolean local;
+    private final FastSearchResult top3;
     private int addedTop3 = 0;
 
     private static final Logger LOG = Logger.getLogger(YellowSearchResult.class);
