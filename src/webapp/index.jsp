@@ -22,8 +22,7 @@
     <head>
         <title>Sesam</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="css/default.css?x=2" rel="stylesheet" type="text/css" />
-        <link href="css/front.css?x=2" rel="stylesheet" type="text/css" />
+        <link href="css/front.css" rel="stylesheet" type="text/css" />
         <link href="css/ps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" href="favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
@@ -77,22 +76,65 @@
         </td>
         <td valign="middle" align="left">
             <form name="sf" action="<search:linkPulse url="" param="category:front_search" index="true"/>" onsubmit='return check();'>
-                <div style="margin-top: 6px">
-                    <input type="text" name="q" class="input_main" onfocus="this.form.q.select();" /> &nbsp;
+	    <input type="hidden" name="c" value="d" />
+	    <table border="0" cellspacing="0" cellpadding="0" id="searchbox_top">
+		<tr>
+		    <td valign="top">
+		    <input type="text" name="q" class="input_main" onfocus="this.form.q.select();" />
                     <script type="text/javascript"><!--
                         var focusControl = document.forms["sf"].elements["q"];
                         if (focusControl.type != "hidden" && !focusControl.disabled) {
                             focusControl.focus();
                         } // -->
                     </script>
-                    <input type="image" id="index_submit" src="images/index/nettsok_forside.png" />
-                    &nbsp;
-                    <a id="searchtip_front" href='<search:linkPulse url="?q=&amp;page=/pages/7/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a>
-                </div>
-                <div id="searchbox_tips">
-                <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
-                <input type="radio" name="c" value="g"  /> Verden
-                </div>
+		    </td>
+                    <td>&nbsp;&nbsp;</td>
+		    <td valign="top"><input type="image" id="index_submit" src="images/searchbar/nettsok_knapp.png" /></td>
+                    <td>&nbsp;</td>
+		    <td valign="top"><a href="javascript:toggleButton('front_button_layer');" onfocus="this.blur();"><img src="images/searchbar/dropdown.png" alt="" /></a></td>
+		    <td><img src="images/pix.gif" border="0" width="15" alt="" /></td>
+		    <td><a id="searchtip_front" href='<search:linkPulse url="?q=&amp;page=/pages/7/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a></td>
+		</tr>
+		<tr>
+		    <td valign="top" id="searchbox_tips">
+                    	<input type="radio" name="ns" value="d" checked="checked" onclick='document.sf.c.value="d"' /> Norge &nbsp;&nbsp;
+                	<input type="radio" name="ns" value="g" onclick='document.sf.c.value="g"' /> Verden
+		    </td>
+		    <td>&nbsp;</td>
+		    <td colspan="3">
+			<div id="front_button_layer">
+			<table border="0" cellspacing="1" cellpadding="0" id="front_button_table">
+			    <tr>
+				<td class="navbut" onclick='document.sf.c.value="m";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Nyhetss&#248;k</td>
+			    </tr>
+			    <tr>
+				<td class="navbut" onclick='document.sf.c.value="y";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bedriftss&#248;k</td>
+			    </tr>
+			    <tr>
+				<td class="navbut" onclick='document.sf.c.value="w";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Persons&#248;k</td>
+			    </tr>
+			    <tr>
+				<td class="navbut" onclick='document.sf.c.value="p";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bildes&#248;k</td>
+			    </tr>
+			    <tr>
+				<td class="navbut" onclick='document.sf.c.value="b";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bloggs&#248;k</td>
+			    </tr>
+			    <tr>
+				<td class="navbut" onclick='document.sf.c.value="t";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>TV-s&#248;k</td>
+			    </tr>
+			    <tr>
+				<td class="navbut" onclick='document.sf.c.value="sw";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>V&#230;rs&#248;k</td>
+			    </tr>
+			    <tr>
+				<td style="font-size: 1.05em;"><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" alt="" align="left" /></a><div style="padding-top: 3px;">&nbsp;&nbsp;Lukk</div></td>
+			    </tr>
+			</table>
+			</div>
+		    </td>
+		    <td>&nbsp;</td>
+		    <td>&nbsp;</td>
+		</tr>
+            </table>
             </form>
         </td>
     </tr>
