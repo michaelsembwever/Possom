@@ -9,6 +9,8 @@ import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
+import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
@@ -21,8 +23,10 @@ import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
+import no.schibstedsok.searchportal.security.MD5Generator;
 import org.apache.commons.lang.time.StopWatch;
 
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -160,10 +164,22 @@ public final class SearchServlet extends HttpServlet {
                     + "<time>" + stopWatch + "</time>"
                 + "</search-servlet>");
 
+
+            if ("finn".equals(request.getParameter("finn"))) {
+                if (checkFinn(request, response)) {
+                    return;
+                }            
+            }
+            
+            if (isEmptyQuery(request, response)) {
+                return;
+            }            
+
+            
         } catch (InterruptedException e) {
             LOG.error("Task timed out");
         }
-
+            
 
     }
 
@@ -174,6 +190,7 @@ public final class SearchServlet extends HttpServlet {
 
         if (request.getParameter("q") == null) {
             String redir = request.getContextPath();
+
             if (redir == null) {
                 redir = "/";
             }
@@ -230,5 +247,35 @@ public final class SearchServlet extends HttpServlet {
         } else {
             response.setContentType("text/html; charset=utf-8");
         }
+    }
+    
+    /* 
+     *  redirects to yellowinfopage if request is from finn.no -> req.param("finn") = "finn" 
+     *  finn sends orgnumber as queryparam, if only 1 hit, then redirect.
+     */
+    private boolean checkFinn(
+            final HttpServletRequest request,
+            final HttpServletResponse response) throws IOException{
+
+        Map<String,Integer> hits = (Map<String,Integer>)request.getAttribute("hits");
+        Map<String,SearchResult> res = (Map<String,SearchResult>)request.getAttribute("results");
+        SearchResult sr = res.get("yellowPages");
+
+        SearchResultItem sri = sr.getResults().get(0);
+        String recordid = sri.getField("recordid").toString();
+
+        Integer yHits = hits.get("yellowPages");
+
+        if (yHits == 1) {
+            final MD5Generator md5 = new MD5Generator("S3SAM rockz");
+
+            String url = "/search/?c=yip&q=" + request.getParameter("q") + "&companyId=" + recordid + "&companyId_x=" + md5.generateMD5(recordid);
+            LOG.info("doGet(): Finn.no redirect: " + url);
+            response.sendRedirect(url);
+            return true;
+            
+        } 
+        
+        return false;
     }
 }
