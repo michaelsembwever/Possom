@@ -214,7 +214,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         </c:if>
                         <tr>
                             <td class="navbar2_imgpad"><img src='<c:out value="../images/menu/icons/${hint.image}"/>' class="nav_icon" align="left" alt="" /></td>
-			    <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
+			    <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this, <search:text key="numberFormat" args="${e.count}"/>);"><c:out value="${hint.displayName}"/></a></td>
                             <% if ( q.trim().equals("") && currentC.equals("m") ) { %>
                                 <td class="navbar2_rightpad" align="right">&nbsp;</td>
                             <% } else { %>
