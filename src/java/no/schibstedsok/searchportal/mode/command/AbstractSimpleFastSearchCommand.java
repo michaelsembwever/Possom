@@ -886,10 +886,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 Collections.sort(searchResult.getModifiers(navigatorKey));
             }
 
-        } else if (nav.getChildNavigator() != null) {
-            navigatedTo.put(navigatorKey, nav.getChildNavigator());
-            collectModifier(navigatorKey, result, searchResult);
-        }
+        } 
     }
 
     private Navigator findChildNavigator(Navigator nav, String nameToFind) {
