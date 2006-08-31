@@ -55,6 +55,8 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
     
     private static final String ERR_CANNOT_CREATE_COMMAND =
             "Unable to create command to rerun.";
+    private static final String RESULT_FIELD_CORRECTED_QUERY =
+            "autoCorrectedQuery";
     
     private static final Logger LOG = Logger.getLogger(CorrectingFastSearchCommand.class);
     
@@ -135,8 +137,15 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
                 c.performQueryTransformation();
                 c.correct = false;
                 c.tokenEvaluationEngine = engine;
+
+                final SearchResult result = c.execute();
                 
-                return c.execute();
+                if (result.getHitCount() > 0) {
+                    result.addField(RESULT_FIELD_CORRECTED_QUERY, newQuery);
+                }
+
+                return result;
+                
             } catch (Exception ex) {
                 LOG.error(ERR_CANNOT_CREATE_COMMAND, ex);
                 return originalResult;

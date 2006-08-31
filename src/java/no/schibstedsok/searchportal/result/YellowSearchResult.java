@@ -126,6 +126,14 @@ public final class YellowSearchResult extends FastSearchResult {
         return getDelegator().getHitCount() + addedTop3;
     }
 
+    public String getField(final String name) {
+        return getDelegator().getField(name);
+    }
+
+    public void addField(final String name, final String value) {
+        getDelegator().addField(name, value);
+    }
+    
     public FastSearchResult getLocalResult() {
         return localResult;
     }
