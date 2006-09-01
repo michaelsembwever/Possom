@@ -51,6 +51,8 @@ public final class AccountingDirective extends Directive {
      * This isn't an optimal solution, but the way data is stored
      * it was the fastest way to do it. For me.
      *
+     * IF THIS MARKUP ARE BEING CHANGED, MOBILE PEOPLE MUST BE INFORMED
+     *
      * @param context
      * @param writer
      * @param node
