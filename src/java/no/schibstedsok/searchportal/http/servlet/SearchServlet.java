@@ -270,7 +270,8 @@ public final class SearchServlet extends HttpServlet {
             final MD5Generator md5 = new MD5Generator("S3SAM rockz");
             
             String showtab = "";
-            if ( !request.getParameter("showtab").trim().equals("") )
+
+            if (request.getParameter("showtab") != null)    
                 showtab = "&showtab=" + request.getParameter("showtab");
 
             String url = "/search/?c=yip&q=" + request.getParameter("q") + "&companyId=" + recordid + "&companyId_x=" + md5.generateMD5(recordid) + showtab;
