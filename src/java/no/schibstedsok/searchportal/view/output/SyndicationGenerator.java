@@ -6,6 +6,33 @@
 
 package no.schibstedsok.searchportal.view.output;
 
+import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+
+import javax.servlet.http.HttpServletRequest;
+
+import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.util.Channels;
+import no.schibstedsok.searchportal.view.i18n.TextMessages;
+
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
+
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEnclosure;
@@ -16,31 +43,6 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-import javax.servlet.http.HttpServletRequest;
-import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.util.Channels;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
-import org.apache.commons.lang.StringEscapeUtils;
-
-import org.apache.log4j.Logger;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
 
 /** Used by the rssDecorator.jsp to print out the results in rss format.
  *
@@ -54,7 +56,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
  */
 public final class SyndicationGenerator {
 
-    private static final String RSS_TPL_DIR="rss";
+    private static final String RSS_TPL_DIR = "rss";
     private final SearchResult result;
     private final Site site;
     private final TextMessages text;
@@ -66,6 +68,7 @@ public final class SyndicationGenerator {
     private final Channels channels;
     private final HttpServletRequest request;
     private String encoding = "UTF-8";
+    private String nowStringUTC;
 
     // Any other way to get rid of the dc:date tags that ROME generates.
     private static final String DCDATE_PATTERN = "<dc:date>[^<]+</dc:date>";
@@ -83,8 +86,7 @@ public final class SyndicationGenerator {
     public SyndicationGenerator(final SearchResult result,
                                 final Site site,
                                 final HttpServletRequest request,
-                                final String modeId
-                                ) {
+                                final String modeId) {
 
         this.result = result;
         this.site = site;
@@ -128,6 +130,7 @@ public final class SyndicationGenerator {
             df.setTimeZone(TimeZone.getTimeZone("UTC"));
         }
 
+        nowStringUTC = df.format(new Date());
 
         try {
             final SyndFeed feed = new SyndFeedImpl();
@@ -203,9 +206,6 @@ public final class SyndicationGenerator {
 
             feed.setEntries(entries);
 
-            final Writer writer = new StringWriter();
-
-
             final SyndFeedOutput output = new SyndFeedOutput();
 
             return output.outputString(feed).replaceAll(DCDATE_PATTERN, "");
@@ -228,6 +228,7 @@ public final class SyndicationGenerator {
             final VelocityContext cxt = VelocityResultHandler.newContextInstance(engine);
 
             cxt.put("text", text);
+            cxt.put("now", nowStringUTC);
 
             if (item != null) {
                 cxt.put("item", item);
@@ -243,7 +244,7 @@ public final class SyndicationGenerator {
 
             final Template tpl = VelocityResultHandler.getTemplate(engine, site, templateUri);
 
-            if(tpl == null){
+            if (tpl == null) {
                 throw new ResourceNotFoundException(DEBUG_TEMPLATE_NOT_FOUND + templateUri);
             }
 
