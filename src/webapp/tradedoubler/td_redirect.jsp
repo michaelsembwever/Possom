@@ -8,7 +8,12 @@
 	cookie.setMaxAge(duration);
 	cookie.setPath("/");
 	response.addCookie(cookie);
-
+        
+        String sitesearch = request.getParameter("sitesearch");
+        if (sitesearch == null) {
+            sitesearch = "";
+        }
+        
         if (request.getParameter("url") != null && request.getParameter("url").length() > 0){
 		response.sendRedirect(request.getParameter("url"));
         } else if (request.getParameter("URL") != null && request.getParameter("URL").length() > 0){
@@ -47,18 +52,23 @@
 			alt = "";
 		}
                 
-                String sitesearch = request.getParameter("sitesearch");
-                if (sitesearch == null || sitesearch.length() == 0){
-                    sitesearch = "";
+                if (sitesearch.length() > 0) {
+                    sitesearch = "&sitesearch=" + sitesearch;
                 }
 %>
 <html>
 <head><title>Sesam</title></head>
 <body onLoad="javascript:goSesam()">
+<%
+   if (!c.equalsIgnoreCase("pss")) {
+%>
 <img src="http://tbs.tradedoubler.com/report?organization=<%=organization%>&event=<%=event%>&leadNumber=<%=orderNumber%>&orderValue=<%=value%>&currency=<%=currency%>&checksum=v04<%=checksum%>&tduid=<%=tduid%>" alt="">
+<%
+   }
+%>
 <script type="text/javascript" language="JavaScript">
 	function goSesam() {
-		document.location="http://www.sesam.no/search/?c=<%= c %>&lang=<%= lang %>&s=<%= s %>&q=<%= q %>&ss_ss=<%= affId %>&ss_lt=tradedoubler&ss_pid=ad_td&ss_sec=<%= alt %>&sitesearch=<%= sitesearch %>";
+		document.location="http://www.sesam.no/search/?c=<%= c %>&lang=<%= lang %>&s=<%= s %>&q=<%= q %>&ss_ss=<%= affId %>&ss_lt=tradedoubler&ss_pid=ad_td&ss_sec=<%= alt %><%= sitesearch %>";
 	}
 </script>
 </body>
