@@ -235,7 +235,7 @@ public final class SearchServlet extends HttpServlet {
             } else {
                 response.setContentType("text/xml; charset=utf-8");
             }
-        } else if (site.getName().startsWith("mobil")) {
+        } else if (site.getName().startsWith("mobil") || site.getName().startsWith("xml")) {
             response.setContentType("text/xml; charset=utf-8");
             try {
                 // Just can't get sitemesh to work in the way I imagine it works.
