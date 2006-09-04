@@ -185,9 +185,12 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     </tr>
     <% }else{ %>
     <tr>
-	<%if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
+       <%if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
         <td class="cell_one" valign="top" rowspan="4">
-	<script type="text/javascript" language="JavaScript">
+          <%if (q.trim().equals("") && (currentC.equals("t") || currentC.equals("m") || currentC.equals("l"))) { %>
+              <decorator:getProperty property="page.frontMenu"/>
+          <% } else { %>
+       <script type="text/javascript" language="JavaScript">
 	    var menuCookie = getCookie("sesam_menu");
 	    if(menuCookie == "closed"){
 	      document.write('<div id="menutable" style="display:none;">'); 
@@ -242,6 +245,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 </tr>
             </table>
             </div>
+            <% } %>
             <%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
 
                 <decorator:getProperty property="page.companies-nav"/>
