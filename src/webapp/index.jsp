@@ -59,7 +59,7 @@
 <div style="padding-left:28px; background-image: url(images/index/stripe_bg.gif); background-repeat: repeat-x; background-position: 0px 105px;" align="left">
 <table border="0" width="850" cellspacing="0" cellpadding="0">
     <tr>
-        <td valign="bottom" align="left" width="170"><img src="images/index/menu_top.gif" alt="Sesam s&#248;k" /></td>
+        <td valign="bottom" align="left" width="170"><img src="images/index/menu_top.png" alt="Sesams&#248;k" /></td>
         <td valign="middle" align="left"><img src="images/index/logo.png" id="logo_index" width="215" height="61" alt="logo" /></td>
     </tr>
 
@@ -105,25 +105,25 @@
 			<div id="front_button_layer">
 			<table border="0" cellspacing="1" cellpadding="0" id="front_button_table">
 			    <tr>
-				<td class="navbut" onclick='document.sf.c.value="m";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Nyhetss&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="m";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Nyhetss&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='document.sf.c.value="y";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bedriftss&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="y";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bedriftss&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='document.sf.c.value="w";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Persons&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="w";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Persons&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='document.sf.c.value="p";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bildes&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="p";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bildes&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='document.sf.c.value="b";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bloggs&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="b";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bloggs&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='document.sf.c.value="t";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>TV-s&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="t";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>TV-s&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='document.sf.c.value="sw";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>V&#230;rs&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="sw";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>V&#230;rs&#248;k</td>
 			    </tr>
 			    <tr>
 				<td style="font-size: 1.05em;"><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" alt="" align="left" /></a><div style="padding-top: 3px;">&nbsp;&nbsp;Lukk</div></td>
