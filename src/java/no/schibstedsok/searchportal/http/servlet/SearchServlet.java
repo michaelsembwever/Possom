@@ -260,17 +260,16 @@ public final class SearchServlet extends HttpServlet {
         Map<String,Integer> hits = (Map<String,Integer>)request.getAttribute("hits");
         Map<String,SearchResult> res = (Map<String,SearchResult>)request.getAttribute("results");
         SearchResult sr = res.get("yellowPages");
-
+        if (sr.getResults().size() == 0) {
+            return false;
+        }
         SearchResultItem sri = sr.getResults().get(0);
         String recordid = sri.getField("recordid").toString();
-
         Integer yHits = hits.get("yellowPages");
 
         if (yHits == 1) {
-            final MD5Generator md5 = new MD5Generator("S3SAM rockz");
-            
+            final MD5Generator md5 = new MD5Generator("S3SAM rockz");            
             String showtab = "";
-
             if (request.getParameter("showtab") != null)    
                 showtab = "&showtab=" + request.getParameter("showtab");
 
@@ -278,7 +277,6 @@ public final class SearchServlet extends HttpServlet {
             LOG.info("doGet(): Finn.no redirect: " + url);
             response.sendRedirect(url);
             return true;
-            
         } 
         
         return false;
