@@ -9,7 +9,9 @@
 	cookie.setPath("/");
 	response.addCookie(cookie);
 
-	if (request.getParameter("URL") != null && request.getParameter("URL").length() > 0){
+        if (request.getParameter("url") != null && request.getParameter("url").length() > 0){
+		response.sendRedirect(request.getParameter("url"));
+        } else if (request.getParameter("URL") != null && request.getParameter("URL").length() > 0){
 		response.sendRedirect(request.getParameter("URL"));
 	} else if (request.getParameter("alt") != null 
 				&& request.getParameter("alt").length() > 0 
