@@ -74,8 +74,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
         final TokenEvaluationEngine tokenEvaluationEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
-        top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluationEngine)
-                 && !(TokenPredicate.LOAN_TRIGGER.evaluate(tokenEvaluationEngine) || TokenPredicate.SUDOKU_TRIGGER.evaluate(tokenEvaluationEngine));
+        top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluationEngine); // && !(TokenPredicate.LOAN_TRIGGER.evaluate(tokenEvaluationEngine) || TokenPredicate.SUDOKU_TRIGGER.evaluate(tokenEvaluationEngine));
 
         try {
             final Document doc = getXmlResult();

@@ -158,7 +158,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
         final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(engine);
 
-        if (exactCompany && !isTop3) {
+        if (exactCompany && !isTop3 && !getParameter("ynp").equals("0")) {
             return t.replaceAll("yellowphon", "yellownamephon");
         }
 
