@@ -227,7 +227,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     </c:if>
                 </c:forEach>
                	<tr>
-               	    <td colspan="3" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="../images/index/skjul_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></td>
+               	    <td class="navbar2_lastpad" colspan="3" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="../images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
                 </tr>
             </table>
             </div>
@@ -241,7 +241,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     	    </script>
             <table class="navbar2_toptable" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td><a href="#" onclick='deleteCookie("sesam_menu", "/");document.getElementById("menutable").style.display="block";document.getElementById("menuopen").style.display="none";'><img src="../images/index/vis_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Vis meny</div></td>
+                    <td class="navbar2_lastpad"><a href="#" onclick='deleteCookie("sesam_menu", "/");document.getElementById("menutable").style.display="block";document.getElementById("menuopen").style.display="none";'><img src="../images/index/vis_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Vis meny</div></a></td>
                 </tr>
             </table>
             </div>

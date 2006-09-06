@@ -199,7 +199,7 @@
 		    <td class="menupad"><a href='<search:linkPulse url="?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="images/index/skjul_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></td>
+                    <td class="lastpad" colspan="2" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
                 </tr>
             </table>
             </div>
@@ -213,7 +213,7 @@
 	    </script>
             <table id="front_menu" border="0" cellspacing="0" cellpadding="0">
                 <tr>
-                    <td><a href="#" onclick='deleteCookie("sesam_menu", "/");document.getElementById("menutable").style.display="block";document.getElementById("menuopen").style.display="none";'><img src="images/index/vis_meny.png" border="0" align="left" /></a><div style="padding-top: 3px;"> &nbsp;&nbsp;Vis meny</div></td>
+                    <td class="lastpad"><a href="#" onclick='deleteCookie("sesam_menu", "/");document.getElementById("menutable").style.display="block";document.getElementById("menuopen").style.display="none";'><img src="images/index/vis_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Vis meny</div></a></td>
                 </tr>
             </table>
             </div>
