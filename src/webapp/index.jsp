@@ -89,7 +89,7 @@
                     </script>
 		    </td>
                     <td>&nbsp;&nbsp;</td>
-		    <td valign="top"><input type="image" id="index_submit" src="images/searchbar/nett.png" /></td>
+		    <td><input type="image" id="index_submit" src="images/searchbar/nett.png" /></td>
                     <td><img src="images/pix.gif" border="0" width="4" height="1" alt="" /></td>
 		    <td valign="top"><a href="javascript:toggleButton('front_button_layer');" onfocus="this.blur();"><img src="images/searchbar/dropdown.png" alt="" /></a></td>
 		    <td><img src="images/pix.gif" border="0" width="15" alt="" /></td>
