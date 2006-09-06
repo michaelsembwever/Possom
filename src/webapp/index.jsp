@@ -189,7 +189,7 @@
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/tv.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TVs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
                 </tr>
 		<tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
