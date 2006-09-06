@@ -105,28 +105,28 @@
 			<div id="front_button_layer">
 			<table border="0" cellspacing="1" cellpadding="0" id="front_button_table">
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="m";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Nyhetss&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("d");'>Nyhetss&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="y";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bedriftss&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("y");'>Bedriftss&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="w";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Persons&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("w");'>Persons&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="p";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bildes&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("p");'>Bildes&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="b";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>Bloggs&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("b");'>Bloggs&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="t";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>TV-s&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t");'>TV-s&#248;k</td>
 			    </tr>
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.sf.c.value="sw";document.getElementById("front_button_layer").style.visibility="hidden";document.forms["sf"].submit();'>V&#230;rs&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw");'>V&#230;rs&#248;k</td>
 			    </tr>
 			    <tr>
-				<td style="font-size: 1.05em;"><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" alt="" align="left" /></a><div style="padding-top: 3px;">&nbsp;&nbsp;Lukk</div></td>
+				<td><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" alt="" align="left" /></a><div class="navbutend" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'>&nbsp;&nbsp;Lukk</div></td>
 			    </tr>
 			</table>
 			</div>
