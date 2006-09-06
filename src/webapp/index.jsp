@@ -161,35 +161,35 @@
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/bedrift.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a></td>
                 </tr>
                 <tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/person.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a></td>
                 </tr>
                 <tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/bilde.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a></td>
                 </tr>
                 <tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/blogg.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
                 </tr>
                 <tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/tv.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TVs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TVs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
                 </tr>
 		<tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
