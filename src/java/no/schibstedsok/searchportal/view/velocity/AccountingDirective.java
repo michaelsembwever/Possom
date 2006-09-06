@@ -98,7 +98,7 @@ public final class AccountingDirective extends Directive {
                 // do some tests before each new row
                 if (k==0) {
                     // #balance0# means print a new table
-                    if (col[0].indexOf("#balanse0#") > -1) {
+                    if (col[0].indexOf("#balanse0#") > -1 || col[0].indexOf("#lederlonn0#") > -1) {
                         html += "</table> <table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
                         bgcolor = false;
                     // #balance1# means don't show rest of the numbers
