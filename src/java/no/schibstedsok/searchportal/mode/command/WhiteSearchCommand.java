@@ -105,59 +105,6 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
         params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
     }
     
-    // Implementation of advanced query language.
-    protected void visitImpl(final AndClause clause) {
-        // The leaf clauses might not produce any output. For example terms 
-        // having a site: field. In these cases we should not output the 
-        // operator keyword.
-        boolean hasEmptyLeaf = false;
-
-        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
-        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
-        
-        clause.getFirstClause().accept(this);
-
-        if (! hasEmptyLeaf) 
-            appendToQueryRepresentation(" AND ");
-
-        clause.getSecondClause().accept(this);
-    }
-
-    protected void visitImpl(final OrClause clause) {
-        appendToQueryRepresentation(" (");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" OR ");
-        clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(") ");
-    }
-
-    protected void visitImpl(final DefaultOperatorClause clause) {
-        boolean hasEmptyLeaf = false;
-
-        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
-        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
-
-        clause.getFirstClause().accept(this);
-        
-        if (! hasEmptyLeaf)
-            appendToQueryRepresentation(" AND ");
-
-        clause.getSecondClause().accept(this);
-    }
-    protected void visitImpl(final NotClause clause) {
-        appendToQueryRepresentation(" ANDNOT ");
-        appendToQueryRepresentation("(");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(")");
-
-    }
-    protected void visitImpl(final AndNotClause clause) {
-        appendToQueryRepresentation("ANDNOT ");
-        appendToQueryRepresentation("(");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(")");
-    }
-
     private boolean isEmptyLeaf(final Clause clause) {
         if (clause instanceof LeafClause) {
             final LeafClause leaf = (LeafClause) clause;
