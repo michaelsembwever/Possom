@@ -151,10 +151,7 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
 
         String t = super.getTransformedQuery();
         
-        final TokenEvaluationEngine engine 
-                = getTokenEvaluationEngine() != null ? 
-            getTokenEvaluationEngine() :
-            context.getRunningQuery().getTokenEvaluationEngine();
+        final TokenEvaluationEngine engine = context.getRunningQuery().getTokenEvaluationEngine();
 
         final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(engine);
 
