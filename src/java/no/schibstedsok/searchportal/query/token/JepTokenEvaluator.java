@@ -71,8 +71,7 @@ public final class JepTokenEvaluator implements TokenEvaluator {
      * @return true if any of the patterns matches.
      */
     public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
-
-        return term != null || result != null;
+        return result != null;
     }
 
     public boolean isQueryDependant(TokenPredicate predicate) {
