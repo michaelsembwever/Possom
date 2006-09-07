@@ -10,7 +10,6 @@ import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.query.finder.PredicateFinder;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenMatch;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
