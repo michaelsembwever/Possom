@@ -28,7 +28,7 @@ import no.schibstedsok.searchportal.query.XorClause;
  *
  * @author magnuse
  */
-public class WhiteSearchCommand extends CorrectingFastSearchCommand {
+public class WhiteSearchCommand extends AbstractSimpleFastSearchCommand {
 
     private static final String PREFIX_INTEGER="whitepages:";
     private static final String PREFIX_PHONETIC="whitephon:";
