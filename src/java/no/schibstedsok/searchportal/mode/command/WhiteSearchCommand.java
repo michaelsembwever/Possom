@@ -100,11 +100,6 @@ public class WhiteSearchCommand extends AbstractSimpleFastSearchCommand {
        }
     }
     
-        protected void setAdditionalParameters(final ISearchParameters params) {
-        super.setAdditionalParameters(params);
-        params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
-    }
-    
     private boolean isEmptyLeaf(final Clause clause) {
         if (clause instanceof LeafClause) {
             final LeafClause leaf = (LeafClause) clause;
