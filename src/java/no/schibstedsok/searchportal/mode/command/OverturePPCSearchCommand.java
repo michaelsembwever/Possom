@@ -3,7 +3,6 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
@@ -72,10 +71,9 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                     context
         );
 
-        final TokenEvaluationEngine tokenEvaluationEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
-
-        top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluationEngine); // && !(TokenPredicate.LOAN_TRIGGER.evaluate(tokenEvaluationEngine) || TokenPredicate.SUDOKU_TRIGGER.evaluate(tokenEvaluationEngine));
-
+        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+        top = engine.evaluateTerm(TokenPredicate.EXACT_PPCTOPLIST, engine.getQueryString());
+        
         try {
             final Document doc = getXmlResult();
             final OvertureSearchResult searchResult = new OvertureSearchResult(this, top);

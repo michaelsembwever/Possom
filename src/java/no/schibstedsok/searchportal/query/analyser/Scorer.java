@@ -117,8 +117,7 @@ public final class Scorer extends AbstractReflectionVisitor {
 
         // update the engine with the predicate sets that can be used to improve evaluation performance.
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
-        engine.setClausesKnownPredicates(knownPredicates);
-        engine.setClausesPossiblePredicates(possiblePredicates);
+        engine.setState(clause.getTerm(), knownPredicates, possiblePredicates);
 
         // XXX Couldn't find the set algorythm for joining two set in Core Java or Commons Collections :-/
         //  List.retainAll might work

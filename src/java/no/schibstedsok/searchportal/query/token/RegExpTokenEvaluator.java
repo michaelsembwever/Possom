@@ -53,8 +53,10 @@ public final class RegExpTokenEvaluator implements TokenEvaluator {
             final Matcher m = term == null ? p.matcher(query) : p.matcher(term);
             final int stringLength = term == null ? query.length() : term.length();
 
-            if(m.find() && (m.start() == 0 && m.end() == stringLength)){
+            if(m.find()){
+                if( term == null || (m.start() == 0 && m.end() == stringLength) ){
                     return true;
+                }
             }
         }
         return false;

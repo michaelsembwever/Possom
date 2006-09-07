@@ -6,14 +6,11 @@ package no.schibstedsok.searchportal.mode.command;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import no.fast.ds.search.BaseParameter;
-import no.fast.ds.search.ISearchParameters;
-import no.fast.ds.search.SearchParameter;
-import no.fast.ds.search.SearchType;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.finder.PredicateFinder;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenMatch;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
@@ -40,7 +37,7 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
     private StringBuilder filterBuilder = null;
 
     private boolean correct = false;
-    
+
     /** Creates a new yellow search command.
      * TODO. Rewrite from scratch. This is insane.
      **/
@@ -149,12 +146,12 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
     /** TODO comment me. **/
     public String getTransformedQuery() {
 
-        String t = super.getTransformedQuery();
-        
+        final String t = super.getTransformedQuery();
+
         final TokenEvaluationEngine engine = context.getRunningQuery().getTokenEvaluationEngine();
 
-        final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(engine);
-
+        final boolean exactCompany = engine.evaluateTerm(TokenPredicate.EXACTCOMPANYRANK, engine.getQueryString());
+        
         if (exactCompany && !isTop3 && !getParameter("ynp").equals("0")) {
             return t.replaceAll("yellowphon", "yellownamephon");
         }
@@ -184,7 +181,7 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
             return super.getResultsToReturn();
         }
     }
-    
+
     /** TODO comment me. **/
     protected String getAdditionalFilter() {
 
@@ -201,9 +198,10 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
 
     /** TODO comment me. **/
     protected String getSortBy() {
+        
         final TokenEvaluationEngine engine = getRunningQuery().getTokenEvaluationEngine();
-        final boolean exactCompany = TokenPredicate.EXACTCOMPANYRANK.evaluate(engine);
-
+        final boolean exactCompany = engine.evaluateTerm(TokenPredicate.EXACTCOMPANYRANK, engine.getQueryString());
+        
         if (exactCompany) {
             return "yellowname";
         }
@@ -263,9 +261,10 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
         }
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final XorClause clause) {
-        
-        if( XorClause.PHRASE_ON_LEFT == clause.getHint()){
+
+        if(XorClause.PHRASE_ON_LEFT == clause.getHint()){
             clause.getSecondClause().accept(this);
         }else{
             super.visitImpl(clause);

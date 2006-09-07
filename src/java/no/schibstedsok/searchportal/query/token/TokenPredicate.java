@@ -123,8 +123,10 @@ public enum TokenPredicate implements Predicate {
 
 
     private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
-            = "Argument to evuluate must be an instance of a TokenEvaluationEngine";
+            = "Argument to evaluate must be an instance of a TokenEvaluationEngine";
     private static final String ERR_TOKEN_NOT_FOUND = "Token argument not found ";
+    private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS 
+            = "TokenPredicate.evaluate(..) can only be used by same thread that created TokenEvaluationEngine!";
 
 
     /**
@@ -184,7 +186,9 @@ public enum TokenPredicate implements Predicate {
 
     /**
      * Evaluates to true if fastListName occurs in the query. This method uses a
-     * TokenEvaluationEngine to get a TokenEvaluator
+     * TokenEvaluationEngine to get a TokenEvaluator.
+     * 
+     * <b>This method can only be called from the RunningQuery thread, not spawned search commands.</b>
      * 
      * @param evalFactory
      *            The TTokenEvaluationEngineused to get a TokenEvaluator for
@@ -193,12 +197,15 @@ public enum TokenPredicate implements Predicate {
      *         TokTokenEvaluationEngineastListName evaluates to true.
      */
     public boolean evaluate(final Object evalFactory) {
-        // pre-condition check
+        // pre-condition checks
         if (! (evalFactory instanceof TokenEvaluationEngine)) {
             throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
-        }
+        }        
         // process
         final TokenEvaluationEngine engine = (TokenEvaluationEngine) evalFactory;
+        if( Thread.currentThread() != engine.getOwningThread() ){
+            throw new IllegalStateException(ERR_METHOD_CLOSED_TO_OTHER_THREADS);
+        }
 
         // check that the evaluation hasn't already been done
         // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether

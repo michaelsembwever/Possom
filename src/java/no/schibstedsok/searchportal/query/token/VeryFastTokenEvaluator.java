@@ -200,7 +200,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             if (term == null) {
                 evaluation = true;
             }  else  {
-
                 for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
 
                     final Matcher m =occurance.getMatcher(term);
@@ -211,8 +210,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                         occurance.setTouched(true);
                         break;
                     }
-                }
+                } 
             }
+            
         }
         return evaluation;
     }

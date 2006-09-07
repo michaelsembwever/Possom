@@ -123,6 +123,11 @@ public abstract class AbstractQueryParser implements QueryParser {
                     }
                 };
             }
+
+            // we're done with parsing individual terms.
+            //  we need to do this to ensure possible predicates are now checked against the whole query string.
+            context.getTokenEvaluationEngine().setCurrentTerm(queryStr);
+
         }
         return query;
     }

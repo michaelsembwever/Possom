@@ -164,7 +164,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
             //  this state can't be assigned to the terms as they are immutable and
             //   re-used across multiple queries at any given time.
             applicable |= clause.getPossiblePredicates().contains(predicate)
-                    && predicate.evaluate(getContext().getTokenEvaluationEngine());
+                    && getContext().getTokenEvaluationEngine().evaluateTerm(predicate, clause.getTerm());
 
             if (applicable) {
 

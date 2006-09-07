@@ -67,6 +67,8 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private Set<TokenPredicate> possiblePredicates;
 
     private Locale locale;
+    
+    private volatile Thread owningThread = Thread.currentThread();
 
     /**
      * Create a new TokenEvaluationEngine.
@@ -121,6 +123,17 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
         return fastEvaluator;
     }
 
+    /** TODO comment me. **/
+    public void setState(
+            final String currentTerm,
+            final Set<TokenPredicate> knownPredicates,
+            final Set<TokenPredicate> possiblePredicates){
+
+        setCurrentTerm(currentTerm);
+        setClausesKnownPredicates(knownPredicates);
+        setClausesPossiblePredicates(possiblePredicates);
+    }
+
     /** @inherit **/
     public void setCurrentTerm(final String term) {
         currTerm = term;
@@ -158,14 +171,24 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     /** @inherit **/
     public synchronized boolean evaluateTerm(final TokenPredicate predicate, final String term) {
+        
+        final Thread origThread = owningThread;
         try{
-            setCurrentTerm(term);
-            setClausesKnownPredicates(Collections.EMPTY_SET);
-            setClausesPossiblePredicates(Collections.EMPTY_SET);
+            // setup the engine's required state before any evaluation process
+            setState(term, Collections.EMPTY_SET, Collections.EMPTY_SET);
+            // temporarily change owningThread to allow this thread to evaluate
+            owningThread = Thread.currentThread();
+            // run the evaluation process
             return predicate.evaluate(this);
+            
         }finally{
             setCurrentTerm(null);
+            owningThread = origThread;
         }
+    }
+
+    public synchronized Thread getOwningThread() {
+        return owningThread;
     }
 
     private final class FastEvaluatorCreator implements Runnable{

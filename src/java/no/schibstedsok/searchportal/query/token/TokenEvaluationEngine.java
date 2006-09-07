@@ -41,7 +41,10 @@ public interface TokenEvaluationEngine {
      *
      * @return
      */
-     String getQueryString();
+    String getQueryString();
+
+    /** TODO comment me. **/
+    void setState(String currentTerm, Set<TokenPredicate> knownPredicates, Set<TokenPredicate> possiblePredicates);
 
      /** TODO comment me. **/
     void setCurrentTerm(String term);
@@ -64,8 +67,10 @@ public interface TokenEvaluationEngine {
      /** TODO comment me. **/
     Site getSite();
 
-    /** Utility method to perform one-off evaluations on terms.
+    /** Utility method to perform one-off evaluations on terms from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
      **/
     boolean evaluateTerm(TokenPredicate predicate, String term);
+    
+    Thread getOwningThread();
 }

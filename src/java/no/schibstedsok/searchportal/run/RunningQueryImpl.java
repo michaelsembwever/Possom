@@ -5,7 +5,6 @@
 package no.schibstedsok.searchportal.run;
 
 
-import java.util.Comparator;
 import java.util.concurrent.Callable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -423,10 +422,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     private void performModifierHandling(){
-        
+
         final List<Modifier> toRemove = new ArrayList<Modifier>();
         for(Modifier m : sources){
-            if( m.getCount() > -1 ){
+            if(m.getCount() > -1 ){
                 m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
             }else{
                 toRemove.add(m);

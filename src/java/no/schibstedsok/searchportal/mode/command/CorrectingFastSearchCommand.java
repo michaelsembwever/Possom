@@ -1,3 +1,4 @@
+// Copyright (2005-2006) Schibsted Søk AS
 /*
  * CorrectingFastSearchCommand.java
  *
@@ -26,7 +27,6 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
@@ -52,21 +52,21 @@ import org.apache.log4j.Logger;
  * @author maek
  */
 public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSearchCommand {
-    
+
     private static final String ERR_CANNOT_CREATE_COMMAND =
             "Unable to create command to rerun.";
     private static final String RESULT_FIELD_CORRECTED_QUERY =
             "autoCorrectedQuery";
-    
+
     private static final Logger LOG = Logger.getLogger(CorrectingFastSearchCommand.class);
-    
+
     private boolean correct = true;
 
     /**
      * A token evaluation engine for corrected query.
      */
     private TokenEvaluationEngine tokenEvaluationEngine;
-    
+
     /** Creates a new instance of CorrectionFastSearchCommand.
      *
      * @param cxt Search command context.
@@ -75,20 +75,21 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
     public CorrectingFastSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
-    
+
     /**
      * @inherit
      */
     public SearchResult execute() {
+
         final FastSearchResult originalResult = (FastSearchResult) super.execute();
         final Map suggestions = originalResult.getSpellingSuggestions();
-        
+
         // Rerun command?
-        // TODO Consider moving the isCorrectionEnabled() call after the 
-        // correction has been made and then discarding the result 
+        // TODO Consider moving the isCorrectionEnabled() call after the
+        // correction has been made and then discarding the result
         // should the call return false.
         // Sub classes might not know if the corrected query should be used
-        // until after the query has been run. or at least not after a token 
+        // until after the query has been run. or at least not after a token
         // evaluation has been run on the corrected query.
         if (isCorrectionEnabled() && correct && originalResult.getHitCount() == 0 && !suggestions.isEmpty()) {
             // Correct spelling suggestions and parse the resulting query string.
@@ -96,9 +97,9 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
             final String newQuery = correctQuery(suggestions, oldQuery);
 
             final TokenEvaluationEngine engine = createEngineForQuery(newQuery);
-            
+
             final Query queryObj = parseNewQuery(newQuery, engine);
-            
+
             // Create a new identical context apart from the corrected query.
             // @todo use ContextWrapper instead.
             final SearchCommand.Context cmdCxt = new SearchCommand.Context() {
@@ -106,29 +107,29 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
                         final String resource, final Properties properties) {
                     return context.newPropertiesLoader(resource, properties);
                 }
-                
+
                 public DocumentLoader newDocumentLoader(
                         final String resource, final DocumentBuilder builder) {
                     return context.newDocumentLoader(resource, builder);
                 }
-                
+
                 public Site getSite() {
                     return context.getSite();
                 }
-                
+
                 public SearchConfiguration getSearchConfiguration() {
                     return context.getSearchConfiguration();
                 }
-                
+
                 public RunningQuery getRunningQuery() {
                     return context.getRunningQuery();
                 }
-                
+
                 public Query getQuery() {
                     return queryObj;
                 }
             };
-            
+
             try {
                 // Create and execute command on corrected query.
                 // Making sure this new command does not try to do the whole
@@ -139,22 +140,22 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
                 c.tokenEvaluationEngine = engine;
 
                 final SearchResult result = c.execute();
-                
+
                 if (result.getHitCount() > 0) {
                     result.addField(RESULT_FIELD_CORRECTED_QUERY, newQuery);
                 }
 
                 return result;
-                
+
             } catch (Exception ex) {
                 LOG.error(ERR_CANNOT_CREATE_COMMAND, ex);
                 return originalResult;
             }
         }
-        
+
         return originalResult;
     }
-    
+
     /**
      * Returns a token evaluation engine for the corrected query or null if
      * the query hasn't been corrected. The engine available via RunningQuery
@@ -169,7 +170,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
 
     /**
      * Correction will only be enabled if this method returns true. Override
-     * this to dynamically turn correction on and off. 
+     * this to dynamically turn correction on and off.
      *
      * @return true
      */
@@ -178,6 +179,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
     }
 
     // TODO comment me.
+    /** TODO comment me. **/
     protected void setAdditionalParameters(final ISearchParameters params) {
         super.setAdditionalParameters(params);
         params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
@@ -186,6 +188,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
     // Implementation of advanced query language. The spelling suggestions for
     // yellow and white only works as it should when the advanced query language
     // is used.
+    /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
         // The leaf clauses might not produce any output. For example terms 
         // having a site: field. In these cases we should not output the 
@@ -203,6 +206,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         clause.getSecondClause().accept(this);
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         appendToQueryRepresentation(" (");
         clause.getFirstClause().accept(this);
@@ -211,6 +215,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         appendToQueryRepresentation(") ");
     }
 
+    /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         boolean hasEmptyLeaf = false;
 
@@ -219,11 +224,13 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
 
         clause.getFirstClause().accept(this);
         
-        if (! hasEmptyLeaf)
+        if (! hasEmptyLeaf){
             appendToQueryRepresentation(" AND ");
+        }
 
         clause.getSecondClause().accept(this);
     }
+    /** TODO comment me. **/
     protected void visitImpl(final NotClause clause) {
         appendToQueryRepresentation(" ANDNOT ");
         appendToQueryRepresentation("(");
@@ -231,6 +238,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         appendToQueryRepresentation(")");
 
     }
+    /** TODO comment me. **/
     protected void visitImpl(final AndNotClause clause) {
         appendToQueryRepresentation("ANDNOT ");
         appendToQueryRepresentation("(");
@@ -268,9 +276,9 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         return new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
     }
     
-    private Query parseNewQuery(final String q, final TokenEvaluationEngine e) {
-        final QueryParser parser
-                = new QueryParserImpl(new AbstractQueryParserContext() {
+    private Query parseNewQuery(String q, final TokenEvaluationEngine e) {
+
+        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
             public TokenEvaluationEngine getTokenEvaluationEngine() {
                 return e;
             }

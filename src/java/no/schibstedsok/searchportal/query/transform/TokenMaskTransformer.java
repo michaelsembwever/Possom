@@ -149,7 +149,8 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
 
                 // otherwise perform the mask check on just the term.
                 transform = clause.getKnownPredicates().contains(predicate);
-                transform |= clause.getPossiblePredicates().contains(predicate) && predicate.evaluate(evalEngine);
+                transform |= clause.getPossiblePredicates().contains(predicate)
+                        && evalEngine.evaluateTerm(predicate, clause.getTerm());
 
                 if (transform) {
                     break;

@@ -1,3 +1,4 @@
+// Copyright (2005-2006) Schibsted Søk AS
 /*
  * PlatefoodPPCSearchCommand.java
  *
@@ -11,7 +12,6 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.PlatefoodPPCSearchConfiguration;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
@@ -30,18 +30,17 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 
 /**
  *
  * @author SSTHKJER
  */
 public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
-      
+
     private static final Logger LOG = Logger.getLogger(PlatefoodPPCSearchCommand.class);
 
     private boolean top = false;
-    
+
     /**
      * Create new Platefood command.
      *
@@ -53,7 +52,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
                              final Map parameters) {
         super(cxt, parameters);
 
-    }    
+    }
 
     /**
      * Execute the command.
@@ -74,27 +73,28 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
                     },
                     context
         );
-                    
+
         final PlatefoodPPCSearchConfiguration ppcConfig
-                = (PlatefoodPPCSearchConfiguration) context.getSearchConfiguration();                    
+                = (PlatefoodPPCSearchConfiguration) context.getSearchConfiguration();
 
-        final TokenEvaluationEngine tokenEvaluationEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
-        top = TokenPredicate.EXACT_PPCTOPLIST.evaluate(tokenEvaluationEngine)
-                 && !(TokenPredicate.LOAN_TRIGGER.evaluate(tokenEvaluationEngine) || TokenPredicate.SUDOKU_TRIGGER.evaluate(tokenEvaluationEngine));
-
+        top = engine.evaluateTerm(TokenPredicate.LOAN_TRIGGER, engine.getQueryString());
+        top |= engine.evaluateTerm(TokenPredicate.SUDOKU_TRIGGER, engine.getQueryString());
+        top &= engine.evaluateTerm(TokenPredicate.EXACT_PPCTOPLIST, engine.getQueryString());        
+        
         try {
             final Document doc = getXmlResult();
             final PlatefoodSearchResult searchResult = new PlatefoodSearchResult(this, top);
-            if (doc != null) {            
+            if (doc != null) {
                 final Element elem = doc.getDocumentElement();
                 final NodeList list = elem.getElementsByTagName("chan:impression");
                 int result = ppcConfig.getResultsToReturn();
                 if (list.getLength() < result)
                     result = list.getLength();
-                
+
                 for (int i = 0; i < result; ++i) {
-                    final Element listing = (Element) list.item(i);   
+                    final Element listing = (Element) list.item(i);
                     final BasicSearchResultItem item = createItem(listing);
                     searchResult.addResult(item);
                 }
@@ -169,5 +169,5 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
 
         return item;
     }
-    
+
 }

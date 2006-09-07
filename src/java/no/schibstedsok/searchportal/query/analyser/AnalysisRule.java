@@ -62,10 +62,6 @@ public final class AnalysisRule {
     public int evaluate(final Query query, final TokenEvaluationEngine evalFactory) {
         int score = 0;
 
-        // we're done with parsing individual terms.
-        //  we need to do this to ensure possible predicates are now checked against the whole query string.
-        evalFactory.setCurrentTerm(null);
-
         // New (post-QueryParser) implementation.
         final Scorer scorer = new Scorer(new Scorer.Context() {
             public TokenEvaluationEngine getTokenEvaluationEngine() {

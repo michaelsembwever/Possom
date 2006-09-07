@@ -18,7 +18,7 @@ public interface TokenEvaluator {
      * This usually means to check if the token occurs in query, but there are
      * other possibilities such as tokens that always evaluates to true.
      *
-     * @param token     the token to look for.
+     * @param term     the token to look for.
      * @return true if token occurs in query
      */
     boolean evaluateToken(TokenPredicate token, String term, String query);
