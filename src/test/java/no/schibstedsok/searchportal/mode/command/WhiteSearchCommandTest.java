@@ -44,7 +44,7 @@ public final class WhiteSearchCommandTest extends AbstractSearchCommandTest {
 
     public void testQueryRepresentationTwoWords() {
         final String query = getParsedQueryAsString("word word2");
-        assertEquals("whitephon:word AND whitephon:word2", query);
+        assertEquals("whitephon:word whitephon:word2", query);
     }
 
     public void testQueryRepresentationPhoneNumber() {
@@ -57,17 +57,17 @@ public final class WhiteSearchCommandTest extends AbstractSearchCommandTest {
 
     public void testQueryRepresentationPhrase() {
         final String query = getParsedQueryAsString("\"magnus eklund\"");
-        assertEquals("whitephon:magnus AND whitephon:eklund", query);
+        assertEquals("whitephon:magnus whitephon:eklund", query);
     }
 
     public void testQueryRepresentationMixed() {
         final String query = getParsedQueryAsString("\"magnus eklund\" 97 40 3306 oslo sarsgate 74");
-        assertEquals("whitephon:magnus AND whitephon:eklund AND whitepages:97403306 AND whitephon:oslo AND whitephon:sarsgate AND whitepages:74", query);
+        assertEquals("whitephon:magnus whitephon:eklund whitepages:97403306 whitephon:oslo whitephon:sarsgate whitepages:74", query);
     }
 
     public void testIgnoreField() {
         final String query = getParsedQueryAsString("site:vg.no magnus eklund");
-        assertEquals("whitephon:magnus AND whitephon:eklund", query.trim());
+        assertEquals("whitephon:magnus whitephon:eklund", query.trim());
     }
 
     private String getParsedQueryAsString(final String query) {
