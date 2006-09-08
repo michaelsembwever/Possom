@@ -353,8 +353,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <decorator:getProperty property="page.tradedoubler"/>
                      <% } else { %>
 
-			<table border="0" width="100%">
-			<tr>
+		<table border="0" width="100%" cellspacing="0" cellpadding="0">
+		<tr>
                 <decorator:getProperty property="page.spellcheck"/>
                  <td id="result_container">
 
