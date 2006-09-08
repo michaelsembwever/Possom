@@ -23,6 +23,7 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModule;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -43,6 +44,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
+import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModuleImpl;
 
 /** Used by the rssDecorator.jsp to print out the results in rss format.
  *
@@ -134,6 +136,15 @@ public final class SyndicationGenerator {
 
         try {
             final SyndFeed feed = new SyndFeedImpl();
+            final SearchResultModule m = new SearchResultModuleImpl();
+
+            m.setNumberOfHits(Integer.toString(result.getHitCount()));
+
+            final List modules = new ArrayList();
+            
+            modules.add(m);
+            
+            feed.setModules(modules);
 
             feed.setEncoding(this.encoding);
             feed.setFeedType(feedType);
@@ -207,7 +218,6 @@ public final class SyndicationGenerator {
             feed.setEntries(entries);
 
             final SyndFeedOutput output = new SyndFeedOutput();
-
             return output.outputString(feed).replaceAll(DCDATE_PATTERN, "");
         } catch (ResourceNotFoundException ex) {
             throw new RuntimeException(ex);
