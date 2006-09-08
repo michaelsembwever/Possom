@@ -774,9 +774,15 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
         
         if (getParameter("c").equals("yg")) {
-            params.setParameter(new SearchParameter("qtf_geosearch:center", "(" + getParameter("cla") + "," + getParameter("clo")));
-            params.setParameter(new SearchParameter("qtf_geosearch:filterbox", "[(" + getParameter("la1") + "," + getParameter("lo1") + ");(" + getParameter("la2") + "," + getParameter("lo2") + ")]"));            
-            params.setParameter(new SearchParameter("sortdirection", "ascending"));
+            if (getParameter("type").equals("f")) {
+                params.setParameter(new SearchParameter("qtf_geosearch:center", "(" + getParameter("cla") + "," + getParameter("clo")));
+                params.setParameter(new SearchParameter("qtf_geosearch:filterbox", "[(" + getParameter("la1") + "," + getParameter("lo1") + ");(" + getParameter("la2") + "," + getParameter("lo2") + ")]"));            
+                params.setParameter(new SearchParameter("sortdirection", "ascending"));
+            } else {
+                params.setParameter(new SearchParameter("qtf_geosearch:center", "(" + getParameter("cla") + "," + getParameter("clo")));
+                params.setParameter(new SearchParameter("qtf_geosearch:radius", getParameter("rad")));            
+                params.setParameter(new SearchParameter("sortdirection", "ascending"));                
+            }
         }
 
         // TODO: Refactor
