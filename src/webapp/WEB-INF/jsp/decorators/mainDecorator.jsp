@@ -203,30 +203,37 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <c:forEach var="e" items="${sources}">
                     <c:set var="hint" value="${e.navigationHint}"/>
                     <c:if test="${!empty hint && !empty hint.tab}">
+                        <c:url var="urlEnc" value="">
+                            <c:param name="c" value="${hint.tab.key}"/>
+                            <c:choose>
+                                <c:when test="${e.count > 0}">
+                                    <c:param name="q" value="{$q}"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:param name="q" value=""/>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:url>
+
+                        <c:set var="navUrl" value="${urlEnc}${hint.urlSuffix}"/>
+
                         <c:set var="rows" value="${rows +1}"/>
-                        <c:choose>
-                            <c:when test="${e.count > 0}">
-                                <c:set var="navUrl" value="?q=${q}&c=${hint.tab.key}${hint.urlSuffix}"/>
-                            </c:when>
-                            <c:otherwise>
-                                <c:set var="navUrl" value="?q=&c=${hint.tab.key}${hint.urlSuffix}"/>
-                            </c:otherwise>
-                        </c:choose>
+
                         <c:if test="${rows > 1}">
                             <tr><td colspan="3"><img src="../images/index/dottedline2.gif" alt="" /></td></tr>
                         </c:if>
                         <tr>
                             <td class="navbar2_imgpad"><img src='<c:out value="../images/menu/icons/${hint.image}"/>' class="nav_icon" align="left" alt="" /></td>
-			    <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
+                            <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
                             <% if ( q.trim().equals("") && currentC.equals("m") ) { %>
-                                <td class="navbar2_rightpad" align="right">&nbsp;</td>
+                            <td class="navbar2_rightpad" align="right">&nbsp;</td>
                             <% } else { %>
-                                <td class="navbar2_rightpad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
+                            <td class="navbar2_rightpad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
                             <% } %>
                         </tr>
                     </c:if>
                 </c:forEach>
-               	<tr>
+                <tr>
                	    <td class="navbar2_lastpad" colspan="3" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="../images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
                 </tr>
             </table>

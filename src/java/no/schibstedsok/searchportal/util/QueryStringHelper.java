@@ -48,7 +48,7 @@ public final class QueryStringHelper {
             encodedReqValue = encodedReqValue.replaceAll("[+]", "%20");
             encodedReqValue = encodedReqValue.replaceAll("[*]", "%2A");
             
-	        if (!queryStringValue.equals(encodedReqValue)){
+	        if (!queryStringValue.equalsIgnoreCase(encodedReqValue)){
 	            reqValue = URLDecoder.decode(queryStringValue, "ISO-8859-1");
 	        }
         } catch (UnsupportedEncodingException e) {
