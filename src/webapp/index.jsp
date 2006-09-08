@@ -105,7 +105,7 @@
 			<div id="front_button_layer">
 			<table border="0" cellspacing="1" cellpadding="0" id="front_button_table">
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("d");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</td>
 			    </tr>
 			    <tr>
 				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("y");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bedriftss&#248;k</td>
