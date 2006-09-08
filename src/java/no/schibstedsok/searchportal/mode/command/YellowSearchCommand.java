@@ -256,7 +256,7 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
                 appendToQueryRepresentation(PREFIX_PHONETIC);
             }
 
-            appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.", ""));
+            appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.", " "));
         }
     }
 
