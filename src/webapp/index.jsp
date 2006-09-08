@@ -76,7 +76,6 @@
         </td>
         <td valign="middle" align="left">
             <form name="sf" action="<search:linkPulse url="" param="category:front_search" index="true"/>" onsubmit='return check();'>
-	    <input type="hidden" name="c" value="d" />
 	    <table border="0" cellspacing="0" cellpadding="0" id="searchbox_top">
 		<tr>
 		    <td valign="top">
@@ -97,8 +96,8 @@
 		</tr>
 		<tr>
 		    <td valign="top" id="searchbox_tips">
-                    	<input type="radio" name="ns" value="d" checked="checked" onclick='document.sf.c.value="d"' /> Norge &nbsp;&nbsp;
-                	<input type="radio" name="ns" value="g" onclick='document.sf.c.value="g"' /> Verden
+                    	<input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
+                	<input type="radio" name="c" value="g" onclick='document.sf.submit();' /> Verden
 		    </td>
 		    <td>&nbsp;</td>
 		    <td colspan="3">
