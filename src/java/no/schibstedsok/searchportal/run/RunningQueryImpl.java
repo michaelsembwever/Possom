@@ -212,11 +212,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             && "0".equals(parameters.get("offset"))
                             && eHint.getWeight() >0) {
 
-                        ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
-
                         int score = 0;
 
                         if(scoresByRule.get(eHint.getRule()) == null){
+                            
+                            ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
 
                             score = rule.evaluate(queryObj, engine);
                             scoresByRule.put(eHint.getRule(), score);
@@ -226,6 +226,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             if(score != 0){
                                 ANALYSIS_LOG.info("  <score>" + score + "</score>");
                             }
+                            
                             ANALYSIS_LOG.info(" </analysis>");
 
                         }else{
