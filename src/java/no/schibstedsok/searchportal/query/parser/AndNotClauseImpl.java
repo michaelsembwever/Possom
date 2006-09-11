@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.query.token.EvaluationState;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.site.Site;
@@ -56,16 +58,17 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      * The methods also allow a chunk of creation logic for the AndNotClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
      * 
+     * 
      * @param first the left child clause of the operation clause we are about to create (or find).
      * @param second the right child clause of the operation clause we are about to create (or find).
-     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @return returns a AndAndNotClauseImplstance matching the term, left and right child clauses.
      * May be either newly created or reused.
      */
     public static AndNotClauseImpl createAndNotClause(
         final Clause first,
-        final TokenEvaluationEngine predicate2evaluatorFactory) {
+        final TokenEvaluationEngine engine) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
@@ -75,14 +78,14 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
                     : "")
                 + first.getTerm();
 
-        // update the factory with what the current term is
-        predicate2evaluatorFactory.setCurrentTerm(term);
+        // create predicate sets
+        engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
         
         // the weakCache to use.
-        Map<String,WeakReference<AndNotClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        Map<String,WeakReference<AndNotClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
         if( weakCache == null ){
             weakCache = new HashMap<String,WeakReference<AndNotClauseImpl>>();
-            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+            WEAK_CACHE.put(engine.getSite(),weakCache);
         }
 
         // use helper method from AbstractLeafClause
@@ -91,7 +94,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
                 term,
                 first,
                 null,
-                predicate2evaluatorFactory,
+                engine,
                 PREDICATES_APPLICABLE, weakCache);
     }
 

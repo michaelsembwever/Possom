@@ -137,7 +137,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** TODO comment me. **/
     public String toString() {
-        return getSearchConfiguration().getName() + " " + context.getRunningQuery().getQueryString();
+        return getSearchConfiguration().getName() + ' ' + context.getRunningQuery().getQueryString();
     }
 
     /** TODO comment me. **/
@@ -281,17 +281,25 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 : context.getQuery().getQueryString();
 
         if (useParameterAsQuery) {
+            
             // OOBS. It's not the query we are looking for but a string held
             // in a different parameter.
             transformedQuery = queryToUse;
-            final Query query = createQuery(queryToUse);
+            final ReconstructedQuery rq = createQuery(queryToUse);
+            final Query query = rq.getQuery();
             transformedTerms.clear();
             // re-initialise map with new query's terms.
             final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
             mapInitialisor.visit(query.getRootClause());
-            applyQueryTransformers(query, getSearchConfiguration().getQueryTransformers());
+            applyQueryTransformers(query, rq.getEngine(), getSearchConfiguration().getQueryTransformers());
+            
         }  else  {
-            applyQueryTransformers(context.getQuery(), getSearchConfiguration().getQueryTransformers());
+            
+            applyQueryTransformers(
+                    context.getQuery(), 
+                    context.getTokenEvaluationEngine(), 
+                    getSearchConfiguration().getQueryTransformers());
+            
         }
         return queryToUse;
     }
@@ -460,7 +468,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @param transformers
      */
-    private void applyQueryTransformers(final Query query, final List<QueryTransformer> transformers) {
+    private void applyQueryTransformers(
+            final Query query, 
+            final TokenEvaluationEngine engine,
+            final List<QueryTransformer> transformers) {
 
         if (transformers != null && transformers.size() > 0) {
             boolean touchedTransformedQuery = false;
@@ -475,7 +486,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     return query;
                 }
                 public TokenEvaluationEngine getTokenEvaluationEngine(){
-                    return context.getRunningQuery().getTokenEvaluationEngine();
+                    return engine;
                 }
             };
 
@@ -533,11 +544,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 : (String) parameters.get(paramName);
     }
 
-    private Query createQuery(final String queryString) {
+    protected final ReconstructedQuery createQuery(final String queryString) {
 
 
-        final TokenEvaluationEngineImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                TokenEvaluationEngineImpl.Context.class,
+        final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                TokenEvaluationEngine.Context.class,
                     context,
                     new QueryStringContext() {
                         public String getQueryString() {
@@ -548,17 +559,17 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // This will among other things perform the initial fast search
         // for textual analysis.
-        final TokenEvaluationEngine tokenEvaluationEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
         // queryStr parser
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
             public TokenEvaluationEngine getTokenEvaluationEngine() {
-                return tokenEvaluationEngine;
+                return engine;
             }
         });
 
         try  {
-            return parser.getQuery();
+            return new ReconstructedQuery(parser.getQuery(), engine);
 
         } catch (TokenMgrError ex)  {
             // Errors (as opposed to exceptions) are fatal.
@@ -668,14 +679,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 if(fieldFilters.containsKey(clause.getField())){
                     field = clause.getField();
                 }else{
-                    final TokenEvaluationEngine evalEngine = context.getRunningQuery().getTokenEvaluationEngine();
+                    final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
                     for(String fieldFilter : fieldFilters.keySet()){
                         try{
                             final TokenPredicate tp = TokenPredicate.valueOf(fieldFilter);
                             // if the field is the token then mask the field and include the term.
+                            // XXX why are we checking the known and possible predicates?
                             boolean result = clause.getKnownPredicates().contains(tp);
                             result |= clause.getPossiblePredicates().contains(tp);
-                            result &= evalEngine.evaluateTerm(tp, clause.getField());
+                            result &= engine.evaluateTerm(tp, clause.getField());
                             if(result){
                                 field = fieldFilter;
                                 break;
@@ -690,5 +702,20 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
+    /** see createQuery(string). **/    
+    protected static class ReconstructedQuery{
+        private final Query query;
+        private final TokenEvaluationEngine engine;
+        ReconstructedQuery(final Query query, final TokenEvaluationEngine engine){
+            this.query = query;
+            this.engine = engine;
+        }
+        public Query getQuery(){
+            return query;
+        }
+        public TokenEvaluationEngine getEngine(){
+            return engine;
+        }
+    }
 
 }

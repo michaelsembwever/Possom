@@ -69,7 +69,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     protected final Map<String,Object> parameters;
     private final Locale locale = new Locale("no", "NO");
     private final List<Modifier> sources = new Vector<Modifier>();
-    private final TokenEvaluationEngine tokenEvaluationEngine;
+    protected final TokenEvaluationEngine engine;
     private final List<Enrichment> enrichments = new ArrayList<Enrichment>();
     private final Map<String,Integer> hits = new HashMap<String,Integer>();
     private final Map<String,Integer> scores = new HashMap<String,Integer>();
@@ -92,9 +92,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         this.parameters = parameters;
 
-        final TokenEvaluationEngineImpl.Context tokenEvalFactoryCxt =
+        final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
                 ContextWrapper.wrap(
-                    TokenEvaluationEngineImpl.Context.class,
+                    TokenEvaluationEngine.Context.class,
                     context,
                     new QueryStringContext() {
                         public String getQueryString() {
@@ -104,12 +104,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         // This will among other things perform the initial fast search
         // for textual analysis.
-        tokenEvaluationEngine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+        engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
 
         // queryStr parser
         final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
             public TokenEvaluationEngine getTokenEvaluationEngine() {
-                return tokenEvaluationEngine;
+                return engine;
             }
         });
 
@@ -121,7 +121,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private List<TokenMatch> getTokenMatches(final TokenPredicate token) {
 
-        final ReportingTokenEvaluator e = (ReportingTokenEvaluator) tokenEvaluationEngine.getEvaluator(token);
+        final ReportingTokenEvaluator e = (ReportingTokenEvaluator) engine.getEvaluator(token);
         return e.reportToken(token, queryStr);
     }
 
@@ -196,6 +196,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             public Query getQuery() {
                                 return queryObj;
                             }
+                            public TokenEvaluationEngine getTokenEvaluationEngine(){
+                                return engine;
+                            }
                         }
                 );
 
@@ -215,7 +218,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                         if(scoresByRule.get(eHint.getRule()) == null){
 
-                            score = rule.evaluate(queryObj, tokenEvaluationEngine);
+                            score = rule.evaluate(queryObj, engine);
                             scoresByRule.put(eHint.getRule(), score);
 
                             LOG.info("Score for " + searchConfiguration.getName() + " is " + score);
@@ -525,14 +528,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         LOG.trace("getEnrichments()");
 
         return enrichments;
-    }
-
-    /** TODO comment me. **/
-    public TokenEvaluationEngine getTokenEvaluationEngine() {
-
-        LOG.trace("getTokenEvaluationEngine()");
-
-        return tokenEvaluationEngine;
     }
 
     /** TODO comment me. **/

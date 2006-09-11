@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchConfigurationContext;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.util.config.ResourceContext;
 import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.QueryContext;
@@ -27,6 +28,9 @@ public interface SearchCommand extends Callable<SearchResult> {
      */
     public interface Context extends BaseContext, QueryContext, ResourceContext, RunningQueryContext,
             SearchConfigurationContext, SiteContext {
+        
+        /** get the engine for the current query. **/
+        TokenEvaluationEngine getTokenEvaluationEngine();
     }
 
     /**

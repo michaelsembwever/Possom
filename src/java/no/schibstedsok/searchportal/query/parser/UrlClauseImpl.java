@@ -53,9 +53,10 @@ public final class UrlClauseImpl extends AbstractLeafClause implements UrlClause
      * The methods also allow a chunk of creation logic for the UrlClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
      * 
+     * 
      * @param term the term this clause represents.
      * @param field any field this clause was specified against.
-     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @return returns a UrlClauseImpl matching the term, left and right child clauses.
      * May be either newly created or reused.
@@ -63,15 +64,13 @@ public final class UrlClauseImpl extends AbstractLeafClause implements UrlClause
     public static UrlClauseImpl createUrlClause(
         final String term,
         final String field,
-        final TokenEvaluationEngine predicate2evaluatorFactory) {
+        final TokenEvaluationEngine engine) {
 
-        // update the factory with what the current term is
-        predicate2evaluatorFactory.setCurrentTerm(term);
         // the weakCache to use.
-        Map<String,WeakReference<UrlClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        Map<String,WeakReference<UrlClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
         if( weakCache == null ){
             weakCache = new HashMap<String,WeakReference<UrlClauseImpl>>();
-            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+            WEAK_CACHE.put(engine.getSite(),weakCache);
         }
         
         // use helper method from AbstractLeafClause
@@ -79,7 +78,7 @@ public final class UrlClauseImpl extends AbstractLeafClause implements UrlClause
                 UrlClauseImpl.class,
                 term,
                 field,
-                predicate2evaluatorFactory,
+                engine,
                 PREDICATES_APPLICABLE, weakCache);
     }
 

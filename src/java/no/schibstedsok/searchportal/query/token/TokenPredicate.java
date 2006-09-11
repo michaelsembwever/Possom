@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import no.schibstedsok.searchportal.query.finder.PredicateFinder;
 import org.apache.commons.collections.Predicate;
 
 /** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
@@ -127,7 +128,7 @@ public enum TokenPredicate implements Predicate {
     private static final String ERR_TOKEN_NOT_FOUND = "Token argument not found ";
     private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS 
             = "TokenPredicate.evaluate(..) can only be used by same thread that created TokenEvaluationEngine!";
-
+    private static final String ERR_ENGINE_MISSING_STATE = "TokenEvaluationEngine must have state assigned";
 
     /**
      * Create a new TokenPredicate that will return true if it applies to the
@@ -206,19 +207,33 @@ public enum TokenPredicate implements Predicate {
         if( Thread.currentThread() != engine.getOwningThread() ){
             throw new IllegalStateException(ERR_METHOD_CLOSED_TO_OTHER_THREADS);
         }
-
+        
+        
         // check that the evaluation hasn't already been done
         // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
         //  the evaluation is for the building of the known and possible predicate list (during query parsing)(in which
         //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
         //  applicable now (in the context of the whole query).
-        final Set<TokenPredicate> knownPredicates = engine.getClausesKnownPredicates();
+        final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
         if(null != knownPredicates && knownPredicates.contains(this)){
             return true;
         }
-
+        
         final TokenEvaluator evaluator = engine.getEvaluator(this);
-        return evaluator.evaluateToken(this, engine.getCurrentTerm(), engine.getQueryString());
+        
+        if( null != engine.getState().getTerm() ){
+            
+            // Single term or clause evaluation
+            return evaluator.evaluateToken(this, engine.getState().getTerm(), engine.getQueryString());
+
+        }else if( null != engine.getState().getQuery() ){
+            
+            // Whole query evaluation
+            return engine.getState().getPossiblePredicates().contains(this)
+                    && evaluator.evaluateToken(this, null, engine.getQueryString());
+            
+        }
+        throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
     }
 
 }

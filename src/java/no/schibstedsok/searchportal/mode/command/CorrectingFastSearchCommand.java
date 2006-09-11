@@ -17,6 +17,7 @@ import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchType;
+import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -62,11 +63,6 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
 
     private boolean correct = true;
 
-    /**
-     * A token evaluation engine for corrected query.
-     */
-    private TokenEvaluationEngine tokenEvaluationEngine;
-
     /** Creates a new instance of CorrectionFastSearchCommand.
      *
      * @param cxt Search command context.
@@ -96,39 +92,21 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
             final String oldQuery = context.getRunningQuery().getQueryString();
             final String newQuery = correctQuery(suggestions, oldQuery);
 
-            final TokenEvaluationEngine engine = createEngineForQuery(newQuery);
-
-            final Query queryObj = parseNewQuery(newQuery, engine);
-
-            // Create a new identical context apart from the corrected query.
-            // @todo use ContextWrapper instead.
-            final SearchCommand.Context cmdCxt = new SearchCommand.Context() {
-                public PropertiesLoader newPropertiesLoader(
-                        final String resource, final Properties properties) {
-                    return context.newPropertiesLoader(resource, properties);
-                }
-
-                public DocumentLoader newDocumentLoader(
-                        final String resource, final DocumentBuilder builder) {
-                    return context.newDocumentLoader(resource, builder);
-                }
-
-                public Site getSite() {
-                    return context.getSite();
-                }
-
-                public SearchConfiguration getSearchConfiguration() {
-                    return context.getSearchConfiguration();
-                }
-
-                public RunningQuery getRunningQuery() {
-                    return context.getRunningQuery();
-                }
-
-                public Query getQuery() {
-                    return queryObj;
-                }
-            };
+            // Create a new identical context apart from the corrected query            
+            final ReconstructedQuery rq = createQuery(newQuery);
+            final SearchCommand.Context cmdCxt = ContextWrapper.wrap(
+                    SearchCommand.Context.class,
+                    new BaseContext(){
+                        public Query getQuery() {
+                            return rq.getQuery();
+                        }
+                        public TokenEvaluationEngine getTokenEvaluationEngine(){
+                            return rq.getEngine();
+                        }
+                    },
+                    context
+                );
+            
 
             try {
                 // Create and execute command on corrected query.
@@ -137,7 +115,6 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
                 final CorrectingFastSearchCommand c = createCommand(cmdCxt);
                 c.performQueryTransformation();
                 c.correct = false;
-                c.tokenEvaluationEngine = engine;
 
                 final SearchResult result = c.execute();
 
@@ -154,18 +131,6 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         }
 
         return originalResult;
-    }
-
-    /**
-     * Returns a token evaluation engine for the corrected query or null if
-     * the query hasn't been corrected. The engine available via RunningQuery
-     * has been run against the original query so in order to do programatic
-     * predicate checking on corrected query this one must be used.
-     *
-     * @return TokenEvaluation engine for corrected query.
-     */
-    protected TokenEvaluationEngine getTokenEvaluationEngine() {
-        return tokenEvaluationEngine;
     }
 
     /**
@@ -260,31 +225,6 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         final Constructor<? extends CorrectingFastSearchCommand> con
                 = clazz.getConstructor(Context.class, Map.class);
         return con.newInstance(cmdCxt, getParameters());
-    }
-    
-    private TokenEvaluationEngine createEngineForQuery(final String q) {
-        final TokenEvaluationEngineImpl.Context tokenEvalFactoryCxt =
-                ContextWrapper.wrap(
-                TokenEvaluationEngineImpl.Context.class,
-                context,
-                new QueryStringContext() {
-            public String getQueryString() {
-                return q;
-            }
-        });
-        
-        return new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
-    }
-    
-    private Query parseNewQuery(String q, final TokenEvaluationEngine e) {
-
-        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-            public TokenEvaluationEngine getTokenEvaluationEngine() {
-                return e;
-            }
-        });
-        
-        return parser.getQuery();
     }
     
     private String correctQuery(

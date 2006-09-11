@@ -86,18 +86,18 @@ public abstract class AbstractClause implements Clause {
      * (Only the clause's term is known and is kept in state inside the TokenEvaluationEngine).
      * Add known predicates to <CODE>knownPredicates</CODE>.
      * Add possible (requires further checking against the whole query heirarchy) predicates to <CODE>possiblePredicates</CODE>.
-     *
-     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * 
+     * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @param predicates2check the complete list of predicates that could apply to the current clause we are finding predicates for.
      */
     protected static final void findPredicates(
-            final TokenEvaluationEngine predicate2evaluatorFactory,
+            final TokenEvaluationEngine engine,
             final Collection<TokenPredicate> predicates2check) {
 
-        final Set<TokenPredicate> knownPredicates = predicate2evaluatorFactory.getClausesKnownPredicates();
-        final Set<TokenPredicate> possiblePredicates = predicate2evaluatorFactory.getClausesPossiblePredicates();
-        final String currTerm = predicate2evaluatorFactory.getCurrentTerm();
+        final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
+        final Set<TokenPredicate> possiblePredicates = engine.getState().getPossiblePredicates();
+        final String currTerm = engine.getState().getTerm();
 
 
         for (TokenPredicate token : predicates2check) {
@@ -105,8 +105,8 @@ public abstract class AbstractClause implements Clause {
             // check it hasn't already been added
             if(!(knownPredicates.contains(token) || possiblePredicates.contains(token))){
 
-                if (token.evaluate(predicate2evaluatorFactory)) {
-                    final TokenEvaluator evaluator = predicate2evaluatorFactory.getEvaluator(token);
+                if (token.evaluate(engine)) {
+                    final TokenEvaluator evaluator = engine.getEvaluator(token);
                     if (evaluator.isQueryDependant(token)) {
                         possiblePredicates.add(token);
                         LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_POSSIBLE + token);

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.query.token.EvaluationState;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
@@ -35,13 +36,13 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
      *       final String field,
      *       final Set&lt;Predicate&gt; knownPredicates,
      *       final Set&lt;Predicate&gt; possiblePredicates
-     *
+     * 
      * Where this is true subclasses are free to use this helper method.
-     *
+     * 
      * @param clauseClass the exact subclass of AbstracLeafClause that we are about to create (or find already in use).
      * @param term the term the clause we are about to create (or find) will have.
      * @param field the field the clause we are about to create (or find) will have.
-     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @param predicates2check the complete list of predicates that could apply to the current clause we are finding predicates for.
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
@@ -51,7 +52,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
             final Class<T> clauseClass,
             final String term,
             final String field,
-            final TokenEvaluationEngine predicate2evaluatorFactory,
+            final TokenEvaluationEngine engine,
             final Collection<TokenPredicate> predicates2check,
             final Map<String,WeakReference<T>> weakCache) {
 
@@ -61,9 +62,6 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
             ? field + ':' + term
             : term;
 
-        // update the factory with what the current term is
-        predicate2evaluatorFactory.setCurrentTerm(key);
-
         // check weak reference cache of immutable wordClauses here.
         // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
         //  into the cache, compared to the performance lost of trying to synchronise this.
@@ -71,10 +69,10 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
 
         if (clause == null) {
             // create predicate sets
-            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet<TokenPredicate>());
-            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet<TokenPredicate>());
+            engine.setState(new EvaluationState(key, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
+
             // find the applicale predicates now
-            findPredicates(predicate2evaluatorFactory, predicates2check);
+            findPredicates(engine, predicates2check);
             try {
                 // find the constructor...
                 final Constructor<T> constructor = clauseClass.getDeclaredConstructor(
@@ -84,8 +82,8 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
                 clause = constructor.newInstance(
                     term,
                     field,
-                    predicate2evaluatorFactory.getClausesKnownPredicates(),
-                    predicate2evaluatorFactory.getClausesPossiblePredicates()
+                    engine.getState().getKnownPredicates(),
+                    engine.getState().getPossiblePredicates()
                 );
 
             } catch (SecurityException ex) {

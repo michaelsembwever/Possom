@@ -147,9 +147,9 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
 
         final String t = super.getTransformedQuery();
 
-        final TokenEvaluationEngine engine = context.getRunningQuery().getTokenEvaluationEngine();
+        final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
-        final boolean exactCompany = engine.evaluateTerm(TokenPredicate.EXACTCOMPANYRANK, engine.getQueryString());
+        final boolean exactCompany = engine.evaluateQuery(TokenPredicate.EXACTCOMPANYRANK, context.getQuery());
         
         if (exactCompany && !isTop3 && !getParameter("ynp").equals("0")) {
             return t.replaceAll("yellowphon", "yellownamephon");
@@ -198,10 +198,9 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
     /** TODO comment me. **/
     protected String getSortBy() {
         
-        final TokenEvaluationEngine engine = getRunningQuery().getTokenEvaluationEngine();
-        final boolean exactCompany = engine.evaluateTerm(TokenPredicate.EXACTCOMPANYRANK, engine.getQueryString());
+        final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
         
-        if (exactCompany) {
+        if (engine.evaluateQuery(TokenPredicate.EXACTCOMPANYRANK, context.getQuery())) {
             return "yellowname";
         }
 

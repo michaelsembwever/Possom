@@ -8,10 +8,14 @@
 
 package no.schibstedsok.searchportal.query.parser;
 
+import java.util.Set;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.finder.Counter;
 import no.schibstedsok.searchportal.query.finder.FirstLeafFinder;
+import no.schibstedsok.searchportal.query.finder.PredicateCollector;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.searchportal.query.token.TokenPredicate;
 
 
 /** Abstract helper for implementing a Query class.
@@ -25,6 +29,9 @@ public abstract class AbstractQuery implements Query {
 
     private final FirstLeafFinder finder = new FirstLeafFinder();
     private final Counter counter = new Counter();
+    private final PredicateCollector predicateCollector;
+    
+    private final TokenEvaluationEngine.State evaluationState;
 
     private final String queryStr;
 
@@ -32,7 +39,27 @@ public abstract class AbstractQuery implements Query {
      * @param queryStr the query string as inputted from the user.
      */
     protected AbstractQuery(final String queryStr) {
+        
         this.queryStr = queryStr;
+        predicateCollector  = new PredicateCollector(this);
+        evaluationState = new TokenEvaluationEngine.State(){
+            public String getTerm() {
+                return null;
+            }
+
+            public Query getQuery() {
+                return AbstractQuery.this;
+            }
+
+            public Set<TokenPredicate> getKnownPredicates() {
+                return predicateCollector.getKnownPredicates();
+            }
+
+            public Set<TokenPredicate> getPossiblePredicates() {
+                return predicateCollector.getPossiblePredicates();
+            }
+            
+        };
     }
 
     /**
@@ -59,5 +86,8 @@ public abstract class AbstractQuery implements Query {
         return false;
     }
 
-
+    public TokenEvaluationEngine.State getEvaluationState(){
+        return evaluationState;
+    }
+    
 }

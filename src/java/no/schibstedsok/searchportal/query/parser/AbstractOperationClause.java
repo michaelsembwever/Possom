@@ -39,13 +39,14 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
      *       final Clause right,
      *       final Set&lt;Predicate&gt; knownPredicates,
      *       final Set&lt;Predicate&gt; possiblePredicates
-     *
+     * 
      * Where this is true subclasses are free to use this helper method.
+     * 
      * @param left the left child clause for OperationClause the clause we are about to create (or find) will have.
      * @param right the right child clause the clause we are about to create (or find) will have.
      * @param clauseClass the exact subclass of AbstracLeafClause that we are about to create (or find already in use).
      * @param term the term the clause we are about to create (or find) will have.
-     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @param predicates2check the complete list of predicates that could apply to the current clause we are finding predicates for.
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
@@ -56,7 +57,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
             final String term,
             final Clause left,
             final Clause right,
-            final TokenEvaluationEngine predicate2evaluatorFactory,
+            final TokenEvaluationEngine engine,
             final Collection<TokenPredicate> predicates2check,
             final Map<String,WeakReference<T>> weakCache) {
 
@@ -71,11 +72,8 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
         if (clause == null) {
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
 
-            // create predicate sets
-            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet<TokenPredicate>());
-            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet<TokenPredicate>());
             // find the applicale predicates now
-            findPredicates(predicate2evaluatorFactory, predicates2check);
+            findPredicates(engine, predicates2check);
             try {
                 // find the constructor...
                 final Constructor<T> constructor = clauseClass.getDeclaredConstructor(
@@ -86,8 +84,8 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
                     term,
                     left,
                     right,
-                    predicate2evaluatorFactory.getClausesKnownPredicates(),
-                    predicate2evaluatorFactory.getClausesPossiblePredicates()
+                    engine.getState().getKnownPredicates(),
+                    engine.getState().getPossiblePredicates()
                 );
 
             } catch (SecurityException ex) {

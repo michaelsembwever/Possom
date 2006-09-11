@@ -93,344 +93,344 @@ public final class FastNavigatorsTest extends TestCase {
         assertSame(config.getNavigator("geographic").getChildNavigator(), child);
     }
 
-    public void testTopLevelModifiers() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-        navigator.setDisplayName("Fylken");
-
-        config.addNavigator(navigator, "geographic");
-
-
-        final FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , new HashMap());
-
-        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-        final FastSearchResult result = (FastSearchResult) command.call();
-
-        assertTrue(result.getModifiers("geographic") != null);
-
-        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
-
-        assertEquals("ywfylkesnavigator", modifier.getNavigator().getName());
-        assertEquals("Fylken", command.getNavigatorTitle("geographic"));
-    }
-
-    public void testTopLevelModifiersWithChild() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-        final Navigator child = new Navigator();
-        child.setName("ywkommunenavigator");
-        navigator.setChildNavigator(child);
-
-        config.addNavigator(navigator, "geographic");
-
-
-
-        final FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , new HashMap());
-
-        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-        final FastSearchResult result = (FastSearchResult) command.call();
-
-        assertTrue(result.getModifiers("geographic") != null);
-
-        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
-
-        assertEquals("ywfylkesnavigator", navigator.getName());
-        assertEquals("ywfylkesnavigator", modifier.getNavigator().getName());
-    }
-
-    public void testSecondLevelModifiersWithChild() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-        final Navigator child = new Navigator();
-        child.setName("ywkommunenavigator");
-        navigator.setChildNavigator(child);
-
-        config.addNavigator(navigator, "geographic");
-
-        final String navigated[] = new String[1];
-        navigated[0] = "ywfylkesnavigator";
-
-        final Map params = new HashMap();
-
-        params.put("nav_geographic", navigated);
-
-        final FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-
-        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-        final FastSearchResult result = (FastSearchResult) command.call();
-
-        assertNotNull(result.getModifiers("geographic"));
-
-        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
-        assertEquals("ywkommunenavigator", modifier.getNavigator().getName());
-
-    }
-
-    public void testSecondLevelModifiersWithoutChild() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-
-        final String navigated[] = new String[1];
-        navigated[0] = "ywfylkesnavigator";
-
-        final Map params = new HashMap();
-
-        params.put("nav_geographic", navigated);
-
-        config.addNavigator(navigator, "geographic");
-
-        final FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-
-        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-        final FastSearchResult result = (FastSearchResult) command.call();
-
-        assertNotNull(result.getModifiers("geographic"));
-
-        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
-        assertEquals("ywfylkesnavigator", modifier.getNavigator().getName());
-
-    }
-
-    public void testThreeLevelNavigator() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-
-        final Navigator child = new Navigator();
-        child.setName("ywkommunenavigator");
-
-        final Navigator childsChild = new Navigator();
-        childsChild.setName("ywsted");
-
-        navigator.setChildNavigator(child);
-        child.setChildNavigator(childsChild);
-
-        final Map params = new HashMap();
-
-        final String navigated[] = new String[1];
-        navigated[0] = "ywfylkesnavigator";
-
-        params.put("nav_geographic", navigated);
-
-        config.addNavigator(navigator, "geographic");
-
-        FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-
-        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-        FastSearchResult result = (FastSearchResult) command.call();
-
-        assertNotNull(result.getModifiers("geographic"));
-
-        Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
-        assertEquals("ywkommunenavigator", modifier.getNavigator().getName());
-
-        params.clear();
-
-        navigated[0] = "ywkommunenavigator";
-        params.put("nav_geographic", navigated);
-
-        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-
-        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-        result = (FastSearchResult) command.call();
-
-        assertNotNull(result.getModifiers("geographic"));
-
-        modifier = (Modifier) result.getModifiers("geographic").get(0);
-        assertEquals("ywsted", modifier.getNavigator().getName());
-    }
-
-    public void testModifiersOneLevel() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-        navigator.setField("ywfylke");
-
-        config.addNavigator(navigator, "geographic");
-        final Map params = new HashMap();
-
-
-        final String navigated[] = new String[1];
-        navigated[0] = "ywfylkesnavigator";
-
-        final String navigatedValue[] = new String[1];
-
-        navigatedValue[0] = "Oslo";
-
-        params.put("nav_geographic", navigated);
-        params.put("ywfylke", navigatedValue);
-
-        final FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-
-        final FastSearchResult result = (FastSearchResult) command.call();
-    }
-
-    public void testModifiersTwoLevels() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-        navigator.setField("ywfylke");
-
-        final Navigator child = new Navigator();
-        child.setName("ywkommunenavigator");
-        child.setField("ywkommune");
-
-        navigator.setChildNavigator(child);
-
-        config.addNavigator(navigator, "geographic");
-        final Map params = new HashMap();
-
-        final String navigated[] = new String[1];
-        navigated[0] = "ywfylkesnavigator";
-
-        final String[] navigatedValue = new String[1];
-
-        navigatedValue[0] = "Oslo";
-
-        params.put("nav_geographic", navigated);
-        params.put("ywfylke", navigatedValue);
-
-        FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-
-        final FastSearchResult result = (FastSearchResult) command.call();
-
-        Collection filters = command.createNavigationFilterStrings();
-
-        assertTrue(filters.contains("+ywfylke:\"Oslo\""));
-
-        final String[] navigatedValue1 = new String[1];
-        navigated[0] = "ywkommunenavigator";
-        navigatedValue1[0] = "Akershus";
-
-        params.clear();
-
-        params.put("nav_geographic", navigated);
-        params.put("ywfylke", navigatedValue);
-        params.put("ywkommune", navigatedValue1);
-
-        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-
-        command.call();
-
-        filters = command.createNavigationFilterStrings();
-        assertTrue(filters.contains("+ywfylke:\"Oslo\""));
-        assertTrue(filters.contains("+ywkommune:\"Akershus\""));
-
-    }
-
-    public void testModifiersX() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-        navigator.setField("ywfylke");
-
-        final Navigator child = new Navigator();
-        child.setName("ywkommunenavigator");
-        child.setField("ywkommune");
-
-        navigator.setChildNavigator(child);
-
-        config.addNavigator(navigator, "geographic");
-
-        final Map params = new HashMap();
-        final String navigated[] = new String[1];
-        navigated[0] = "ywfylkesnavigator";
-
-        final String[] navigatedValue = new String[1];
-
-        navigatedValue[0] = "Oslo";
-        params.put("nav_geographic", navigated);
-        final FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-
-        final FastSearchResult result = (FastSearchResult) command.call();
-
-        final Navigator nav = command.getNavigatedTo("geographic");
-
-        for (final Iterator iterator = result.getModifiers("geographic").iterator(); iterator.hasNext();) {
-            final Modifier modifier = (Modifier) iterator.next();
-        }
-    }
-
-
-    public void testHeading() {
-
-        final Navigator navigator = new Navigator();
-        navigator.setName("ywfylkesnavigator");
-        navigator.setField("ywfylke");
-
-        final Navigator child = new Navigator();
-        child.setName("ywkommunenavigator");
-        child.setField("ywkommune");
-
-        final Navigator child2 = new Navigator();
-        child2.setName("ywbydelnavigator");
-        child2.setField("ywbydel");
-
-        child.setChildNavigator(child2);
-        navigator.setChildNavigator(child);
-
-        config.addNavigator(navigator, "geographic");
-
-        final HashMap params = new HashMap();
-
-        final String navigated[] = new String[1];
-        navigated[0] = "ywfylkesnavigator";
-
-        final String navigatedValue[] = new String[1];
-
-        navigatedValue[0] = "Oslo";
-
-        params.put("nav_geographic", navigated);
-        params.put("ywfylke", navigatedValue);
-
-        {
-            final FastSearchCommand command1
-                    = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-            command1.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-
-            final FastSearchResult result = (FastSearchResult) command1.call();
-
-            LOG.info("command.getNavigatorTitle(geographic): " + command1.getNavigatorTitle("geographic"));
-            assertEquals("Oslo", command1.getNavigatorTitle("geographic"));
-        }
-
-
-        navigated[0] = "ywkommunenavigator";
-
-        final String navigatedValue2[] = new String[1];
-
-        navigatedValue2[0] = "Oslokommune";
-
-        params.clear();
-
-        params.put("nav_geographic", navigated);
-        params.put("ywfylke", navigatedValue);
-        params.put("ywkommune", navigatedValue2);
-
-        {
-            final FastSearchCommand command2
-                    = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
-            command2.setSearchEngineFactory(new MockupFastSearchEngineFactory());
-
-            command2.call();
-
-            LOG.info("command.getNavigatorTitle(geographic): " + command2.getNavigatorTitle("geographic"));
-            assertEquals("Oslokommune", command2.getNavigatorTitle("geographic"));
-        }
-    }
+//    public void testTopLevelModifiers() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//        navigator.setDisplayName("Fylken");
+//
+//        config.addNavigator(navigator, "geographic");
+//
+//
+//        final FastSearchCommand command
+//                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , new HashMap());
+//
+//        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//        final FastSearchResult result = (FastSearchResult) command.call();
+//
+//        assertTrue(result.getModifiers("geographic") != null);
+//
+//        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
+//
+//        assertEquals("ywfylkesnavigator", modifier.getNavigator().getName());
+//        assertEquals("Fylken", command.getNavigatorTitle("geographic"));
+//    }
+//
+//    public void testTopLevelModifiersWithChild() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//        final Navigator child = new Navigator();
+//        child.setName("ywkommunenavigator");
+//        navigator.setChildNavigator(child);
+//
+//        config.addNavigator(navigator, "geographic");
+//
+//
+//
+//        final FastSearchCommand command
+//                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , new HashMap());
+//
+//        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//        final FastSearchResult result = (FastSearchResult) command.call();
+//
+//        assertTrue(result.getModifiers("geographic") != null);
+//
+//        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
+//
+//        assertEquals("ywfylkesnavigator", navigator.getName());
+//        assertEquals("ywfylkesnavigator", modifier.getNavigator().getName());
+//    }
+//
+//    public void testSecondLevelModifiersWithChild() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//        final Navigator child = new Navigator();
+//        child.setName("ywkommunenavigator");
+//        navigator.setChildNavigator(child);
+//
+//        config.addNavigator(navigator, "geographic");
+//
+//        final String navigated[] = new String[1];
+//        navigated[0] = "ywfylkesnavigator";
+//
+//        final Map params = new HashMap();
+//
+//        params.put("nav_geographic", navigated);
+//
+//        final FastSearchCommand command
+//                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//
+//        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//        final FastSearchResult result = (FastSearchResult) command.call();
+//
+//        assertNotNull(result.getModifiers("geographic"));
+//
+//        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
+//        assertEquals("ywkommunenavigator", modifier.getNavigator().getName());
+//
+//    }
+//
+//    public void testSecondLevelModifiersWithoutChild() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//
+//        final String navigated[] = new String[1];
+//        navigated[0] = "ywfylkesnavigator";
+//
+//        final Map params = new HashMap();
+//
+//        params.put("nav_geographic", navigated);
+//
+//        config.addNavigator(navigator, "geographic");
+//
+//        final FastSearchCommand command
+//                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//
+//        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//        final FastSearchResult result = (FastSearchResult) command.call();
+//
+//        assertNotNull(result.getModifiers("geographic"));
+//
+//        final Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
+//        assertEquals("ywfylkesnavigator", modifier.getNavigator().getName());
+//
+//    }
+//
+//    public void testThreeLevelNavigator() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//
+//        final Navigator child = new Navigator();
+//        child.setName("ywkommunenavigator");
+//
+//        final Navigator childsChild = new Navigator();
+//        childsChild.setName("ywsted");
+//
+//        navigator.setChildNavigator(child);
+//        child.setChildNavigator(childsChild);
+//
+//        final Map params = new HashMap();
+//
+//        final String navigated[] = new String[1];
+//        navigated[0] = "ywfylkesnavigator";
+//
+//        params.put("nav_geographic", navigated);
+//
+//        config.addNavigator(navigator, "geographic");
+//
+//        FastSearchCommand command
+//                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//
+//        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//        FastSearchResult result = (FastSearchResult) command.call();
+//
+//        assertNotNull(result.getModifiers("geographic"));
+//
+//        Modifier modifier = (Modifier) result.getModifiers("geographic").get(0);
+//        assertEquals("ywkommunenavigator", modifier.getNavigator().getName());
+//
+//        params.clear();
+//
+//        navigated[0] = "ywkommunenavigator";
+//        params.put("nav_geographic", navigated);
+//
+//        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//
+//        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//        result = (FastSearchResult) command.call();
+//
+//        assertNotNull(result.getModifiers("geographic"));
+//
+//        modifier = (Modifier) result.getModifiers("geographic").get(0);
+//        assertEquals("ywsted", modifier.getNavigator().getName());
+//    }
+//
+//    public void testModifiersOneLevel() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//        navigator.setField("ywfylke");
+//
+//        config.addNavigator(navigator, "geographic");
+//        final Map params = new HashMap();
+//
+//
+//        final String navigated[] = new String[1];
+//        navigated[0] = "ywfylkesnavigator";
+//
+//        final String navigatedValue[] = new String[1];
+//
+//        navigatedValue[0] = "Oslo";
+//
+//        params.put("nav_geographic", navigated);
+//        params.put("ywfylke", navigatedValue);
+//
+//        final FastSearchCommand command
+//                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//
+//        final FastSearchResult result = (FastSearchResult) command.call();
+//    }
+//
+//    public void testModifiersTwoLevels() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//        navigator.setField("ywfylke");
+//
+//        final Navigator child = new Navigator();
+//        child.setName("ywkommunenavigator");
+//        child.setField("ywkommune");
+//
+//        navigator.setChildNavigator(child);
+//
+//        config.addNavigator(navigator, "geographic");
+//        final Map params = new HashMap();
+//
+//        final String navigated[] = new String[1];
+//        navigated[0] = "ywfylkesnavigator";
+//
+//        final String[] navigatedValue = new String[1];
+//
+//        navigatedValue[0] = "Oslo";
+//
+//        params.put("nav_geographic", navigated);
+//        params.put("ywfylke", navigatedValue);
+//
+//        FastSearchCommand command
+//                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//
+//        final FastSearchResult result = (FastSearchResult) command.call();
+//
+//        Collection filters = command.createNavigationFilterStrings();
+//
+//        assertTrue(filters.contains("+ywfylke:\"Oslo\""));
+//
+//        final String[] navigatedValue1 = new String[1];
+//        navigated[0] = "ywkommunenavigator";
+//        navigatedValue1[0] = "Akershus";
+//
+//        params.clear();
+//
+//        params.put("nav_geographic", navigated);
+//        params.put("ywfylke", navigatedValue);
+//        params.put("ywkommune", navigatedValue1);
+//
+//        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//
+//        command.call();
+//
+//        filters = command.createNavigationFilterStrings();
+//        assertTrue(filters.contains("+ywfylke:\"Oslo\""));
+//        assertTrue(filters.contains("+ywkommune:\"Akershus\""));
+//
+//    }
+//
+//    public void testModifiersX() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//        navigator.setField("ywfylke");
+//
+//        final Navigator child = new Navigator();
+//        child.setName("ywkommunenavigator");
+//        child.setField("ywkommune");
+//
+//        navigator.setChildNavigator(child);
+//
+//        config.addNavigator(navigator, "geographic");
+//
+//        final Map params = new HashMap();
+//        final String navigated[] = new String[1];
+//        navigated[0] = "ywfylkesnavigator";
+//
+//        final String[] navigatedValue = new String[1];
+//
+//        navigatedValue[0] = "Oslo";
+//        params.put("nav_geographic", navigated);
+//        final FastSearchCommand command
+//                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//        command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//
+//        final FastSearchResult result = (FastSearchResult) command.call();
+//
+//        final Navigator nav = command.getNavigatedTo("geographic");
+//
+//        for (final Iterator iterator = result.getModifiers("geographic").iterator(); iterator.hasNext();) {
+//            final Modifier modifier = (Modifier) iterator.next();
+//        }
+//    }
+//
+//
+//    public void testHeading() {
+//
+//        final Navigator navigator = new Navigator();
+//        navigator.setName("ywfylkesnavigator");
+//        navigator.setField("ywfylke");
+//
+//        final Navigator child = new Navigator();
+//        child.setName("ywkommunenavigator");
+//        child.setField("ywkommune");
+//
+//        final Navigator child2 = new Navigator();
+//        child2.setName("ywbydelnavigator");
+//        child2.setField("ywbydel");
+//
+//        child.setChildNavigator(child2);
+//        navigator.setChildNavigator(child);
+//
+//        config.addNavigator(navigator, "geographic");
+//
+//        final HashMap params = new HashMap();
+//
+//        final String navigated[] = new String[1];
+//        navigated[0] = "ywfylkesnavigator";
+//
+//        final String navigatedValue[] = new String[1];
+//
+//        navigatedValue[0] = "Oslo";
+//
+//        params.put("nav_geographic", navigated);
+//        params.put("ywfylke", navigatedValue);
+//
+//        {
+//            final FastSearchCommand command1
+//                    = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//            command1.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//
+//            final FastSearchResult result = (FastSearchResult) command1.call();
+//
+//            LOG.info("command.getNavigatorTitle(geographic): " + command1.getNavigatorTitle("geographic"));
+//            assertEquals("Oslo", command1.getNavigatorTitle("geographic"));
+//        }
+//
+//
+//        navigated[0] = "ywkommunenavigator";
+//
+//        final String navigatedValue2[] = new String[1];
+//
+//        navigatedValue2[0] = "Oslokommune";
+//
+//        params.clear();
+//
+//        params.put("nav_geographic", navigated);
+//        params.put("ywfylke", navigatedValue);
+//        params.put("ywkommune", navigatedValue2);
+//
+//        {
+//            final FastSearchCommand command2
+//                    = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+//            command2.setSearchEngineFactory(new MockupFastSearchEngineFactory());
+//
+//            command2.call();
+//
+//            LOG.info("command.getNavigatorTitle(geographic): " + command2.getNavigatorTitle("geographic"));
+//            assertEquals("Oslokommune", command2.getNavigatorTitle("geographic"));
+//        }
+//    }
 
     public void tBackLinks() {
 

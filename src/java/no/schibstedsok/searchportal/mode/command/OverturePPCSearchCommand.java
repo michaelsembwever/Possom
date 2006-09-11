@@ -58,21 +58,13 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      * @return
      */
     public SearchResult execute() {
+        
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
-        final TokenEvaluationEngineImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                TokenEvaluationEngineImpl.Context.class,
-                    new QueryStringContext() {
-                        public String getQueryString() {
-                            return getTransformedQuery();
-                        }
-                    },
-                    context
-        );
-
-        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
-        top = engine.evaluateTerm(TokenPredicate.EXACT_PPCTOPLIST, engine.getQueryString());
+        final ReconstructedQuery rq = createQuery(getTransformedQuery());
+        
+        top = rq.getEngine().evaluateQuery(TokenPredicate.EXACT_PPCTOPLIST, rq.getQuery());
         
         try {
             final Document doc = getXmlResult();

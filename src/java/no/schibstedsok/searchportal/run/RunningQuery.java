@@ -79,9 +79,6 @@ public interface RunningQuery {
     /** TODO comment me. **/
     List<Modifier> getSources();
 
-    /** TODO comment me. **/
-    TokenEvaluationEngine getTokenEvaluationEngine();
-
     /**
      * Thread run
      *

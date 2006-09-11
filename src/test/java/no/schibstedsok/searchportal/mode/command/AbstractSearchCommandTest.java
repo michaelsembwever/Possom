@@ -9,6 +9,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
@@ -17,6 +18,7 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
@@ -92,7 +94,9 @@ public abstract class AbstractSearchCommandTest extends TestCase {
             final RunningQuery.Context rqCxt,
             final String conf) {
 
-        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());
+        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query, new HashMap());
+        final Query q = rq.getQuery();
+        final TokenEvaluationEngine engine = rq.getTokenEvaluationEngine();
 
         return ContextWrapper.wrap(
                 SearchCommand.Context.class,
@@ -105,7 +109,10 @@ public abstract class AbstractSearchCommandTest extends TestCase {
                         return rq;
                     }
                     public Query getQuery(){
-                        return rq.getQuery();
+                        return q;
+                    }
+                    public TokenEvaluationEngine getTokenEvaluationEngine(){
+                        return engine;
                     }
                 },
                 rqCxt);
@@ -125,4 +132,15 @@ public abstract class AbstractSearchCommandTest extends TestCase {
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------
+    
+    public static final class RunningTestQuery extends RunningQueryImpl{
+        
+        public RunningTestQuery(final Context cxt, final String query, final Map parameters) {
+            super(cxt, query, parameters);
+        }
+        
+        public TokenEvaluationEngine getTokenEvaluationEngine(){
+            return engine;
+        }
+    }
 }

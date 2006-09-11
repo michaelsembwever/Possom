@@ -143,16 +143,11 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
         check |= Position.PREFIX == position && clause == getContext().getQuery().getFirstLeafClause();
 
         if (check) {
-            final TokenEvaluationEngine evalEngine = getContext().getTokenEvaluationEngine();
+            final TokenEvaluationEngine engine = getContext().getTokenEvaluationEngine();
 
             for (TokenPredicate predicate : getPredicates()) {
 
-                // otherwise perform the mask check on just the term.
-                transform = clause.getKnownPredicates().contains(predicate);
-                transform |= clause.getPossiblePredicates().contains(predicate)
-                        && evalEngine.evaluateTerm(predicate, clause.getTerm());
-
-                if (transform) {
+                if (engine.evaluateClause(predicate, clause)) {
                     break;
                 }
             }
@@ -170,7 +165,7 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
         check |= Position.PREFIX == position && clause == getContext().getQuery().getFirstLeafClause();
 
         if (check) {
-            final TokenEvaluationEngine evalEngine = getContext().getTokenEvaluationEngine();
+            final TokenEvaluationEngine engine = getContext().getTokenEvaluationEngine();
 
             for (TokenPredicate predicate : getPredicates()) {
 
@@ -178,11 +173,7 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
 
                 if(null != clause.getField()){
 
-                    transform = clause.getKnownPredicates().contains(predicate);
-                    transform |= clause.getPossiblePredicates().contains(predicate);
-                    transform &= evalEngine.evaluateTerm(predicate, clause.getField());
-
-                    if(transform){
+                    if(engine.evaluateTerm(predicate, clause.getField())){
                         break;
                     }
                 }

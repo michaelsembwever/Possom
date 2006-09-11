@@ -47,47 +47,50 @@ public final class AnalysisRule {
     }
 
     /**
-     * Evaluates this rule. All added predicates are evaluated using evalFactory
+     * Evaluates this rule. All added predicates are evaluated using engine
      * as input. The score of those predicates that are true are added to the
      * final score (output of this method).
-     *
-     *
+     * 
      * @param query
      *            the query to apply the rule to.
-     * @param evalFactory
+     * @param engine
      *            the {@link TokenEvaluationEngineImpl} used as input to the
      *            predicates.
      * @return the score of this rule when applied to query.
      */
-    public int evaluate(final Query query, final TokenEvaluationEngine evalFactory) {
-        int score = 0;
-
-        // New (post-QueryParser) implementation.
+    public int evaluate(final Query query, final TokenEvaluationEngine engine) {
+        
+        final boolean additivity = true; // TODO implement inside NOT ANDNOT clauses to deduct from score.
+        
         final Scorer scorer = new Scorer(new Scorer.Context() {
-            public TokenEvaluationEngine getTokenEvaluationEngine() {
-                return evalFactory;
-            }
-
-            public Map<PredicateScore,Predicate> getPredicates() {
-                return predicates;
-            }
-
             public String getNameForAnonymousPredicate(final Predicate predicate) {
                 return predicateNames.get(predicate);
             }
-
         });
 
-        if (query != null) {
-            scorer.visit(query.getRootClause());
-            score = scorer.getScore();
-        }
+        // update the engine with the query's evaluation state
+        engine.setState(query.getEvaluationState());
 
-        return score;
+        for (PredicateScore predicateScore : predicates.keySet()) {
+
+            final Predicate predicate = predicateScore.getPredicate();
+
+            if (predicateScore.getPredicate().evaluate(engine)) {
+
+                if (additivity) {
+                    scorer.addScore(predicateScore);
+                }  else  {
+                    scorer.minusScore(predicateScore);
+                }
+            }
+        }        
+        
+        return scorer.getScore();
     }
 
     /** TODO comment me. **/
     void setPredicateNameMap(final Map<Predicate,String> predicateNames) {
         this.predicateNames = predicateNames;
     }
+    
 }

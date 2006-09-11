@@ -5,6 +5,7 @@ package no.schibstedsok.searchportal.query;
 
 import java.util.Set;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 
 
 /** A Query represents a users inputted query string.
@@ -45,4 +46,6 @@ public interface Query {
     boolean isBlank();
 
     ParentFinder getParentFinder();
+
+    TokenEvaluationEngine.State getEvaluationState();
 }

@@ -4,13 +4,14 @@
 package no.schibstedsok.searchportal.query.token;
 
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.query.Clause;
+import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
 
@@ -28,7 +29,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
-    private static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new TokenEvaluator(){
+    static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new TokenEvaluator(){
         public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             return true;
         }
@@ -60,13 +61,10 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private final Context context;
     private final Future fastEvaluatorCreator;
 
-    /** The current term the parser is on **/
-    private String currTerm = null;
-
-    private Set<TokenPredicate> knownPredicates;
-    private Set<TokenPredicate> possiblePredicates;
-
-    private Locale locale;
+    /**
+     * Holds value of property state.
+     */
+    private State state;
     
     private volatile Thread owningThread = Thread.currentThread();
 
@@ -123,47 +121,6 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
         return fastEvaluator;
     }
 
-    /** TODO comment me. **/
-    public void setState(
-            final String currentTerm,
-            final Set<TokenPredicate> knownPredicates,
-            final Set<TokenPredicate> possiblePredicates){
-
-        setCurrentTerm(currentTerm);
-        setClausesKnownPredicates(knownPredicates);
-        setClausesPossiblePredicates(possiblePredicates);
-    }
-
-    /** @inherit **/
-    public void setCurrentTerm(final String term) {
-        currTerm = term;
-    }
-
-    /** @inherit **/
-    public String getCurrentTerm() {
-        return currTerm;
-    }
-
-    /** @inherit **/
-    public void setClausesKnownPredicates(final Set<TokenPredicate> _knownPredicates) {
-        knownPredicates = _knownPredicates;
-    }
-
-    /** @inherit **/
-    public Set<TokenPredicate> getClausesKnownPredicates() {
-        return knownPredicates;
-    }
-
-    /** @inherit **/
-    public void setClausesPossiblePredicates(final Set<TokenPredicate> _possiblePredicates) {
-        possiblePredicates = _possiblePredicates;
-    }
-
-    /** @inherit **/
-    public Set<TokenPredicate> getClausesPossiblePredicates() {
-        return possiblePredicates;
-    }
-
     /** @inherit **/
     public Site getSite() {
         return context.getSite();
@@ -172,17 +129,35 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     /** @inherit **/
     public synchronized boolean evaluateTerm(final TokenPredicate predicate, final String term) {
         
+        return evaluateImpl(predicate, new EvaluationState(term, Collections.EMPTY_SET, Collections.EMPTY_SET));
+    }
+    
+    /** @inherit **/
+    public synchronized boolean evaluateClause(final TokenPredicate predicate, final Clause clause) {
+        
+        return evaluateImpl(predicate, new EvaluationState(clause));
+    }
+    
+    /** @inherit **/
+    public synchronized boolean evaluateQuery(final TokenPredicate predicate, final Query query) {
+        
+        return evaluateImpl(predicate, query.getEvaluationState());
+    }
+    
+    private boolean evaluateImpl(
+            final TokenPredicate predicate, final State state) {
+        
         final Thread origThread = owningThread;
         try{
             // setup the engine's required state before any evaluation process
-            setState(term, Collections.EMPTY_SET, Collections.EMPTY_SET);
+            setState(state);
             // temporarily change owningThread to allow this thread to evaluate
             owningThread = Thread.currentThread();
             // run the evaluation process
             return predicate.evaluate(this);
             
         }finally{
-            setCurrentTerm(null);
+            setState(null);
             owningThread = origThread;
         }
     }
@@ -198,6 +173,22 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
                     ContextWrapper.wrap(VeryFastTokenEvaluator.Context.class, context));
         }
 
+    }
+
+    /**
+     * Getter for property state.
+     * @return Value of property state.
+     */
+    public State getState() {
+        return state;
+    }
+
+    /**
+     * Setter for property state.
+     * @param state New value of property state.
+     */
+    public void setState(final State state) {
+        this.state = state;
     }
 
 }

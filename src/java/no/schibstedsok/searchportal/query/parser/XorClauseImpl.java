@@ -15,6 +15,7 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.token.EvaluationState;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.site.Site;
@@ -53,9 +54,10 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
      * The methods also allow a chunk of creation logic for the XorClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
      * 
+     * 
      * @param first the left child clause of the operation clause we are about to create (or find).
      * @param second the right child clause of the operation clause we are about to create (or find).
-     * @param predicate2evaluatorFactory the factory handing out evaluators against TokenPredicates.
+     * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @return returns a XorClauseImpl matching the term, left and right child clauses.
      * May be either newly created or reused.
@@ -64,7 +66,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
         final Clause first,
         final Clause second,
         final Hint hint,
-        final TokenEvaluationEngine predicate2evaluatorFactory) {
+        final TokenEvaluationEngine engine) {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
@@ -79,14 +81,14 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
                     : "")
                 + second.getTerm();
 
-        // update the factory with what the current term is
-        predicate2evaluatorFactory.setCurrentTerm(term);
+        // create predicate sets
+        engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
         // the weakCache to use.
-        Map<String,WeakReference<XorClauseImpl>> weakCache = WEAK_CACHE.get(predicate2evaluatorFactory.getSite());
+        Map<String,WeakReference<XorClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
         if( weakCache == null ){
             weakCache = new HashMap<String,WeakReference<XorClauseImpl>>();
-            WEAK_CACHE.put(predicate2evaluatorFactory.getSite(),weakCache);
+            WEAK_CACHE.put(engine.getSite(),weakCache);
         }
         
         // we can't use the helper method because of the extra Hint argument to the XorClauseImpl constructor        
@@ -99,11 +101,8 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
         if (clause == null) {
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
             
-            // create predicate sets
-            predicate2evaluatorFactory.setClausesKnownPredicates(new HashSet<TokenPredicate>());
-            predicate2evaluatorFactory.setClausesPossiblePredicates(new HashSet<TokenPredicate>());
             // find the applicale predicates now
-            findPredicates(predicate2evaluatorFactory, PREDICATES_APPLICABLE);
+            findPredicates(engine, PREDICATES_APPLICABLE);
 
             // create it...
             clause = new XorClauseImpl(
@@ -111,8 +110,8 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
                 first, 
                 second, 
                 hint,
-                predicate2evaluatorFactory.getClausesKnownPredicates(), 
-                predicate2evaluatorFactory.getClausesPossiblePredicates()
+                engine.getState().getKnownPredicates(), 
+                engine.getState().getPossiblePredicates()
             );
 
             addClauseInUse(term, clause, weakCache);

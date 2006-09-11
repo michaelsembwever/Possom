@@ -63,25 +63,15 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
-
-        final TokenEvaluationEngineImpl.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                TokenEvaluationEngineImpl.Context.class,
-                    new QueryStringContext() {
-                        public String getQueryString() {
-                            return getTransformedQuery();
-                        }
-                    },
-                    context
-        );
+        final ReconstructedQuery rq = createQuery(getTransformedQuery());
 
         final PlatefoodPPCSearchConfiguration ppcConfig
                 = (PlatefoodPPCSearchConfiguration) context.getSearchConfiguration();
+        
 
-        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
-
-        top = engine.evaluateTerm(TokenPredicate.LOAN_TRIGGER, engine.getQueryString());
-        top |= engine.evaluateTerm(TokenPredicate.SUDOKU_TRIGGER, engine.getQueryString());
-        top &= engine.evaluateTerm(TokenPredicate.EXACT_PPCTOPLIST, engine.getQueryString());        
+        top = rq.getEngine().evaluateQuery(TokenPredicate.LOAN_TRIGGER, rq.getQuery());
+        top |= rq.getEngine().evaluateQuery(TokenPredicate.SUDOKU_TRIGGER, rq.getQuery());
+        top &= rq.getEngine().evaluateQuery(TokenPredicate.EXACT_PPCTOPLIST, rq.getQuery());        
         
         try {
             final Document doc = getXmlResult();
