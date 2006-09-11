@@ -200,10 +200,14 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             if (term == null) {
                 evaluation = true;
             }  else  {
+                
+                // HACK since DefaultOperatorClause wraps its children in parenthesis 
+                final String hackTerm = term.replaceAll("\\(|\\)","");
+                
                 for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
 
-                    final Matcher m =occurance.getMatcher(term);
-                    evaluation = m.find() && m.start() == 0 && m.end() == term.length();
+                    final Matcher m =occurance.getMatcher(hackTerm);
+                    evaluation = m.find() && m.start() == 0 && m.end() == hackTerm.length();
 
                     // keep track of which TokenMatch's we've used.
                     if (evaluation) {
