@@ -148,6 +148,7 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
             for (TokenPredicate predicate : getPredicates()) {
 
                 if (engine.evaluateClause(predicate, clause)) {
+                    transform = true;
                     break;
                 }
             }
@@ -174,6 +175,7 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
                 if(null != clause.getField()){
 
                     if(engine.evaluateTerm(predicate, clause.getField())){
+                        transform = true;
                         break;
                     }
                 }
