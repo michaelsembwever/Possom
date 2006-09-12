@@ -35,6 +35,9 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
 
     private StringBuilder filterBuilder = null;
 
+    boolean exactCompany;
+    boolean companyRank = false;
+    
     private boolean correct = false;
 
     /** Creates a new yellow search command.
@@ -66,6 +69,7 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
             viewAll = true;
         }
 
+        
         if (isLocalSearch() && !viewAll) {
             correct = false;
             ignoreGeoNav = true;
@@ -87,6 +91,10 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
             final FastSearchResult localResult = (FastSearchResult) super.execute();
 
             final YellowSearchResult result = new YellowSearchResult(this, localResult, nationalHits, top3, isLocalSearch() && !viewAll);
+
+            final String yprank = companyRank ? "company" : "default";
+            result.addField("yprank", yprank);
+            
             return result;
         } else if (!viewAll) {
             isLocal = false;
@@ -100,6 +108,10 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
             ypkeywordsgeo = false;
 
             final YellowSearchResult result = new YellowSearchResult(this, null, nationalHits, top3, false);
+
+            final String yprank = companyRank ? "company" : "default";
+            result.addField("yprank", yprank);
+
             return result;
         } else {
             correct = true;
@@ -121,7 +133,10 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
             final FastSearchResult nationalHits = (FastSearchResult) super.execute();
             ypkeywordsgeo = false;
 
+            final String yprank = companyRank ? "company" : "default";
+
             final YellowSearchResult result = new YellowSearchResult(this, localResult, nationalHits, top3, false);
+            result.addField("yprank", yprank);
             return result;
         }
     }
@@ -149,9 +164,11 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
 
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
-        final boolean exactCompany = engine.evaluateQuery(TokenPredicate.EXACTCOMPANYRANK, context.getQuery());
+        exactCompany = engine.evaluateQuery(TokenPredicate.EXACTCOMPANYRANK, context.getQuery());
         
-        if (exactCompany && !isTop3 && !getParameter("ynp").equals("0")) {
+        companyRank = exactCompany && !isTop3 && !getParameter("yprank").equals("standard") || getParameter("yprank").equals("company");
+        
+        if (companyRank) {
             return t.replaceAll("yellowphon", "yellownamephon");
         }
 
