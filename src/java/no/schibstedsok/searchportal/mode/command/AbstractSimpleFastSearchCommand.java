@@ -785,6 +785,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             }
         }
 
+        if (getParameters().containsKey("rank")) {
+            params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getParameter("rank")));
+        }
+        
         // TODO: Refactor
         if (getParameters().containsKey("userSortBy")) {
 
