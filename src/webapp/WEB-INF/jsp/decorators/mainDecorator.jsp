@@ -183,6 +183,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <td class="cell_three">&nbsp;</td>
         <td class="cell_four">&nbsp;</td>
     </tr>
+
     <% }else{ %>
     <tr>
        <%if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
@@ -303,10 +304,13 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <td class="cell_three" valign="top" colspan="2">
         <%}%>
 
+	    <%if (q.trim().equals("") && !currentC.equals("l") && !currentC.equals("m") && !currentC.equals("t") && !currentC.equals("wt")) {%>
+            <% } else { %>	
             <%if (currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
                 <search:velocity template="results/middlebar" command="scanpix"/>
             <% } else { %>
                 <decorator:getProperty property="page.middle-bar"/>
+            <% } %>
             <% } %>
 
                 <%--<decorator:getProperty property="page.search-bar"/>--%>
