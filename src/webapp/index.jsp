@@ -229,8 +229,6 @@
 <img src="images/navLightLine.gif" style="padding-top:20px;" width="100%" height="1" alt="" />
 <div id="footer_space_index">
     <search:publish page="/pages/footer"/>
-    <br />
-    <div style="padding: 8px 0px 20px 0px;"><img src="images/pix.gif" border="0" width="100%" height="2" alt="" /></div>
 </div>
 
 
