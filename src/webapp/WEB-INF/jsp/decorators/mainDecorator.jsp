@@ -186,11 +186,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% }else{ %>
     <tr>
        <%if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d")|| currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
-        <td class="cell_one" valign="top" rowspan="4">
+        <td class="cell_one" valign="top">
           <%if (q.trim().equals("") && (currentC.equals("t") || currentC.equals("m") || currentC.equals("l"))) { %>
               <decorator:getProperty property="page.frontMenu"/>
           <% } else { %>
-       <script type="text/javascript" language="JavaScript">
+        <script type="text/javascript" language="JavaScript">
 	    var menuCookie = getCookie("sesam_menu");
 	    if(menuCookie == "closed"){
 	      document.write('<div id="menutable" style="display:none;">'); 
@@ -293,27 +293,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             </c:if>
         </td>
 	<% } %>
-	<td height="6"><img src="../images/pix.gif" border="0" width="100%" height="6" alt="" /></td>
-	<td><img src="../images/pix.gif" border="0" width="204" height="6" alt="" /></td>
-    </tr>
-    <tr>
-        <td class="cell_three" valign="top" height="6">
-            <%if (currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
-                <search:velocity template="results/middlebar" command="scanpix"/>
-            <% } else { %>
-                <decorator:getProperty property="page.middle-bar"/>
-            <% } %>
-        </td>
-        <td class="cell_four"><decorator:getProperty property="page.greybar_ad"/></td>
-    </tr>
-    <tr>
-	<td height="6"><img src="../images/pix.gif" border="0" width="100%" height="6" alt="" /></td>
-	<td><img src="../images/pix.gif" border="0" width="204" height="6" alt="" /></td>
-    </tr>
     <% } %>
 
-
-    <tr>
         <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("wt")) {%>
             <td valign="top" colspan="3">
         <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")&& !currentC.equals("swip") && !currentC.equals("wipgift")) {%>
@@ -321,6 +302,13 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <% }else{ %>
             <td class="cell_three" valign="top" colspan="2">
         <%}%>
+
+            <%if (currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
+                <search:velocity template="results/middlebar" command="scanpix"/>
+            <% } else { %>
+                <decorator:getProperty property="page.middle-bar"/>
+            <% } %>
+
                 <%--<decorator:getProperty property="page.search-bar"/>--%>
                 <!-- Magic -->
                 <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
@@ -490,32 +478,28 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                </td>
 
             <%if (q.trim().equals("") && !currentC.equals("t")) {%>
-
-            <%}else if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("pss")) {%>
+	
+	    <%}else{%>
                 <td class="cell_four" valign="top" width="225">
+		    <div id="midbar_right">
+			<decorator:getProperty property="page.greybar_ad"/>
+		    </div>
+
+            <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("pss")) {%>
                     <decorator:getProperty property="page.ads"/>
-                </td>
             <%}else if ( currentC.equals("pp") || currentC.equals("pip")) {%>
-                <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
-
-                </td>
             <%}else if (currentC.equals("p") ) {%>
                     <decorator:getProperty property="page.ads"/>
                     <decorator:getProperty property="page.ads-picsearch-logo"/>
-                </td>
             <%}else if (currentC.equals("b") ) {%>
-                <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.feedback"/>
-                </td>
             <%} else if (currentC.equals("t")) {%>
-                <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.tvSearchWebTv"/>
                     <decorator:getProperty property="page.ads"/>
-                </td>
             <%} else if (currentC.equals("wt")) {%>
-                <td class="cell_four" valign="top" width="225">
                     <decorator:getProperty property="page.ads"/>
+            <%}%>
                 </td>
             <%}%>
 

@@ -97,7 +97,7 @@
 		<tr>
 		    <td valign="top" id="searchbox_tips">
                     	<input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
-                	<input type="radio" name="c" value="g" onclick='document.sf.submit();' /> Verden
+                	<input type="radio" name="c" value="g" /> Verden
 		    </td>
 		    <td>&nbsp;</td>
 		    <td colspan="3">
@@ -181,21 +181,21 @@
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/blogg.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a></td>
                 </tr>
                 <tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/tv.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a></td>
                 </tr>
 		<tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/ver.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>&#160;&#160;<span style="color: #AD248D;"><b>NY!</b></span></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a></td>
                 </tr>
                 <tr>
                     <td class="lastpad" colspan="2" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
