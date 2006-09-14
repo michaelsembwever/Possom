@@ -76,21 +76,21 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         HttpURLConnection con = null;
         try {
 
-            final URL u = new URL(UrlResourceLoader.getURL(url));
+            final URL u = new URL(getURL(url));
 
             con = (HttpURLConnection) u.openConnection();
             con.setInstanceFollowRedirects(false);
             con.setRequestMethod("HEAD");
-            con.addRequestProperty("host", UrlResourceLoader.getHostHeader(url));
+            con.addRequestProperty("host", getHostHeader(url));
             success = (con.getResponseCode() == HttpURLConnection.HTTP_OK);
 
             LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + u + " is " + success);
 
         } catch (NullPointerException e) {
-            LOG.debug( '[' + UrlResourceLoader.getHostHeader(url) + "] " + url, e);
+            LOG.debug( '[' + getURL(url) + "] " + url, e);
 
         } catch (IOException e) {
-            LOG.warn( '[' + UrlResourceLoader.getHostHeader(url) + "] " + url, e);
+            LOG.warn( '[' + getURL(url) + "] " + url, e);
         }  finally  {
             if (con != null) {
                 con.disconnect();
@@ -127,6 +127,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
     }
     
     public static String getHostHeader(final String resource){
+        
         return resource.substring(7,resource.indexOf('/',8));
     }
 
