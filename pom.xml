@@ -109,6 +109,7 @@
                 <finalName>ROOT</finalName>
             </build>
             <properties>
+                <server.port>0</server.port><!-- Zero means use port from host-header. -->
                 <queryServerURL.4>http://localhost:15500</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
                 <queryServerURL.2>http://localhost:15200</queryServerURL.2>
@@ -132,6 +133,7 @@
                 <finalName>ROOT.bleeding</finalName>
             </build>
             <properties>
+                <server.port>80</server.port>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
@@ -165,6 +167,7 @@
                 </repository>
             </distributionManagement>
             <properties>
+                <server.port>80</server.port>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
@@ -198,6 +201,7 @@
                 </repository>
             </distributionManagement>
             <properties>
+                <server.port>8080</server.port>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>

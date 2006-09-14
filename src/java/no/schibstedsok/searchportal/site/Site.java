@@ -47,6 +47,7 @@ public final class Site {
     /** TODO comment me. **/
     public static final String PARENT_SITE_KEY = "site.parent";
     private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
+    private static final String DEFAULT_SERVER_PORT_KEY = "server.port";
     /** TODO comment me. **/
     public static final String NAME_KEY = "site";
     /** TODO comment me. **/
@@ -183,6 +184,7 @@ public final class Site {
     }
 
     /** Get the instance for the given siteName.
+     * The port number will be changed if the server has explicitly assigned one port number to use.
      * A "www." prefix will be automatically ignored.
      * @param cxt the cxt to use during creation. null will prevent constructing a new site.
      * @param siteName the virtual host name.
@@ -190,13 +192,17 @@ public final class Site {
      */
     public static Site valueOf(final Context cxt, final String siteName, final Locale locale) {
 
-        // Strip www. from siteName
-        final String shortSiteName =
-                ensureTrailingSlash(siteName.replaceAll("www.", ""));
+        // Tweak the port is SERVER_PORT has been explicitly set.
+        final String correctedPortSiteName = SERVER_PORT > 0 && siteName.indexOf(':') > 0
+                ? siteName.replaceFirst(":*", ":" + SERVER_PORT)
+                : siteName;
 
-        Site site = INSTANCES.get(getUniqueName(shortSiteName,locale));
+        // Strip www. from siteName
+        final String realSiteName = ensureTrailingSlash(correctedPortSiteName.replaceAll("www.", ""));
+
+        Site site = INSTANCES.get(getUniqueName(realSiteName,locale));
         if (null == site && null != cxt) {
-            site = new Site(cxt, shortSiteName, locale);
+            site = new Site(cxt, realSiteName, locale);
         }
         return site;
     }
@@ -215,6 +221,7 @@ public final class Site {
         }
         final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, SITE_DEFAULT_FALLBACK);
         final String defaultSiteLocaleName = props.getProperty(DEFAULT_SITE_LOCALE_KEY, SITE_DEFAULT_LOCALE_FALLBACK);
+        SERVER_PORT = Integer.parseInt(props.getProperty(DEFAULT_SERVER_PORT_KEY));
 
         constructingDefault = true;
         DEFAULT = new Site(null, defaultSiteName, new Locale(defaultSiteLocaleName));
@@ -225,9 +232,12 @@ public final class Site {
      */
     public static final Site DEFAULT;
 
+    /** the server's actual port. **/
+    public static final int SERVER_PORT;
+
     /** TODO comment me. **/
     public static String getUniqueName(final String siteName, final Locale locale) {
-        return siteName+"["+locale.getDisplayName()+"]";
+        return siteName + '[' + locale.getDisplayName() + ']';
     }
 
     private static String ensureTrailingSlash(final String theSiteName) {
