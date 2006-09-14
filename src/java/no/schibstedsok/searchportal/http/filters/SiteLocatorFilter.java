@@ -207,7 +207,8 @@ public final class SiteLocatorFilter implements Filter {
         final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
 
         if (UrlResourceLoader.urlExists(url)) {
-            return url;
+            // return a relative url to ensure it can survice through an out-of-cluster server.
+            return '/' + site.getConfigContext() + '/' + datedResource;
         } else if (site.getParent() != null) {
             return recursivelyFindResource(resource, site.getParent());
         } else {
