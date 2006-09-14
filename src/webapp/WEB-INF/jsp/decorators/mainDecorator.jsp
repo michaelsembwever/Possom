@@ -296,8 +296,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	<% } %>
     <% } %>
 
-        <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("wt")) {%>
-	<tr>
+        <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("wt")) {%>
             <td valign="top" colspan="3">
         <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")&& !currentC.equals("swip") && !currentC.equals("wipgift")) {%>
             <td class="cell_three" valign="top">
