@@ -201,7 +201,7 @@
                 </repository>
             </distributionManagement>
             <properties>
-                <server.port>8080</server.port>
+                <server.port>80</server.port>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
