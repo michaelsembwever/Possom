@@ -87,10 +87,10 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + u + " is " + success);
 
         } catch (NullPointerException e) {
-            LOG.debug(url, e);
+            LOG.debug( '[' + UrlResourceLoader.getHostHeader(url) + "] " + url, e);
 
         } catch (IOException e) {
-            LOG.warn(url, e);
+            LOG.warn( '[' + UrlResourceLoader.getHostHeader(url) + "] " + url, e);
         }  finally  {
             if (con != null) {
                 con.disconnect();
@@ -131,6 +131,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
     }
 
     public static String getURL(final String resource){
+                
         return "http://localhost"+
                 resource.substring(resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
     }
