@@ -194,7 +194,7 @@ public final class Site {
 
         // Tweak the port is SERVER_PORT has been explicitly set.
         final String correctedPortSiteName = SERVER_PORT > 0 && siteName.indexOf(':') > 0
-                ? siteName.replaceFirst(":*", ":" + SERVER_PORT)
+                ? siteName.substring(0, siteName.indexOf(':') + 1) + SERVER_PORT
                 : siteName;
 
         // Strip www. from siteName
