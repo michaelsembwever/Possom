@@ -39,6 +39,7 @@ public enum TokenPredicate implements Predicate {
     GEOGLOBAL (Type.FAST),
     GEOLOCALEXACT (Type.FAST),
     GEOGLOBALEXACT (Type.FAST),
+    FINNTORGET (Type.FAST),
     FIRSTNAME (Type.FAST),
     FOOD (Type.FAST),
     EXACTFIRST (Type.FAST),
@@ -56,6 +57,7 @@ public enum TokenPredicate implements Predicate {
     WIKIPEDIA (Type.FAST),
     EXACTWIKI (Type.FAST),
     TNS (Type.FAST),
+    
 
     // RegExp TokenPredicates -- magic words
     BOOK_MAGIC (Type.REGEX),
