@@ -247,9 +247,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         </tr>
                     </c:if>
                 </c:forEach>
+                <% if ( "no".equals(locale) ) { %>  
                 <tr>
                	    <td class="navbar2_lastpad" colspan="3" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="../images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
                 </tr>
+                <% } %>
             </table>
             </div>
 	    <script type="text/javascript" language="JavaScript">
