@@ -872,6 +872,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         final AgeCalculatorResultHandler ac = (AgeCalculatorResultHandler) handler;
                         ac.setTargetField(rh.getAttribute("target"));
                         ac.setSourceField(rh.getAttribute("source"));
+                        fillBeanProperty(ac, null, "asDate", ParseType.Boolean, rh, "false");
                         break;
                     case FIELD_CHOOSER:
                         final FieldChooser fc = (FieldChooser) handler;

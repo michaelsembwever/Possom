@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.Date;
+
 import no.schibstedsok.common.ioc.ContextWrapper;
 
 
@@ -25,7 +27,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
     private String targetField;
     private String sourceField;
     private String dateFormat;
-    private boolean asDate = false;
+    private Boolean asDate = Boolean.FALSE;
     private String ageMessageFormat;
 
     private static final Logger LOG = Logger.getLogger(AgeCalculatorResultHandler.class);
@@ -70,9 +72,10 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     final TextMessages txtMsgs = TextMessages.valueOf(
                             ContextWrapper.wrap(TextMessages.Context.class, cxt));
 
-                    //older than 3 days or source is Mediearkivet, show dd.mm.yyyy
-                    if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || asDate){
-                        ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
+                    //older than 3 days or source is Mediearkivet, show short date format.
+                    if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || asDate.booleanValue()){
+                        final DateFormat shortFmt = DateFormat.getDateInstance(DateFormat.SHORT, cxt.getSite().getLocale());
+                        ageString = shortFmt.format(new Date(stamp));
                     //more than 1 day, show days
                     }else if (dateParts[0].longValue() > 0) {
                         dateParts[1] = Long.valueOf(0);
@@ -121,5 +124,10 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
     /** TODO comment me. **/
     public void setSourceField(final String string) {
         sourceField = string;
+    }
+
+    /** TODO comment me. **/
+    public void setAsDate(final Boolean asDate) {
+        this.asDate = asDate;
     }
 }
