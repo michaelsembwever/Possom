@@ -239,11 +239,21 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                             <% } else { %>
                                 <td class="navbar_main_left"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
                             <% } %>
-                            <% if ( q.trim().equals("") && currentC.equals("m") ) { %>
-                            <td class="navbar2_rightpad" align="right">&nbsp;</td>
-                            <% } else { %>
-                            <td class="navbar2_rightpad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
-                            <% } %>
+
+                            <c:choose>
+                                <c:when test="${e.count == 123456789}">
+                                    <td class="navbar2_rightpad" align="right">&nbsp;</td>
+                                </c:when>
+                                <c:otherwise>
+                                    <% if (q.trim().equals("") && currentC.equals("m") ) { %>
+                                    <td class="navbar2_rightpad" align="right">&nbsp;</td>
+                                    <% } else { %>
+                                    <td class="navbar2_rightpad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
+                                    <% } %>
+                                    
+                                </c:otherwise>
+                            </c:choose>
+
                         </tr>
                     </c:if>
                 </c:forEach>

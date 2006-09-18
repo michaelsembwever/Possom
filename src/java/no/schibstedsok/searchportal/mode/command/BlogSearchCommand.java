@@ -11,6 +11,8 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
 
 /**
  *
@@ -34,6 +36,19 @@ public class BlogSearchCommand extends AbstractAdvancedFastSearchCommand {
      */
     public BlogSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
+    }
+
+    // Public --------------------------------------------------------
+    public SearchResult execute() {
+
+        if (getSearchConfiguration().getName().equals("blogCounter")) {
+            final BasicSearchResult r = new BasicSearchResult(this);
+            r.setHitCount(123456789);
+
+            return r;
+        }
+
+        return super.execute();
     }
 
     protected void visitImpl(final LeafClause clause) {
