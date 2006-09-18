@@ -95,9 +95,9 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     }
                     if (LOG.isDebugEnabled()) {
                         LOG.debug("Resulting age string is " + ageString);
-                    }
+                    }         
 
-                    if (!ageString.contains("1970")) {
+                    if (stamp > 0) {
                         item.addField(getTargetField(), ageString);
                     }
 
