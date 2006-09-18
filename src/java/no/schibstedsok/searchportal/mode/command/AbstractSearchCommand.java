@@ -70,8 +70,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // when the root logger is set to DEBUG do not limit connection times
         if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
-            System.setProperty("sun.net.client.defaultConnectTimeout", "3000");
-            System.setProperty("sun.net.client.defaultReadTimeout", "3000");
+            System.setProperty("sun.net.client.defaultConnectTimeout", "1000");
+            System.setProperty("sun.net.client.defaultReadTimeout", "1000");
         }
     }
 
@@ -85,6 +85,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private String transformedQuery;
     private final Map<String,Object> parameters;
     private volatile boolean completed = false;
+    private volatile Thread thread = null;
 
 
    // Constructors --------------------------------------------------
@@ -170,13 +171,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     public SearchResult call() {
 
         MDC.put(Site.NAME_KEY, context.getSite().getName());
+        thread = Thread.currentThread();
 
-        final String thread = Thread.currentThread().getName();
+        final String t = thread.getName();
         final String statName = getSearchConfiguration().getStatisticalName();
         if (statName != null && statName.length()>0) {
-            Thread.currentThread().setName(thread + " [" + getSearchConfiguration().getStatisticalName() + "]");
+            Thread.currentThread().setName(t + " [" + getSearchConfiguration().getStatisticalName() + "]");
         }  else  {
-            Thread.currentThread().setName(thread + " [" + getClass().getSimpleName() + "]");
+            Thread.currentThread().setName(t + " [" + getClass().getSimpleName() + "]");
         }
         try  {
 
@@ -192,20 +194,25 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         }  finally  {
             // restore thread name
-            Thread.currentThread().setName(thread);
+            Thread.currentThread().setName(t);
         }
     }
 
     /** TODO comment me. **/
-    public void handleCancellation(){
+    public synchronized boolean handleCancellation(){
 
         if(!completed){
             LOG.error(ERR_HANDLING_CANCELLATION
                     + getSearchConfiguration().getName()
                     + " [" + getClass().getSimpleName() + "]");
 
+            if( null != thread ){
+                thread.interrupt();
+                thread = null;
+            }
             performResultHandling(new BasicSearchResult(this));
         }
+        return !completed;
     }
 
     // AbstractReflectionVisitor overrides ----------------------------------------------

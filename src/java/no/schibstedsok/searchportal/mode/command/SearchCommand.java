@@ -47,6 +47,8 @@ public interface SearchCommand extends Callable<SearchResult> {
      */
     RunningQuery getRunningQuery();
 
-    /** Allows the SearchCommand to clean itself after a long night out when s/he didn't get home in time. **/
-    void handleCancellation();
+    /** Allows the SearchCommand to clean itself after a long night out when s/he didn't get home in time.
+     * @return if cleaning was actually performed
+     **/
+    boolean handleCancellation();
 }

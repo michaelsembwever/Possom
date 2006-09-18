@@ -12,16 +12,14 @@ import java.util.concurrent.Executors;
  */
 public final class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
 
-//    private static final int INSPECTOR_PERIOD = 300000;
-
-    //private transient static final SearchTaskExecutorService EXECUTOR = new SearchTaskExecutorService();
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
-    //private static final ThreadPoolInspector INSPECTOR = new ThreadPoolInspector(EXECUTOR, INSPECTOR_PERIOD);
+
 
     /**
      * Creates a new parallel EXECUTOR.
      */
     public ParallelSearchCommandExecutor() {
+        LOG.info(EXECUTOR);
     }
 
     protected ExecutorService getExecutorService(){

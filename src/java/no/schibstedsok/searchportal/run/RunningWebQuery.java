@@ -2,6 +2,7 @@
 package no.schibstedsok.searchportal.run;
 
 
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.apache.log4j.Logger;
 public final class RunningWebQuery extends RunningQueryImpl {
 
     private static final Logger LOG = Logger.getLogger(RunningWebQuery.class);
+    private static final String ERR_SEND_ERROR = "!!! Unable to sendError !!!";
     
     private final HttpServletRequest request;
     private final HttpServletResponse response;
@@ -86,19 +88,31 @@ public final class RunningWebQuery extends RunningQueryImpl {
         
         super.run();
         
-        // push all parameters into request attributes
-        for( Map.Entry<String,Object> entry : parameters.entrySet() ){
-            // don't put back in String array that only contains one element
-            if( entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1 ){
-                request.setAttribute(entry.getKey(), ((String[])entry.getValue())[0]);
-            }else{
-                request.setAttribute(entry.getKey(), entry.getValue());
+        if( allCancelled ){
+            
+            try {
+                
+                response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            } catch (IOException ex) {
+                LOG.error(ERR_SEND_ERROR, ex);
             }
+            
+        }else{
+        
+            // push all parameters into request attributes
+            for( Map.Entry<String,Object> entry : parameters.entrySet() ){
+                // don't put back in String array that only contains one element
+                if( entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1 ){
+                    request.setAttribute(entry.getKey(), ((String[])entry.getValue())[0]);
+                }else{
+                    request.setAttribute(entry.getKey(), entry.getValue());
+                }
+            }
+            // ...and...
+            request.setAttribute("queryHTMLEscaped", StringEscapeUtils.escapeHtml(getQueryString()));
+            request.setAttribute("enrichments", getEnrichments());
+            request.setAttribute("sources", getSources());
+            request.setAttribute("hits",getHits());
         }
-        // ...and...
-        request.setAttribute("queryHTMLEscaped", StringEscapeUtils.escapeHtml(getQueryString()));
-        request.setAttribute("enrichments", getEnrichments());
-        request.setAttribute("sources", getSources());
-        request.setAttribute("hits",getHits());
     }
 }

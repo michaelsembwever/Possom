@@ -65,6 +65,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final AnalysisRuleFactory rules;
     private final String queryStr;
     private final Query queryObj;
+    protected boolean allCancelled = true;
     /** TODO comment me. **/
     protected final Map<String,Object> parameters;
     private final Locale locale = new Locale("no", "NO");
@@ -254,7 +255,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             LOG.info(INFO_COMMAND_COUNT + commands.size());
 
             final List<Future<SearchResult>> results = context.getSearchMode().getExecutor().invokeAll(commands,
-                    Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) ?  10000 :  Integer.MAX_VALUE);
+                    Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) ?  5000 :  Integer.MAX_VALUE);
 
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()
@@ -262,66 +263,69 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             // Ensure any cancellations are properly handled
             for(Callable<SearchResult> command : commands){
-                ((SearchCommand)command).handleCancellation();
+                allCancelled &= ((SearchCommand)command).handleCancellation();
             }
 
-            for (Future<SearchResult> task : results) {
+            if( !allCancelled ){
+                
+                for (Future<SearchResult> task : results) {
 
-                if (task.isDone() && !task.isCancelled()) {
+                    if (task.isDone() && !task.isCancelled()) {
 
-                    try{
-                        final SearchResult searchResult = task.get();
-                        if (searchResult != null) {
+                        try{
+                            final SearchResult searchResult = task.get();
+                            if (searchResult != null) {
 
-                            // Information we need about and for the enrichment
-                            final SearchConfiguration config = searchResult.getSearchCommand().getSearchConfiguration();
-                            final String name = config.getName();
-                            final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
-                            final float score = scores.get(name) != null
-                                    ? scores.get(name) * eHint.getWeight()
-                                    : 0;
+                                // Information we need about and for the enrichment
+                                final SearchConfiguration config = searchResult.getSearchCommand().getSearchConfiguration();
+                                final String name = config.getName();
+                                final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
+                                final float score = scores.get(name) != null
+                                        ? scores.get(name) * eHint.getWeight()
+                                        : 0;
 
-                            // update hit status
-                            hitsToShow |= searchResult.getHitCount() > 0;
-                            hits.put(name, searchResult.getHitCount());
+                                // update hit status
+                                hitsToShow |= searchResult.getHitCount() > 0;
+                                hits.put(name, searchResult.getHitCount());
 
-                            // score
-                            if(eHint != null && searchResult.getHitCount() > 0 && score >= eHint.getThreshold()) {
+                                // score
+                                if(eHint != null && searchResult.getHitCount() > 0 && score >= eHint.getThreshold()) {
 
-                                // add enrichment
-                                final Enrichment e = new Enrichment(score, name);
-                                enrichments.add(e);
+                                    // add enrichment
+                                    final Enrichment e = new Enrichment(score, name);
+                                    enrichments.add(e);
+                                }
                             }
+                        }catch(ExecutionException ee){
+                            LOG.error(ERR_EXECUTION_ERROR, ee);
                         }
-                    }catch(ExecutionException ee){
-                        LOG.error(ERR_EXECUTION_ERROR, ee);
                     }
                 }
-            }
 
-            performModifierHandling();
+                performModifierHandling();
 
-            if (!hitsToShow) {
-                PRODUCT_LOG.info("<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
-                        + "<query>" + queryStr + "</query></no-hits>");
-// FIXME: i do not know how to reset/clean the sitemesh's outputStream so the result from the new RunningQuery are used.
-//                int sourceHits = 0;
-//                for (final Iterator it = sources.iterator(); it.hasNext();) {
-//                    sourceHits += ((Modifier) it.next()).getCount();
-//                }
-//                if (sourceHits == 0) {
-//                    // there were no hits for any of the search tabs!
-//                    // maybe we can modify the query to broaden the search
-//                    // replace all DefaultClause with an OrClause
-//                    //  [simply done with wrapping the query string inside ()'s ]
-//                    if (!queryStr.startsWith("(") && !queryStr.endsWith(")") && queryObj.getTermCount() > 1) {
-//                        // create and run a new RunningQueryImpl
-//                        new RunningQueryImpl(context, '(' + queryStr + ')', parameters).run();
-//                    }
-//                }
-            }  else  {
+                if (!hitsToShow) {
+                    PRODUCT_LOG.info("<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
+                            + "<query>" + queryStr + "</query></no-hits>");
+    // FIXME: i do not know how to reset/clean the sitemesh's outputStream so the result from the new RunningQuery are used.
+    //                int sourceHits = 0;
+    //                for (final Iterator it = sources.iterator(); it.hasNext();) {
+    //                    sourceHits += ((Modifier) it.next()).getCount();
+    //                }
+    //                if (sourceHits == 0) {
+    //                    // there were no hits for any of the search tabs!
+    //                    // maybe we can modify the query to broaden the search
+    //                    // replace all DefaultClause with an OrClause
+    //                    //  [simply done with wrapping the query string inside ()'s ]
+    //                    if (!queryStr.startsWith("(") && !queryStr.endsWith(")") && queryObj.getTermCount() > 1) {
+    //                        // create and run a new RunningQueryImpl
+    //                        new RunningQueryImpl(context, '(' + queryStr + ')', parameters).run();
+    //                    }
+    //                }
+                }  else  {
 
-                performEnrichmentHandling(results);
+                    performEnrichmentHandling(results);
+                }
             }
         } catch (Exception e) {
             LOG.error(ERR_RUN_QUERY, e);

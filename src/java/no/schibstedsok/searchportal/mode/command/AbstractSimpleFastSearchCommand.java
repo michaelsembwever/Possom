@@ -366,13 +366,18 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 result = engine.search(fastQuery);
 
             } catch (IOException ioe) {
+                
                 LOG.error(getSearchConfiguration().getName() + ERR_FAST_FAILURE, ioe);
                 return new FastSearchResult(this);
+                
             } catch (SearchEngineException fastException) {
+                
                 LOG.error(
-                        getSearchConfiguration().getName() + ERR_FAST_FAILURE + '[' + fastException.getErrorCode() + ']', 
+                        getSearchConfiguration().getName() 
+                        + ERR_FAST_FAILURE + '[' + fastException.getErrorCode() + ']', 
                         fastException);
                 return new FastSearchResult(this);
+                
             }
 
 
@@ -396,9 +401,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             final String collapseId = getParameter(COLLAPSE_PARAMETER);
 
-            if (getSearchConfiguration().isCollapsing() 
-            && getSearchConfiguration().isExpansionEnabled()) {
+            if (getSearchConfiguration().isCollapsing() && getSearchConfiguration().isExpansionEnabled()) {
+                
                 if (collapseId != null && !collapseId.equals("")) {
+                    
                     if (searchResult.getResults().size() > 0) {
                         final SearchResultItem itm = searchResult.getResults().get(0);
                         final URL url = new URL(itm.getField("url"));
