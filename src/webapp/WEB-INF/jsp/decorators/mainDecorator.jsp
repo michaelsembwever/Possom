@@ -201,13 +201,13 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	</script>
                   
             <%-- couple of swedish quick fix in this table. have to override this file later in sesam.se  --%>
-            <% if ( "no".equals(locale) ) { %>      
-                <table border="0" cellspacing="0" cellpadding="0" class="navbar2_toptable">
-            <% } else { %>
+            <% if ( "sv".equals(locale) ) { %>      
                 <table border="0" cellspacing="0" cellpadding="0" id="navbar_main" class="navbar2_table">
                     <tr>
                         <td colspan="3" class="navbar2_header">Fler tr&#228;ffar</td>
-                    </tr>
+                    </tr>                
+            <% } else { %>
+                <table border="0" cellspacing="0" cellpadding="0" class="navbar2_toptable">
             <% } %>
                 <c:set var="rows" value="${0}"/>
                 <c:forEach var="e" items="${sources}">
@@ -233,11 +233,11 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                             <tr><td colspan="3"><img src="../images/index/dottedline2.gif" alt="" /></td></tr>
                         </c:if>
                         <tr>
-                            <% if ( "no".equals(locale) ) { %>
-                                <td class="navbar2_imgpad"><img src='<c:out value="../images/menu/icons/${hint.image}"/>' class="nav_icon" align="left" alt="" /></td>
-                                <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
-                            <% } else { %>
+                            <% if ( "sv".equals(locale) ) { %>
                                 <td class="navbar_main_left"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
+                            <% } else { %>
+                                <td class="navbar2_imgpad"><img src='<c:out value="../images/menu/icons/${hint.image}"/>' class="nav_icon" align="left" alt="" /></td>
+                                <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>                                
                             <% } %>
 
                             <c:choose>
@@ -257,7 +257,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         </tr>
                     </c:if>
                 </c:forEach>
-                <% if ( "no".equals(locale) ) { %>  
+                <% if ( !"sv".equals(locale) ) { %>  
                 <tr>
                	    <td class="navbar2_lastpad" colspan="3" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="../images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
                 </tr>
@@ -604,7 +604,7 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } %>
 
 <% } %>
-<!-- end gallup -->
+<!-- end gallup. -->
 
 </body>
 </html>
