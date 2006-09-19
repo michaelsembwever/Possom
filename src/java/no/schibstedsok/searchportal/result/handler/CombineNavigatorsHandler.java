@@ -67,7 +67,10 @@ public class CombineNavigatorsHandler implements ResultHandler {
                 
             }
         }
-        Collections.sort(result.getModifiers(target));
+
+        if (result.getModifiers(target) != null) {
+            Collections.sort(result.getModifiers(target));
+        }
     }
 
     /**
