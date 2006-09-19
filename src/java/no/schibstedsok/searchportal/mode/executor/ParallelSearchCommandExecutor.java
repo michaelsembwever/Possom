@@ -19,7 +19,6 @@ public final class ParallelSearchCommandExecutor extends AbstractSearchCommandEx
      * Creates a new parallel EXECUTOR.
      */
     public ParallelSearchCommandExecutor() {
-        LOG.info(EXECUTOR);
     }
 
     protected ExecutorService getExecutorService(){

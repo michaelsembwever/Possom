@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
@@ -57,6 +58,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private static final String ERR_TOKENTYPE_WIHOUT_IMPL = "Token type not known or implemented. ";
     private static final String ERR_GENERIC_TOKENTYPE_WIHOUT_IMPL = "Generic token type not known or implemented. ";
     private static final String ERR_FAILED_CREATING_EVAL = "Failed to create VeryFastTokenEvaluator";
+    private static final String DEBUG_POOL_COUNT = "Pool size: ";
 
     private final Context context;
     private final Future fastEvaluatorCreator;
@@ -76,6 +78,13 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
      * @param properties
      */
     public TokenEvaluationEngineImpl(final Context cxt) {
+        
+        
+        if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
+            final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
+            LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+        }
+        
         context = cxt;
         fastEvaluatorCreator = EXECUTOR.submit(new FastEvaluatorCreator());
 

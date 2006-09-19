@@ -15,6 +15,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
@@ -33,6 +34,7 @@ public abstract class AbstractResourceLoader
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
     private static final Logger LOG = Logger.getLogger(AbstractResourceLoader.class);
+    private static final String DEBUG_POOL_COUNT = "Pool size: ";
 
     private final SiteContext context;
     private volatile String resource;
@@ -110,6 +112,11 @@ public abstract class AbstractResourceLoader
         this.resource = resource;
         this.props = props;
         future = EXECUTOR.submit(this);
+        
+        if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
+            final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
+            LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+        }
     }
 
 
@@ -123,6 +130,11 @@ public abstract class AbstractResourceLoader
         this.resource = resource;
         this.builder = builder;
         future = EXECUTOR.submit(this);
+        
+        if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
+            final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
+            LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+        }
     }
 
     /** {@inheritDoc}

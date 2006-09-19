@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
@@ -25,8 +26,9 @@ import org.apache.log4j.Logger;
 abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
 
 
-    protected transient static final Logger LOG = Logger.getLogger(AbstractSearchCommandExecutor.class);
+    protected static final Logger LOG = Logger.getLogger(AbstractSearchCommandExecutor.class);
     private static final String DEBUG_INVOKEALL = "invokeAll using ";
+    private static final String DEBUG_POOL_COUNT = "Pool size: ";
 
 
     // Constants -----------------------------------------------------
@@ -49,6 +51,13 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     public List<Future<SearchResult>> invokeAll(final Collection<Callable<SearchResult>> callables, final int timeoutInMillis)  {
 
         LOG.debug(DEBUG_INVOKEALL + getClass().getSimpleName());
+        
+        if(LOG.isDebugEnabled() && getExecutorService() instanceof ThreadPoolExecutor){
+            final ThreadPoolExecutor tpe = (ThreadPoolExecutor)getExecutorService();
+            LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+        }
+        
+        
         final List<Future<SearchResult>> results = new ArrayList<Future<SearchResult>>();
         try {
             results.addAll(getExecutorService().invokeAll(callables, timeoutInMillis, TimeUnit.MILLISECONDS));

@@ -190,6 +190,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
 
             completed = true;
+            thread = null;
             return result;
 
         }  finally  {
