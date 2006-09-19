@@ -23,6 +23,8 @@ import org.apache.log4j.Logger;
 
 /**
  *
+ * This class can be used to combine the modififers of two navigators into a new navigator.
+ *
  * @author maek
  */
 public class CombineNavigatorsHandler implements ResultHandler {
@@ -35,24 +37,27 @@ public class CombineNavigatorsHandler implements ResultHandler {
     private String target;
 
     
-    /** Creates a new instance of ExtractNewsCountryHandler */
+    /** Creates a new instance of CombineNavigatorsHandler */
     public CombineNavigatorsHandler() {
     }
 
+    /**
+     * Combine the navigators that has been added using addMapping
+     * into a new navigator.
+     *
+     * @param cxt The context.
+     * @param parameters The parameters.
+     */
     public void handleResult(final Context cxt, final Map parameters) {
 
         if (!(cxt.getSearchResult() instanceof FastSearchResult)) {
             LOG.debug(DEBUG_WRONG_RESULT_TYPE);
             return;
         }
-        
+
         final FastSearchResult result = (FastSearchResult) cxt.getSearchResult();
 
         for (final String nav : mappings.keySet()) {
-            for (Iterator it = result.getModifiers(nav).iterator(); it.hasNext();) {
-                Modifier mod = (Modifier) it.next();
-            }
-
             for (final String mod : mappings.get(nav)) {
                 final Modifier modifier = result.getModifier(nav, mod);
 
@@ -68,7 +73,15 @@ public class CombineNavigatorsHandler implements ResultHandler {
         }
         Collections.sort(result.getModifiers(target));
     }
-        
+
+    /**
+     * Adds a navigator mapping where navigator is the source navigator and modifier is
+     * the modifier to be used. (only modifiers explicitly added using this method will be added
+     * to the new navigator).
+     * 
+     * @param navigator A source navigator.
+     * @param modifier The modifier name.
+     */
     public void addMapping(final String navigator, final String modifier) {
         if (! mappings.containsKey(navigator))
             mappings.put(navigator, new HashSet());
@@ -76,19 +89,12 @@ public class CombineNavigatorsHandler implements ResultHandler {
         mappings.get(navigator).add(modifier);
     }
 
+    /**
+     * Sets the name of the target modifier.
+     *
+     * @param target The name of the target modifier.
+     */
     public void setTarget(final String target) {
         this.target = target;
-    }
-
-    private class Mapping {
-        private final String navigator;
-        private final String modifier;
-        private final String message;
-        
-        public Mapping(final String navigator, final String modifier, final String message) {
-            this.navigator = navigator;
-            this.modifier = modifier;
-            this.message = message;
-        }
     }
 }
