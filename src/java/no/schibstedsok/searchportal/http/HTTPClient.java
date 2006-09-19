@@ -8,6 +8,7 @@ import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
+import org.apache.log4j.Level;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -40,7 +41,10 @@ public final class HTTPClient {
         
         final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
         params.setStaleCheckingEnabled(true);
-        params.setMaxTotalConnections(100);
+        params.setMaxTotalConnections(Integer.MAX_VALUE                                                                                                                                                                                                                                                                                                                                                         );
+        if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+            params.setSoTimeout(3000);
+        }
         cMgr.setParams(params);
         commonsHttpClient = new HttpClient(cMgr);
     }
@@ -55,22 +59,23 @@ public final class HTTPClient {
     }
 
     public HttpMethod executeGet(final String id, final String path) throws IOException {
-        HostConfiguration conf = (HostConfiguration) hostConfigurations.get(id);
-        HttpMethod method = new GetMethod(path);
+        
+        final HostConfiguration conf = (HostConfiguration) hostConfigurations.get(id);
+        final HttpMethod method = new GetMethod(path);
         commonsHttpClient.executeMethod(conf, method);
         return method;
-    }
+    }                                                                                           
 
     public Document getXmlDocument(final String id, final String path) throws IOException, SAXException {
         HttpMethod method = null;
         try {
             method = executeGet(id, path);
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder;
             try {
                 builder = factory.newDocumentBuilder();
                 return builder.parse(method.getResponseBodyAsStream());
-            } catch (ParserConfigurationException e) {
+            } catch (ParserConfigurationException e) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
                 throw new InfrastructureException(e);
             }
         } finally {

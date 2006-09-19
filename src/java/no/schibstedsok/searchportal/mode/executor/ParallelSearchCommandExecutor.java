@@ -17,9 +17,9 @@ import java.util.concurrent.TimeUnit;
  */
 public final class ParallelSearchCommandExecutor extends AbstractSearchCommandExecutor {
 
-    private static final ExecutorService EXECUTOR = //Executors.newCachedThreadPool();
+    private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
             // Alternative to find memory leakages
-            new DebugThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+            //new DebugThreadPoolExecutor(0, Integer.MAX_VALUE, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
 
     /**
