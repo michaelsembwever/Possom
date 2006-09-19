@@ -64,6 +64,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             = "Cannot use transformedTerms Map once deprecated getTransformedQuery as been used";
     private static final String ERR_HANDLING_CANCELLATION
             = "Cancellation (and now handling of) occurred to ";
+    private static final String ERROR_RUNTIME = "RuntimeException occurred";
     private static final String TRACE_NOT_TOKEN_PREDICATE = "Not a TokenPredicate ";
 
     static{
@@ -192,11 +193,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             completed = true;
             thread = null;
             return result;
-
-        }  finally  {
+            
+        }catch(RuntimeException rte){
+            LOG.error(ERROR_RUNTIME, rte);
+            return new BasicSearchResult(this);
+            
+        }finally{
             // restore thread name
             Thread.currentThread().setName(t);
         }
+        
     }
 
     /** TODO comment me. **/
