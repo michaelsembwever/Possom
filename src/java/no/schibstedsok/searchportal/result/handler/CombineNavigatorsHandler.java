@@ -1,10 +1,6 @@
 /*
- * ExtractNewsCountryHandler.java
+ * CombineNavigatorsHandler.java
  *
- * Created on June 15, 2006, 7:29 PM
- *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.result.handler;
