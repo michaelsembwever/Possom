@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -55,6 +57,22 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
         if(LOG.isDebugEnabled() && getExecutorService() instanceof ThreadPoolExecutor){
             final ThreadPoolExecutor tpe = (ThreadPoolExecutor)getExecutorService();
             LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
+            if(tpe instanceof ParallelSearchCommandExecutor.DebugThreadPoolExecutor){
+                final ParallelSearchCommandExecutor.DebugThreadPoolExecutor dtpe 
+                        = (ParallelSearchCommandExecutor.DebugThreadPoolExecutor)tpe;
+                LOG.debug("Still executing...");
+                synchronized( dtpe.EXECUTING ){
+                    for(Runnable r : dtpe.EXECUTING){
+                        try {
+                            LOG.debug(" " + ((SearchResult)(((FutureTask)r).get())).getSearchCommand());
+                        } catch (InterruptedException ex) {
+                            LOG.debug(ex);
+                        } catch (ExecutionException ex) {
+                            LOG.debug(ex);
+                        }
+                    }
+                }
+            }
         }
         
         
