@@ -1,13 +1,12 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.http;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import no.schibstedsok.searchportal.InfrastructureException;
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpConnectionManager;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpConnectionManagerParams;
 import org.apache.log4j.Level;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -16,87 +15,143 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.log4j.Logger;
 
-/**
+/** Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
+ * Original implementation used Commons HttpClient but keepalive was disabled, due to a FAST Query-Matching bug,
+ *  which was its original benefit.
+ * The current implementation just using URL and URLConnection directly synchronously.
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * @author <a href="mailto:mick@sesam.no">Mck</a>
  * @version <tt>$Id$</tt>
  */
 public final class HTTPClient {
-    // Constants -----------------------------------------------------
-    private static final Logger LOG = Logger.getLogger(HttpClient.class);
-    private static final String DEBUG_ADDING_CONF = "Adding configuration ";
     
-    private static final Map hostConfigurations = new HashMap();
-
-    private static final HttpConnectionManager cMgr = new ConnectionManagerWithoutKeepAlive();
-    private HttpClient commonsHttpClient;
-
-    private static final HTTPClient client = new HTTPClient();
-
-
-    private HTTPClient() {
+    // Constants -----------------------------------------------------
+    private static final Logger LOG = Logger.getLogger(HTTPClient.class);
+    
+    private final String host, hostHeader;
+    private final int port;
+    
+    private HTTPClient(final String host, final int port, final String hostHeader) {
         
-        final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
-        params.setStaleCheckingEnabled(true);
-        params.setMaxTotalConnections(Integer.MAX_VALUE                                                                                                                                                                                                                                                                                                                                                         );
-        if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
-            params.setSoTimeout(3000);
-        }
-        cMgr.setParams(params);
-        commonsHttpClient = new HttpClient(cMgr);
+        this.host= host;
+        this.port = port;
+        this.hostHeader = hostHeader;
     }
 
     public static HTTPClient instance(final String id, final String host, final int port) {
         
-        if (!hostConfigurations.containsKey(id)) {
-            addHostConfiguration(id, host, port);
-        }
-        
-        return client;
+        return new HTTPClient(host, port, host);
     }
-
-    public HttpMethod executeGet(final String id, final String path) throws IOException {
+    
+    public static HTTPClient instance(final String id, final String host, final int port, final String hostHeader) {
         
-        final HostConfiguration conf = (HostConfiguration) hostConfigurations.get(id);
-        final HttpMethod method = new GetMethod(path);
-        commonsHttpClient.executeMethod(conf, method);
-        return method;
-    }                                                                                           
+        return new HTTPClient(host, port, hostHeader);
+    }
+       
+    private URL getURL(final String path) throws MalformedURLException{
+        
+        return new URL(
+                (host.startsWith("http://") ? "" : "http://")
+                + host + ':' + port 
+                + path);
+    }
 
     public Document getXmlDocument(final String id, final String path) throws IOException, SAXException {
-        HttpMethod method = null;
+            
+            
+        final URL url = getURL(path);
+        final URLConnection urlConn = url.openConnection();
+
+        if( !hostHeader.equals(host) ){
+            urlConn.addRequestProperty("host", hostHeader);
+        }
+
+
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+
         try {
-            method = executeGet(id, path);
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder;
-            try {
-                builder = factory.newDocumentBuilder();
-                return builder.parse(method.getResponseBodyAsStream());
-            } catch (ParserConfigurationException e) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-                throw new InfrastructureException(e);
-            }
-        } finally {
-            if (method != null) {
-                method.releaseConnection();
-            }
+            builder = factory.newDocumentBuilder();
+            return builder.parse(urlConn.getInputStream());
+
+        } catch (ParserConfigurationException e) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+            throw new InfrastructureException(e);
         }
     }
+    
+    public BufferedReader getBufferedReader(final String id, final String path) throws IOException {
+            
+            
+        final URL url = getURL(path);
+        final URLConnection urlConn = url.openConnection();
 
-    public void release(final HttpMethod method) {
-        method.releaseConnection();
-    }
-
-    private synchronized static void addHostConfiguration(final String id, final String host, final int port) {
-        
-        if (! hostConfigurations.containsKey(id)) {
-            HostConfiguration conf = new HostConfiguration();
-            LOG.debug(DEBUG_ADDING_CONF + host + ":" + port);
-            conf.setHost(host, port, "http");
-            cMgr.getParams().setMaxConnectionsPerHost(conf, 1);
-            hostConfigurations.put(id, conf);
+        if( !hostHeader.equals(host) ){
+            urlConn.addRequestProperty("host", hostHeader);
         }
+
+        return new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
     }
+    
+    
+    // --HTTPClient implementation to allow keepalive or pipelining.
+    // --  see revision 3596 for original implementation
+    
+//    private static final String DEBUG_ADDING_CONF = "Adding configuration ";
+    
+//    private static final Map<String,HostConfiguration> hostConfigurations = new HashMap<String,HostConfiguration>();
+//
+//    private static final HttpConnectionManager cMgr = new ConnectionManagerWithoutKeepAlive();
+//    private HttpClient commonsHttpClient;
+
+//    private static final HTTPClient client = new HTTPClient();
+    
+    
+    
+//    private HTTPClient() {
+//        final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
+//        params.setStaleCheckingEnabled(true);
+//        params.setMaxTotalConnections(Integer.MAX_VALUE                                                                                                                                                                                                                                                                                                                                                         );
+//        if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+//            params.setSoTimeout(3000);
+//        }
+//        cMgr.setParams(params);
+//        commonsHttpClient = new HttpClient(cMgr);
+//    }
+    
+    
+//    public static HTTPClient instance(final String id, final String host, final int port) {
+//        
+//        if (!hostConfigurations.containsKey(id)) {
+//            addHostConfiguration(id, host, port);
+//        }
+//    }
+    
+//    private HttpMethod executeGet(final String id, final String path) throws IOException {
+//        
+//        final HostConfiguration conf = (HostConfiguration) hostConfigurations.get(id);
+//        final HttpMethod method = new GetMethod(path);
+//        commonsHttpClient.executeMethod(conf, method);
+//        return method;
+//    } 
+    
+    
+//    private void release(final HttpMethod method) {
+//        method.releaseConnection();
+//    }
+//
+//    private synchronized static void addHostConfiguration(final String id, final String host, final int port) {
+//        
+//        if (! hostConfigurations.containsKey(id)) {
+//            
+//            final HostConfiguration conf = new HostConfiguration();
+//            LOG.debug(DEBUG_ADDING_CONF + host + ":" + port);
+//            conf.setHost(host, port, "http");
+//            cMgr.getParams().setMaxConnectionsPerHost(conf, 1);
+//            hostConfigurations.put(id, conf);
+//        }
+//    }
+    
 }

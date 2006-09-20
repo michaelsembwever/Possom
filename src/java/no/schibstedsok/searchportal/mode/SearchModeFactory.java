@@ -491,6 +491,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "host", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "partnerId", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "port", ParseType.Int , commandE, "80");
+                    fillBeanProperty(sc, inherit, "hostHeader", ParseType.String , commandE, "");
                 }
                 if(sc instanceof OverturePPCSearchConfiguration){
                     fillBeanProperty(sc, inherit, "url", ParseType.String , commandE, "");

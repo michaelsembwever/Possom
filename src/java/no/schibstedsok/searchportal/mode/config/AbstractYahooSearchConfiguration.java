@@ -141,4 +141,25 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
         this.port = port;
     }
 
+    /**
+     * Holds value of property hostHeader.
+     */
+    private String hostHeader;
+
+    /**
+     * Getter for property hostHeader.
+     * @return Value of property hostHeader.
+     */
+    public String getHostHeader() {
+        return this.hostHeader;
+    }
+
+    /**
+     * Setter for property hostHeader.
+     * @param hostHeader New value of property hostHeader.
+     */
+    public void setHostHeader(String hostHeader) {
+        this.hostHeader = hostHeader;
+    }
+
 }

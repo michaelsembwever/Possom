@@ -52,7 +52,10 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
         super(cxt, parameters);
 
         final AbstractYahooSearchConfiguration conf = (AbstractYahooSearchConfiguration)cxt.getSearchConfiguration();
-        client = HTTPClient.instance(conf.getName(), conf.getHost(), conf.getPort());
+        
+        client = conf.getHostHeader().length() >0
+                ? HTTPClient.instance(conf.getName(), conf.getHost(), conf.getPort(), conf.getHostHeader())
+                : HTTPClient.instance(conf.getName(), conf.getHost(), conf.getPort());
     }
 
     // Public --------------------------------------------------------
