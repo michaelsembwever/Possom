@@ -126,7 +126,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             for (int i = 0; i < modifiers.length; i++) {
                 if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")){
-                    filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
+                    filterStrings.add("+" + field + ":^\"" + modifiers[i] + "\"$");
                 }
             }
         }
