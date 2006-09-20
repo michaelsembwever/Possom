@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
  * positionally (prefix or anywhere) contains TokenPredicates.
  *
  * <b>Note</b> Using <code>position="prefix" predicates="*_MAGIC"</code> is kinda pointless but is often done anyway.
+ * <b>Note</b> position="prefix" only currently works with single terms. XXX
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@sesam.no">Mick Wever</a>
@@ -120,7 +121,7 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
         }
 
         // Do not remove if the query is just the prefix and we're in prefix exclude mode.
-        if (Position.ANY == position || Mask.INCLUDE == mask || getContext().getQuery().getTermCount() > 1) {
+        if (Mask.INCLUDE == mask || getContext().getQuery().getTermCount() > 1) {
 
             if(maskField(clause)){
                 // this resets the the term to the clause's field or term

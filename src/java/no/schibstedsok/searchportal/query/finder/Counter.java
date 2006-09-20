@@ -11,11 +11,14 @@ import no.schibstedsok.searchportal.query.parser.*;
 
 public final class Counter extends AbstractReflectionVisitor {
 
-    private int termCount = 0;
+    private Integer termCount = null;
 
     public synchronized int getTermCount(final Clause root) {
         
-        visit(root);
+        if( termCount == null ){
+            termCount = 0;
+            visit(root);
+        }
         return termCount;
     }
 
