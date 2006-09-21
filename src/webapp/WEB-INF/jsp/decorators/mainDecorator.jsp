@@ -314,7 +314,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <search:velocity template="navigators/scanpix" command="scanpix"/>
             <decorator:getProperty property="page.blogDateNavigation"/>
 
-            <c:if test='${!(empty tab.rssResultName) && no_hits >0}'>
+            <c:if test='${!(empty tab.rssResultName)}'>
                 <decorator:getProperty property="page.rss-nav"/>
             </c:if>
         </td>
