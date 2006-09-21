@@ -30,6 +30,8 @@ public final class HTTPClient {
     
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(HTTPClient.class);
+    private static final String DEBUG_USING_URL = "Using url ";
+    private static final String DEBUG_USING_HOSTHEADER = "Using host header: ";
     
     private final String host, hostHeader;
     private final int port;
@@ -53,10 +55,14 @@ public final class HTTPClient {
        
     private URL getURL(final String path) throws MalformedURLException{
         
-        return new URL(
+        final URL url = new URL(
                 (host.startsWith("http://") ? "" : "http://")
                 + host + ':' + port 
                 + path);
+        
+        LOG.debug(DEBUG_USING_URL + url);
+        
+        return url;
     }
 
     public Document getXmlDocument(final String id, final String path) throws IOException, SAXException {
@@ -66,6 +72,7 @@ public final class HTTPClient {
         final URLConnection urlConn = url.openConnection();
 
         if( !hostHeader.equals(host) ){
+            LOG.debug(DEBUG_USING_HOSTHEADER + hostHeader);
             urlConn.addRequestProperty("host", hostHeader);
         }
 
@@ -89,6 +96,7 @@ public final class HTTPClient {
         final URLConnection urlConn = url.openConnection();
 
         if( !hostHeader.equals(host) ){
+            LOG.debug(DEBUG_USING_HOSTHEADER + hostHeader);
             urlConn.addRequestProperty("host", hostHeader);
         }
 

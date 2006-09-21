@@ -487,8 +487,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if(sc instanceof NewsSearchConfiguration){
                 }
                 if(sc instanceof AbstractYahooSearchConfiguration){
+                    final AbstractYahooSearchConfiguration aysc = (AbstractYahooSearchConfiguration)sc;
+                    final AbstractYahooSearchConfiguration ayscInherit = inherit instanceof AbstractYahooSearchConfiguration
+                            ? (AbstractYahooSearchConfiguration)inherit
+                            : null;
                     fillBeanProperty(sc, inherit, "encoding", ParseType.String , commandE, "");
-                    fillBeanProperty(sc, inherit, "host", ParseType.String , commandE, "");
+                    aysc.setHost(parseProperty(cxt, commandE.getAttribute("host"),
+                            ayscInherit != null ? ayscInherit.getHost() : null));
                     fillBeanProperty(sc, inherit, "partnerId", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "port", ParseType.Int , commandE, "80");
                     fillBeanProperty(sc, inherit, "hostHeader", ParseType.String , commandE, "");
