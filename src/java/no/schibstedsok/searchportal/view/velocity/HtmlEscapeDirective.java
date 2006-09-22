@@ -55,6 +55,11 @@ public final class HtmlEscapeDirective extends Directive {
             return false;
         }
 
+        
+        if (node.jjtGetChild(0).value(context) != null)   {
+
+
+
         final String input = node.jjtGetChild(0).value(context).toString();
 
         writer.write(StringEscapeUtils.escapeHtml(input));
@@ -65,6 +70,8 @@ public final class HtmlEscapeDirective extends Directive {
             writer.write("\n");
         }
 
+
+        }
         return true;
-    }
+        }
 }
