@@ -306,7 +306,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private enum CommandTypes {
         COMMAND(AbstractSearchConfiguration.class),
         ADVANCED_FAST_COMMAND(AdvancedFastSearchConfiguration.class),
-        NAVIGATABLE_FAST_COMMAND(NavigatableAdvancedFastConfiguration.class),
+        NAVIGATABLE_ADVANCED_FAST_COMMAND(NavigatableAdvancedFastConfiguration.class),
         BLENDING_NEWS_COMMAND(BlendingNewsSearchConfiguration.class),
         FAST_COMMAND(FastSearchConfiguration.class),
         HITTA_COMMAND(HittaSearchConfiguration.class),
