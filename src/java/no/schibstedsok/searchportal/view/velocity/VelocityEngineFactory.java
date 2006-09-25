@@ -151,15 +151,20 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     public static VelocityEngineFactory valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
-        INSTANCES_LOCK.readLock().lock();
-        VelocityEngineFactory instance = INSTANCES.get(site);
-        INSTANCES_LOCK.readLock().unlock();
 
+        VelocityEngineFactory instance = null;
+
+        try {
+            INSTANCES_LOCK.readLock().lock();
+            instance = INSTANCES.get(site);
+        } finally {
+            INSTANCES_LOCK.readLock().unlock();
+        }
 
         if (instance == null) {
             instance = new VelocityEngineFactory(cxt);
-
         }
+
         return instance;
     }
 
