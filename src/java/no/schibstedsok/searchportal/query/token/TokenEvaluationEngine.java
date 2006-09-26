@@ -47,7 +47,7 @@ public interface TokenEvaluationEngine {
      * @param token
      * @return
      */
-    TokenEvaluator getEvaluator(TokenPredicate token);
+    TokenEvaluator getEvaluator(TokenPredicate token) throws InterruptedException;
 
     /**
      *

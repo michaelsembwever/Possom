@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.token.TokenEvaluator;
@@ -33,11 +34,15 @@ public abstract class AbstractClause implements Clause {
 
     private static final Logger LOG = Logger.getLogger(AbstractClause.class);
     private static final String INFO_WEAK_CACHE_SIZE ="WeakCache size at ";
-    private static final String DEBUG_REFERENCE_REUSED = "Gjenbruk weakReference. Størrelse: ";
-
+    private static final String DEBUG_REFERENCE_REUSED = "Re-using a weakReference. Cache size: ";
+    private static final String ERR_FAILED_TO_FIND_ALL_PREDICATES = "Failed to find all predicates."
+            + " Marking token predicate stale.";
+    
     private final String term;
     private final Set<TokenPredicate> knownPredicates;
     private final Set<TokenPredicate> possiblePredicates;
+
+    
 
     /**
      * See if there is an identical and immutable Clause already in use in the JVM.
@@ -91,9 +96,11 @@ public abstract class AbstractClause implements Clause {
      * Also holds state information about the current term/clause we are finding predicates against.
      * @param predicates2check the complete list of predicates that could apply to the current clause we are finding predicates for.
      */
-    protected static final void findPredicates(
+    protected static final boolean findPredicates(
             final TokenEvaluationEngine engine,
             final Collection<TokenPredicate> predicates2check) {
+        
+        boolean success = true;
 
         final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
         final Set<TokenPredicate> possiblePredicates = engine.getState().getPossiblePredicates();
@@ -104,19 +111,29 @@ public abstract class AbstractClause implements Clause {
 
             // check it hasn't already been added
             if(!(knownPredicates.contains(token) || possiblePredicates.contains(token))){
-
-                if (token.evaluate(engine)) {
-                    final TokenEvaluator evaluator = engine.getEvaluator(token);
-                    if (evaluator.isQueryDependant(token)) {
-                        possiblePredicates.add(token);
-                        LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_POSSIBLE + token);
-                    }  else  {
-                        knownPredicates.add(token);
-                        LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_KNOWN + token);
+                
+                try{
+                    if (token.evaluate(engine)) {
+                        final TokenEvaluator evaluator = engine.getEvaluator(token);
+                        if (evaluator.isQueryDependant(token)) {
+                            possiblePredicates.add(token);
+                            LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_POSSIBLE + token);
+                        }  else  {
+                            knownPredicates.add(token);
+                            LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_KNOWN + token);
+                        }
                     }
+                }catch(InterruptedException ie){
+                    success = false;
+                    LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES);
+                }catch(InfrastructureException ie){
+                    success = false;
+                    LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES);
                 }
             }
         }
+        
+        return success;
     }
 
     /** You must use <CODE>AbstractClause(String, Set&lt;Predicate&gt;, Set&lt;Predicate&gt;)</CODE> instead.

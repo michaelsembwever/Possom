@@ -21,7 +21,8 @@ import java.text.NumberFormat;
  */
 public class MathExpressionSearchCommand extends AbstractSearchCommand {
     
-    private static final Logger log = Logger.getLogger(MathExpressionSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(MathExpressionSearchCommand.class);
+    private static final String ERR_INTERRUPTED = "Interrupted";
     private static final double ZERO_THREASHOLD = 0.00000001D;
 
     /**
@@ -37,13 +38,15 @@ public class MathExpressionSearchCommand extends AbstractSearchCommand {
 
     public SearchResult execute() {
 
-        final Complex result = ((JepTokenEvaluator)context.getTokenEvaluationEngine()
-                .getEvaluator(TokenPredicate.MATHPREDICATE))
-                .getComplex();
+        
         final NumberFormat f = NumberFormat.getInstance();
 
         final BasicSearchResult searchResult = new BasicSearchResult(this);
 
+        try{
+        final Complex result = ((JepTokenEvaluator)context.getTokenEvaluationEngine()
+                .getEvaluator(TokenPredicate.MATHPREDICATE))
+                .getComplex();
         
         if (result != null) {
             String s = null;
@@ -63,9 +66,7 @@ public class MathExpressionSearchCommand extends AbstractSearchCommand {
 
             final String r = context.getQuery().getQueryString() + " = " + s;
 
-            if (log.isDebugEnabled()) {
-                log.debug("Adding result " + r);
-            }
+            LOG.debug("Adding result " + r);
 
             item.addField("result", r);
 
@@ -73,6 +74,9 @@ public class MathExpressionSearchCommand extends AbstractSearchCommand {
             searchResult.addResult(item);
         }
 
+        }catch(InterruptedException ie){
+            LOG.warn(ERR_INTERRUPTED);
+        }
         return searchResult;
     }
 }

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.query.finder.PredicateFinder;
 import org.apache.commons.collections.Predicate;
 
@@ -209,32 +210,37 @@ public enum TokenPredicate implements Predicate {
         if( Thread.currentThread() != engine.getOwningThread() ){
             throw new IllegalStateException(ERR_METHOD_CLOSED_TO_OTHER_THREADS);
         }
-        
-        
-        // check that the evaluation hasn't already been done
-        // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
-        //  the evaluation is for the building of the known and possible predicate list (during query parsing)(in which
-        //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
-        //  applicable now (in the context of the whole query).
-        final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
-        if(null != knownPredicates && knownPredicates.contains(this)){
-            return true;
-        }
-        
-        final TokenEvaluator evaluator = engine.getEvaluator(this);
-        
-        if( null != engine.getState().getTerm() ){
-            
-            // Single term or clause evaluation
-            return evaluator.evaluateToken(this, engine.getState().getTerm(), engine.getQueryString());
+ 
+        try{
 
-        }else if( null != engine.getState().getQuery() ){
-            
-            // Whole query evaluation
-            return engine.getState().getPossiblePredicates().contains(this)
-                    && evaluator.evaluateToken(this, null, engine.getQueryString());
-            
+            // check that the evaluation hasn't already been done
+            // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
+            //  the evaluation is for the building of the known and possible predicate list (during query parsing)(in which
+            //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
+            //  applicable now (in the context of the whole query).
+            final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
+            if(null != knownPredicates && knownPredicates.contains(this)){
+                return true;
+            }
+
+            final TokenEvaluator evaluator = engine.getEvaluator(this);
+
+            if( null != engine.getState().getTerm() ){
+
+                // Single term or clause evaluation
+                return evaluator.evaluateToken(this, engine.getState().getTerm(), engine.getQueryString());
+
+            }else if( null != engine.getState().getQuery() ){
+
+                // Whole query evaluation
+                return engine.getState().getPossiblePredicates().contains(this)
+                        && evaluator.evaluateToken(this, null, engine.getQueryString());
+
+            }
+        }catch(InterruptedException ie){
+            throw new InfrastructureException(ie);
         }
+        
         throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
     }
 

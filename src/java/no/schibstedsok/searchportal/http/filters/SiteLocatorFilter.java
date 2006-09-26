@@ -277,38 +277,48 @@ public final class SiteLocatorFilter implements Filter {
             ? (String) servletRequest.getAttribute("SERVER_NAME")
             // falls back to this when not behind Apache. (Development machine).
             : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
-
-        final Locale locale = servletRequest.getLocale();
-
+        
+        
         LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
 
+        // Construct the site object off the browser's locale, even if it won't finally be used.
+        final Locale locale = servletRequest.getLocale();
         final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
 
-        final String[] locales = SiteConfiguration.valueOf(result).getProperty(SITE_LOCALE_SUPPORTED).split(",");
-        for(String l : locales){
-            if(locale.toString().equals(l)){
-                return result;
+        // Check if the browser's locale is supported by this skin. Use it if so.
+        final String supportedLocales = SiteConfiguration.valueOf(result).getProperty(SITE_LOCALE_SUPPORTED);
+        if( null != supportedLocales ){
+            final String[] locales = supportedLocales.split(",");
+            for(String l : locales){
+                if(locale.toString().equals(l)){
+                    return result;
+                }
             }
         }
 
+        // Use the skin's default locale.
         final String[] prefLocale = SiteConfiguration.valueOf(result)
                 .getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT)
                 .split("_");
 
         switch(prefLocale.length){
+            
             case 3:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
                         + '_' + prefLocale[1] + '_' + prefLocale[2]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
+                
             case 2:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0] + '_' + prefLocale[1]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1]));
+                
             case 1:
             default:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0]));
+                
         }
 
 

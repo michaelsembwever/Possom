@@ -73,7 +73,7 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
 
             // find the applicale predicates now
-            findPredicates(engine, predicates2check);
+            final boolean healthy = findPredicates(engine, predicates2check);
             try {
                 // find the constructor...
                 final Constructor<T> constructor = clauseClass.getDeclaredConstructor(
@@ -102,7 +102,9 @@ public abstract class AbstractOperationClause extends AbstractClause implements 
                 LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
             }
 
-            addClauseInUse(key, clause, weakCache);
+            if( healthy ){
+                addClauseInUse(key, clause, weakCache);
+            }
         }
 
         return clause;

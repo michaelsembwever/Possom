@@ -102,7 +102,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
             // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
             
             // find the applicale predicates now
-            findPredicates(engine, PREDICATES_APPLICABLE);
+            final boolean healthy = findPredicates(engine, PREDICATES_APPLICABLE);
 
             // create it...
             clause = new XorClauseImpl(
@@ -114,7 +114,9 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
                 engine.getState().getPossiblePredicates()
             );
 
-            addClauseInUse(term, clause, weakCache);
+            if( healthy ){
+                addClauseInUse(term, clause, weakCache);
+            }
         }
 
         return clause;        

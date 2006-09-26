@@ -120,7 +120,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     }
 
-    private List<TokenMatch> getTokenMatches(final TokenPredicate token) {
+    private List<TokenMatch> getTokenMatches(final TokenPredicate token) throws InterruptedException {
 
         final ReportingTokenEvaluator e = (ReportingTokenEvaluator) engine.getEvaluator(token);
         return e.reportToken(token, queryStr);
@@ -129,11 +129,17 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     /** TODO comment me. **/
     public List<TokenMatch> getGeographicMatches() {
 
+        
         final List<TokenMatch> matches = new ArrayList<TokenMatch>();
+            
+        try{
 
-        matches.addAll(getTokenMatches(TokenPredicate.GEOLOCAL));
-        matches.addAll(getTokenMatches(TokenPredicate.GEOGLOBAL));
+            matches.addAll(getTokenMatches(TokenPredicate.GEOLOCAL));
+            matches.addAll(getTokenMatches(TokenPredicate.GEOGLOBAL));
 
+        }catch(InterruptedException ie){
+            LOG.error("");
+        }
         Collections.sort(matches);
 
         return matches;

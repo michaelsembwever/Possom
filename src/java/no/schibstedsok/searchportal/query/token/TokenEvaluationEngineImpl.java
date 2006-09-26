@@ -92,7 +92,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     }
 
     /** @inherit **/
-    public TokenEvaluator getEvaluator(final TokenPredicate token) {
+    public TokenEvaluator getEvaluator(final TokenPredicate token) throws InterruptedException {
 
         switch(token.getType()){
             case GENERIC:
@@ -119,11 +119,11 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
         return context.getQueryString();
     }
 
-    private TokenEvaluator getFastEvaluator() {
+    private TokenEvaluator getFastEvaluator() throws InterruptedException {
         try {
             fastEvaluatorCreator.get();
-        } catch (InterruptedException ex) {
-            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
+//        } catch (InterruptedException ex) {
+//            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
         } catch (ExecutionException ex) {
             LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
         }
