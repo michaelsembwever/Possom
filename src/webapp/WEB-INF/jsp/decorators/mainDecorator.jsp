@@ -208,7 +208,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <% if ( "sv".equals(locale) ) { %>      
                 <table border="0" cellspacing="0" cellpadding="0" id="navbar_main" class="navbar2_table">
                     <tr>
-                        <td colspan="3" class="navbar2_header">Fler tr&#228;ffar</td>
+                        <td colspan="3" class="navbar2_header">Fler Sesam-tr&#228;ffar</td>
                     </tr>                
             <% } else { %>
                 <table border="0" cellspacing="0" cellpadding="0" class="navbar2_toptable">
