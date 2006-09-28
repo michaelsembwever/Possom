@@ -11,15 +11,13 @@ package no.schibstedsok.searchportal.mode.command;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
+
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchType;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -28,19 +26,11 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.QueryStringContext;
-import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
-import no.schibstedsok.searchportal.query.parser.QueryParser;
-import no.schibstedsok.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.run.RunningQuery;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.util.config.DocumentLoader;
-import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+
 import org.apache.log4j.Logger;
 
 /**
@@ -92,7 +82,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
             final String oldQuery = context.getRunningQuery().getQueryString();
             final String newQuery = correctQuery(suggestions, oldQuery);
 
-            // Create a new identical context apart from the corrected query            
+            // Create a new identical context apart from the corrected query
             final ReconstructedQuery rq = createQuery(newQuery);
             final SearchCommand.Context cmdCxt = ContextWrapper.wrap(
                     SearchCommand.Context.class,
@@ -106,7 +96,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
                     },
                     context
                 );
-            
+
 
             try {
                 // Create and execute command on corrected query.
@@ -155,17 +145,17 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
     // is used.
     /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
-        // The leaf clauses might not produce any output. For example terms 
-        // having a site: field. In these cases we should not output the 
+        // The leaf clauses might not produce any output. For example terms
+        // having a site: field. In these cases we should not output the
         // operator keyword.
         boolean hasEmptyLeaf = false;
 
         hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
         hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
-        
+
         clause.getFirstClause().accept(this);
 
-        if (! hasEmptyLeaf) 
+        if (! hasEmptyLeaf)
             appendToQueryRepresentation(" AND ");
 
         clause.getSecondClause().accept(this);
@@ -188,7 +178,7 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
 
         clause.getFirstClause().accept(this);
-        
+
         if (! hasEmptyLeaf){
             appendToQueryRepresentation(" AND ");
         }
@@ -219,24 +209,28 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
 
         return false;
     }
-    
+
     private CorrectingFastSearchCommand createCommand(final SearchCommand.Context cmdCxt) throws Exception {
         final Class<? extends CorrectingFastSearchCommand> clazz = getClass();
         final Constructor<? extends CorrectingFastSearchCommand> con
                 = clazz.getConstructor(Context.class, Map.class);
         return con.newInstance(cmdCxt, getParameters());
     }
-    
+
     private String correctQuery(
             final Map<String, List<SpellingSuggestion>> suggestions,
             String q) {
+
+        // Query suggestions is returned in lowercase from Fast, including the keys that
+        // maybe had mixed case. Lowers the case first to make the replacement work.
+        q = q.toLowerCase();
 
         for (final List<SpellingSuggestion> suggestionList : suggestions.values()) {
             for (final SpellingSuggestion s : suggestionList) {
                 q = q.replaceAll(s.getOriginal(), s.getSuggestion());
             }
         }
-        
+
         return q;
     }
 }
