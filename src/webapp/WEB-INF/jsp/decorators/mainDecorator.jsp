@@ -74,7 +74,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-    <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
+    <title><search:velocity template="/pages/pageTitle"/></title>
+
     <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/sitesearch.css" rel="stylesheet" type="text/css" />
     <link media="screen" href="../css/front.css" rel="stylesheet" type="text/css" />
