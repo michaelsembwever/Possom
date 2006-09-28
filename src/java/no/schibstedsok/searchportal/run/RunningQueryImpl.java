@@ -346,93 +346,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 + "\" size=\"" + enrichments.size() + "\">"
                 + "<query>" + queryStr + "</query>");
 
-        Enrichment tvEnrich = null;
-        Enrichment webtvEnrich = null;
-
-        /* Write product log and find webtv and tv enrichments */
+        /* Write product log */
         for(Enrichment e : enrichments){
             PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
                     + "\" score=\"" + e.getAnalysisResult() + "\"/>");
-
-            /* Store reference to webtv and tv enrichments */
-            if ("webtvEnrich".equals(e.getName())) {
-                webtvEnrich = e;
-            } else if ("tvEnrich".equals(e.getName())) {
-                tvEnrich = e;
-            }
         }
+
         PRODUCT_LOG.info("</enrichments>");
-
-
-        /* Update score and if necessary the enrichment name */
-        if (webtvEnrich != null && tvEnrich != null) {
-            if (webtvEnrich.getAnalysisResult() > tvEnrich.getAnalysisResult()) {
-                tvEnrich.setAnalysisResult(webtvEnrich.getAnalysisResult());
-            }
-            enrichments.remove(webtvEnrich);
-        } else if (webtvEnrich != null && tvEnrich == null) {
-            tvEnrich = webtvEnrich;
-            webtvEnrich.setName("tvEnrich");
-        }
-
-        if (tvEnrich != null) {
-            SearchResult tvResult = null;
-            SearchResult webtvResult = null;
-
-            /* Find webtv and tv results */
-            for (Future<SearchResult> task : results) {
-                if (task.isDone() && !task.isCancelled()) {
-                    final SearchResult sr = task.get();
-                    if ("webtvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
-                        webtvResult = sr;
-                    } else if ("tvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
-                        tvResult = sr;
-                    }
-                }
-            }
-
-            /* Merge webtv results into tv results */
-            if (webtvResult != null && webtvResult.getResults().size() > 0) {
-                if (tvResult != null) {
-                    /* If tv results exists we only want the two first results from webtv. */
-                    if (tvResult.getResults().size() > 0 && webtvResult.getResults().size() > 2) {
-                        webtvResult.getResults().remove(2);
-                    }
-                    tvResult.getResults().addAll(webtvResult.getResults());
-                    tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
-                }
-            }
-
-            /* Run velocity result handler on the enrichment results */
-            if (tvResult != null && tvResult.getResults().size() > 0) {
-                final VelocityResultHandler vrh = new VelocityResultHandler();
-                final SearchResult cxtResult = tvResult;
-
-                final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
-                        ResultHandler.Context.class,
-                        new BaseContext(){
-                            public SearchResult getSearchResult() {
-                                return cxtResult;
-                            }
-
-                            public SearchTab getSearchTab(){
-                                return RunningQueryImpl.this.getSearchTab();
-                            }
-
-                            /** @deprecated implementations should be using the QueryContext instead! */
-                            public String getQueryString() {
-                                return queryObj.getQueryString();
-                            }
-
-                            public Query getQuery() {
-                                return queryObj;
-                            }
-                        },
-                        context
-                );
-                vrh.handleResult(resultHandlerContext, parameters);
-            }
-        }
     }
 
     private void performModifierHandling(){
