@@ -51,11 +51,16 @@ public final class FinnImgLinkDirective extends Directive {
      * {@inheritDoc}
      */
     public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
-        if (node.jjtGetNumChildren() != 1) {
-            rsvc.error("#" + getName() + " - missing argument");
+        if (node.jjtGetNumChildren() < 1 && node.jjtGetNumChildren() > 2) {
+            rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
 
+        String varName = null;
+        if (node.jjtGetNumChildren() == 2) {
+            varName = node.jjtGetChild(1).value(context).toString();
+        }
+        
         final String prefix = "http://cache.finn.no/mmo/";
         final String thumb = "_thumb";
 
@@ -65,10 +70,14 @@ public final class FinnImgLinkDirective extends Directive {
         if (input.startsWith("prod/"))
             url = input.substring(5);
 
-        url = prefix + url.substring(0, url.lastIndexOf(".")) + thumb + url.substring(url.lastIndexOf("."));;
+        url = prefix + input.substring(0, input.lastIndexOf(".")) + thumb + input.substring(input.lastIndexOf("."));;
 
-        writer.write(url);
-
+        if (varName == null) {
+            writer.write(url);
+        } else {
+            context.put(varName, url);
+        }
+        
         final Token lastToken = node.getLastToken();
 
         if (lastToken.image.endsWith("\n")) {
