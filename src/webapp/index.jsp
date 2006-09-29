@@ -153,7 +153,7 @@
             <table id="front_menu" cellspacing="0" cellpadding="0">
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/nyheter.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="?c=m&amp;newscountry=Norge&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
+		    <td class="menupad"><a href='<search:linkPulse url="?c=m&amp;newscountry=Norge&amp;vertikal=m&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
                 </tr>
                 <tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>

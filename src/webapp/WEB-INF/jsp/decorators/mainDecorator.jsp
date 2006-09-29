@@ -40,6 +40,7 @@ final String toolbar = request.getParameter("toolbar");
 final String tradedoubler = request.getParameter("td");
 final String ss = request.getParameter("ss");
 final String ssr = request.getParameter("ssr");
+final String vertikal = request.getParameter("vertikal") == null ? "" : request.getParameter("vertikal");
 
 final List<Enrichment> enrichments = (List<Enrichment>) request.getAttribute("enrichments");
 final int enrichmentSize = enrichments.size();
@@ -171,19 +172,22 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
     <% } else { %>
 
-        <%if (q.trim().equals("") && (currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b"))) {%>
-	<decorator:getProperty property="page.newsearch-bar"/>
+        <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b"))) {%>
+	    <decorator:getProperty property="page.newsearch-bar"/>
+	<% }else if(currentC.equals("l")){ %>
 	<% }else{ %>
-	<decorator:getProperty property="page.search-bar"/>
+	    <decorator:getProperty property="page.search-bar"/>
 	<% } %>
 
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
-    <%if (q.trim().equals("") && !currentC.equals("l") && !currentC.equals("m") && !currentC.equals("t") && !currentC.equals("wt")) {%>
+    <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("t") && !currentC.equals("wt")) {%>
     <tr>
         <td class="cell_one">&nbsp;</td>
         <td class="cell_three">&nbsp;</td>
         <td class="cell_four">&nbsp;</td>
     </tr>
+
+    <% }else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) { %>
 
     <% }else{ %>
     <tr>
@@ -322,7 +326,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	<% } %>
     <% } %>
 
-        <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("wt")) {%>
+        <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("m") && !currentC.equals("wt")) {%>
             <td valign="top" colspan="3">
         <% }else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")&& !currentC.equals("swip") && !currentC.equals("wipgift")) {%>
             <td class="cell_three" valign="top">
@@ -330,14 +334,15 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <td class="cell_three" valign="top" colspan="2">
         <%}%>
 
-	    <%if (q.trim().equals("") && !currentC.equals("l") && !currentC.equals("m") && !currentC.equals("t") && !currentC.equals("wt")) {%>
-            <% } else { %>	
+	<%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("t") && !currentC.equals("wt")) {%>
+	<%} else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
+        <% } else { %>	
             <%if (currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
                 <search:velocity template="results/middlebar" command="scanpix"/>
             <% } else { %>
                 <decorator:getProperty property="page.middle-bar"/>
             <% } %>
-            <% } %>
+        <% } %>
 
                 <%--<decorator:getProperty property="page.search-bar"/>--%>
                 <!-- Magic -->
@@ -435,13 +440,22 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
 
                 <%if (currentC.equals("m")) {%>
-                    <decorator:getProperty property="page.main_ads"/>
-                    <decorator:getProperty property="page.media-collection-results"/>
+		    <%if (q.trim().equals("") && vertikal.equals("m")) {%>
+		    	<div id="index_news">
+			    <div class="newshead"><img src="../images/menu/nyheter_inv.gif" border="0" alt="Siste nytt" />&nbsp;&nbsp;<span class="mid_bar_m">Siste nytt</span></div>
+			    <decorator:getProperty property="page.main_ads"/>
+       	    		    <decorator:getProperty property="page.media-collection-results"/>
+			</div>
+		    <%}else{%>
+               	    	<decorator:getProperty property="page.main_ads"/>
+               	    	<decorator:getProperty property="page.media-collection-results"/>
+                    <%}%>
                 <%}%>
 
                 <%if (currentC.equals("l")) {%>
-                    <decorator:getProperty property="page.main_ads"/>
-                    <decorator:getProperty property="page.media-collection-results"/>
+                    	<decorator:getProperty property="page.main_ads"/>
+                    	<decorator:getProperty property="page.media-collection-results"/>
+		    </div>
                 <%}%>
 
 
