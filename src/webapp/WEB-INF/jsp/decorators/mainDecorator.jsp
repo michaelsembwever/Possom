@@ -444,6 +444,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
        	    		    <decorator:getProperty property="page.media-collection-results"/>
 			</div>
 		    <%}else if (q.trim().equals("") && vertikal.equals("m") && publish) {%>
+
 		    <%}else{%>
                	    	<decorator:getProperty property="page.main_ads"/>
                	    	<decorator:getProperty property="page.media-collection-results"/>
