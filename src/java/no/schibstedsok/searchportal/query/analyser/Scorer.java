@@ -8,15 +8,7 @@
 
 package no.schibstedsok.searchportal.query.analyser;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import no.schibstedsok.searchportal.query.AndNotClause;
-import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
-import no.schibstedsok.searchportal.query.Clause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
@@ -29,7 +21,7 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public final class Scorer extends AbstractReflectionVisitor {
-    
+
     /** The contextual dependencies the Scorer requires to calculate a total score for this Query it will visit. */
     public interface Context {
 
@@ -45,6 +37,7 @@ public final class Scorer extends AbstractReflectionVisitor {
     private final Context context;
 
     private static final String DEBUG_UPDATE_SCORE = "Updating Score...";
+    private static final String INFO_STALE_SCORE = "Scoring failed...";
 
     /** Create the Scorer with the required context.
      **/
@@ -58,6 +51,7 @@ public final class Scorer extends AbstractReflectionVisitor {
         return score;
     }
 
+    /** TODO comment me. **/
     public void addScore(final PredicateScore predicateScore) {
 
         final Predicate predicate = predicateScore.getPredicate();
@@ -67,10 +61,11 @@ public final class Scorer extends AbstractReflectionVisitor {
         ANALYSIS_LOG.info("  <predicate-add name=\"" + toString(predicate) + "\">"
                 + predicateScore.getScore()
                 + "</predicate>");
-        
+
         score += predicateScore.getScore();
     }
 
+    /** TODO comment me. **/
     public void minusScore(final PredicateScore predicateScore) {
 
         final Predicate predicate = predicateScore.getPredicate();
@@ -80,12 +75,24 @@ public final class Scorer extends AbstractReflectionVisitor {
         ANALYSIS_LOG.info("  <predicate-minus name=\"" + toString(predicate) + "\">"
                 + predicateScore.getScore()
                 + "</predicate>");
-        
+
         score -= predicateScore.getScore();
-    }    
-    
+    }
+
+    /** TODO comment me. **/
+    public void error(final PredicateScore predicateScore) {
+
+        final Predicate predicate = predicateScore.getPredicate();
+
+        LOG.info(INFO_STALE_SCORE + toString(predicate));
+
+        ANALYSIS_LOG.info("  <predicate-error name=\"" + toString(predicate) + "\">±"
+                + predicateScore.getScore()
+                + "</predicate>");
+    }
+
     private String toString(final Predicate predicate){
-        
+
         return predicate instanceof TokenPredicate
                     ? predicate.toString()
                     : context.getNameForAnonymousPredicate(predicate);

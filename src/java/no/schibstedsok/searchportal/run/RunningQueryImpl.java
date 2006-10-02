@@ -66,8 +66,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final AnalysisRuleFactory rules;
     private final String queryStr;
     private final Query queryObj;
-    /** TODO comment me. **/
-    protected boolean allCancelled = true;
+    /** have all search commands been cancelled.
+     * implementation details allowing web subclasses to send correct error to client. **/
+    protected boolean allCancelled = false;
     /** TODO comment me. **/
     protected final Map<String,Object> parameters;
     private final Locale locale = new Locale("no", "NO");
@@ -263,6 +264,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             LOG.info(INFO_COMMAND_COUNT + commands.size());
 
+            // mark state that we're about to execute the sub threads
+            allCancelled = true;
+
             final List<Future<SearchResult>> results = context.getSearchMode().getExecutor().invokeAll(commands,
                     Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) ?  5000 :  Integer.MAX_VALUE);
 
@@ -286,9 +290,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             if (searchResult != null) {
 
                                 // Information we need about and for the enrichment
-                                final SearchConfiguration config = searchResult.getSearchCommand().getSearchConfiguration();
+                                final SearchConfiguration config
+                                        = searchResult.getSearchCommand().getSearchConfiguration();
+
                                 final String name = config.getName();
-                                final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(name);
+                                final SearchTab.EnrichmentHint eHint
+                                        = context.getSearchTab().getEnrichmentByCommand(name);
+
                                 final float score = scores.get(name) != null
                                         ? scores.get(name) * eHint.getWeight()
                                         : 0;
@@ -316,7 +324,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 if (!hitsToShow) {
                     PRODUCT_LOG.info("<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
                             + "<query>" + queryStr + "</query></no-hits>");
-    // FIXME: i do not know how to reset/clean the sitemesh's outputStream so the result from the new RunningQuery are used.
+    // FIXME: i do not know how to reset/clean the sitemesh's outputStream so
+    //                  the result from the new RunningQuery are used.
     //                int sourceHits = 0;
     //                for (final Iterator it = sources.iterator(); it.hasNext();) {
     //                    sourceHits += ((Modifier) it.next()).getCount();

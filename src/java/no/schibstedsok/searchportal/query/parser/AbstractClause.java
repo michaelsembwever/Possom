@@ -50,7 +50,7 @@ public abstract class AbstractClause implements Clause {
     private static final String INFO_WEAK_CACHE_SIZE ="WeakCache size at ";
     private static final String DEBUG_REFERENCE_REUSED = "Re-using a weakReference. Cache size: ";
     private static final String ERR_FAILED_TO_FIND_ALL_PREDICATES = "Failed to find all predicates."
-            + " Marking token predicate stale.";
+            + " Marking token predicate stale >>";
 
     private final String term;
     private final Set<TokenPredicate> knownPredicates;
@@ -141,11 +141,15 @@ public abstract class AbstractClause implements Clause {
                         }
                     }
                 }catch(VeryFastListQueryException ie){
-                    success = false;
-                    LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES);
+                    if(success){
+                        success = false;
+                        LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES + currTerm);
+                    }
                 }catch(InfrastructureException ie){
-                    success = false;
-                    LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES);
+                    if(success){
+                        success = false;
+                        LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES + currTerm);
+                    }
                 }
             }
         }

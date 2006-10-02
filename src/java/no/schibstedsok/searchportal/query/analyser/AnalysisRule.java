@@ -6,6 +6,7 @@ package no.schibstedsok.searchportal.query.analyser;
 
 import java.util.HashMap;
 import java.util.Map;
+import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import org.apache.commons.collections.Predicate;
@@ -50,7 +51,7 @@ public final class AnalysisRule {
      * Evaluates this rule. All added predicates are evaluated using engine
      * as input. The score of those predicates that are true are added to the
      * final score (output of this method).
-     * 
+     *
      * @param query
      *            the query to apply the rule to.
      * @param engine
@@ -59,9 +60,9 @@ public final class AnalysisRule {
      * @return the score of this rule when applied to query.
      */
     public int evaluate(final Query query, final TokenEvaluationEngine engine) {
-        
+
         final boolean additivity = true; // TODO implement inside NOT ANDNOT clauses to deduct from score.
-        
+
         final Scorer scorer = new Scorer(new Scorer.Context() {
             public String getNameForAnonymousPredicate(final Predicate predicate) {
                 return predicateNames.get(predicate);
@@ -75,16 +76,22 @@ public final class AnalysisRule {
 
             final Predicate predicate = predicateScore.getPredicate();
 
-            if (predicateScore.getPredicate().evaluate(engine)) {
+            try{
+                if (predicateScore.getPredicate().evaluate(engine)) {
 
-                if (additivity) {
-                    scorer.addScore(predicateScore);
-                }  else  {
-                    scorer.minusScore(predicateScore);
+                    if (additivity) {
+                        scorer.addScore(predicateScore);
+                    }  else  {
+                        scorer.minusScore(predicateScore);
+                    }
                 }
+
+            }catch(InfrastructureException ie){
+                // make sure to mention in the analysis logs that the scoring is corrupt.
+                scorer.error(predicateScore);
             }
-        }        
-        
+        }
+
         return scorer.getScore();
     }
 
@@ -92,5 +99,5 @@ public final class AnalysisRule {
     void setPredicateNameMap(final Map<Predicate,String> predicateNames) {
         this.predicateNames = predicateNames;
     }
-    
+
 }
