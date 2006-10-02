@@ -98,8 +98,11 @@ public final class AccountingDirective extends Directive {
                 // do some tests before each new row
                 if (k==0) {
                     // #balance0# means print a new table
-                    if (col[0].indexOf("#balanse0#") > -1 || col[0].indexOf("#lederlonn0#") > -1) {
-                        html += "</table> <table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
+                    if (col[0].indexOf("#balanse0#") > -1) {
+                        html += "</table><div class=\"lindorff\"></div><table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
+                        bgcolor = false;
+                    } else if (col[0].indexOf("#lederlonn0#") > -1) {                        
+                        html += "</table>* Alle tall i hele 1000 kroner.<table id=\"balance\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
                         bgcolor = false;
                     // #balance1# means don't show rest of the numbers
                     } else if (col[0].indexOf("#balanse1#") > -1) {
@@ -130,7 +133,7 @@ public final class AccountingDirective extends Directive {
                 break;
         }
         html += "</table>";
-        html += "<div id=\"lindorff\">* Alle tall i hele 1000 kroner.<br />* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.</div>";
+        html += "<div class=\"lindorff\">* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.</div>";
         html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"" + lpUrl + "\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
 
         writer.write(html);
