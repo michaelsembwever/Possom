@@ -30,7 +30,7 @@ public interface TokenEvaluationEngine {
 
     public interface Context extends BaseContext, QueryStringContext, ResourceContext, SiteContext{
     }
-    
+
     public interface State{
         /** the current clause's term, or null if in query-evaluation mode. **/
         String getTerm();
@@ -47,7 +47,7 @@ public interface TokenEvaluationEngine {
      * @param token
      * @return
      */
-    TokenEvaluator getEvaluator(TokenPredicate token) throws InterruptedException;
+    TokenEvaluator getEvaluator(TokenPredicate token) throws VeryFastListQueryException;
 
     /**
      *
@@ -63,17 +63,17 @@ public interface TokenEvaluationEngine {
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
      **/
     boolean evaluateTerm(TokenPredicate predicate, String term);
-    
+
     /** Utility method to perform one-off evaluations on clauses from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
      **/
     boolean evaluateClause(TokenPredicate predicate, Clause clause);
-    
+
     /** Utility method to perform one-off evaluations on queries from non RunningQuery threads.
      * Typically used by TokenTransformers or performing evaluations on non-clause oriented strings.
      **/
     boolean evaluateQuery(TokenPredicate predicate, Query query);
-    
+
     Thread getOwningThread();
 
     /**
@@ -87,6 +87,6 @@ public interface TokenEvaluationEngine {
      * @param state New value of property state.
      */
     public void setState(State state);
-    
-    
+
+
 }

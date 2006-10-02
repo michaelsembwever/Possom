@@ -1,26 +1,25 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.token.JepTokenEvaluator;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import org.apache.log4j.Logger;
-import org.nfunk.jep.JEP;
-import org.nfunk.jep.type.Complex;
 
 import java.util.Map;
 import java.text.NumberFormat;
+import org.nfunk.jep.type.Complex;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
 public class MathExpressionSearchCommand extends AbstractSearchCommand {
-    
+
     private static final Logger LOG = Logger.getLogger(MathExpressionSearchCommand.class);
     private static final String ERR_INTERRUPTED = "Interrupted";
     private static final double ZERO_THREASHOLD = 0.00000001D;
@@ -36,9 +35,10 @@ public class MathExpressionSearchCommand extends AbstractSearchCommand {
     }
 
 
+    /** TODO comment me. **/
     public SearchResult execute() {
 
-        
+
         final NumberFormat f = NumberFormat.getInstance();
 
         final BasicSearchResult searchResult = new BasicSearchResult(this);
@@ -47,7 +47,7 @@ public class MathExpressionSearchCommand extends AbstractSearchCommand {
         final Complex result = ((JepTokenEvaluator)context.getTokenEvaluationEngine()
                 .getEvaluator(TokenPredicate.MATHPREDICATE))
                 .getComplex();
-        
+
         if (result != null) {
             String s = null;
 
@@ -74,7 +74,7 @@ public class MathExpressionSearchCommand extends AbstractSearchCommand {
             searchResult.addResult(item);
         }
 
-        }catch(InterruptedException ie){
+        }catch(VeryFastListQueryException ie){
             LOG.warn(ERR_INTERRUPTED);
         }
         return searchResult;

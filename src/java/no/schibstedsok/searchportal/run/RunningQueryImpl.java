@@ -35,6 +35,7 @@ import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
+import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.Enrichment;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -65,11 +66,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final AnalysisRuleFactory rules;
     private final String queryStr;
     private final Query queryObj;
+    /** TODO comment me. **/
     protected boolean allCancelled = true;
     /** TODO comment me. **/
     protected final Map<String,Object> parameters;
     private final Locale locale = new Locale("no", "NO");
     private final List<Modifier> sources = new Vector<Modifier>();
+    /** TODO comment me. **/
     protected final TokenEvaluationEngine engine;
     private final List<Enrichment> enrichments = new ArrayList<Enrichment>();
     private final Map<String,Integer> hits = new HashMap<String,Integer>();
@@ -120,7 +123,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     }
 
-    private List<TokenMatch> getTokenMatches(final TokenPredicate token) throws InterruptedException {
+    private List<TokenMatch> getTokenMatches(final TokenPredicate token) throws VeryFastListQueryException {
 
         final ReportingTokenEvaluator e = (ReportingTokenEvaluator) engine.getEvaluator(token);
         return e.reportToken(token, queryStr);
@@ -129,16 +132,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     /** TODO comment me. **/
     public List<TokenMatch> getGeographicMatches() {
 
-        
+
         final List<TokenMatch> matches = new ArrayList<TokenMatch>();
-            
+
         try{
 
             matches.addAll(getTokenMatches(TokenPredicate.GEOLOCAL));
             matches.addAll(getTokenMatches(TokenPredicate.GEOGLOBAL));
 
-        }catch(InterruptedException ie){
-            LOG.error("");
+        }catch(VeryFastListQueryException ie){
+            LOG.error("Magnus: fix SEARCH-943   :-)");
         }
         Collections.sort(matches);
 
@@ -222,7 +225,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         int score = 0;
 
                         if(scoresByRule.get(eHint.getRule()) == null){
-                            
+
                             ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
 
                             score = rule.evaluate(queryObj, engine);
@@ -233,7 +236,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             if(score != 0){
                                 ANALYSIS_LOG.info("  <score>" + score + "</score>");
                             }
-                            
+
                             ANALYSIS_LOG.info(" </analysis>");
 
                         }else{
@@ -273,7 +276,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
 
             if( !allCancelled ){
-                
+
                 for (Future<SearchResult> task : results) {
 
                     if (task.isDone() && !task.isCancelled()) {

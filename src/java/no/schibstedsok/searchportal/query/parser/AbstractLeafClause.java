@@ -36,17 +36,19 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
      *       final String field,
      *       final Set&lt;Predicate&gt; knownPredicates,
      *       final Set&lt;Predicate&gt; possiblePredicates
-     * 
+     *
      * Where this is true subclasses are free to use this helper method.
-     * 
+     *
      * @param clauseClass the exact subclass of AbstracLeafClause that we are about to create (or find already in use).
      * @param term the term the clause we are about to create (or find) will have.
      * @param field the field the clause we are about to create (or find) will have.
      * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @param predicates2check the complete list of predicates that could apply to the current clause we are finding predicates for.
+     * @param predicates2check the complete list of predicates that could apply to the current
+     *   clause we are finding predicates for.
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
-     * @return Either a clause already in use that matches this term and field, or a newly created cluase for this term and field.
+     * @return Either a clause already in use that matches this term and field,
+     *   or a newly created cluase for this term and field.
      */
     public static <T extends AbstractLeafClause> T createClause(
             final Class<T> clauseClass,
@@ -100,7 +102,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
                 LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
             }
 
-            if( healthy ){
+            if(healthy){
                 addClauseInUse(key, clause, weakCache);
             }
         }

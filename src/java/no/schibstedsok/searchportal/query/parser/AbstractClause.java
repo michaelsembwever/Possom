@@ -19,6 +19,7 @@ import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.token.TokenEvaluator;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import org.apache.log4j.Logger;
 
 
@@ -33,16 +34,29 @@ import org.apache.log4j.Logger;
 public abstract class AbstractClause implements Clause {
 
     private static final Logger LOG = Logger.getLogger(AbstractClause.class);
+    /**
+     * Error message when reflection cannot find the required constructor.
+     */
+    protected static final String ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR
+            = "Failed to find (or use) constructor with parameters (String, String, Set, Set) for class: ";
+    /**
+     * Error message when trying to use the incorrect constructor.
+     **/
+    protected static final String ERR_MUST_ALWAYS_USE_ARGED_CONSTRUCTOR
+            = "Illegal to call constructor without arguments!";
+    private static final String DEBUG_FOUND_PREDICATE_PREFIX = "Found (for \"";
+    private static final String DEBUG_FOUND_PREDICATE_KNOWN = "\") known ";
+    private static final String DEBUG_FOUND_PREDICATE_POSSIBLE = "\") possible ";
     private static final String INFO_WEAK_CACHE_SIZE ="WeakCache size at ";
     private static final String DEBUG_REFERENCE_REUSED = "Re-using a weakReference. Cache size: ";
     private static final String ERR_FAILED_TO_FIND_ALL_PREDICATES = "Failed to find all predicates."
             + " Marking token predicate stale.";
-    
+
     private final String term;
     private final Set<TokenPredicate> knownPredicates;
     private final Set<TokenPredicate> possiblePredicates;
 
-    
+
 
     /**
      * See if there is an identical and immutable Clause already in use in the JVM.
@@ -69,7 +83,8 @@ public abstract class AbstractClause implements Clause {
 
     /**
      * Note there is an identical and immutable Clause ready to use in the JVM.
-     * @param key the <B>unique</B> (for this AbstractClause subtype) key for the Clause we are about to add to the mappings.
+     * @param key the <B>unique</B> (for this AbstractClause subtype) key
+     *   for the Clause we are about to add to the mappings.
      * @param clause the Clause we are about to add to the mappings.
      * @param weakCache the map containing the key to WeakReference (of the Clause) mappings.
      */
@@ -90,16 +105,18 @@ public abstract class AbstractClause implements Clause {
      * Find the predicates that are applicable to the clause.
      * (Only the clause's term is known and is kept in state inside the TokenEvaluationEngine).
      * Add known predicates to <CODE>knownPredicates</CODE>.
-     * Add possible (requires further checking against the whole query heirarchy) predicates to <CODE>possiblePredicates</CODE>.
-     * 
+     * Add possible (requires further checking against the whole query heirarchy)
+     *   predicates to <CODE>possiblePredicates</CODE>.
+     *
      * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
-     * @param predicates2check the complete list of predicates that could apply to the current clause we are finding predicates for.
+     * @param predicates2check the complete list of predicates that could apply
+     *   to the current clause we are finding predicates for.
      */
     protected static final boolean findPredicates(
             final TokenEvaluationEngine engine,
             final Collection<TokenPredicate> predicates2check) {
-        
+
         boolean success = true;
 
         final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
@@ -111,7 +128,7 @@ public abstract class AbstractClause implements Clause {
 
             // check it hasn't already been added
             if(!(knownPredicates.contains(token) || possiblePredicates.contains(token))){
-                
+
                 try{
                     if (token.evaluate(engine)) {
                         final TokenEvaluator evaluator = engine.getEvaluator(token);
@@ -123,7 +140,7 @@ public abstract class AbstractClause implements Clause {
                             LOG.debug(DEBUG_FOUND_PREDICATE_PREFIX + currTerm + DEBUG_FOUND_PREDICATE_KNOWN + token);
                         }
                     }
-                }catch(InterruptedException ie){
+                }catch(VeryFastListQueryException ie){
                     success = false;
                     LOG.error(ERR_FAILED_TO_FIND_ALL_PREDICATES);
                 }catch(InfrastructureException ie){
@@ -132,7 +149,7 @@ public abstract class AbstractClause implements Clause {
                 }
             }
         }
-        
+
         return success;
     }
 
@@ -199,18 +216,7 @@ public abstract class AbstractClause implements Clause {
         return getClass().getSimpleName() + "[" + getTerm() + "]";
     }
 
-    /**
-     * Error message when reflection cannot find the required constructor.
-     */
-    protected static final String ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR
-            = "Failed to find (or use) constructor with parameters (String, String, Set, Set) for class: ";
-    /**
-     * Error message when trying to use the incorrect constructor.
-     **/
-    protected static final String ERR_MUST_ALWAYS_USE_ARGED_CONSTRUCTOR = "Illegal to call constructor without arguments!";
-    private static final String DEBUG_FOUND_PREDICATE_PREFIX = "Found (for \"";
-    private static final String DEBUG_FOUND_PREDICATE_KNOWN = "\") known ";
-    private static final String DEBUG_FOUND_PREDICATE_POSSIBLE = "\") possible ";
+
 
 
     private static final class WeakClauseReference<T> extends WeakReference{

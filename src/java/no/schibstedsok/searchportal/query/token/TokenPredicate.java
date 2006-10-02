@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.query.finder.PredicateFinder;
 import org.apache.commons.collections.Predicate;
 
 /** Implementation of org.apache.commons.collections.Predicate for the terms in the Query.
@@ -129,7 +128,7 @@ public enum TokenPredicate implements Predicate {
     private static final String ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY
             = "Argument to evaluate must be an instance of a TokenEvaluationEngine";
     private static final String ERR_TOKEN_NOT_FOUND = "Token argument not found ";
-    private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS 
+    private static final String ERR_METHOD_CLOSED_TO_OTHER_THREADS
             = "TokenPredicate.evaluate(..) can only be used by same thread that created TokenEvaluationEngine!";
     private static final String ERR_ENGINE_MISSING_STATE = "TokenEvaluationEngine must have state assigned";
 
@@ -191,12 +190,13 @@ public enum TokenPredicate implements Predicate {
     /**
      * Evaluates to true if fastListName occurs in the query. This method uses a
      * TokenEvaluationEngine to get a TokenEvaluator.
-     * 
+     *
      * <b>This method can only be called from the RunningQuery thread, not spawned search commands.</b>
-     * 
+     *
      * @param evalFactory
      *            The TTokenEvaluationEngineused to get a TokenEvaluator for
      *            this fastListName, AND to get the current term in the query being tokenised.
+     * @throws InfrastructureException thrown when an VeryFastListQueryException is caught internally.
      * @return true if, according to the TokenEvaluator provided by the
      *         TokTokenEvaluationEngineastListName evaluates to true.
      */
@@ -204,19 +204,21 @@ public enum TokenPredicate implements Predicate {
         // pre-condition checks
         if (! (evalFactory instanceof TokenEvaluationEngine)) {
             throw new IllegalArgumentException(ERR_ARG_NOT_TOKEN_EVALUATOR_FACTORY);
-        }        
+        }
         // process
         final TokenEvaluationEngine engine = (TokenEvaluationEngine) evalFactory;
-        if( Thread.currentThread() != engine.getOwningThread() ){
+        if(Thread.currentThread() != engine.getOwningThread()){
             throw new IllegalStateException(ERR_METHOD_CLOSED_TO_OTHER_THREADS);
         }
- 
+
         try{
 
             // check that the evaluation hasn't already been done
             // we can only check against the knownPredicates because with the possiblePredicates we are not sure whether
-            //  the evaluation is for the building of the known and possible predicate list (during query parsing)(in which
-            //  case we could perform the check) or if we are scoring and need to know if the possible predicate is really
+            //  the evaluation is for the building of the known and possible predicate list
+            //    (during query parsing)(in which
+            //  case we could perform the check) or if we are scoring and need to know if the
+            //    possible predicate is really
             //  applicable now (in the context of the whole query).
             final Set<TokenPredicate> knownPredicates = engine.getState().getKnownPredicates();
             if(null != knownPredicates && knownPredicates.contains(this)){
@@ -225,22 +227,25 @@ public enum TokenPredicate implements Predicate {
 
             final TokenEvaluator evaluator = engine.getEvaluator(this);
 
-            if( null != engine.getState().getTerm() ){
+            if(null != engine.getState().getTerm()){
 
                 // Single term or clause evaluation
                 return evaluator.evaluateToken(this, engine.getState().getTerm(), engine.getQueryString());
 
-            }else if( null != engine.getState().getQuery() ){
+            }else if(null != engine.getState().getQuery()){
 
                 // Whole query evaluation
                 return engine.getState().getPossiblePredicates().contains(this)
                         && evaluator.evaluateToken(this, null, engine.getQueryString());
 
             }
-        }catch(InterruptedException ie){
+
+        }catch(VeryFastListQueryException ie){
+            // unfortunately Predicate.evaluate(..) does not declare to throw any checked exceptions.
+            //  so we must sneak the VeryFastListQueryException through as a run-time exception.
             throw new InfrastructureException(ie);
         }
-        
+
         throw new IllegalStateException(ERR_ENGINE_MISSING_STATE);
     }
 

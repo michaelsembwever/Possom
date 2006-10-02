@@ -19,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.config.DocumentContext;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
@@ -54,6 +55,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
     private static final Logger LOG = Logger.getLogger(VeryFastTokenEvaluator.class);
     private static final String ERR_FAILED_INITIALISATION = "Failed reading configuration files";
+    private static final String ERR_QUERY_FAILED = "Querying the fast list failed on ";
+    private static final String ERR_PARSE_FAILED = "XML parsing of fast list response failed on ";
     private static final String DEBUG_LISTNAME_FOUND_1 = "List for ";
     private static final String DEBUG_LISTNAME_FOUND_2 = " is ";
 
@@ -83,7 +86,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
      * Search fast and initialize analysis result.
      * @param query
      */
-    VeryFastTokenEvaluator(final Context cxt){
+    VeryFastTokenEvaluator(final Context cxt) throws VeryFastListQueryException{
 
         // pre-condition check
 
@@ -200,10 +203,10 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             if (term == null) {
                 evaluation = true;
             }  else  {
-                
-                // HACK since DefaultOperatorClause wraps its children in parenthesis 
+
+                // HACK since DefaultOperatorClause wraps its children in parenthesis
                 final String hackTerm = term.replaceAll("\\(|\\)","");
-                
+
                 for (TokenMatch occurance : analysisResult.get(realTokenFQ)) {
 
                     final Matcher m =occurance.getMatcher(hackTerm);
@@ -214,9 +217,9 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                         occurance.setTouched(true);
                         break;
                     }
-                } 
+                }
             }
-            
+
         }
         return evaluation;
     }
@@ -238,7 +241,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
      * Search fast and find out if the given tokens are company, firstname, lastname etc
      * @param query
      */
-    private void queryFast(final String query) {
+    private void queryFast(final String query) throws InfrastructureException, VeryFastListQueryException{
 
         LOG.trace("queryFast( " + query + " )");
 
@@ -281,9 +284,11 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         } catch (UnsupportedEncodingException ignore) {
             LOG.warn(ERR_FAILED_TO_ENCODE + query);
         } catch (IOException e1) {
-            LOG.error("Analysis failed " + url, e1);
+            LOG.error(ERR_QUERY_FAILED + url, e1);
+            throw new VeryFastListQueryException(ERR_QUERY_FAILED + url, e1);
         } catch (SAXException e1) {
-            LOG.error("XML Parse failure " + url, e1);
+            LOG.error(ERR_PARSE_FAILED + url, e1);
+            throw new VeryFastListQueryException(ERR_PARSE_FAILED + url, e1);
         }
     }
 

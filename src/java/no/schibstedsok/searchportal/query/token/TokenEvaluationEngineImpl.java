@@ -30,6 +30,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
+    /** TODO comment me. **/
     static final TokenEvaluator ALWAYS_TRUE_EVALUATOR = new TokenEvaluator(){
         public boolean evaluateToken(final TokenPredicate token, final String term, final String query) {
             return true;
@@ -53,11 +54,11 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private final JepTokenEvaluator jedEvaluator;
 
     private static final Logger LOG = Logger.getLogger(TokenEvaluationEngineImpl.class);
+    private static final String ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR = "Failed to construct the fast evaluator";
     private static final String ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED =
-            "Interrupted waiting for FastEvaluatorCreator. Analysis on this query will fail.";
+            "Interrupted waiting for FastEvaluatorCreator. Evaluation on this query will fail.";
     private static final String ERR_TOKENTYPE_WIHOUT_IMPL = "Token type not known or implemented. ";
     private static final String ERR_GENERIC_TOKENTYPE_WIHOUT_IMPL = "Generic token type not known or implemented. ";
-    private static final String ERR_FAILED_CREATING_EVAL = "Failed to create VeryFastTokenEvaluator";
     private static final String DEBUG_POOL_COUNT = "Pool size: ";
 
     private final Context context;
@@ -67,7 +68,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
      * Holds value of property state.
      */
     private State state;
-    
+
     private volatile Thread owningThread = Thread.currentThread();
 
     /**
@@ -78,13 +79,13 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
      * @param properties
      */
     public TokenEvaluationEngineImpl(final Context cxt) {
-        
-        
+
+
         if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
             final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
             LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
         }
-        
+
         context = cxt;
         fastEvaluatorCreator = EXECUTOR.submit(new FastEvaluatorCreator());
 
@@ -92,7 +93,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     }
 
     /** @inherit **/
-    public TokenEvaluator getEvaluator(final TokenPredicate token) throws InterruptedException {
+    public TokenEvaluator getEvaluator(final TokenPredicate token) throws VeryFastListQueryException {
 
         switch(token.getType()){
             case GENERIC:
@@ -119,14 +120,22 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
         return context.getQueryString();
     }
 
-    private TokenEvaluator getFastEvaluator() throws InterruptedException {
+    private TokenEvaluator getFastEvaluator() throws VeryFastListQueryException {
+
         try {
             fastEvaluatorCreator.get();
-//        } catch (InterruptedException ex) {
-//            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
+
+        } catch (InterruptedException ex) {
+            LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
+            throw new VeryFastListQueryException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
         } catch (ExecutionException ex) {
             LOG.error(ERR_FAST_EVALUATOR_CREATOR_INTERRUPTED, ex);
+            throw new VeryFastListQueryException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, ex);
         }
+        if( null == fastEvaluator ){
+            throw new VeryFastListQueryException(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR, new NullPointerException());
+        }
+
         return fastEvaluator;
     }
 
@@ -137,25 +146,25 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 
     /** @inherit **/
     public synchronized boolean evaluateTerm(final TokenPredicate predicate, final String term) {
-        
+
         return evaluateImpl(predicate, new EvaluationState(term, Collections.EMPTY_SET, Collections.EMPTY_SET));
     }
-    
+
     /** @inherit **/
     public synchronized boolean evaluateClause(final TokenPredicate predicate, final Clause clause) {
-        
+
         return evaluateImpl(predicate, new EvaluationState(clause));
     }
-    
+
     /** @inherit **/
     public synchronized boolean evaluateQuery(final TokenPredicate predicate, final Query query) {
-        
+
         return evaluateImpl(predicate, query.getEvaluationState());
     }
-    
+
     private boolean evaluateImpl(
             final TokenPredicate predicate, final State state) {
-        
+
         final Thread origThread = owningThread;
         try{
             // setup the engine's required state before any evaluation process
@@ -164,7 +173,7 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
             owningThread = Thread.currentThread();
             // run the evaluation process
             return predicate.evaluate(this);
-            
+
         }finally{
             setState(null);
             owningThread = origThread;
@@ -178,8 +187,14 @@ public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
     private final class FastEvaluatorCreator implements Runnable{
         public void run() {
 
-            fastEvaluator = new VeryFastTokenEvaluator(
-                    ContextWrapper.wrap(VeryFastTokenEvaluator.Context.class, context));
+            try {
+
+                fastEvaluator = new VeryFastTokenEvaluator(
+                        ContextWrapper.wrap(VeryFastTokenEvaluator.Context.class, context));
+
+            } catch (VeryFastListQueryException ex) {
+                LOG.error(ERR_FAILED_CONSTRUCTING_FAST_EVALUATOR);
+            }
         }
 
     }
