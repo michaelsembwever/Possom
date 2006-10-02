@@ -70,40 +70,44 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
         T clause = findClauseInUse(key, weakCache);
 
         if (clause == null) {
-            // create predicate sets
-            engine.setState(new EvaluationState(key, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
+            try{
+                // create predicate sets
+                engine.setState(new EvaluationState(key, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
-            // find the applicale predicates now
-            final boolean healthy = findPredicates(engine, predicates2check);
-            try {
-                // find the constructor...
-                final Constructor<T> constructor = clauseClass.getDeclaredConstructor(
-                    String.class, String.class, Set.class, Set.class
-                );
-                // use the constructor...
-                clause = constructor.newInstance(
-                    term,
-                    field,
-                    engine.getState().getKnownPredicates(),
-                    engine.getState().getPossiblePredicates()
-                );
+                // find the applicale predicates now
+                final boolean healthy = findPredicates(engine, predicates2check);
+                try {
+                    // find the constructor...
+                    final Constructor<T> constructor = clauseClass.getDeclaredConstructor(
+                        String.class, String.class, Set.class, Set.class
+                    );
+                    // use the constructor...
+                    clause = constructor.newInstance(
+                        term,
+                        field,
+                        engine.getState().getKnownPredicates(),
+                        engine.getState().getPossiblePredicates()
+                    );
 
-            } catch (SecurityException ex) {
-                LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
-            } catch (NoSuchMethodException ex) {
-                LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
-            } catch (IllegalArgumentException ex) {
-                LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
-            } catch (InstantiationException ex) {
-                LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
-            } catch (InvocationTargetException ex) {
-                LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
-            } catch (IllegalAccessException ex) {
-                LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
-            }
+                } catch (SecurityException ex) {
+                    LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
+                } catch (NoSuchMethodException ex) {
+                    LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
+                } catch (IllegalArgumentException ex) {
+                    LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
+                } catch (InstantiationException ex) {
+                    LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
+                } catch (InvocationTargetException ex) {
+                    LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
+                } catch (IllegalAccessException ex) {
+                    LOG.error(ERR_FAILED_FINDING_OR_USING_CONSTRUCTOR + clauseClass.getName(), ex);
+                }
 
-            if(healthy){
-                addClauseInUse(key, clause, weakCache);
+                if(healthy){
+                    addClauseInUse(key, clause, weakCache);
+                }
+            }finally{
+                engine.setState(null);
             }
         }
 

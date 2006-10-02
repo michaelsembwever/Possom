@@ -124,9 +124,6 @@ public abstract class AbstractQueryParser implements QueryParser {
                 };
             }
 
-            // we're done with parsing individual terms.
-            context.getTokenEvaluationEngine().setState(null);
-
         }
         return query;
     }

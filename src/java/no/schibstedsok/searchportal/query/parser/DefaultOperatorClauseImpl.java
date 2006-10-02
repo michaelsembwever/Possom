@@ -82,29 +82,33 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
                     : "")
                 + second.getTerm();
 
-        
-        // create predicate sets
-        engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
+        try{
+            // create predicate sets
+            engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
-        final String unique = '(' + term + ')';
+            final String unique = '(' + term + ')';
 
-        // the weakCache to use.
-        Map<String,WeakReference<DefaultOperatorClauseImpl>> weakCache
-                = WEAK_CACHE.get(engine.getSite());
+            // the weakCache to use.
+            Map<String,WeakReference<DefaultOperatorClauseImpl>> weakCache
+                    = WEAK_CACHE.get(engine.getSite());
 
-        if(weakCache == null){
-            weakCache = new HashMap<String,WeakReference<DefaultOperatorClauseImpl>>();
-            WEAK_CACHE.put(engine.getSite(), weakCache);
+            if(weakCache == null){
+                weakCache = new HashMap<String,WeakReference<DefaultOperatorClauseImpl>>();
+                WEAK_CACHE.put(engine.getSite(), weakCache);
+            }
+
+            // use helper method from AbstractLeafClause
+            return createClause(
+                    DefaultOperatorClauseImpl.class,
+                    unique,
+                    first,
+                    second,
+                    engine,
+                    PREDICATES_APPLICABLE, weakCache);
+
+        }finally{
+            engine.setState(null);
         }
-
-        // use helper method from AbstractLeafClause
-        return createClause(
-                DefaultOperatorClauseImpl.class,
-                unique,
-                first,
-                second,
-                engine,
-                PREDICATES_APPLICABLE, weakCache);
     }
 
     /**

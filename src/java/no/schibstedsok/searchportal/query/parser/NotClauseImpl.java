@@ -71,24 +71,29 @@ public final class NotClauseImpl extends AbstractOperationClause implements NotC
                     : "")
                 + first.getTerm();
 
-        // create predicate sets
-        engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
-        
-        // the weakCache to use.
-        Map<String,WeakReference<NotClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
-        if( weakCache == null ){
-            weakCache = new HashMap<String,WeakReference<NotClauseImpl>>();
-            WEAK_CACHE.put(engine.getSite(),weakCache);
-        }
+        try{
+            // create predicate sets
+            engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
-        // use helper method from AbstractLeafClause
-        return createClause(
-                NotClauseImpl.class,
-                term,
-                first,
-                null,
-                engine,
-                PREDICATES_APPLICABLE, weakCache);
+            // the weakCache to use.
+            Map<String,WeakReference<NotClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
+            if( weakCache == null ){
+                weakCache = new HashMap<String,WeakReference<NotClauseImpl>>();
+                WEAK_CACHE.put(engine.getSite(),weakCache);
+            }
+
+            // use helper method from AbstractLeafClause
+            return createClause(
+                    NotClauseImpl.class,
+                    term,
+                    first,
+                    null,
+                    engine,
+                    PREDICATES_APPLICABLE, weakCache);
+
+        }finally{
+            engine.setState(null);
+        }
     }
 
     /**

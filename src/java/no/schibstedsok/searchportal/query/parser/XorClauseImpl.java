@@ -80,46 +80,50 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
                     ?  ((LeafClause) second).getField() + ":"
                     : "")
                 + second.getTerm();
+        try{
+            // create predicate sets
+            engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
-        // create predicate sets
-        engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
-
-        // the weakCache to use.
-        Map<String,WeakReference<XorClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
-        if( weakCache == null ){
-            weakCache = new HashMap<String,WeakReference<XorClauseImpl>>();
-            WEAK_CACHE.put(engine.getSite(),weakCache);
-        }
-        
-        // we can't use the helper method because of the extra Hint argument to the XorClauseImpl constructor        
-
-        // check weak reference cache of immutable wordClauses here.
-        // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
-        //  into the cache, compared to the performance lost of trying to synchronise this.
-        XorClauseImpl clause = findClauseInUse(term, weakCache);
-
-        if (clause == null) {
-            // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
-            
-            // find the applicale predicates now
-            final boolean healthy = findPredicates(engine, PREDICATES_APPLICABLE);
-
-            // create it...
-            clause = new XorClauseImpl(
-                term, 
-                first, 
-                second, 
-                hint,
-                engine.getState().getKnownPredicates(), 
-                engine.getState().getPossiblePredicates()
-            );
-
-            if( healthy ){
-                addClauseInUse(term, clause, weakCache);
+            // the weakCache to use.
+            Map<String,WeakReference<XorClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
+            if( weakCache == null ){
+                weakCache = new HashMap<String,WeakReference<XorClauseImpl>>();
+                WEAK_CACHE.put(engine.getSite(),weakCache);
             }
-        }
 
-        return clause;        
+            // we can't use the helper method because of the extra Hint argument to the XorClauseImpl constructor        
+
+            // check weak reference cache of immutable wordClauses here.
+            // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
+            //  into the cache, compared to the performance lost of trying to synchronise this.
+            XorClauseImpl clause = findClauseInUse(term, weakCache);
+
+            if (clause == null) {
+                // Doesn't exist in weak-reference cache. let's find the predicates and create the WordClause.
+
+                // find the applicale predicates now
+                final boolean healthy = findPredicates(engine, PREDICATES_APPLICABLE);
+
+                // create it...
+                clause = new XorClauseImpl(
+                    term, 
+                    first, 
+                    second, 
+                    hint,
+                    engine.getState().getKnownPredicates(), 
+                    engine.getState().getPossiblePredicates()
+                );
+
+                if( healthy ){
+                    addClauseInUse(term, clause, weakCache);
+                }
+            }
+
+            return clause; 
+        
+        }finally{
+            engine.setState(null);
+        }
     }
 
     public XorClause.Hint getHint() {

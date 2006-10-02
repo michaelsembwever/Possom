@@ -69,27 +69,31 @@ public final class AnalysisRule {
             }
         });
 
-        // update the engine with the query's evaluation state
-        engine.setState(query.getEvaluationState());
+        try{
+            // update the engine with the query's evaluation state
+            engine.setState(query.getEvaluationState());
 
-        for (PredicateScore predicateScore : predicates.keySet()) {
+            for (PredicateScore predicateScore : predicates.keySet()) {
 
-            final Predicate predicate = predicateScore.getPredicate();
+                final Predicate predicate = predicateScore.getPredicate();
 
-            try{
-                if (predicateScore.getPredicate().evaluate(engine)) {
+                try{
+                    if (predicateScore.getPredicate().evaluate(engine)) {
 
-                    if (additivity) {
-                        scorer.addScore(predicateScore);
-                    }  else  {
-                        scorer.minusScore(predicateScore);
+                        if (additivity) {
+                            scorer.addScore(predicateScore);
+                        }  else  {
+                            scorer.minusScore(predicateScore);
+                        }
                     }
-                }
 
-            }catch(InfrastructureException ie){
-                // make sure to mention in the analysis logs that the scoring is corrupt.
-                scorer.error(predicateScore);
+                }catch(InfrastructureException ie){
+                    // make sure to mention in the analysis logs that the scoring is corrupt.
+                    scorer.error(predicateScore);
+                }
             }
+        }finally{
+            engine.setState(null);
         }
 
         return scorer.getScore();

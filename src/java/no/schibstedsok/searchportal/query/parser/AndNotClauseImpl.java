@@ -78,24 +78,29 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
                     : "")
                 + first.getTerm();
 
-        // create predicate sets
-        engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
-        
-        // the weakCache to use.
-        Map<String,WeakReference<AndNotClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
-        if( weakCache == null ){
-            weakCache = new HashMap<String,WeakReference<AndNotClauseImpl>>();
-            WEAK_CACHE.put(engine.getSite(),weakCache);
-        }
+        try{
+            // create predicate sets
+            engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
-        // use helper method from AbstractLeafClause
-        return createClause(
-                AndNotClauseImpl.class,
-                term,
-                first,
-                null,
-                engine,
-                PREDICATES_APPLICABLE, weakCache);
+            // the weakCache to use.
+            Map<String,WeakReference<AndNotClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
+            if( weakCache == null ){
+                weakCache = new HashMap<String,WeakReference<AndNotClauseImpl>>();
+                WEAK_CACHE.put(engine.getSite(),weakCache);
+            }
+
+            // use helper method from AbstractLeafClause
+            return createClause(
+                    AndNotClauseImpl.class,
+                    term,
+                    first,
+                    null,
+                    engine,
+                    PREDICATES_APPLICABLE, weakCache);
+        
+        }finally{
+            engine.setState(null);
+        }
     }
 
     /**

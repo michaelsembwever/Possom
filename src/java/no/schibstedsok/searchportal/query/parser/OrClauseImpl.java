@@ -81,26 +81,31 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
                     : "")
                 + second.getTerm();
 
-        // create predicate sets
-        engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
+        try{
+            // create predicate sets
+            engine.setState(new EvaluationState(term, new HashSet<TokenPredicate>(), new HashSet<TokenPredicate>()));
 
-        final String unique = '(' + term + ')';
+            final String unique = '(' + term + ')';
 
-        // the weakCache to use.
-        Map<String,WeakReference<OrClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
-        if(weakCache == null){
-            weakCache = new HashMap<String,WeakReference<OrClauseImpl>>();
-            WEAK_CACHE.put(engine.getSite(),weakCache);
+            // the weakCache to use.
+            Map<String,WeakReference<OrClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
+            if(weakCache == null){
+                weakCache = new HashMap<String,WeakReference<OrClauseImpl>>();
+                WEAK_CACHE.put(engine.getSite(),weakCache);
+            }
+
+            // use helper method from AbstractLeafClause
+            return createClause(
+                    OrClauseImpl.class,
+                    unique,
+                    first,
+                    second,
+                    engine,
+                    PREDICATES_APPLICABLE, weakCache);
+
+        }finally{
+            engine.setState(null);
         }
-
-        // use helper method from AbstractLeafClause
-        return createClause(
-                OrClauseImpl.class,
-                unique,
-                first,
-                second,
-                engine,
-                PREDICATES_APPLICABLE, weakCache);
     }
 
     /**
