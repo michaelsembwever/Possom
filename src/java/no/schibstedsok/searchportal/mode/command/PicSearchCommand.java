@@ -9,6 +9,7 @@ import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.mode.config.PicSearchConfiguration;
+import no.schibstedsok.searchportal.query.NotClause;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -21,6 +22,9 @@ import java.util.Map;
 import java.net.URLEncoder;
 
 /**
+ *
+ * A search command that uses the picsearch API.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
@@ -48,7 +52,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     /** {@inheritDoc} */
     public SearchResult execute() {
 
-        String query = getTransformedQuery().replace(' ', '+');
+        String query = getTransformedQuery();
         final PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
 
         try {
@@ -92,6 +96,20 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         return searchResult;
     }
 
+    /**
+     * Picsearch uses the - notation for NOT.
+     *
+     * @param clause The not clause to generate representation of.
+     */
+    protected void visitImpl(final NotClause clause) {
+        final String childsTerm = getTransformedTerm(clause.getFirstClause());
+
+        if (childsTerm != null && childsTerm.length() > 0) {
+            appendToQueryRepresentation("-");
+            clause.getFirstClause().accept(this);
+        }
+    }
+    
     private Document doSearch(final String url) {
         try {
             return client.getXmlDocument("picture_search", url);
