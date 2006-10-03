@@ -62,7 +62,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         final String url = "/query?ie=UTF-8&tldb=" + psConfig.getPicsearchCountry()
                 + "&filter=medium&custid=558735&version=2.6&thumbs=" + psConfig.getResultsToReturn()
                 + "&q=" + query
-                + "&start=" + getCurrentOffset(0);
+                + "&start=" + getCurrentOffset(1);
 
         LOG.info("Using " + url);
 
