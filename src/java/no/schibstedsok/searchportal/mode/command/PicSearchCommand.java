@@ -5,12 +5,10 @@ package no.schibstedsok.searchportal.mode.command;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.mode.config.PicSearchConfiguration;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -32,10 +30,10 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     private final HTTPClient client;
 
     /**
-     * @param query         The query to act on.
-     * @param configuration The search configuration associated with this
-     *                      command.
-     * @param parameters    Command parameters.
+     * Creates a new command in given context.
+     *
+     * @param cxt Context to run in.
+     * @param parameters Command parameters.
      */
     public PicSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
@@ -47,7 +45,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
                 Integer.valueOf(siteConfig.getProperty("picsearch.port")));
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} */
     public SearchResult execute() {
 
         String query = getTransformedQuery().replace(' ', '+');
@@ -97,8 +95,6 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     private Document doSearch(final String url) {
         try {
             return client.getXmlDocument("picture_search", url);
-        } catch (HttpException e) {
-            LOG.error("Unable to connect to " + url, e);
         } catch (IOException e) {
             LOG.error("Problems with connection to " + url, e);
         } catch (SAXException e) {
