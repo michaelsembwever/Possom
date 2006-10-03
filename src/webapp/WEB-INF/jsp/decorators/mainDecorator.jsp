@@ -548,12 +548,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
         </tr>
         <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
-        <tr>
-            <td>&nbsp;</td>
-            <td colspan="2">
-                <decorator:getProperty property="page.ads_floating"/>
-            </td>
-        </tr>
+            <decorator:getProperty property="page.ads_floating"/>
         <% } %>
     </table>
 
