@@ -46,7 +46,7 @@ public class ForecastDateHandler extends WeatherDateHandler {
                         forecast.addField("datePart", datePart.format(date));
                         forecast.addField("timePart", timePart.format(date));
                         
-                        if (cal.get(Calendar.MONTH) < 10) {
+                        if (cal.get(Calendar.MONTH) < 9) {
                             forecast.addField("month", "0" + Integer.toString(cal.get(Calendar.MONTH) + 1));
                         } else {
                             forecast.addField("month", Integer.toString(cal.get(Calendar.MONTH) + 1));
