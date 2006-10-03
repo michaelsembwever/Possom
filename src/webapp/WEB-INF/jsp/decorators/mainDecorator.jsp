@@ -522,30 +522,39 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%if (q.trim().equals("") && !currentC.equals("t")) {%>
 	
 	    <%}else{%>
-                <td class="cell_four" valign="top" width="225">
-		    <div id="midbar_right">
-			<decorator:getProperty property="page.greybar_ad"/>
-		    </div>
+                <% if ( !currentC.equals("sw") && !currentC.equals("swip") ) {%>
+                    <td class="cell_four" valign="top" width="225">
+                        <div id="midbar_right">
+                            <decorator:getProperty property="page.greybar_ad"/>
+                        </div>
 
-            <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("pss")) {%>
-                    <decorator:getProperty property="page.ads"/>
-            <%}else if ( currentC.equals("pp") || currentC.equals("pip")) {%>
-                    <decorator:getProperty property="page.ads"/>
-            <%}else if (currentC.equals("p") ) {%>
-                    <decorator:getProperty property="page.ads"/>
-                    <decorator:getProperty property="page.ads-picsearch-logo"/>
-            <%}else if (currentC.equals("b") ) {%>
-                    <decorator:getProperty property="page.feedback"/>
-            <%} else if (currentC.equals("t")) {%>
-                    <decorator:getProperty property="page.tvSearchWebTv"/>
-                    <decorator:getProperty property="page.ads"/>
-            <%} else if (currentC.equals("wt")) {%>
-                    <decorator:getProperty property="page.ads"/>
-            <%}%>
-                </td>
-            <%}%>
-
+                    <%if ( currentC.equals("d") || currentC.equals("m") || currentC.equals("g") || currentC.equals("pss")) {%>
+                            <decorator:getProperty property="page.ads"/>
+                    <%}else if ( currentC.equals("pp") || currentC.equals("pip")) {%>
+                            <decorator:getProperty property="page.ads"/>
+                    <%}else if (currentC.equals("p") ) {%>
+                            <decorator:getProperty property="page.ads"/>
+                            <decorator:getProperty property="page.ads-picsearch-logo"/>
+                    <%}else if (currentC.equals("b") ) {%>
+                            <decorator:getProperty property="page.feedback"/>
+                    <%} else if (currentC.equals("t")) {%>
+                            <decorator:getProperty property="page.tvSearchWebTv"/>
+                            <decorator:getProperty property="page.ads"/>
+                    <%} else if (currentC.equals("wt")) {%>
+                            <decorator:getProperty property="page.ads"/>
+                    <%}%>
+                        </td>
+                    <%}%>
+                <%}%>
         </tr>
+        <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="2">
+                <decorator:getProperty property="page.ads_floating"/>
+            </td>
+        </tr>
+        <% } %>
     </table>
 
     <%--  footer  --%>
