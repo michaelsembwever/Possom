@@ -42,7 +42,8 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
         LOG.trace("RunningWebQuery(mode, " + query + ", request, response)");
 
-        // Add all request parameters
+        // Add all request parameters 
+        /* SEE "Add all request attributes" below */
         for (String parameterName : (Set<String>)request.getParameterMap().keySet()) {
 
             final String[] parameterValues = request.getParameterValues(parameterName);
@@ -68,12 +69,15 @@ public final class RunningWebQuery extends RunningQueryImpl {
         for (Enumeration<String> e = (Enumeration<String>)request.getAttributeNames(); e.hasMoreElements();) {
 
             final String attrName = e.nextElement();
-            // HACK backwards-compatibility since we never designed for unique names across parameters & attributes
-            //  any attribute that overlaps a parameter's name won't be added!!
-            if( !parameters.containsKey(attrName) ){
-                addParameter(attrName, request.getAttribute(attrName));
-                LOG.info("Added " + attrName + ", value: " + request.getAttribute(attrName));
-            }
+            /*
+                // HACK backwards-compatibility since we never designed for unique names across parameters & attributes
+                //  any attribute that overlaps a parameter's name won't be added!!
+                
+             * this has now been changed. request parameters are first put into the parameters map and 
+             * are overwritten with request attributes. this is a basic attempt to prevent parameter injection.
+             */
+            addParameter(attrName, request.getAttribute(attrName));
+            LOG.info("Added " + attrName + ", value: " + request.getAttribute(attrName));
         }
         
         this.request = request;
@@ -98,8 +102,8 @@ public final class RunningWebQuery extends RunningQueryImpl {
             }
             
         }else{
-        
-            // push all parameters into request attributes
+            
+            // push all parameters into request attributes, they are needed by jsp and taglib
             for( Map.Entry<String,Object> entry : parameters.entrySet() ){
                 // don't put back in String array that only contains one element
                 if( entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1 ){
@@ -107,6 +111,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
                 }else{
                     request.setAttribute(entry.getKey(), entry.getValue());
                 }
+                LOG.info("Added " + entry.getKey() + ", value: " + request.getAttribute(entry.getKey()));
             }
             // ...and...
             request.setAttribute("queryHTMLEscaped", StringEscapeUtils.escapeHtml(getQueryString()));
