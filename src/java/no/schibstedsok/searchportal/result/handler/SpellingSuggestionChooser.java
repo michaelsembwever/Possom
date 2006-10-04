@@ -58,7 +58,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             LOG.debug("Number of corrected terms are " + numberOfCorrectedTerms(result.getSpellingSuggestions()));
         }
 
-        final int numberOfTermsInQuery = result.getSearchCommand().getRunningQuery().getNumberOfTerms();
+        final int numberOfTermsInQuery = cxt.getQuery().getTermCount();
 
         if (numberOfTermsInQuery >= veryLongQuery && numberOfCorrectedTerms(result.getSpellingSuggestions()) > 1) {
             result.getSpellingSuggestions().clear();
@@ -90,7 +90,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
         final int numberOfCorrections = numberOfCorrectedTerms(result.getSpellingSuggestions());
 
-        final String newQuery = cxt.getQueryString().toLowerCase(result.getSearchCommand().getRunningQuery().getLocale());
+        final String newQuery = cxt.getQuery().getQueryString().toLowerCase(cxt.getSite().getLocale());
 
         if (numberOfCorrections == 1) {
 
