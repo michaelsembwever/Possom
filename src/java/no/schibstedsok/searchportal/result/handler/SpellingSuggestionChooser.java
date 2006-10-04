@@ -1,18 +1,31 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 import org.apache.log4j.Logger;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
 
 /**
+ *  Spelling suggestions are chosen in the following way:
+ *
+ * <ul>
+ * <li>Discard all suggestions with score less than minimumScore</li>
+ * <li>For each term, remove suggestions with lowest score so that the number
+ *     of suggestions is less than maxSuggestions. If the query is long the limit is maxSuggestionsForLongQueries</li>
+ * <li>Remove all suggestions whose score differs more than maxDistance from the suggestion with the highest score</li>
+ * <li>If the query is long and if two terms have suggestions, remove all suggestions unless the best suggestion
+ * is much better than the second best</li>
+ * </ul>
+ *
+ * A new query is then created using the chosen suggestions. 
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
@@ -20,37 +33,107 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(SpellingSuggestionChooser.class);
 
-    /** TODO comment me. **/
-    int minimumScore = -1;
-    /** TODO comment me. **/
-    int maxSuggestions = 3;
-    /** TODO comment me. **/
-    int maxDistance = 0;
-    /** TODO comment me. **/
-    int muchBetter = 5;
-    /** TODO comment me. **/
-    int maxSuggestionsForLongQueries = 2;
-    /** TODO comment me. **/
-    int longQuery = 2;
-    /** TODO comment me. **/
-    int veryLongQuery = 3;
+    private int minimumScore = -1;
+    private int maxSuggestions = 3;
+    private int maxDistance = 0;
+    private int muchBetter = 5;
+    private int maxSuggestionsForLongQueries = 2;
+    private int longQuery = 2;
+    private int veryLongQuery = 3;
 
-    /** TODO comment me. **/
+    /**
+     * Create a new SpellingSuggestionChooser. *
+     */
     public SpellingSuggestionChooser() {
     }
 
-    /** TODO comment me. **/
+    /**
+     * Create a new SpellingSuggestionChooser.
+     *
+     * @param minimumScore The minum score a suggestion needs to be considered.
+     */
     public SpellingSuggestionChooser(final int minimumScore) {
         this.minimumScore = minimumScore;
     }
 
-    /** TODO comment me. **/
+    /**
+     * Create a new SpellingSuggestionChooser.
+     *
+     * @param minimumScore   The minum score a suggestion needs to be considered.
+     * @param maxSuggestions The maximum number of suggestions to choose.
+     */
     public SpellingSuggestionChooser(final int minimumScore, final int maxSuggestions) {
         this.minimumScore = minimumScore;
         this.maxSuggestions = maxSuggestions;
     }
 
-    /** @inherit **/
+    /**
+     * Sets the minimum score a suggestions needs to have to be considered.
+     *
+     * @param minumScore New minimum score.
+     */
+    public void setMinScore(final int minumScore) {
+        this.minimumScore = minumScore;
+    }
+
+    /**
+     * Sets the maximum number of suggestions to choose.
+     *
+     * @param maxSuggestions New max number of suggestions.
+     */
+    public void setMaxSuggestions(final int maxSuggestions) {
+        this.maxSuggestions = maxSuggestions;
+    }
+
+    /**
+     * Sets the maximum difference in score a suggestion can have from the highest
+     * the suggestion with the highest score without being discarded. 
+     *
+     * @param maxDistance New max distance.
+     */
+    public void setMaxDistance(final int maxDistance) {
+        this.maxDistance = maxDistance;
+    }
+
+    /**
+     * Sets the score difference needed for a suggestion to be rated as much better.
+     *
+     * @param muchBetter New difference.
+     */
+    public void setMuchBetter(final int muchBetter) {
+        this.muchBetter = muchBetter;
+    }
+
+    /**
+     * Sets the number of terms query needs to be considered as long.
+     *
+     * @param longQuery The new number of terms.
+     */
+    public void setLongQuery(final int longQuery) {
+        this.longQuery = longQuery;
+    }
+
+    /**
+     * Sets the number of terms a query needs to be considered as long.
+     * 
+     * @param veryLongQuery The new number of terms.
+     */
+    public void setVeryLongQuery(final int veryLongQuery) {
+        this.veryLongQuery = veryLongQuery;
+    }
+
+    /**
+     * Sets the number of suggestions to choose for very long queries.
+     *
+     * @param maxSuggestionsForLongQueries The new number of suggestions.
+     */
+    public void setLongQueryMaxSuggestions(final int maxSuggestionsForLongQueries) {
+        this.maxSuggestionsForLongQueries = maxSuggestionsForLongQueries;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public void handleResult(final Context cxt, final Map parameters) {
 
         final SearchResult result = cxt.getSearchResult();
@@ -64,8 +147,8 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             result.getSpellingSuggestions().clear();
         }
 
-        for (final Iterator terms = result.getSpellingSuggestions().values().iterator(); terms.hasNext();) {
-            final List suggestionList = (List) terms.next();
+        for (final Iterator<List<SpellingSuggestion>> terms = result.getSpellingSuggestions().values().iterator(); terms.hasNext();) {
+            final List<SpellingSuggestion> suggestionList = terms.next();
 
             Collections.sort(suggestionList);
 
@@ -76,7 +159,8 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             if (numberOfTermsInQuery >= longQuery) {
                 if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 1) {
                     limitNumberOfSuggestions(suggestionList, maxSuggestionsForLongQueries);
-                } else if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 2 && numberOfTermsInQuery < veryLongQuery) {
+                } else
+                if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 2 && numberOfTermsInQuery < veryLongQuery) {
                     if (suggestionList.size() > 1) {
                         removeAllIfOneIsNotMuchBetter(suggestionList);
                     }
@@ -94,13 +178,10 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
         if (numberOfCorrections == 1) {
 
-            for (final Iterator suggestions = result.getSpellingSuggestions().values().iterator(); suggestions.hasNext();) {
-                final List suggestionList = (List) suggestions.next();
-
-                for (final Iterator iterator = suggestionList.iterator(); iterator.hasNext();) {
+            for (List<SpellingSuggestion> spellingSuggestions : result.getSpellingSuggestions().values()) {
+                for (SpellingSuggestion suggestion : spellingSuggestions) {
                     String query = newQuery;
                     String displayQuery = newQuery;
-                    final SpellingSuggestion suggestion = (SpellingSuggestion) iterator.next();
                     query = query.replaceAll(suggestion.getOriginal(), suggestion.getSuggestion());
                     displayQuery = displayQuery.replaceAll(suggestion.getOriginal(), "<b>" + suggestion.getSuggestion() + "</b>");
                     result.addQuerySuggestion(new QuerySuggestion(query, displayQuery));
@@ -110,11 +191,8 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             String query = newQuery;
             String displayQuery = newQuery;
 
-            for (final Iterator iterator = result.getSpellingSuggestions().values().iterator(); iterator.hasNext();) {
-                final List suggestionList =  (List) iterator.next();
-
-                for (final Iterator iterator1 = suggestionList.iterator(); iterator1.hasNext();) {
-                    final SpellingSuggestion spellingSuggestion = (SpellingSuggestion) iterator1.next();
+            for (List<SpellingSuggestion> spellingSuggestions : result.getSpellingSuggestions().values()) {
+                for (SpellingSuggestion spellingSuggestion : spellingSuggestions) {
                     query = query.replaceAll(spellingSuggestion.getOriginal(), spellingSuggestion.getSuggestion());
                     displayQuery = displayQuery.replaceAll(spellingSuggestion.getOriginal(), "<b>" + spellingSuggestion.getSuggestion() + "</b>");
                 }
@@ -124,8 +202,8 @@ public final class SpellingSuggestionChooser implements ResultHandler {
     }
 
     private void removeAllIfOneIsNotMuchBetter(final List<SpellingSuggestion> suggestionList) {
-        final SpellingSuggestion best =  suggestionList.get(0);
-        final SpellingSuggestion nextBest =  suggestionList.get(1);
+        final SpellingSuggestion best = suggestionList.get(0);
+        final SpellingSuggestion nextBest = suggestionList.get(1);
 
         if (best.getScore() < nextBest.getScore() + muchBetter) {
             suggestionList.clear();
@@ -143,7 +221,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
         }
     }
 
-    private int numberOfCorrectedTerms(final Map<String,List<SpellingSuggestion>> spellingSuggestions) {
+    private int numberOfCorrectedTerms(final Map<String, List<SpellingSuggestion>> spellingSuggestions) {
         return spellingSuggestions.keySet().size();
     }
 
@@ -151,7 +229,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
         int lastScore = -1;
 
         for (final Iterator<SpellingSuggestion> iterator = suggestionList.iterator(); iterator.hasNext();) {
-            final SpellingSuggestion suggestion =  iterator.next();
+            final SpellingSuggestion suggestion = iterator.next();
 
             if (suggestion.getScore() + maxDistance < lastScore) {
                 iterator.remove();
@@ -168,7 +246,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             final int numberToRemove = suggestionList.size() - limit;
 
             for (int i = 0; i < numberToRemove; i++) {
-                final SpellingSuggestion removed =  suggestionList.remove(suggestionList.size() - 1);
+                final SpellingSuggestion removed = suggestionList.remove(suggestionList.size() - 1);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Suggestion " + removed + " to reach maximum number of suggestions");
                 }
@@ -178,7 +256,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
     private void removeSuggestionsWithTooLowScore(final List<SpellingSuggestion> suggestionList) {
         for (final Iterator<SpellingSuggestion> suggestions = suggestionList.iterator(); suggestions.hasNext();) {
-            final SpellingSuggestion suggestion =   suggestions.next();
+            final SpellingSuggestion suggestion = suggestions.next();
             if (suggestion.getScore() < minimumScore) {
                 suggestions.remove();
                 if (LOG.isDebugEnabled()) {
@@ -186,40 +264,5 @@ public final class SpellingSuggestionChooser implements ResultHandler {
                 }
             }
         }
-    }
-
-    /** TODO comment me. **/
-    public void setMinScore(final int i) {
-        minimumScore = i;
-    }
-
-    /** TODO comment me. **/
-    public void setMaxSuggestions(final int i) {
-        maxSuggestions = i;
-    }
-
-    /** TODO comment me. **/
-    public void setMaxDistance(final int i) {
-        maxDistance = i;
-    }
-
-    /** TODO comment me. **/
-    public void setMuchBetter(final int i) {
-        muchBetter = i;
-    }
-
-    /** TODO comment me. **/
-    public void setLongQuery(final int i) {
-        longQuery = i;
-    }
-
-    /** TODO comment me. **/
-    public void setVeryLongQuery(final int i) {
-        veryLongQuery = i;
-    }
-
-    /** TODO comment me. **/
-    public void setLongQueryMaxSuggestions(final int i) {
-        maxSuggestionsForLongQueries = i;
     }
 }
