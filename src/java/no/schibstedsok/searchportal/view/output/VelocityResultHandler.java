@@ -218,12 +218,15 @@ public final class VelocityResultHandler implements ResultHandler {
             LOG.error(e);
         }
 
-        // push all parameters into request attributes
+        // push all parameters into velocity context attributes
         for(Map.Entry<String,Object> entry : parameters.entrySet()){
-            // don't put back in String array that only contains one element
-            context.put(entry.getKey(), entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1
-                    ? context.put(entry.getKey(), ((String[])entry.getValue())[0])
-                    : entry.getValue());
+            /* do not overwrite parameters already in the velocity context */
+            if (!context.containsKey(entry.getKey())) {
+                // don't put back in String array that only contains one element
+                context.put(entry.getKey(), entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1
+                        ? context.put(entry.getKey(), ((String[])entry.getValue())[0])
+                        : entry.getValue());
+            }
         }
 
         // populate context with request and response // TODO remove, since all attributes are copied in
