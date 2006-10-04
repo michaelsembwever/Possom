@@ -373,10 +373,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <decorator:getProperty property="page.tradedoubler"/>
                      <% } else { %>
 
-		<table border="0" width="100%" cellspacing="0" cellpadding="0">
-		<tr>
+
                 <decorator:getProperty property="page.spellcheck"/>
-                 <td id="result_container">
+
 
                         <decorator:getProperty property="page.main_ads"/>
 
@@ -428,9 +427,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                              <decorator:getProperty property="page.noHits" />
                          </c:otherwise>
                      </c:choose>
-                </td>
-			</tr>
-            </table>
+
                         <% } %>  <%-- Sok smart --%>
                 <%}%>
 
