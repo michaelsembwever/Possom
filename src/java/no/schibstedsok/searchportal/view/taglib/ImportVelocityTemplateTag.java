@@ -86,10 +86,13 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
                 context.put("contextPath", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("text", text);
 
-                // push all parameters into request attributes
+                // push all parameters into velocity context attributes
                 for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames(); e.hasMoreElements();) {
                     final String attrName = e.nextElement();
-                    context.put(attrName, cxt.getRequest().getAttribute(attrName));
+                    /* do not overwrite parameters already in the velocity context */
+                    if (!context.containsKey(attrName)) {
+                        context.put(attrName, cxt.getRequest().getAttribute(attrName));
+                    }
                 }
 
                 // populate modifiers
