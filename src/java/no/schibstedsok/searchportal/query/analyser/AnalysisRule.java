@@ -55,7 +55,7 @@ public final class AnalysisRule {
      * @param query
      *            the query to apply the rule to.
      * @param engine
-     *            the {@link TokenEvaluationEngineImpl} used as input to the
+     *            the {@link no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl} used as input to the
      *            predicates.
      * @return the score of this rule when applied to query.
      */
@@ -74,9 +74,6 @@ public final class AnalysisRule {
             engine.setState(query.getEvaluationState());
 
             for (PredicateScore predicateScore : predicates.keySet()) {
-
-                final Predicate predicate = predicateScore.getPredicate();
-
                 try{
                     if (predicateScore.getPredicate().evaluate(engine)) {
 

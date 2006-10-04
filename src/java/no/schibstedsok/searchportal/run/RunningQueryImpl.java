@@ -18,7 +18,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.QueryTokenizer;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.searchportal.query.QueryStringContext;
@@ -487,15 +486,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     protected void addParameter(final String key, final Object obj) {
         parameters.put(key, obj);
     }
-
-    /** TODO comment me. **/
-    public int getNumberOfTerms() {
-
-        LOG.trace("getNumberOfTerms()");
-
-        return QueryTokenizer.tokenize(queryStr).size();
-    }
-
 
     /** TODO comment me. **/
     public String getQueryString() {

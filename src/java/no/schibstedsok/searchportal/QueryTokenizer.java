@@ -14,9 +14,9 @@ public class QueryTokenizer {
 
     private static int quoteChar = '"';
 
-    public static List tokenize(String query) {
+    public static List<String> tokenize(String query) {
 
-        List tokens = new ArrayList();
+        List<String> tokens = new ArrayList<String>();
 
         if (query != null) {
 
@@ -29,7 +29,7 @@ public class QueryTokenizer {
                 try {
                     found = tkn.nextToken();
                 } catch (IOException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
                 if (found == StreamTokenizer.TT_WORD || found == quoteChar) {
                     tokens.add(tkn.sval);

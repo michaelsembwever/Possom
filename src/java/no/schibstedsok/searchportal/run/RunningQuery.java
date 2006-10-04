@@ -29,7 +29,6 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
 public interface RunningQuery {
 
     public interface Context extends BaseContext, ResourceContext, SiteContext {
-        /** TODO comment me. **/
     /** TODO comment me. **/
     SearchMode getSearchMode();
         /** TODO comment me. **/
@@ -60,9 +59,6 @@ public interface RunningQuery {
 
     /** TODO comment me. **/
     Integer getNumberOfHits(final String configName);
-
-    /** TODO comment me. **/
-    int getNumberOfTerms();
 
     /** TODO comment me. **/
     Query getQuery();
