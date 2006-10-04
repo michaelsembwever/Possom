@@ -599,6 +599,7 @@ tmsec[0]="tmsec=sesam";
 <% } else if (currentC.equals("b")) { %> tmsec[1]="tmsec=bloggsok";
 <% } else if (currentC.equals("t")) { %> tmsec[1]="tmsec=tvsok";
 <% } else if (currentC.equals("wt")) { %> tmsec[1]="tmsec=tvsok_web";
+<% } else if (currentC.equals("ads")) { %> tmsec[1]="tmsec=sponsede_lenker";
 <% } else if (currentC.equals("n")) { %> tmsec[1]="tmsec=<search:velocity template="/pages/tns"/>";
 <% } else { %> tmsec[1]="tmsec=xxx";
 <% } %>
@@ -621,6 +622,7 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } else if (currentC.equals("b")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=bloggesok" alt="" /></noscript>
 <% } else if (currentC.equals("t")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=tvsok" alt="" /></noscript>
 <% } else if (currentC.equals("wt")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=tvsok_web" alt="" /></noscript>
+<% } else if (currentC.equals("ads")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sponsede_lenker" alt="" /></noscript>
 <% } else if (currentC.equals("n")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=<search:velocity template="/pages/tns"/>" alt="" /></noscript>
 <% } %>
 
