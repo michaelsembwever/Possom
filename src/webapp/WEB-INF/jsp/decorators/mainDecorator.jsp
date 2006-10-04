@@ -171,7 +171,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
     <% } else { %>
 
-        <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b"))) {%>
+        <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b") )) {%>
 	<decorator:getProperty property="page.newsearch-bar"/>
 	<% }else{ %>
 	<decorator:getProperty property="page.search-bar"/>
@@ -508,6 +508,10 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%if (currentC.equals("b")) {%>
                 <decorator:getProperty property="page.blog-search"/>
                 <%}%>
+                
+                <%if (currentC.equals("ads")) {%>                
+                    <decorator:getProperty property="page.ads-results"/>
+                <%}%>                
 
                     <%--  offset  --%>
                     <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
