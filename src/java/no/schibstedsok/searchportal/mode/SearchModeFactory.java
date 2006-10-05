@@ -32,6 +32,7 @@ import no.schibstedsok.searchportal.mode.config.WhiteSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YellowGeoSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YellowSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
@@ -328,6 +329,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private enum CommandTypes {
         COMMAND(AbstractSearchConfiguration.class),
         ESP_FAST_COMMAND(ESPFastSearchConfiguration.class),
+        ADVANCED_FAST_COMMAND(AdvancedFastSearchConfiguration.class),
         NAVIGATABLE_ESP_FAST_COMMAND(NavigatableESPFastConfiguration.class),
         BLENDING_NEWS_COMMAND(BlendingNewsSearchConfiguration.class),
         FAST_COMMAND(FastSearchConfiguration.class),

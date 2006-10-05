@@ -8,30 +8,17 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.query.Query;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+import org.apache.log4j.Logger;
+
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
-
-import no.fast.ds.search.BaseParameter;
-import no.fast.ds.search.ISearchParameters;
-import no.fast.ds.search.SearchParameter;
-import no.fast.ds.search.SearchType;
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.query.AndClause;
-import no.schibstedsok.searchportal.query.AndNotClause;
-import no.schibstedsok.searchportal.query.Clause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
-import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
-import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
-
-import org.apache.log4j.Logger;
 
 /**
  *
@@ -42,7 +29,7 @@ import org.apache.log4j.Logger;
  *
  * @author maek
  */
-public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSearchCommand {
+public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchCommand {
 
     private static final String ERR_CANNOT_CREATE_COMMAND =
             "Unable to create command to rerun.";
@@ -62,13 +49,11 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
         super(cxt, parameters);
     }
 
-    /**
-     * @inherit
-     */
+    /** {@inheritDoc} */
     public SearchResult execute() {
 
-        final FastSearchResult originalResult = (FastSearchResult) super.execute();
-        final Map suggestions = originalResult.getSpellingSuggestions();
+        final SearchResult originalResult = super.execute();
+        final Map<String, List<SpellingSuggestion>> suggestions = originalResult.getSpellingSuggestions();
 
         // Rerun command?
         // TODO Consider moving the isCorrectionEnabled() call after the
@@ -131,83 +116,6 @@ public abstract class CorrectingFastSearchCommand extends AbstractSimpleFastSear
      */
     protected boolean isCorrectionEnabled() {
         return true;
-    }
-
-    // TODO comment me.
-    /** TODO comment me. **/
-    protected void setAdditionalParameters(final ISearchParameters params) {
-        super.setAdditionalParameters(params);
-        params.setParameter(new SearchParameter(BaseParameter.TYPE, SearchType.SEARCH_ADVANCED.getValueString()));
-    }
-
-    // Implementation of advanced query language. The spelling suggestions for
-    // yellow and white only works as it should when the advanced query language
-    // is used.
-    /** TODO comment me. **/
-    protected void visitImpl(final AndClause clause) {
-        // The leaf clauses might not produce any output. For example terms
-        // having a site: field. In these cases we should not output the
-        // operator keyword.
-        boolean hasEmptyLeaf = false;
-
-        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
-        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
-
-        clause.getFirstClause().accept(this);
-
-        if (! hasEmptyLeaf)
-            appendToQueryRepresentation(" AND ");
-
-        clause.getSecondClause().accept(this);
-    }
-
-    /** TODO comment me. **/
-    protected void visitImpl(final OrClause clause) {
-        appendToQueryRepresentation(" (");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" OR ");
-        clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(") ");
-    }
-
-    /** TODO comment me. **/
-    protected void visitImpl(final DefaultOperatorClause clause) {
-        boolean hasEmptyLeaf = false;
-
-        hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
-        hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
-
-        clause.getFirstClause().accept(this);
-
-        if (! hasEmptyLeaf){
-            appendToQueryRepresentation(" AND ");
-        }
-
-        clause.getSecondClause().accept(this);
-    }
-    /** TODO comment me. **/
-    protected void visitImpl(final NotClause clause) {
-        appendToQueryRepresentation(" ANDNOT ");
-        appendToQueryRepresentation("(");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(")");
-
-    }
-    /** TODO comment me. **/
-    protected void visitImpl(final AndNotClause clause) {
-        appendToQueryRepresentation("ANDNOT ");
-        appendToQueryRepresentation("(");
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(")");
-    }
-
-    private boolean isEmptyLeaf(final Clause clause) {
-        if (clause instanceof LeafClause) {
-            final LeafClause leaf = (LeafClause) clause;
-            return leaf.getField() != null;
-        }
-
-        return false;
     }
 
     private CorrectingFastSearchCommand createCommand(final SearchCommand.Context cmdCxt) throws Exception {
