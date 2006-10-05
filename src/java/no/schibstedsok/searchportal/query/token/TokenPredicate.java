@@ -26,6 +26,7 @@ public enum TokenPredicate implements Predicate {
     // TODO make ExactFast tokens a separate Type referencing the original Fast token.
     ANIMAL (Type.FAST),
     CATEGORY (Type.FAST),
+    CAR (Type.FAST),
     CELEBRITY (Type.FAST),
     CHAIN (Type.FAST),
     COMPANYENRICHMENT (Type.FAST),
