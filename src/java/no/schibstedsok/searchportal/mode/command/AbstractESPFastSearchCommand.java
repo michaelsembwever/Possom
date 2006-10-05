@@ -1,6 +1,6 @@
 /* Copyright (2005-2006) Schibsted Søk AS
  *
- * AbstractAdvancedFastSearchCommand.java
+ * AbstractESPFastSearchCommand.java
  *
  * Created on 14 March 2006, 19:51
  *
@@ -20,17 +20,11 @@ import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
-import java.io.IOException;
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
-import no.schibstedsok.searchportal.query.Clause;
-import no.schibstedsok.searchportal.result.Navigator;
+import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
+import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
@@ -39,9 +33,16 @@ import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  *
@@ -50,7 +51,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCommand {
+public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
     // Constants -----------------------------------------------------
     private final static String FACTORY_PROPERTY =
@@ -66,10 +67,10 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     private final static String COLLAPSE_PARAMETER="collapse";
     
     private static final Logger LOG =
-            Logger.getLogger(AbstractAdvancedFastSearchCommand.class);
+            Logger.getLogger(AbstractESPFastSearchCommand.class);
 
     // Attributes ----------------------------------------------------
-    private final AdvancedFastSearchConfiguration cfg;
+    private final ESPFastSearchConfiguration cfg;
 
     private Map<String, Navigator> navigatedTo = new HashMap<String,Navigator>();
     private Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
@@ -80,14 +81,14 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
 
     // Constructors --------------------------------------------------
 
-    /** Creates a new instance of AbstractAdvancedFastSearchCommand */
-    public AbstractAdvancedFastSearchCommand(
+    /** Creates a new instance of AbstractESPFastSearchCommand */
+    public AbstractESPFastSearchCommand(
                     final Context cxt,
                     final Map parameters) {
 
         super(cxt, parameters);
 
-        cfg = (AdvancedFastSearchConfiguration) getSearchConfiguration();
+        cfg = (ESPFastSearchConfiguration) getSearchConfiguration();
     }
 
     // Public --------------------------------------------------------
@@ -301,7 +302,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSearchCo
     private int getMaxDocIndex(
             final IQueryResult result,
             final int cnt,
-            final AdvancedFastSearchConfiguration cfg)
+            final ESPFastSearchConfiguration cfg)
     {
         return Math.min(cnt + cfg.getResultsToReturn(), result.getDocCount());
     }

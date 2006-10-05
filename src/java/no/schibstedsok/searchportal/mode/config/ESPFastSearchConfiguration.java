@@ -9,15 +9,16 @@
 
 package no.schibstedsok.searchportal.mode.config;
 
+import no.schibstedsok.searchportal.result.Navigator;
+
 import java.util.HashMap;
 import java.util.Map;
-import no.schibstedsok.searchportal.result.Navigator;
 
 /**
  *
  * @author maek
  */
-public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration {
+public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
 
     private String view;
     private String queryServer;
@@ -57,11 +58,11 @@ public class AdvancedFastSearchConfiguration extends AbstractSearchConfiguration
 
     private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();
 
-    public AdvancedFastSearchConfiguration(final SearchConfiguration asc){
+    public ESPFastSearchConfiguration(final SearchConfiguration asc){
         super(asc);
     }
 
-    public AdvancedFastSearchConfiguration() {
+    public ESPFastSearchConfiguration() {
         super(null);
     }
     

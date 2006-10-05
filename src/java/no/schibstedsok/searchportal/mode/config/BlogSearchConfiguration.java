@@ -14,7 +14,7 @@ package no.schibstedsok.searchportal.mode.config;
  *
  * @author maek
  */
-public class BlogSearchConfiguration extends NavigatableAdvancedFastConfiguration {
+public class BlogSearchConfiguration extends NavigatableESPFastConfiguration {
     
     public BlogSearchConfiguration(){
         super(null);

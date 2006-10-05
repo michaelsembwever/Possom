@@ -20,9 +20,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.searchportal.mode.command.AdvancedFastSearchCommand;
-import no.schibstedsok.searchportal.mode.command.SearchCommand.Context;
-import no.schibstedsok.searchportal.mode.config.NavigatableAdvancedFastConfiguration;
+import no.schibstedsok.searchportal.mode.command.ESPFastSearchCommand;
+import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
@@ -35,7 +34,7 @@ import org.apache.commons.lang.StringUtils;
  * 
  * @author maek
  */
-public class NavigatableAdvancedFastCommand extends AdvancedFastSearchCommand {
+public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     
     // Attributes ----------------------------------------------------
     private final Map<String,Navigator> navigatedTo = new HashMap<String,Navigator>();
@@ -43,7 +42,7 @@ public class NavigatableAdvancedFastCommand extends AdvancedFastSearchCommand {
     
     
     
-    public NavigatableAdvancedFastCommand(final Context cxt, final Map parameters) {
+    public NavigatableESPFastCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
     
@@ -216,8 +215,8 @@ public class NavigatableAdvancedFastCommand extends AdvancedFastSearchCommand {
     }
     
     /** Assured associated search configuration will always be of this type. **/
-    public NavigatableAdvancedFastConfiguration getSearchConfiguration() {
-        return (NavigatableAdvancedFastConfiguration) super.getSearchConfiguration();
+    public NavigatableESPFastConfiguration getSearchConfiguration() {
+        return (NavigatableESPFastConfiguration) super.getSearchConfiguration();
     }
     
     public List getNavigatorBackLinks(final String navigatorKey) {

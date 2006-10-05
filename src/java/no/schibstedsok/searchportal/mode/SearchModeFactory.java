@@ -1,6 +1,101 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode;
 
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.DailyWordConfiguration;
+import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.MathExpressionSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.MobileSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
+import no.schibstedsok.searchportal.mode.config.NewsSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.PicSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.PlatefoodPPCSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.config.SensisSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
+import no.schibstedsok.searchportal.mode.config.StaticSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.StockSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.StormWeatherSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.WebSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.WhiteSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.YellowGeoSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.YellowSearchConfiguration;
+import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
+import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
+import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
+import no.schibstedsok.searchportal.query.transform.AgeFilterTransformer;
+import no.schibstedsok.searchportal.query.transform.ExactTitleMatchTransformer;
+import no.schibstedsok.searchportal.query.transform.InfopageQueryTransformer;
+import no.schibstedsok.searchportal.query.transform.MobileTvQueryTransformer;
+import no.schibstedsok.searchportal.query.transform.NewsTransformer;
+import no.schibstedsok.searchportal.query.transform.QueryTransformer;
+import no.schibstedsok.searchportal.query.transform.RegExpTransformer;
+import no.schibstedsok.searchportal.query.transform.SimpleSiteSearchTransformer;
+import no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer;
+import no.schibstedsok.searchportal.query.transform.TermPrefixTransformer;
+import no.schibstedsok.searchportal.query.transform.TokenMaskTransformer;
+import no.schibstedsok.searchportal.query.transform.TvSearchQueryTransformer;
+import no.schibstedsok.searchportal.query.transform.WeatherInfopageQueryTransformer;
+import no.schibstedsok.searchportal.query.transform.WeatherQueryTransformer;
+import no.schibstedsok.searchportal.result.Navigator;
+import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
+import no.schibstedsok.searchportal.result.handler.AgeCalculatorResultHandler;
+import no.schibstedsok.searchportal.result.handler.CategorySplitter;
+import no.schibstedsok.searchportal.result.handler.CombineNavigatorsHandler;
+import no.schibstedsok.searchportal.result.handler.ContentSourceCollector;
+import no.schibstedsok.searchportal.result.handler.DataModelResultHandler;
+import no.schibstedsok.searchportal.result.handler.DateFormatHandler;
+import no.schibstedsok.searchportal.result.handler.DiscardDuplicatesResultHandler;
+import no.schibstedsok.searchportal.result.handler.DiscardOldNewsResultHandler;
+import no.schibstedsok.searchportal.result.handler.FieldChooser;
+import no.schibstedsok.searchportal.result.handler.FieldEscapeHandler;
+import no.schibstedsok.searchportal.result.handler.FindFileFormat;
+import no.schibstedsok.searchportal.result.handler.ForecastDateHandler;
+import no.schibstedsok.searchportal.result.handler.ForecastWindHandler;
+import no.schibstedsok.searchportal.result.handler.ImageHelper;
+import no.schibstedsok.searchportal.result.handler.MapCoordHandler;
+import no.schibstedsok.searchportal.result.handler.MultiValuedFieldCollector;
+import no.schibstedsok.searchportal.result.handler.NumberOperationHandler;
+import no.schibstedsok.searchportal.result.handler.PhoneNumberChooser;
+import no.schibstedsok.searchportal.result.handler.PhoneNumberFormatter;
+import no.schibstedsok.searchportal.result.handler.ResultHandler;
+import no.schibstedsok.searchportal.result.handler.SpellingSuggestionChooser;
+import no.schibstedsok.searchportal.result.handler.SumFastModifiers;
+import no.schibstedsok.searchportal.result.handler.TvSearchSortingHandler;
+import no.schibstedsok.searchportal.result.handler.WeatherCelciusHandler;
+import no.schibstedsok.searchportal.result.handler.WeatherDateHandler;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.SiteKeyedFactory;
+import no.schibstedsok.searchportal.util.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.util.config.DocumentLoader;
+import no.schibstedsok.searchportal.util.config.PropertiesLoader;
+import no.schibstedsok.searchportal.util.config.ResourceContext;
+import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
+import no.schibstedsok.searchportal.view.output.TextOutputResultHandler;
+import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
+import no.schibstedsok.searchportal.view.output.XmlOutputResultHandler;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -10,78 +105,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.*;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
-import no.schibstedsok.searchportal.query.transform.MobileTvQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.RegExpTransformer;
-import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.util.config.DocumentLoader;
-import no.schibstedsok.searchportal.util.config.PropertiesLoader;
-import no.schibstedsok.searchportal.util.config.ResourceContext;
-import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
-import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
-import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
-import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
-import no.schibstedsok.searchportal.query.transform.AgeFilterTransformer;
-import no.schibstedsok.searchportal.result.handler.CombineNavigatorsHandler;
-import no.schibstedsok.searchportal.result.handler.DataModelResultHandler;
-import no.schibstedsok.searchportal.query.transform.TvSearchQueryTransformer;
-import no.schibstedsok.searchportal.result.handler.FieldEscapeHandler;
-import no.schibstedsok.searchportal.result.handler.NumberOperationHandler;
-import no.schibstedsok.searchportal.result.handler.TvSearchSortingHandler;
-import no.schibstedsok.searchportal.view.output.TextOutputResultHandler;
-import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
-import no.schibstedsok.searchportal.view.output.XmlOutputResultHandler;
-import no.schibstedsok.searchportal.query.transform.ExactTitleMatchTransformer;
-import no.schibstedsok.searchportal.query.transform.InfopageQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.NewsTransformer;
-import no.schibstedsok.searchportal.query.transform.TokenMaskTransformer;
-import no.schibstedsok.searchportal.query.transform.QueryTransformer;
-import no.schibstedsok.searchportal.query.transform.SimpleSiteSearchTransformer;
-import no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.TermPrefixTransformer;
-import no.schibstedsok.searchportal.query.transform.WeatherQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.WeatherInfopageQueryTransformer;
-import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
-import no.schibstedsok.searchportal.result.handler.AgeCalculatorResultHandler;
-import no.schibstedsok.searchportal.result.handler.CategorySplitter;
-import no.schibstedsok.searchportal.result.handler.ContentSourceCollector;
-import no.schibstedsok.searchportal.result.handler.DiscardDuplicatesResultHandler;
-import no.schibstedsok.searchportal.result.handler.DiscardOldNewsResultHandler;
-import no.schibstedsok.searchportal.result.handler.FieldChooser;
-import no.schibstedsok.searchportal.result.handler.FindFileFormat;
-import no.schibstedsok.searchportal.result.handler.ForecastWindHandler;
-import no.schibstedsok.searchportal.result.handler.ImageHelper;
-import no.schibstedsok.searchportal.result.handler.MapCoordHandler;
-import no.schibstedsok.searchportal.result.handler.MultiValuedFieldCollector;
-import no.schibstedsok.searchportal.result.handler.PhoneNumberChooser;
-import no.schibstedsok.searchportal.result.handler.PhoneNumberFormatter;
-import no.schibstedsok.searchportal.result.handler.ResultHandler;
-import no.schibstedsok.searchportal.result.handler.SpellingSuggestionChooser;
-import no.schibstedsok.searchportal.result.handler.ForecastDateHandler;
-import no.schibstedsok.searchportal.result.handler.SumFastModifiers;
-import no.schibstedsok.searchportal.result.handler.DateFormatHandler;
-import no.schibstedsok.searchportal.result.handler.WeatherCelciusHandler;
-import no.schibstedsok.searchportal.result.handler.WeatherDateHandler;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.searchportal.util.config.AbstractDocumentFactory;
-
-import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -110,7 +133,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final Logger LOG = Logger.getLogger(SearchModeFactory.class);
     private static final String ERR_DOC_BUILDER_CREATION
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
-    private static final String ERR_MISSING_IMPLEMENTATION = "Missing implementation case in CommandTypes";
     private static final String ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED
             = "Each FastNavigator is only allowed to have one child. Parent was ";
     private static final String ERR_FAST_EPS_QR_SERVER =
@@ -305,8 +327,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private enum CommandTypes {
         COMMAND(AbstractSearchConfiguration.class),
-        ADVANCED_FAST_COMMAND(AdvancedFastSearchConfiguration.class),
-        NAVIGATABLE_ADVANCED_FAST_COMMAND(NavigatableAdvancedFastConfiguration.class),
+        ESP_FAST_COMMAND(ESPFastSearchConfiguration.class),
+        NAVIGATABLE_ESP_FAST_COMMAND(NavigatableESPFastConfiguration.class),
         BLENDING_NEWS_COMMAND(BlendingNewsSearchConfiguration.class),
         FAST_COMMAND(FastSearchConfiguration.class),
         HITTA_COMMAND(HittaSearchConfiguration.class),
@@ -431,10 +453,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     }
                 }
-                if (sc instanceof AdvancedFastSearchConfiguration) {
-                    final AdvancedFastSearchConfiguration asc = (AdvancedFastSearchConfiguration) sc;
-                    final AdvancedFastSearchConfiguration ascInherit = inherit instanceof AdvancedFastSearchConfiguration
-                            ? (AdvancedFastSearchConfiguration) inherit
+                if (sc instanceof ESPFastSearchConfiguration) {
+                    final ESPFastSearchConfiguration asc = (ESPFastSearchConfiguration) sc;
+                    final ESPFastSearchConfiguration ascInherit = inherit instanceof ESPFastSearchConfiguration
+                            ? (ESPFastSearchConfiguration) inherit
                             : null;
                     fillBeanProperty(sc, inherit, "view", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "default");
@@ -466,8 +488,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     }
                 }
-                if (sc instanceof NavigatableAdvancedFastConfiguration) {
-                    final NavigatableAdvancedFastConfiguration nasc = (NavigatableAdvancedFastConfiguration) sc;
+                if (sc instanceof NavigatableESPFastConfiguration) {
+                    final NavigatableESPFastConfiguration nasc = (NavigatableESPFastConfiguration) sc;
                     // navigators
                     final NodeList nList = commandE.getElementsByTagName("navigators");
                     for(int i = 0; i < nList.getLength(); ++i){

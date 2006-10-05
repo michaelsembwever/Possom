@@ -27,7 +27,7 @@ import no.schibstedsok.searchportal.result.BasicSearchResult;
  *
  * @author maek
  */
-public class BlogSearchCommand extends AbstractAdvancedFastSearchCommand {
+public class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
     /** Creates a new instance of FastSearchCommand
      *

@@ -1,5 +1,5 @@
 /*
- * NavigatableAdvancedFastConfiguration.java
+ * NavigatableESPFastConfiguration.java
  *
  * Created on August 20, 2006, 6:30 PM
  *
@@ -17,11 +17,11 @@ import no.schibstedsok.searchportal.result.Navigator;
  *
  * @author maek
  */
-public class NavigatableAdvancedFastConfiguration extends AdvancedFastSearchConfiguration {
+public class NavigatableESPFastConfiguration extends ESPFastSearchConfiguration {
 
     final Map<String, Navigator> navigators = new HashMap<String, Navigator>();
     
-    public NavigatableAdvancedFastConfiguration(final SearchConfiguration asc){
+    public NavigatableESPFastConfiguration(final SearchConfiguration asc){
         super(asc);
     }
 
