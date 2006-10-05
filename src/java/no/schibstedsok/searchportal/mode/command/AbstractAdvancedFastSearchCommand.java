@@ -118,16 +118,16 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
     }
 
     /**
-     * Returns true iff the clause is a leaf clause and if it will not produce and output in the query representation.
+     * Returns true iff the clause is a leaf clause and if it will not
+     * produce any output in the query representation.
      *
      * @param clause The clause to examine.
      * @return true iff leaf is empty.
      */
     private boolean isEmptyLeaf(final Clause clause) {
-
         if (clause instanceof LeafClause) {
             final LeafClause leaf = (LeafClause) clause;
-            return leaf.getField() != null;
+            return context.getSearchConfiguration().getFieldFilters().keySet().contains(leaf.getField());
         } else {
             return false;
         }
