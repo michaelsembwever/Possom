@@ -10,13 +10,14 @@ import org.jdom.Namespace;
 /**
  * @see SearchResultModule
  */
-public class SearchResultModuleImpl extends ModuleImpl 
+public class SearchResultModuleImpl extends ModuleImpl
         implements SearchResultModule {
 
-    public static final Namespace NS 
+    public static final Namespace NS
             = Namespace.getNamespace(SearchResultModule.PREFIX, SearchResultModule.URI);
-    
+
     private String numberOfHits;
+    private String articleAge;
 
     /**
      * Creates a new instance of this class.
@@ -26,31 +27,46 @@ public class SearchResultModuleImpl extends ModuleImpl
     }
 
     /**
-     * @inherit
+     * {@inheritDoc}
      */
     public Class getInterface() {
         return SearchResultModule.class;
     }
 
-     /**
-     * @inherit
+    /**
+     * {@inheritDoc}
      */
-   public void copyFrom(final Object object) {
+    public void copyFrom(final Object object) {
         SearchResultModule m = (SearchResultModule) object;
         setNumberOfHits(m.getNumberOfHits());
+        setArticleAge(m.getArticleAge());
     }
 
     /**
-     * @inherit
+     * {@inheritDoc}
      */
     public String getNumberOfHits() {
         return numberOfHits;
     }
 
     /**
-     * @inherit
+     * {@inheritDoc}
      */
     public void setNumberOfHits(final String numberOfHits) {
         this.numberOfHits = numberOfHits;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getArticleAge() {
+        return articleAge;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setArticleAge(final String articleAge) {
+        this.articleAge = articleAge;
     }
 }

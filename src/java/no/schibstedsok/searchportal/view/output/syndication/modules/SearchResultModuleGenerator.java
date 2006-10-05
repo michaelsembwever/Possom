@@ -6,25 +6,26 @@ package no.schibstedsok.searchportal.view.output.syndication.modules;
 
 import com.sun.syndication.feed.module.Module;
 import com.sun.syndication.io.ModuleGenerator;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * Syndication feed generator for the extended sesam feed syntax. 
+ * Syndication feed generator for the extended sesam feed syntax.
  */
 public class SearchResultModuleGenerator implements ModuleGenerator {
-    
+
     private static Set<Namespace> NAMESPACES;
-    
+
     static {
-        final Set nss = new HashSet();
+        final Set<Namespace> nss = new HashSet<Namespace>();
         nss.add(SearchResultModuleImpl.NS);
         NAMESPACES = Collections.unmodifiableSet(nss);
     }
-    
+
     /**
      * Creates a new instance of this class.
      */
@@ -32,39 +33,44 @@ public class SearchResultModuleGenerator implements ModuleGenerator {
     }
 
     /**
-     * @inherit
+     * {@inheritDoc}
      */
     public String getNamespaceUri() {
         return SearchResultModule.URI;
     }
 
     /**
-     * @inherit
+     * {@inheritDoc}
      */
     public Set getNamespaces() {
         return NAMESPACES;
     }
 
     /**
-     * @inherit
+     * {@inheritDoc}
      */
     public void generate(final Module module, final Element element) {
 
         // this is not necessary, it is done to avoid the namespace definition in every item.
         Element root = element;
-        while (root.getParent()!=null && root.getParent() instanceof Element) {
+        while (root.getParent() != null && root.getParent() instanceof Element) {
             root = (Element) element.getParent();
         }
+
         root.addNamespaceDeclaration(SearchResultModuleImpl.NS);
 
         final SearchResultModule m = (SearchResultModule) module;
-        
+
         if (m.getNumberOfHits() != null) {
             element.addContent(generateSimpleElement("numberOfHits", m.getNumberOfHits()));
         }
+
+        if (m.getArticleAge() != null) {
+            element.addContent(generateSimpleElement("articleAge", m.getArticleAge()));
+        }
     }
 
-    private  Element generateSimpleElement(final String name, final String value)  {
+    private Element generateSimpleElement(final String name, final String value) {
         final Element element = new Element(name, SearchResultModuleImpl.NS);
         element.addContent(value);
         return element;

@@ -58,7 +58,6 @@ import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResult
  */
 public final class SyndicationGenerator {
 
-    private static final String RSS_TPL_DIR = "rss";
     private final SearchResult result;
     private final Site site;
     private final TextMessages text;
@@ -140,7 +139,7 @@ public final class SyndicationGenerator {
 
             m.setNumberOfHits(Integer.toString(result.getHitCount()));
 
-            final List modules = new ArrayList();
+            final List<SearchResultModule> modules = new ArrayList<SearchResultModule>();
             
             modules.add(m);
             
@@ -158,7 +157,18 @@ public final class SyndicationGenerator {
             int idx = 0;
             for (SearchResultItem item : result.getResults()) {
                 ++idx;
+
                 final SyndEntry entry = new SyndEntryImpl();
+
+                final SearchResultModule entryModule = new SearchResultModuleImpl();
+
+                if (item.getField("age") != null && ! "".equals(item.getField("age"))) {
+                    entryModule.setArticleAge(item.getField("age"));
+                }
+
+                final List<SearchResultModule> sModules = new ArrayList<SearchResultModule>();
+                sModules.add(entryModule);
+                entry.setModules(sModules);
 
                 final SyndContent content = new SyndContentImpl();
 
