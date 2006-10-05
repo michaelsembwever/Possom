@@ -436,7 +436,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%if (currentC.equals("m")) {%>
 		    <%if (q.trim().equals("") && vertikal.equals("m") && !publish) {%>
 		    	<div id="index_news">
-			    <div class="head"><img src="../images/menu/nyheter_inv.gif" alt="Siste nytt" />&nbsp;&nbsp;<span class="mid_bar_m">Siste nytt</span></div>
+			    <div class="head"><img src="../images/menu/nyheter_inv.gif" alt="Siste nytt" />&nbsp;&nbsp;<span id="midbarTxt">Siste nytt</span></div>
 			    <decorator:getProperty property="page.main_ads"/>
        	    		    <decorator:getProperty property="page.media-collection-results"/>
 			</div>
