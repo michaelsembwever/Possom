@@ -1,15 +1,24 @@
 package no.schibstedsok.searchportal.mode.config;
 
 /**
+ * Search configuration for the advanced search command.
  *
  */
 public class AdvancedFastSearchConfiguration extends FastSearchConfiguration {
-	 /** TODO comment me. **/
-    public AdvancedFastSearchConfiguration() {
+
+	/**
+	 * Creates a new instance of the configuration.
+	 *
+	 */
+	public AdvancedFastSearchConfiguration() {
         super(null);
 	}
     
-	public AdvancedFastSearchConfiguration(final SearchConfiguration asc){
+	/**
+	 * Creates a new instance of the configuration.
+	 * 
+	 * @param asc Parent configuration.
+	 */public AdvancedFastSearchConfiguration(final SearchConfiguration asc){
         super(asc);
     }
 }
