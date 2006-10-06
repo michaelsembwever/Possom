@@ -91,24 +91,24 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         return Collections.unmodifiableList(copy);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final void addQueryTransformer(final QueryTransformer queryTransformer) {
         if(queryTransformer != null){
             queryTransformers.add(queryTransformer);
         }
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final List<ResultHandler> getResultHandlers() {
         return resultHandlers;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final void addResultHandler(final ResultHandler handler) {
         resultHandlers.add(handler);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final String getName() {
         return name;
     }
@@ -128,42 +128,42 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         this.pageSize = pageSize;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final boolean isPaging() {
         return paging;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final void addResultField(final String... fieldName) {
         resultFields.put(fieldName[0].trim(), (fieldName.length >1 ? fieldName[1] : fieldName[0]).trim());
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final Map<String,String> getResultFields() {
         return Collections.unmodifiableMap(resultFields);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final int getResultsToReturn() {
         return resultsToReturn;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public final void setResultsToReturn(final int no) {
         this.resultsToReturn = no;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public boolean isChild() {
         return child;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public String getQueryParameter() {
         return queryParameter;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public boolean isAlwaysRun() {
         return alwaysRun;
     }
@@ -178,7 +178,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         this.queryParameter = useParameterAsQuery;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public String getStatisticalName() {
         return statisticalName;
     }
@@ -188,7 +188,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         statisticalName = name;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public String toString(){
         return getClass().getSimpleName() + " [" + name + "]";
     }
@@ -211,12 +211,12 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
         return Collections.unmodifiableMap(fieldFilters);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void clearQueryTransformers() {
         queryTransformers.clear();
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void clearResultHandlers() {
         resultHandlers.clear();
     }

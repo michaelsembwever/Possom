@@ -102,6 +102,8 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
      * {@inheritDoc}
      */
     protected void visitImpl(final NotClause clause) {
+        // This must be extended to handle more cases
+        // and not just the start of the query, e.g. first operand of an or operator.
         if (firstTerm) {
             appendToQueryRepresentation(QL_TRUE);
         }
@@ -118,10 +120,10 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
     }
 
     /**
-     * Returns true iff the clause is a leaf clause and if it will not
-     * produce any output in the query representation.
+     * Returns true iff the clause is a leaf clause and if it will not produce any output in the query representation.
      *
      * @param clause The clause to examine.
+     *
      * @return true iff leaf is empty.
      */
     private boolean isEmptyLeaf(final Clause clause) {

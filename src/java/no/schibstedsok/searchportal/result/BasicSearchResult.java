@@ -33,27 +33,27 @@ public class BasicSearchResult implements SearchResult {
         this.searchCommand = command;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public SearchCommand getSearchCommand() {
         return searchCommand;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void setHitCount(final int docCount) {
         this.hitCount = docCount;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public int getHitCount() {
         return hitCount;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void addResult(final SearchResultItem item) {
         results.add(item);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void addSpellingSuggestion(final SpellingSuggestion suggestion) {
         if (spellingSuggestions.containsKey(suggestion.getOriginal())) {
             final List<SpellingSuggestion> exising = spellingSuggestions.get(suggestion.getOriginal());
@@ -69,32 +69,32 @@ public class BasicSearchResult implements SearchResult {
         }
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public Map<String,List<SpellingSuggestion>> getSpellingSuggestions() {
         return spellingSuggestions;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public List<QuerySuggestion> getQuerySuggestions() {
        return querySuggestions;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void addQuerySuggestion(final QuerySuggestion query) {
         querySuggestions.add(query);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public List<SearchResultItem> getResults() {
         return results;
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public void addField(final String name, final String value) {
         fields.put(name, value);
     }
 
-    /** @inherit **/
+    /** {@inheritDoc} **/
     public String getField(final String name){
         return fields.get(name);
     }
