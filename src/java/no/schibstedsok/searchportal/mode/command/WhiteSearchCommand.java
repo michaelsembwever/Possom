@@ -9,20 +9,13 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
-import no.fast.ds.search.BaseParameter;
-import no.fast.ds.search.ISearchParameters;
-import no.fast.ds.search.SearchParameter;
-import no.fast.ds.search.SearchType;
-import no.schibstedsok.searchportal.query.AndClause;
-import no.schibstedsok.searchportal.query.AndNotClause;
+
 import no.schibstedsok.searchportal.query.Clause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.token.TokenPredicate;
 
 /**
  *
@@ -92,12 +85,16 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
      *
      */
     protected void visitImpl(final XorClause clause) {
-
-       if (clause.getHint() == XorClause.PHRASE_ON_LEFT || clause.getHint() == XorClause.NUMBER_GROUP_ON_LEFT) {
-           clause.getSecondClause().accept(this);
-       } else {
-           clause.getFirstClause().accept(this);
-       }
+        // If we have a match on an international phone number, but it is not recognized as
+        // a local phone number, force it to use the original number string.
+        if (clause.getHint() == XorClause.PHONE_NUMBER_ON_LEFT
+                && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
+            clause.getSecondClause().accept(this);
+        } else if (clause.getHint() == XorClause.PHRASE_ON_LEFT || clause.getHint() == XorClause.NUMBER_GROUP_ON_LEFT) {
+            clause.getSecondClause().accept(this);
+        } else {
+            clause.getFirstClause().accept(this);
+        }
     }
     
     private boolean isEmptyLeaf(final Clause clause) {
