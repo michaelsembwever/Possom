@@ -37,7 +37,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
     boolean exactCompany;
     boolean companyRank = false;
-    
+
     private boolean correct = false;
 
     /** Creates a new yellow search command.
@@ -69,7 +69,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             viewAll = true;
         }
 
-        
+
         if (isLocalSearch() && !viewAll) {
             correct = false;
             ignoreGeoNav = true;
@@ -94,7 +94,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
             final String yprank = companyRank ? "company" : "default";
             result.addField("yprank", yprank);
-            
+
             return result;
         } else if (!viewAll) {
             isLocal = false;
@@ -165,9 +165,9 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
         exactCompany = engine.evaluateQuery(TokenPredicate.EXACTCOMPANYRANK, context.getQuery());
-        
+
         companyRank = exactCompany && !isTop3 && !getParameter("yprank").equals("standard") || getParameter("yprank").equals("company");
-        
+
         if (companyRank) {
             return t.replaceAll("yellowphon", "yellownamephon");
         }
@@ -214,9 +214,9 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
     /** TODO comment me. **/
     protected String getSortBy() {
-        
+
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
-        
+
         if (engine.evaluateQuery(TokenPredicate.EXACTCOMPANYRANK, context.getQuery())) {
             return "yellowname";
         }
@@ -276,12 +276,22 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
         }
     }
 
-    /** TODO comment me. **/
+    /**
+     * An implementation that ignores phrase searches.
+     *
+     * Visits only the left clause, unless that clause is a clause, in which
+     * case only the right clause is visited. Phrase searches are not possible
+     * against the yellow index.
+     */
     protected void visitImpl(final XorClause clause) {
-
-        if(XorClause.PHRASE_ON_LEFT == clause.getHint()){
+        // If we have a match on an international phone number, but it is not recognized as
+        // a local phone number, force it to use the original number string.
+        if (clause.getHint() == XorClause.PHONE_NUMBER_ON_LEFT
+                && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
             clause.getSecondClause().accept(this);
-        }else{
+        } else if(XorClause.PHRASE_ON_LEFT == clause.getHint()){
+            clause.getSecondClause().accept(this);
+        } else {
             super.visitImpl(clause);
         }
     }
