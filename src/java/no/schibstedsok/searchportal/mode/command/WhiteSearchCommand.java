@@ -76,13 +76,11 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
     }
 
     /**
-     *
      * An implementation that ignores phrase searches.
      *
      * Visits only the left clause, unless that clause is a phrase or organisation clause, in
      * which case only the right clause is visited. Phrase and organisation searches are not
      * possible against the white index.
-     *
      */
     protected void visitImpl(final XorClause clause) {
         // If we have a match on an international phone number, but it is not recognized as
