@@ -90,6 +90,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <link rel="icon" href="../favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
     <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>
+    <script type='text/javascript' language='JavaScript' src='../javascript/newsrss.js'></script>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 
@@ -98,7 +99,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>
 <body onLoad="init(); checkTab();">
 <%} else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m") && !publish) {%>
-<body onLoad="sndReq('http://localhost:8080/search/?c=l&newscountry=Norge&q=&output=rss')">
+<body onLoad="sndReq('/search/?c=l&newscountry=Norge&q=&output=rss')">
 <%} else {%>
 <body>
 <% } %>
