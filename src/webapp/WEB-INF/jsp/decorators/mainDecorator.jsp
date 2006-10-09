@@ -520,7 +520,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     <%}%>
                </td>
                 <td class="cell_four" valign="top" width="225">
-                    <div id="midbar_right">..
+                    <div id="midbar_right">
                         <decorator:getProperty property="page.greybar_ad"/>
                     </div>
 
