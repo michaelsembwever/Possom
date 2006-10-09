@@ -93,8 +93,15 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>
 
-
-<body onload="<%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("sw") || currentC.equals("swip")) {%>init();<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>init(); checkTab();<% } %>">
+<%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("sw") || currentC.equals("swip")) {%>
+<body onLoad="init();">
+<%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>
+<body onLoad="init(); checkTab();">
+<%} else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m") && !publish) {%>
+<body onLoad="sndReq('http://localhost:8080/search/?c=l&newscountry=Norge&q=&output=rss')">
+<%} else {%>
+<body>
+<% } %>
 
     <search:velocity template="/pages/main"/>
 
@@ -326,190 +333,124 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
        	    <% } %>
        	<% } %>
 
+        <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
 
-                <%--<decorator:getProperty property="page.search-bar"/>--%>
-                <!-- Magic -->
-                <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
-
-                     <%--  Sok smart  --%>
-                     <% if ( publish ) { %>
-                        <decorator:getProperty property="page.publishing_page"/>
-                     <% } else if ("true".equals(box)) { %>
-                        <decorator:getProperty property="page.searchbox"/>
-                     <% } else if ("true".equals(toolbar)) { %>
-                        <decorator:getProperty property="page.toolbar"/>
-                     <% } else if ("true".equals(tradedoubler)) { %>
-                        <decorator:getProperty property="page.tradedoubler"/>
-                     <% } else { %>
+             <%--  Sok smart  --%>
+             <% if ( publish ) { %>
+                <decorator:getProperty property="page.publishing_page"/>
+             <% } else if ("true".equals(box)) { %>
+                <decorator:getProperty property="page.searchbox"/>
+             <% } else if ("true".equals(toolbar)) { %>
+                <decorator:getProperty property="page.toolbar"/>
+             <% } else if ("true".equals(tradedoubler)) { %>
+                <decorator:getProperty property="page.tradedoubler"/>
+             <% } else { %>
 
 
                 <decorator:getProperty property="page.spellcheck"/>
+                <decorator:getProperty property="page.main_ads"/>
+
+                 <c:choose>
+                     <c:when test="${no_hits >0 || enrichmentSize >0}">
+
+                         <!--  Enrichments on top: <c:out value="${tab.enrichmentOnTop}"/>
+                          Enrichments in total: <c:out value="${tab.enrichmentLimit}"/>
+                           <c:forEach var="ee" items="${enrichments}">
+                               <c:out value="${ee.name}"/>: <c:out value="${ee.analysisResult}"/>
+                           </c:forEach> -->
+
+                          <decorator:getProperty property="page.globalSearchTips" />
+
+                           <%-- Show tab's leading enrichments --%>
+                           <c:forEach var="ee" items="${enrichments}" varStatus="i">
+                               <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult > tab.enrichmentOnTopScore}">
+                                   <c:set var="pageName" value="page.${ee.name}"/>
+                                   <search:velocity template="enrichments/${ee.name}" command="${ee.name}"/>
+                                    <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
+                               </c:if>
+                           </c:forEach>
+
+                            <c:choose>
+                                <c:when test="${tab.id == 'local-internet' || tab.id == 'pss'}">
+                                   <%--  Shows the 3 first hits if more than 1 enrichment  --%>
+                                   <decorator:getProperty property="page.fast-results-norwegian_part1"/>
 
 
-                        <decorator:getProperty property="page.main_ads"/>
+                                   <%-- Show tab's proceeding enrichments --%>
+                                   <c:forEach var="ee" items="${enrichments}" varStatus="i">
+                                       <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult <= tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
+                                           <c:set var="pageName" value="page.${ee.name}"/>
+                                           <search:velocity template="enrichments/${ee.name}" command="${ee.name}"/>
+                                           <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
+                                       </c:if>
+                                   </c:forEach>
 
-                     <c:choose>
-                         <c:when test="${no_hits >0 || enrichmentSize >0}">
+                                   <%--  Shows the 7 next hits after the second/third enrichments  --%>
+                                   <decorator:getProperty property="page.fast-results-norwegian_part2"/>
 
-                             <!--  Enrichments on top: <c:out value="${tab.enrichmentOnTop}"/>
-                              Enrichments in total: <c:out value="${tab.enrichmentLimit}"/>
-                               <c:forEach var="ee" items="${enrichments}">
-                                   <c:out value="${ee.name}"/>: <c:out value="${ee.analysisResult}"/>
-                               </c:forEach> -->
+                                </c:when>
+                                <c:when test="${tab.id == 'global-internet'}">
+                                    <decorator:getProperty property="page.global-results"/>
+                               </c:when>
+                           </c:choose>
+                     </c:when>
+                     <c:otherwise>
+                         <decorator:getProperty property="page.noHits" />
+                     </c:otherwise>
+                 </c:choose>
 
-                              <decorator:getProperty property="page.globalSearchTips" />
+            <% } %>  <%-- Sok smart --%>
+            
+        <% } else if (currentC.equals("m") || currentC.equals("l")) {%>
+            <%if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
+            <%}else{%>
+                <decorator:getProperty property="page.main_ads"/>
+                <decorator:getProperty property="page.search-results"/>
+            <%}%>	            
+        <% } else if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
+            <div>
+                <decorator:getProperty property="page.picsearch-results"/>
+                <search:velocity template="results/scanpix" command="scanpix"/>
+                <!--search:import template="picSearch"/-->
 
-                               <%-- Show tab's leading enrichments --%>
-                               <c:forEach var="ee" items="${enrichments}" varStatus="i">
-                                   <c:if test="${i.index < tab.enrichmentOnTop && ee.analysisResult > tab.enrichmentOnTopScore}">
-                                       <c:set var="pageName" value="page.${ee.name}"/>
-                                       <search:velocity template="enrichments/${ee.name}" command="${ee.name}"/>
-                                        <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
-                                   </c:if>
-                               </c:forEach>
+                <div class="clearFloat">&nbsp;</div>
+            </div>
+        <% } else { %>
+            <decorator:getProperty property="page.search-results"/>            
+        <%}%>
 
-                                <c:choose>
-                                    <c:when test="${tab.id == 'local-internet' || tab.id == 'pss'}">
-                                       <%--  Shows the 3 first hits if more than 1 enrichment  --%>
-                                       <decorator:getProperty property="page.fast-results-norwegian_part1"/>
+      
+        <%--  offset  --%>
+        <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
+            <%if (currentC.equals("pp")) {%>
+                    <search:velocity template="results/offsetPager" command="scanpix"/>
+            <% } else { %>
+                <decorator:getProperty property="page.offsetPager"/>
+             <% } %>
+        <%}%>
+        </td>
+        <td class="cell_four" valign="top" width="225">
+            <div id="midbar_right">
+                <decorator:getProperty property="page.greybar_ad"/>
+            </div>
 
-
-                                       <%-- Show tab's proceeding enrichments --%>
-                                       <c:forEach var="ee" items="${enrichments}" varStatus="i">
-                                           <c:if test="${(i.index >= tab.enrichmentOnTop || ee.analysisResult <= tab.enrichmentOnTopScore) && i.index < tab.enrichmentLimit}">
-                                               <c:set var="pageName" value="page.${ee.name}"/>
-                                               <search:velocity template="enrichments/${ee.name}" command="${ee.name}"/>
-                                               <c:out value="${siteMeshPage.properties[pageName]}" escapeXml="false"/>
-                                           </c:if>
-                                       </c:forEach>
-
-                                       <%--  Shows the 7 next hits after the second/third enrichments  --%>
-                                       <decorator:getProperty property="page.fast-results-norwegian_part2"/>
-
-                                    </c:when>
-                                    <c:when test="${tab.id == 'global-internet'}">
-                                        <decorator:getProperty property="page.global-results"/>
-                                   </c:when>
-                               </c:choose>
-                         </c:when>
-                         <c:otherwise>
-                             <decorator:getProperty property="page.noHits" />
-                         </c:otherwise>
-                     </c:choose>
-
-                        <% } %>  <%-- Sok smart --%>
-                <%}%>
-
-
-
-                <%if (currentC.equals("m")) {%>
-		    <%if (q.trim().equals("") && vertikal.equals("m") && !publish) {%>
-		    	<div id="index_news">
-			    <div class="head"><img src="../images/menu/nyheter_inv.gif" alt="Siste nytt" />&nbsp;&nbsp;<span id="midbarTxt">Siste nytt</span></div>
-			    <decorator:getProperty property="page.main_ads"/>
-       	    		    <decorator:getProperty property="page.media-collection-results"/>
-			</div>
-		    <%}else if (q.trim().equals("") && vertikal.equals("m") && publish) {%>
-
-		    <%}else{%>
-               	    	<decorator:getProperty property="page.main_ads"/>
-               	    	<decorator:getProperty property="page.media-collection-results"/>
-                    <%}%>
-                <%}%>
-
-                <%if (currentC.equals("l")) {%>
-                    <decorator:getProperty property="page.main_ads"/>
-                    <decorator:getProperty property="page.media-collection-results"/>
-                <%}%>
-
-
-                <%if (currentC.equals("yip") || currentC.equals("yipticker")) {%>
-                <decorator:getProperty property="page.infopage"/>
-                <%}%>
-                <%if (currentC.equals("wip") || currentC.equals("swip")) {%>
-                <decorator:getProperty property="page.infopage"/>
-                <%}%>
-
-                <%if (currentC.equals("wipgift")) {%>
-                <decorator:getProperty property="page.infopage"/>
-                <%}%>
-
-                <!-- Companies -->
-                <%if (currentC.equals("y") || currentC.equals("yg")) {%>
-                <%if (request.getParameter("companyId") != null) {%>
-                <%} else {%>
-                <decorator:getProperty property="page.pseudo-local"/>
-                <decorator:getProperty property="page.companies-results"/>
-                <%}%>
-                <%}%>
-
-                <!-- Weather -->
-                <%if (currentC.equals("sw") && !q.trim().equals("")) {%>
-                <decorator:getProperty property="page.weather"/>
-                <%}%>
-
-                <!-- Persons -->
-                <%if (currentC.equals("w")) {%>
-                <decorator:getProperty property="page.persons-results"/>
-                <%}%>
-
-                <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
-                    <div>
-                        <decorator:getProperty property="page.picsearch-results"/>
-                        <search:velocity template="results/scanpix" command="scanpix"/>
-                        <!--search:import template="picSearch"/-->
-
-                        <div class="clearFloat">&nbsp;</div>
-                    </div>
-                <%}%>
-
-                <%if (currentC.equals("t")) {%>
-                    <decorator:getProperty property="page.tv-results"/>
-                <%}%>
-
-                <%if (currentC.equals("wt")) {%>
-                    <decorator:getProperty property="page.webtv-results"/>
-                <%}%>
-
-                <%if (currentC.equals("b")) {%>
-                <decorator:getProperty property="page.blog-search"/>
-                <%}%>
-                
-                <%if (currentC.equals("ads")) {%>                
-                    <decorator:getProperty property="page.ads-results"/>
-                <%}%>                
-
-                    <%--  offset  --%>
-                    <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
-                        <%if (currentC.equals("pp")) {%>
-                                <search:velocity template="results/offsetPager" command="scanpix"/>
-                        <% } else { %>
-                            <decorator:getProperty property="page.offsetPager"/>
-                         <% } %>
-                    <%}%>
-               </td>
-                <td class="cell_four" valign="top" width="225">
-                    <div id="midbar_right">
-                        <decorator:getProperty property="page.greybar_ad"/>
-                    </div>
-
-                    <% if (currentC.equals("p") ) {%>
-                        <decorator:getProperty property="page.ads"/>
-                        <decorator:getProperty property="page.ads-picsearch-logo"/>
-                    <%}else if (currentC.equals("b") ) {%>
-                        <decorator:getProperty property="page.feedback"/>
-                    <%} else if (currentC.equals("t")) {%>
-                        <decorator:getProperty property="page.tvSearchWebTv"/>
-                        <decorator:getProperty property="page.ads"/>
-                    <%} else {%>
-                        <decorator:getProperty property="page.ads"/>
-                    <%}%>
-                </td>
-        </tr>
-        <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
-            <decorator:getProperty property="page.ads_floating"/>
-        <% } %>
-    </table>
+            <% if (currentC.equals("p") ) {%>
+                <decorator:getProperty property="page.ads"/>
+                <decorator:getProperty property="page.ads-picsearch-logo"/>
+            <%}else if (currentC.equals("b") ) {%>
+                <decorator:getProperty property="page.feedback"/>
+            <%} else if (currentC.equals("t")) {%>
+                <decorator:getProperty property="page.tvSearchWebTv"/>
+                <decorator:getProperty property="page.ads"/>
+            <%} else {%>
+                <decorator:getProperty property="page.ads"/>
+            <%}%>
+        </td>
+    </tr>
+    <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
+        <decorator:getProperty property="page.ads_floating"/>
+    <% } %>
+</table>
 
     <%--  footer  --%>
     <%if (q==null || !q.trim().equals("") || "m".equals(currentC) ) {%>
