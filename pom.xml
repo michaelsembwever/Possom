@@ -15,7 +15,7 @@
     </description>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
-        <testSourceDirectory>src/test/java</testSourceDirectory>
+        <testSourceDirectory>src/test/unit/java</testSourceDirectory>
         <defaultGoal>package</defaultGoal>
         <resources>
             <resource>
@@ -35,19 +35,18 @@
                 </includes>
             </resource>
         </resources>
-        <testResources>
-            <testResource>
-                <filtering>true</filtering>
-                <directory>src/test/conf</directory>
-                <includes>
-                    <include>*.xml</include>
-                    <include>*.properties</include>
-                    <include>*.csv</include>
-                    <include>*.txt</include>
-                </includes>
-            </testResource>
-        </testResources>
         <plugins>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <executions>
+                 <execution>
+                   <goals>
+                     <goal>test-jar</goal>
+                   </goals>
+                 </execution>
+               </executions>
+             </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
@@ -58,8 +57,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <forkMode>once</forkMode>
-                    <argLine>-Xmx512m -Dfile.encoding=UTF-8</argLine>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -327,11 +325,6 @@
             <groupId>fast</groupId>
             <artifactId>msearch-client</artifactId>
             <version>4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
         </dependency>
         <dependency>
             <groupId>jug</groupId>
