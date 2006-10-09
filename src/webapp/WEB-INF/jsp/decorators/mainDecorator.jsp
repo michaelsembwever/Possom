@@ -71,27 +71,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-    <title><% if((q != null) && (!q.equals(""))){ %><%=q%> - <%}%>Sesam</title>
-    <link media="screen" href="../css/decorator-style.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/sitesearch.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/front.css" rel="stylesheet" type="text/css" />
-    <link media="screen" href="../css/ps.css" rel="stylesheet" type="text/css" />
-    <c:if test='${!(empty tab.rssResultName)}'>
-    <link rel="alternate" type="application/rss+xml" title="RSS - Sesam" href="<c:out value='${request.requestURL}' escapeXml="false"/>?<c:out value='${request.queryString}' escapeXml="false"/>&output=rss" />
-    </c:if>
-    <c:forEach var="t" items="${tab.ancestry}">
-        <link media="screen" href="../css/tab/<c:out value='${t.id}'/>.css" rel="stylesheet" type="text/css" />
-    </c:forEach>
-    <c:forEach var="css" items="${tab.css}">
-        <link media="screen" href="../css/tab/<c:out value='${css}'/>.css" rel="stylesheet" type="text/css" />
-    </c:forEach>
-
-    <link media="print" href="../css/print-style.css" rel="stylesheet" type="text/css" />
-    <link rel="icon" href="../favicon.ico" type="image/x-icon" />
-    <link rel="shortcut icon" href="../favicon.ico" type="image/x-icon" />
-    <script type='text/javascript' language='JavaScript' src='../javascript/common.js'></script>
-    <script type='text/javascript' language='JavaScript' src='../javascript/newsrss.js'></script>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <search:velocity template="/pages/head"/>
 </head>
 
 <%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("sw") || currentC.equals("swip")) {%>
