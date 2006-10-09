@@ -18,7 +18,8 @@ public class AdvancedFastSearchConfiguration extends FastSearchConfiguration {
 	 * Creates a new instance of the configuration.
 	 * 
 	 * @param asc Parent configuration.
-	 */public AdvancedFastSearchConfiguration(final SearchConfiguration asc){
+	 */
+    public AdvancedFastSearchConfiguration(final SearchConfiguration asc){
         super(asc);
     }
 }

@@ -36,18 +36,25 @@ public class SearchResultModuleParser implements ModuleParser {
 
         boolean touched = false;
 
-        final Element e = root.getChild("numberOfHits", SearchResultModuleImpl.NS);
+        final Element e = root.getChild(SearchResultModule.ELEM_NUMBER_OF_HITS, SearchResultModuleImpl.NS);
 
         if (e != null) {
             touched = true;
             m.setNumberOfHits(e.getText());
         }
 
-        final Element ageElem = root.getChild("articleAge", SearchResultModuleImpl.NS);
+        final Element ageElem = root.getChild(SearchResultModule.ELEM_ARTICLE_AGE, SearchResultModuleImpl.NS);
 
         if (ageElem != null) {
             touched = true;
             m.setArticleAge(e.getText());
+        }
+
+        final Element sourceElem = root.getChild(SearchResultModule.ELEM_NEWS_SOURCE, SearchResultModuleImpl.NS);
+
+        if (sourceElem != null) {
+            touched = true;
+            m.setNewsSource(e.getText());
         }
 
         return touched == true ? m : null;

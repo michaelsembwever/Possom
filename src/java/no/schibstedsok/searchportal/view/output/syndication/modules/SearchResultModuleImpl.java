@@ -18,7 +18,8 @@ public class SearchResultModuleImpl extends ModuleImpl
 
     private String numberOfHits;
     private String articleAge;
-
+    private String newsSource;
+    
     /**
      * Creates a new instance of this class.
      */
@@ -47,6 +48,16 @@ public class SearchResultModuleImpl extends ModuleImpl
      */
     public String getNumberOfHits() {
         return numberOfHits;
+    }
+
+    /** {@inheritDoc} */
+    public void setNewsSource(String newsSource) {
+        this.newsSource = newsSource;
+    }
+
+    /** {@inheritDoc} */
+    public String getNewsSource() {
+        return newsSource;
     }
 
     /**

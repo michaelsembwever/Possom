@@ -62,11 +62,15 @@ public class SearchResultModuleGenerator implements ModuleGenerator {
         final SearchResultModule m = (SearchResultModule) module;
 
         if (m.getNumberOfHits() != null) {
-            element.addContent(generateSimpleElement("numberOfHits", m.getNumberOfHits()));
+            element.addContent(generateSimpleElement(SearchResultModule.ELEM_NUMBER_OF_HITS, m.getNumberOfHits()));
         }
 
         if (m.getArticleAge() != null) {
-            element.addContent(generateSimpleElement("articleAge", m.getArticleAge()));
+            element.addContent(generateSimpleElement(SearchResultModule.ELEM_ARTICLE_AGE, m.getArticleAge()));
+        }
+
+        if (m.getNewsSource() != null) {
+            element.addContent(generateSimpleElement(SearchResultModule.ELEM_NEWS_SOURCE, m.getNewsSource()));
         }
     }
 

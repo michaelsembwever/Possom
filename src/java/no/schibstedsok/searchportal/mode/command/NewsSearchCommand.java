@@ -9,18 +9,8 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
-import no.fast.idl.orb.configservice.config;
-import no.fast.idl.orb.statusservice.configuration;
-import no.schibstedsok.searchportal.mode.command.*;
-import no.schibstedsok.searchportal.query.AndClause;
-import no.schibstedsok.searchportal.query.AndNotClause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 
 /**
@@ -80,8 +70,6 @@ public class NewsSearchCommand extends FastSearchCommand {
                 if (containsJustThePrefix() || getTransformedQuery().equals("")) {
                     filterBuilder.append(FAST_SIZE_HACK);
                 }
-                
-                
 
                 if (!getSearchConfiguration().isIgnoreNavigation()) {
 

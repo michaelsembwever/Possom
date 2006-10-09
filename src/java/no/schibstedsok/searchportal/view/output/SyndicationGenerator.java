@@ -166,10 +166,13 @@ public final class SyndicationGenerator {
                     entryModule.setArticleAge(item.getField("age"));
                 }
 
+                if (item.getField("newssource") != null && !"".equals(item.getField("newssource"))) {
+                    entryModule.setNewsSource(item.getField("newssource"));
+                }
+
                 final List<SearchResultModule> sModules = new ArrayList<SearchResultModule>();
                 sModules.add(entryModule);
                 entry.setModules(sModules);
-
                 final SyndContent content = new SyndContentImpl();
 
                 content.setType("text/html");
