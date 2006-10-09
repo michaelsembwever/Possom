@@ -432,6 +432,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             fsc.addCollection(collection);
                         }
                     }
+
                     fillBeanProperty(sc, inherit, "filter", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "ignoreNavigation", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "offensiveScoreLimit", ParseType.Int , commandE, "-1");
@@ -446,7 +447,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "spellcheck", ParseType.Boolean , commandE, "false");
 
                     // navigators
+                    if (fscInherit != null && fscInherit.getNavigators() != null) {
+                        for (final Map.Entry<String, Navigator> nav : fscInherit.getNavigators().entrySet()) {
+                            fsc.addNavigator(nav.getValue(), nav.getKey());
+                        }
+                    }
+
                     final NodeList nList = commandE.getElementsByTagName("navigators");
+
                     for(int i = 0; i < nList.getLength(); ++i){
                         final Collection<Navigator> navigators = parseNavigators((Element)nList.item(i));
                         for(Navigator navigator : navigators){
