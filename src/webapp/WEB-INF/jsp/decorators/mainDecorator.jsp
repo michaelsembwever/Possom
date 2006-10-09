@@ -31,10 +31,6 @@ final String newscountry = (String) request.getParameter("newscountry");
 final String qURLEncoded = URLEncoder.encode(q, "utf-8");
 q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
-final String help = request.getParameter("help");
-final String about = request.getParameter("about");
-final String ads_help = request.getParameter("ads_help");
-final String smart = request.getParameter("smart");
 final String box = request.getParameter("box");
 final String toolbar = request.getParameter("toolbar");
 final String tradedoubler = request.getParameter("td");
@@ -300,16 +296,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
             <% }else{ %>
                 <decorator:getProperty property="page.relevantQueries" />
-                <% if ("true".equals(smart)) { %>
-                    <decorator:getProperty property="page.smart-nav"/>
-                <% }else if ("true".equals(help)){ %>
-                    <decorator:getProperty property="page.help-nav"/>
-                <% }else if ("true".equals(about)){ %>
-                    <decorator:getProperty property="page.about-nav"/>
-                <% }else if ("true".equals(ads_help)){ %>
-                    <decorator:getProperty property="page.ads_help-nav"/>
-                <%}%>
-
             <%}%>
 
             <search:velocity template="navigators/scanpix" command="scanpix"/>
@@ -345,26 +331,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <!-- Magic -->
                 <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
 
-
-                    <%--  Header  --%>
-                    <% if ("true".equals(smart)) { %>
-                        <decorator:getProperty property="page.greybar_smart"/>
-                    <% } else if ("true".equals(help)) { %>
-                        <decorator:getProperty property="page.greybar_help"/>
-                    <% } %>  <%--  Help header  --%>
-
-
                      <%--  Sok smart  --%>
                      <% if ( publish ) { %>
                         <decorator:getProperty property="page.publishing_page"/>
-                     <% } else if ("true".equals(smart)) { %>
-                        <decorator:getProperty property="page.smart"/>
-                     <% } else if ("true".equals(help)) { %>
-                         <decorator:getProperty property="page.help"/>
-                     <% } else if ("true".equals(about)) { %>
-                        <decorator:getProperty property="page.about"/>
-                     <% } else if ("true".equals(ads_help)) { %>
-                        <decorator:getProperty property="page.ads_help"/>
                      <% } else if ("true".equals(box)) { %>
                         <decorator:getProperty property="page.searchbox"/>
                      <% } else if ("true".equals(toolbar)) { %>
