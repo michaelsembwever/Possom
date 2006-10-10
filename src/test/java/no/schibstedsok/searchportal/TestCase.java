@@ -74,7 +74,7 @@ public abstract class TestCase extends junit.framework.TestCase {
     
     private static void removingAppendersWarning(){
         
-        LOG.warn("\n==================================");
+        LOG.warn("==================================");
         LOG.warn("REMOVING ALL APPENDERS FOR TESTING");
         LOG.warn("==================================");
         
