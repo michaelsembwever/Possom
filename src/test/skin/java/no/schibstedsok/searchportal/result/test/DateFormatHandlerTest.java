@@ -27,7 +27,7 @@ public final class DateFormatHandlerTest extends TestCase {
     private static final String SOURCE_FIELD = "source_field";
     private static final String FIELD_PREFIX = "prefix";
 
-    public DateFormatHandlerTest(final String testName) {
+    public DateFormatHandlerTest(String testName) {
         super(testName);
     }	
     

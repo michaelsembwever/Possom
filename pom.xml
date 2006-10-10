@@ -15,7 +15,7 @@
     </description>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
-        <testSourceDirectory>src/test/unit/java</testSourceDirectory>
+        <testSourceDirectory>src/test/skin/java</testSourceDirectory>
         <defaultGoal>package</defaultGoal>
         <resources>
             <resource>
@@ -58,6 +58,12 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <!--includes>
+                        <include>**/*UnitTest.java</include>
+                    </includes-->
                 </configuration>
             </plugin>
             <plugin>

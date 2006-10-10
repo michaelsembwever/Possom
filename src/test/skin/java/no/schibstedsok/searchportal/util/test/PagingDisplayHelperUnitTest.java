@@ -13,11 +13,11 @@ import junit.framework.TestResult;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class PagingDisplayHelperTest extends TestCase {
+public class PagingDisplayHelperUnitTest extends TestCase {
 
     private PagingDisplayHelper pager;
     
-    public PagingDisplayHelperTest(final String testName) {
+    public PagingDisplayHelperUnitTest(final String testName) {
         super(testName);
     }	     
 

@@ -14,13 +14,13 @@ import no.schibstedsok.searchportal.TestCase;
  * @author <a href="magnus.eklund@sesam.no">Magnus Eklund</a>
  * @version $Revision$
  */
-public class AnalysisRuleTest extends TestCase {
+public final class AnalysisRuleTest extends junit.framework.TestCase {
 
     private AnalysisRule rule = null;
     private Predicate truePredicate = PredicateUtils.truePredicate();
     private Predicate falsePredicate = PredicateUtils.falsePredicate();
 
-    public AnalysisRuleTest(final String testName) {
+    public AnalysisRuleTest(String testName) {
         super(testName);
     }	 
     
