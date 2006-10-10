@@ -4,7 +4,7 @@
       <parent>
           <groupId>schibstedsok</groupId>
           <artifactId>search-main</artifactId>
-          <version>2.4</version>
+          <version>2.5-SNAPSHOT</version>
       </parent>
     <artifactId>search-portal</artifactId>
     <packaging>war</packaging>
