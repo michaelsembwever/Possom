@@ -15,7 +15,6 @@
     </description>
     <build>
         <sourceDirectory>src/java</sourceDirectory>
-        <testSourceDirectory>src/test/skin/java</testSourceDirectory>
         <defaultGoal>package</defaultGoal>
         <resources>
             <resource>
