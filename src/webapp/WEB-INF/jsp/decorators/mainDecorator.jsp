@@ -433,15 +433,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% } %>
 </table>
 
-    <%--  footer  --%>
-    <%if (q==null || !q.trim().equals("") || "m".equals(currentC) ) {%>
     <decorator:getProperty property="page.verbosePager"/>
-    <%}%>
-
-    <%if ("l".equals(currentC) ) {%>
-    <decorator:getProperty property="page.verbosePager"/>
-    <%}%>
-
 
     <decorator:getProperty property="page.footer"/>
 
