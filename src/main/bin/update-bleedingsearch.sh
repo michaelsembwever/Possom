@@ -52,7 +52,7 @@ rm -f update-bleedingsearch.tmp
 #
 
 # XXX parametise which project list we load
-sh bleedingsearch-projects.sh
+. bleedingsearch-projects.sh
 
 cnt=${#PROJECTS[*]}
 
