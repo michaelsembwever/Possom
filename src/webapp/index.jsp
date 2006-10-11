@@ -54,7 +54,7 @@
         </script>
     </head>
 
-    <body>
+    <body onLoad='scrollbox()'>
 
 <div style="padding-left:28px; background-image: url(images/index/stripe_bg.gif); background-repeat: repeat-x; background-position: 0px 105px;" align="left">
 <table border="0" width="850" cellspacing="0" cellpadding="0">
