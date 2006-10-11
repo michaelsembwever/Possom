@@ -24,6 +24,8 @@ rm -f update-bleedingsearch.tmp
 wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/update-bleedingsearch.sh -O update-bleedingsearch.tmp
 if (diff -q update-bleedingsearch.sh update-bleedingsearch.tmp) ; then
     mv update-bleedingsearch.tmp update-bleedingsearch.sh
+    chmod u+x update-bleedingsearch.sh
+    chmod g+x update-bleedingsearch.sh
     echo "Updated myself. Did not update bleedingsearch. Please run again."
     rm -f update-bleedingsearch.lck
     exit 1
@@ -35,7 +37,9 @@ rm -f update-bleedingsearch.tmp
 rm -f bleedingsearch-projects.tmp
 wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/bleedingsearch-projects.sh -O bleedingsearch-projects.tmp
 if (diff -q bleedingsearch-projects.sh bleedingsearch-projects.tmp) ; then
-    mv update-bleedingsearch.tmp update-bleedingsearch.sh
+    mv bleedingsearch-projects.tmp bleedingsearch-projects.sh
+    chmod u+x bleedingsearch-projects.sh
+    chmod g+x bleedingsearch-projects.sh
     echo "Updated bleedingsearch-projects.sh"
 fi
 rm -f update-bleedingsearch.tmp
