@@ -87,18 +87,18 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
         LOG.debug(DEBUG_CONF_NFO + conf.getCatalog() + ' ' + conf.getKey());
 
-        try {
-            final HittaServiceLocator locator = new HittaServiceLocator();
-            final HittaServiceSoap service = locator.getHittaServiceSoap();
-            final SplitQueryTransformer splitter = new SplitQueryTransformer();
+        if(getTransformedQuery().equals(context.getQuery().getQueryString())){
 
-            if(getTransformedQuery().equals(context.getQuery().getQueryString())){
+            try {
 
+                final HittaServiceLocator locator = new HittaServiceLocator();
+                final HittaServiceSoap service = locator.getHittaServiceSoap();
+                final SplitQueryTransformer splitter = new SplitQueryTransformer();
 
                 final String[] splitQuery = splitter.getQuery();
 
                 if( splitQuery[0].length() >0 ){
-                    
+
                     getParameters().put("hittaWho", splitQuery[0]);
                     getParameters().put("hittaWhere", splitQuery[1]);
 
@@ -113,13 +113,14 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
                     }
                 }
+            } catch (ServiceException ex) {
+                LOG.error(ERR_FAILED_HITTA_SEARCH, ex);
+            } catch (RemoteException ex) {
+                LOG.error(ERR_FAILED_HITTA_SEARCH, ex);
             }
-
-        } catch (ServiceException ex) {
-            LOG.error(ERR_FAILED_HITTA_SEARCH, ex);
-        } catch (RemoteException ex) {
-            LOG.error(ERR_FAILED_HITTA_SEARCH, ex);
         }
+
+        
 
         final SearchResult result = new WebServiceSearchResult(this);
         result.setHitCount(hits);
@@ -180,6 +181,8 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
         private boolean hasCompany = false;
         private boolean hasFullname = false;
+        private boolean multipleCompany = false;
+        private boolean multipleFullname = false;
         private boolean validQuery = true;
         private FullnameOrCompanyFinder fullnameOrCompanyFinder = new FullnameOrCompanyFinder();
 
@@ -189,7 +192,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 who = new StringBuilder();
                 where = new StringBuilder();
                 fullnameOrCompanyFinder.visit(context.getQuery().getRootClause());
-                if(!(hasCompany && hasFullname)){
+                if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
                         visit(context.getQuery().getRootClause());
                 }
             }
@@ -240,9 +243,10 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 where.append(getTransformedTerm(clause));
                 
             }else{
-                if(hasCompany && !isCompany && isName){
+                if((hasCompany && !isCompany && isName) || multipleCompany || multipleFullname ){
                     // this is a company query but this clause isn't the company but a loose name.
                     // abort this hitta search, see SEARCH-966 - hitta enrichment
+                    // OR there are multiple fullnames or company names.
                     validQuery = false;
                 }else{
                     who.append(getTransformedTerm(clause));
@@ -251,7 +255,9 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         }
 
         protected void visitImpl(final OperationClause clause) {
-            clause.getFirstClause().accept(this);
+            if(validQuery){
+                clause.getFirstClause().accept(this);
+            }
         }
 
         protected void visitImpl(final DoubleOperatorClause clause) {
@@ -280,17 +286,21 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
                 final Set<TokenPredicate> predicates = clause.getKnownPredicates();
 
-                hasCompany |= predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+                final boolean company = predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+                multipleCompany = hasCompany && company;
+                hasCompany |= company;
             }
 
             protected void visitImpl(final OperationClause clause) {
-                if(!(hasCompany && hasFullname)){
+                
+                if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname ){
                     clause.getFirstClause().accept(this);
                 }
             }
 
             protected void visitImpl(final DoubleOperatorClause clause) {
-                if(!(hasCompany && hasFullname)){
+                
+                if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
                     clause.getFirstClause().accept(this);
                     clause.getSecondClause().accept(this);
                 }
@@ -301,12 +311,13 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 final Set<TokenPredicate> predicates = clause.getKnownPredicates();
                 
                 boolean fullname = predicates.contains(TokenPredicate.FULLNAME);
+                multipleFullname = fullname && hasFullname;
                 hasFullname |= fullname;
                 
                 hasCompany |= !fullname
                     && predicates.contains(TokenPredicate.COMPANYENRICHMENT);
                 
-                if(!fullname || !(hasCompany && hasFullname)){
+                if(!fullname || !(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
                     clause.getFirstClause().accept(this);
                     clause.getSecondClause().accept(this);
                 }
