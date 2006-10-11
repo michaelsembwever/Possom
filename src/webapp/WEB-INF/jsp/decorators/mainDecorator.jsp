@@ -406,7 +406,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%if (currentC.equals("pp")) {%>
                     <search:velocity template="results/offsetPager" command="scanpix"/>
             <% } else { %>
-                <decorator:getProperty property="page.offsetPager"/>
+                <% if ( !"sv".equals(locale) ) { %>
+                    <decorator:getProperty property="page.offsetPager"/>
+                <% } %>            
              <% } %>
         <%}%>
         </td>
@@ -431,6 +433,13 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
         <decorator:getProperty property="page.ads_floating"/>
     <% } %>
+    
+     <% if ( "sv".equals(locale) ) { %>
+        <tr>
+            <td>&nbsp;</td>
+            <td colspan="2"><decorator:getProperty property="page.offsetPager"/></td>
+        </tr>     
+     <% } %>    
 </table>
 
     <decorator:getProperty property="page.verbosePager"/>
