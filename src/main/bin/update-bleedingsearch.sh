@@ -7,7 +7,7 @@
 
 # Check we're on correct machine
 #
-if ! (hostname | grep -q sch-http01.dev); then
+if ! (hostname | grep -q sch-login01); then
         echo "This script can only be executed on sch-http01.dev"
         rm -f update-bleedingsearch.lck
         exit 1
@@ -20,7 +20,7 @@ lockfile -l 900 update-bleedingsearch.lck
 
 #  Update update-bleedingsearch.sh
 #
-rm update-bleedingsearch.tmp
+rm -f update-bleedingsearch.tmp
 wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/update-bleedingsearch.sh -O update-bleedingsearch.tmp
 if (diff -q update-bleedingsearch.sh update-bleedingsearch.tmp) ; then
     mv update-bleedingsearch.tmp update-bleedingsearch.sh
@@ -28,17 +28,17 @@ if (diff -q update-bleedingsearch.sh update-bleedingsearch.tmp) ; then
     rm -f update-bleedingsearch.lck
     exit 1
 fi
-rm update-bleedingsearch.tmp
+rm -f update-bleedingsearch.tmp
 
 #  Update bleedingsearch-projects.sh
 #
-rm bleedingsearch-projects.tmp
+rm -f bleedingsearch-projects.tmp
 wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/bleedingsearch-projects.sh -O bleedingsearch-projects.tmp
 if (diff -q bleedingsearch-projects.sh bleedingsearch-projects.tmp) ; then
     mv update-bleedingsearch.tmp update-bleedingsearch.sh
     echo "Updated bleedingsearch-projects.sh"
 fi
-rm update-bleedingsearch.tmp
+rm -f update-bleedingsearch.tmp
 
 #
 # Start Update
