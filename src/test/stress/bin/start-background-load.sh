@@ -8,7 +8,7 @@
 cd /www/schibstedsok/home/mickw
 echo "Fetching new copy of bleedingsearch-background-stress.jmx"
 rm bleedingsearch-background-stress.jmx
-wget https://dev.schibstedsok.no/svn/search-config/sesam.no/trunk/war/src/main/conf/bleedingsearch-background-stress.jmx
+wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/test/stress/conf/bleedingsearch-background-stress.jmx
 echo "Cleaning jmeter.log"
 > jmeter.log
 echo "Backgrounding jmeter in non-gui mode..."
