@@ -57,3 +57,4 @@ CONTEXTS[22]="generic.bleedingsearch.schibstedsok.no.war"
 CONTEXTS[23]="genericsitesearch.bleedingsearch.schibstedsok.se.war"
 CONTEXTS[24]="ROOT.war"
 
+export PROJECTS CONTEXTS
