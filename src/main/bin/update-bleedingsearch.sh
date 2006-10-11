@@ -8,8 +8,7 @@
 # Check we're on correct machine
 #
 if ! (hostname | grep -q sch-login01); then
-        echo "This script can only be executed on sch-http01.dev"
-        rm -f update-bleedingsearch.lck
+        echo "This script can only be executed on sch-login01.dev"
         exit 1
 fi
 
@@ -45,7 +44,9 @@ if [[ "x" != "x$DIFF" ]] ; then
     chmod g+x bleedingsearch-projects.sh
     echo "Updated bleedingsearch-projects.sh"
 fi
-rm -f update-bleedingsearch.tmp
+rm -f bleedingsearch-projects.tmp
+unset DIFF
+
 
 #
 # Start Update

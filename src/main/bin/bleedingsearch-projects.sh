@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Projects to use in bleedingsearch
+# Projects to use in trunk
 #  Used by update-bleedingsearch.sh
 #
 
