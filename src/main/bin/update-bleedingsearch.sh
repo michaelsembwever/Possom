@@ -32,7 +32,7 @@ if [[ "x" != "x$DIFF" ]] ; then
     exit 1
 fi
 rm -f update-bleedingsearch.tmp
-unset $DIFF
+unset DIFF
 
 #  Update bleedingsearch-projects.sh
 #
