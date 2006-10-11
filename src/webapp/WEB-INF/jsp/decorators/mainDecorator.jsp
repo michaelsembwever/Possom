@@ -173,96 +173,12 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	<%if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
         <%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d") || currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
         <td class="cell_one" valign="top">
-          <%if (q.trim().equals("") && (currentC.equals("t") || currentC.equals("m") || currentC.equals("l"))) { %>
-              <decorator:getProperty property="page.frontMenu"/>
-          <% } else { %>
-        <script type="text/javascript" language="JavaScript">
-	    var menuCookie = getCookie("sesam_menu");
-	    if(menuCookie == "closed"){
-	      document.write('<div id="menutable" style="display:none;">'); 
-	    }else{
-	      document.write('<div id="menutable">');	
-	    }
-	</script>
-                  
-            <%-- couple of swedish quick fix in this table. have to override this file later in sesam.se  --%>
-            <% if ( "sv".equals(locale) ) { %>      
-                <table border="0" cellspacing="0" cellpadding="0" id="navbar_main" class="navbar2_table">
-                    <tr>
-                        <td colspan="3" class="navbar2_header">Fler Sesam-tr&#228;ffar</td>
-                    </tr>                
-            <% } else { %>
-                <table border="0" cellspacing="0" cellpadding="0" class="navbar2_toptable">
-            <% } %>
-                <c:set var="rows" value="${0}"/>
-                <c:forEach var="e" items="${sources}">
-                    <c:set var="hint" value="${e.navigationHint}"/>
-                    <c:if test="${!empty hint && !empty hint.tab}">
-                        <c:url var="urlEnc" value="">
-                            <c:param name="c" value="${hint.tab.key}"/>
-                            <c:choose>
-                                <c:when test="${e.count > 0}">
-                                    <c:param name="q" value="{$q}"/>
-                                </c:when>
-                                <c:otherwise>
-                                    <c:param name="q" value=""/>
-                                </c:otherwise>
-                            </c:choose>
-                        </c:url>
-
-                        <c:set var="navUrl" value="${urlEnc}${hint.urlSuffix}"/>
-
-                        <c:set var="rows" value="${rows +1}"/>
-
-                        <c:if test="${rows > 1}">
-                            <tr><td colspan="3"><img src="../images/index/dottedline2.gif" alt="" /></td></tr>
-                        </c:if>
-                        <tr>
-                            <% if ( "sv".equals(locale) ) { %>
-                                <td class="navbar_main_left"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>
-                            <% } else { %>
-                                <td class="navbar2_imgpad"><img src='<c:out value="../images/menu/icons/${hint.image}"/>' class="nav_icon" align="left" alt="" /></td>
-                                <td class="navbar2_menupad"><a href='<search:linkPulse url="${navUrl}" param="category:navigation;subcategory:service_left" index=""/>' onclick="return strep(this);"><c:out value="${hint.displayName}"/></a></td>                                
-                            <% } %>
-
-                            <c:choose>
-                                <c:when test="${e.count == 123456789}">
-                                    <td class="navbar2_rightpad" align="right">&nbsp;</td>
-                                </c:when>
-                                <c:otherwise>
-                                    <% if (q.trim().equals("") && currentC.equals("m") ) { %>
-                                    <td class="navbar2_rightpad" align="right">&nbsp;</td>
-                                    <% } else { %>
-                                    <td class="navbar2_rightpad" align="right"><search:text key="numberFormat" args="${e.count}"/></td>
-                                    <% } %>
-                                    
-                                </c:otherwise>
-                            </c:choose>
-
-                        </tr>
-                    </c:if>
-                </c:forEach>
-                <% if ( !"sv".equals(locale) ) { %>  
-                <tr>
-               	    <td class="navbar2_lastpad" colspan="3" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="../images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
-                </tr>
-                <% } %>
-            </table>
-            </div>
-	    <script type="text/javascript" language="JavaScript">
-	    	var menuCookie = getCookie("sesam_menu");
-	    	if(menuCookie == "closed"){
-	      	  document.write('<div id="menuopen">'); 
-	    	}else{
-	      	  document.write('<div id="menuopen" style="display: none;">');	
-	    	}
-    	    </script>
-            <table class="navbar2_toptable" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td class="navbar2_lastpad"><a href="#" onclick='deleteCookie("sesam_menu", "/");document.getElementById("menutable").style.display="block";document.getElementById("menuopen").style.display="none";'><img src="../images/index/vis_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Vis meny</div></a></td>
-                </tr>
-            </table>
-            </div>
+            <%if (q.trim().equals("") && (currentC.equals("t") || currentC.equals("m") || currentC.equals("l"))) { %>
+                <decorator:getProperty property="page.frontMenu"/>
+            <% } else { %>                
+            
+                <search:velocity template="/pages/navbarMain"/>
+            
             <% } %>
             <%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
 
