@@ -180,25 +180,14 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <search:velocity template="/pages/navbarMain"/>
             
             <% } %>
-            <%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yip") || currentC.equals("yipticker")) {%>
-
-                <decorator:getProperty property="page.companies-nav"/>
-            <%}else if (currentC.equals("w") || currentC.equals("wip") || currentC.equals("wipgift")) {%>
-                <% if (!currentC.equals("wipgift")) {%>
-                    <decorator:getProperty property="page.persons-nav"/>
-                <% } %>
-            <%}else if (currentC.equals("m")) {%>
+            <% if (currentC.equals("m")) { %>
                 <decorator:getProperty property="page.newsSearchNavigator" />
                 <decorator:getProperty property="page.media-collection-nav"/>
-            <%}else if (currentC.equals("sw") || currentC.equals("swip")) {%>
-                <decorator:getProperty property="page.weather-nav"/>
-            <%}else if (currentC.equals("t")) {%>
-                <decorator:getProperty property="page.tvSearchNavigator" />
-            <%}else if (currentC.equals("wt")) {%>
-                <decorator:getProperty property="page.webtvNavigator"/>
-            <%}else if (currentC.equals("b")) {%>
-
-            <% }else{ %>
+            <%}else {%>
+                <decorator:getProperty property="page.sub-navigator"/>
+            <%}%>            
+            
+            <% if (currentC.equals("d") || currentC.equals("g")) { %>
                 <decorator:getProperty property="page.relevantQueries" />
             <%}%>
 
