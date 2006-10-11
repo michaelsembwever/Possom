@@ -102,14 +102,12 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
              "sa".equals(ss) ||
              "it".equals(ss))) { %>
 
-
         <div id="frame">
             <div id="header">
                 <search:velocity template="legacy/skin/headers/${param.ss}"/>
                 <decorator:getProperty property="page.search-bar"/>
 
             </div>
-
             <div id="content_ss">
                 <div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
                 <div id ="content_top">
@@ -136,23 +134,19 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     </dl>
                 </div>
                 <div class="greybar_line"><img src="../images/pix.gif" width="1" height="1" alt="" /></div>
-
                 <%--sesam search in sitesearch modus--%>
                 <div id="content_left_ss">
                     <decorator:getProperty property="page.fast-results"/>
                 </div>
-
                 <div id="content_right_ss">
                     <decorator:getProperty property="page.ads"/>
                 </div>
             </div>
-
             <div id="footer_ss">
                 <decorator:getProperty property="page.offsetPager"/>
             </div>
         </div>
-
-
+        
     <% } else { %>
 
         <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b") )) {%>
@@ -232,7 +226,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.tradedoubler"/>
              <% } else { %>
 
-
                 <decorator:getProperty property="page.spellcheck"/>
                 <decorator:getProperty property="page.main_ads"/>
 
@@ -244,8 +237,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                            <c:forEach var="ee" items="${enrichments}">
                                <c:out value="${ee.name}"/>: <c:out value="${ee.analysisResult}"/>
                            </c:forEach> -->
-
-                          <decorator:getProperty property="page.globalSearchTips" />
 
                            <%-- Show tab's leading enrichments --%>
                            <c:forEach var="ee" items="${enrichments}" varStatus="i">
