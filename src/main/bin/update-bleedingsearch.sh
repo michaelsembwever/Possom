@@ -21,7 +21,7 @@ lockfile -l 900 update-bleedingsearch.lck
 #  Update update-bleedingsearch.sh
 #
 rm -f update-bleedingsearch.tmp
-wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/update-bleedingsearch.sh -O update-bleedingsearch.tmp
+wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/update-bleedingsearch.sh -O update-bleedingsearch.tmp >/dev/null
 DIFF=`diff -q update-bleedingsearch.sh update-bleedingsearch.tmp`
 if [[ "x" != "x$DIFF" ]] ; then
     mv update-bleedingsearch.tmp update-bleedingsearch.sh
@@ -37,7 +37,7 @@ unset DIFF
 #  Update bleedingsearch-projects.sh
 #
 rm -f bleedingsearch-projects.tmp
-wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/bleedingsearch-projects.sh -O bleedingsearch-projects.tmp
+wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/bleedingsearch-projects.sh -O bleedingsearch-projects.tmp >/dev/null
 DIFF=`diff -q bleedingsearch-projects.sh bleedingsearch-projects.tmp`
 if [[ "x" != "x$DIFF" ]] ; then
     mv bleedingsearch-projects.tmp bleedingsearch-projects.sh
