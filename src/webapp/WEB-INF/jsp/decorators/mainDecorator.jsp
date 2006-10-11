@@ -79,7 +79,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <%} else if (currentC.equals("yip") || currentC.equals("wip")) {%>
 <body onLoad="init(); checkTab();">
 <%} else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m") && !publish) {%>
-<body onLoad="sndReq('/search/?c=l&newscountry=Norge&q=&output=rss')">
+<body onLoad="sndReq('/search/?c=l&newscountry=Norge&q=&output=rss');scrollbox();">
 <%} else {%>
 <body>
 <% } %>
