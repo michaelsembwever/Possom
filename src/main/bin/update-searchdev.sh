@@ -82,7 +82,8 @@ for (( i = 0; i < cnt ; i++ )) ; do
     # Find the latest build in the version
     #
     for f in /www/schibstedsok/data/searchdev-builds/${PROJECTS[$i]}/${PRODUCTION_VERSION}/*.war ; do
-            warFile=$f
+            # replace sesam with searchdev.schibstedsok
+            warFile=`echo $f | sed 's/sesam\./searchdev\.schibstedsok\./g'`
     done
 
     # Check that it's not already being used and copy it to tomcat's deploy directory
