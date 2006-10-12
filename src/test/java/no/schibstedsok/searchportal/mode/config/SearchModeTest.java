@@ -17,6 +17,7 @@ import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
+import org.testng.annotations.Test;
 
 /** SearchMode tests.
  *
@@ -31,6 +32,7 @@ public class SearchModeTest extends TestCase {
     
     /** Test the WebCrawl index.
      **/
+    @Test
     public void testWebCrawl() {
 
         final SearchMode mode = new SearchMode();
@@ -84,6 +86,7 @@ public class SearchModeTest extends TestCase {
     }
 
 
+    @Test
     public void testOverturePPCConfiguration() throws Exception {
 
         final String query = "linux";

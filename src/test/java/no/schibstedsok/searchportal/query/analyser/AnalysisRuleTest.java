@@ -7,6 +7,7 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
 
 import no.schibstedsok.searchportal.TestCase;
+import org.testng.annotations.Test;
 
 /**
  * A test class for {@link no.schibstedsok.searchportal.analyzer.AnalysisRule}.
@@ -36,6 +37,7 @@ public final class AnalysisRuleTest extends junit.framework.TestCase {
     /**
      * Test method for 'no.schibstedsok.searchportal.analyzer.AnalysisRule.addPredicateScore(Predicate, int)'.
      */
+    @Test
     public void testAddPredicateScore() {
         rule.addPredicateScore(truePredicate, 0);
     }

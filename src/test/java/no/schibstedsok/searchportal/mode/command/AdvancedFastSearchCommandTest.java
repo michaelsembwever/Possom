@@ -1,6 +1,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Collections;
+import org.testng.annotations.Test;
 
 /**
  * Tests for the AdvancedFastSearchCommand.
@@ -19,6 +20,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
     /**
      * Test a single term.
      */
+    @Test
     public void testSingleTerm() {
         executeTestOfQuery("test", "test", "");
     }
@@ -26,6 +28,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
     /**
      * Test two terms.
      */
+    @Test
     public void testTwoTerms() {
         executeTestOfQuery("october surprise", "october AND surprise", "");
         executeTestOfQuery("+october +surprise", "october AND surprise", "");
@@ -34,6 +37,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
     /**
      * Test three terms.
      */
+    @Test
     public void testThreeTerms() {
         executeTestOfQuery("xyz zyx yxz", "xyz AND zyx AND yxz", "");
     }
@@ -41,6 +45,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
     /**
      * Test OR operator.
      */
+    @Test
     public void testOr() {
         executeTestOfQuery("(october surprise)", "(october OR surprise)", "");
         executeTestOfQuery("(october surprise) (test test1)", "(october OR surprise) AND (test OR test1)", "");
@@ -49,6 +54,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
     /**
      * Test NOT operator.
      */
+    @Test
     public void testNot() {
         executeTestOfQuery("october -surprise", "october ANDNOT surprise", "");
         executeTestOfQuery("october -surprise -whatever", "october ANDNOT surprise ANDNOT whatever", "");
@@ -58,6 +64,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
     /**
      * Test NOT operator as first token of query.
      */
+    @Test
     public void testLeadingNot() {
         executeTestOfQuery("-surprise october", "# ANDNOT surprise AND october", "");
     }

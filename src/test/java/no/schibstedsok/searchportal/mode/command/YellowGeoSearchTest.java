@@ -4,6 +4,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Collections;
+import org.testng.annotations.Test;
 
 
 /**
@@ -18,6 +19,7 @@ public final class YellowGeoSearchTest extends AbstractSearchCommandTest {
         super(name);
     }
 
+    @Test
     public void testQueryRepresentationOrganisationNumber() {
         final String query = getParsedQueryAsString("933739384");
         assertEquals("yellowpages:933739384", query);

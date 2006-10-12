@@ -27,14 +27,14 @@ public abstract class TestCase extends junit.framework.TestCase {
 
     static{
     
-        removingAppendersWarning();
-
-        // This will be dangerous if this class is loaded in non-test operation
-        if(Logger.getRootLogger().getAppender("TEST_APPEND") == null){
-            // switch appenders over to the test logfile
-            Logger.getRootLogger().removeAllAppenders();
-            Logger.getRootLogger().addAppender(LOG.getAppender("TEST_APPEND"));
-        }
+//        removingAppendersWarning();
+//
+//        // This will be dangerous if this class is loaded in non-test operation
+//        if(Logger.getRootLogger().getAppender("TEST_APPEND") == null){
+//            // switch appenders over to the test logfile
+//            Logger.getRootLogger().removeAllAppenders();
+//            Logger.getRootLogger().addAppender(LOG.getAppender("TEST_APPEND"));
+//        }
     }
 
     // Constructors --------------------------------------------------

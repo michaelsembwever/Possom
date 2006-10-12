@@ -144,8 +144,8 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     </logger>
     
     <!-- These are here to avoid their DEBUG messages flooding our logfiles -->
-    <logger name="httpclient"><level value="INFO"/></logger>
     <logger name="org.apache"><level value="INFO"/></logger>
+    
     <root>
         <level value="@log.level@"/>
         <appender-ref ref="ERROR_APPEND"/>

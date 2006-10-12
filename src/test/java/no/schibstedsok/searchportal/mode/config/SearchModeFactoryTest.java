@@ -19,6 +19,7 @@ import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -44,6 +45,7 @@ public final class SearchModeFactoryTest extends TestCase {
     /**
      * Test of valueOf method, of class no.schibstedsok.searchportal.configuration.SearchModeFactory.
      */
+    @Test
     public void testGetModeFactory(){
 
         assertNotNull(getModeFactory(null));
@@ -81,6 +83,7 @@ public final class SearchModeFactoryTest extends TestCase {
     /**
      * Test of getMode method, of class no.schibstedsok.searchportal.configuration.SearchModeFactory.
      */
+    @Test
     public void testGetMode() {
         LOG.trace("testGetMode");
 
@@ -95,6 +98,7 @@ public final class SearchModeFactoryTest extends TestCase {
      * Test of memory against getMode method,
      * of class no.schibstedsok.searchportal.configuration.SearchModeFactory.
      */
+    @Test
     public void testGetModeOnAllAvailableLocales() {
         LOG.trace("testGetModeOnAllAvailableLocales");
 

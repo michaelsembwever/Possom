@@ -19,6 +19,7 @@ import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.view.config.SearchTab;
+import org.testng.annotations.Test;
 
 
 /**
@@ -31,6 +32,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         super(testName);
     }
     
+    @Test
     public void testNoSuggestions() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
@@ -38,6 +40,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
+    @Test
     public void testOneTermOneSuggestion() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting"));
@@ -48,6 +51,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(1, numberOfSuggestions(result, "slankting"));
     }
 
+    @Test
     public void testOneTermOneSuggestionwithLimit() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(230);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
@@ -57,6 +61,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
+    @Test
     public void testOneTermTwoSuggestionsSameScore() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
@@ -69,6 +74,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(2, numberOfSuggestions(result, "slankting"));
     }
 
+    @Test
     public void testOneTermNumberOfSuggestionsSameScoreOnLimit() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
@@ -83,6 +89,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(3, numberOfSuggestions(result, "slankting"));
     }
 
+    @Test
     public void testOneTermNumberOfSuggestionsSameScoreOvertLimit() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
@@ -99,6 +106,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(3, numberOfSuggestions(result, "slankting"));
     }
 
+    @Test
     public void testOneTermNumberOfSuggestionsDiffScoreOvertLimit() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
@@ -124,6 +132,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertFalse(suggestionList.contains(suggestion3));
     }
 
+    @Test
     public void testOneTermNumberOfSuggestionsSameScoreLimitToZero() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 0);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
@@ -139,6 +148,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
+    @Test
     public void testOneTermTwoSuggestionsDifferentScore() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
@@ -153,6 +163,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertFalse(suggestionList.contains(suggestion));
     }
 
+    @Test
     public void testTwoTermsBothWrong() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
@@ -168,6 +179,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertTrue(suggestionList2.contains(suggestion2));
     }
 
+    @Test
     public void testTwoTermsBothWrongManySuggestions() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
@@ -185,6 +197,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertNull(suggestionList2);
     }
 
+    @Test
     public void testTwoTermsBothWrongManySuggestionsOneMuchBetter() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
@@ -202,6 +215,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertTrue(suggestionList2.contains(suggestion3));
     }
 
+    @Test
     public void testThreeTermsTwoWrong() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel bil"));
@@ -216,6 +230,7 @@ public class SpellingSuggestionChooserTest extends TestCase {
         assertEquals(0, result.getQuerySuggestions().size());
     }
 
+    @Test
     public void testThreeTermsOneWrong() {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykkel bil"));

@@ -32,6 +32,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 /** Fast navigation tests.
  *
@@ -62,10 +63,12 @@ public final class FastNavigatorsTest extends TestCase {
         config.addResultHandler(resultHandler);
     }
 
+    @Test
     public void testNoNavigators() {
         assertTrue(config.getNavigators().isEmpty());
     }
 
+    @Test
     public void testOneNavigator() {
 
         final Navigator navigator = new Navigator();
@@ -77,6 +80,7 @@ public final class FastNavigatorsTest extends TestCase {
 
     }
 
+    @Test
     public void testHierarchicalNavigator() {
 
         final Navigator navigator = new Navigator();

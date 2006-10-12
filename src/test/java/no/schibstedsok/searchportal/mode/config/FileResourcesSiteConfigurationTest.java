@@ -14,6 +14,7 @@ import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
+import org.testng.annotations.Test;
 
 /**
  * Tests using SearchTabsCreator against File-based configuration files.
@@ -35,6 +36,7 @@ public final class FileResourcesSiteConfigurationTest extends TestCase {
     /**
      * Test of valueOf method, of class no.schibstedsok.searchportal.configuration.SiteConfiguration.
      */
+    @Test
     public void testDefaultSite() {
 
         final Site site = Site.DEFAULT;
@@ -47,6 +49,7 @@ public final class FileResourcesSiteConfigurationTest extends TestCase {
     /**
      * Test of getProperties method, of class no.schibstedsok.searchportal.configuration.SiteConfiguration.
      */
+    @Test
     public void testDefaultSiteGetProperties() {
 
         final SiteConfiguration instance = valueOf(Site.DEFAULT);

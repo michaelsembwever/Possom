@@ -9,6 +9,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Collections;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -23,6 +24,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
     /**
      * Test of the site prefix.
      */
+    @Test
     public void testSiteFilter() {
         executeTestOfQuery(
                 "site:zmag.org bil",
@@ -33,6 +35,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
     /**
      * Test of the site prefix whith quotes.
      */
+    @Test
     public void testSiteFilterWithQuotes() {
         executeTestOfQuery(
                 "site:\"zmag.org\" bil",
@@ -44,6 +47,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
      *
      * Make sure that that phrase searches works.
      */
+    @Test
     public void testPhraseSearches() {
         executeTestOfQuery(
                 "\"george bush\"",
@@ -53,6 +57,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
 
     /** Test that the nyhetskilde prefix is ignored.
      */
+    @Test
     public void testIgnoreField() {
         executeTestOfQuery(
                 "nyhetskilde:vg bil",
@@ -60,6 +65,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
                 "");
     }
 
+    @Test
     public void testExclusion() {
         executeTestOfQuery("magnus -eklund",
                 "magnus -eklund",
@@ -70,6 +76,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
     }
 
 
+    @Test
     public void testTwoTerms() {
         executeTestOfQuery("magnus eklund",
                 "magnus eklund",
@@ -80,6 +87,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
      *
      *
      */
+    @Test
     public void testSiteExclusion() {
 //        executeTestOfQuery(
 //                "-site:zmag.org bil",
@@ -99,6 +107,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
      * Make sure phone numbers are not normalized.
      *
      */
+    @Test
     public void testPhoneNumberSearches() {
         executeTestOfQuery(
                 "97 40 33 06",

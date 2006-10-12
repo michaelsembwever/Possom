@@ -46,6 +46,7 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.site.Site;
 
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -62,6 +63,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
 
+    @Test
     public void testOneWordExact() throws ParseException {
 
         final String queryString = "sch";
@@ -84,6 +86,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         }
     }
 
+    @Test
     public void testOneWord() throws ParseException {
 
         final String queryString = "sch";
@@ -105,6 +108,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         }
     }
 
+    @Test
     public void testTwoWords() throws ParseException {
 
         final String queryString = "oslo sch schibsted";
@@ -126,6 +130,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         }
     }
 
+    @Test
     public void testTwoWordsExact() throws ParseException {
 
         // Not Exact match. Don't do expansion.

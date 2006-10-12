@@ -22,6 +22,7 @@ import no.schibstedsok.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.searchportal.site.*;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -35,15 +36,10 @@ public class FactoryReloadsTest extends TestCase {
         super(testName);
     }
 
-    protected void setUp() throws Exception {
-    }
-
-    protected void tearDown() throws Exception {
-    }
-
     /**
      * Test of remove method, of class no.schibstedsok.searchportal.servlet.FactoryReloads.
      */
+    @Test
     public void testRemoveAll() {
         
         FactoryReloads.performReloads(genericContext(), "all"); 

@@ -14,6 +14,7 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
 import static no.schibstedsok.searchportal.result.handler.DateFormatHandler.Fields;
+import org.testng.annotations.Test;
 
 /** Fast navigation tests.
  *
@@ -69,6 +70,7 @@ public final class DateFormatHandlerTest extends TestCase {
         return bsri;
     }
     
+    @Test
     public void testOneWithoutPrefix() {
         
         rh.handleResult(resultHandlerContext, null);
@@ -84,6 +86,7 @@ public final class DateFormatHandlerTest extends TestCase {
         assertEquals("12", bsri.getField(Fields.SECOND.name()));
     }
 
+    @Test
     public void testOneWithPrefix() {
         rh.setFieldPrefix(FIELD_PREFIX);
         rh.handleResult(resultHandlerContext, null);

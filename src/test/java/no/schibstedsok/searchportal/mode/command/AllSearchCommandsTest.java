@@ -16,6 +16,7 @@ import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 
 /** Executes all search commands in the given different tabs.
@@ -34,30 +35,38 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         super(name);
     }
 
+    
+    @Test
     public void testAllNorskNettsokSearchCommands() {
         executeTestOfQuery("linux", "d");
     }
 
+    
+    @Test
     public void testAllInternasjonalNettsokSearchCommands() {
 
         executeTestOfQuery("linux", "g");
     }
 
+    @Test
     public void testAllWhitepagesSearchCommands() {
 
         executeTestOfQuery("linux", "w");
     }
 
+    @Test
     public void testAllYellowpagesSearchCommands() {
 
         executeTestOfQuery("linux", "y");
     }
 
+    @Test
     public void testAllNyheterSearchCommands() {
 
         executeTestOfQuery("linux", "m");
     }
 
+    @Test
     public void testAllBilderSearchCommands() {
 
         executeTestOfQuery("linux", "p");

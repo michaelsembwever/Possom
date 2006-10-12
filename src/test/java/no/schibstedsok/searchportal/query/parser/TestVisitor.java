@@ -26,6 +26,7 @@ import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.WordClause;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 /** Test the QueryParser and it's generated visitor pattern.
  *
@@ -44,6 +45,7 @@ public final class TestVisitor extends TestCase {
 
     /** test a visitor on a  basic clause heirarchy.
      **/
+    @Test
     public void testBasicTestVisitorImpl() {
         final TestVisitorImpl visitor = new TestVisitorImpl();
         final String queryStr = "firstName:magnus eklund \"schibsted sok\"";
@@ -91,6 +93,7 @@ public final class TestVisitor extends TestCase {
 
     /** test a visitor on a QuerParser built clause heirarchy.
      **/
+    @Test
     public void testAndOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123",
@@ -99,6 +102,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testAndOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
@@ -107,6 +111,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testAndOrNotAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus eklund oslo magnus AND eklund NOT 123",
@@ -115,6 +120,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testOrAgainstQueryParser() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
@@ -123,6 +129,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testNotOrAgainstQueryParser() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
@@ -131,6 +138,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testAndNotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen AND Inderøy Marte AND Elden NOT gausen oldervoll nordlys",
@@ -139,6 +147,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testAndNotOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
@@ -147,6 +156,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testAndnotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen oldervoll nordlys",
@@ -155,6 +165,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testAndAndnotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll nordlys",
@@ -163,6 +174,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testAndAndnotNotOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden gausen AND oldervoll NOT nordlys",
@@ -171,6 +183,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testAndAndnotNotOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy ANDNOT Marte Elden NOT gausen oldervoll AND nordlys",
@@ -179,6 +192,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testPhoneNumberAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "92221689",
@@ -187,6 +201,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testPhoneNumberAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "9222 1689",
@@ -195,6 +210,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testPhoneNumberAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "+47 9222 1689",
@@ -203,6 +219,7 @@ public final class TestVisitor extends TestCase {
     }
 
     /** TODO comment me. **/
+    @Test
     public void testUnicodeAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
                 "सिद्धार्थ गौतम",

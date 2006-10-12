@@ -45,6 +45,7 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.searchportal.site.Site;
 
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -69,6 +70,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
         super(testName);
     }
 
+    @Test
     public void testTwoSameWordsQuery() throws ParseException {
 
         final String queryString = QUERY_WORD + " " + QUERY_WORD;
@@ -83,6 +85,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
                 PREFIX_WORD + ":" + QUERY_WORD, builder.getQueryString());
     }
 
+    @Test
     public void testTwoWordQuery() throws ParseException {
 
         final String queryString = QUERY_WORD + " " + QUERY_WORD_2;
@@ -99,6 +102,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
                 builder.getQueryString());
     }
 
+    @Test
     public void testPhoneNumber() throws ParseException {
 
         final String queryString = QUERY_PHONE_NUMBER;
@@ -113,6 +117,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
                 builder.getQueryString());
     }
 
+    @Test
     public void testPhoneNumberSpaces() throws ParseException {
 
         final String queryString = QUERY_PHONE_NUMBER_SPACES;
@@ -126,6 +131,8 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
         assertEquals(PREFIX_INTEGER + ":" + QUERY_PHONE_NUMBER,
                 builder.getQueryString());
     }
+    
+    @Test
     public void testOrgNr() throws ParseException {
 
         final String queryString = QUERY_ORG_NR;
@@ -140,6 +147,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
                 builder.getQueryString());
     }
 
+    @Test
     public void testInteger() throws ParseException {
 
         final String queryString = QUERY_INTEGER;

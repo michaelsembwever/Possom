@@ -18,6 +18,7 @@ import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
+import org.testng.annotations.Test;
 
 /** Tests for SearchTabFactory. Using default search-config's configuration files.
  *
@@ -44,6 +45,7 @@ public final class SearchTabFactoryTest extends TestCase {
     /**
      * Test of getViewFactory method, of class no.schibstedsok.searchportal.view.config.SearchTabFactory.
      */
+    @Test
     public void testGetViewFactory() {
 
         assertNotNull(getViewFactory(null));
@@ -52,6 +54,7 @@ public final class SearchTabFactoryTest extends TestCase {
     /**
      * Test of testGetTabByName method, of class no.schibstedsok.searchportal.view.config.SearchTabFactory.
      */
+    @Test
     public void testGetTabByName() {
 
         LOG.trace("testGetTab");
@@ -66,6 +69,7 @@ public final class SearchTabFactoryTest extends TestCase {
     /**
      * Test of testGetTabByKey method, of class no.schibstedsok.searchportal.view.config.SearchTabFactory.
      */
+    @Test
     public void testGetTabByKey() {
 
         LOG.trace("testGetTab");
@@ -81,6 +85,7 @@ public final class SearchTabFactoryTest extends TestCase {
      * Test of memory against getTabByKey method,
      * of class no.schibstedsok.searchportal.configuration.SearchModeFactory.
      */
+    @Test
     public void testGetTabByKeyModeOnAllAvailableLocales() {
         LOG.trace("testGetModeOnAllAvailableLocales");
 

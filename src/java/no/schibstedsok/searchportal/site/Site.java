@@ -52,6 +52,7 @@ public final class Site {
     public static final String NAME_KEY = "site";
     /** TODO comment me. **/
     public static final String CONFIGURATION_FILE = "configuration.properties";
+    private static final String CORE_CONF_FILE = "core.properties";
 
     /**
      * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
@@ -215,7 +216,7 @@ public final class Site {
 
         final Properties props = new Properties();
         try  {
-            props.load(Site.class.getResourceAsStream('/' + CONFIGURATION_FILE));
+            props.load(Site.class.getResourceAsStream('/' + CORE_CONF_FILE));
         }  catch (IOException ex) {
             LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
         }

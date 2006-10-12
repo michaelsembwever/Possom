@@ -13,6 +13,7 @@ import java.util.Properties;
 import no.schibstedsok.searchportal.TestCase;
 import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.Site;
+import org.testng.annotations.Test;
 
 /**
  * Tests using SearchTabsCreator against URL-based configuration files.
@@ -36,6 +37,7 @@ public final class UrlResourcesSiteConfigurationtest extends TestCase {
     /**
      * Test of valueOf method, of class no.schibstedsok.searchportal.configuration.SiteConfiguration.
      */
+    @Test
     public void testDefaultSite() {
 
         final Site site = Site.DEFAULT;
@@ -47,6 +49,7 @@ public final class UrlResourcesSiteConfigurationtest extends TestCase {
     /**
      * Test of getProperties method, of class no.schibstedsok.searchportal.configuration.SiteConfiguration.
      */
+    @Test
     public void testDefaultSiteGetProperties() {
 
         final SiteConfiguration instance = SiteConfiguration.valueOf(Site.DEFAULT);
