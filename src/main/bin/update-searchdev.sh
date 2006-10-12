@@ -82,22 +82,20 @@ for (( i = 0; i < cnt ; i++ )) ; do
     # Find the latest build in the version
     #
     for f in /www/schibstedsok/data/searchdev-builds/${PROJECTS[$i]}/${PRODUCTION_VERSION}/*.war ; do
-            # replace sesam with searchdev.schibstedsok
-            warFile=`echo $f | sed 's/sesam\./searchdev\.schibstedsok\./g'`
-            # replace the first occurance back again ;)
-            warFile=`echo $warFile | sed 's/searchdev\.schibstedsok\./sesam\./'`
+            warFile=$f
     done
 
     # Check that it's not already being used and copy it to tomcat's deploy directory
     #
-    while ! diff $warFile /www/schibstedsok/deploy/searchdev/tomcat/deploy/search/${CONTEXTS[$i]} >/dev/null ; do
-            echo "cp $warFile   ${CONTEXTS[$i]}"
-            cp $warFile /www/schibstedsok/deploy/searchdev/tomcat/deploy/search/${CONTEXTS[$i]}
+    deployFile=`echo ${CONTEXTS[$i]} | sed 's/sesam\./searchdev\.schibstedsok\./g'`
+    while ! diff $warFile /www/schibstedsok/deploy/searchdev/tomcat/deploy/search/$deployFile >/dev/null ; do
+            echo "cp $warFile   $deployFile"
+            cp $warFile /www/schibstedsok/deploy/searchdev/tomcat/deploy/search/$deployFile
     done
 
     # Keep permissions on it friendly
     #
-    chmod g+w /www/schibstedsok/deploy/searchdev/tomcat/deploy/search/${CONTEXTS[$i]} 2>/dev/null
+    chmod g+w /www/schibstedsok/deploy/searchdev/tomcat/deploy/search/$deployFile 2>/dev/null
 
 done
 
