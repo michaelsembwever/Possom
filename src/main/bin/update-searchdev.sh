@@ -84,6 +84,8 @@ for (( i = 0; i < cnt ; i++ )) ; do
     for f in /www/schibstedsok/data/searchdev-builds/${PROJECTS[$i]}/${PRODUCTION_VERSION}/*.war ; do
             # replace sesam with searchdev.schibstedsok
             warFile=`echo $f | sed 's/sesam\./searchdev\.schibstedsok\./g'`
+            # replace the first occurance back again ;)
+            warFile=`echo $warFile | sed 's/searchdev\.schibstedsok\./sesam\./'`
     done
 
     # Check that it's not already being used and copy it to tomcat's deploy directory
