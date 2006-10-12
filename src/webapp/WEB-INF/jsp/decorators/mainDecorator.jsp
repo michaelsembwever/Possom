@@ -314,9 +314,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.greybar_ad"/>
             </div>
 
-            <% if (currentC.equals("p") ) {%>
+            <% if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") ) {%>
                 <decorator:getProperty property="page.ads"/>
-                <decorator:getProperty property="page.ads-picsearch-logo"/>
+                <decorator:getProperty property="page.ads-logo"/>
             <%}else if (currentC.equals("b") ) {%>
                 <decorator:getProperty property="page.feedback"/>
             <%} else if (currentC.equals("t")) {%>
