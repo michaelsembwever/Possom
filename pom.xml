@@ -7,7 +7,7 @@
           <version>2.5-SNAPSHOT</version>
       </parent>
     <artifactId>search-portal</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>Sesam Search Engine</name>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
