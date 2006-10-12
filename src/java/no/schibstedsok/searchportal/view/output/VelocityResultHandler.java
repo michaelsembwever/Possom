@@ -2,6 +2,8 @@
 package no.schibstedsok.searchportal.view.output;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
@@ -61,6 +63,7 @@ public final class VelocityResultHandler implements ResultHandler {
     private static final String ERR_TEMPLATE_NOT_FOUND = "Could not find the template ";
     private static final String ERR_NP_WRITING_TO_STREAM 
             = "Possible client cancelled request. (NullPointerException writing to response's stream).";
+    private static final String ERR_MERGE = "Error merging template ";
 
     public static VelocityEngine getEngine(final Context cxt){
 
@@ -150,8 +153,10 @@ public final class VelocityResultHandler implements ResultHandler {
         // write to a separate writer first for threading reasons
         final Writer w = new StringWriter();
         final SearchConfiguration searchConfiguration = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+        
+            final String templateName = searchConfiguration.getName() + ".vm";
 
-            LOG.debug(DEBUG_TEMPLATE_SEARCH + searchConfiguration + searchConfiguration.getName() + ".vm");
+            LOG.debug(DEBUG_TEMPLATE_SEARCH + searchConfiguration + templateName);
 
             final Site site = cxt.getSite();
             final VelocityEngine engine = getEngine(cxt);
@@ -171,16 +176,16 @@ public final class VelocityResultHandler implements ResultHandler {
 
                 } catch (MethodInvocationException ex) {
                     LOG.error("Exception for reference: " + ex.getReferenceName());
-                    throw new InfrastructureException(ex);
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
                 } catch (ResourceNotFoundException ex) {
-                    throw new InfrastructureException(ex);
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
                 } catch (ParseErrorException ex) {
-                    throw new InfrastructureException(ex);
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
                 } catch (IOException ex) {
-                    throw new InfrastructureException(ex);
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
                 } catch (NullPointerException ex) {
                     //at com.opensymphony.module.sitemesh.filter.RoutablePrintWriter.write(RoutablePrintWriter.java:132)
@@ -190,13 +195,13 @@ public final class VelocityResultHandler implements ResultHandler {
                     LOG.warn(ERR_NP_WRITING_TO_STREAM);
 
                 } catch (Exception ex) {
-                    throw new InfrastructureException(ex);
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
                 }
 
             }else{
-                LOG.error(ERR_TEMPLATE_NOT_FOUND + searchConfiguration.getName() + ".vm");
-                throw new UnsupportedOperationException(ERR_TEMPLATE_NOT_FOUND + searchConfiguration.getName() + ".vm");
+                LOG.error(ERR_TEMPLATE_NOT_FOUND + templateName);
+                throw new UnsupportedOperationException(ERR_TEMPLATE_NOT_FOUND + templateName);
             }
 
     }
@@ -218,8 +223,8 @@ public final class VelocityResultHandler implements ResultHandler {
             LOG.error(e);
         }
 
-        // push all parameters into velocity context attributes
-        for(Map.Entry<String,Object> entry : parameters.entrySet()){
+        // push all parameters into velocity context attributes. make a copy first as others could be updating it.
+        for(Map.Entry<String,Object> entry : Collections.unmodifiableSet(parameters.entrySet())){
             /* do not overwrite parameters already in the velocity context */
             if (!context.containsKey(entry.getKey())) {
                 // don't put back in String array that only contains one element
