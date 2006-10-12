@@ -44,7 +44,7 @@ public final class SiteLocatorFilter implements Filter {
 
     private static final String ERR_NOT_FOUND = "Failed to find resource ";
     private static final String ERR_UNCAUGHT_RUNTIME_EXCEPTION
-            = "Following runtime exception was let loose in tomcat\n";
+            = "Following runtime exception was let loose in tomcat against ";
 
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
     private static final String DEBUG_REQUESTED_VHOST = "Virtual host is ";
@@ -122,13 +122,14 @@ public final class SiteLocatorFilter implements Filter {
                 throws IOException, ServletException {
 
         LOG.trace("doFilter(..)");
+        final HttpServletRequest req = (HttpServletRequest) request;
 
         try  {
 
             doBeforeProcessing(request, response);
 
             if (request instanceof HttpServletRequest) {
-                final HttpServletRequest req = (HttpServletRequest) request;
+                
                 final HttpServletResponse res = (HttpServletResponse) response;
                 final String uri = req.getRequestURI();
                 final String resource = uri;
@@ -188,7 +189,7 @@ public final class SiteLocatorFilter implements Filter {
         }  catch (Exception e) {
             // Don't let anything through without logging it.
             //  Otherwise it ends in a different logfile.
-            LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION);
+            LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION + req.getQueryString());
             for (Throwable t = e; t != null; t = e.getCause()) {
                 LOG.error("", t);
             }
