@@ -181,7 +181,7 @@
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/blogg.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a><span class="betaNavbar">beta</span></td>
                 </tr>
                 <tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
