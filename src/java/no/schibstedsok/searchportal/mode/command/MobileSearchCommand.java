@@ -122,25 +122,31 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
             final IQueryResult result = mResult.getResult();
 
-            final int cnt = getCurrentOffset(0);
-            final int maxIndex = Math.min(cnt + cfg.getResultsToReturn(),
-                    result.getDocCount());
-
             final SearchResult searchResult = new BasicSearchResult(this);
-            searchResult.setHitCount(result.getDocCount());
+            
+            if( null != result ){
+                
+                final int cnt = getCurrentOffset(0);
+                final int maxIndex = Math.min(cnt + cfg.getResultsToReturn(), result.getDocCount());
 
-            for (int i = cnt; i < maxIndex; i++) {
-                //catch nullpointerException because of unaccurate doccount
-                try {
-                    final IDocumentSummary document = result.getDocument(i + 1);
-                    final SearchResultItem item = createResultItem(document);
-                    searchResult.addResult(item);
-                } catch (NullPointerException e) {
-                    return searchResult;
+                searchResult.setHitCount(result.getDocCount());
+
+                for (int i = cnt; i < maxIndex; i++) {
+                    //catch nullpointerException because of unaccurate doccount
+                    try {
+                        final IDocumentSummary document = result.getDocument(i + 1);
+                        final SearchResultItem item = createResultItem(document);
+                        searchResult.addResult(item);
+                    } catch (NullPointerException e) {
+                        return searchResult;
+                    }
                 }
+            }else{
+                LOG.error("IMSearchResult.getResult() returned null");
             }
 
             return searchResult;
+            
         } catch (ConfigurationException ex) {
             throw new InfrastructureException(ex);
         } catch (IOException ex) {
