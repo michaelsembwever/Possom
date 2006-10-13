@@ -287,14 +287,8 @@ public final class SiteLocatorFilter implements Filter {
         final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
 
         // Check if the browser's locale is supported by this skin. Use it if so.
-        final String supportedLocales = SiteConfiguration.valueOf(result).getProperty(SITE_LOCALE_SUPPORTED);
-        if( null != supportedLocales ){
-            final String[] locales = supportedLocales.split(",");
-            for(String l : locales){
-                if(locale.toString().equals(l)){
-                    return result;
-                }
-            }
+        if( isSiteLocaleSupported(locale, result) ){
+            return result;
         }
 
         // Use the skin's default locale.
@@ -323,6 +317,20 @@ public final class SiteLocatorFilter implements Filter {
         }
 
 
+    }
+    
+    public static boolean isSiteLocaleSupported(final Locale locale, final Site site){
+        
+        final String supportedLocales = SiteConfiguration.valueOf(site).getProperty(SITE_LOCALE_SUPPORTED);
+        if( null != supportedLocales ){
+            final String[] locales = supportedLocales.split(",");
+            for(String l : locales){
+                if(locale.toString().equals(l)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

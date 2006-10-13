@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.http.filters.SiteLocatorFilter;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
@@ -48,7 +49,8 @@ public final class SearchTabFactoryTest extends TestCase {
     @Test
     public void testGetViewFactory() {
 
-        assertNotNull(getViewFactory(null));
+        final Site.Context siteConstructorContext = getSiteConstructingContext();
+        assertNotNull(getViewFactory(siteConstructorContext, null));
     }
 
     /**
@@ -60,7 +62,8 @@ public final class SearchTabFactoryTest extends TestCase {
         LOG.trace("testGetTab");
 
         final String id = "local-internet";
-        final SearchTabFactory instance = getViewFactory(null);
+        final Site.Context siteConstructorContext = getSiteConstructingContext();
+        final SearchTabFactory instance = getViewFactory(siteConstructorContext, null);
 
         final SearchTab result = instance.getTabByName(id);
         assertNotNull(result);
@@ -75,7 +78,8 @@ public final class SearchTabFactoryTest extends TestCase {
         LOG.trace("testGetTab");
 
         final String key = "d";
-        final SearchTabFactory instance = getViewFactory(null);
+        final Site.Context siteConstructorContext = getSiteConstructingContext();
+        final SearchTabFactory instance = getViewFactory(siteConstructorContext, null);
 
         final SearchTab result = instance.getTabByKey(key);
         assertNotNull(result);
@@ -90,33 +94,45 @@ public final class SearchTabFactoryTest extends TestCase {
         LOG.trace("testGetModeOnAllAvailableLocales");
 
         final String key = "d";
+        final Site.Context siteConstructorContext = getSiteConstructingContext();
+        
         System.gc();
         final long initialTotal = Runtime.getRuntime().totalMemory();
         final long initialFree = Runtime.getRuntime().freeMemory();
         LOG.info("Number of Available locales " + Locale.getAvailableLocales().length);
+        
         for(Locale l : Locale.getAvailableLocales()){
-            final SearchTabFactory instance = getViewFactory(l);
+            
+            
+            final Site site = Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), l);
+            
+            if( SiteLocatorFilter.isSiteLocaleSupported(l, site) ){
+                final SearchTabFactory instance = getViewFactory(siteConstructorContext, l);
 
-            final SearchTab result = instance.getTabByKey(key);
-            assertNotNull(result);
+                final SearchTab result = instance.getTabByKey(key);
+                assertNotNull(result);
+            }
         }
         LOG.info("Total memory increased "+(Runtime.getRuntime().totalMemory()-initialTotal) + " bytes");
         LOG.info("Free memory decreased "+(initialFree-Runtime.getRuntime().freeMemory()) + " bytes");
         System.gc();
     }
+    
+    private Site.Context getSiteConstructingContext(){
+        
+        return new Site.Context(){
+            public String getParentSiteName(final SiteContext siteContext){
+                return Site.DEFAULT.getName();
+            }
+        };
+    }
 
 
-    private SearchTabFactory getViewFactory(final Locale locale) {
+    private SearchTabFactory getViewFactory(final Site.Context siteConstructorContext, final Locale locale) {
 
         LOG.trace("getModeFactory");
 
         final SearchTabFactory.Context cxt = new SearchTabFactory.Context(){
-
-            private final Site.Context siteConstructorContext = new Site.Context(){
-                public String getParentSiteName(final SiteContext siteContext){
-                    return Site.DEFAULT.getName();
-                }
-            };
 
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
