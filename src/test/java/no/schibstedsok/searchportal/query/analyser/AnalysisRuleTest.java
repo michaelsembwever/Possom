@@ -7,6 +7,8 @@ import org.apache.commons.collections.Predicate;
 import org.apache.commons.collections.PredicateUtils;
 
 import no.schibstedsok.searchportal.TestCase;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -25,13 +27,10 @@ public final class AnalysisRuleTest extends junit.framework.TestCase {
         super(testName);
     }	 
     
+    @BeforeClass
     protected void setUp() throws Exception {
         super.setUp();
         this.rule = new AnalysisRule();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
     }
 
     /**

@@ -14,6 +14,7 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
 import static no.schibstedsok.searchportal.result.handler.DateFormatHandler.Fields;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /** Fast navigation tests.
@@ -57,6 +58,7 @@ public final class DateFormatHandlerTest extends TestCase {
     
     DateFormatHandler rh = null;
     
+    @BeforeClass
     protected void setUp() throws Exception {
         rh = new DateFormatHandler();
         rh.setSourceField(SOURCE_FIELD);

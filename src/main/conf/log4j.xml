@@ -20,17 +20,6 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         </layout>
     </appender>
     
-    <appender name="TEST_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="@log.directory@/@log.file@.test"/>
-        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
-        <param name="Append" value="true"/>
-        <param name="Threshold" value="ALL"/>
-        <param name="encoding" value="UTF-8"/>
-        <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site} %X{test}] %-5p %c{1}\: %m%n"/>
-        </layout>
-    </appender>
-    
     <appender name="ERROR_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.error"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -136,11 +125,6 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     <logger name="no.schibstedsok.Product" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="PRODUCT_APPEND"/>
-    </logger>
-    
-    <logger name="no.schibstedsok.searchportal.TestCase" additivity="false">
-        <level value="ALL"/>
-        <appender-ref ref="TEST_APPEND"/>
     </logger>
     
     <!-- These are here to avoid their DEBUG messages flooding our logfiles -->
