@@ -32,6 +32,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import org.apache.log4j.Logger;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /** Fast navigation tests.
@@ -54,17 +55,21 @@ public final class FastNavigatorsTest extends TestCase {
         return config;
     }
 
+    @BeforeClass
     protected void setUp() throws Exception {
 
-        final FastSearchConfiguration config = new FastSearchConfiguration();
-        this.config = config;
+        //final FastSearchConfiguration 
+                config = new FastSearchConfiguration();
+        //this.config = config;
         config.setResultsToReturn(10);
         resultHandler = new MockupResultHandler();
         config.addResultHandler(resultHandler);
     }
-
+    
     @Test
     public void testNoNavigators() {
+        
+        final FastSearchConfiguration config = new FastSearchConfiguration();
         assertTrue(config.getNavigators().isEmpty());
     }
 
