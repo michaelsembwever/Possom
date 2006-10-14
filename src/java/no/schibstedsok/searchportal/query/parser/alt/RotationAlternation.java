@@ -392,7 +392,7 @@ public final class RotationAlternation {
         return context.createXorClause(
                 rotations.removeLast(),
                 rotations.size() == 1 ? rotations.removeLast() : createXorClause(rotations),
-                XorClause.ROTATION_ALTERNATION);
+                XorClause.Hint.ROTATION_ALTERNATION);
     }
 
     /** TODO comment me. **/

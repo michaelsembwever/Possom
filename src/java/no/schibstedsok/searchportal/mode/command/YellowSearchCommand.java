@@ -286,10 +286,10 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
     protected void visitImpl(final XorClause clause) {
         // If we have a match on an international phone number, but it is not recognized as
         // a local phone number, force it to use the original number string.
-        if (clause.getHint() == XorClause.PHONE_NUMBER_ON_LEFT
+        if (clause.getHint() == XorClause.Hint.PHONE_NUMBER_ON_LEFT
                 && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
             clause.getSecondClause().accept(this);
-        } else if(XorClause.PHRASE_ON_LEFT == clause.getHint()){
+        } else if(XorClause.Hint.PHRASE_ON_LEFT == clause.getHint()){
             clause.getSecondClause().accept(this);
         } else {
             super.visitImpl(clause);

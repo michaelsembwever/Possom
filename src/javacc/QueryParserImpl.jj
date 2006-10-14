@@ -329,14 +329,14 @@ Clause fieldedLeaf(final Token field) :{
         { 
             try{
                 // remove the PHONE_SYMBOL sub-tokens
-                final String term = token.image.replaceAll("\\.|-|/| ","");
+                final String term = token.image.replaceAll("\\.|-|/| |\\(|\\)","");
                 final String f = field == null ? null : field.image;
                 final PhoneNumberClause phClause = context.createPhoneNumberClause(term, f);
 
                 // Create a XorClause
                 final QueryParserImpl p = new QueryParserImpl(createContext(token.image), PHONE_NUMBER_DISABLED);
                 final Clause altClause = p.parse();
-                return context.createXorClause(phClause, altClause, XorClause.PHONE_NUMBER_ON_LEFT);
+                return context.createXorClause(phClause, altClause, XorClause.Hint.PHONE_NUMBER_ON_LEFT);
 
             }finally{exitMethod();}
         }
@@ -352,7 +352,7 @@ Clause fieldedLeaf(final Token field) :{
                 // Create a XorClause
                 final QueryParserImpl p = new QueryParserImpl(createContext(token.image), NUMBER_GROUP_DISABLED);
                 final Clause altClause = p.parse();
-                return context.createXorClause(orgClause, altClause, XorClause.NUMBER_GROUP_ON_LEFT);
+                return context.createXorClause(orgClause, altClause, XorClause.Hint.NUMBER_GROUP_ON_LEFT);
 
             }finally{exitMethod();}
         }
@@ -367,7 +367,7 @@ Clause fieldedLeaf(final Token field) :{
                 final String term = token.image.trim().replaceAll("\"","");
                 final QueryParserImpl p = new QueryParserImpl(createContext(term), QUOTED_WORD_DISABLED);
                 final Clause altClause = p.parse();
-                return context.createXorClause(phClause, altClause, XorClause.PHRASE_ON_LEFT);
+                return context.createXorClause(phClause, altClause, XorClause.Hint.PHRASE_ON_LEFT);
 
             }finally{exitMethod();}
         }

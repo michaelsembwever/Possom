@@ -50,7 +50,8 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             Arrays.asList(
             TokenPredicate.COMPANYENRICHMENT,
             TokenPredicate.FIRSTNAME,
-            TokenPredicate.LASTNAME
+            TokenPredicate.LASTNAME,
+            TokenPredicate.PHONENUMBER
             ));
 
     private static final Logger LOG = Logger.getLogger(HittaSearchCommand.class);
@@ -87,7 +88,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
         LOG.debug(DEBUG_CONF_NFO + conf.getCatalog() + ' ' + conf.getKey());
 
-        if(getTransformedQuery().equals(context.getQuery().getQueryString())){
+        if(getTransformedQuery().equals(untransformedQuery)){
 
             try {
 
@@ -223,8 +224,9 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 insideFullname |= oc.getKnownPredicates().contains(TokenPredicate.FULLNAME);
             }
             
-            boolean isName = clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME)
-                    || clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
+            boolean isNameOrNumber = clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
+            isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
+            isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.PHONENUMBER);
             
             boolean isCompany = clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
 
@@ -235,7 +237,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             }else{
                 
                 // no fullname or company exists in the query, so firstname or lastname will do
-                onlyGeo &= !isName;
+                onlyGeo &= !isNameOrNumber;
             }
 
             if (onlyGeo) {
@@ -243,7 +245,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 where.append(getTransformedTerm(clause));
                 
             }else{
-                if((hasCompany && !isCompany && isName) || multipleCompany || multipleFullname ){
+                if((hasCompany && !isCompany && isNameOrNumber) || multipleCompany || multipleFullname ){
                     // this is a company query but this clause isn't the company but a loose name.
                     // abort this hitta search, see SEARCH-966 - hitta enrichment
                     // OR there are multiple fullnames or company names.
@@ -277,7 +279,23 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         }
 
         protected void visitImpl(final XorClause clause) {
-            clause.getFirstClause().accept(this);
+            
+            switch(clause.getHint()){
+                
+                case NUMBER_GROUP_ON_LEFT:
+                    clause.getSecondClause().accept(this);
+                    break;
+                    
+                case PHONE_NUMBER_ON_LEFT:
+                    if( !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER) ){
+                        clause.getSecondClause().accept(this);
+                    }
+                    // intentionally fall through to default!
+                default:
+                    clause.getFirstClause().accept(this);
+                    break;
+            }
+            
         }
 
         private final class FullnameOrCompanyFinder extends AbstractReflectionVisitor{

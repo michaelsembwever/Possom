@@ -283,7 +283,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      * @param clause The clause to examine.
      */
     protected void visitImpl(final XorClause clause) {
-        if (clause.getHint() == XorClause.PHRASE_ON_LEFT) {
+        if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT) {
             // Web searches should use phrases over separate words.
             clause.getFirstClause().accept(this);
         } else {

@@ -85,10 +85,10 @@ public class WhiteSearchCommand extends AbstractSimpleFastSearchCommand {
     protected void visitImpl(final XorClause clause) {
         // If we have a match on an international phone number, but it is not recognized as
         // a local phone number, force it to use the original number string.
-        if (clause.getHint() == XorClause.PHONE_NUMBER_ON_LEFT
+        if (clause.getHint() == XorClause.Hint.PHONE_NUMBER_ON_LEFT
                 && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
             clause.getSecondClause().accept(this);
-        } else if (clause.getHint() == XorClause.PHRASE_ON_LEFT || clause.getHint() == XorClause.NUMBER_GROUP_ON_LEFT) {
+        } else if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT || clause.getHint() == XorClause.Hint.NUMBER_GROUP_ON_LEFT) {
             clause.getSecondClause().accept(this);
         } else {
             clause.getFirstClause().accept(this);

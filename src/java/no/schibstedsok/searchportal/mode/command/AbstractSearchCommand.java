@@ -80,6 +80,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** TODO comment me. **/
     protected final Context context;
+    protected final String untransformedQuery;
     private String filter = "";
     private final String additionalFilter;
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
@@ -112,6 +113,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         // initialise transformed terms
         final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
         mapInitialisor.visit(root);
+        untransformedQuery =  getQueryRepresentation(context.getQuery());
 
         // create additional filters
         final FilterVisitor  additionalFilterVisitor = new FilterVisitor();
