@@ -52,7 +52,6 @@ public final class SiteLocatorFilter implements Filter {
 
     private static final String HTTP = "http://";
     private static final String PUBLISH_DIR = "/img/";
-    private static final String SITE_LOCALE_SUPPORTED = "site.locale.supported";
 
     /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
@@ -287,7 +286,7 @@ public final class SiteLocatorFilter implements Filter {
         final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
 
         // Check if the browser's locale is supported by this skin. Use it if so.
-        if( isSiteLocaleSupported(locale, result) ){
+        if( SiteConfiguration.isSiteLocaleSupported(locale, result) ){
             return result;
         }
 
@@ -319,18 +318,6 @@ public final class SiteLocatorFilter implements Filter {
 
     }
     
-    public static boolean isSiteLocaleSupported(final Locale locale, final Site site){
-        
-        final String supportedLocales = SiteConfiguration.valueOf(site).getProperty(SITE_LOCALE_SUPPORTED);
-        if( null != supportedLocales ){
-            final String[] locales = supportedLocales.split(",");
-            for(String l : locales){
-                if(locale.toString().equals(l)){
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    
 
 }

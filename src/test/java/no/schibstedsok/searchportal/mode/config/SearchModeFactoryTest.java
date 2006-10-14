@@ -11,9 +11,9 @@ package no.schibstedsok.searchportal.mode.config;
 import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.TestCase;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
 import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.util.config.AbstractFactoryTest;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class SearchModeFactoryTest extends TestCase {
+public final class SearchModeFactoryTest extends AbstractFactoryTest {
 
     private static final Logger LOG = Logger.getLogger(SearchModeFactoryTest.class);
 
@@ -48,18 +48,14 @@ public final class SearchModeFactoryTest extends TestCase {
     @Test
     public void testGetModeFactory(){
 
-        assertNotNull(getModeFactory(null));
+        final Site.Context siteConstructorContext = getSiteConstructingContext();
+        assertNotNull(getModeFactory(siteConstructorContext, null));
     }
 
-    private SearchModeFactory getModeFactory(final Locale locale) {
+    private SearchModeFactory getModeFactory(final Site.Context siteConstructorContext, final Locale locale) {
         LOG.trace("getModeFactory");
 
         final SearchModeFactory.Context cxt = new SearchModeFactory.Context(){
-            private final Site.Context siteConstructorContext = new Site.Context(){
-                public String getParentSiteName(final SiteContext siteContext){
-                    return Site.DEFAULT.getName();
-                }
-            };
 
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
@@ -88,7 +84,8 @@ public final class SearchModeFactoryTest extends TestCase {
         LOG.trace("testGetMode");
 
         final String id = "norsk-magic";
-        final SearchModeFactory instance = getModeFactory(null);
+        final Site.Context siteConstructorContext = getSiteConstructingContext();
+        final SearchModeFactory instance = getModeFactory(siteConstructorContext, null);
 
         final SearchMode result = instance.getMode(id);
         assertNotNull(result);
@@ -103,15 +100,23 @@ public final class SearchModeFactoryTest extends TestCase {
         LOG.trace("testGetModeOnAllAvailableLocales");
 
         final String id = "norsk-magic";
+        final Site.Context siteConstructorContext = getSiteConstructingContext();
+        
         System.gc();
         final long initialTotal = Runtime.getRuntime().totalMemory();
         final long initialFree = Runtime.getRuntime().freeMemory();
         LOG.info("Number of Available locales " + Locale.getAvailableLocales().length);
+        
         for(Locale l : Locale.getAvailableLocales()){
-            final SearchModeFactory instance = getModeFactory(l);
+            
+            final Site site = Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), l);
+            
+            if( SiteConfiguration.isSiteLocaleSupported(l, site) ){
+                final SearchModeFactory instance = getModeFactory(siteConstructorContext, l);
 
-            final SearchMode result = instance.getMode(id);
-            assertNotNull(result);
+                final SearchMode result = instance.getMode(id);
+                assertNotNull(result);
+            }
         }
         LOG.info("Total memory increased "+(Runtime.getRuntime().totalMemory()-initialTotal) + " bytes");
         LOG.info("Free memory decreased "+(initialFree-Runtime.getRuntime().freeMemory()) + " bytes");

@@ -17,12 +17,12 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
    
     <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
-        <param name="Target" value="System.out"/>
+        <param name="Target" value="System.err"/>
         <param name="encoding" value="UTF-8"/>
         <param name="Threshold" value="ERROR"/>
 
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%-5p %d{HH:mm:ss,SSS} (%F:%M:%L) -%m%n"/>
+            <param name="ConversionPattern" value="%-5p %d{HH:mm:ss,SSS} (%F:%M)-%m%n"/>
         </layout>
     </appender>
    
@@ -33,7 +33,7 @@
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%-5p %d{HH:mm:ss,SSS} (%F:%M:%L) -%m%n"/>
+            <param name="ConversionPattern" value="%-5p %d{HH:mm:ss,SSS} (%F:%M)-%m%n"/>
         </layout>
     </appender>
 

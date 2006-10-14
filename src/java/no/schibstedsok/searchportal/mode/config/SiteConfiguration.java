@@ -2,6 +2,7 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -31,6 +32,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
     public static final String PUBLISH_SYSTEM_URL = "publishing.system.baseURL";
     /** TODO comment me. **/
     public static final String PUBLISH_SYSTEM_HOST = "publishing.system.host-header";
+    private static final String SITE_LOCALE_SUPPORTED = "site.locale.supported";
 
     public interface Context extends BaseContext, PropertiesContext, SiteContext {
     }
@@ -122,5 +124,19 @@ public final class SiteConfiguration implements SiteKeyedFactory{
         }finally{
             INSTANCES_LOCK.writeLock().unlock();
         }
+    }
+    
+    public static boolean isSiteLocaleSupported(final Locale locale, final Site site){
+        
+        final String supportedLocales = valueOf(site).getProperty(SITE_LOCALE_SUPPORTED);
+        if( null != supportedLocales ){
+            final String[] locales = supportedLocales.split(",");
+            for(String l : locales){
+                if(locale.toString().equals(l)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

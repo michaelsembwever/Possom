@@ -11,9 +11,9 @@ package no.schibstedsok.searchportal.view.config;
 import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.TestCase;
-import no.schibstedsok.searchportal.http.filters.SiteLocatorFilter;
+import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.util.config.AbstractFactoryTest;
 import no.schibstedsok.searchportal.util.config.DocumentLoader;
 import no.schibstedsok.searchportal.util.config.FileResourceLoader;
 import no.schibstedsok.searchportal.util.config.PropertiesLoader;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class SearchTabFactoryTest extends TestCase {
+public final class SearchTabFactoryTest extends AbstractFactoryTest {
 
     private static final Logger LOG = Logger.getLogger(SearchTabFactoryTest.class);
 
@@ -106,7 +106,7 @@ public final class SearchTabFactoryTest extends TestCase {
             
             final Site site = Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), l);
             
-            if( SiteLocatorFilter.isSiteLocaleSupported(l, site) ){
+            if( SiteConfiguration.isSiteLocaleSupported(l, site) ){
                 final SearchTabFactory instance = getViewFactory(siteConstructorContext, l);
 
                 final SearchTab result = instance.getTabByKey(key);
@@ -116,15 +116,6 @@ public final class SearchTabFactoryTest extends TestCase {
         LOG.info("Total memory increased "+(Runtime.getRuntime().totalMemory()-initialTotal) + " bytes");
         LOG.info("Free memory decreased "+(initialFree-Runtime.getRuntime().freeMemory()) + " bytes");
         System.gc();
-    }
-    
-    private Site.Context getSiteConstructingContext(){
-        
-        return new Site.Context(){
-            public String getParentSiteName(final SiteContext siteContext){
-                return Site.DEFAULT.getName();
-            }
-        };
     }
 
 
