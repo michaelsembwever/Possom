@@ -75,6 +75,10 @@ public final class AnalysisRule {
 
             for (PredicateScore predicateScore : predicates.keySet()) {
                 try{
+                    
+                    assert null != predicateScore.getPredicate() 
+                            : "Disappearing predicate from score " + predicateScore;
+                    
                     if (predicateScore.getPredicate().evaluate(engine)) {
 
                         if (additivity) {

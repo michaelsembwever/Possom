@@ -52,7 +52,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
 
         try{
             INSTANCES_LOCK.writeLock().lock();
-            LOG.trace("Configuration(cxt)");
+            LOG.trace("SiteConfiguration(cxt)");
             context = cxt;
 
             propertyLoader = context.newPropertiesLoader(Site.CONFIGURATION_FILE, properties);
@@ -85,12 +85,19 @@ public final class SiteConfiguration implements SiteKeyedFactory{
      * We need to use a Context instead of the Site directly so we can handle different styles of loading resources.
      **/
     public static SiteConfiguration valueOf(final Context cxt) {
+        
         final Site site = cxt.getSite();
-
-        INSTANCES_LOCK.readLock().lock();
-        SiteConfiguration instance = INSTANCES.get(site);
-        INSTANCES_LOCK.readLock().unlock();
-
+        assert null != site : "valueOf(cxt) got null site";
+        
+        SiteConfiguration instance = null;
+        
+        try{
+            INSTANCES_LOCK.readLock().lock();
+            instance = INSTANCES.get(site);
+        }finally{
+            INSTANCES_LOCK.readLock().unlock();
+        }
+        
         if (instance == null) {
             instance = new SiteConfiguration(cxt);
         }

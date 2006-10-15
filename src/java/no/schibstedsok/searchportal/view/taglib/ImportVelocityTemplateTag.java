@@ -4,7 +4,6 @@
  *
  * Created on May 26, 2006, 3:17 PM
  */
-
 package no.schibstedsok.searchportal.view.taglib;
 
 
@@ -20,10 +19,12 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import no.schibstedsok.searchportal.http.filters.SiteLocatorFilter;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
+import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -32,7 +33,7 @@ import org.apache.velocity.app.VelocityEngine;
 /** Imports (and merges) a velocity template from a site-config into the jsp. 
  *
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
- * @version $ID$
+ * @version $Id$
  */
 
 public final class ImportVelocityTemplateTag extends SimpleTagSupport {
@@ -68,11 +69,24 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
             if (f != null){
                 f.invoke(out);
             }
-            final Site site = (Site)cxt.findAttribute(Site.NAME_KEY);
-            final TextMessages text = (TextMessages)cxt.findAttribute("text");
+            
+            final Site site = null != cxt.findAttribute(Site.NAME_KEY)
+                    ? (Site)cxt.findAttribute(Site.NAME_KEY)
+                    // we haven't gone through the SiteLocatorFilter so get site manually
+                    : SiteLocatorFilter.getSite(cxt.getRequest());
+            
+            assert null != site : "doTag() got null Site";
+            
+            final TextMessages text = null != cxt.findAttribute("text")
+                    ? (TextMessages)cxt.findAttribute("text")
+                    // we haven't gone through the SearchServlet so create TextMessages
+                    : TextMessages.valueOf(site);
+            
+            assert null != text : "doTag() got null TextMessages";
 
-            final VelocityEngine engine = VelocityResultHandler.getEngine(site);
+            final VelocityEngine engine = VelocityEngineFactory.valueOf(site).getEngine();
             final Template template = VelocityResultHandler.getTemplate(engine, site, this.template);
+            
             if (template != null){
 
                 final VelocityContext context = VelocityResultHandler.newContextInstance(engine);

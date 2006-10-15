@@ -24,6 +24,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModule;
+import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -110,7 +111,8 @@ public final class SyndicationGenerator {
         }
 
         templateDir = "rss/" + modeId + "/";
-        engine = VelocityResultHandler.getEngine(site);
+        // TODO should be using a context here. Below can be used in tests.
+        engine = VelocityEngineFactory.valueOf(site).getEngine();
     }
 
     /** TODO comment me. **/

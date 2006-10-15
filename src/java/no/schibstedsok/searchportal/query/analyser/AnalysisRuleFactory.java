@@ -68,10 +68,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             "Predicate not inherited: ";
 
     /**
-     * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
-     * time. But only one will persist in the map.
-     *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
-     * the resources to improve the performance. But I doubt this would gain much, if anything at all.
+     * 
      */
     private static final Map<Site,AnalysisRuleFactory> INSTANCES = new HashMap<Site,AnalysisRuleFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
@@ -82,8 +79,8 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     private final Map predicateIds = new HashMap();
     private final Map<String, Predicate> globalPredicates = new HashMap();
 
-
-    private final Map rules = new HashMap();
+    private final Map<String,AnalysisRule> rules = new HashMap<String,AnalysisRule>();
+    private final ReentrantReadWriteLock rulesLock = new ReentrantReadWriteLock();
 
     private final Context context;
     private final DocumentLoader loader;
@@ -110,6 +107,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     }
 
     private void init() {
+        
         if (!init) {
             loader.abut();
             LOG.info("Parsing " + ANALYSIS_RULES_XMLFILE + " started");
@@ -127,6 +125,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             // ruleList
             final NodeList ruleList = root.getElementsByTagName("rule");
             for (int i = 0; i < ruleList.getLength(); ++i) {
+                
                 final Element rule = (Element) ruleList.item(i);
                 final String id = rule.getAttribute("id");
                 final AnalysisRule analysisRule = new AnalysisRule();
@@ -148,7 +147,12 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                     analysisRule.addPredicateScore(predicate, scoreValue);
                     analysisRule.setPredicateNameMap(Collections.unmodifiableMap(predicateIds));
                 }
-                rules.put(id, analysisRule);
+                try{
+                    rulesLock.writeLock().lock();
+                    rules.put(id, analysisRule);
+                }finally{
+                    rulesLock.writeLock().unlock();
+                }
                 LOG.info(DEBUG_FINISHED_RULE + id + " " + analysisRule);
             }
             LOG.info("Parsing " + ANALYSIS_RULES_XMLFILE + " finished");
@@ -336,22 +340,29 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         LOG.trace("getRule(" + ruleName + ")");
 
         init();
-        AnalysisRule rule = (AnalysisRule) rules.get(ruleName);
+        
+        AnalysisRule rule = null;
+        try{
+            rulesLock.readLock().lock();
+            rule = (AnalysisRule) rules.get(ruleName);
+        }finally{
+            rulesLock.readLock().unlock();
+        }
 
         if(rule == null) {
             rule = valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext() {
-                public Site getSite() {
-                    return context.getSite().getParent();
-                }
-                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                    return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                }
-                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                    return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                }
-            },
+                        public Site getSite() {
+                            return context.getSite().getParent();
+                        }
+                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                        }
+                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+                        }
+                    },
                     context
                     )).getRule(ruleName);
 
@@ -373,9 +384,16 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     public static AnalysisRuleFactory valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
-        INSTANCES_LOCK.readLock().lock();
-        AnalysisRuleFactory instance = INSTANCES.get(site);
-        INSTANCES_LOCK.readLock().unlock();
+        assert null != site : "valueOf(cxt) got null site";
+        
+        AnalysisRuleFactory instance = null;
+        
+        try{
+            INSTANCES_LOCK.readLock().lock();
+            instance = INSTANCES.get(site);
+        }finally{
+            INSTANCES_LOCK.readLock().unlock();
+        }
 
         if (instance == null) {
             try {

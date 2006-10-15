@@ -77,7 +77,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     public static SearchTabFactory valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
-
+        assert null != site;
+        
         INSTANCES_LOCK.readLock().lock();
         SearchTabFactory instance = INSTANCES.get(site);
         INSTANCES_LOCK.readLock().unlock();
@@ -167,8 +168,12 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
         try{
             tabsLock.readLock().lock();
-            return tabsByKey.get(key);
-
+            
+            final SearchTab result = tabsByKey.get(key);
+            assert null != result : "getTabByKey(" + key + ") returned null" + tabsByKey;
+            
+            return result;
+            
         }finally{
             tabsLock.readLock().unlock();
         }

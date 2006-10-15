@@ -46,7 +46,7 @@ import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
  * Strictly view domain.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class VelocityResultHandler implements ResultHandler {
 
@@ -64,27 +64,6 @@ public final class VelocityResultHandler implements ResultHandler {
     private static final String ERR_NP_WRITING_TO_STREAM 
             = "Possible client cancelled request. (NullPointerException writing to response's stream).";
     private static final String ERR_MERGE = "Error merging template ";
-
-    public static VelocityEngine getEngine(final Context cxt){
-
-        return VelocityEngineFactory.valueOf(ContextWrapper.wrap(VelocityEngineFactory.Context.class,cxt)).getEngine();
-    }
-
-    /** Utility wrapper to getEngine(Context) defaulting to UrlResourceLoader resource loading. **/
-    public static VelocityEngine getEngine(final Site site){
-
-        return VelocityEngineFactory.valueOf(new VelocityEngineFactory.Context(){
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-            public Site getSite() {
-                return site;
-            }
-        }).getEngine();
-    }
 
     public static Template getTemplate(
             final VelocityEngine engine,
@@ -152,14 +131,16 @@ public final class VelocityResultHandler implements ResultHandler {
 
         // write to a separate writer first for threading reasons
         final Writer w = new StringWriter();
-        final SearchConfiguration searchConfiguration = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+        final SearchConfiguration searchConfiguration 
+                = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
         
             final String templateName = searchConfiguration.getName() + ".vm";
 
             LOG.debug(DEBUG_TEMPLATE_SEARCH + searchConfiguration + templateName);
 
             final Site site = cxt.getSite();
-            final VelocityEngine engine = getEngine(cxt);
+            final VelocityEngine engine = VelocityEngineFactory.valueOf(
+                    ContextWrapper.wrap(VelocityEngineFactory.Context.class, cxt)).getEngine();
             final Template template = getTemplate(engine, site, searchConfiguration.getName());
 
             if(template != null){
