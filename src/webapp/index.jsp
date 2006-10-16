@@ -226,7 +226,6 @@
 
 </div>
 
-<img src="images/navLightLine.gif" style="padding-top:20px;" width="100%" height="1" alt="" />
 <div id="footer_space_index">
     <search:publish page="/pages/footer"/>
 </div>
