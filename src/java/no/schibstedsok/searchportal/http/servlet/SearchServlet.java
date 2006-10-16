@@ -102,13 +102,22 @@ public final class SearchServlet extends HttpServlet {
         if (searchTabKey == null) {
             searchTabKey = "d";
         }
-
-        final SearchTab searchTab = SearchTabFactory.valueOf(
-            ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)).getTabByKey(searchTabKey);
-
+        
+        SearchTab st = null;
+        try{
+            st = SearchTabFactory.valueOf(
+                ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)).getTabByKey(searchTabKey);
+            
+        }catch(AssertionError ae){
+            // it's not normal to catch assert errors but we really want a 404 not 500 response error.
+            LOG.error("Caught Assertion: " + ae);
+        }
+        final SearchTab searchTab = st;
+        
         if (searchTab == null) {
             LOG.error(ERR_MISSING_TAB + searchTabKey);
-            throw new UnsupportedOperationException(ERR_MISSING_TAB + searchTabKey);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
 
         final SearchMode mode = SearchModeFactory.valueOf(
