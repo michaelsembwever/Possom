@@ -310,20 +310,23 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <%}%>
         </td>
         <td class="cell_four" valign="top" width="225">
-            <div id="midbar_right">
-                <decorator:getProperty property="page.greybar_ad"/>
-            </div>
+	    <% if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
+	    <% } else { %>
+            	<div id="midbar_right">
+                    <decorator:getProperty property="page.greybar_ad"/>
+            	</div>
 
-            <% if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") ) {%>
-                <decorator:getProperty property="page.ads"/>
-                <decorator:getProperty property="page.ads-logo"/>
-            <%}else if (currentC.equals("b") ) {%>
-                <decorator:getProperty property="page.feedback"/>
-            <%} else if (currentC.equals("t")) {%>
-                <decorator:getProperty property="page.tvSearchWebTv"/>
-                <decorator:getProperty property="page.ads"/>
-            <%} else {%>
-                <decorator:getProperty property="page.ads"/>
+            	<% if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") ) {%>
+                    <decorator:getProperty property="page.ads"/>
+                    <decorator:getProperty property="page.ads-logo"/>
+            	<%}else if (currentC.equals("b") ) {%>
+                    <decorator:getProperty property="page.feedback"/>
+            	<%} else if (currentC.equals("t")) {%>
+                    <decorator:getProperty property="page.tvSearchWebTv"/>
+                    <decorator:getProperty property="page.ads"/>
+            	<%} else {%>
+                    <decorator:getProperty property="page.ads"/>
+            	<%}%>
             <%}%>
         </td>
     </tr>
