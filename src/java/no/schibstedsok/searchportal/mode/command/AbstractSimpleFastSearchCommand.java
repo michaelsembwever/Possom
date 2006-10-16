@@ -574,6 +574,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             searchResult.addSpellingSuggestion(egg);
         }
 
+        if (context.getRunningQuery().getQueryString().equalsIgnoreCase("kvasir")) {
+            final SpellingSuggestion egg = new SpellingSuggestion("kvasir", "sesam", 1000);
+            searchResult.addSpellingSuggestion(egg);
+        }
+
         if (context.getRunningQuery().getQueryString().equalsIgnoreCase("meningen med livet")) {
             final SpellingSuggestion egg = new SpellingSuggestion("meningen med livet", "42", 1000);
             searchResult.addSpellingSuggestion(egg);
