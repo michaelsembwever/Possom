@@ -50,7 +50,6 @@ public class DailyWordCommand extends AbstractSearchCommand {
             final InputStream wordStream = DailyWordCommand.class.getResourceAsStream("/dailyWords.txt");
             BufferedReader reader;
             try {
-
             reader = new BufferedReader(new InputStreamReader(wordStream, "UTF-8"));
             String row = "";
                 while ((row = reader.readLine()) != null) {
@@ -71,7 +70,7 @@ public class DailyWordCommand extends AbstractSearchCommand {
         
         if (words.containsKey(context.getQuery().getQueryString().toLowerCase())) {
             final DailyWord word = words.get(context.getQuery().getQueryString().toLowerCase());
-            if (isToday(word.getDay())) {
+            if (word.isActive(new Date())) {
                 final SearchResultItem item = new BasicSearchResultItem();
                 item.addField(FIELD_WORD, word.getWord());
                 item.addField(FIELD_CODE, word.getCode());
@@ -82,43 +81,47 @@ public class DailyWordCommand extends AbstractSearchCommand {
         return result;
     }
 
-    private boolean isToday(Date date) {
-        final Calendar today = Calendar.getInstance();
-        final Calendar wordDay = Calendar.getInstance();
-        
-        wordDay.setTime(date);
-        
-        return today.get(Calendar.YEAR) == wordDay.get(Calendar.YEAR) &&
-                today.get(Calendar.DAY_OF_YEAR) == wordDay.get(Calendar.DAY_OF_YEAR);
-    }
 
     private static void addDailyWord(String row) throws ParseException {
         final String[] fields = row.split(";");
 
-        if (fields.length == 3) {
-            final Date wordDate = new SimpleDateFormat(DATE_FORMAT).parse(fields[0]);
-            final DailyWord word = new DailyWord(fields[1], wordDate, fields[2]);
+        if (fields.length == 4) {
+            final Date startDate = new SimpleDateFormat(DATE_FORMAT).parse(fields[0]);
+            final Date endDate = new SimpleDateFormat(DATE_FORMAT).parse(fields[1]);
+
+            final DailyWord word = new DailyWord(fields[2], startDate, endDate, fields[3]);
             words.put(word.getWord(), word);
         }
     }
     
     private static class DailyWord {
         final String word;
-        final Date day;
+        final Date startDate;
+        final Date endDate;
         final String code;
         
-        public DailyWord(final String word, final Date day, final String code) {
+        public DailyWord(final String word, final Date startDate, final Date endDate, final String code) {
             this.word = word;
-            this.day = day;
+            this.startDate = startDate;
+            this.endDate = endDate;
             this.code = code;
+        }
+
+        public boolean isActive(final Date date) {
+            return (date.equals(startDate) || date.after(startDate)) && (date.equals(endDate) || date.before(endDate));
         }
 
         public String getCode() {
             return code;
         }
 
-        public Date getDay() {
-            return day;
+
+        public Date getStartDate() {
+            return startDate;
+        }
+
+        public Date getEndDate() {
+            return endDate;
         }
 
         public String getWord() {
