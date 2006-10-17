@@ -630,8 +630,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * Visitor to create the FAST filter string. Handles the site: syntax.
      *
-     * @todo add correct handling of NotClause and AndNotClause. This also needs
-     * to be added to the query builder visitor above.
+     * @todo add correct handling of NotClause and AndNotClause. This also needs to be added to the query builder visitor above.
+     * @todo move to an abstract fast search command?
      *
      */
     private final class FilterVisitor extends AbstractReflectionVisitor {

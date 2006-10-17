@@ -183,6 +183,11 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
         if (transformedTerm != null && transformedTerm.length() > 0) {
             appendToQueryRepresentation(pendingAnd);
+
+            if (clause.getField() != null) {
+                appendToQueryRepresentation(clause.getField() + ":");
+            }
+
             appendToQueryRepresentation(transformedTerm);
             pendingAnd = "";
         }
