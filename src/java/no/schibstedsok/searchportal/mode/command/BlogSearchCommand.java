@@ -38,19 +38,6 @@ public class BlogSearchCommand extends AbstractESPFastSearchCommand {
         super(cxt, parameters);
     }
 
-    // Public --------------------------------------------------------
-    public SearchResult execute() {
-
-        if (getSearchConfiguration().getName().equals("blogCounter")) {
-            final BasicSearchResult r = new BasicSearchResult(this);
-            r.setHitCount(123456789);
-
-            return r;
-        }
-
-        return super.execute();
-    }
-
     protected void visitImpl(final LeafClause clause) {
 
         if (clause.getField() == null 
