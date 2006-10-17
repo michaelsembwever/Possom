@@ -53,6 +53,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String YAHOO_SIZE_PARAM = "dimensions";
     private static final String SIZE_PARAM = "sz";
+    private static final Object SITE_FILTER = "site";
 
     /**
      * provides a mapping betweeen sizes defined by us
@@ -108,7 +109,6 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
                 if (mapping != null)
                     url += "&" + YAHOO_SIZE_PARAM + "=" + mapping.getSizes();
             }
-
 
             return url;
 
@@ -184,7 +184,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         if (transformedTerm != null && transformedTerm.length() > 0) {
             appendToQueryRepresentation(pendingAnd);
 
-            if (clause.getField() != null) {
+            if (clause.getField() != null && clause.getField().equals(SITE_FILTER)) {
                 appendToQueryRepresentation(clause.getField() + ":");
             }
 
