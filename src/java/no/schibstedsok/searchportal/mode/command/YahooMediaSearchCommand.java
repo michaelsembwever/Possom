@@ -48,17 +48,11 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     private static final String RESULT_HEADER_ELEMENT = "GRP";
     private static final String TOTAL_HITS_ATTR = "TOT";
     private static final String RESULT_ELEMENT = "RES";
-    private static final Object SITE_FIELD = "site";
 
     private static final String URL_ENCODING = "UTF-8";
-    private static final String SCHEME_INDICATOR = ":";
-    private static final String HTTP_SCHEME = "http://";
 
     private static final String YAHOO_SIZE_PARAM = "dimensions";
-    private static final String YAHOO_SITE_PARAM = "rurl";
     private static final String SIZE_PARAM = "sz";
-
-    private String siteRestriction = null;
 
     /**
      * provides a mapping betweeen sizes defined by us
@@ -107,8 +101,6 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
                     cfg.getResultsToReturn(),
                     cfg.getOcr(),
                     cfg.getCatalog());
-
-            url += getSiteRestriction() == null ? "" : "&" + YAHOO_SITE_PARAM + "=" + getSiteRestriction();
 
             if (getSingleParameter(SIZE_PARAM) != null && !getSingleParameter(SIZE_PARAM).equals("")) {
                 final ImageMapping mapping = ImageMapping.valueOf(getSingleParameter(SIZE_PARAM).toUpperCase());
@@ -177,8 +169,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
         first.accept(this);
 
-        if (!(isEmptyLeaf(first) || isEmptyLeaf(second)))
-            pendingAnd = QL_AND; // Defer emission of QL_AND until we know second clause isn't a NotClause.
+        pendingAnd = QL_AND; // Defer emission of QL_AND until we know second clause isn't a NotClause.
         
         second.accept(this);
     }
@@ -187,17 +178,16 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
      * {@inheritDoc}
      */
     protected void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null) {
-            final String transformedTerm = getTransformedTerm(clause);
-            if (transformedTerm != null && transformedTerm.length() > 0) {
-                appendToQueryRepresentation(pendingAnd);
-                appendToQueryRepresentation(transformedTerm);
-                pendingAnd = "";
-            }
-        } else if (clause.getField().equals(SITE_FIELD)) {
-            setSiteRestriction(clause.getTerm());
+
+        final String transformedTerm = getTransformedTerm(clause);
+
+        if (transformedTerm != null && transformedTerm.length() > 0) {
+            appendToQueryRepresentation(pendingAnd);
+            appendToQueryRepresentation(transformedTerm);
+            pendingAnd = "";
         }
     }
+
 
     /**
      * {@inheritDoc}
@@ -248,26 +238,6 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         appendToQueryRepresentation(QL_ANDNOT);
         clause.getFirstClause().accept(this);
     }
-
-    /**
-     * Returns true iff the clause is a fielded leaf
-     *
-     * @param clause The clause to examine.
-     *
-     * @return true iff leaf is fielded.
-     */
-    private boolean isEmptyLeaf(final Clause clause) {
-        return clause instanceof LeafClause && ((LeafClause)clause).getField() != null;
-    }
-
-    private String getSiteRestriction() {
-        return siteRestriction;
-    }
-
-    private void setSiteRestriction(final String url) {
-        this.siteRestriction = url.contains(SCHEME_INDICATOR) ? url : HTTP_SCHEME + url;
-    }
-
 
     private SearchResultItem createResultItem(final Element listing) {
         final BasicSearchResultItem item = new BasicSearchResultItem();
