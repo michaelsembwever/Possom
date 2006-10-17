@@ -53,7 +53,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String YAHOO_SIZE_PARAM = "dimensions";
     private static final String SIZE_PARAM = "sz";
-    private static final Object SITE_FILTER = "site";
+    private static final String SITE_FILTER = "site";
 
     /**
      * provides a mapping betweeen sizes defined by us
@@ -169,7 +169,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
         first.accept(this);
 
-        pendingAnd = QL_AND; // Defer emission of QL_AND until we know second clause isn't a NotClause.
+        pendingAnd = QL_AND; // Defer emission of QL_AND until we know right branch isn't a NotClause.
         
         second.accept(this);
     }
