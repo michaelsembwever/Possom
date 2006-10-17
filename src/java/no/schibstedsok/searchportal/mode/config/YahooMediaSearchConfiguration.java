@@ -8,7 +8,7 @@ package no.schibstedsok.searchportal.mode.config;
 public class YahooMediaSearchConfiguration extends AbstractYahooSearchConfiguration {
 
     public final static String DEFAULT_OCR = "yes";
-    public final static String DEFAULT_CATALOG = "images"; 
+    public final static String DEFAULT_CATALOG = "image"; 
 
     private String catalog;
     private String ocr;

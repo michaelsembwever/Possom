@@ -33,6 +33,7 @@ import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YellowGeoSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YellowSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.YahooMediaSearchConfiguration;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
@@ -346,6 +347,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         STORMWEATHER_COMMAND(StormWeatherSearchConfiguration.class),
         TVSEARCH_COMMAND(TvSearchConfiguration.class),
         YAHOO_IDP_COMMAND(YahooIdpSearchConfiguration.class),
+        YAHOO_MEDIA_COMMAND(YahooMediaSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
         YELLOWGEOPAGES_COMMAND(YellowGeoSearchConfiguration.class),
         WEB_COMMAND(WebSearchConfiguration.class),
@@ -529,6 +531,20 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "partnerId", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "port", ParseType.Int , commandE, "80");
                     fillBeanProperty(sc, inherit, "hostHeader", ParseType.String , commandE, "");
+                }
+                if (sc instanceof YahooMediaSearchConfiguration) {
+
+                    final YahooMediaSearchConfiguration ymsc = (YahooMediaSearchConfiguration) sc;
+                    final YahooMediaSearchConfiguration ymscInherit = (YahooMediaSearchConfiguration) (inherit instanceof YahooMediaSearchConfiguration ? inherit : null);
+
+                    final String host = commandE.getAttribute("host");
+                    final String port = commandE.getAttribute("port");
+
+                    ymsc.setPort(Integer.valueOf(parseProperty(cxt, port, ymscInherit != null ? String.valueOf(ymscInherit.getPort()) : "0")));
+                    ymsc.setHost(parseProperty(cxt, host, ymscInherit != null ? ymscInherit.getHost() : ""));
+
+                    fillBeanProperty(ymsc, inherit, "catalog", ParseType.String, commandE, YahooMediaSearchConfiguration.DEFAULT_CATALOG);
+                    fillBeanProperty(ymsc, inherit, "ocr", ParseType.String, commandE, YahooMediaSearchConfiguration.DEFAULT_OCR);
                 }
                 if(sc instanceof OverturePPCSearchConfiguration){
                     fillBeanProperty(sc, inherit, "url", ParseType.String , commandE, "");

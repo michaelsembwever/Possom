@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.Map;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
-import no.schibstedsok.searchportal.mode.command.*;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -41,13 +40,12 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
     /**
      * Create new overture command.
      *
-     * @param query
-     * @param configuration
-     * @param parameters
+     * @param cxt The context to execute in.
+     * @param parameters Search command parameters.
      */
     public AbstractYahooSearchCommand(
             final Context cxt,
-            final Map parameters) {
+            final Map<String, Object> parameters) {
 
         super(cxt, parameters);
 
@@ -90,8 +88,4 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------
-
-
-
-
 }

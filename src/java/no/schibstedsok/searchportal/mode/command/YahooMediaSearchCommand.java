@@ -41,14 +41,46 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     private static final String QL_ANDNOT = " ANDNOT ";
 
     private static final String COMMAND_URL_PATTERN =
-            "/std_xmls_a00?type=adv&query={0}&custid1={1}&hits={2}&ocr={3}&catalog={4}";
+            "/std_xmls_a00?type=adv&query={0}&offset={1}&custid1={2}&hits={3}&ocr={4}&catalog={5}";
+
     private static final String ERR_FAILED_CREATING_URL = "Failed to encode URL";
+
     private static final String RESULT_HEADER_ELEMENT = "GRP";
     private static final String TOTAL_HITS_ATTR = "TOT";
     private static final String RESULT_ELEMENT = "RES";
     private static final Object SITE_FIELD = "site";
 
-    private String siteRestriction;
+    private static final String URL_ENCODING = "UTF-8";
+    private static final String SCHEME_INDICATOR = ":";
+    private static final String HTTP_SCHEME = "http://";
+
+    private static final String YAHOO_SIZE_PARAM = "dimensions";
+    private static final String YAHOO_SITE_PARAM = "rurl";
+    private static final String SIZE_PARAM = "sz";
+
+    private String siteRestriction = null;
+
+    /**
+     * provides a mapping betweeen sizes defined by us
+     * and sizes defined by yahoo. Currently one to one.
+     */
+    private static enum ImageMapping {
+        SMALL ("small"),
+        MEDIUM ("medium"),
+        LARGE ("large"),
+        WALLPAPER ("wallpaper"),
+        WIDEWALLPAPER ("widewallpaper");
+
+        private final String sizes;
+
+        ImageMapping(final String sizes) {
+            this.sizes = sizes;
+        }
+
+        public String getSizes() {
+            return sizes;
+        }
+    }
 
     /**
      * Create new yahoo media command.
@@ -69,13 +101,25 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         try {
             String url = MessageFormat.format(
                     COMMAND_URL_PATTERN,
+                    URLEncoder.encode(query, URL_ENCODING),
+                    getCurrentOffset(0),
                     cfg.getPartnerId(),
                     cfg.getResultsToReturn(),
                     cfg.getOcr(),
-                    cfg.getCatalog(),
-                    URLEncoder.encode(query, "UTF-8"));
+                    cfg.getCatalog());
 
-            return getSiteRestriction() == null ? url : url + "&rurl=" + getSiteRestriction();
+            url += getSiteRestriction() == null ? "" : "&" + YAHOO_SITE_PARAM + "=" + getSiteRestriction();
+
+            if (getSingleParameter(SIZE_PARAM) != null && !getSingleParameter(SIZE_PARAM).equals("")) {
+                final ImageMapping mapping = ImageMapping.valueOf(getSingleParameter(SIZE_PARAM).toUpperCase());
+
+                if (mapping != null)
+                    url += "&" + YAHOO_SIZE_PARAM + "=" + mapping.getSizes();
+            }
+
+
+            return url;
+
         } catch (final UnsupportedEncodingException e) {
             throw new InfrastructureException(ERR_FAILED_CREATING_URL, e);
         }
@@ -89,6 +133,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
             final SearchResult searchResult = new BasicSearchResult(this);
 
             if (doc != null) {
+
                 final Element searchResponseE = doc.getDocumentElement();
                 final Element resultHeaderE = (Element) searchResponseE.getElementsByTagName(RESULT_HEADER_ELEMENT).item(0);
 
@@ -103,6 +148,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
             }
 
             return searchResult;
+
         } catch (final IOException e) {
             throw new InfrastructureException(e);
         } catch (final SAXException e) {
@@ -110,30 +156,6 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
-    private String getSiteRestriction() {
-        return siteRestriction;
-    }
-
-    private void setSiteRestriction(final String url) {
-        this.siteRestriction = url.contains("://") ? url : "http://" + url;
-    }
-
-
-    private SearchResultItem createResultItem(final Element listing) {
-        final BasicSearchResultItem item = new BasicSearchResultItem();
-
-        for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
-
-            final String field = listing.getAttribute(entry.getKey().toUpperCase());
-
-            if (!"".equals(field)) {
-                item.addField(entry.getValue(), field);
-            }
-        }
-
-        return item;
-
-    }
 
     private String pendingAnd = "";
 
@@ -148,14 +170,14 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         // Make sure NotClauses are not emitted first. The query language only supports ANDNOT.
         // This has the side effect of rearringing other types of queries as well.
         // TODO. This should probably be applied to OR clauses as well but currently isn't.
-        if (!(clause.getSecondClause() instanceof NotClause) &&  !(clause.getFirstClause() instanceof LeafClause)) {
+        if (!(clause.getSecondClause() instanceof NotClause || clause.getFirstClause() instanceof LeafClause)) {
             first = clause.getSecondClause();
             second = clause.getFirstClause();
         }
 
         first.accept(this);
 
-        if (!isEmptyLeaf(first) && !isEmptyLeaf(second))
+        if (!(isEmptyLeaf(first) || isEmptyLeaf(second)))
             pendingAnd = QL_AND; // Defer emission of QL_AND until we know second clause isn't a NotClause.
         
         second.accept(this);
@@ -236,5 +258,29 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
      */
     private boolean isEmptyLeaf(final Clause clause) {
         return clause instanceof LeafClause && ((LeafClause)clause).getField() != null;
+    }
+
+    private String getSiteRestriction() {
+        return siteRestriction;
+    }
+
+    private void setSiteRestriction(final String url) {
+        this.siteRestriction = url.contains(SCHEME_INDICATOR) ? url : HTTP_SCHEME + url;
+    }
+
+
+    private SearchResultItem createResultItem(final Element listing) {
+        final BasicSearchResultItem item = new BasicSearchResultItem();
+
+        for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
+
+            final String field = listing.getAttribute(entry.getKey().toUpperCase());
+
+            if (!"".equals(field)) {
+                item.addField(entry.getValue(), field);
+            }
+        }
+
+        return item;
     }
 }
