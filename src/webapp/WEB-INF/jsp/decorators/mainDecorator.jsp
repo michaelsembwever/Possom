@@ -71,7 +71,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-    <search:velocity template="/pages/head"/>
+    <search:velocity template="/fragments/head"/>
 </head>
 
 <%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("yipticker") || currentC.equals("w") || currentC.equals("sw") || currentC.equals("swip")) {%>
