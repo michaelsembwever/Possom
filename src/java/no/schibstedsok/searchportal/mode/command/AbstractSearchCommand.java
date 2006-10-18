@@ -85,12 +85,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final String additionalFilter;
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
+    private String transformedQuerySesamSyntax;
     private final Map<String,Object> parameters;
     private volatile boolean completed = false;
     private volatile Thread thread = null;
 
-
-   // Constructors --------------------------------------------------
+    // Constructors --------------------------------------------------
 
     /**
      * @param query         The query to act on.
@@ -127,8 +127,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     public abstract SearchResult execute();
 
     /**
-     * Returns the query as it is after the query transformers have been
-     * applied to it.
+     * Returns the query as it is after the query transformers and command specific query builder
+     * have been applied to it.
      *
      * @return The transformed query.
      */
@@ -137,6 +137,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return transformedQuery;
     }
 
+    /**
+     * Returns the query as it is after the query transformers have been applied to it.
+     */
+     public String getTransformedQuerySesamSyntax() {
+        return transformedQuerySesamSyntax;
+    }
 
 
     /** TODO comment me. **/
@@ -370,7 +376,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         // add some general properties first from the command
         //  if we've somehow blanked out the query altogether then revert to the user's origianl query string
         result.addField(FIELD_TRANSFORMED_QUERY,
-                getTransformedQuery().length()>0 ? getTransformedQuery() : context.getQuery().getQueryString());
+                getTransformedQuerySesamSyntax().length()>0 ? getTransformedQuerySesamSyntax() : context.getQuery().getQueryString());
 
         // process listed result handlers
         for (ResultHandler resultHandler : getSearchConfiguration().getResultHandlers()) {
@@ -551,6 +557,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         } else {
             transformedQuery = getQueryRepresentation(query);
         }
+
+        final SesamSyntaxQueryBuilder builder = new SesamSyntaxQueryBuilder();
+        builder.visit(context.getQuery().getRootClause());
+        transformedQuerySesamSyntax = builder.getQueryRepresentation();
     }
 
     /** returns null when array is null **/
@@ -637,7 +647,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final class FilterVisitor extends AbstractReflectionVisitor {
 
         private final StringBuilder filterBuilder = new StringBuilder();
-
+        
         String getFilter(){
             return filterBuilder.toString().trim();
         }
@@ -718,7 +728,98 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
-    /** see createQuery(string). **/    
+    /**
+     * Query builder for creating a query syntax similar to sesam's own.
+     */
+    private final class SesamSyntaxQueryBuilder extends AbstractReflectionVisitor {
+        private final StringBuilder sb = new StringBuilder();
+
+        /**
+         * Returns the generated query.
+         *
+         * @return The query.
+         */
+        String getQueryRepresentation() {
+            return sb.toString();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void visitImpl(final LeafClause clause) {
+            final String field = clause.getField();
+
+            if (field == null) {
+                sb.append(transformedTerms.get(clause));
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void visitImpl(final OperationClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void visitImpl(final AndClause clause) {
+            clause.getFirstClause().accept(this);
+            sb.append(" ");
+            clause.getSecondClause().accept(this);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void visitImpl(final OrClause clause) {
+            sb.append("(");
+            clause.getFirstClause().accept(this);
+            clause.getSecondClause().accept(this);
+            sb.append(")");
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void visitImpl(final DefaultOperatorClause clause) {
+            clause.getFirstClause().accept(this);
+            sb.append(' ');
+            clause.getSecondClause().accept(this);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void visitImpl(final NotClause clause) {
+            final String childsTerm = transformedTerms.get(clause.getFirstClause());
+            if (childsTerm != null && childsTerm.length() > 0) {
+                sb.append("-");
+                clause.getFirstClause().accept(this);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void visitImpl(final AndNotClause clause) {
+            final String childsTerm = transformedTerms.get(clause.getFirstClause());
+            if (childsTerm != null && childsTerm.length() > 0) {
+                sb.append("-");
+                clause.getFirstClause().accept(this);
+            }
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        protected void visitImpl(final XorClause clause) {
+            clause.getFirstClause().accept(this);
+        }
+    }
+
+    /** see createQuery(string). **/
     protected static class ReconstructedQuery{
         private final Query query;
         private final TokenEvaluationEngine engine;
