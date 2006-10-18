@@ -19,7 +19,7 @@ ssh \
 -L 15200:sch-fast-search.osl.basefarm.net:15300 \
 -L 15400:sch-fast-query01.osl.basefarm.net:15200 \
 -L 15500:sch-fast-query.osl.basefarm.net:15400 \
--L 15100:sch-fast-b01.dev.osl.basefarm.net:15100 \
+-L 15100:10.16.195.250:15100 \
 -L 15151:sch-fast02.dev.osl.basefarm.net:25100 \
 -L 15252:license.picsearch.com:80  \
 -L 25100:sch-fast-se-admin01.osl.basefarm.net:15100 \
