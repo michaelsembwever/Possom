@@ -133,9 +133,9 @@ public final class SiteConfiguration implements SiteKeyedFactory{
         }
     }
     
-    public static boolean isSiteLocaleSupported(final Locale locale, final Site site){
+    public boolean isSiteLocaleSupported(final Locale locale){
         
-        final String supportedLocales = valueOf(site).getProperty(SITE_LOCALE_SUPPORTED);
+        final String supportedLocales = getProperty(SITE_LOCALE_SUPPORTED);
         if( null != supportedLocales ){
             final String[] locales = supportedLocales.split(",");
             for(String l : locales){

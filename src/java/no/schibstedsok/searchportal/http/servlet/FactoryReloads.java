@@ -51,7 +51,7 @@ public final class FactoryReloads {
 
         final Site site = genericCxt.getSite();
 
-        if("all".equalsIgnoreCase(reload)){
+        if("all".equalsIgnoreCase(reload) || "configuration".equalsIgnoreCase(reload)){
             LOG.warn(removeAllLocalesFromSiteKeyedFactory(site,
                     SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, genericCxt)))
                     + WARN_CONFIG_CLEANED + site);

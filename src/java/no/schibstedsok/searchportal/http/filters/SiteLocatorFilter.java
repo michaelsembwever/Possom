@@ -284,16 +284,23 @@ public final class SiteLocatorFilter implements Filter {
         // Construct the site object off the browser's locale, even if it won't finally be used.
         final Locale locale = servletRequest.getLocale();
         final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
+        final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
+            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+            }
+            public Site getSite() {
+                return result;
+            }
+        };//</editor-fold>
+        final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
 
         // Check if the browser's locale is supported by this skin. Use it if so.
-        if( SiteConfiguration.isSiteLocaleSupported(locale, result) ){
+        if( siteConf.isSiteLocaleSupported(locale) ){
             return result;
         }
 
         // Use the skin's default locale.
-        final String[] prefLocale = SiteConfiguration.valueOf(result)
-                .getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT)
-                .split("_");
+        final String[] prefLocale = siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
 
         switch(prefLocale.length){
             
