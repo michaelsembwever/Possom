@@ -110,8 +110,17 @@ public final class SearchModeFactoryTest extends AbstractFactoryTest {
         for(Locale l : Locale.getAvailableLocales()){
             
             final Site site = Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), l);
+            final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
+                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                    return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+                }
+                public Site getSite() {
+                    return site;
+                }
+            };//</editor-fold>
+            final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
             
-            if( SiteConfiguration.isSiteLocaleSupported(l, site) ){
+            if( siteConf.isSiteLocaleSupported(l) ){
                 final SearchModeFactory instance = getModeFactory(siteConstructorContext, l);
 
                 final SearchMode result = instance.getMode(id);

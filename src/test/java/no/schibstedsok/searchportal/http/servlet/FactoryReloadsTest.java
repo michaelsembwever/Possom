@@ -42,7 +42,12 @@ public class FactoryReloadsTest extends TestCase {
     @Test
     public void testRemoveAll() {
         
-        FactoryReloads.performReloads(genericContext(), "all"); 
+        FactoryReloads.performReloads(genericContext(), "configuration"); 
+        FactoryReloads.performReloads(genericContext(), "views"); 
+        FactoryReloads.performReloads(genericContext(), "modes"); 
+        FactoryReloads.performReloads(genericContext(), "AnalysisRules"); 
+        FactoryReloads.performReloads(genericContext(), "RegularExpressionEvaluators"); 
+        // skip "velocity" because VelocityEngineFactory harcodes to URLVelocityTemplateLoader
         
     }
 
