@@ -41,7 +41,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     private static final String QL_ANDNOT = " ANDNOT ";
 
     private static final String COMMAND_URL_PATTERN =
-            "/std_xmls_a00?type=adv&query={0}&offset={1}&custid1={2}&hits={3}&ocr={4}&catalog={5}";
+            "/std_xmls_a00?type=adv&query={0}&offset={1}&custid1={2}&hits={3}&ocr={4}&catalog={5}&encoding=utf-8";
 
     private static final String ERR_FAILED_CREATING_URL = "Failed to encode URL";
 
@@ -89,9 +89,14 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
     /** {@inheritDoc} */
     protected String createRequestURL() {
-        final String query = getTransformedQuery();
+
+        String query = getTransformedQuery();
 
         final YahooMediaSearchConfiguration cfg = (YahooMediaSearchConfiguration) context.getSearchConfiguration();
+
+        if (cfg.getSite().length() > 0) {
+            query += QL_AND + "site:" + cfg.getSite(); 
+        }
 
         try {
             String url = MessageFormat.format(
@@ -126,19 +131,23 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
             if (doc != null) {
 
+                searchResult.setHitCount(0);
+
                 final Element searchResponseE = doc.getDocumentElement();
                 final Element resultHeaderE = (Element) searchResponseE.getElementsByTagName(RESULT_HEADER_ELEMENT).item(0);
 
-                searchResult.setHitCount(Integer.parseInt(resultHeaderE.getAttribute(TOTAL_HITS_ATTR)));
+                if (resultHeaderE != null) {
 
-                final NodeList list = searchResponseE.getElementsByTagName(RESULT_ELEMENT);
+                    searchResult.setHitCount(Integer.parseInt(resultHeaderE.getAttribute(TOTAL_HITS_ATTR)));
 
-                for (int i = 0; i < list.getLength(); ++i) {
-                    final Element listing = (Element) list.item(i);
-                    searchResult.addResult(createResultItem(listing));
+                    final NodeList list = searchResponseE.getElementsByTagName(RESULT_ELEMENT);
+
+                    for (int i = 0; i < list.getLength(); ++i) {
+                        final Element listing = (Element) list.item(i);
+                        searchResult.addResult(createResultItem(listing));
+                    }
                 }
             }
-
             return searchResult;
 
         } catch (final IOException e) {

@@ -12,6 +12,7 @@ public class YahooMediaSearchConfiguration extends AbstractYahooSearchConfigurat
 
     private String catalog;
     private String ocr;
+    private String site;
 
     /**
      * Creates a new instance of the configuration.
@@ -30,6 +31,24 @@ public class YahooMediaSearchConfiguration extends AbstractYahooSearchConfigurat
         if(parent != null && parent instanceof YahooMediaSearchConfiguration){
             final YahooMediaSearchConfiguration ysc = (YahooMediaSearchConfiguration) parent;
         }
+    }
+
+    /**
+     * Getter for property 'site'.
+     *
+     * @return Value for property 'site'.
+     */
+    public String getSite() {
+        return site;
+    }
+
+    /**
+     * Setter for property 'site'.
+     *
+     * @param site Value to set for property 'site'.
+     */
+    public void setSite(final String site) {
+        this.site = site;
     }
 
     /**

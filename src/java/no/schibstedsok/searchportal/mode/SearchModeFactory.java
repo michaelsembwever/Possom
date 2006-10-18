@@ -545,6 +545,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     fillBeanProperty(ymsc, inherit, "catalog", ParseType.String, commandE, YahooMediaSearchConfiguration.DEFAULT_CATALOG);
                     fillBeanProperty(ymsc, inherit, "ocr", ParseType.String, commandE, YahooMediaSearchConfiguration.DEFAULT_OCR);
+                    fillBeanProperty(ymsc, inherit, "site", ParseType.String, commandE, "");
                 }
                 if(sc instanceof OverturePPCSearchConfiguration){
                     fillBeanProperty(sc, inherit, "url", ParseType.String , commandE, "");
