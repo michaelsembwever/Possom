@@ -40,7 +40,8 @@ rm -f bleedingsearch-projects.tmp
 wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/bleedingsearch-projects.sh -q -O bleedingsearch-projects.tmp >/dev/null
 DIFF=`diff -q bleedingsearch-projects.sh bleedingsearch-projects.tmp`
 if [[ "x" != "x$DIFF" ]] ; then
-    mv bleedingsearch-projects.tmp bleedingsearch-projects.sh
+    cp bleedingsearch-projects.tmp bleedingsearch-projects.sh
+    rm bleedingsearch-projects.tmp
     chmod u+x bleedingsearch-projects.sh
     chmod g+x bleedingsearch-projects.sh
     echo "Updated bleedingsearch-projects.sh"
