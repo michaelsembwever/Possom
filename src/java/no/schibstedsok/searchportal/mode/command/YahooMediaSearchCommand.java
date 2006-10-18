@@ -54,6 +54,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     private static final String YAHOO_SIZE_PARAM = "dimensions";
     private static final String SIZE_PARAM = "sz";
     private static final String SITE_FILTER = "site";
+    private static final String OCR_PARAM = "ocr";
 
     /**
      * provides a mapping betweeen sizes defined by us
@@ -99,13 +100,16 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         }
 
         try {
+
+            final String ocr = getSingleParameter(OCR_PARAM) != null ? getSingleParameter(OCR_PARAM) : cfg.getOcr();
+
             String url = MessageFormat.format(
                     COMMAND_URL_PATTERN,
                     URLEncoder.encode(query, URL_ENCODING),
                     getCurrentOffset(0),
                     cfg.getPartnerId(),
                     cfg.getResultsToReturn(),
-                    cfg.getOcr(),
+                    ocr,
                     cfg.getCatalog());
 
             if (getSingleParameter(SIZE_PARAM) != null && !getSingleParameter(SIZE_PARAM).equals("")) {
