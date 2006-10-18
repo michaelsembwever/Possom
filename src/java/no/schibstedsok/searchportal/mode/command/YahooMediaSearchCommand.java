@@ -169,7 +169,8 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
         first.accept(this);
 
-        pendingAnd = QL_AND; // Defer emission of QL_AND until we know right branch isn't a NotClause.
+        if (! (isEmptyLeaf(first) || isEmptyLeaf(second)))
+            pendingAnd = QL_AND; // Defer emission of QL_AND until we know right branch isn't a NotClause.
         
         second.accept(this);
     }
@@ -257,5 +258,16 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         }
 
         return item;
+    }
+
+    /**
+     * Returns true iff the clause is a leaf clause and if it will not produce any output in the query representation.
+     *
+     * @param clause The clause to examine.
+     *
+     * @return true iff leaf is empty.
+     */
+    private boolean isEmptyLeaf(final Clause clause) {
+        return clause instanceof LeafClause && (getTransformedTerm(clause) == null || getTransformedTerm(clause).length() == 0); 
     }
 }
