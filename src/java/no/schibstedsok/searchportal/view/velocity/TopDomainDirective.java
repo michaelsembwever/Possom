@@ -59,10 +59,14 @@ public final class TopDomainDirective extends Directive {
         final String input = node.jjtGetChild(0).value(context).toString();
         String topDomain = "";
         String string = "";
+
         if (input.indexOf("http://") > -1) 
             string = input.substring(7);
-        else 
+        else if (input.indexOf("https://") > -1) { 
+            string = input.substring(8);
+        } else {
             string = input;
+        }
 
         int i = string.indexOf("/");
         topDomain = string.substring(0, i);
