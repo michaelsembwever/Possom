@@ -23,7 +23,8 @@ rm -f update-bleedingsearch.tmp
 wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/update-bleedingsearch.sh -q -O update-bleedingsearch.tmp >/dev/null
 DIFF=`diff -q update-bleedingsearch.sh update-bleedingsearch.tmp`
 if [[ "x" != "x$DIFF" ]] ; then
-    mv update-bleedingsearch.tmp update-bleedingsearch.sh
+    cp update-bleedingsearch.tmp update-bleedingsearch.sh
+    rm update-bleedingsearch.tmp
     chmod u+x update-bleedingsearch.sh
     chmod g+x update-bleedingsearch.sh
     echo "Updated myself. Did not update bleedingsearch. Please run again."
