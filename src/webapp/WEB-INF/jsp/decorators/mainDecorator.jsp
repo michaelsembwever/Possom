@@ -171,7 +171,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <decorator:getProperty property="page.frontMenu"/>
                     <% } else { %>                
 
-                        <search:velocity template="/pages/navbarMain"/>
+                        <search:velocity template="/navigators/navbarMain"/>
 
                     <% } %>
                     <% if (currentC.equals("m")) { %>
