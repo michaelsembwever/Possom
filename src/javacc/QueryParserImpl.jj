@@ -110,10 +110,10 @@ TOKEN : { <URL: "http://"<WORD>> }
 <DEFAULT,URL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED,QUOTED_WORD_DISABLED>
 TOKEN : { <EMAIL: <WORD>"@"<WORD>"."<WORD>> }
 
-// Very generic to match any Internation Phone Number !! Based off example from http://www.weberdev.com/ViewArticle/461
+// Very generic to match any Internation Phone Number !! 
 //   TODO deal with optional area codes. eg australian numbers can be written (02) 4878 9336
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <PHONE_NUMBER: (("+"|"00"(<PHONE_MIDDLE>)?)?((<DIGIT>){1,3}(<PHONE_MIDDLE>)?)?((<DIGIT>){1,5}(<PHONE_MIDDLE>)?){1,3})" "> }
+TOKEN : { <PHONE_NUMBER: (("+"|"00"(<PHONE_MIDDLE>)?)?(<DIGIT>(<PHONE_MIDDLE>)?){7,14})" "> }
 
 // Also prevent organisation numbers when phone numbers are disabled. Prevents a cyclic loop.
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
