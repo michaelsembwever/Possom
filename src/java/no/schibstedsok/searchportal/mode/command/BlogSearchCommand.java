@@ -11,8 +11,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
 import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.query.UrlClause;
 
 /**
  *
@@ -42,14 +41,31 @@ public class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
         if (clause.getField() == null 
                 && !getTransformedTerm(clause).trim().equals("")) 
+
         {
-            appendToQueryRepresentation("(");
-            appendToQueryRepresentation("content:");
-            appendToQueryRepresentation(getTransformedTerm(clause));
-            appendToQueryRepresentation(" or ");
-            appendToQueryRepresentation("extended:");
-            appendToQueryRepresentation(getTransformedTerm(clause));
-            appendToQueryRepresentation(")");
+            final String term = getTransformedTerm(clause);
+
+            appendTermRepresentation(term);
         }
     }
+
+    /**
+     * Adds quotes around the URL. Failing so will produce syntax error in filter.
+     *
+     * @param clause The url clause.
+     */
+    protected void visitImpl(final UrlClause clause) {
+        appendTermRepresentation('"' + getTransformedTerm(clause) + '"');
+    }
+
+    private void appendTermRepresentation(final String term) {
+        appendToQueryRepresentation("(");
+        appendToQueryRepresentation("content:");
+        appendToQueryRepresentation(term);
+        appendToQueryRepresentation(" or ");
+        appendToQueryRepresentation("extended:");
+        appendToQueryRepresentation(term);
+        appendToQueryRepresentation(")");
+    }
+
 }
