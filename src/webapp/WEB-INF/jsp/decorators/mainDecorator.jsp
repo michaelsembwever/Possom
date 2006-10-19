@@ -90,17 +90,14 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
     <%-- old-school sitesearch --%>
     <% if (currentC.equals("d") && (
-             "ds".equals(ss) ||
              "di".equals(ss) ||
              "pr".equals(ss) ||
              "im".equals(ss) ||
-             "nrk".equals(ss) ||
              "af".equals(ss) ||
              "fv".equals(ss) ||
              "aa".equals(ss) ||
              "bt".equals(ss) ||
-             "sa".equals(ss) ||
-             "it".equals(ss))) { %>
+             "sa".equals(ss))) { %>
 
         <div id="frame">
             <div id="header">
