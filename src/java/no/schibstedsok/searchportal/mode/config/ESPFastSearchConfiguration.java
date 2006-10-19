@@ -25,6 +25,7 @@ public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
     private String sortBy;
     private boolean collapsingEnabled;
     private boolean expansionEnabled;
+    private boolean collapsingRemoves;
     private String qtPipeline;
     
     public void setCollapsingEnabled(final boolean collapsingEnabled) {
@@ -54,6 +55,14 @@ public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
      */
     public void setExpansionEnabled(final boolean expansionEnabled) {
         this.expansionEnabled = expansionEnabled;
+    }
+
+    public boolean isCollapsingRemoves() {
+        return collapsingRemoves;
+    }
+
+    public void setCollapsingRemoves(final boolean collapsingRemoves) {
+        this.collapsingRemoves = collapsingRemoves;
     }
 
     private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();

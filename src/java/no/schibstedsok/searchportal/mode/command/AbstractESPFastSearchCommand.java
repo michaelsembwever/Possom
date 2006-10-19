@@ -19,6 +19,8 @@ import com.fastsearch.esp.search.query.SearchParameter;
 import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
+import com.fastsearch.esp.search.result.IllegalType;
+import com.fastsearch.esp.search.result.EmptyValueException;
 import com.fastsearch.esp.search.view.ISearchView;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
@@ -46,10 +48,7 @@ import java.util.Properties;
 
 /**
  *
- * Base class for commands queryinga FAST EPS Server.
- *
- * @version $Id$
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ * Base class for commands querying a FAST EPS Server.
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
@@ -71,20 +70,21 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     // Attributes ----------------------------------------------------
     private final ESPFastSearchConfiguration cfg;
-
-    private Map<String, Navigator> navigatedTo = new HashMap<String,Navigator>();
-    private Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
-
     private IQueryResult result;
     
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
 
-    /** Creates a new instance of AbstractESPFastSearchCommand */
+    /**
+     * Creates new instance of search command.
+     *
+     * @param cxt The context to work in.
+     * @param parameters The command parameters to use.
+     */
     public AbstractESPFastSearchCommand(
                     final Context cxt,
-                    final Map parameters) {
+                    final Map<String, Object> parameters) {
 
         super(cxt, parameters);
 
@@ -92,6 +92,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     }
 
     // Public --------------------------------------------------------
+    /** {@inheritDoc} */
     public SearchResult execute() {
 
         final Properties props = new Properties();
@@ -126,21 +127,22 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             if (cfg.isCollapsingEnabled()) {
                 if (collapseId == null || collapseId.equals("")) {
-                    query.setParameter(new SearchParameter(
-                            BaseParameter.COLLAPSING, true));
+                    query.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
+
+                    if (cfg.isCollapsingRemoves()) {
+                        query.setParameter(new SearchParameter(BaseParameter.DUPLICATIONREMOVAL, true));
+                        query.setParameter(new SearchParameter("collapsenum", 1));
+                    }
+
                 } else {
                     filterBuilder.append("+collapseid:").append(collapseId);
                 }
             }
 
-            query.setParameter(new SearchParameter(
-                    BaseParameter.OFFSET, getCurrentOffset(0)));
-            query.setParameter(new SearchParameter(
-                    BaseParameter.HITS, cfg.getResultsToReturn()));
-            query.setParameter(new SearchParameter(
-                    BaseParameter.SORT_BY, cfg.getSortBy()));
-            query.setParameter(new SearchParameter(BaseParameter.FILTER,
-                    filterBuilder.toString()));
+            query.setParameter(new SearchParameter(BaseParameter.OFFSET, getCurrentOffset(0)));
+            query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));
+            query.setParameter(new SearchParameter(BaseParameter.SORT_BY, cfg.getSortBy()));
+            query.setParameter(new SearchParameter(BaseParameter.FILTER, filterBuilder.toString()));
 
             if (! cfg.getQtPipeline().equals("")) {
                 query.setParameter(new SearchParameter(BaseParameter.QT_PIPELINE, cfg.getQtPipeline()));
@@ -206,19 +208,17 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     // Protected -----------------------------------------------------
     // Generate query in FQL.
 
-   /**
-    *
-    * @todo Work in progress.
-    * quoting reserved words, operator precedence and more.
-    */
+    /** {@inheritDoc} */
     protected void visitImpl(final LeafClause clause) {
         if (clause.getField() == null) {
             appendToQueryRepresentation(getTransformedTerm(clause));
         } 
     }
+    /** {@inheritDoc} */
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
+    /** {@inheritDoc} */
     protected void visitImpl(final AndClause clause) {
         // The leaf clauses might not produce any output. For example terms 
         // having a site: field. In these cases we should not output the 
@@ -236,6 +236,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         clause.getSecondClause().accept(this);
     }
 
+    /** {@inheritDoc} */
     protected void visitImpl(final OrClause clause) {
         appendToQueryRepresentation(" (");
         clause.getFirstClause().accept(this);
@@ -243,6 +244,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         clause.getSecondClause().accept(this);
         appendToQueryRepresentation(") ");
     }
+    /** {@inheritDoc} */
     protected void visitImpl(final DefaultOperatorClause clause) {
         boolean hasEmptyLeaf = false;
 
@@ -256,6 +258,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         clause.getSecondClause().accept(this);
     }
+    /** {@inheritDoc} */
     protected void visitImpl(final NotClause clause) {
         appendToQueryRepresentation(" not ");
         appendToQueryRepresentation("(");
@@ -263,6 +266,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         appendToQueryRepresentation(")");
 
     }
+    /** {@inheritDoc} */
     protected void visitImpl(final AndNotClause clause) {
         appendToQueryRepresentation("andnot ");
         appendToQueryRepresentation("(");
@@ -293,6 +297,11 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     }
 
     
+    /**
+     * Returns the fast search result
+     *
+     * @return The fast search result.
+     */
     protected IQueryResult getIQueryResult() {
         return result;
     }
@@ -300,11 +309,11 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     // Private -------------------------------------------------------
     
     private int getMaxDocIndex(
-            final IQueryResult result,
+            final IQueryResult iQueryResult,
             final int cnt,
-            final ESPFastSearchConfiguration cfg)
+            final ESPFastSearchConfiguration fastSearchConfiguration)
     {
-        return Math.min(cnt + cfg.getResultsToReturn(), result.getDocCount());
+        return Math.min(cnt + fastSearchConfiguration.getResultsToReturn(), iQueryResult.getDocCount());
     }
 
     private SearchResultItem createResultItem(final IDocumentSummary document) {
@@ -319,24 +328,21 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 item.addField(entry.getValue(), summary.getStringValue().trim());
         }
 
-
-
         if (cfg.isCollapsingEnabled()) {
             final String currCollapseId = getParameter(COLLAPSE_PARAMETER);
 
             if (currCollapseId == null || currCollapseId.equals("")) {
-                final String moreHits = document.getSummaryField("morehits").getStringValue();
 
-                if (moreHits.equals("1")) {
-                    item.addField("moreHits", "true");
-                    item.addField("collapseParameter", COLLAPSE_PARAMETER);
+                if (! document.getSummaryField("fcocount").isEmpty() && Integer.parseInt(document.getSummaryField("fcocount").getStringValue()) > 1) {
+                        item.addField("moreHits", "true");
+                        item.addField("collapseParameter", COLLAPSE_PARAMETER);
                     item.addField("collapseId", document.getSummaryField("collapseid").getStringValue());
+                    }
                 }
             }
+            return item;
         }
-        return item;
-    }
 
-    // Inner classes -------------------------------------------------
-}
+        // Inner classes -------------------------------------------------
+    }
 

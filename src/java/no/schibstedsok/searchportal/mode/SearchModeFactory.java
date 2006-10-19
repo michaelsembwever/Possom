@@ -470,15 +470,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final ESPFastSearchConfiguration ascInherit = inherit instanceof ESPFastSearchConfiguration
                             ? (ESPFastSearchConfiguration) inherit
                             : null;
+
                     fillBeanProperty(sc, inherit, "view", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "default");
-                    // TODO use fillBeanProperty pattern instead
-                    asc.setCollapsingEnabled(parseBoolean(commandE.getAttribute("collapsing"),
-                            ascInherit != null ? ascInherit.isCollapsingEnabled() : false));
-                    // TODO use fillBeanProperty pattern instead
-                    asc.setExpansionEnabled(parseBoolean(commandE.getAttribute("expansion"),
-                            ascInherit != null ? ascInherit.isExpansionEnabled() : false));
-
+                    fillBeanProperty(sc, inherit, "collapsingRemoves", ParseType.Boolean, commandE, "false");
+                    fillBeanProperty(sc, inherit, "collapsingEnabled", ParseType.Boolean, commandE, "false");
+                    fillBeanProperty(sc, inherit, "expansionEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
 
                     final String qrServer = commandE.getAttribute("query-server");
