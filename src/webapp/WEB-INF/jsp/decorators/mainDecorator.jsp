@@ -181,9 +181,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <decorator:getProperty property="page.sub-navigator"/>
                     <%}%>            
 
-                    <% if (currentC.equals("d") || currentC.equals("g")) { %>
-                        <decorator:getProperty property="page.relevantQueries" />
-                    <%}%>
+                    <decorator:getProperty property="page.relevantQueries" />
 
                     <search:velocity template="navigators/scanpix" command="scanpix"/>
                     <decorator:getProperty property="page.blogDateNavigation"/>
