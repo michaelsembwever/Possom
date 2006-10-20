@@ -467,9 +467,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
                 if (sc instanceof ESPFastSearchConfiguration) {
                     final ESPFastSearchConfiguration asc = (ESPFastSearchConfiguration) sc;
-                    final ESPFastSearchConfiguration ascInherit = inherit instanceof ESPFastSearchConfiguration
-                            ? (ESPFastSearchConfiguration) inherit
-                            : null;
 
                     fillBeanProperty(sc, inherit, "view", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "default");
@@ -477,16 +474,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "collapsingEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "expansionEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "query-server", ParseType.String, commandE, "");
 
-                    final String qrServer = commandE.getAttribute("query-server");
-                    final String qrServerValue = parseProperty(cxt, qrServer,
-                            ascInherit != null ? ascInherit.getQueryServer() : null);
-
-                    if (qrServerValue.startsWith("http://")) {
-                        throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + qrServerValue);
+                    if (asc.getQueryServer().startsWith("http://")) {
+                        throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + asc.getQueryServer());
                     }
 
-                    asc.setQueryServer(qrServerValue);
                     // navigators
                     final NodeList nList = commandE.getElementsByTagName("navigators");
                     for(int i = 0; i < nList.getLength(); ++i){
