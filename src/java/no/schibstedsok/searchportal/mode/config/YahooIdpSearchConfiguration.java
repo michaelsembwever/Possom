@@ -216,6 +216,27 @@ public final class YahooIdpSearchConfiguration extends AbstractYahooSearchConfig
         this.language = language;
     }
 
+    /**
+     * Holds value of property languageMix.
+     */
+    private String languageMix;
+
+    /**
+     * Getter for property languageMix.
+     * @return Value of property languageMix.
+     */
+    public String getLanguageMix() {
+        return this.languageMix;
+    }
+
+    /**
+     * Setter for property languageMix.
+     * @param languageMix New value of property languageMix.
+     */
+    public void setLanguageMix(String languageMix) {
+        this.languageMix = languageMix;
+    }
+
 
 
 }

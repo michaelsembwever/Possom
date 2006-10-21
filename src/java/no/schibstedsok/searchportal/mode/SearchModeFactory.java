@@ -549,6 +549,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "filter", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "hideDomain", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "language", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "languageMix", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "region", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "regionMix", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "spellState", ParseType.String , commandE, "");

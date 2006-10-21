@@ -53,9 +53,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String COMMAND_URL_PATTERN =
             "/search?Client={0}&Database={1}&DateRange={2}&"
             + "FirstResult={3}&Numresults={4}&"
-            + "Region={5}&RegionMix={6}&SpellState={7}&Language={8}&"
-            + "QueryEncoding={9}&Fields={10}&Unique={11}&Filter={12}&"
-            + "Query={13}";
+            + "Region={5}&RegionMix={6}&SpellState={7}&Language={8}&LanguageMix={9}&"
+            + "QueryEncoding={10}&Fields={11}&Unique={12}&Filter={13}&"
+            + "Query={14}";
     private static final String DATE_PATTERN = "yyyy/MM/dd";
 
     private static final String HEADER_ELEMENT = "HEADER";
@@ -149,6 +149,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     conf.getRegionMix(),
                     conf.getSpellState(),
                     conf.getLanguage(),
+                    conf.getLanguageMix(),
                     conf.getEncoding(),
                     fields.toString(),
                     conf.getUnique(),
