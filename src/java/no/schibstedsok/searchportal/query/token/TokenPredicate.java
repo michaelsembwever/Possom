@@ -60,6 +60,7 @@ public enum TokenPredicate implements Predicate {
     PRODUCT_HOBBY (Type.FAST),
     PRODUCT_HOUSEHOLD (Type.FAST),
     PRODUCT_JEWELRY (Type.FAST),
+    PRODUCT_MOTOR (Type.FAST),
     PRODUCT_MUSIC (Type.FAST),
     PRODUCT_SHOE (Type.FAST),
     PRODUCT_SPORT (Type.FAST),
