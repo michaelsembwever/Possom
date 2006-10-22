@@ -44,9 +44,9 @@ public final class Site {
 
     /** Found from the configuration.properties resource found in this class's ClassLoader. **/
     private static final String DEFAULT_SITE_KEY = "site.default";
+    private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
     /** TODO comment me. **/
     public static final String PARENT_SITE_KEY = "site.parent";
-    private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
     private static final String DEFAULT_SERVER_PORT_KEY = "server.port";
     /** TODO comment me. **/
     public static final String NAME_KEY = "site";
@@ -89,14 +89,19 @@ public final class Site {
     /** Creates a new instance of Site.
      * A null Context will result in a parentSiteName == siteName
      */
-    private Site(final Context cxt, final String theSiteName, final Locale theLlocale) {
+    private Site(final Context cxt, final String theSiteName, final Locale theLocale) {
+        
+        LOG.info("Site(cxt, " + theSiteName + ", " + theLocale + ')');
+        assert null != theSiteName;
+        assert null != theLocale;
+        
         // siteName must finish with a '\'
         siteName = ensureTrailingSlash(theSiteName);
 
         cxtName = siteName.indexOf(':') >= 0
             ? siteName.substring(0, siteName.indexOf(':')) + '/' // don't include the port in the cxtName.
             : siteName;
-        locale = theLlocale;
+        locale = theLocale;
         uniqueName = getUniqueName(siteName, locale);
         // register in global pool.
         INSTANCES.put(uniqueName, this);
@@ -114,7 +119,7 @@ public final class Site {
 
         parent = null == parentSiteName || ensureTrailingSlash(parentSiteName).equals(siteName)
             ? constructingDefault ? null : DEFAULT
-            : Site.valueOf(cxt, parentSiteName, theLlocale);
+            : Site.valueOf(cxt, parentSiteName, theLocale);
     }
 
 
@@ -225,11 +230,18 @@ public final class Site {
         SERVER_PORT = Integer.parseInt(props.getProperty(DEFAULT_SERVER_PORT_KEY));
 
         constructingDefault = true;
-        DEFAULT = new Site(null, defaultSiteName, new Locale(defaultSiteLocaleName));
+        final Locale defaultLocale = new Locale(defaultSiteLocaleName);
+        DEFAULT = new Site(null, defaultSiteName, defaultLocale);
+        // FIXME and all locales along-side DEFAULT
+        for(Locale l : Locale.getAvailableLocales()){
+            if(defaultLocale != l){
+                new Site(null, defaultSiteName, l);
+            }
+        }
         constructingDefault = false;
     }
 
-    /** the default SiteSearch. For example: "sesam.no" or "localhost:8080".
+    /** the default SiteSearch. For example: "generic.sesam.no" or "generic.localhost:8080".
      */
     public static final Site DEFAULT;
 

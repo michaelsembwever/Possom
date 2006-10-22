@@ -209,7 +209,8 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     public TokenEvaluator getEvaluator(final TokenPredicate token) {
         init();
         TokenEvaluator result = regExpEvaluators.get(token);
-        if(result == null){
+        if(result == null && null != context.getSite().getParent()){
+
             result = valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){

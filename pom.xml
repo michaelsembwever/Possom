@@ -113,6 +113,7 @@
                 <finalName>ROOT</finalName>
             </build>
             <properties>
+                <sesam.site.default>generic.localhost:8080</sesam.site.default>
                 <server.port>0</server.port><!-- Zero means use port from host-header. -->
                 <queryServerURL.4>http://localhost:15500</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
@@ -137,6 +138,7 @@
                 <finalName>ROOT.bleeding</finalName>
             </build>
             <properties>
+                <sesam.site.default>generic.bleedingsearch.schibstedsok.no</sesam.site.default>
                 <server.port>80</server.port>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
@@ -171,6 +173,7 @@
                 </repository>
             </distributionManagement>
             <properties>
+                <sesam.site.default>generic.searchdev.schibstedsok.no</sesam.site.default>
                 <server.port>80</server.port>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>
@@ -205,6 +208,7 @@
                 </repository>
             </distributionManagement>
             <properties>
+                <sesam.site.default>generic.sesam.no</sesam.site.default>
                 <server.port>80</server.port>
                 <queryServerURL.4>http://10.16.195.250:15400</queryServerURL.4>
                 <queryServerURL.3>http://cobraprod.bos3.fastsearch.net:15100</queryServerURL.3>

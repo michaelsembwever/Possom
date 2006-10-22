@@ -226,16 +226,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchModeFactory factory = valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext(){
-                public Site getSite(){
-                    return context.getSite().getParent();
-                }
-                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                    return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                }
-                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                    return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                }
-            },
+                        public Site getSite(){
+                            return context.getSite().getParent();
+                        }
+                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                        }
+                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+                        }
+                    },
                     context
                     ));
             mode = factory.getMode(id);
@@ -476,7 +476,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "query-server", ParseType.String, commandE, "");
 
-                    if (asc.getQueryServer().startsWith("http://")) {
+                    if (null != asc.getQueryServer() && asc.getQueryServer().startsWith("http://")) {
                         throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + asc.getQueryServer());
                     }
 

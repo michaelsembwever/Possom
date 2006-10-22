@@ -97,6 +97,17 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         </layout>
     </appender>
     
+    <appender name="INITIALISATION_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.initialisations"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="INFO"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] %-5p %c{1}\: %m%n"/>
+        </layout>
+    </appender>
+    
     <logger name="no.schibstedsok.Dump" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="DUMP_APPEND"/>
@@ -125,6 +136,32 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     <logger name="no.schibstedsok.Product" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="PRODUCT_APPEND"/>
+    </logger>
+    
+    <!-- Loggers involved in core initialisation of the engine -->
+    <logger name="no.schibstedsok.searchportal.site.Site">
+        <appender-ref ref="INITIALISATION_APPEND"/>
+    </logger>
+    <logger name="no.schibstedsok.searchportal.query.token.RegExpEvaluatorFactory">
+        <appender-ref ref="INITIALISATION_APPEND"/>
+    </logger>
+    <logger name="no.schibstedsok.searchportal.query.token.VeryFastTokenEvaluatorFactory">
+        <appender-ref ref="INITIALISATION_APPEND"/>
+    </logger>
+    <logger name="no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory">
+        <appender-ref ref="INITIALISATION_APPEND"/>
+    </logger>
+    <logger name="no.schibstedsok.searchportal.mode.SearchModeFactory">
+        <appender-ref ref="INITIALISATION_APPEND"/>
+    </logger>
+    <logger name="no.schibstedsok.searchportal.view.config.SearchTabFactory">
+        <appender-ref ref="INITIALISATION_APPEND"/>
+    </logger>
+    <logger name="no.schibstedsok.searchportal.view.i18n.TextMessages">
+        <appender-ref ref="INITIALISATION_APPEND"/>
+    </logger>
+    <logger name="no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory">
+        <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
     
     <!-- These are here to avoid their DEBUG messages flooding our logfiles -->
