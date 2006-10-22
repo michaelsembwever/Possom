@@ -58,9 +58,9 @@ CONTEXTS[20]="dinepenger.bleedingsearch.schibstedsok.no.war"
 CONTEXTS[21]="e24.bleedingsearch.schibstedsok.no.war"
 CONTEXTS[22]="bleedingsearch.schibstedsok.no.war"
 CONTEXTS[23]="generic.bleedingsearch.schibstedsok.no.war"
-CONTEXTS[23]="genericno.bleedingsearch.schibstedsok.no.war"
-CONTEXTS[23]="genericse.bleedingsearch.schibstedsok.se.war"
-CONTEXTS[24]="genericsitesearch.bleedingsearch.schibstedsok.se.war"
-CONTEXTS[25]="ROOT.war"
+CONTEXTS[24]="genericno.bleedingsearch.schibstedsok.no.war"
+CONTEXTS[25]="genericse.bleedingsearch.schibstedsok.se.war"
+CONTEXTS[26]="genericsitesearch.bleedingsearch.schibstedsok.se.war"
+CONTEXTS[27]="ROOT.war"
 
 export PROJECTS CONTEXTS
