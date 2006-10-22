@@ -77,7 +77,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     public static final String ANALYSIS_RULES_XMLFILE = "AnalysisRules.xml";
 
     private final Map predicateIds = new HashMap();
-    private final Map<String, Predicate> globalPredicates = new HashMap();
+    private final Map<String, Predicate> globalPredicates = new HashMap<String, Predicate>();
 
     private final Map<String,AnalysisRule> rules = new HashMap<String,AnalysisRule>();
     private final ReentrantReadWriteLock rulesLock = new ReentrantReadWriteLock();
@@ -110,15 +110,11 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         
         if (!init) {
             loader.abut();
-            LOG.info("Parsing " + ANALYSIS_RULES_XMLFILE + " started");
+            LOG.info("Parsing " + ANALYSIS_RULES_XMLFILE + " started for " + context.getSite());
             final Document doc = loader.getDocument();
             final Element root = doc.getDocumentElement();
 
-            final AnalysisRuleFactory parentFactory = getParentFactory();
-
-            final Map inheritedPredicates = parentFactory != null
-                ? parentFactory.getGlobalPredicates()
-                : Collections.EMPTY_MAP;
+            final Map inheritedPredicates = getInheritedPredicates();
 
             readPredicates(root, globalPredicates, inheritedPredicates);
 
@@ -164,19 +160,26 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
         if (context.getSite().getParent() != null) {
 
-            return valueOf(ContextWrapper.wrap(
+            return valueOf(ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" parentSiteContext ">
                     Context.class,
                     new SiteContext() {
-                public Site getSite() {
-                    return context.getSite().getParent();
-                }
-                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                    return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                }
-                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                    return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                }
-            }, context));
+                        public Site getSite() {
+                            return context.getSite().getParent();
+                        }
+                        public PropertiesLoader newPropertiesLoader(
+                                final String resource, 
+                                final Properties properties) {
+                            
+                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                        }
+                        public DocumentLoader newDocumentLoader(
+                                final String resource, 
+                                final DocumentBuilder builder) {
+                            
+                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+                        }
+                    }, 
+                    context));//</editor-fold>
         }
         return null;
     }
@@ -186,7 +189,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             final Map predicateMap,
             final Map inheritedPredicates){
 
-        final NodeList predicates = element.getChildNodes(); //ElementsByTagName("predicate");
+        final NodeList predicates = element.getChildNodes();
 
         for (int i = 0; i < predicates.getLength(); ++i) {
             final Node node = predicates.item(i);
@@ -442,9 +445,24 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             INSTANCES_LOCK.writeLock().unlock();
         }
     }
+    
+    /** Get all inherited globalPredicates. **/
+    private Map<String, Predicate> getInheritedPredicates() {
+        
+        final AnalysisRuleFactory parentFactory = getParentFactory();
 
+        return parentFactory != null
+            ? parentFactory.getGlobalPredicates()
+            : Collections.EMPTY_MAP;
+    }
+    
+    /** Returns this site's and all parent site's global predicates in one map. **/
     private Map<String, Predicate> getGlobalPredicates() {
+        
         init();
-        return globalPredicates;
+        
+        final Map<String, Predicate> result = new HashMap<String, Predicate>(globalPredicates);
+        result.putAll(getInheritedPredicates());
+        return Collections.unmodifiableMap(result); 
     }
 }
