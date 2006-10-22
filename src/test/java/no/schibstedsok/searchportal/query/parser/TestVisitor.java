@@ -97,8 +97,8 @@ public final class TestVisitor extends TestCase {
     public void testAndOrAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123",
-                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR magnus eklund OR 123 OR 123",
-                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR \"magnus eklund\" (magnus eklund)) OR 123) 123 (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR (\"magnus eklund\" (magnus eklund) OR 123)) 123 (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR (\"magnus eklund\" (magnus eklund) OR 123 123))");
+                "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR magnus eklund OR 123",
+                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR \"magnus eklund\" (magnus eklund)) OR 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR (\"magnus eklund\" (magnus eklund) OR 123))");
     }
 
     /** TODO comment me. **/
@@ -106,8 +106,8 @@ public final class TestVisitor extends TestCase {
     public void testAndOrAgainstQueryParser2() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
-                "firstname:magnus AND eklund AND oslo \"magnus eklund\" OR magnus eklund 123 OR 123",
-                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) \"magnus eklund\" (magnus eklund)) 123 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) (\"magnus eklund\" (magnus eklund) 123 123))");
+                "firstname:magnus AND eklund AND oslo \"magnus eklund\" OR magnus eklund 123",
+                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) \"magnus eklund\" (magnus eklund)) 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) (\"magnus eklund\" (magnus eklund) 123))");
     }
 
     /** TODO comment me. **/
@@ -115,8 +115,8 @@ public final class TestVisitor extends TestCase {
     public void testAndOrNotAgainstQueryParser1() {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus eklund oslo magnus AND eklund NOT 123",
-                "firstname:magnus eklund oslo magnus AND eklund NOT 123 OR 123",
-                "((((firstname:magnus eklund) oslo) (magnus AND eklund)) NOT 123 123) (((firstname:magnus (eklund oslo)) (magnus AND eklund)) NOT 123 123) ((firstname:magnus (eklund (oslo (magnus AND eklund)))) NOT 123 123) (firstname:magnus (eklund (oslo ((magnus AND eklund) NOT 123 123))))");
+                "firstname:magnus eklund oslo magnus AND eklund NOT 123",
+                "((((firstname:magnus eklund) oslo) (magnus AND eklund)) NOT 123) (((firstname:magnus (eklund oslo)) (magnus AND eklund)) NOT 123) ((firstname:magnus (eklund (oslo (magnus AND eklund)))) NOT 123) (firstname:magnus (eklund (oslo ((magnus AND eklund) NOT 123))))");
     }
 
     /** TODO comment me. **/
