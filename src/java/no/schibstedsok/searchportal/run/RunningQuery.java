@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.util.config.ResourceContext;
+import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.result.Modifier;

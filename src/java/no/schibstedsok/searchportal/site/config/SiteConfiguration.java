@@ -1,5 +1,5 @@
 // Copyright (2006) Schibsted Søk AS
-package no.schibstedsok.searchportal.mode.config;
+package no.schibstedsok.searchportal.site.config;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -7,10 +7,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.searchportal.util.config.PropertiesContext;
-
-import no.schibstedsok.searchportal.util.config.PropertiesLoader;
-import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;

@@ -20,9 +20,9 @@ import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 
 import no.schibstedsok.searchportal.mode.config.FileResourcesSiteConfigurationTest;
-import no.schibstedsok.searchportal.util.config.DocumentLoader;
-import no.schibstedsok.searchportal.util.config.FileResourceLoader;
-import no.schibstedsok.searchportal.util.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;

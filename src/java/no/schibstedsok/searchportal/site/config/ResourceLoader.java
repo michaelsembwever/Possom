@@ -7,7 +7,7 @@
  * and open the template in the editor.
  */
 
-package no.schibstedsok.searchportal.util.config;
+package no.schibstedsok.searchportal.site.config;
 
 /**
  * @version $Id$

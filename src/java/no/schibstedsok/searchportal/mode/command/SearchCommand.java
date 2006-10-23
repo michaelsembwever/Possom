@@ -9,7 +9,7 @@ import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchConfigurationContext;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
-import no.schibstedsok.searchportal.util.config.ResourceContext;
+import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.run.RunningQuery;

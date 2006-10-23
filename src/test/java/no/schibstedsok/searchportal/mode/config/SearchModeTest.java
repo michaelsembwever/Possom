@@ -5,15 +5,15 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.util.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 
 import java.util.HashMap;
 import java.util.Properties;
-import no.schibstedsok.searchportal.util.config.PropertiesLoader;
-import no.schibstedsok.searchportal.util.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;

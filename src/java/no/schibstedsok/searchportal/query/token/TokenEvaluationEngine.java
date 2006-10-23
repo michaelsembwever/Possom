@@ -7,7 +7,7 @@ import java.util.Set;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.util.config.ResourceContext;
+import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;

@@ -7,7 +7,7 @@
  *
  */
 
-package no.schibstedsok.searchportal.util.config;
+package no.schibstedsok.searchportal.site.config;
 
 
 import java.util.Properties;

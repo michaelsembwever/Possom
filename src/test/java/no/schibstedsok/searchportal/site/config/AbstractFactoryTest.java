@@ -8,7 +8,7 @@
  * and open the template in the editor.
  */
 
-package no.schibstedsok.searchportal.util.config;
+package no.schibstedsok.searchportal.site.config;
 
 import no.schibstedsok.searchportal.TestCase;
 import no.schibstedsok.searchportal.site.Site;

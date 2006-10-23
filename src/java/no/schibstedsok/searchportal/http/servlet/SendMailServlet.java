@@ -1,6 +1,6 @@
 package no.schibstedsok.searchportal.http.servlet;
 
-import no.schibstedsok.searchportal.mode.config.SiteConfiguration;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;

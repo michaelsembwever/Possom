@@ -6,7 +6,7 @@ package no.schibstedsok.searchportal.query.transform;
 
 
 import java.util.Map;
-import no.schibstedsok.searchportal.util.config.ResourceContext;
+import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.query.Visitor;

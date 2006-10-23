@@ -4,7 +4,7 @@
  * Created on 4 April 2006, 14:42
  *
  */
-package no.schibstedsok.searchportal.util.config;
+package no.schibstedsok.searchportal.site.config;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.EntityResolver;

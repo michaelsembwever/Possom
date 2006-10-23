@@ -6,7 +6,7 @@
  *
  */
 
-package no.schibstedsok.searchportal.util.config;
+package no.schibstedsok.searchportal.site.config;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

@@ -3,7 +3,7 @@
  * Created on 23 January 2006, 13:54
  */
 
-package no.schibstedsok.searchportal.util.config;
+package no.schibstedsok.searchportal.site.config;
 
 import java.util.Properties;
 import no.schibstedsok.common.ioc.BaseContext;

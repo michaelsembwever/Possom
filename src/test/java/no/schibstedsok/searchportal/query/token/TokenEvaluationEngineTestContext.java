@@ -16,9 +16,9 @@ import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 
 import no.schibstedsok.searchportal.mode.config.FileResourcesSiteConfigurationTest;
-import no.schibstedsok.searchportal.util.config.DocumentLoader;
-import no.schibstedsok.searchportal.util.config.FileResourceLoader;
-import no.schibstedsok.searchportal.util.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
 
 /**

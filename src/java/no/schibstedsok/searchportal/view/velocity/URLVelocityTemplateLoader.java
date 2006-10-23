@@ -5,7 +5,7 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import java.io.InputStream;
-import no.schibstedsok.searchportal.util.config.UrlResourceLoader;
+import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
 

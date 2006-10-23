@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.util.config.DocumentLoader;
-import no.schibstedsok.searchportal.util.config.FileResourceLoader;
-import no.schibstedsok.searchportal.util.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.testng.annotations.Test;
 
