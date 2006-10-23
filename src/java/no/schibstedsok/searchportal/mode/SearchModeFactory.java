@@ -466,7 +466,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     }
                 }
                 if (sc instanceof ESPFastSearchConfiguration) {
-                    final ESPFastSearchConfiguration asc = (ESPFastSearchConfiguration) sc;
+                    final ESPFastSearchConfiguration esc = (ESPFastSearchConfiguration) sc;
+
+                    final ESPFastSearchConfiguration ascInherit = inherit instanceof ESPFastSearchConfiguration
+                            ? (ESPFastSearchConfiguration)inherit
+                            : null;
 
                     fillBeanProperty(sc, inherit, "view", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "default");
@@ -474,10 +478,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "collapsingEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "expansionEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
-                    fillBeanProperty(sc, inherit, "query-server", ParseType.String, commandE, "");
 
-                    if (null != asc.getQueryServer() && asc.getQueryServer().startsWith("http://")) {
-                        throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + asc.getQueryServer());
+                    final String queryServer = commandE.getAttribute("query-server");
+                    // TODO use fillBeanProperty pattern instead
+                    esc.setQueryServer(parseProperty(cxt, queryServer,
+                           ascInherit != null ? ascInherit.getQueryServer() : null));
+
+                    if (null != esc.getQueryServer() && esc.getQueryServer().startsWith("http://")) {
+                        throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + esc.getQueryServer());
                     }
 
                     // navigators
@@ -485,7 +493,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     for(int i = 0; i < nList.getLength(); ++i){
                         final Collection<Navigator> navigators = parseNavigators((Element)nList.item(i));
                         for(Navigator navigator : navigators){
-                            asc.addNavigator(navigator, navigator.getId());
+                            esc.addNavigator(navigator, navigator.getId());
                         }
 
                     }
