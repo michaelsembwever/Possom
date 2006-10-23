@@ -15,7 +15,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
@@ -213,21 +212,21 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             } catch (NullPointerException e) {
                 final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
                 LOG.warn(err, e);
-                //throw new InfrastructureException(err, e);
+                //throw new ResourceLoadException(err, e);
 
             } catch (IOException e) {
                 final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
                 LOG.warn(err, e);
-                //throw new InfrastructureException(err, e);
+                //throw new ResourceLoadException(err, e);
             } catch (SAXParseException e) {
                 final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]" +
                         " at " + e.getLineNumber() + ":" + e.getColumnNumber();
                 LOG.warn(err, e);
-                throw new InfrastructureException(err, e);
+                throw new ResourceLoadException(err, e);
             } catch (SAXException e) {
                 final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
                 LOG.warn(err, e);
-                throw new InfrastructureException(err, e);
+                throw new ResourceLoadException(err, e);
             }
         }
         return success;

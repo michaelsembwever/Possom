@@ -18,6 +18,10 @@
         <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk</url>
         <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk</developerConnection>
     </scm>
+    
+    <!--modules> project must be pom to do this
+        <module>site-spi</module>
+    </modules-->
 
     <build>
         <sourceDirectory>src/java</sourceDirectory>
@@ -103,6 +107,15 @@
             </plugin>
         </plugins>
     </build>
+    
+    <dependencies>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-site-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+    </dependencies>
+    
     <profiles>
         <profile>
             <id>development</id>
