@@ -147,13 +147,17 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% } else { %>
 
         <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b") )) {%>
-	<decorator:getProperty property="page.newsearch-bar"/>
+	    <decorator:getProperty property="page.newsearch-bar"/>
+	<% }else if(q.trim().equals("") && currentC.equals("d") && publish) {%>
+	    <decorator:getProperty property="page.omsesam-bar"/>
 	<% }else{ %>
-	<decorator:getProperty property="page.search-bar"/>
+	    <decorator:getProperty property="page.search-bar"/>
 	<% } %>
 
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
-    <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
+    <%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
+	<tr>
+    <%} else if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
     	<tr>
             <td class="cell_one">&nbsp;</td>
             <td class="cell_three">&nbsp;</td>
@@ -305,6 +309,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
              <% } %>
         <%}%>
         </td>
+
+    	<%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
+	<%} else {%>
         <td class="cell_four" valign="top" width="225">
 	    <% if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
 	    <% } else { %>
@@ -325,6 +332,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             	<%}%>
             <%}%>
         </td>
+	<%}%>
     </tr>
     <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
         <decorator:getProperty property="page.ads_floating"/>
