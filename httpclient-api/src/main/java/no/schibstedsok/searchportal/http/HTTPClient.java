@@ -84,7 +84,7 @@ public final class HTTPClient {
             return builder.parse(urlConn.getInputStream());
 
         } catch (ParserConfigurationException e) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
-            throw new IOException(e);
+            throw new IOException(e.getMessage());
         }
     }
     
