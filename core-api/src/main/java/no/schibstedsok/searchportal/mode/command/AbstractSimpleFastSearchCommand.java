@@ -664,7 +664,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     private IQuery createQuery() {
 
         ISearchParameters params = new SearchParameters();
-        params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getSearchConfiguration().isLemmatizeEnabled()));
+        params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getSearchConfiguration().isLemmatise()));
 
         if (getSearchConfiguration().isSpellcheck()) {
             params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));

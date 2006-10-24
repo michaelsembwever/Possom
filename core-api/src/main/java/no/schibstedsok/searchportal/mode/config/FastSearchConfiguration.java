@@ -45,7 +45,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
 
     private final List<String> collections = new ArrayList<String>();
     private Map searchParameters;
-    private boolean lemmatizeEnabled;
+    private boolean lemmatise;
     private boolean spellcheck;
     private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();
     private String sortBy;
@@ -77,7 +77,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
             final FastSearchConfiguration fsc = (FastSearchConfiguration) asc;
             collections.addAll(fsc.collections);
             searchParameters = fsc.searchParameters;
-            lemmatizeEnabled = fsc.lemmatizeEnabled;
+            lemmatise = fsc.lemmatise;
             spellcheck = fsc.spellcheck;
             navigators.putAll(fsc.navigators);
             sortBy = fsc.sortBy;
@@ -155,12 +155,12 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         searchParameters.put(parameterName, parameterValue);
     }
 
-    public boolean isLemmatizeEnabled() {
-        return lemmatizeEnabled;
+    public boolean isLemmatise() {
+        return lemmatise;
     }
 
-    public void setLemmatizeEnabled(final boolean lemmatizeEnabled) {
-        this.lemmatizeEnabled = lemmatizeEnabled;
+    public void setLemmatise(final boolean lemmatise) {
+        this.lemmatise = lemmatise;
     }
 
     public boolean isSpellcheck() {
