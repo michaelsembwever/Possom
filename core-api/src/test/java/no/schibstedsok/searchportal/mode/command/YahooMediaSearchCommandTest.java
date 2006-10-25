@@ -67,8 +67,6 @@ public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
         final SearchCommand.Context cxt = createCommandContext("site:aftonbladet.se banan", "d", "yahoo-image-search");
         final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, Collections.EMPTY_MAP);
         cmd.getQueryRepresentation(cxt.getQuery());
-        System.out.println(cmd.createRequestURL());
-
         assertTrue(cmd.createRequestURL().contains("rurl=http://aftonbladet.se"));
     }
 
