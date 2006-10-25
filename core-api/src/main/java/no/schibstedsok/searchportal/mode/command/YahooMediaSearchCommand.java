@@ -14,6 +14,7 @@ import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.query.XorClause;
 
 import java.util.Map;
 import java.text.MessageFormat;
@@ -35,13 +36,9 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
-    // Query Language Operators.
-    private static final String QL_AND = " AND ";
-    private static final String QL_OR = " OR ";
-    private static final String QL_ANDNOT = " ANDNOT ";
 
     private static final String COMMAND_URL_PATTERN =
-            "/std_xmls_a00?type=adv&query={0}&offset={1}&custid1={2}&hits={3}&ocr={4}&catalog={5}&encoding=utf-8";
+            "/std_xmls_a00?type=any&query={0}&offset={1}&custid1={2}&hits={3}&ocr={4}&catalog={5}&encoding=utf-8";
 
     private static final String ERR_FAILED_CREATING_URL = "Failed to encode URL";
 
@@ -73,6 +70,11 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
             this.sizes = sizes;
         }
 
+        /**
+         * Getter for property 'sizes'.
+         *
+         * @return Value for property 'sizes'.
+         */
         public String getSizes() {
             return sizes;
         }
@@ -96,7 +98,7 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         final YahooMediaSearchConfiguration cfg = (YahooMediaSearchConfiguration) context.getSearchConfiguration();
 
         if (cfg.getSite().length() > 0) {
-            query += QL_AND + "site:" + cfg.getSite(); 
+            query += " +site:" + cfg.getSite(); 
         }
 
         try {
@@ -152,6 +154,9 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
                     }
                 }
             }
+
+            searchResult.addField("generatedQuery", getQueryRepresentation(context.getQuery()));
+
             return searchResult;
 
         } catch (final IOException e) {
@@ -162,101 +167,93 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     }
 
 
-    private String pendingAnd = "";
+    // AbstractReflectionVisitor overrides ----------------------------------------------
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void visitImpl(final DefaultOperatorClause clause) {
+    private boolean insideNot = false;
+    private Boolean writeAnd = Boolean.TRUE;
 
-        Clause first = clause.getFirstClause();
-        Clause second = clause.getSecondClause();
-        
-        // Make sure NotClauses are not emitted first. The query language only supports ANDNOT.
-        // This has the side effect of rearringing other types of queries as well.
-        // TODO. This should probably be applied to OR clauses as well but currently isn't.
-        if (!(clause.getSecondClause() instanceof NotClause || clause.getFirstClause() instanceof LeafClause)) {
-            first = clause.getSecondClause();
-            second = clause.getFirstClause();
-        }
-
-        first.accept(this);
-
-        if (! (isEmptyLeaf(first) || isEmptyLeaf(second)))
-            pendingAnd = QL_AND; // Defer emission of QL_AND until we know right branch isn't a NotClause.
-        
-        second.accept(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     protected void visitImpl(final LeafClause clause) {
-
         final String transformedTerm = getTransformedTerm(clause);
-
-        if (transformedTerm != null && transformedTerm.length() > 0) {
-            appendToQueryRepresentation(pendingAnd);
-
-            if (clause.getField() != null && clause.getField().equals(SITE_FILTER)) {
-                appendToQueryRepresentation(clause.getField() + ":");
-            }
-
+        if (clause.getField() != null && clause.getField().equals(SITE_FILTER)) {
+            appendToQueryRepresentation("+" + clause.getField() + ":");
             appendToQueryRepresentation(transformedTerm);
-            pendingAnd = "";
+        } else  if (clause.getField() == null) {
+            if (transformedTerm != null && transformedTerm.length() > 0) {
+                if (insideNot) {
+                    appendToQueryRepresentation("-");
+                }  else if (writeAnd != null && writeAnd) {
+                    appendToQueryRepresentation("+");
+                }
+                appendToQueryRepresentation(transformedTerm);
+            }
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     protected void visitImpl(final AndClause clause) {
+        final Boolean originalWriteAnd = writeAnd;
+        writeAnd = Boolean.TRUE;
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(QL_AND);
+        appendToQueryRepresentation(" ");
         clause.getSecondClause().accept(this);
+        writeAnd = originalWriteAnd;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     protected void visitImpl(final OrClause clause) {
-        appendToQueryRepresentation(pendingAnd);
-        pendingAnd = "";
-
-        appendToQueryRepresentation("(");
+        final Boolean originalWriteAnd = writeAnd;
+        writeAnd = Boolean.FALSE;
+//        appendToQueryRepresentation(" ("); 
         clause.getFirstClause().accept(this);
-
-        appendToQueryRepresentation(QL_OR);
-
+        appendToQueryRepresentation(" ");
         clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(")");
+//        appendToQueryRepresentation(") ");
+        writeAnd = originalWriteAnd;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
+    protected void visitImpl(final DefaultOperatorClause clause) {
+        clause.getFirstClause().accept(this);
+        appendToQueryRepresentation(" ");
+        clause.getSecondClause().accept(this);
+    }
+
+    /** {@inheritDoc} */
     protected void visitImpl(final NotClause clause) {
-        pendingAnd = "";
-        appendToQueryRepresentation(QL_ANDNOT);
+        if (writeAnd == null) {
+            // must start prefixing terms with +
+            writeAnd = Boolean.TRUE;
+        }
+        final boolean originalInsideAndNot = insideNot;
+        insideNot = true;
+        clause.getFirstClause().accept(this);
+        insideNot = originalInsideAndNot;
+
+    }
+
+    /** {@inheritDoc} */
+    protected void visitImpl(final AndNotClause clause) {
+        if (writeAnd == null) {
+            // must start prefixing terms with +
+            writeAnd = Boolean.TRUE;
+        }
+        final boolean originalInsideAndNot = insideNot;
+        insideNot = true;
+        clause.getFirstClause().accept(this);
+        insideNot = originalInsideAndNot;
+    }
+
+    /** {@inheritDoc} */
+    protected void visitImpl(final XorClause clause) {
         clause.getFirstClause().accept(this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected void visitImpl(final AndNotClause clause) {
-        pendingAnd = "";
-        appendToQueryRepresentation(QL_ANDNOT);
-        clause.getFirstClause().accept(this);
-    }
 
     private SearchResultItem createResultItem(final Element listing) {
         final BasicSearchResultItem item = new BasicSearchResultItem();
@@ -271,16 +268,5 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         }
 
         return item;
-    }
-
-    /**
-     * Returns true iff the clause is a leaf clause and if it will not produce any output in the query representation.
-     *
-     * @param clause The clause to examine.
-     *
-     * @return true iff leaf is empty.
-     */
-    private boolean isEmptyLeaf(final Clause clause) {
-        return clause instanceof LeafClause && (getTransformedTerm(clause) == null || getTransformedTerm(clause).length() == 0); 
     }
 }
