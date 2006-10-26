@@ -43,7 +43,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
     private static final String GIFT_PAGE_ID = "wipgift";
 
     /** RegEx pattern used to get a base url from a url. */
-    private static final Pattern BASE_URL_PATTERN = Pattern.compile("(https?://)?([^/]+)(/.*)?");
+    private static final Pattern BASE_URL_PATTERN = Pattern.compile("(https?://)?(.*)");
 
     private boolean top = false;
 
