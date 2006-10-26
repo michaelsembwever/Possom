@@ -106,6 +106,7 @@ done
 date +"%Y%m%d%H%M" > /www/schibstedsok-prod/www.sesam.no/version.txt
 date >> /www/schibstedsok-prod/www.sesam.no/version.txt
 whoami >> /www/schibstedsok-prod/www.sesam.no/version.txt
+echo ${PRODUCTION_VERSION} >> /www/schibstedsok-prod/www.sesam.no/version.txt
 chmod g+w version.txt 2>/dev/null
 
 
