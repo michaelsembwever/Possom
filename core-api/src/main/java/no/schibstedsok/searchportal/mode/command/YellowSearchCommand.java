@@ -164,7 +164,7 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
 
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
-        exactCompany = engine.evaluateQuery(TokenPredicate.EXACTCOMPANYRANK, context.getQuery());
+        exactCompany = engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, context.getQuery());
 
         companyRank = exactCompany && !isTop3 && !getParameter("yprank").equals("standard") || getParameter("yprank").equals("company");
 
@@ -217,7 +217,7 @@ public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
 
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
-        if (engine.evaluateQuery(TokenPredicate.EXACTCOMPANYRANK, context.getQuery())) {
+        if (engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, context.getQuery())) {
             return "yellowname";
         }
 
