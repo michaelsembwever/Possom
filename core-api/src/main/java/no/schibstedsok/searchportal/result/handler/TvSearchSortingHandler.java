@@ -68,7 +68,7 @@ public class TvSearchSortingHandler implements ResultHandler {
             return;
         }
         
-        if (parameters.get("nav_channels") != null && parameters.get("nav_days") != null) {
+        if (parameters.get("nav_channels") != null && parameters.get("nav_days") != null && !sortBy.equals("category")) {
             return;
         }
         
