@@ -10,6 +10,9 @@
  */
 package no.schibstedsok.searchportal.mode.command;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -38,6 +41,9 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
 
     /** Constant that is used as partnerId on the gift page. */
     private static final String GIFT_PAGE_ID = "wipgift";
+
+    /** RegEx pattern used to get a base url from a url. */
+    private static final Pattern BASE_URL_PATTERN = Pattern.compile("(https?://)?([^/]+)(/.*)?");
 
     private boolean top = false;
 
@@ -172,12 +178,37 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         if (clickUrl.getLength() > 0) {
             item.addField("clickURL", clickUrl.item(0).getFirstChild().getNodeValue());
         }
+        if (displayUrl.getLength() > 0) {
+            item.addField("displayUrl", displayUrl.item(0).getFirstChild().getNodeValue());
+            item.addField("displayUrlBase", getBaseUrl(displayUrl.item(0).getFirstChild().getNodeValue()));
+        }
         if (imageUrl.getLength() > 0) {
             item.addField("imageUrl", imageUrl.item(0).getFirstChild().getNodeValue());
         }
         item.addField("place", place);
 
         return item;
+    }
+
+    /**
+     * Returns a striped base url from a given url.
+     *
+     * @param url the url to strip
+     * @return the base url
+     */
+    private String getBaseUrl(final String url) {
+        if (url == null || url.length() == 0) {
+            return null;
+        }
+
+        try {
+            final Matcher matcher = BASE_URL_PATTERN.matcher(url);
+            matcher.matches();
+            return matcher.group(2);
+        } catch (IllegalStateException e) {
+            LOG.warn("Failed to get base url from gift url: " + url);
+            return null;
+        }
     }
 
 }
