@@ -147,7 +147,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% } else { %>
 
         <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b") )) {%>
-	    <decorator:getProperty property="page.newsearch-bar"/>
+            <decorator:getProperty property="page.newsearch-bar"/>
 	<% }else if(q.trim().equals("") && currentC.equals("d") && publish) {%>
 	    <decorator:getProperty property="page.omsesam-bar"/>
 	<% }else{ %>
@@ -205,7 +205,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
         <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
 	<%}else {%>
-            <%if (currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
+            <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
                 <search:velocity template="results/middlebar" command="scanpix"/>
 	    <% }else if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
       	    <% }else { %>
@@ -286,8 +286,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}%>	            
         <% } else if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
             <div>
-                <decorator:getProperty property="page.picsearch-results"/>
+                <!--decorator:getProperty property="page.picsearch-results"/-->
                 <search:velocity template="results/scanpix" command="scanpix"/>
+                <search:velocity template="results/yahooPicsearch" command="picSearch"/>
                 <!--search:import template="picSearch"/-->
 
                 <div class="clearFloat">&nbsp;</div>
