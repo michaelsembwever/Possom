@@ -116,14 +116,13 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
                 url.append("&searchTerm=");
                 url.append(URLEncoder.encode("send gave", ppcConfig.getEncoding()));
 
-                // Finding location, defaulting to Oslo
-                String location = getParameter("ywpoststed");
-                if (location == null) {
-                    location = "Oslo";
+                // Finding location, using that as an extra parameter
+                final String location = getParameter("ywpoststed");
+                if (location != null && location.length() > 0) {
+                    url.append("&locationTerm=");
+                    url.append(URLEncoder.encode(location, ppcConfig.getEncoding()));
                 }
 
-                url.append("&locationTerm=");
-                url.append(URLEncoder.encode(location, ppcConfig.getEncoding()));
             } else {
                 url.append("&searchTerm=");
                 url.append(URLEncoder.encode(getTransformedQuery().replace(' ', '+'), ppcConfig.getEncoding()));
