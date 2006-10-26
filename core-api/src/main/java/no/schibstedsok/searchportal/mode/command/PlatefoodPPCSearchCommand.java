@@ -161,7 +161,8 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         final NodeList clickUrl = ppcListing.getElementsByTagName("chan:trackURL");
         final NodeList displayUrl = ppcListing.getElementsByTagName("chan:displayURL");
         final NodeList title = ppcListing.getElementsByTagName("chan:title");
-        final NodeList desc = ppcListing.getElementsByTagName("chan:desc");
+        final NodeList desc1 = ppcListing.getElementsByTagName("chan:desc");
+        final NodeList desc2 = ppcListing.getElementsByTagName("chan:line2");
         final NodeList imageUrl = ppcListing.getElementsByTagName("chan:line1");
         final String place =
             ppcListing.getParentNode().getParentNode().getAttributes().getNamedItem("id").getNodeValue();
@@ -169,8 +170,11 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         if (title.getLength() > 0) {
             item.addField("title", title.item(0).getFirstChild().getNodeValue());
         }
-        if (desc.getLength() > 0) {
-            item.addField("description", desc.item(0).getFirstChild().getNodeValue());
+        if (desc1.getLength() > 0) {
+            item.addField("description1", desc1.item(0).getFirstChild().getNodeValue());
+        }
+        if (desc2.getLength() > 0) {
+            item.addField("description2", desc2.item(0).getFirstChild().getNodeValue());
         }
         if (displayUrl.getLength() > 0) {
             item.addField("siteHost", displayUrl.item(0).getFirstChild().getNodeValue());
