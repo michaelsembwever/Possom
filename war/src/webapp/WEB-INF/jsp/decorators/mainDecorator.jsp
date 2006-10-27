@@ -409,6 +409,29 @@ getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
 <% } else if (currentC.equals("n")) { %> <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=<search:velocity template="/pages/tns"/>" alt="" /></noscript>
 <% } %>
 
+<% } else { %>
+
+<!-- BEGIN Open Insight XE TAGGING -->
+<script type="text/javascript" language="JavaScript">
+<!--
+var if_Site_ID = "sesam";
+var if_sid = "217";
+var if_tag = "<" + "script type='text/javascript' language='JavaScript' " + "DEFER SRC=http" + "://" + if_Site_ID + ".research-int.se/scripts/" + if_Site_ID + "_if.js" + "></" + "scr" + "ipt>";
+
+<% if (currentC.equals("g")) { %> var mep1 = "&Site=sesam&Section=world";
+<% } else if (currentC.equals("d")) { %> var mep1 = "&Site=sesam&Section=netsearch";
+<% } else if (currentC.equals("m")) { %> var mep1 = "&Site=sesam&Section=news";
+<% } else if (currentC.equals("p")) { %> var mep1 = "&Site=sesam&Section=pics";
+<% } %>
+
+document.write(if_tag);
+//-->
+</script>
+<noscript>
+<img src="http://sesam.research-int.se/data?JSFLAG=no&tax0_SiteID=217&Site=sesam&Section=nyheter&Subsection1=sverige&Subsection2=aktuellt&Page=index&Groups1=Paket" alt="" />
+</noscript>
+<!-- END Insight XE -->
+
 <% } %>
 <!-- end gallup. -->
 
