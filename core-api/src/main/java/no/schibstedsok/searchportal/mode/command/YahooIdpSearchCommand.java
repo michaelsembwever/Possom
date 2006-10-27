@@ -179,20 +179,10 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     }
 
     /** TODO comment me. **/
-    protected void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null) {
-            appendToQueryRepresentation(getTransformedTerm(clause));
-        }
-    }
-    /** TODO comment me. **/
     protected void visitImpl(final PhraseClause clause) {
         if (clause.getField() == null) {
             appendToQueryRepresentation(PHRASEWORDS + getTransformedTerm(clause) + ')');
         }
-    }
-    /** TODO comment me. **/
-    protected void visitImpl(final OperationClause clause) {
-        clause.getFirstClause().accept(this);
     }
     /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
@@ -232,13 +222,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
-    /** TODO comment me. **/
-    protected void visitImpl(final XorClause clause) {
-        // [TODO] we need to determine which branch in the query-tree we want to use.
-        //  Both branches to a XorClause should never be used.
-        clause.getFirstClause().accept(this);
-        // clause.getSecondClause().accept(this);
-    }
+
 
     /** Assured that associated SearchConfiguration is always of this type. **/
     public YahooIdpSearchConfiguration getSearchConfiguration() {

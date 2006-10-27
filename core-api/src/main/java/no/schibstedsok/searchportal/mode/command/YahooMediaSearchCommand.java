@@ -190,10 +190,6 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
-    /** {@inheritDoc} */
-    protected void visitImpl(final OperationClause clause) {
-        clause.getFirstClause().accept(this);
-    }
 
     /** {@inheritDoc} */
     protected void visitImpl(final AndClause clause) {
@@ -215,13 +211,6 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         clause.getSecondClause().accept(this);
 //        appendToQueryRepresentation(") ");
         writeAnd = originalWriteAnd;
-    }
-
-    /** {@inheritDoc} */
-    protected void visitImpl(final DefaultOperatorClause clause) {
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
-        clause.getSecondClause().accept(this);
     }
 
     /** {@inheritDoc} */
@@ -249,10 +238,6 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         insideNot = originalInsideAndNot;
     }
 
-    /** {@inheritDoc} */
-    protected void visitImpl(final XorClause clause) {
-        clause.getFirstClause().accept(this);
-    }
 
 
     private SearchResultItem createResultItem(final Element listing) {

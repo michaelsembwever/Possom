@@ -238,8 +238,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected void visitImpl(final LeafClause clause) {
 
         final String field = clause.getField();
-        if (field == null) {
-            sb.append(transformedTerms.get(clause));
+        if (null == field) {
+            // we accept terms without fields
+            appendToQueryRepresentation(getTransformedTerm(clause));
+        }else if(null == getFieldFilter(clause)){
+            // we also accept terms with fields that haven't been permitted for the searchConfiguration
+            appendToQueryRepresentation(clause.getField() + "\\:" + transformedTerms.get(clause));
         }
     }
     /** TODO comment me. **/
@@ -249,26 +253,26 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
         clause.getFirstClause().accept(this);
-        sb.append(" AND ");
+        appendToQueryRepresentation(" AND ");
         clause.getSecondClause().accept(this);
     }
     /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         clause.getFirstClause().accept(this);
-        sb.append(" OR ");
+        appendToQueryRepresentation(" OR ");
         clause.getSecondClause().accept(this);
     }
     /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
-        sb.append(' ');
+        appendToQueryRepresentation(" ");
         clause.getSecondClause().accept(this);
     }
     /** TODO comment me. **/
     protected void visitImpl(final NotClause clause) {
         final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
-            sb.append("NOT ");
+            appendToQueryRepresentation("NOT ");
             clause.getFirstClause().accept(this);
         }
     }
@@ -276,7 +280,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected void visitImpl(final AndNotClause clause) {
         final String childsTerm = (String) transformedTerms.get(clause.getFirstClause());
         if (childsTerm != null && childsTerm.length() > 0) {
-            sb.append("ANDNOT ");
+            appendToQueryRepresentation("ANDNOT ");
             clause.getFirstClause().accept(this);
         }
     }
@@ -604,6 +608,37 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return null;
     }
 
+    /** Returns null when no field exists. **/
+    private String getFieldFilter(final LeafClause clause){
+
+        String field = null;
+        if(null != clause.getField()){
+            final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
+            if(fieldFilters.containsKey(clause.getField())){
+                field = clause.getField();
+            }else{
+                final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
+                for(String fieldFilter : fieldFilters.keySet()){
+                    try{
+                        final TokenPredicate tp = TokenPredicate.valueOf(fieldFilter);
+                        // if the field is the token then mask the field and include the term.
+                        // XXX why are we checking the known and possible predicates?
+                        boolean result = clause.getKnownPredicates().contains(tp);
+                        result |= clause.getPossiblePredicates().contains(tp);
+                        result &= engine.evaluateTerm(tp, clause.getField());
+                        if(result){
+                            field = fieldFilter;
+                            break;
+                        }
+                    }catch(IllegalArgumentException iae){
+                        LOG.trace(TRACE_NOT_TOKEN_PREDICATE + filter);
+                    }
+                }
+            }
+        }
+        return field;
+    }
+        
    // Inner classes -------------------------------------------------
 
 
@@ -696,36 +731,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             filterBuilder.append(" +" + (fieldAs.length() >0 ?  fieldAs + ':' + term : term));
         }
 
-        /** Returns null when no field exists. **/
-        private String getFieldFilter(final LeafClause clause){
-
-            String field = null;
-            if(null != clause.getField()){
-                final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
-                if(fieldFilters.containsKey(clause.getField())){
-                    field = clause.getField();
-                }else{
-                    final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
-                    for(String fieldFilter : fieldFilters.keySet()){
-                        try{
-                            final TokenPredicate tp = TokenPredicate.valueOf(fieldFilter);
-                            // if the field is the token then mask the field and include the term.
-                            // XXX why are we checking the known and possible predicates?
-                            boolean result = clause.getKnownPredicates().contains(tp);
-                            result |= clause.getPossiblePredicates().contains(tp);
-                            result &= engine.evaluateTerm(tp, clause.getField());
-                            if(result){
-                                field = fieldFilter;
-                                break;
-                            }
-                        }catch(IllegalArgumentException iae){
-                            LOG.trace(TRACE_NOT_TOKEN_PREDICATE + filter);
-                        }
-                    }
-                }
-            }
-            return field;
-        }
+        
     }
 
     /**

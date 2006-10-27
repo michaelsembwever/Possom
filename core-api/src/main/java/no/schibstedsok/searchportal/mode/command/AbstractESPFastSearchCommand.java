@@ -208,16 +208,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     // Protected -----------------------------------------------------
     // Generate query in FQL.
 
-    /** {@inheritDoc} */
-    protected void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null) {
-            appendToQueryRepresentation(getTransformedTerm(clause));
-        } 
-    }
-    /** {@inheritDoc} */
-    protected void visitImpl(final OperationClause clause) {
-        clause.getFirstClause().accept(this);
-    }
+
+
     /** {@inheritDoc} */
     protected void visitImpl(final AndClause clause) {
         // The leaf clauses might not produce any output. For example terms 

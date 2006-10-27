@@ -433,22 +433,18 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null) {
-            final String transformedTerm = (String) getTransformedTerm(clause);
-            if (transformedTerm != null && transformedTerm.length() > 0) {
-                if (insideNot) {
-                    appendToQueryRepresentation("-");
-                }  else if (writeAnd != null && writeAnd.booleanValue()) {
-                    appendToQueryRepresentation("+");
-                }
-                appendToQueryRepresentation(transformedTerm);
+        
+        final String transformedTerm = (String) getTransformedTerm(clause);
+        if (null == null && null != transformedTerm && transformedTerm.length() > 0) {
+            if (insideNot) {
+                appendToQueryRepresentation("-");
+            }  else if (writeAnd != null && writeAnd.booleanValue()) {
+                appendToQueryRepresentation("+");
             }
         }
+        super.visitImpl(clause);
     }
-    /** TODO comment me. **/
-    protected void visitImpl(final OperationClause clause) {
-        clause.getFirstClause().accept(this);
-    }
+
     /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
         final Boolean originalWriteAnd = writeAnd;
@@ -469,12 +465,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         appendToQueryRepresentation(") ");
         writeAnd = originalWriteAnd;
     }
-    /** TODO comment me. **/
-    protected void visitImpl(final DefaultOperatorClause clause) {
-        clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
-        clause.getSecondClause().accept(this);
-    }
+
     /** TODO comment me. **/
     protected void visitImpl(final NotClause clause) {
         if (writeAnd == null) {
@@ -498,13 +489,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         clause.getFirstClause().accept(this);
         insideNot = originalInsideAndNot;
     }
-    /** TODO comment me. **/
-    protected void visitImpl(final XorClause clause) {
-        // [TODO] we need to determine which branch in the query-tree we want to use.
-        //  Both branches to a XorClause should never be used.
-        clause.getFirstClause().accept(this);
-        // clause.getSecondClause().accept(this);
-    }
+
 
     // Package protected ---------------------------------------------
 

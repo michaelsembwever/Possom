@@ -45,12 +45,11 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
      * {@inheritDoc}
      */
     protected void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null) {
-            final String transformedTerm = getTransformedTerm(clause);
-            if (transformedTerm != null && transformedTerm.length() > 0) {
-                appendToQueryRepresentation(transformedTerm);
-                firstTerm = false;
-            }
+        
+        final String transformedTerm = getTransformedTerm(clause);
+        if (transformedTerm != null && transformedTerm.length() > 0) {
+            super.visitImpl(clause);
+            firstTerm = false;
         }
     }
 
