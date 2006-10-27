@@ -92,7 +92,7 @@
                     <td><img src="images/pix.gif" border="0" width="4" height="1" alt="" /></td>
 		    <td><a href="javascript:toggleButton('front_button_layer');" onfocus="this.blur();"><img src="images/searchbar/dropdown.png" alt="" /></a></td>
 		    <td><img src="images/pix.gif" border="0" width="15" alt="" /></td>
-		    <td><a id="searchtip_front" href='<search:linkPulse url="?q=&amp;page=/pages/33/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a></td>
+		    <td><a id="searchtip_front" href='<search:linkPulse url="?q=&amp;page=/pages/82/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a></td>
 		</tr>
 		<tr>
 		    <td valign="top" id="searchbox_tips">
