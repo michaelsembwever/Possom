@@ -82,7 +82,7 @@ for (( i = 0; i < cnt ; i++ )) ; do
 
     # Find the latest build in the version
     #
-    for f in /www/schibstedsok/data/production-builds/${PROJECTS[$i]}/${PRODUCTION_VERSION}/*.war ; do
+    for f in /www/schibstedsok/data/production-builds/${PROJECTS[$i]}/${VERSION}/*.war ; do
             warFile=$f
     done
 
@@ -106,7 +106,7 @@ done
 date +"%Y%m%d%H%M" > /www/schibstedsok-prod/www.sesam.no/version.txt
 date >> /www/schibstedsok-prod/www.sesam.no/version.txt
 whoami >> /www/schibstedsok-prod/www.sesam.no/version.txt
-echo ${PRODUCTION_VERSION} >> /www/schibstedsok-prod/www.sesam.no/version.txt
+echo ${VERSION} >> /www/schibstedsok-prod/www.sesam.no/version.txt
 chmod g+w version.txt 2>/dev/null
 
 

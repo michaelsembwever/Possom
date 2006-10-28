@@ -32,7 +32,7 @@ PROJECTS[23]="generic.sesam.no"
 PROJECTS[24]="genericno.sesam.no"
 PROJECTS[25]="genericse.sesam.se"
 PROJECTS[26]="genericsitesearch.sesam.se"
-PROJECTS[27]="search-portal"
+PROJECTS[27]="search-portal-war"
 
 CONTEXTS[0]="$RIG.test.sesam.se.war"
 CONTEXTS[1]="aftonbladet.$RIG.test.sesam.se.war"
