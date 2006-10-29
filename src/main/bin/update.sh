@@ -87,19 +87,19 @@ esac
 
 #  Update update-test.sh
 #
-rm -f update-test.tmp
-wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/update-test.sh -q -O update-test.tmp >/dev/null
-DIFF=`diff -q update-test.sh update-test.tmp`
+rm -f update.tmp
+wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/update.sh -q -O update.tmp >/dev/null
+DIFF=`diff -q update.sh update.tmp`
 if [[ "x" != "x$DIFF" ]] ; then
-    cp update-test.tmp update-test.sh
-    rm update-test.tmp
-    chmod u+x update-test.sh
-    chmod g+x update-test.sh
+    cp update.tmp update.sh
+    rm update.tmp
+    chmod u+x update.sh
+    chmod g+x update.sh
     echo "Updated myself. Did not update ${RIG_DOMAIN}. Please run again."
-    rm -f update-test.lck
+    rm -f update.lck
     exit 1
 fi
-rm -f update-test.tmp
+rm -f update.tmp
 unset DIFF
 
 #  Update $PROJECT_SCRIPT.sh
