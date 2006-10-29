@@ -59,18 +59,18 @@ esac
 
 case "$RIG" in
 	alpha|nuclei)
-        PROJECT_SCRIPT=test-projects.sh
-        BRANCH_SCRIPT=test-branch.sh
+        PROJECT_SCRIPT=test-projects
+        BRANCH_SCRIPT=test-branch
         DEPLOY_PARTITION=schibstedsok
         ;;
 	beta|electron)
-        PROJECT_SCRIPT=production-projects.sh
-        BRANCH_SCRIPT=production-branch.sh
+        PROJECT_SCRIPT=production-projects
+        BRANCH_SCRIPT=production-branch
         DEPLOY_PARTITION=schibstedsok
         ;;
 	gamma|photon|production)
-        PROJECT_SCRIPT=production-projects.sh
-        BRANCH_SCRIPT=production-branch.sh
+        PROJECT_SCRIPT=production-projects
+        BRANCH_SCRIPT=production-branch
         DEPLOY_PARTITION=schibstedsok-prod
         ;;
 esac
