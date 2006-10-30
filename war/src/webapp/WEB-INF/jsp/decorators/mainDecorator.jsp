@@ -202,15 +202,18 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <% }else{ %>
             	<td class="cell_three" valign="top" colspan="2">
  	<%}%>
-
         <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
 	<%}else {%>
-            <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
-                <search:velocity template="results/middlebar" command="scanpix"/>
-	    <% }else if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
-      	    <% }else { %>
+            <% if ( !"sv".equals(locale) ) { %>        
+                <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
+                    <search:velocity template="fragments/middlebar" command="scanpix"/>
+                <% }else if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
+                <% }else { %>
+                    <decorator:getProperty property="page.middle-bar"/>
+                <% } %>
+            <% }else { %>
                 <decorator:getProperty property="page.middle-bar"/>
-       	    <% } %>
+            <% } %>
        	<% } %>
 
         <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
@@ -286,9 +289,13 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}%>	            
         <% } else if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
             <div>
-                <!--decorator:getProperty property="page.picsearch-results"/-->
-                <search:velocity template="results/scanpix" command="scanpix"/>
-                <search:velocity template="results/yahooPicsearch" command="picSearch"/>
+                <% if ( !"sv".equals(locale) ) { %>
+                    <search:velocity template="results/scanpix" command="scanpix"/>
+                    <search:velocity template="results/yahooPicsearch" command="picSearch"/>
+                <% } else { %>
+                    <decorator:getProperty property="page.picsearch-results"/>
+                <& } %>
+
                 <!--search:import template="picSearch"/-->
 
                 <div class="clearFloat">&nbsp;</div>
