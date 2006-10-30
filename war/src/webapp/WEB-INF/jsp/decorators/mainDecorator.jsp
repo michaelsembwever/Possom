@@ -294,7 +294,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     <search:velocity template="results/yahooPicsearch" command="picSearch"/>
                 <% } else { %>
                     <decorator:getProperty property="page.picsearch-results"/>
-                <& } %>
+                <% } %>
 
                 <!--search:import template="picSearch"/-->
 
