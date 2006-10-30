@@ -289,15 +289,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}%>	            
         <% } else if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
             <div>
-                <% if ( !"sv".equals(locale) ) { %>
-                    <search:velocity template="results/scanpix" command="scanpix"/>
-                    <search:velocity template="results/yahooPicsearch" command="picSearch"/>
-                <% } else { %>
-                    <decorator:getProperty property="page.picsearch-results"/>
-                <% } %>
-
-                <!--search:import template="picSearch"/-->
-
+                <search:velocity template="results/scanpix" command="scanpix"/>
+                <search:velocity template="results/yahooPicsearch" command="picSearch"/>
                 <div class="clearFloat">&nbsp;</div>
             </div>
         <% } else { %>
@@ -309,7 +302,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <%--  offset  --%>
         <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
             <%if (currentC.equals("pp")) {%>
-                    <search:velocity template="results/offsetPager" command="scanpix"/>
+                    <search:velocity template="fragments/offsetPager" command="scanpix"/>
             <% } else { %>
                 <% if ( !"sv".equals(locale) ) { %>
                     <decorator:getProperty property="page.offsetPager"/>
