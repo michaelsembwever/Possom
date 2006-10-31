@@ -13,7 +13,7 @@
 <%@ page import="no.schibstedsok.searchportal.site.config.SiteConfiguration"%>
 <%@ page import="no.schibstedsok.searchportal.view.config.SearchTab" %>
 <%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
