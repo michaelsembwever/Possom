@@ -269,7 +269,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     private boolean isEmptyLeaf(final Clause clause) {
         if (clause instanceof LeafClause) {
             final LeafClause leaf = (LeafClause) clause;
-            return leaf.getField() != null;
+            return null != leaf.getField() && null != getFieldFilter(leaf);
         }
 
         return false;
