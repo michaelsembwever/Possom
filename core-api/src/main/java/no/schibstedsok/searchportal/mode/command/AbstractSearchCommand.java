@@ -609,7 +609,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /** Returns null when no field exists. **/
-    private String getFieldFilter(final LeafClause clause){
+    protected final String getFieldFilter(final LeafClause clause){
 
         String field = null;
         if(null != clause.getField()){
