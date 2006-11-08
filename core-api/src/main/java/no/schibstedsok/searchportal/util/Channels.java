@@ -9,7 +9,6 @@
 
 package no.schibstedsok.searchportal.util;
 
-import com.sun.org.apache.xpath.internal.compiler.Keywords;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -70,9 +69,14 @@ public class Channels {
         }
         return instance;
     }
-    
-    public String getText(String channel) {
+
+    public String getMessage(String channel) {
         return keys.getProperty(channel);
+    }
+    
+    /** @deprecated */
+    public String getText(String channel) {
+        return getMessage(channel);
     }
     
     public boolean hasChannel(String channel) {
