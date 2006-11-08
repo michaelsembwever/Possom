@@ -61,4 +61,5 @@ CONTEXTS[25]="genericno.$RIG.test.sesam.no.war"
 CONTEXTS[26]="genericse.$RIG.test.sesam.se.war"
 CONTEXTS[27]="genericsitesearch.$RIG.test.sesam.se.war"
 CONTEXTS[28]="ROOT.war"
-export PROJECTS CONTEXTS
+export PROJECTS 
+export CONTEXTS
