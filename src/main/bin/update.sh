@@ -16,6 +16,8 @@ update_file() {
         rm $UPDATE_FILE.tmp
         chmod u+x $UPDATE_FILE.sh
         chmod g+x $UPDATE_FILE.sh
+        chmod u+w $UPDATE_FILE.sh
+        chmod g+w $UPDATE_FILE.sh
         echo "Updated $UPDATE_FILE.sh"
     fi
     rm -f $UPDATE_FILE.tmp
@@ -95,6 +97,8 @@ if [[ "x" != "x$DIFF" ]] ; then
     rm update.tmp
     chmod u+x update.sh
     chmod g+x update.sh
+    chmod u+w update.sh
+    chmod g+w update.sh
     echo "Updated myself. Did not update ${RIG_DOMAIN}. Please run again."
     rm -f update.lck
     exit 1
