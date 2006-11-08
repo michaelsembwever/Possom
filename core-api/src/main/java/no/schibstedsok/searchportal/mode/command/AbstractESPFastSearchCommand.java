@@ -19,8 +19,6 @@ import com.fastsearch.esp.search.query.SearchParameter;
 import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
-import com.fastsearch.esp.search.result.IllegalType;
-import com.fastsearch.esp.search.result.EmptyValueException;
 import com.fastsearch.esp.search.view.ISearchView;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
@@ -30,19 +28,16 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -102,7 +97,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         props.setProperty(ENCODER_PROPERTY, ENCODER_CLASS);
 
         try {
-
+                                                  
             final StringBuilder filterBuilder = new StringBuilder();
 
             if (getFilter() != null) {
@@ -127,11 +122,11 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             if (cfg.isCollapsingEnabled()) {
                 if (collapseId == null || collapseId.equals("")) {
-                    query.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
-
+//                    query.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
+              
                     if (cfg.isCollapsingRemoves()) {
-                        query.setParameter(new SearchParameter(BaseParameter.DUPLICATIONREMOVAL, true));
-                        query.setParameter(new SearchParameter("collapsenum", 1));
+//                        query.setParameter(new SearchParameter(BaseParameter.DUPLICATIONREMOVAL, true));
+                        query.setParameter(new SearchParameter("collapseon", "batvcollapseid"));
                     }
 
                 } else {
@@ -143,6 +138,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));
             query.setParameter(new SearchParameter(BaseParameter.SORT_BY, cfg.getSortBy()));
             query.setParameter(new SearchParameter(BaseParameter.FILTER, filterBuilder.toString()));
+
+            if (! (this instanceof NavigatableESPFastCommand)) {
+                query.setParameter(new SearchParameter(BaseParameter.NAVIGATION, 0));
+            }
 
             if (! cfg.getQtPipeline().equals("")) {
                 query.setParameter(new SearchParameter(BaseParameter.QT_PIPELINE, cfg.getQtPipeline()));

@@ -66,12 +66,22 @@ public class WhiteSearchCommand extends AbstractSimpleFastSearchCommand {
      * @param clause The clause to prefix.
      */
     protected void visitImpl(final LeafClause clause) {
+        
         if (clause.getField() == null) {
-            if (! getTransformedTerm(clause).equals("")) {
-                appendToQueryRepresentation(PREFIX_PHONETIC);
+            if (!getTransformedTerm(clause).equals("")) {
+                appendToQueryRepresentation(PREFIX_PHONETIC 
+                        + getTransformedTerm(clause).replaceAll("\\.", " "));
+            }
+            
+        }else if(null == getFieldFilter(clause)){
+            
+            if (!getTransformedTerm(clause).equals("")) {
+                // we also accept terms with fields that haven't been permitted for the searchConfiguration
+                appendToQueryRepresentation(PREFIX_PHONETIC 
+                        + clause.getField() + "\\:" + getTransformedTerm(clause).replaceAll("\\.", " "));
+                
             }
 
-            appendToQueryRepresentation(getTransformedTerm(clause).replaceAll("\\.",""));
         }
     }
 

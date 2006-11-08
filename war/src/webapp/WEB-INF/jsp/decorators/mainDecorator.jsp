@@ -154,7 +154,16 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	    <decorator:getProperty property="page.search-bar"/>
 	<% } %>
 
+<%-- temporary sesam.se header fix for pub system --%>        
+<% if ( !"sv".equals(locale) ) { %>      
 <table border="0" cellspacing="0" cellpadding="0" id="body_table">
+<% } else { %>
+    <%if (currentC.equals("d") && publish) {%>
+        <table width="100%" cellspacing="0" cellpadding="0" id="body_table">    
+    <% } else { %>
+        <table border="0" cellspacing="0" cellpadding="0" id="body_table">    
+    <% } %>
+<% } %>
     <%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
 	<tr>
     <%} else if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
@@ -202,6 +211,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <% }else{ %>
             	<td class="cell_three" valign="top" colspan="2">
  	<%}%>
+
         <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
 	<%}else {%>
             <% if ( !"sv".equals(locale) ) { %>        
@@ -288,9 +298,19 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.search-results"/>
             <%}%>	            
         <% } else if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
-            <div>
-                <search:velocity template="results/scanpix" command="scanpix"/>
-                <search:velocity template="results/yahooPicsearch" command="picSearch"/>
+            <div>            
+                <% if ( !"sv".equals(locale) ) { %>
+                    <% if (currentC.equals("p")) {%>
+                    <decorator:getProperty property="page.picsearch-results"/>
+                    <% } else { %>
+                    <search:velocity template="results/scanpix" command="scanpix"/>
+                    <decorator:getProperty property="page.picsearch-results"/>
+                    <%}%>
+                <% } else { %>
+                    <decorator:getProperty property="page.picsearch-results"/>
+                <% } %>
+                <!--search:import template="picSearch"/-->
+
                 <div class="clearFloat">&nbsp;</div>
             </div>
         <% } else { %>
@@ -358,6 +378,5 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 <decorator:getProperty property="page.map-script"/>
 
 <search:velocity template="fragments/gallup" />
-
 </body>
 </html>

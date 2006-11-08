@@ -836,7 +836,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         break;
                     case TERM_PREFIX:
                         fillBeanProperty(transformer, null, "prefix", ParseType.String, qt, "");
-                        fillBeanProperty(transformer, null, "number-prefix", ParseType.String, qt, "");
+                        fillBeanProperty(transformer, null, "numberPrefix", ParseType.String, qt, "");
                         break;
                     case TOKEN_MASK:
                         final TokenMaskTransformer trqt = (TokenMaskTransformer) transformer;

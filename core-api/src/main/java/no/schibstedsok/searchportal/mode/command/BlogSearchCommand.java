@@ -10,8 +10,11 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
-import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.UrlClause;
+import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
 
 /**
  *
@@ -37,15 +40,38 @@ public class BlogSearchCommand extends AbstractESPFastSearchCommand {
         super(cxt, parameters);
     }
 
+    // Public --------------------------------------------------------
+    public SearchResult execute() {
+        if (getSearchConfiguration().getName().equals("blogCounter")) {
+            final BasicSearchResult r = new BasicSearchResult(this);
+            r.setHitCount(123456789);
+
+            return r;
+        }
+
+        final SearchResult result = super.execute();
+
+        if (getParameter("collapse") != null && !getParameter("collapse").equals("")) {
+            final SearchResultItem item = result.getResults().get(0);
+
+            final String publishedTimed = item.getField("publishedtime");
+
+            if (! publishedTimed.startsWith("1970")) {
+                result.addField("expandedBlog", item.getField("title"));
+            }
+        }
+
+        return result;
+    }
+
+
     protected void visitImpl(final LeafClause clause) {
-
-        if (clause.getField() == null 
-                && !getTransformedTerm(clause).trim().equals("")){
-
+        if (clause.getField() == null
+                && !getTransformedTerm(clause).trim().equals("")) {
             appendTermRepresentation(getTransformedTerm(clause));
         }
     }
-
+    
     /**
      * Adds quotes around the URL. Failing so will produce syntax error in filter.
      *

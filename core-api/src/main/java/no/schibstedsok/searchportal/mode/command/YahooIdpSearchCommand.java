@@ -23,15 +23,11 @@ import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
-import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
-import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -59,7 +55,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String DATE_PATTERN = "yyyy/MM/dd";
 
     private static final String HEADER_ELEMENT = "HEADER";
-    private static final String TOTALHITS_ELEMENT ="TOTALHITS";
+    private static final String TOTALHITS_ELEMENT ="DEEPHITS";
     private static final String RESULT_ELEMENT = "RESULT";
     private static final String WORDCOUNTS_ELEMENT = "WORDCOUNTS";
 
@@ -84,11 +80,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                 final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
                 final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
                 searchResult.setHitCount(Integer.parseInt(totalHitsE.getFirstChild().getNodeValue()));
-                if(!context.getSearchConfiguration().isPaging()){
-                    context.getRunningQuery().addSource(new Modifier(
-                            context.getSearchConfiguration().getName(),
-                            searchResult.getHitCount(), null));
-                }
+
                 LOG.info("hitcount " + searchResult.getHitCount());
 
                 // build results

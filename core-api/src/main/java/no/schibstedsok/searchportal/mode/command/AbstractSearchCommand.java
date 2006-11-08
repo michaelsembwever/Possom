@@ -241,6 +241,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         if (null == field) {
             // we accept terms without fields
             appendToQueryRepresentation(getTransformedTerm(clause));
+            
         }else if(null == getFieldFilter(clause)){
             // we also accept terms with fields that haven't been permitted for the searchConfiguration
             appendToQueryRepresentation(clause.getField() + "\\:" + transformedTerms.get(clause));

@@ -53,6 +53,11 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     private static final String SITE_FILTER = "site";
     private static final String OCR_PARAM = "ocr";
 
+    private static final String FIELD_THUMB_HEIGHT = "thumb_height";
+    private static final String FIELD_THUMB_WIDTH = "thumb_width";
+
+    private static final String ATTRIBUTE_THUMB_GEO = "TGEO";
+
     /**
      * provides a mapping betweeen sizes defined by us
      * and sizes defined by yahoo. Currently one to one.
@@ -174,18 +179,23 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
     /** {@inheritDoc} */
     protected void visitImpl(final LeafClause clause) {
+        
         final String transformedTerm = getTransformedTerm(clause);
         if (clause.getField() != null && clause.getField().equals(SITE_FILTER)) {
             appendToQueryRepresentation("+" + clause.getField() + ":");
             appendToQueryRepresentation(transformedTerm);
-        } else  if (clause.getField() == null) {
+            
+        } else if (null == clause.getField() || null == getFieldFilter(clause)) {
             if (transformedTerm != null && transformedTerm.length() > 0) {
                 if (insideNot) {
                     appendToQueryRepresentation("-");
                 }  else if (writeAnd != null && writeAnd) {
                     appendToQueryRepresentation("+");
                 }
-                appendToQueryRepresentation(transformedTerm);
+                appendToQueryRepresentation((null == clause.getField()
+                        ? ""
+                        : clause.getField() + "\\:")
+                        + transformedTerm);
             }
         }
     }
@@ -238,17 +248,27 @@ public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         insideNot = originalInsideAndNot;
     }
 
-
-
     private SearchResultItem createResultItem(final Element listing) {
         final BasicSearchResultItem item = new BasicSearchResultItem();
 
         for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
 
-            final String field = listing.getAttribute(entry.getKey().toUpperCase());
+            // Special case for thumb width & height.
+            if (entry.getKey().equals(FIELD_THUMB_HEIGHT)) {
+                final String geometry = listing.getAttribute(ATTRIBUTE_THUMB_GEO);
+                final String height = geometry.substring(geometry.indexOf("x") + 1);
+                item.addField(entry.getValue(), height);
+            } else if (entry.getKey().equals(FIELD_THUMB_WIDTH)) {
+                final String geometry = listing.getAttribute(ATTRIBUTE_THUMB_GEO);
+                final String width = geometry.substring(0, geometry.indexOf("x"));
+                item.addField(entry.getValue(), width);
+            } else {
 
-            if (!"".equals(field)) {
-                item.addField(entry.getValue(), field);
+                final String field = listing.getAttribute(entry.getKey().toUpperCase());
+
+                if (!"".equals(field)) {
+                    item.addField(entry.getValue(), field);
+                }
             }
         }
 
