@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.prisjakt.nu/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://www.prisjakt.nu/wsdl">
+<types><xsd:schema targetNamespace="http://www.prisjakt.nu/wsdl"
+>
+ <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+ <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+ <xsd:complexType name="Produkt">
+  <xsd:all>
+   <xsd:element name="Produktnamn" type="xsd:string"/>
+   <xsd:element name="Kategorinamn" type="xsd:string"/>
+   <xsd:element name="Kategoriurl" type="xsd:string"/>
+   <xsd:element name="AntalButiker" type="xsd:int"/>
+   <xsd:element name="LagstaPris" type="xsd:int"/>
+   <xsd:element name="Bild" type="xsd:string"/>
+   <xsd:element name="Url" type="xsd:string"/>
+  </xsd:all>
+ </xsd:complexType>
+ <xsd:complexType name="Kategori">
+  <xsd:all>
+   <xsd:element name="Kategorinamn" type="xsd:string"/>
+   <xsd:element name="Url" type="xsd:string"/>
+   <xsd:element name="AntalProdukter" type="xsd:int"/>
+  </xsd:all>
+ </xsd:complexType>
+ <xsd:complexType name="Butik">
+  <xsd:all>
+   <xsd:element name="Butiksnamn" type="xsd:string"/>
+   <xsd:element name="Url" type="xsd:string"/>
+   <xsd:element name="AntalProdukter" type="xsd:int"/>
+  </xsd:all>
+ </xsd:complexType>
+ <xsd:complexType name="Produkter">
+  <xsd:complexContent>
+   <xsd:restriction base="SOAP-ENC:Array">
+    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:Produkt[]"/>
+   </xsd:restriction>
+  </xsd:complexContent>
+ </xsd:complexType>
+ <xsd:complexType name="Kategorier">
+  <xsd:complexContent>
+   <xsd:restriction base="SOAP-ENC:Array">
+    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:Kategori[]"/>
+   </xsd:restriction>
+  </xsd:complexContent>
+ </xsd:complexType>
+ <xsd:complexType name="Butiker">
+  <xsd:complexContent>
+   <xsd:restriction base="SOAP-ENC:Array">
+    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:Butik[]"/>
+   </xsd:restriction>
+  </xsd:complexContent>
+ </xsd:complexType>
+ <xsd:complexType name="Resultat">
+  <xsd:all>
+   <xsd:element name="Produkter" type="tns:Produkter"/>
+   <xsd:element name="Kategorier" type="tns:Kategorier"/>
+   <xsd:element name="Butiker" type="tns:Butiker"/>
+  </xsd:all>
+ </xsd:complexType>
+</xsd:schema>
+</types>
+<message name="GetDataRequest"><part name="search" type="xsd:string" /></message>
+<message name="GetDataResponse"><part name="return" type="tns:Resultat" /></message>
+<portType name="PrisjaktPortType"><operation name="GetData"><documentation>Hämta produkter, kategorier och butiker</documentation><input message="tns:GetDataRequest"/><output message="tns:GetDataResponse"/></operation></portType>
+<binding name="PrisjaktBinding" type="tns:PrisjaktPortType"><soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/><operation name="GetData"><soap:operation soapAction="http://www.prisjakt.nu/wsdl#GetData" style="rpc"/><input><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www.prisjakt.nu/wsdl" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation></binding>
+<service name="Prisjakt"><port name="PrisjaktPort" binding="tns:PrisjaktBinding"><soap:address location="http://www.prisjakt.nu/sesam/soap.php"/></port></service>
+</definitions>
