@@ -3,6 +3,7 @@
 # Projects to use in trunk
 #  Used by update-bleedingsearch.sh
 #
+
 PROJECTS[0]="sesam.se"
 PROJECTS[1]="aftonbladet.sesam.se"
 PROJECTS[2]="svd.sesam.se"
@@ -33,7 +34,9 @@ PROJECTS[26]="generic.sesam.no"
 PROJECTS[27]="genericno.sesam.no"
 PROJECTS[28]="genericse.sesam.se"
 PROJECTS[29]="genericsitesearch.sesam.se"
-PROJECTS[30]="search-portal-war"
+PROJECTS[30]="stress.sesam.no"
+PROJECTS[31]="search-portal-war"
+
 CONTEXTS[0]="$RIG.test.sesam.se.war"
 CONTEXTS[1]="aftonbladet.$RIG.test.sesam.se.war"
 CONTEXTS[2]="svd.$RIG.test.sesam.se.war"
@@ -64,6 +67,8 @@ CONTEXTS[26]="generic.$RIG.test.sesam.no.war"
 CONTEXTS[27]="genericno.$RIG.test.sesam.no.war"
 CONTEXTS[28]="genericse.$RIG.test.sesam.se.war"
 CONTEXTS[29]="genericsitesearch.$RIG.test.sesam.se.war"
-CONTEXTS[30]="ROOT.war"
+CONTEXTS[30]="stress.$RIG.test.sesam.no.war"
+CONTEXTS[31]="ROOT.war"
+
 export PROJECTS 
 export CONTEXTS
