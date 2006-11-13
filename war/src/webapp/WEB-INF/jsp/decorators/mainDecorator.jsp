@@ -89,7 +89,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
     <%-- old-school sitesearch --%>
     <% if (currentC.equals("d") && (
-             "di".equals(ss) ||
              "pr".equals(ss) ||
              "im".equals(ss) ||
              "af".equals(ss) ||
@@ -111,7 +110,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <dt>
                             <span class="sitename">
                                 <% if ("ds".equals(ssr)) { %> Dinside:
-                                <% } else if ("di".equals(ssr)) { %> Digi:
                                 <% } else if ("pr".equals(ssr)) { %> Propaganda:
                                 <% } else if ("it".equals(ssr)) { %> Itavisen:
                                 <% } else if ("im".equals(ssr)) { %> iMarkedet:
