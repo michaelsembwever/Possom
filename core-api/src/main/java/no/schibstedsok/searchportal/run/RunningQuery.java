@@ -11,8 +11,10 @@ package no.schibstedsok.searchportal.run;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
@@ -75,6 +77,14 @@ public interface RunningQuery {
     /** TODO comment me. **/
     List<Modifier> getSources();
 
+    /** Returns the search result for the named search command.
+     * The method blocks until the search command is done.
+     * 
+     * @param id Name of search command
+     * @return The search result of the search command. Returns null if command does not exist.
+     */
+    public SearchResult getSearchResult(final String id) throws InterruptedException, ExecutionException;
+            
     /**
      * Thread run
      *

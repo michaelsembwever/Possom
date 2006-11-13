@@ -16,6 +16,9 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
@@ -65,6 +68,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final AnalysisRuleFactory rules;
     private final String queryStr;
     private final Query queryObj;
+    
+    /** Map of search command IDs to SearchResult */
+    private final Map<String, Future<SearchResult>> results = new HashMap<String,Future<SearchResult>>();
+    
+    /** Mutext for results variable */
+    private final ReadWriteLock resultsLock = new ReentrantReadWriteLock();
+    
     /** have all search commands been cancelled.
      * implementation details allowing web subclasses to send correct error to client. **/
     protected boolean allCancelled = false;
@@ -173,6 +183,22 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return Collections.unmodifiableMap(hits);
     }
 
+    /** {@inheritDoc} */
+    public final SearchResult getSearchResult(final String id) throws InterruptedException, ExecutionException {
+        final Future<SearchResult> task;
+        resultsLock.readLock().lock();
+        try {
+            if (!results.containsKey(id)) {
+                return null;
+            }
+            task = results.get(id);
+        } finally {
+            resultsLock.readLock().unlock();
+        }
+        
+        return task.get();
+    }
+    
     /**
      * Thread run. Guts of the logic behind this class.
      *
@@ -266,13 +292,26 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             // mark state that we're about to execute the sub threads
             allCancelled = true;
 
-            final List<Future<SearchResult>> results = context.getSearchMode().getExecutor().invokeAll(commands,
-                    Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) ?  5000 :  Integer.MAX_VALUE);
-
+            final int timeout = Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) ? 10000 : Integer.MAX_VALUE;
+            
+            /* Entering CS */
+            resultsLock.writeLock().lock();
+            try {
+                context.getSearchMode().getExecutor().invokeAll(commands, results, timeout);
+            } finally {
+                /* Leaving CS */
+                resultsLock.writeLock().unlock();
+            }
+            
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()
             boolean hitsToShow = false;
 
+            /* Give the commands a chance to finish its work */
+            for (Future<SearchResult> task : results.values()) {
+                task.get(timeout, TimeUnit.MILLISECONDS);
+            }
+            
             // Ensure any cancellations are properly handled
             for(Callable<SearchResult> command : commands){
                 allCancelled &= ((SearchCommand)command).handleCancellation();
@@ -280,7 +319,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             if( !allCancelled ){
 
-                for (Future<SearchResult> task : results) {
+                for (Future<SearchResult> task : results.values()) {
 
                     if (task.isDone() && !task.isCancelled()) {
 
@@ -341,7 +380,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     //                }
                 }  else  {
 
-                    performEnrichmentHandling(results);
+                    performEnrichmentHandling(results.values());
                 }
             }
         } catch (Exception e) {
@@ -349,7 +388,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
     }
 
-    private void performEnrichmentHandling(final List<Future<SearchResult>> results) throws InterruptedException, ExecutionException {
+    private void performEnrichmentHandling(final Collection<Future<SearchResult>> results) throws InterruptedException, ExecutionException {
 
         Collections.sort(enrichments);
 

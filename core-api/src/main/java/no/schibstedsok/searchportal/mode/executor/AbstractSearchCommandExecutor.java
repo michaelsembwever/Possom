@@ -7,16 +7,15 @@
 
 package no.schibstedsok.searchportal.mode.executor;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
 
@@ -50,7 +49,7 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
     // Public --------------------------------------------------------
 
 
-    public List<Future<SearchResult>> invokeAll(final Collection<Callable<SearchResult>> callables, final int timeoutInMillis)  {
+    public Map<String,Future<SearchResult>> invokeAll(final Collection<Callable<SearchResult>> callables, final Map<String, Future<SearchResult>> results, final int timeoutInMillis)  {
 
         LOG.debug(DEBUG_INVOKEALL + getClass().getSimpleName());
         
@@ -75,17 +74,11 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
             }
         }
         
-        
-        final List<Future<SearchResult>> results = new ArrayList<Future<SearchResult>>();
-        try {
-            results.addAll(getExecutorService().invokeAll(callables, timeoutInMillis, TimeUnit.MILLISECONDS));
-
-//            for( Callable<SearchResult> c : callables ){
-//                results.add( EXECUTOR.submit(c) );
-//            }
-        }  catch (InterruptedException e) {
-            LOG.error(e);
+        ExecutorService es = getExecutorService();
+        for (Callable<SearchResult> c : callables) {
+            results.put(((SearchCommand) c).getSearchConfiguration().getName(), es.submit(c));
         }
+        
         return results;
     }
 
@@ -96,17 +89,4 @@ abstract class AbstractSearchCommandExecutor implements SearchCommandExecutor {
 
     protected abstract ExecutorService getExecutorService();
 
-
-
-    // Z implementation ----------------------------------------------
-
-    // Y overrides ---------------------------------------------------
-
-    // Package protected ---------------------------------------------
-
-    // Protected -----------------------------------------------------
-
-    // Private -------------------------------------------------------
-
-    // Inner classes -------------------------------------------------
 }

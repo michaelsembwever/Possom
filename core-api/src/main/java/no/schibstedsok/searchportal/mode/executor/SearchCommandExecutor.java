@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.mode.executor;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -29,7 +29,7 @@ public interface SearchCommandExecutor {
      * @return the list of Futures holding the results.
      * @throws InterruptedException
      */
-    List<Future<SearchResult>> invokeAll(Collection<Callable<SearchResult>> callables, int timeoutInMillis)
+    Map<String,Future<SearchResult>> invokeAll(Collection<Callable<SearchResult>> callables, Map<String, Future<SearchResult>> results, int timeoutInMillis)
             throws InterruptedException;
 
 }

@@ -10,7 +10,9 @@ package no.schibstedsok.searchportal.mode.command;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.run.RunningQuery;
@@ -72,6 +74,11 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         executeTestOfQuery("linux", "p");
     }
 
+    @Test
+    public void testAllTvSearchCommands() {
+        executeTestOfQuery("linux", "t");
+    }
+    
     private void executeTestOfQuery(final String query, final String key) {
 
         // proxy it back to the RunningQuery context.
@@ -92,7 +99,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         }
         try {
 
-            rqCxt.getSearchMode().getExecutor().invokeAll(commands, 10000);
+            rqCxt.getSearchMode().getExecutor().invokeAll(commands, new HashMap<String, Future<SearchResult>>(), 10000);
         } catch (InterruptedException ex) {
             throw new AssertionError(ex);
         }
