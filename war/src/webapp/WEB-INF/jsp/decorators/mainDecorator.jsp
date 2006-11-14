@@ -31,8 +31,6 @@ final String newscountry = (String) request.getParameter("newscountry");
 final String qURLEncoded = URLEncoder.encode(q, "utf-8");
 q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
-final String box = request.getParameter("box");
-final String toolbar = request.getParameter("toolbar");
 final String tradedoubler = request.getParameter("td");
 final String ss = request.getParameter("ss");
 final String ssr = request.getParameter("ssr");
@@ -88,12 +86,10 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
              "aa".equals(ss) ||
              "bt".equals(ss) ||
              "sa".equals(ss))) { %>
-
         <div id="frame">
             <div id="header">
                 <search:velocity template="legacy/skin/headers/${param.ss}"/>
                 <decorator:getProperty property="page.search-bar"/>
-
             </div>
             <div id="content_ss">
                 <div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
@@ -131,10 +127,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <div id="footer_ss">
                 <decorator:getProperty property="page.offsetPager"/>
             </div>
-        </div>
-        
+        </div>        
     <% } else { %>
-
         <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b") )) {%>
             <decorator:getProperty property="page.newsearch-bar"/>
 	<% }else if(q.trim().equals("") && currentC.equals("d") && publish) {%>
@@ -143,62 +137,57 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	    <decorator:getProperty property="page.search-bar"/>
 	<% } %>
 
-<%-- temporary sesam.se header fix for pub system --%>        
-<% if ( !"sv".equals(locale) ) { %>      
-<table border="0" cellspacing="0" cellpadding="0" id="body_table">
-<% } else { %>
-    <%if (currentC.equals("d") && publish) {%>
-        <table width="100%" cellspacing="0" cellpadding="0" id="body_table">    
-    <% } else { %>
-        <table border="0" cellspacing="0" cellpadding="0" id="body_table">    
-    <% } %>
-<% } %>
-    <%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
-	<tr>
-    <%} else if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
-    	<tr>
-            <td class="cell_one">&nbsp;</td>
-            <td class="cell_three">&nbsp;</td>
-            <td class="cell_four">&nbsp;</td>
-    	</tr>
-    <% }else{ %>
-        <tr>
-            <%if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
-            <%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d") || currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
-                <td class="cell_one" valign="top">
-                    <%if (q.trim().equals("") && (currentC.equals("t") || currentC.equals("m") || currentC.equals("l"))) { %>
-                        <decorator:getProperty property="page.frontMenu"/>
-                    <% } else { %>                
-
-                        <search:velocity template="/navigators/navbarMain"/>
-
-                    <% } %>
-                    <% if (currentC.equals("m")) { %>
-                        <decorator:getProperty property="page.newsSearchNavigator" />
-                        <decorator:getProperty property="page.media-collection-nav"/>
-                    <%}else {%>
-                        <decorator:getProperty property="page.sub-navigator"/>
-                    <%}%>            
-
-                    <decorator:getProperty property="page.relevantQueries" />
-
-                    <search:velocity template="navigators/scanpix" command="scanpix"/>
-                    <decorator:getProperty property="page.blogDateNavigation"/>
-
-                    <c:if test='${!(empty tab.rssResultName)}'>
-                        <decorator:getProperty property="page.rss-nav"/>
-                    </c:if>
-                </td>
+        <%-- temporary sesam.se header fix for pub system --%>        
+        <% if ( !"sv".equals(locale) ) { %>      
+        <table border="0" cellspacing="0" cellpadding="0" id="body_table">
+        <% } else { %>
+            <%if (currentC.equals("d") && publish) {%>
+                <table width="100%" cellspacing="0" cellpadding="0" id="body_table">    
+            <% } else { %>
+                <table border="0" cellspacing="0" cellpadding="0" id="body_table">    
             <% } %>
-    <% } %>
-        
+        <% } %>
+        <%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
+            <tr>
+        <%} else if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
+            <tr>
+                <td class="cell_one">&nbsp;</td>
+                <td class="cell_three">&nbsp;</td>
+                <td class="cell_four">&nbsp;</td>
+            </tr>
+        <% }else{ %>
+            <tr>
+                <%if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
+                <%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d") || currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
+                    <td class="cell_one" valign="top">
+                        <%if (q.trim().equals("") && (currentC.equals("t") || currentC.equals("m") || currentC.equals("l"))) { %>
+                            <decorator:getProperty property="page.frontMenu"/>
+                        <% } else { %>     
+                            <search:velocity template="/navigators/navbarMain"/>
+                        <% } %>
+                        <% if (currentC.equals("m")) { %>
+                            <decorator:getProperty property="page.newsSearchNavigator" />
+                            <decorator:getProperty property="page.media-collection-nav"/>
+                        <%}else {%>
+                            <decorator:getProperty property="page.sub-navigator"/>
+                        <%}%> 
+                        <decorator:getProperty property="page.relevantQueries" />
 
+                        <search:velocity template="navigators/scanpix" command="scanpix"/>
+                        <decorator:getProperty property="page.blogDateNavigation"/>
+
+                        <c:if test='${!(empty tab.rssResultName)}'>
+                            <decorator:getProperty property="page.rss-nav"/>
+                        </c:if>
+                    </td>
+                <% } %>
+        <% } %>
         <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("l") && !currentC.equals("m") && !currentC.equals("wt")) {%>
             <td valign="top" colspan="3">
         <%}else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")&& !currentC.equals("swip") && !currentC.equals("wipgift")) {%>
-            	<td class="cell_three" valign="top">
+            <td class="cell_three" valign="top">
         <% }else{ %>
-            	<td class="cell_three" valign="top" colspan="2">
+            <td class="cell_three" valign="top" colspan="2">
  	<%}%>
 
         <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
@@ -216,25 +205,17 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
        	<% } %>
 
         <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
-
              <%--  Sok smart  --%>
              <% if ( publish ) { %>
                 <decorator:getProperty property="page.publishing_page"/>
-             <% } else if ("true".equals(box)) { %>
-                <decorator:getProperty property="page.searchbox"/>
-             <% } else if ("true".equals(toolbar)) { %>
-                <decorator:getProperty property="page.toolbar"/>
              <% } else if ("true".equals(tradedoubler)) { %>
                 <decorator:getProperty property="page.tradedoubler"/>
              <% } else { %>
-
                 <decorator:getProperty property="page.spellcheck"/>
                 <decorator:getProperty property="page.main_ads"/>
                
                 <search:velocity template="/enrichments/enrichment-handler"/>
-
-            <% } %>  <%-- Sok smart --%>
-            
+            <% } %>  <%-- Sok smart --%>            
         <% } else if (currentC.equals("m") || currentC.equals("l")) {%>
             <%if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
             <%}else{%>
@@ -245,24 +226,20 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <div>            
                 <% if ( !"sv".equals(locale) ) { %>
                     <% if (currentC.equals("p")) {%>
-                    <decorator:getProperty property="page.picsearch-results"/>
+                        <decorator:getProperty property="page.picsearch-results"/>
                     <% } else { %>
-                    <search:velocity template="results/scanpix" command="scanpix"/>
-                    <decorator:getProperty property="page.picsearch-results"/>
+                        <search:velocity template="results/scanpix" command="scanpix"/>
+                        <decorator:getProperty property="page.picsearch-results"/>
                     <%}%>
                 <% } else { %>
                     <decorator:getProperty property="page.picsearch-results"/>
                 <% } %>
-                <!--search:import template="picSearch"/-->
-
                 <div class="clearFloat">&nbsp;</div>
             </div>
         <% } else { %>
             <decorator:getProperty property="page.search-results"/>
             <search:velocity template="results/giftProviders" command="giftProviders"/>            
-        <%}%>
-
-      
+        <%}%>      
         <%--  offset  --%>
         <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
             <%if (currentC.equals("pp")) {%>
@@ -303,24 +280,20 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <decorator:getProperty property="page.ads_floating"/>
     <% } %>
     
-     <% if ( "sv".equals(locale) ) { %>
+    <% if ( "sv".equals(locale) ) { %>
         <tr>
             <td>&nbsp;</td>
             <td colspan="2"><decorator:getProperty property="page.offsetPager"/></td>
         </tr>     
      <% } %>    
 </table>
-
     <decorator:getProperty property="page.verbosePager"/>
-
     <decorator:getProperty property="page.footer"/>
-
 <%}%>
 
     </c:if>
 
 <decorator:getProperty property="page.map-script"/>
-
 <search:velocity template="fragments/gallup" />
 </body>
 </html>
