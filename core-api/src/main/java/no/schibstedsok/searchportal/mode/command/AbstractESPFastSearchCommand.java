@@ -47,6 +47,7 @@ import java.util.Properties;
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
+    private final static String COLLAPSE_PARAMETER="collapse";
 
     private static final Logger LOG =
             Logger.getLogger(AbstractESPFastSearchCommand.class);
@@ -166,9 +167,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             
             return searchResult;
 
-        } catch (ConfigurationException ex) {
-            LOG.error("exeute ", ex);
-            throw new InfrastructureException(ex);
         } catch (SearchEngineException ex) {
             LOG.error(ex.getMessage() + " " + ex.getCause());
             return new FastSearchResult(this);

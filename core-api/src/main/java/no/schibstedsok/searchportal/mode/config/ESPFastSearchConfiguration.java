@@ -39,7 +39,6 @@ public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
             "com.fastsearch.esp.search.http.encoderclass";
     private final static String ENCODER_CLASS =
             "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
-    private final static String COLLAPSE_PARAMETER="collapse";
     
     private String view;
     private String queryServer;
