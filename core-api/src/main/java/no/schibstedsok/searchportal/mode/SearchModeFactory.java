@@ -358,6 +358,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
+        private static final String ERR_INIT_SEARCH_VIEW = "Search view could not be initialized for ";
 
 
         CommandTypes(final Class<? extends SearchConfiguration> clazz){
@@ -498,7 +499,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         }
 
                     }
+
+                    try {
+                        esc.initializeSearchView();
+                    } catch (InfrastructureException e) {
+                        LOG.error(ERR_INIT_SEARCH_VIEW + esc.getName());
+                    }
                 }
+
                 if (sc instanceof NavigatableESPFastConfiguration) {
                     final NavigatableESPFastConfiguration nasc = (NavigatableESPFastConfiguration) sc;
                     // navigators

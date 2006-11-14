@@ -10,9 +10,17 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.result.Navigator;
+import no.schibstedsok.searchportal.InfrastructureException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import com.fastsearch.esp.search.view.ISearchView;
+import com.fastsearch.esp.search.ISearchFactory;
+import com.fastsearch.esp.search.SearchFactory;
+import com.fastsearch.esp.search.ConfigurationException;
+import com.fastsearch.esp.search.SearchEngineException;
 
 /**
  *
@@ -20,6 +28,19 @@ import java.util.Map;
  */
 public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
 
+    // Constants -----------------------------------------------------
+    private final static String FACTORY_PROPERTY =
+            "com.fastsearch.esp.search.SearchFactory";
+    private final static String HTTP_FACTORY =
+            "com.fastsearch.esp.search.http.HttpSearchFactory";
+    private final static String QR_SERVER_PROPERTY =
+            "com.fastsearch.esp.search.http.qrservers";
+    private final static String ENCODER_PROPERTY =
+            "com.fastsearch.esp.search.http.encoderclass";
+    private final static String ENCODER_CLASS =
+            "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
+    private final static String COLLAPSE_PARAMETER="collapse";
+    
     private String view;
     private String queryServer;
     private String sortBy;
@@ -27,7 +48,9 @@ public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
     private boolean expansionEnabled;
     private boolean collapsingRemoves;
     private String qtPipeline;
-    
+    private ISearchView searchView;
+    private static final String ERR_CALL_SET_VIEW = "setView() must be called prior to calling this method";
+
     public void setCollapsingEnabled(final boolean collapsingEnabled) {
         this.collapsingEnabled = collapsingEnabled;
     }
@@ -81,6 +104,30 @@ public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
 
     public void setView(final String view) {
         this.view = view;
+    }
+
+    public ISearchView getSearchView() {
+         return searchView;
+    }
+
+    public void initializeSearchView() {
+        if (view == null) {
+            throw new IllegalStateException(ERR_CALL_SET_VIEW);
+        }
+
+        final Properties props = new Properties();
+
+        props.setProperty(FACTORY_PROPERTY, HTTP_FACTORY);
+        props.setProperty(QR_SERVER_PROPERTY, getQueryServer());
+        props.setProperty(ENCODER_PROPERTY, ENCODER_CLASS);
+
+        try {
+            this.searchView = SearchFactory.newInstance(props).getSearchView(getView());
+        } catch (ConfigurationException e) {
+            throw new InfrastructureException(e);
+        } catch (SearchEngineException e) {
+            throw new InfrastructureException(e);
+        }
     }
 
     public String getQueryServer() {

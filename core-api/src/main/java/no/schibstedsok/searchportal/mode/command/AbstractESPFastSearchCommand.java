@@ -47,19 +47,7 @@ import java.util.Properties;
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
-    // Constants -----------------------------------------------------
-    private final static String FACTORY_PROPERTY =
-            "com.fastsearch.esp.search.SearchFactory";
-    private final static String HTTP_FACTORY =
-            "com.fastsearch.esp.search.http.HttpSearchFactory";
-    private final static String QR_SERVER_PROPERTY =
-            "com.fastsearch.esp.search.http.qrservers";
-    private final static String ENCODER_PROPERTY =
-            "com.fastsearch.esp.search.http.encoderclass";
-    private final static String ENCODER_CLASS =
-            "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
-    private final static String COLLAPSE_PARAMETER="collapse";
-    
+
     private static final Logger LOG =
             Logger.getLogger(AbstractESPFastSearchCommand.class);
 
@@ -90,11 +78,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     /** {@inheritDoc} */
     public SearchResult execute() {
 
-        final Properties props = new Properties();
-
-        props.setProperty(FACTORY_PROPERTY, HTTP_FACTORY);
-        props.setProperty(QR_SERVER_PROPERTY, cfg.getQueryServer());
-        props.setProperty(ENCODER_PROPERTY, ENCODER_CLASS);
 
         try {
                                                   
@@ -110,7 +93,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 filterBuilder.append(" ");
             }
 
-            final ISearchFactory factory = SearchFactory.newInstance(props);
 
             final String transformedQuery = getTransformedQuery();
 
@@ -147,13 +129,12 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 query.setParameter(new SearchParameter(BaseParameter.QT_PIPELINE, cfg.getQtPipeline()));
             }
 
-            final ISearchView view = factory.getSearchView(cfg.getView());
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Query is " + query);
             }
 
-            result = view.search(query);
+            result = cfg.getSearchView().search(query);
 
             final FastSearchResult searchResult = new FastSearchResult(this);
 
