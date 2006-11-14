@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * This bean holds nothing more than the name of the virtual host used to access this SiteSearch.
  * <b>Immutable</b>.
  *
- * Does a little bit of niggling wiggling to load the DEFAULT site.
+ * Does a little bit of niggling wiggling to load the DEFAULT site. See static constructor.
  *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>

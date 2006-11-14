@@ -8,7 +8,8 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class Modifier implements Comparable {
+public class Modifier implements Comparable<Modifier> {
+    
     private int count = 0;
 
     final private String name;
@@ -61,13 +62,9 @@ public class Modifier implements Comparable {
         return name;
     }
 
-    public int compareTo(final Object o) {
-        final Modifier other = (Modifier) o;
+    public int compareTo(final Modifier other) {
 
-        final Integer otherCount = Integer.valueOf(other.getCount());
-        final Integer thisCount = Integer.valueOf(getCount());
-
-        return otherCount.compareTo(thisCount);
+        return Integer.valueOf(other.getCount()).compareTo(getCount());
     }
 
     public String toString() {
@@ -84,14 +81,14 @@ public class Modifier implements Comparable {
      * @return Value of property navigationHint.
      */
     public SearchTab.NavigatorHint getNavigationHint() {
-        return this.navigationHint;
+        return navigationHint;
     }
 
     /**
      * Setter for property navigationHint.
      * @param navigationHint New value of property navigationHint.
      */
-    public void setNavigationHint(SearchTab.NavigatorHint navigationHint) {
+    public void setNavigationHint(final SearchTab.NavigatorHint navigationHint) {
         this.navigationHint = navigationHint;
     }
 

@@ -176,31 +176,6 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     }
 
     /**
-     * Utility wrapper to the valueOf(Context).
-     * <b>Makes the presumption we will be using the UrlResourceLoader to load all resources.</b>
-     * @param site the site this RegExpEvaluatorFactory will work for.
-     * @return RegExpEvaluatorFactory for this site.
-     */
-    public static RegExpEvaluatorFactory valueOf(final Site site) {
-
-        // RegExpEvaluatorFactory.Context for this site & UrlResourceLoader.
-        final RegExpEvaluatorFactory instance = RegExpEvaluatorFactory.valueOf(new RegExpEvaluatorFactory.Context() {
-            public Site getSite() {
-                return site;
-            }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-
-        });
-        return instance;
-    }
-
-    /**
      * If the regular expression is not found in this site's RegularExpressionEvaluators.xml file
      * it will fallback and look in the parent site.
      * @param token the predicate the evaluator is to be used for
@@ -232,7 +207,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                 )).getEvaluator(token);
         }
         if(result == null){
-            // if we cannot find an evaulator, then awlways fail evaluation.
+            // if we cannot find an evaulator, then always fail evaluation.
             //  Rather than encourage a NullPointerException
             result = TokenEvaluationEngineImpl.ALWAYS_FALSE_EVALUATOR;
         }

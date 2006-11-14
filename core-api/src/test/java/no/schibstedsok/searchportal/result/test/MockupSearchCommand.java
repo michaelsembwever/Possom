@@ -34,20 +34,21 @@ public class MockupSearchCommand implements SearchCommand {
             return mode;
         }
         public SearchTab getSearchTab(){
-                return SearchTabFactory.valueOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
-                    .getTabByKey("d");
-            }
+            return SearchTabFactory.valueOf(
+                ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                .getTabByKey("d");
+        }
         public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
             return FileResourceLoader.newPropertiesLoader(this, resource, properties);
         }
-
         public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
             return FileResourceLoader.newDocumentLoader(this, resource, builder);
         }
-
         public Site getSite() {
             return Site.DEFAULT;
+        }
+        public SearchTabFactory getLeafSearchTabFactory(){
+            return null;
         }
     };
 

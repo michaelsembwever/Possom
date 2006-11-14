@@ -1,9 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -23,8 +21,6 @@ import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.fast.searchengine.test.MockupFastSearchEngineFactory;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
-import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.Modifier;
 
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
@@ -550,13 +546,14 @@ public final class FastNavigatorsTest extends TestCase {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
-
             public Site getSite() {
                 return Site.DEFAULT;
+            }
+            public SearchTabFactory getLeafSearchTabFactory(){
+                return null;
             }
         };
 

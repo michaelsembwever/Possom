@@ -106,7 +106,14 @@ public final class SearchServlet extends HttpServlet {
         SearchTab st = null;
         try{
             st = SearchTabFactory.valueOf(
-                ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)).getTabByKey(searchTabKey);
+                ContextWrapper.wrap(
+                    SearchTabFactory.Context.class, 
+                    genericCxt,
+                    new BaseContext(){
+                        public SearchTabFactory getLeafSearchTabFactory(){
+                            return null;
+                        }
+                    })).getTabByKey(searchTabKey);
             
         }catch(AssertionError ae){
             // it's not normal to catch assert errors but we really want a 404 not 500 response error.

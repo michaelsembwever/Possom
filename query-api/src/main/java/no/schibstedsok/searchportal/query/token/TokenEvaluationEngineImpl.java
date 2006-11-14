@@ -4,7 +4,6 @@
 package no.schibstedsok.searchportal.query.token;
 
 import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,7 +23,7 @@ import org.apache.log4j.Logger;
  * Manual synhronisation must be taken when calling operate or setter methods from inside SearchCommand classes.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version $Id$
  */
 public final class TokenEvaluationEngineImpl implements TokenEvaluationEngine {
 

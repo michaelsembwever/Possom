@@ -78,13 +78,14 @@ public abstract class AbstractSearchCommandTest extends TestCase {
             public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
                 return FileResourceLoader.newPropertiesLoader(this, resource, properties);
             }
-
             public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                 return FileResourceLoader.newDocumentLoader(this, resource, builder);
             }
-
             public Site getSite() {
                 return Site.DEFAULT;
+            }
+            public SearchTabFactory getLeafSearchTabFactory(){
+                return null;
             }
         };
     }

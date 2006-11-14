@@ -66,6 +66,8 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     private static final String DEBUG_FINISHED_RULE = "Parsed rule ";
     private static final String DEBUG_PREDICATE_NOT_INHERITED =
             "Predicate not inherited: ";
+    
+    private static final AnalysisRule DUMB_RULE = new AnalysisRule();
 
     /**
      * 
@@ -207,6 +209,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             final Element element,
             final Map predicateMap,
             final Map inheritedPredicates) {
+        
         Predicate result = null;
 
         final boolean hasId = element.hasAttribute("id");
@@ -270,6 +273,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     }
 
     private Predicate createPredicate(final Element element, final Map predicateMap, final Map inheritedPredicates) {
+        
         Predicate result = null;
         // The operator to use from PredicateUtils.
         //   The replaceAll's are so we end up with a method with one Predicate[] argument.
@@ -340,6 +344,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      * @return  the rule.
      */
     public AnalysisRule getRule(final String ruleName) {
+        
         LOG.trace("getRule(" + ruleName + ")");
 
         init();
@@ -352,7 +357,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             rulesLock.readLock().unlock();
         }
 
-        if(rule == null) {
+        if(rule == null && null != context.getSite().getParent()) {
             rule = valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext() {
@@ -370,7 +375,10 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                     )).getRule(ruleName);
 
             if (rule == null) {
+                // if we cannot find an rule, then use the dumb guy that never scores.
+                //  Rather than encourage a NullPointerException
                 LOG.warn(WARN_RULE_NOT_FOUND + ruleName);
+                rule = DUMB_RULE;
             }
         }
 
@@ -406,32 +414,6 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                 LOG.error(ERR_DOC_BUILDER_CREATION, ex);
             }
         }
-        return instance;
-    }
-
-    /**
-     * Utility wrapper to the valueOf(Context).
-     * <b>Makes the presumption we will be using the UrlResourceLoader to load all resources.</b>
-     *
-     * @param site the site this AnalysisRuleFactory will work for.
-     * @return AnalysisRuleFactory for this site.
-     */
-    public static AnalysisRuleFactory valueOf(final Site site) {
-
-        // RegExpEvaluatorFactory.Context for this site & UrlResourceLoader.
-        final AnalysisRuleFactory instance = AnalysisRuleFactory.valueOf(new AnalysisRuleFactory.Context() {
-            public Site getSite() {
-                return site;
-            }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-            }
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-            }
-
-        });
         return instance;
     }
 

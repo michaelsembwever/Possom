@@ -43,7 +43,10 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     /**
      * The context any SearchTabFactory must work against. *
      */
-    public interface Context extends BaseContext, ResourceContext, SiteContext {}
+    public interface Context extends BaseContext, ResourceContext, SiteContext {
+        /** Allowed to return null to specify this is the leaf SearchTabFactory. **/
+        SearchTabFactory getLeafSearchTabFactory();
+    }
 
    // Constants -----------------------------------------------------
 
@@ -71,6 +74,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
     private final DocumentLoader loader;
     private final Context context;
+    private SearchTabFactory grandfather = null;
 
     // Static --------------------------------------------------------
 
@@ -150,6 +154,11 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         }
                         public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
                             return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+                        }
+                        public SearchTabFactory getLeafSearchTabFactory(){
+                            return null == context.getLeafSearchTabFactory()
+                                    ? SearchTabFactory.this
+                                    : context.getLeafSearchTabFactory();
                         }
                     },
                     context
@@ -244,8 +253,16 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 final String urlSuffix = n.getAttribute("url-suffix");
                 final String image = n.getAttribute("image");
                 final int priority = parseInt(n.getAttribute("priority"), 0);
-                final SearchTab.NavigatorHint navHint
-                        = new SearchTab.NavigatorHint(navId, name, displayName, match, tab, urlSuffix, image, priority, this);
+                final SearchTab.NavigatorHint navHint = new SearchTab.NavigatorHint(
+                        navId, 
+                        name, 
+                        displayName, 
+                        match, 
+                        tab, 
+                        urlSuffix, 
+                        image, 
+                        priority, 
+                        context.getLeafSearchTabFactory());
                 navigations.add(navHint);
             }
 

@@ -12,7 +12,6 @@ import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
-import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.AbstractFactoryTest;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -144,6 +143,9 @@ public final class SearchTabFactoryTest extends AbstractFactoryTest {
                 return locale == null
                         ? Site.DEFAULT
                         : Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), locale);
+            }
+            public SearchTabFactory getLeafSearchTabFactory(){
+                return null;
             }
         };
 

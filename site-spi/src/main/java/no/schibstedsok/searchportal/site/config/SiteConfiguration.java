@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  * SiteConfiguration properties.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision: 2720 $</tt>
+ * @version $Id$
  */
 public final class SiteConfiguration implements SiteKeyedFactory{
 
@@ -74,6 +74,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
         if(properties.size() == 0){
             propertyLoader.abut();
         }
+        
         return properties.getProperty(key);
     }
 
