@@ -31,7 +31,6 @@ final String newscountry = (String) request.getParameter("newscountry");
 final String qURLEncoded = URLEncoder.encode(q, "utf-8");
 q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
-final String tradedoubler = request.getParameter("td");
 final String ss = request.getParameter("ss");
 final String ssr = request.getParameter("ssr");
 final String vertikal = request.getParameter("vertikal") == null ? "" : request.getParameter("vertikal");
@@ -204,24 +203,12 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <% } %>
        	<% } %>
 
-        <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>
-             <%--  Sok smart  --%>
-             <% if ( publish ) { %>
-                <decorator:getProperty property="page.publishing_page"/>
-             <% } else if ("true".equals(tradedoubler)) { %>
-                <decorator:getProperty property="page.tradedoubler"/>
-             <% } else { %>
-                <decorator:getProperty property="page.spellcheck"/>
-                <decorator:getProperty property="page.main_ads"/>
-               
-                <search:velocity template="/enrichments/enrichment-handler"/>
-            <% } %>  <%-- Sok smart --%>            
-        <% } else if (currentC.equals("m") || currentC.equals("l")) {%>
-            <%if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
-            <%}else{%>
-                <decorator:getProperty property="page.main_ads"/>
-                <decorator:getProperty property="page.search-results"/>
-            <%}%>	            
+        <decorator:getProperty property="page.publishing_page"/>
+        <decorator:getProperty property="page.spellcheck"/>
+        <decorator:getProperty property="page.main_ads"/>
+        <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>                      
+            <search:velocity template="/enrichments/enrichment-handler"/>
+        <% } else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
         <% } else if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
             <div>            
                 <% if ( !"sv".equals(locale) ) { %>
@@ -260,7 +247,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             	<div id="midbar_right">
                     <decorator:getProperty property="page.greybar_ad"/>
             	</div>
-
             	<% if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") ) {%>
                     <decorator:getProperty property="page.ads"/>
                     <decorator:getProperty property="page.ads-logo"/>
