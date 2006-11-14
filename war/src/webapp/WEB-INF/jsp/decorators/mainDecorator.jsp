@@ -74,15 +74,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <search:velocity template="/fragments/head"/>
 </head>
 
-<%if (currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("sw") || currentC.equals("swip")) {%>
-<body onLoad="init();">
-<%} else if (currentC.equals("yip") || currentC.equals("wip") || currentC.equals("yipticker")) {%>
-<body onLoad="init(); checkTab();">
-<%} else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m") && !publish) {%>
-<body onLoad="sndReq('/search/?c=l&newscountry=Norge&q=&output=rss');scrollbox();">
-<%} else {%>
-<body>
-<% } %>
+<body onLoad="sesamInit('<%= currentC %>', '<%= vertikal %>', '<%= q.trim() %>', <%= publish %>);">
     <search:velocity template="/pages/main"/>
 
     <c:if test="${! empty Missing_pagesmain_Template}">
