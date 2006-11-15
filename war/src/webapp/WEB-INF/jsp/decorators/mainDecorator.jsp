@@ -71,7 +71,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <search:velocity template="/fragments/head"/>
 </head>
 
-<body onLoad="sesamInit('<%= currentC %>', '<%= vertikal %>', '<%= q.trim() %>', <%= publish %>);">
+<body onload="sesamInit('<%= currentC %>', '<%= vertikal %>', '<%= q.trim() %>', <%= publish %>);">
     <search:velocity template="/pages/main"/>
 
     <c:if test="${! empty Missing_pagesmain_Template}">
