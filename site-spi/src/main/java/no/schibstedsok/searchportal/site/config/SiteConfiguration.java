@@ -37,8 +37,6 @@ public final class SiteConfiguration implements SiteKeyedFactory{
 
     private final Context context;
 
-    private final PropertiesLoader propertyLoader;
-
     private static final Map<Site, SiteConfiguration> INSTANCES = new HashMap<Site,SiteConfiguration>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
@@ -51,8 +49,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
             LOG.trace("SiteConfiguration(cxt)");
             context = cxt;
 
-            propertyLoader = context.newPropertiesLoader(Site.CONFIGURATION_FILE, properties);
-            propertyLoader.abut();
+            context.newPropertiesLoader(Site.CONFIGURATION_FILE, properties).abut();
 
             INSTANCES.put(context.getSite(), this);
         }finally{

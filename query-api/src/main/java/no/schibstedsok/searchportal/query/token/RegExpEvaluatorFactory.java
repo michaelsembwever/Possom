@@ -89,6 +89,8 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
             loader = context.newDocumentLoader(REGEXP_EVALUATOR_XMLFILE, builder);
 
             INSTANCES.put(context.getSite(), this);
+            init();
+            
         }finally{
             INSTANCES_LOCK.writeLock().unlock();
         }
@@ -182,7 +184,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
      * @return the RegExpTokenEvaluator to use.
      */
     public TokenEvaluator getEvaluator(final TokenPredicate token) {
-        init();
+        
         TokenEvaluator result = regExpEvaluators.get(token);
         if(result == null && null != context.getSite().getParent()){
 
