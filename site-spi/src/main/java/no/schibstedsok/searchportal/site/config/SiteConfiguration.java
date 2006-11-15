@@ -52,6 +52,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
             context = cxt;
 
             propertyLoader = context.newPropertiesLoader(Site.CONFIGURATION_FILE, properties);
+            propertyLoader.abut();
 
             INSTANCES.put(context.getSite(), this);
         }finally{
@@ -61,19 +62,12 @@ public final class SiteConfiguration implements SiteKeyedFactory{
 
     /** TODO comment me. **/
     public Properties getProperties() {
-
-        if(properties.size() == 0){
-            propertyLoader.abut();
-        }
+        
         return properties;
     }
 
     /** TODO comment me. **/
     public String getProperty(final String key) {
-
-        if(properties.size() == 0){
-            propertyLoader.abut();
-        }
         
         return properties.getProperty(key);
     }

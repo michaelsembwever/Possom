@@ -143,13 +143,9 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         if(props != null){
             // Properties inherent through the fallback process. Keys are *not* overridden.
 
-            Site site = getContext().getSite();
-            
-            do {
+            for(Site site = getContext().getSite(); site != null; site = site.getParent()){
                 loadResource(getResource(site));
-                site = site.getParent();
-                
-            } while (site != null);
+            }
             
         }else{
             // Default behavour: only load first found resource
@@ -191,13 +187,12 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                     final Properties newProps = new Properties();
                     newProps.load(urlConn.getInputStream());
                     
-                    synchronized( props ){
-                        for(Object p : newProps.keySet()){
+                    
+                    for(Object p : newProps.keySet()){
 
-                            if(!props.containsKey(p)){
-                                final String prop = (String)p;
-                                props.setProperty(prop, newProps.getProperty(prop));
-                            }
+                        if(!props.containsKey(p)){
+                            final String prop = (String)p;
+                            props.setProperty(prop, newProps.getProperty(prop));
                         }
                     }
                 }
