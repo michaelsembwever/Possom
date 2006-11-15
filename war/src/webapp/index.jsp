@@ -245,7 +245,7 @@
             getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
             //-->
         </script>
-        <noscript><img src="http://statistik-gallup.net/v11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamforside" alt="" /></noscript>
+        <noscript><img src="http://statistik-gallup.net/V11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamforside" alt="" /></noscript>
         <% } %>
         <!-- end gallup -->
 
