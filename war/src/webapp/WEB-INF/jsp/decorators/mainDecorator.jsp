@@ -227,16 +227,16 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <decorator:getProperty property="page.search-results"/>
             <search:velocity template="results/giftProviders" command="giftProviders"/>            
         <%}%>      
+
         <%--  offset  --%>
-        <%if (q==null || !q.trim().equals("") || "m".equals(currentC) || "l".equals(currentC)) {%>
-            <%if (currentC.equals("pp")) {%>
-                    <search:velocity template="fragments/offsetPager" command="scanpix"/>
-            <% } else { %>
-                <% if ( !"sv".equals(locale) ) { %>
-                    <decorator:getProperty property="page.offsetPager"/>
-                <% } %>            
-             <% } %>
-        <%}%>
+        <%if (currentC.equals("pp")) {%>
+                <search:velocity template="fragments/offsetPager" command="scanpix"/>
+        <% } else { %>
+            <% if ( !"sv".equals(locale) ) { %>
+                <decorator:getProperty property="page.offsetPager"/>
+            <% } %>            
+         <% } %>
+
         </td>
 
     	<%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
