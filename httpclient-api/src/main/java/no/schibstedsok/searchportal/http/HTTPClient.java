@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import org.apache.log4j.Level;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
@@ -53,6 +52,10 @@ public final class HTTPClient {
     }
        
     private URL getURL(final String path) throws MalformedURLException{
+        
+        if( port == 0 ){
+            throw new MalformedURLException("Null port");
+        }
         
         final URL url = new URL(
                 (host.startsWith("http://") ? "" : "http://")
