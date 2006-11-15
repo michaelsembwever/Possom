@@ -12,6 +12,7 @@
 # 25100 ---> sesam.se queryServerURL.1
 # 25200 ---> sesam.se tokenevaluator
 # 25300 ---> sesam.se fast server (svd2,n24)
+# 15101 ---> ESP 5.0 Load balancer
 #-L 15500:10.16.195.250:15400 \
 
 ssh \
@@ -27,6 +28,7 @@ ssh \
 -L 25100:sch-fast-se-admin01.osl.basefarm.net:15100 \
 -L 25200:sch-fast-query-se.osl.basefarm.net:25200 \
 -L 25300:sch-fast-query-se.osl.basefarm.net:25100 \
+-L 15101:sch-fast-query.osl.basefarm.net:15500 \
 $1@sch-login01.osl.basefarm.net # require username as first argument
 
 
