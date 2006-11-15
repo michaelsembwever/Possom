@@ -121,7 +121,14 @@ public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
         props.setProperty(ENCODER_PROPERTY, ENCODER_CLASS);
 
         try {
-            this.searchView = SearchFactory.newInstance(props).getSearchView(getView());
+            searchView = SearchFactory.newInstance(props).getSearchView(getView());
+
+            // Force server address since we want to use the hardware load balancer.
+            // This also enables us to do tunneling.
+            final String serverAndPort = getQueryServer();
+            final String serverName = serverAndPort.substring(0, serverAndPort.indexOf(':'));
+            final String serverPort = serverAndPort.substring(serverAndPort.indexOf(':') + 1);
+            searchView.setServerAddress(serverName, Integer.parseInt(serverPort), false);
         } catch (ConfigurationException e) {
             throw new InfrastructureException(e);
         } catch (SearchEngineException e) {
