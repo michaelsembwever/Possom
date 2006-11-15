@@ -391,8 +391,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private void performEnrichmentHandling(final Collection<Future<SearchResult>> results) throws InterruptedException, ExecutionException {
 
         Collections.sort(enrichments);
+        
+        final StringBuilder log = new StringBuilder();
 
-        PRODUCT_LOG.info("<enrichments mode=\"" + context.getSearchTab().getKey()
+        log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
                 + "\" size=\"" + enrichments.size() + "\">"
                 + "<query>" + queryStr + "</query>");
 
@@ -401,7 +403,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         /* Write product log and find webtv and tv enrichments */
         for(Enrichment e : enrichments){
-            PRODUCT_LOG.info("  <enrichment name=\"" + e.getName()
+            log.append("<enrichment name=\"" + e.getName()
                     + "\" score=\"" + e.getAnalysisResult() + "\"/>");
 
             /* Store reference to webtv and tv enrichments */
@@ -411,7 +413,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 tvEnrich = e;
             }
         }
-        PRODUCT_LOG.info("</enrichments>");
+        log.append("</enrichments>");
+        PRODUCT_LOG.info(log.toString());
 
 
         /* Update score and if necessary the enrichment name */

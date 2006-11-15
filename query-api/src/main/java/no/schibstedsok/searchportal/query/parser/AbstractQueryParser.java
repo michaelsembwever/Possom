@@ -8,28 +8,15 @@
 
 package no.schibstedsok.searchportal.query.parser;
 
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Stack;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.query.AndClause;
-import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
-import no.schibstedsok.searchportal.query.DoubleOperatorClause;
-import no.schibstedsok.searchportal.query.IntegerClause;
-import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.PhoneNumberClause;
-import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.QueryStringContext;
-import no.schibstedsok.searchportal.query.WordClause;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.parser.alt.RotationAlternation;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import org.apache.log4j.Logger;
 
 /** Abstract helper for implementing a QueryParser
