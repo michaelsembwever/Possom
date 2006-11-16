@@ -86,6 +86,7 @@ case "$RIG" in
         exit 1
         ;;
 esac
+export RIG_DOMAIN
 
 #  Update update-test.sh
 #
