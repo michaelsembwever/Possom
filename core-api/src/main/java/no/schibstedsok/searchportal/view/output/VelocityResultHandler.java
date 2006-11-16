@@ -3,7 +3,6 @@ package no.schibstedsok.searchportal.view.output;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Set;
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
@@ -36,11 +35,6 @@ import java.io.Writer;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
-import java.util.Properties;
-import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 
 /** Handles the populating the velocity contexts.
  * Strictly view domain.

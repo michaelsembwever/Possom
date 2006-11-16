@@ -18,5 +18,18 @@
         <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk/site-spi</url>
         <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/site-spi</developerConnection>
     </scm>
-
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>commons-ioc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+        </dependency>
+    </dependencies>
 </project>

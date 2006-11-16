@@ -18,5 +18,10 @@
         <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk/http-api</url>
         <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/http-api</developerConnection>
     </scm>
-
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+    </dependencies>
 </project>
