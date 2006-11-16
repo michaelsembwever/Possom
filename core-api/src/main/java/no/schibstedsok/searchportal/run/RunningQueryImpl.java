@@ -88,6 +88,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final Map<String,Integer> hits = new HashMap<String,Integer>();
     private final Map<String,Integer> scores = new HashMap<String,Integer>();
     private final Map<String,Integer> scoresByRule = new HashMap<String,Integer>();
+    private static final String PARAM_OUTPUT = "output";
 
     /**
      * Create a new Running Query instance.
@@ -213,10 +214,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             final Collection<Callable<SearchResult>> commands = new ArrayList<Callable<SearchResult>>();
 
+            final boolean isRss = parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).equals("rss");
+
             for (SearchConfiguration searchConfiguration : context.getSearchMode().getSearchConfigurations()) {
 
                 final SearchConfiguration config = searchConfiguration;
                 final String configName = config.getName();
+
+                // If output is rss, only run the one command that will produce the rss output.
+                if (!isRss || context.getSearchTab().getRssResultName().equals(configName)) {
+
                 hits.put(config.getName(), Integer.valueOf(0));
 
                 final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
@@ -284,7 +291,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                 }
             }
-
+            }
             ANALYSIS_LOG.info("</analyse>");
 
             LOG.info(INFO_COMMAND_COUNT + commands.size());
