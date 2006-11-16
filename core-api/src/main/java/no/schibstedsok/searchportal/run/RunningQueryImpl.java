@@ -224,73 +224,76 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 // If output is rss, only run the one command that will produce the rss output.
                 if (!isRss || context.getSearchTab().getRssResultName().equals(configName)) {
 
-                hits.put(config.getName(), Integer.valueOf(0));
+                    hits.put(config.getName(), Integer.valueOf(0));
 
-                final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
-                        SearchCommand.Context.class,
-                        context,
-                        new BaseContext() {
-                            public SearchConfiguration getSearchConfiguration() {
-                                return config;
+                    final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
+                            SearchCommand.Context.class,
+                            context,
+                            new BaseContext() {
+                                public SearchConfiguration getSearchConfiguration() {
+                                    return config;
+                                }
+
+                                public RunningQuery getRunningQuery() {
+                                    return RunningQueryImpl.this;
+                                }
+
+                                public Query getQuery() {
+                                    return queryObj;
+                                }
+
+                                public TokenEvaluationEngine getTokenEvaluationEngine() {
+                                    return engine;
+                                }
                             }
-                            public RunningQuery getRunningQuery() {
-                                return RunningQueryImpl.this;
-                            }
-                            public Query getQuery() {
-                                return queryObj;
-                            }
-                            public TokenEvaluationEngine getTokenEvaluationEngine(){
-                                return engine;
-                            }
-                        }
-                );
+                    );
 
-                final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
+                    final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
 
-                if(eHint != null && !queryObj.isBlank()){
+                    if (eHint != null && !queryObj.isBlank()) {
 
-                    final AnalysisRule rule = rules.getRule(eHint.getRule());
+                        final AnalysisRule rule = rules.getRule(eHint.getRule());
 
-                    if (context.getSearchMode().isAnalysis()
-                            && "0".equals(parameters.get("offset"))
-                            && eHint.getWeight() >0) {
+                        if (context.getSearchMode().isAnalysis()
+                                && "0".equals(parameters.get("offset"))
+                                && eHint.getWeight() > 0) {
 
-                        int score = 0;
+                            int score = 0;
 
-                        if(scoresByRule.get(eHint.getRule()) == null){
+                            if (scoresByRule.get(eHint.getRule()) == null) {
 
-                            ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
+                                ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
 
-                            score = rule.evaluate(queryObj, engine);
-                            scoresByRule.put(eHint.getRule(), score);
+                                score = rule.evaluate(queryObj, engine);
+                                scoresByRule.put(eHint.getRule(), score);
 
-                            LOG.info("Score for " + searchConfiguration.getName() + " is " + score);
+                                LOG.info("Score for " + searchConfiguration.getName() + " is " + score);
 
-                            if(score != 0){
-                                ANALYSIS_LOG.info("  <score>" + score + "</score>");
+                                if (score != 0) {
+                                    ANALYSIS_LOG.info("  <score>" + score + "</score>");
+                                }
+
+                                ANALYSIS_LOG.info(" </analysis>");
+
+                            } else {
+                                score = scoresByRule.get(eHint.getRule());
                             }
 
-                            ANALYSIS_LOG.info(" </analysis>");
+                            scores.put(config.getName(), score);
 
-                        }else{
-                            score = scoresByRule.get(eHint.getRule());
-                        }
+                            if (config.isAlwaysRun() || score >= eHint.getThreshold()) {
+                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
+                            }
 
-                        scores.put(config.getName(), score);
-
-                        if (config.isAlwaysRun() || score >= eHint.getThreshold()) {
+                        } else if (config.isAlwaysRun()) {
                             commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
 
-                    } else if (config.isAlwaysRun()) {
+                    } else {
+
                         commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                     }
-
-                } else {
-
-                    commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                 }
-            }
             }
             ANALYSIS_LOG.info("</analyse>");
 
