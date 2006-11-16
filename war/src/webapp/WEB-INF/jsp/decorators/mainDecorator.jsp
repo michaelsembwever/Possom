@@ -240,9 +240,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
          <% } %>
 
         </td>
-
-    	<%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
-	<%} else {%>
         <td class="cell_four" valign="top" width="225">
             <% if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") ) {%>
                 <decorator:getProperty property="page.ads"/>
@@ -256,7 +253,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.ads"/>
             <%}%>
         </td>
-	<%}%>
     </tr>
     <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
         <decorator:getProperty property="page.ads_floating"/>
