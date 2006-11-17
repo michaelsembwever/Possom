@@ -467,36 +467,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
                 }
             }
-
-            /* Run velocity result handler on the enrichment results */
-            if (tvResult != null && tvResult.getResults().size() > 0) {
-                final VelocityResultHandler vrh = new VelocityResultHandler();
-                final SearchResult cxtResult = tvResult;
-
-                final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
-                        ResultHandler.Context.class,
-                        new BaseContext(){
-                            public SearchResult getSearchResult() {
-                                return cxtResult;
-                            }
-
-                            public SearchTab getSearchTab(){
-                                return RunningQueryImpl.this.getSearchTab();
-                            }
-
-                            /** @deprecated implementations should be using the QueryContext instead! */
-                            public String getQueryString() {
-                                return queryObj.getQueryString();
-                            }
-
-                            public Query getQuery() {
-                                return queryObj;
-                            }
-                        },
-                        context
-                );
-                vrh.handleResult(resultHandlerContext, parameters);
-            }
         }
     }
 
