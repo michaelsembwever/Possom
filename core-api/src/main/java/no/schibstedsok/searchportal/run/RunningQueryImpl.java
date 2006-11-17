@@ -267,7 +267,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 score = rule.evaluate(queryObj, engine);
                                 scoresByRule.put(eHint.getRule(), score);
 
-                                LOG.info("Score for " + searchConfiguration.getName() + " is " + score);
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
+                                }
 
                                 if (score != 0) {
                                     ANALYSIS_LOG.info("  <score>" + score + "</score>");
