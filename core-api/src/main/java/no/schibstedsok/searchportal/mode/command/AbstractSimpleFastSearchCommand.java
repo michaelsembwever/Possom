@@ -305,9 +305,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         if (a != null) {
 
-            LOG.debug(navigator.getName());
-            LOG.debug(a);
-
             if (!(navigator.getName().equals("ywfylkesnavigator") && a.equals("Oslo"))) {
                 if (!(navigator.getName().equals("ywkommunenavigator") && a.equals("Oslo"))) {
                     links.add(navigator);
@@ -380,8 +377,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 
             }
 
-
-            LOG.info(DEBUG_QUERY_DUMP + fastQuery);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(DEBUG_QUERY_DUMP + fastQuery);
+            }
             
             final FastSearchResult searchResult = collectResults(result);
 
@@ -805,7 +803,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         
         IQuery query = new Query(params);
 
-        LOG.info(INFO_CONSTRUCTED_QUERY + query);
         return query;
     }
 

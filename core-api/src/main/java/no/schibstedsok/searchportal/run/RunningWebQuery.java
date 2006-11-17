@@ -40,7 +40,9 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
         super(cxt, query, new Hashtable<String,Object>());
 
-        LOG.trace("RunningWebQuery(mode, " + query + ", request, response)");
+        if (LOG.isTraceEnabled()) {
+            LOG.trace("RunningWebQuery(mode, " + query + ", request, response)");
+        }
 
         // Add all request parameters 
         /* SEE "Add all request attributes" below */
@@ -49,8 +51,8 @@ public final class RunningWebQuery extends RunningQueryImpl {
             final String[] parameterValues = request.getParameterValues(parameterName);
             addParameter(parameterName, parameterValues.length>1 ? parameterValues : parameterValues[0]);
 
-            if (LOG.isInfoEnabled()) {
-                LOG.info("Added " + parameterName + ", values: " + StringUtils.join(parameterValues, ", "));
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Added " + parameterName + ", values: " + StringUtils.join(parameterValues, ", "));
             }
         }
         
@@ -77,7 +79,9 @@ public final class RunningWebQuery extends RunningQueryImpl {
              * are overwritten with request attributes. this is a basic attempt to prevent parameter injection.
              */
             addParameter(attrName, request.getAttribute(attrName));
-            LOG.info("Added " + attrName + ", value: " + request.getAttribute(attrName));
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Added " + attrName + ", value: " + request.getAttribute(attrName));
+            }
         }
         
         this.request = request;
@@ -111,7 +115,9 @@ public final class RunningWebQuery extends RunningQueryImpl {
                 }else{
                     request.setAttribute(entry.getKey(), entry.getValue());
                 }
-                LOG.info("Added " + entry.getKey() + ", value: " + request.getAttribute(entry.getKey()));
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Added " + entry.getKey() + ", value: " + request.getAttribute(entry.getKey()));
+                }
             }
             // ...and...
             request.setAttribute("queryHTMLEscaped", StringEscapeUtils.escapeHtml(getQueryString()));
