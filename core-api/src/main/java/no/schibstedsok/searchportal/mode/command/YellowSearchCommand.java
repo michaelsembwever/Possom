@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 /**
  * TODO. Rewrite from scratch. This class is insane.
  */
-public class YellowSearchCommand extends AbstractSimpleFastSearchCommand {
+public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(YellowSearchCommand.class);
 
