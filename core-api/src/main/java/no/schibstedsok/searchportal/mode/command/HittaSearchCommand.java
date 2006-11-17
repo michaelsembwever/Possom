@@ -9,6 +9,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,6 +19,7 @@ import java.util.Set;
 import javax.xml.rpc.ServiceException;
 import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndNotClause;
+import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
@@ -48,10 +50,10 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
     private static final Collection<TokenPredicate> WHO_PREDICATES = Collections.unmodifiableCollection(
             Arrays.asList(
-            TokenPredicate.COMPANYENRICHMENT,
-            TokenPredicate.FIRSTNAME,
-            TokenPredicate.LASTNAME,
-            TokenPredicate.PHONENUMBER
+                TokenPredicate.COMPANYENRICHMENT,
+                TokenPredicate.FIRSTNAME,
+                TokenPredicate.LASTNAME,
+                TokenPredicate.PHONENUMBER
             ));
 
     private static final Logger LOG = Logger.getLogger(HittaSearchCommand.class);
@@ -204,14 +206,23 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             };
               
         }
-
-        protected void visitImpl(final LeafClause clause) {
-            
+        
+        private List<OperationClause> parentsOf(Clause clause){
             
             final Query query = context.getQuery();
+            
+            final List<OperationClause> parents = new ArrayList<OperationClause>();
+            
+            for(OperationClause oc : query.getParentFinder().getParents(query.getRootClause(), clause)){
+                parents.add(oc);
+                parents.addAll(parentsOf(oc));
+            }
+            return parents;
+        }
+
+        protected void visitImpl(final LeafClause clause) {
                 
-            final List<OperationClause> parents
-                        = query.getParentFinder().getParents(query.getRootClause(), clause);
+            final List<OperationClause> parents  = parentsOf(clause);
 
             boolean geo = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL)
                     || clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
@@ -228,7 +239,11 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
             isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.PHONENUMBER);
             
-            boolean isCompany = clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
+            // check if any possible parents of this clause match the company predicate.
+            boolean isCompany = false;
+            for(OperationClause oc : parents){
+                isCompany |= oc.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
+            }
 
             if(hasCompany || hasFullname){
 

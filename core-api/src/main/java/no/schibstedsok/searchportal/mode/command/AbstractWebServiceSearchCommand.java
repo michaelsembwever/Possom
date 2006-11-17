@@ -7,14 +7,8 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.List;
+
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.*;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
-import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
-import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 
 /**
  *

@@ -10,7 +10,6 @@ package no.schibstedsok.searchportal.query.finder;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
