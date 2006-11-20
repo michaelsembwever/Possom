@@ -104,14 +104,4 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
-
-    private boolean isEmptyLeaf(final Clause clause) {
-        if (clause instanceof LeafClause) {
-            final LeafClause leaf = (LeafClause) clause;
-            return leaf.getField() != null;
-        }
-
-        return false;
-    }
-
 }
