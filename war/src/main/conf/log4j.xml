@@ -168,7 +168,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     <logger name="org.apache"><level value="INFO"/></logger>
     
     <root>
-        <level value="INFO"/>
+        <level value="@log.level@"/>
         <appender-ref ref="ERROR_APPEND"/>
         <appender-ref ref="LOG_APPEND"/>
     </root>
