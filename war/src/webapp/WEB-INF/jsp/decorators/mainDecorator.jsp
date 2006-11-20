@@ -138,16 +138,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	    <decorator:getProperty property="page.search-bar"/>
 	<% } %>
 
-        <%-- temporary sesam.se header fix for pub system --%>        
-        <% if ( !"sv".equals(locale) ) { %>      
         <table border="0" cellspacing="0" cellpadding="0" id="body_table">
-        <% } else { %>
-            <%if (currentC.equals("d") && publish) {%>
-                <table width="100%" cellspacing="0" cellpadding="0" id="body_table">    
-            <% } else { %>
-                <table border="0" cellspacing="0" cellpadding="0" id="body_table">    
-            <% } %>
-        <% } %>
         <%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
             <tr>
         <%} else if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
@@ -193,13 +184,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
         <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
 	<%}else {%>
-            <% if ( !"sv".equals(locale) ) { %>        
-                <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
-                    <search:velocity template="fragments/middlebar" command="scanpix"/>
-                <% }else if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
-                <% }else { %>
-                    <decorator:getProperty property="page.middle-bar"/>
-                <% } %>
+            <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn")) {%>
+                <search:velocity template="fragments/middlebar" command="scanpix"/>
+            <% }else if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
             <% }else { %>
                 <decorator:getProperty property="page.middle-bar"/>
             <% } %>
@@ -213,16 +200,12 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <% } else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
         <% } else if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>
             <div>            
-                <% if ( !"sv".equals(locale) ) { %>
-                    <% if (currentC.equals("p")) {%>
-                        <decorator:getProperty property="page.picsearch-results"/>
-                    <% } else { %>
-                        <search:velocity template="results/scanpix" command="scanpix"/>
-                        <decorator:getProperty property="page.picsearch-results"/>
-                    <%}%>
-                <% } else { %>
+                <% if (currentC.equals("p")) {%>
                     <decorator:getProperty property="page.picsearch-results"/>
-                <% } %>
+                <% } else { %>
+                    <search:velocity template="results/scanpix" command="scanpix"/>
+                    <decorator:getProperty property="page.picsearch-results"/>
+                <%}%>
                 <div class="clearFloat">&nbsp;</div>
             </div>
         <% } else { %>
@@ -232,11 +215,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
         <%--  offset  --%>
         <%if (currentC.equals("pp")) {%>
-                <search:velocity template="fragments/offsetPager" command="scanpix"/>
+            <search:velocity template="fragments/offsetPager" command="scanpix"/>
         <% } else { %>
-            <% if ( !"sv".equals(locale) ) { %>
-                <decorator:getProperty property="page.offsetPager"/>
-            <% } %>            
+            <decorator:getProperty property="page.offsetPager"/>
          <% } %>
 
         </td>
@@ -257,21 +238,15 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
         <decorator:getProperty property="page.ads_floating"/>
     <% } %>
-    
-    <% if ( "sv".equals(locale) ) { %>
-        <tr>
-            <td>&nbsp;</td>
-            <td colspan="2"><decorator:getProperty property="page.offsetPager"/></td>
-        </tr>     
-     <% } %>    
+     
 </table>
     <decorator:getProperty property="page.verbosePager"/>
     <decorator:getProperty property="page.footer"/>
 <%}%>
 
+<decorator:getProperty property="page.map-script"/>
     </c:if>
 
-<decorator:getProperty property="page.map-script"/>
 <search:velocity template="fragments/gallup" />
 </body>
 </html>
