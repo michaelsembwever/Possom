@@ -127,8 +127,8 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
      */
     private boolean isEmptyLeaf(final Clause clause) {
         if (clause instanceof LeafClause) {
-            final LeafClause leaf = (LeafClause) clause;
-            return context.getSearchConfiguration().getFieldFilters().keySet().contains(leaf.getField());
+            final LeafClause leafClause = (LeafClause) clause;
+            return getFieldFilter(leafClause) != null || getTransformedTerm(clause).equals("");
         } else {
             return false;
         }
