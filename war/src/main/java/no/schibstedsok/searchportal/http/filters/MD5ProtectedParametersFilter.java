@@ -58,13 +58,15 @@ public final class MD5ProtectedParametersFilter implements Filter {
         while (e.hasMoreElements()) {
             final String parameterName = (String) e.nextElement();
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Checking to see if " + parameterName + " is protected");
+            if (LOG.isTraceEnabled()) {
+                LOG.trace("Checking to see if " + parameterName + " is protected");
             }
 
             if (protectedParameters.containsKey(parameterName)) {
 
-                LOG.debug(parameterName + " is protected");
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace(parameterName + " is protected");
+                }
 
                 final String md5_parameter = servletRequest.getParameter(parameterName + "_x");
 
