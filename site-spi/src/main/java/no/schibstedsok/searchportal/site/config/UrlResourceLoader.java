@@ -9,7 +9,7 @@
 package no.schibstedsok.searchportal.site.config;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -18,9 +18,6 @@ import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 /** Loads resources through URL references.
  *
@@ -31,10 +28,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
 
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
 
-    private static final String WARN_USING_FALLBACK = "Falling back to default version for resource ";
-    private static final String FATAL_RESOURCE_NOT_LOADED = "Resource not found ";
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
-    private static final String WARN_PARENT_SITE = "Parent site is: ";
 
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.
@@ -69,9 +63,9 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         dl.init(resource, builder);
         return dl;
     }
-
-    public static boolean urlExists(final String url) {
-
+    
+    public static boolean doesUrlExist(final String url){
+        
         boolean success = false;
         HttpURLConnection con = null;
         try {
@@ -91,6 +85,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
 
         } catch (IOException e) {
             LOG.warn( '[' + getURL(url) + "] " + url, e);
+            
         }  finally  {
             if (con != null) {
                 con.disconnect();
@@ -99,31 +94,11 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
 
         return success;
     }
-
-    /** {@inheritDoc}
-     */
-    private UrlResourceLoader(final SiteContext cxt) {
-        super(cxt);
-    }
-
-    /** {@inheritDoc}
-     */
-    protected String getResource() {
-
-        return "http://"
-                + getContext().getSite().getName()
-                + getContext().getSite().getConfigContext()
-                + "conf/"
-                + super.getResource();
-    }
-
-    private String getResource(final Site site) {
-        
-        return "http://"
-                + site.getName()
-                + site.getConfigContext()
-                + "conf/"
-                + super.getResource();
+    
+    public static String getURL(final String resource){
+                
+        return "http://localhost"+
+                resource.substring(resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
     }
     
     public static String getHostHeader(final String resource){
@@ -131,100 +106,54 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         return resource.substring(7,resource.indexOf('/',8));
     }
 
-    public static String getURL(final String resource){
-                
-        return "http://localhost"+
-                resource.substring(resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
-    }
-
     /** {@inheritDoc}
      */
-    public void run() {
-        if(props != null){
-            // Properties inherent through the fallback process. Keys are *not* overridden.
-
-            for(Site site = getContext().getSite(); site != null; site = site.getParent()){
-                loadResource(getResource(site));
-            }
-            
-        }else{
-            // Default behavour: only load first found resource
-            if (!loadResource(getResource())) {
-                Site site = getContext().getSite();
-                LOG.warn(WARN_USING_FALLBACK + getResource());
-                LOG.warn(WARN_PARENT_SITE + site.getParent());
-
-                do {
-                    if (loadResource(getResource(site))) {
-                        break;
-                    } else {
-                        site = site.getParent();
-                    }
-                } while (site != null);
-
-                if (site == null) {
-                    LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
-                }
-            }
-        }
+    private UrlResourceLoader(final SiteContext cxt) {
+        super(cxt);
     }
 
-    private boolean loadResource(final String resource) {
+    protected String getResource(final Site site) {
+        
+        return "http://"
+                + site.getName()
+                + site.getConfigContext()
+                + "conf/"
+                + getResource();
+    }
+   
+    public boolean urlExists(final String url) {
 
-        boolean success = false;
+        return doesUrlExist(url);
+    }
+    
+    protected String getHostHeaderFor(final String resource){
+        
+        return getHostHeader(resource);
+    }
 
-        if(urlExists(resource)){
+    protected String getUrlFor(final String resource){
+        
+        return getURL(resource);
+    }
 
-            try {
+    protected InputStream getInputStreamFor(String resource) {
+        
+        try {
+            final URLConnection urlConn = new URL(getUrlFor(resource)).openConnection();
 
-                final URLConnection urlConn = new URL(getURL(resource)).openConnection();
-                urlConn.addRequestProperty("host", getHostHeader(resource));
-
-
-                if (props != null) {
-                    // only add properties that don't already exist!
-                    // allows us to inherent back through the fallback process.
-                    final Properties newProps = new Properties();
-                    newProps.load(urlConn.getInputStream());
-                    
-                    
-                    for(Object p : newProps.keySet()){
-
-                        if(!props.containsKey(p)){
-                            final String prop = (String)p;
-                            props.setProperty(prop, newProps.getProperty(prop));
-                        }
-                    }
-                }
-                if (builder != null) {
-                    document = builder.parse(
-                            new InputSource(new InputStreamReader(urlConn.getInputStream())));
-                }
-
-                LOG.info("Read configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]");
-                success = true;
-
-            } catch (NullPointerException e) {
-                final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
-                LOG.warn(err, e);
-                //throw new ResourceLoadException(err, e);
-
-            } catch (IOException e) {
-                final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
-                LOG.warn(err, e);
-                //throw new ResourceLoadException(err, e);
-            } catch (SAXParseException e) {
-                final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]" +
-                        " at " + e.getLineNumber() + ":" + e.getColumnNumber();
-                LOG.warn(err, e);
-                throw new ResourceLoadException(err, e);
-            } catch (SAXException e) {
-                final String err = "When Reading Configuration from " + getURL(resource)+" ["+getHostHeader(resource)+"]";
-                LOG.warn(err, e);
-                throw new ResourceLoadException(err, e);
-            }
+            urlConn.addRequestProperty("host", getHostHeaderFor(resource));
+            return urlConn.getInputStream();
+            
+        }catch (IOException ex) {
+            throw new ResourceLoadException(ex.getMessage(), ex);
         }
-        return success;
+         
+        
+    }
+    
+    protected String readResourceDebug(final String resource){
+        
+        return "Read Configuration from " + getUrlFor(resource) + " [" + getHostHeaderFor(resource) + ']';
     }
 
 }

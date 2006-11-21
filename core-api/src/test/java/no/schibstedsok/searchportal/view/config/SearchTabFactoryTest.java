@@ -17,6 +17,7 @@ import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
@@ -105,8 +106,12 @@ public final class SearchTabFactoryTest extends AbstractFactoryTest {
             
             final Site site = Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), l);
             final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
-                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                    return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+                public PropertiesLoader newPropertiesLoader(
+                        final SiteContext siteCxt, 
+                        final String resource, 
+                        final Properties properties) {
+
+                    return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
                 }
                 public Site getSite() {
                     return site;
@@ -132,17 +137,24 @@ public final class SearchTabFactoryTest extends AbstractFactoryTest {
         LOG.trace("getModeFactory");
 
         final SearchTabFactory.Context cxt = new SearchTabFactory.Context(){
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+            public DocumentLoader newDocumentLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final DocumentBuilder builder) {
+                
+                return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public Site getSite()  {
                 return locale == null
-                        ? Site.DEFAULT
-                        : Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), locale);
+                        ? getTestingSite()
+                        : Site.valueOf(siteConstructorContext, getTestingSite().getName(), locale);
             }
             public SearchTabFactory getLeafSearchTabFactory(){
                 return null;

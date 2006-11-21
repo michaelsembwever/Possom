@@ -14,6 +14,7 @@ import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import org.testng.annotations.Test;
 
 /**
@@ -52,7 +53,7 @@ public final class FileResourcesSiteConfigurationTest extends TestCase {
     @Test
     public void testDefaultSiteGetProperties() {
 
-        final SiteConfiguration instance = valueOf(Site.DEFAULT);
+        final SiteConfiguration instance = valueOf(getTestingSite());
 
         final Properties result = instance.getProperties();
         assertNotNull(FAIL_CONFIG_NOT_FOUND, result);
@@ -72,10 +73,13 @@ public final class FileResourcesSiteConfigurationTest extends TestCase {
             public Site getSite()  {
                 return site;
             }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-
         });
         return stc;
     }

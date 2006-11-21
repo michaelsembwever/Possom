@@ -15,6 +15,7 @@ import java.util.Properties;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import org.testng.annotations.Test;
@@ -62,14 +63,22 @@ public class SearchModeTest extends TestCase {
                     ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                     .getTabByKey("d");
             }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
+            public DocumentLoader newDocumentLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final DocumentBuilder builder) {
+                
+                return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public Site getSite() {
-                return Site.DEFAULT;
+                return getTestingSite();
             }
             public SearchTabFactory getLeafSearchTabFactory(){
                 return null;
@@ -106,16 +115,22 @@ public class SearchModeTest extends TestCase {
                     ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                     .getTabByKey("d");
             }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this,resource, properties);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
+            public DocumentLoader newDocumentLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final DocumentBuilder builder) {
+                
+                return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-
             public Site getSite() {
-                return Site.DEFAULT;
+                return getTestingSite();
             }
             public SearchTabFactory getLeafSearchTabFactory(){
                 return null;

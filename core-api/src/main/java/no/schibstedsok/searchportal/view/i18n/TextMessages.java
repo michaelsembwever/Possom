@@ -68,8 +68,12 @@ public final class TextMessages {
             public Site getSite() {
                 return site;
             }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
 
         });
@@ -91,7 +95,8 @@ public final class TextMessages {
             loadKeys(cxt.getSite().getLocale());
 
             // import messages from site's preferred locale [will not override already loaded messages]
-            final String[] prefLocale = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
+            final String[] prefLocale 
+                    = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
                     .getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
 
 
@@ -139,7 +144,10 @@ public final class TextMessages {
     private void performLoadKeys(final Locale locale) {
 
         final PropertiesLoader loader
-                = context.newPropertiesLoader(MESSAGE_RESOURCE + "_" + locale.toString() + ".properties", keys);
+                = context.newPropertiesLoader(
+                context, 
+                MESSAGE_RESOURCE + "_" + locale.toString() + ".properties", 
+                keys);
         loader.abut();
         loader.getProperties();
     }

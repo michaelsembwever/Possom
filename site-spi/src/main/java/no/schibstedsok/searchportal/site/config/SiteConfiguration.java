@@ -49,7 +49,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
             LOG.trace("SiteConfiguration(cxt)");
             context = cxt;
 
-            context.newPropertiesLoader(Site.CONFIGURATION_FILE, properties).abut();
+            context.newPropertiesLoader(cxt, Site.CONFIGURATION_FILE, properties).abut();
 
             INSTANCES.put(context.getSite(), this);
         }finally{
@@ -66,7 +66,10 @@ public final class SiteConfiguration implements SiteKeyedFactory{
     /** TODO comment me. **/
     public String getProperty(final String key) {
         
-        return properties.getProperty(key);
+        //assert null != key : "Expecting a value for a null key!?";
+        final String result = properties.getProperty(key);
+        //assert null != result && key.length() > 0 : "Couldn't find " + key + " in " + properties;
+        return result;
     }
 
     /** Find the correct instance handling this Site.
@@ -103,7 +106,11 @@ public final class SiteConfiguration implements SiteKeyedFactory{
             public Site getSite() {
                 return site;
             }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
             }
         });
@@ -123,6 +130,10 @@ public final class SiteConfiguration implements SiteKeyedFactory{
     
     public boolean isSiteLocaleSupported(final Locale locale){
         
+        if( Site.DEFAULT.getName().equals(context.getSite().getName())){
+            // the DEFAULT site supports all Locales !
+            return true;
+        }
         final String supportedLocales = getProperty(SITE_LOCALE_SUPPORTED);
         if( null != supportedLocales ){
             final String[] locales = supportedLocales.split(",");

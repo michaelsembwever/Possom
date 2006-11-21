@@ -23,13 +23,12 @@ import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.config.DocumentContext;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesContext;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
+
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -43,7 +42,7 @@ import org.xml.sax.SAXException;
  * TODO would make sense to split this class into an Evaluator and a factory, similar to RegExpEvaluator.
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @author mick
+ * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
 public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTokenEvaluator {
@@ -133,12 +132,22 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                         public Site getSite(){
                             return parent;
                         }
-                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties props) {
-                            return UrlResourceLoader.newPropertiesLoader(this, resource, props);
-                        }
-                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                        }
+//                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties props) {
+//
+//                            return ProxyResourceLoaderFactory.newPropertiesLoader(
+//                                    cxt.newPropertiesLoader(resource, properties).getClass(), 
+//                                    this, 
+//                                    resource, 
+//                                    properties);
+//                        }
+//                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
+//
+//                            return ProxyResourceLoaderFactory.newDocumentLoader(
+//                                    cxt.newDocumentLoader(resource, builder).getClass(), 
+//                                    this, 
+//                                    resource, 
+//                                    builder);
+//                        }
                     },
                     cxt
                 ));
@@ -154,7 +163,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             final DocumentBuilder builder = factory.newDocumentBuilder();
-            final DocumentLoader loader = cxt.newDocumentLoader(VERYFAST_EVALUATOR_XMLFILE, builder);
+            final DocumentLoader loader = cxt.newDocumentLoader(cxt, VERYFAST_EVALUATOR_XMLFILE, builder);
             loader.abut();
             LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " started");
             final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);

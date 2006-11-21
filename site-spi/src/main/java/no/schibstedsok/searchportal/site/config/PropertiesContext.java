@@ -7,6 +7,7 @@ package no.schibstedsok.searchportal.site.config;
 
 import java.util.Properties;
 import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.searchportal.site.SiteContext;
 
 /** Defines the context for consumers of PropertiesLoaders.
  *
@@ -21,5 +22,5 @@ public interface PropertiesContext extends BaseContext {
      * @param properties the properties to hold the individual properties loaded.
      * @return the new PropertiesLoader to use.
      **/
-    PropertiesLoader newPropertiesLoader(String resource, Properties properties);
+    PropertiesLoader newPropertiesLoader(SiteContext siteCxt, String resource, Properties properties);
 }

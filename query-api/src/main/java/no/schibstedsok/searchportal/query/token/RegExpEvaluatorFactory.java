@@ -16,11 +16,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -46,7 +43,6 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
     private static final String ERR_MUST_USE_CONTEXT_CONSTRUCTOR = "Must use constructor that supplies a context!";
     private static final String ERR_DOC_BUILDER_CREATION
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
-    private static final String ERR_COULD_NOT_FIND_TOKEN_PREDICATE = "Failed to find TokenPredicate.";
 
     /** TODO comment me. **/
     static final int REG_EXP_OPTIONS = Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
@@ -86,7 +82,7 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             final DocumentBuilder builder = factory.newDocumentBuilder();
-            loader = context.newDocumentLoader(REGEXP_EVALUATOR_XMLFILE, builder);
+            loader = context.newDocumentLoader(cxt, REGEXP_EVALUATOR_XMLFILE, builder);
 
             INSTANCES.put(context.getSite(), this);
             init();
@@ -194,16 +190,27 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                         public Site getSite(){
                             return context.getSite().getParent();
                         }
-                        public PropertiesLoader newPropertiesLoader(
-                                final String resource,
-                                final Properties properties) {
-                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                        }
-                        public DocumentLoader newDocumentLoader(
-                                final String resource,
-                                final DocumentBuilder builder) {
-                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                        }
+//                        public PropertiesLoader newPropertiesLoader(
+//                                final String resource,
+//                                final Properties properties) {
+//                            
+//                            
+//                            return ProxyResourceLoaderFactory.newPropertiesLoader(
+//                                    context.newPropertiesLoader(resource, properties).getClass(), 
+//                                    this, 
+//                                    resource, 
+//                                    properties);
+//                        }
+//                        public DocumentLoader newDocumentLoader(
+//                                final String resource,
+//                                final DocumentBuilder builder) {
+//                            
+//                            return ProxyResourceLoaderFactory.newDocumentLoader(
+//                                    context.newDocumentLoader(resource, builder).getClass(), 
+//                                    this, 
+//                                    resource, 
+//                                    builder);
+//                        }
                     },
                     context
                 )).getEvaluator(token);

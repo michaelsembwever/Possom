@@ -25,6 +25,7 @@ import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.WordClause;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
@@ -55,20 +56,25 @@ public final class TestVisitor extends TestCase {
                     public String getQueryString() {
                         return queryStr;
                     }
-
                     public Properties getApplicationProperties() {
-                        return FileResourcesSiteConfigurationTest.valueOf(Site.DEFAULT).getProperties();
+                        return FileResourcesSiteConfigurationTest.valueOf(getTestingSite()).getProperties();
                     }
+                    public PropertiesLoader newPropertiesLoader(
+                            final SiteContext siteCxt, 
+                            final String resource, 
+                            final Properties properties) {
 
-                    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                        return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+                        return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
                     }
-                    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                        return FileResourceLoader.newDocumentLoader(this, resource, builder);
-                    }
+                    public DocumentLoader newDocumentLoader(
+                            final SiteContext siteCxt, 
+                            final String resource, 
+                            final DocumentBuilder builder) {
 
+                        return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+                    }
                     public Site getSite()  {
-                        return Site.DEFAULT;
+                        return getTestingSite();
                     }
                 });
 

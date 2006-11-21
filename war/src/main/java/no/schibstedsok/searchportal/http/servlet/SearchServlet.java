@@ -81,11 +81,19 @@ public final class SearchServlet extends HttpServlet {
         // BaseContext providing SiteContext and ResourceContext.
         //  We need it casted as a SiteContext for the ResourceContext code to be happy.
         final SiteContext genericCxt = new SiteContext(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+            public DocumentLoader newDocumentLoader(
+                    final SiteContext siteCxt,
+                    final String resource, 
+                    final DocumentBuilder builder) {
+                
+                return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public Site getSite() {
                 return site;

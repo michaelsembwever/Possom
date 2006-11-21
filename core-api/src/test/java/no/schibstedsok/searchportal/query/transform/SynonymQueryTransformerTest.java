@@ -8,21 +8,8 @@
 package no.schibstedsok.searchportal.query.transform;
 
 
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import javax.xml.parsers.DocumentBuilder;
-
-import no.schibstedsok.searchportal.TestCase;
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
-
-import no.schibstedsok.searchportal.mode.config.FileResourcesSiteConfigurationTest;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -32,18 +19,13 @@ import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.parser.ParseException;
-import no.schibstedsok.searchportal.query.parser.QueryParser;
-import no.schibstedsok.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineTestContext;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.searchportal.site.Site;
 
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;

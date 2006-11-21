@@ -8,8 +8,15 @@
 
 package no.schibstedsok.searchportal;
 
+import java.util.Locale;
+import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.Site.Context;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 
 /**
  * @version $Id$
@@ -38,6 +45,8 @@ public abstract class TestCase extends junit.framework.TestCase {
     }
 
     // Constructors --------------------------------------------------
+    
+    protected TestCase(){}
 
     /** Creates a new instance of TestCase */
     public TestCase(final String testName) {
@@ -69,6 +78,31 @@ public abstract class TestCase extends junit.framework.TestCase {
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
+    
+    protected Site.Context getSiteConstructingContext(){
+        
+        return new Context(){
+            public String getParentSiteName(final SiteContext siteContext){
+                // we have to do this manually instead of using SiteConfiguration,
+                //  because SiteConfiguration relies on the parent site that we haven't get initialised.
+                // That is, the PARENT_SITE_KEY property MUST be explicit in the site's configuration.properties.
+                final Properties props = new Properties();
+                final PropertiesLoader loader
+                        = FileResourceLoader.newPropertiesLoader(siteContext, Site.CONFIGURATION_FILE, props);
+                loader.abut();
+                return props.getProperty(Site.PARENT_SITE_KEY);
+            }
+        };
+    }
+    
+    protected Site getTestingSite(){
+        
+        final String basedir = System.getProperty("basedir").replaceAll("/war", "");
+        return Site.valueOf(
+                getSiteConstructingContext(),
+                basedir.substring(basedir.lastIndexOf('/')+1).replaceAll("/", ""),
+                Locale.getDefault());
+    }    
 
     // Private -------------------------------------------------------
     

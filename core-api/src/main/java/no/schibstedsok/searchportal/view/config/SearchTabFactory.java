@@ -122,7 +122,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             final DocumentBuilder builder = factory.newDocumentBuilder();
-            loader = context.newDocumentLoader(VIEWS_XMLFILE, builder);
+            loader = context.newDocumentLoader(cxt, VIEWS_XMLFILE, builder);
 
             // start initialisation
             init();

@@ -168,12 +168,20 @@ public final class YellowSearchResult extends FastSearchResult {
                 public Site getSite() {
                     return Site.DEFAULT; // FIXME !!! Needs to work on a per SiteSearch basis.
                 }
-                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                    return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+                public PropertiesLoader newPropertiesLoader(
+                        final SiteContext siteCxt, 
+                        final String resource, 
+                        final Properties properties) {
+                    
+                    return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
                 }
 
-                public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                    return UrlResourceLoader.newDocumentLoader(this, resource, builder);
+                public DocumentLoader newDocumentLoader(
+                        final SiteContext siteCxt, 
+                        final String resource,  
+                        final DocumentBuilder builder) {
+                    
+                    return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
                 }
 
                 public String getQueryString() {

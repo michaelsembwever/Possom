@@ -12,10 +12,12 @@ import no.schibstedsok.searchportal.result.SearchResult;
 
 import java.util.HashMap;
 import java.util.Properties;
+import no.schibstedsok.searchportal.TestCase;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 
@@ -24,7 +26,7 @@ import no.schibstedsok.searchportal.view.config.SearchTabFactory;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class MockupSearchCommand implements SearchCommand {
+public class MockupSearchCommand extends TestCase implements SearchCommand {
 
     private final RunningQuery.Context rqCxt = new RunningQuery.Context() {
 
@@ -38,14 +40,22 @@ public class MockupSearchCommand implements SearchCommand {
                 ContextWrapper.wrap(SearchTabFactory.Context.class, this))
                 .getTabByKey("d");
         }
-        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-            return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+        public PropertiesLoader newPropertiesLoader(
+                final SiteContext siteCxt, 
+                final String resource, 
+                final Properties properties) {
+
+            return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
         }
-        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-            return FileResourceLoader.newDocumentLoader(this, resource, builder);
+        public DocumentLoader newDocumentLoader(
+                final SiteContext siteCxt, 
+                final String resource, 
+                final DocumentBuilder builder) {
+
+            return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
         }
         public Site getSite() {
-            return Site.DEFAULT;
+            return getTestingSite();
         }
         public SearchTabFactory getLeafSearchTabFactory(){
             return null;

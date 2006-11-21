@@ -24,6 +24,7 @@ final class LocalEntityResolver implements EntityResolver {
             final String rsc = systemId.substring(systemId.lastIndexOf('/'));
             LOG.info(INFO_LOADING_DTD + rsc);
             return new InputSource(getClass().getResourceAsStream(rsc));
+            
         } else {
             // use the default behaviour
             return null;

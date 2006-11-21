@@ -136,8 +136,6 @@
                 <finalName>ROOT</finalName>
             </build>
             <properties>
-                <sesam.site.default>generic.localhost:8080</sesam.site.default>
-                <server.port>0</server.port><!-- Zero means use port from host-header. -->
                 <msearch.configuration.url>http://mobile:8080/mobile/conf/msearch-client.properties</msearch.configuration.url>
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
@@ -151,8 +149,6 @@
                 <finalName>ROOT.alpha</finalName>
             </build>
             <properties>
-                <sesam.site.default>generic.alpha.test.sesam.no</sesam.site.default>
-                <server.port>80</server.port>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
@@ -169,8 +165,6 @@
                 <finalName>ROOT.nuclei</finalName>
             </build>
             <properties>
-                <sesam.site.default>generic.nuclei.test.sesam.no</sesam.site.default>
-                <server.port>80</server.port>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
@@ -187,8 +181,6 @@
                 <finalName>ROOT.beta</finalName>
             </build>
             <properties>
-                <sesam.site.default>generic.beta.test.sesam.no</sesam.site.default>
-                <server.port>80</server.port>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
@@ -205,8 +197,6 @@
                 <finalName>ROOT.electron</finalName>
             </build>
             <properties>
-                <sesam.site.default>generic.electron.test.sesam.no</sesam.site.default>
-                <server.port>80</server.port>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
@@ -223,8 +213,6 @@
                 <finalName>ROOT.gamma</finalName>
             </build>
             <properties>
-                <sesam.site.default>generic.gamma.test.sesam.no</sesam.site.default>
-                <server.port>80</server.port>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <msearch.configuration.url>http://www.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
@@ -248,8 +236,6 @@
                 </repository>
             </distributionManagement>
             <properties>
-                <sesam.site.default>generic.searchdev.schibstedsok.no</sesam.site.default>
-                <server.port>80</server.port>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
                 <msearch.configuration.url>http://mobil.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>

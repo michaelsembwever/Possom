@@ -7,6 +7,7 @@ package no.schibstedsok.searchportal.site.config;
 
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.searchportal.site.SiteContext;
 
 /** Defines the context for consumers of DocumentLoaders.
  *
@@ -19,5 +20,5 @@ public interface DocumentContext extends BaseContext {
      * @param builder the DocumentBuilder to build the DOM resource with.
      * @return the new DocumentLoader to use.
      **/
-    DocumentLoader newDocumentLoader(String resource, DocumentBuilder builder);
+    DocumentLoader newDocumentLoader(SiteContext siteCxt, String resource, DocumentBuilder builder);
 }

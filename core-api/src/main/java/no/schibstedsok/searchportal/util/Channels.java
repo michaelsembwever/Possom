@@ -53,7 +53,7 @@ public class Channels {
 
     private void loadChannels() {
         final PropertiesLoader loader =
-                context.newPropertiesLoader(CHANNELS_RESOURCE, keys);
+                context.newPropertiesLoader(context, CHANNELS_RESOURCE, keys);
         loader.abut();
         loader.getProperties();
     }

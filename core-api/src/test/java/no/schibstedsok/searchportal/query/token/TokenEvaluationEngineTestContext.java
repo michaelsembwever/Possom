@@ -14,18 +14,20 @@ package no.schibstedsok.searchportal.query.token;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.TestCase;
 
 import no.schibstedsok.searchportal.mode.config.FileResourcesSiteConfigurationTest;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 
 /**
  *
  * @author mick
  */
-public final class TokenEvaluationEngineTestContext implements TokenEvaluationEngineImpl.Context{
+public final class TokenEvaluationEngineTestContext extends TestCase implements TokenEvaluationEngineImpl.Context{
 
     private final String query;
 
@@ -43,22 +45,27 @@ public final class TokenEvaluationEngineTestContext implements TokenEvaluationEn
 
     /** TODO comment me. **/
     public Properties getApplicationProperties() {
-        return FileResourcesSiteConfigurationTest.valueOf(Site.DEFAULT).getProperties();
+        return FileResourcesSiteConfigurationTest.valueOf(getTestingSite()).getProperties();
     }
 
-    /** TODO comment me. **/
-    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-        return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-    }
+    public PropertiesLoader newPropertiesLoader(
+            final SiteContext siteCxt, 
+            final String resource, 
+            final Properties properties) {
 
-    /** TODO comment me. **/
-    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-        return FileResourceLoader.newDocumentLoader(this, resource, builder);
+        return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+    }
+    public DocumentLoader newDocumentLoader(
+            final SiteContext siteCxt, 
+            final String resource, 
+            final DocumentBuilder builder) {
+
+        return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
     }
 
     /** TODO comment me. **/
     public Site getSite()  {
-        return Site.DEFAULT;
+        return getTestingSite();
     }
 
 }

@@ -10,10 +10,8 @@
 
 package no.schibstedsok.searchportal.site.config;
 
+
 import no.schibstedsok.searchportal.TestCase;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.site.Site.Context;
-import no.schibstedsok.searchportal.site.SiteContext;
 
 /**
  *
@@ -27,14 +25,5 @@ public abstract class AbstractFactoryTest extends TestCase {
         super(testName);
     }
 
-    
-    protected Site.Context getSiteConstructingContext(){
-        
-        return new Context(){
-            public String getParentSiteName(final SiteContext siteContext){
-                return Site.DEFAULT.getName();
-            }
-        };
-    }
     
 }

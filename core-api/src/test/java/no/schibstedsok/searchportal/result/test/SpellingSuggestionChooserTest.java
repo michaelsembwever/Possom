@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
@@ -258,16 +259,22 @@ public class SpellingSuggestionChooserTest extends TestCase {
             }
 
             public Site getSite() {
-                return Site.DEFAULT;
+                return getTestingSite();
             }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
+            public DocumentLoader newDocumentLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final DocumentBuilder builder) {
+                
+                return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-
             public String getQueryString() {
                 return result.getSearchCommand().getRunningQuery().getQueryString();
             }

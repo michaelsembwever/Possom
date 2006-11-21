@@ -69,6 +69,7 @@ public final class SiteLocatorFilter implements Filter {
         public String getParentSiteName(final SiteContext siteContext) {
             // we have to do this manually instead of using SiteConfiguration,
             //  because SiteConfiguration relies on the parent site that we haven't get initialised.
+            // That is, the PARENT_SITE_KEY property MUST be explicit in the site's configuration.properties.
             final Properties props = new Properties();
             final PropertiesLoader loader
                     = UrlResourceLoader.newPropertiesLoader(siteContext, Site.CONFIGURATION_FILE, props);
@@ -206,7 +207,7 @@ public final class SiteLocatorFilter implements Filter {
         
         final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
 
-        if (UrlResourceLoader.urlExists(url)) {
+        if (UrlResourceLoader.doesUrlExist(url)) {
             // return a relative url to ensure it can survice through an out-of-cluster server.
             return '/' + site.getConfigContext() + '/' + datedResource;
         } else if (site.getParent() != null) {
@@ -285,8 +286,12 @@ public final class SiteLocatorFilter implements Filter {
         final Locale locale = servletRequest.getLocale();
         final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
         final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public Site getSite() {
                 return result;

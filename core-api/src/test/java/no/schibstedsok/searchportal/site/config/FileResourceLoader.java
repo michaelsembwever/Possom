@@ -8,15 +8,21 @@
 
 package no.schibstedsok.searchportal.site.config;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /** Loads resource through ClassLoader resources.
  *
@@ -56,7 +62,7 @@ public final class FileResourceLoader extends AbstractResourceLoader {
             final DocumentBuilder builder) {
 
         final DocumentLoader dl = new FileResourceLoader(siteCxt);
-        builder.setEntityResolver(new LocalEntityResolver());
+        builder.setEntityResolver(new LocalTestEntityResolver());
         dl.init(resource, builder);
         return dl;
     }
@@ -67,41 +73,117 @@ public final class FileResourceLoader extends AbstractResourceLoader {
         super(cxt);
     }
 
-    /** {@inheritDoc}
-     */
-    protected String getResource() {
-        return System.getProperty("basedir") + "/target/classes/" + super.getResource();
+    public boolean urlExists(final String url) {
+        
+        try {
+            final URL u = new URL(getUrlFor(url));
+
+            return new File(u.toURI()).exists();
+            
+        }catch (URISyntaxException ex) {
+            LOG.error(ex.getMessage(), ex);
+            
+        }catch (MalformedURLException ex) {
+            LOG.error(ex.getMessage(), ex);
+            
+        }
+
+        return false;
+    }
+    
+    private String getProjectName(final String siteName){
+        
+        LOG.debug("getProjectName(" + siteName + ')');
+        // Very hacky.
+        String projectName = siteName.replaceAll("localhost", "sesam");
+        if( projectName.indexOf(':') > 0 ){
+            projectName = projectName.substring(0, projectName.indexOf(':'));
+        }
+        if( projectName.endsWith("sesam") && !"generic.sesam".equals(projectName) ){
+            projectName = projectName + ".no";
+        }
+        LOG.debug("result: " + projectName);
+        return projectName;
     }
 
-    /** {@inheritDoc}
-     */
-    public void run() {
-         try {
-            
-            if (props != null) {
-                props.load(new java.io.FileInputStream(getResource()));
-            }
-            if (builder != null) {
-                document = builder.parse(new InputSource(new java.io.FileReader(getResource())));
-            }
+    protected String getResource(final Site site) {
+        
+        LOG.debug("getResource(" + site + ')');
+        
+        try{
+            final String base = System.getProperty("basedir") // test jvm sets this property
+                    + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
+                    + getProjectName(site.getName());
 
-            LOG.info("Read configuration from " + getResource());
+            final File warFolder = new File(base + "/war");
 
-        } catch (NullPointerException e) {
-            final String err = "When Reading Configuration from " + getResource();
-            LOG.error(err, e);
-            throw new InfrastructureException(err, e);
+            final String result = new URI("file://"
+                    + base 
+                    + (warFolder.exists() && warFolder.isDirectory() ? "/war/target/classes/" : "/target/classes/")
+                    + getResource()).normalize().toString();
 
-        } catch (IOException e) {
-            final String err = "When Reading Configuration from " + getResource();
-            LOG.error(err, e);
-            throw new InfrastructureException(err, e);
+            LOG.debug("result: " + result);
+            return result;
+         
+        }catch (URISyntaxException ex) {
+            throw new ResourceLoadException(ex.getMessage(), ex);
+        } 
+    }
 
-        } catch (SAXException e) {
-            final String err = "When Reading Configuration from " + getResource();
-            LOG.error(err, e);
-            throw new InfrastructureException(err, e);
+    protected String getUrlFor(final String resource) {
+        
+//        LOG.debug("getUrlFor(" + resource + ')');
+//        final String result = "file://"
+//                + System.getProperty("basedir") // test jvm sets this property
+//                + "/target/classes/"
+//                + resource;
+//        LOG.debug("result: " + result);
+        return resource;
+    }
+
+    protected String getHostHeaderFor(final String resource) {
+        
+        return "localhost";
+    }
+
+    protected InputStream getInputStreamFor(String resource) {
+
+        try {
+            return new FileInputStream(resource.replaceFirst("file:", ""));
+        }catch (FileNotFoundException ex) {
+            throw new ResourceLoadException(ex.getMessage(), ex);
         }
     }
 
+    private static class LocalTestEntityResolver implements EntityResolver {
+
+        private static final Logger LOG = Logger.getLogger(LocalTestEntityResolver.class);
+        private static final String INFO_LOADING_DTD = "Loading local DTD ";
+
+
+        public InputSource resolveEntity(final String publicId, final String systemId) {
+
+            // the latter is only for development purposes when dtds have't been published to production yet
+            if (systemId.startsWith("http://sesam.no/dtds/") || systemId.startsWith("http://localhost")) {
+                
+                final String dtd = System.getProperty("basedir") // test jvm sets this property
+                    + (System.getProperty("basedir").endsWith("war") ? "/../../" : "/../")
+                    + "search-portal/war/src/webapp/dtds/" +
+                    systemId.substring(systemId.lastIndexOf('/'));
+
+                LOG.info(INFO_LOADING_DTD + dtd);
+                try{
+                    return new InputSource(new FileInputStream(dtd));
+                    
+                }catch (FileNotFoundException ex) {
+                    throw new ResourceLoadException(ex.getMessage(), ex);
+                }
+                
+            } else {
+                // use the default behaviour
+                return null;
+            }
+        }
+
+    }
 }

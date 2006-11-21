@@ -64,8 +64,6 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     private static final String DEBUG_CREATED_PREDICATE = "Parsed predicate ";
     private static final String DEBUG_STARTING_RULE = "Parsing rule ";
     private static final String DEBUG_FINISHED_RULE = "Parsed rule ";
-    private static final String DEBUG_PREDICATE_NOT_INHERITED =
-            "Predicate not inherited: ";
     
     private static final AnalysisRule DUMB_RULE = new AnalysisRule();
 
@@ -100,7 +98,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setValidating(false);
             final DocumentBuilder builder = factory.newDocumentBuilder();
-            loader = context.newDocumentLoader(ANALYSIS_RULES_XMLFILE, builder);
+            loader = context.newDocumentLoader(cxt, ANALYSIS_RULES_XMLFILE, builder);
 
             INSTANCES.put(context.getSite(), this);
         }finally{
@@ -168,18 +166,28 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                         public Site getSite() {
                             return context.getSite().getParent();
                         }
-                        public PropertiesLoader newPropertiesLoader(
-                                final String resource, 
-                                final Properties properties) {
-                            
-                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                        }
-                        public DocumentLoader newDocumentLoader(
-                                final String resource, 
-                                final DocumentBuilder builder) {
-                            
-                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                        }
+//                        public PropertiesLoader newPropertiesLoader(
+//                                final String resource, 
+//                                final Properties properties) {
+//                            
+//
+//                            return ProxyResourceLoaderFactory.newPropertiesLoader(
+//                                    context.newPropertiesLoader(resource, properties).getClass(), 
+//                                    this, 
+//                                    resource, 
+//                                    properties);
+//                        }
+//                        public DocumentLoader newDocumentLoader(
+//                                final String resource, 
+//                                final DocumentBuilder builder) {
+//                            
+//
+//                            return ProxyResourceLoaderFactory.newDocumentLoader(
+//                                    context.newDocumentLoader(resource, builder).getClass(), 
+//                                    this, 
+//                                    resource, 
+//                                    builder);
+//                        }
                     }, 
                     context));//</editor-fold>
         }

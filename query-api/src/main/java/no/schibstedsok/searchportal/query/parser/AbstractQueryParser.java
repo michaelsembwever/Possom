@@ -17,6 +17,7 @@ import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.parser.alt.RotationAlternation;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /** Abstract helper for implementing a QueryParser
@@ -88,11 +89,11 @@ public abstract class AbstractQueryParser implements QueryParser {
             }catch(ParseException pe){
                 LOG.warn(ERR_PARSING + queryStr, pe);
                 // also let product department know these queries are not working
-                PRODUCT_LOG.info("<invalid-query type=\"ParseException\">" + queryStr + "</invalid-query>");
+                PRODUCT_LOG.info("<invalid-query type=\"ParseException\">" + StringEscapeUtils.escapeXml(queryStr) + "</invalid-query>");
             } catch (TokenMgrError tme)  {
                 LOG.error(ERR_PARSING + queryStr, tme);
                 // also let product department know these queries are not working
-                PRODUCT_LOG.info("<invalid-query type=\"TokenMgrError\">" + queryStr + "</invalid-query>");
+                PRODUCT_LOG.info("<invalid-query type=\"TokenMgrError\">" + StringEscapeUtils.escapeXml(queryStr) + "</invalid-query>");
             }
 
             if( query == null ){

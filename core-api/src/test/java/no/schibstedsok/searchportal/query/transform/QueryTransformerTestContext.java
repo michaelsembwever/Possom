@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.TestCase;
 
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -25,12 +26,13 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineTestContext
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 
 /**
  *
  * @author mick
  */
-public final class QueryTransformerTestContext implements QueryTransformer.Context{
+public final class QueryTransformerTestContext extends TestCase implements QueryTransformer.Context{
 
     private final Query query;
     private final Map<Clause,String> transformedTerms;
@@ -69,7 +71,7 @@ public final class QueryTransformerTestContext implements QueryTransformer.Conte
     }
     /** TODO comment me. **/
     public Site getSite() {
-        return Site.DEFAULT;
+        return getTestingSite();
     }
 
     /** TODO comment me. **/
@@ -80,14 +82,19 @@ public final class QueryTransformerTestContext implements QueryTransformer.Conte
     public String getTransformedQuery() {
         return query.getQueryString();
     }
-    /** TODO comment me. **/
-    public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-        return FileResourceLoader.newPropertiesLoader(this, resource, properties);
-    }
+    public PropertiesLoader newPropertiesLoader(
+            final SiteContext siteCxt, 
+            final String resource, 
+            final Properties properties) {
 
-    /** TODO comment me. **/
-    public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-        return FileResourceLoader.newDocumentLoader(this, resource, builder);
+        return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+    }
+    public DocumentLoader newDocumentLoader(
+            final SiteContext siteCxt, 
+            final String resource, 
+            final DocumentBuilder builder) {
+
+        return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
     }
     /** TODO comment me. **/
     public TokenEvaluationEngine getTokenEvaluationEngine(){

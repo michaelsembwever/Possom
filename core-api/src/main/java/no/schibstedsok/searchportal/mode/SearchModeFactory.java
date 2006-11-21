@@ -203,7 +203,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        loader = context.newDocumentLoader(MODES_XMLFILE, builder);
+        loader = context.newDocumentLoader(cxt, MODES_XMLFILE, builder);
 
         // update the store of factories
         INSTANCES.put(context.getSite(), this);

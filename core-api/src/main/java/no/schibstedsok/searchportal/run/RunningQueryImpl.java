@@ -24,7 +24,6 @@ import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.searchportal.query.QueryStringContext;
-import no.schibstedsok.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.searchportal.query.token.ReportingTokenEvaluator;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
@@ -37,13 +36,13 @@ import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
+import no.schibstedsok.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.Enrichment;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -373,7 +372,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 if (!hitsToShow) {
                     PRODUCT_LOG.info("<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
-                            + "<query>" + queryStr + "</query></no-hits>");
+                            + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query></no-hits>");
     // FIXME: i do not know how to reset/clean the sitemesh's outputStream so
     //                  the result from the new RunningQuery are used.
     //                int sourceHits = 0;
@@ -408,7 +407,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
                 + "\" size=\"" + enrichments.size() + "\">"
-                + "<query>" + queryStr + "</query>");
+                + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query>");
 
         Enrichment tvEnrich = null;
         Enrichment webtvEnrich = null;

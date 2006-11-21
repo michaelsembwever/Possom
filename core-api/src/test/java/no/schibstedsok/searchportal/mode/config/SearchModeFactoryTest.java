@@ -12,13 +12,13 @@ import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
-import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.config.AbstractFactoryTest;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
@@ -35,8 +35,8 @@ public final class SearchModeFactoryTest extends AbstractFactoryTest {
         super(testName);
     }
 
-    /** TODO comment me. **/
     protected void setUp() throws Exception {
+        
     }
 
     /** TODO comment me. **/
@@ -57,17 +57,24 @@ public final class SearchModeFactoryTest extends AbstractFactoryTest {
         LOG.trace("getModeFactory");
 
         final SearchModeFactory.Context cxt = new SearchModeFactory.Context(){
-
-            public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                return FileResourceLoader.newDocumentLoader(this, resource, builder);
-            }
             public Site getSite()  {
                 return locale == null
-                        ? Site.DEFAULT
-                        : Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), locale);
+                        ? getTestingSite()
+                        : Site.valueOf(siteConstructorContext, getTestingSite().getName(), locale);
             }
-            public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final Properties properties) {
+                
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+            }
+            public DocumentLoader newDocumentLoader(
+                    final SiteContext siteCxt, 
+                    final String resource, 
+                    final DocumentBuilder builder) {
+                
+                return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
         };
 
@@ -110,10 +117,14 @@ public final class SearchModeFactoryTest extends AbstractFactoryTest {
         
         for(Locale l : Locale.getAvailableLocales()){
             
-            final Site site = Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), l);
+            final Site site = Site.valueOf(siteConstructorContext, getTestingSite().getName(), l);
             final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
-                public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                    return FileResourceLoader.newPropertiesLoader(this, resource, properties);
+                public PropertiesLoader newPropertiesLoader(
+                        final SiteContext siteCxt, 
+                        final String resource, 
+                        final Properties properties) {
+
+                    return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
                 }
                 public Site getSite() {
                     return site;

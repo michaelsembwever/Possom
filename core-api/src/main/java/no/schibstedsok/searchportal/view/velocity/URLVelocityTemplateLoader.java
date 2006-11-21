@@ -124,7 +124,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             final String url, final Site currentSite)
             throws IOException, ResourceNotFoundException {
 
-        if (UrlResourceLoader.urlExists(url)) {
+        if (UrlResourceLoader.doesUrlExist(url)) {
             return getURLConnection(url);
         } else {
             final Site parent = currentSite.getParent();
