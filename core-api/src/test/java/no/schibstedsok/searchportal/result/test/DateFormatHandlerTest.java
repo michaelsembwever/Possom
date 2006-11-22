@@ -1,15 +1,23 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
+import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.handler.DateFormatHandler;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
@@ -19,7 +27,7 @@ import org.testng.annotations.Test;
 /** Fast navigation tests.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision: 2859 $</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class DateFormatHandlerTest extends TestCase {
 
@@ -41,26 +49,46 @@ public final class DateFormatHandlerTest extends TestCase {
         
         final MockupSearchCommand command = new MockupSearchCommand();
         final BasicSearchResult bsr = new BasicSearchResult(command);
-        final ResultHandler.Context cxt = ContextWrapper.wrap(
-                ResultHandler.Context.class,
-                new BaseContext(){
-                    public SearchResult getSearchResult() {
-                        return bsr;
-                    }
+        final ResultHandler.Context cxt = new ResultHandler.Context() {
 
-                    public SearchTab getSearchTab() {
-                        return null;
-                    }
+            public SearchResult getSearchResult() {
+                return bsr;
+            }
 
-                    public String getQueryString() {
-                        return null;
-                    }
+            public SearchTab getSearchTab() {
+                return null;
+            }
 
-                    public Query getQuery() {
-                        return null;
-                    }
-                }
-        );
+            public String getQueryString() {
+                return null;
+            }
+
+            public Query getQuery() {
+                return null;
+            }
+
+            public void addSource(final Modifier modifier) {
+                command.getRunningQuery().addSource(modifier);
+            }
+
+            public Site getSite() {
+                return getTestingSite();
+            }
+
+            public DocumentLoader newDocumentLoader(final SiteContext siteCxt,
+                                                    final String resource,
+                                                    final DocumentBuilder builder) {
+                
+                return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+            }
+
+            public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
+                                                        final String resource,
+                                                        final Properties properties) {
+                
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+            }
+        };
         cxt.getSearchResult().addResult(createItem("2006-04-27T10:11:12Z"));
         return cxt;
     }

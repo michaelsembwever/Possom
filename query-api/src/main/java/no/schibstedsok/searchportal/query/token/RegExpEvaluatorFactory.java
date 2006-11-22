@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
 

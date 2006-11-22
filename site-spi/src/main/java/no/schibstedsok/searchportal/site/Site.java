@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.common.ioc.BaseContext;
 import org.apache.log4j.Logger;
 
@@ -32,7 +33,7 @@ public final class Site {
      * While a SiteContext is a context required to use a Site.
      **/
     public interface Context extends BaseContext{
-        /** TODO comment me. **/
+        /** Get the name of the parent site. **/
         String getParentSiteName(SiteContext siteContext);
     }
 
@@ -45,22 +46,17 @@ public final class Site {
     /** Found from the configuration.properties resource found in this class's ClassLoader. **/
     private static final String DEFAULT_SITE_KEY = "site.default";
     private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
-    /** TODO comment me. **/
+    /** Property key for site parent's name. **/
     public static final String PARENT_SITE_KEY = "site.parent";
     private static final String DEFAULT_SERVER_PORT_KEY = "server.port";
-    /** TODO comment me. **/
+    /** Property key for a site object. **/
     public static final String NAME_KEY = "site";
-    /** TODO comment me. **/
+    /** Name of the resource to find the PARENT_SITE_KEY property. **/
     public static final String CONFIGURATION_FILE = "configuration.properties";
     private static final String CORE_CONF_FILE = "core.properties";
 
-    /**
-     * No need to synchronise this. Worse that can happen is multiple identical INSTANCES are created at the same
-     * time. But only one will persist in the map.
-     *  There might be a reason to synchronise to avoid the multiple calls to the search-front-config context to obtain
-     * the resources to improve the performance. But I doubt this would gain much, if anything at all.
-     */
     private static final Map<String,Site> INSTANCES = new HashMap<String,Site>();
+    private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     private static volatile boolean constructingDefault = false;
 
@@ -91,35 +87,46 @@ public final class Site {
      */
     private Site(final Context cxt, final String theSiteName, final Locale theLocale) {
         
-        LOG.info("Site(cxt, " + theSiteName + ", " + theLocale + ')');
-        assert null != theSiteName;
-        assert null != theLocale;
         
-        // siteName must finish with a '\'
-        siteName = ensureTrailingSlash(theSiteName);
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            
+            LOG.info("Site(cxt, " + theSiteName + ", " + theLocale + ')');
+            assert null != theSiteName;
+            assert null != theLocale;
 
-        cxtName = siteName.indexOf(':') >= 0
-            ? siteName.substring(0, siteName.indexOf(':')) + '/' // don't include the port in the cxtName.
-            : siteName;
-        locale = theLocale;
-        uniqueName = getUniqueName(siteName, locale);
-        // register in global pool.
-        INSTANCES.put(uniqueName, this);
+            // siteName must finish with a '\'
+            siteName = ensureTrailingSlash(theSiteName);
 
-        final Site thisSite = this;
+            cxtName = siteName.indexOf(':') >= 0
+                ? siteName.substring(0, siteName.indexOf(':')) + '/' // don't include the port in the cxtName.
+                : siteName;
+            locale = theLocale;
+            uniqueName = getUniqueName(siteName, locale);
 
-        final SiteContext siteContext = new SiteContext() {
-            public Site getSite() {
-                return thisSite;
-            }
-        };
+            final Site thisSite = this;
+
+            final SiteContext siteContext = new SiteContext() {
+                public Site getSite() {
+                    return thisSite;
+                }
+            };
 
 
-        final String parentSiteName = null != cxt ? cxt.getParentSiteName(siteContext) : siteName;
+            final String parentSiteName = null != cxt ? cxt.getParentSiteName(siteContext) : siteName;
 
-        parent = null == parentSiteName || ensureTrailingSlash(parentSiteName).equals(siteName)
-            ? constructingDefault ? null : DEFAULT
-            : Site.valueOf(cxt, parentSiteName, theLocale);
+            parent = null == parentSiteName || ensureTrailingSlash(parentSiteName).equals(siteName)
+                ? constructingDefault ? null : DEFAULT
+                : Site.valueOf(cxt, parentSiteName, theLocale);
+
+            assert null != parent || constructingDefault : "Parent must exist for all Sites except the DEFAULT";
+            
+            // register in global pool.
+            INSTANCES.put(uniqueName, this);
+        
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
     }
 
 
@@ -178,6 +185,7 @@ public final class Site {
     /** {@inheritDoc}
      */
     public boolean equals(final Object obj) {
+        
         return obj instanceof Site
                 ? uniqueName.equals(((Site)obj).uniqueName)
                 : super.equals(obj);
@@ -198,6 +206,8 @@ public final class Site {
      */
     public static Site valueOf(final Context cxt, final String siteName, final Locale locale) {
 
+        Site site = null;
+        
         // Tweak the port is SERVER_PORT has been explicitly set.
         final String correctedPortSiteName = SERVER_PORT > 0 && siteName.indexOf(':') > 0
                 ? siteName.substring(0, siteName.indexOf(':') + 1) + SERVER_PORT
@@ -206,7 +216,16 @@ public final class Site {
         // Strip www. from siteName
         final String realSiteName = ensureTrailingSlash(correctedPortSiteName.replaceAll("www.", ""));
 
-        Site site = INSTANCES.get(getUniqueName(realSiteName,locale));
+        // Look for existing instances
+        try{
+            INSTANCES_LOCK.readLock().lock();
+            site = INSTANCES.get(getUniqueName(realSiteName,locale));
+            
+        }finally{
+            INSTANCES_LOCK.readLock().unlock();
+        }
+        
+        // construct a new instance
         if (null == site && null != cxt) {
             site = new Site(cxt, realSiteName, locale);
         }
@@ -250,10 +269,12 @@ public final class Site {
 
     /** TODO comment me. **/
     public static String getUniqueName(final String siteName, final Locale locale) {
+        
         return siteName + '[' + locale.getDisplayName() + ']';
     }
 
     private static String ensureTrailingSlash(final String theSiteName) {
+        
         return theSiteName.endsWith("/")
             ? theSiteName
             : theSiteName + '/';
