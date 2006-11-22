@@ -166,7 +166,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     
     <!-- These are here to avoid their DEBUG messages flooding our logfiles -->
     <logger name="org.apache"><level value="INFO"/></logger>
-    <logger name="httpclient.Wire"><level value="INFO"/></logger>
+    <logger name="httpclient.wire"><level value="INFO"/></logger>
 
     <root>
         <level value="@log.level@"/>
