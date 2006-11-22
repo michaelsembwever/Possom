@@ -11,6 +11,7 @@ package no.schibstedsok.searchportal.site.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Properties;
@@ -76,12 +77,17 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
             con.setInstanceFollowRedirects(false);
             con.setRequestMethod("HEAD");
             con.addRequestProperty("host", getHostHeader(url));
-            success = (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+            con.setConnectTimeout(1000);
+            con.setReadTimeout(1000);
+            success = HttpURLConnection.HTTP_OK == con.getResponseCode();
 
             LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + u + " is " + success);
 
         } catch (NullPointerException e) {
             LOG.debug( '[' + getURL(url) + "] " + url, e);
+
+        } catch (SocketTimeoutException ste) {
+            LOG.debug( '[' + getURL(url) + "] " + url + '\n' + ste);
 
         } catch (IOException e) {
             LOG.warn( '[' + getURL(url) + "] " + url, e);
