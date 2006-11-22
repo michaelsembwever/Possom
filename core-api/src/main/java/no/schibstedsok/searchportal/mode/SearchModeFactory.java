@@ -19,6 +19,7 @@ import no.schibstedsok.searchportal.mode.config.NewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.PicSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.PlatefoodPPCSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.PrisjaktSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.config.SensisSearchConfiguration;
@@ -353,7 +354,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         WEB_COMMAND(WebSearchConfiguration.class),
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
         DAILY_WORD_COMMAND(DailyWordConfiguration.class),
-        BLOG_COMMAND(BlogSearchConfiguration.class);
+        BLOG_COMMAND(BlogSearchConfiguration.class),
+        PRISJAKT_COMMAND(PrisjaktSearchConfiguration.class);
 
 
         private final Class<? extends SearchConfiguration> clazz;
@@ -522,6 +524,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "catalog", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "key", ParseType.String , commandE, "");
                 }
+                
+                if(sc instanceof PrisjaktSearchConfiguration){
+                	
+                
+                }
+                	
                 if(sc instanceof MathExpressionSearchConfiguration){
                     final MathExpressionSearchConfiguration msc = (MathExpressionSearchConfiguration) sc;
                 }
