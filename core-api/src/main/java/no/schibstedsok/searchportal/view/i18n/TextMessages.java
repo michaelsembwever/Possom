@@ -95,9 +95,15 @@ public final class TextMessages {
             loadKeys(cxt.getSite().getLocale());
 
             // import messages from site's preferred locale [will not override already loaded messages]
-            final String[] prefLocale 
-                    = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
-                    .getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
+            final SiteConfiguration siteConf 
+                    =  SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+            final String defaultLocale = siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT); 
+            
+            assert null != defaultLocale 
+                    : SiteConfiguration.SITE_LOCALE_DEFAULT + " null in " 
+                    + context.getSite() + ' ' + siteConf.getProperties();
+            
+            final String[] prefLocale = defaultLocale.split("_");
 
 
             switch(prefLocale.length){
@@ -149,7 +155,7 @@ public final class TextMessages {
                 MESSAGE_RESOURCE + "_" + locale.toString() + ".properties", 
                 keys);
         loader.abut();
-        loader.getProperties();
+        //loader.getProperties();
     }
 
 

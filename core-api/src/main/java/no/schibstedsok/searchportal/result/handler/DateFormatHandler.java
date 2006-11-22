@@ -1,8 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.Map;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
@@ -13,7 +12,7 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * 
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
  * @version 0.1
- * @vesrion $Revision$, $Author$, $Date$
+ * @vesrion $Id$
  */
 public class DateFormatHandler implements ResultHandler {
 

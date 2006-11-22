@@ -104,7 +104,7 @@ public final class SearchTabFactoryTest extends AbstractFactoryTest {
         for(Locale l : Locale.getAvailableLocales()){
             
             
-            final Site site = Site.valueOf(siteConstructorContext, Site.DEFAULT.getName(), l);
+            final Site site = Site.valueOf(siteConstructorContext, getTestingSite().getName(), l);
             final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
                 public PropertiesLoader newPropertiesLoader(
                         final SiteContext siteCxt, 

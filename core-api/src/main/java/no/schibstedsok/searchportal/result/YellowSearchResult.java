@@ -166,7 +166,7 @@ public final class YellowSearchResult extends FastSearchResult {
                 }
 
                 public Site getSite() {
-                    return Site.DEFAULT; // FIXME !!! Needs to work on a per SiteSearch basis.
+                    return Site.DEFAULT; // FIXME !!! Needs to work on a per Skin basis.
                 }
                 public PropertiesLoader newPropertiesLoader(
                         final SiteContext siteCxt, 

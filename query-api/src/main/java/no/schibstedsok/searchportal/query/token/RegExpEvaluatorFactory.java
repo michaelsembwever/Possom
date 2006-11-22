@@ -107,6 +107,9 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                 loader.abut();
                 LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " started");
                 final Document doc = loader.getDocument();
+                
+                assert null != doc : "No document loaded for " + context.getSite().getName();
+                
                 final Element root = doc.getDocumentElement();
                 final NodeList evaluators = root.getElementsByTagName("evaluator");
                 for (int i = 0; i < evaluators.getLength(); ++i) {

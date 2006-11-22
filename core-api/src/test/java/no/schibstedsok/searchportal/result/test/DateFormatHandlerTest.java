@@ -14,7 +14,6 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 
 import static no.schibstedsok.searchportal.result.handler.DateFormatHandler.Fields;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /** Fast navigation tests.
@@ -28,52 +27,55 @@ public final class DateFormatHandlerTest extends TestCase {
 
     private static final String SOURCE_FIELD = "source_field";
     private static final String FIELD_PREFIX = "prefix";
+    
+    private final DateFormatHandler rh;
 
     public DateFormatHandlerTest(String testName) {
         super(testName);
-    }	
-    
-    final MockupSearchCommand command = new MockupSearchCommand();
-    final BasicSearchResult bsr = new BasicSearchResult(command);
-    final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
-            ResultHandler.Context.class,
-            new BaseContext(){
-                public SearchResult getSearchResult() {
-                    return bsr;
-                }
-                
-                public SearchTab getSearchTab() {
-                    return null;
-                }
-                
-                public String getQueryString() {
-                    return null;
-                }
-                
-                public Query getQuery() {
-                    return null;
-                }
-            }
-    );
-    
-    DateFormatHandler rh = null;
-    
-    @BeforeClass
-    protected void setUp() throws Exception {
+        
         rh = new DateFormatHandler();
         rh.setSourceField(SOURCE_FIELD);
+    }	
+    
+    private ResultHandler.Context getResultHandlerContext(){
         
-        resultHandlerContext.getSearchResult().addResult(createItem("2006-04-27T10:11:12Z"));
+        final MockupSearchCommand command = new MockupSearchCommand();
+        final BasicSearchResult bsr = new BasicSearchResult(command);
+        final ResultHandler.Context cxt = ContextWrapper.wrap(
+                ResultHandler.Context.class,
+                new BaseContext(){
+                    public SearchResult getSearchResult() {
+                        return bsr;
+                    }
+
+                    public SearchTab getSearchTab() {
+                        return null;
+                    }
+
+                    public String getQueryString() {
+                        return null;
+                    }
+
+                    public Query getQuery() {
+                        return null;
+                    }
+                }
+        );
+        cxt.getSearchResult().addResult(createItem("2006-04-27T10:11:12Z"));
+        return cxt;
     }
 
     private BasicSearchResultItem createItem(String time) {
-        BasicSearchResultItem bsri = new BasicSearchResultItem();
+        
+        final BasicSearchResultItem bsri = new BasicSearchResultItem();
         bsri.addField(SOURCE_FIELD, time);
         return bsri;
     }
     
     @Test
     public void testOneWithoutPrefix() {
+        
+        final ResultHandler.Context resultHandlerContext = getResultHandlerContext();
         
         rh.handleResult(resultHandlerContext, null);
         
@@ -90,6 +92,9 @@ public final class DateFormatHandlerTest extends TestCase {
 
     @Test
     public void testOneWithPrefix() {
+        
+        final ResultHandler.Context resultHandlerContext = getResultHandlerContext();
+        
         rh.setFieldPrefix(FIELD_PREFIX);
         rh.handleResult(resultHandlerContext, null);
         

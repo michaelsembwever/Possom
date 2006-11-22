@@ -3,8 +3,6 @@
  *
  * Created on 16 February 2006, 19:52
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.run;
@@ -17,7 +15,6 @@ import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;

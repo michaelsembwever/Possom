@@ -116,7 +116,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 engine.setProperty("url.resource.loader.cache", "true");
                 engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
                 engine.setProperty(Site.NAME_KEY, site);
-                engine.setProperty("site.fallback", Site.DEFAULT);
+                //engine.setProperty("site.fallback", Site.DEFAULT);
                 engine.setProperty(PUBLISH_SYSTEM_URL, props.getProperty(PUBLISH_SYSTEM_URL));
                 engine.setProperty(PUBLISH_SYSTEM_HOST, props.getProperty(PUBLISH_SYSTEM_HOST));
                 engine.setProperty("input.encoding", "UTF-8");

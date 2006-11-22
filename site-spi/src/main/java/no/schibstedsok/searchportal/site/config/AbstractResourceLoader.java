@@ -44,8 +44,8 @@ abstract class AbstractResourceLoader
     private static final String DEBUG_POOL_COUNT = "Pool size: ";
 
     private final SiteContext context;
-    private volatile String resource;
-    private volatile Future future;
+    private String resource;
+    private Future future;
 
     /** the properties resource holder. **/
     protected Properties props;
@@ -159,8 +159,16 @@ abstract class AbstractResourceLoader
         if (future == null) {
             throw new IllegalStateException(ERR_NOT_INITIALISED);
         }
+        
         try {
+            
+            final long time = System.currentTimeMillis();
             future.get();
+            LOG.debug("abut() for " + getResource(context.getSite()) + '\n' 
+                    + "waited " + (System.currentTimeMillis() - time) + "ms\n"
+                    + "future: " + future + "; props:" + props + "; document:" + document);
+            
+
         } catch (InterruptedException ex) {
             LOG.error(ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD, ex);
         } catch (ExecutionException ex) {
@@ -173,11 +181,9 @@ abstract class AbstractResourceLoader
     public void run() {
         if(props != null){
             // Properties inherent through the fallback process. Keys are *not* overridden.
-
             for(Site site = getContext().getSite(); site != null; site = site.getParent()){
                 loadResource(getResource(site));
             }
-            
         }else{
             // Default behavour: only load first found resource
             Site site = getContext().getSite();
@@ -211,6 +217,7 @@ abstract class AbstractResourceLoader
             try {
 
                 if (props != null) {
+                    
                     // only add properties that don't already exist!
                     // allows us to inherent back through the fallback process.
                     final Properties newProps = new Properties();
@@ -225,6 +232,7 @@ abstract class AbstractResourceLoader
                             props.setProperty(prop, newProps.getProperty(prop));
                         }
                     }
+                    
                 }
                 if (builder != null) {
                     document = builder.parse( new InputSource(new InputStreamReader(is)) );
