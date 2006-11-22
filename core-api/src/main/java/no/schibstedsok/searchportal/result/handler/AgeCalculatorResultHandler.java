@@ -54,8 +54,8 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
 
                     final long age = System.currentTimeMillis() - stamp;
 
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Doctime is " + docTime);
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("Doctime is " + docTime);
                     }
 
                     final Long dateParts[] = new Long[3];
@@ -93,8 +93,8 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     } else{
                         ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
                     }
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Resulting age string is " + ageString);
+                    if (LOG.isTraceEnabled()) {
+                        LOG.trace("Resulting age string is " + ageString);
                     }         
 
                     if (stamp > 0) {
