@@ -356,7 +356,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
             hitCount = result.getHitCount();
 
-            LOG.info("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
+            if (LOG.isDebugEnabled()) {
+                LOG.debug("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
+            }
 
             return result;
 
