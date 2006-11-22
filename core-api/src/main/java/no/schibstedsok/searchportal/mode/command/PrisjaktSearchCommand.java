@@ -10,6 +10,8 @@ import java.util.Map;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 
+import nu.prisjakt.www.wsdl.Butik;
+import nu.prisjakt.www.wsdl.Kategori;
 import nu.prisjakt.www.wsdl.PrisjaktLocator;
 import nu.prisjakt.www.wsdl.PrisjaktPortType;
 import nu.prisjakt.www.wsdl.Resultat;
@@ -52,19 +54,28 @@ public class PrisjaktSearchCommand extends AbstractSearchCommand {
             final PrisjaktPortType port = service.getPrisjaktPort(new java.net.URL(SOAP_ENDPOINT));
 
             final Resultat prisjaktResult= port.getData(getTransformedQuery());
-
+            String query = getTransformedQuery();
+            result.addField("searchquery", query);
             Produkt[] products = prisjaktResult.getProdukter();
-
+            Butik[] butiker = prisjaktResult.getButiker();
+            Kategori[] kategorier = prisjaktResult.getKategorier();
+            
             result.setHitCount(products.length);
-
+            /*
+             * FIXME: Ta bort hårdkodningen för söktyp
+             */
+            result.addField("searchtype", "productsearch");
+            
             LOG.debug("Number of results " + result.getHitCount());
-
-            for (final Produkt product : products) {
-                final SearchResultItem item = new BasicSearchResultItem();
-                item.addField("productName", product.getProduktnamn());
-
-                result.addResult(item);
+            
+            /*
+             * FIXME: Ta bort hårdkodning för söktyp
+             */
+            if(products!=null)
+            {
+            	productConverter(result, products);
             }
+            
 
             return result;
         } catch (ServiceException e) {
@@ -75,4 +86,24 @@ public class PrisjaktSearchCommand extends AbstractSearchCommand {
             throw new InfrastructureException(e);
         }
     }
+
+    
+    private void productConverter(SearchResult result, Produkt [] products)
+    {
+    	for (final Produkt product : products) {
+            final SearchResultItem item = new BasicSearchResultItem();
+            item.addField("productName", product.getProduktnamn());
+            item.addField("categorieName", product.getKategorinamn());
+            item.addField("lowestPrice", Integer.toString(product.getLagstaPris()));
+            item.addField("numberofStores", Integer.toString(product.getAntalButiker()));
+            /* &st=4 tillägget gör att vi får en liten bild ifrån prisjakt*/
+            item.addField("pruductPicture", product.getBild()+"&st=4");
+            item.addField("categorieURL", product.getKategoriurl());
+            item.addField("pruductURL", product.getUrl());
+            result.addResult(item);
+        }
+    }
+    
+    
+
 }
