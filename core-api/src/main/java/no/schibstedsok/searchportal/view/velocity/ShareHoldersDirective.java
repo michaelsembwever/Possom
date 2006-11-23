@@ -1,23 +1,31 @@
 package no.schibstedsok.searchportal.view.velocity;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.apache.log4j.Logger;
+import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.directive.Directive;
 import org.apache.velocity.runtime.parser.node.Node;
-import org.apache.velocity.context.InternalContextAdapter;
-import org.apache.velocity.exception.ParseErrorException;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Directive to display share holder information in the yellowInfopage.vm. The
@@ -43,258 +51,300 @@ import org.dom4j.Element;
  * 
  */
 public class ShareHoldersDirective extends Directive {
-	/** Logger */
-	private static Logger log = Logger.getLogger(ShareHoldersDirective.class);
+    /** Logger */
+    private static Logger log = Logger.getLogger(ShareHoldersDirective.class);
 
-	// Constants -----------------------------------------------------
-	/** Title Name */
-	static final String MSG_NAME_SHAREHOLDER_TITLE = "Aksjonærer";
+    // Constants -----------------------------------------------------
+ 
+    /** Title Name */
+    static final String MSG_NAME_SHAREHOLDER_TITLE = "Aksjonærer";
 
-	/** Th Name */
-	static final String MSG_NAME = "Navn";
+    /** Th Name */
+    static final String MSG_NAME = "Navn";
 
-	/** Th number of shares */
-	static final String MSG_NUMB_OF_SHARES = "Antall aksjer";
+    /** Th number of shares */
+    static final String MSG_NUMB_OF_SHARES = "Antall aksjer";
 
-	/** Th shares in percent */
-	static final String MSG_SHARES_IN_PERCENT = "Andel i %";
+    /** Th shares in percent */
+    static final String MSG_SHARES_IN_PERCENT = "Andel i %";
 
-	
-	// Attributes -------------------------------------------------------
-	/** Table Background colors, switch between white and gray */
-	public enum TableBgColor {
-		GRAY, WHITE
-	}
+    // Attributes -------------------------------------------------------
+  
+    /** Table Background colors, switch between white and gray */
+    public enum TableBgColor {
+        GRAY, WHITE
+    }
 
-	/** The first row in the shareholders table is color white */
-	private TableBgColor tableBgColor = TableBgColor.WHITE;
+    /** The first row in the shareholders table is color white */
+    private TableBgColor tableBgColor = TableBgColor.WHITE;
 
-	/** Html elements used for building up the table */
-	static final String HTML_DIV = "div";
+    /** Html elements used for building up the table */
+    static final String HTML_DIV = "div";
 
-	/** Table Tag */
-	static final String HTML_TABLE = "table";
+    /** Table Tag */
+    static final String HTML_TABLE = "table";
 
-	/** Tr Tag */
-	static final String HTML_TR = "tr";
+    /** Tr Tag */
+    static final String HTML_TR = "tr";
 
-	/** Th Tag */
-	static final String HTML_TH = "th";
+    /** Th Tag */
+    static final String HTML_TH = "th";
 
-	/** Td Tag */
-	static final String HTML_TD = "td";
+    /** Td Tag */
+    static final String HTML_TD = "td";
 
-	/** Html Class */
-	static final String HTML_CLASS = "class";
+    /** Html Class */
+    static final String HTML_CLASS = "class";
 
-	/** Not supported by IE ? Equivalent to the css attribute border-spacing */
-	static final String HTML_CELLSPACING = "cellspacing";
+    /** Not supported by IE ? Equivalent to the css attribute border-spacing */
+    static final String HTML_CELLSPACING = "cellspacing";
 
-	/**
-	 * This is the information we get from the field 'yproller' aboute
-	 * shareholders.
-	 */
-	private class ShareHolder 
-	{
-		/** Name of the shareHolder field #1 */
-		String name;
-		/** Id so we can link to WhitePages */
-		String id; 
-		/** Stocks in percent, field #2 */
-		String sharesInPercent;
-		/** Number of stocks, field #2 */
-		String numberOfShares;
-	}
+    /**
+     * This is the information we get from the field 'yproller' aboute
+     * shareholders.
+     */
+    private class ShareHolder {
+        /** Name of the shareHolder field #1 */
+        String name;
+
+        /** Id so we can link to WhitePages */
+        String id;
+
+        /** Stocks in percent, field #2 */
+        String sharesInPercent;
+
+        /** Number of stocks, field #2 */
+        String numberOfShares;
+    }
 
     // Public --------------------------------------------------------
 
-	/**
-	 * Name of Directive
-	 * 
-	 * @return directive name
-	 */
-	public String getName() 
-	{
-		return "shareHolders";
-	}
+    /**
+     * Name of Directive
+     * 
+     * @return directive name
+     */
+    public String getName() {
+        return "shareHolders";
+    }
 
-	/**
-	 * Type of Directive
-	 * 
-	 * @return type as int value
-	 */
-	public int getType() 
-	{
-		return LINE;
-	}
+    /**
+     * Type of Directive
+     * 
+     * @return type as int value
+     */
+    public int getType() {
+        return LINE;
+    }
 
-	/**
-	 * Render content (non-Javadoc)
-	 * 
-	 * @see org.apache.velocity.runtime.directive.Directive#render(org.apache.velocity.context.InternalContextAdapter,
-	 *      java.io.Writer, org.apache.velocity.runtime.parser.node.Node)
-	 */
-	public boolean render(InternalContextAdapter ica, Writer writer, Node node)
-			throws IOException, ResourceNotFoundException, ParseErrorException,
-			MethodInvocationException 
-	{
-        if (node.jjtGetNumChildren() != 1) 
-        {
+    /**
+     * Render content 
+     * 
+     * @see org.apache.velocity.runtime.directive.Directive#render(org.apache.velocity.context.InternalContextAdapter,
+     *      java.io.Writer, org.apache.velocity.runtime.parser.node.Node)
+     */
+    public boolean render(InternalContextAdapter ica, Writer writer, Node node)
+            throws IOException, ResourceNotFoundException, ParseErrorException,
+            MethodInvocationException {
+
+        if (node.jjtGetNumChildren() != 1) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
         // The text string from datafield which all the roledata is stored
         String ypRoles = node.jjtGetChild(0).value(ica).toString();
 
-        /*
-        ypRoles = "#aksjonaer0##sepnl#\n " +  
-        "#bold#Navn#sep#Eierandel i %#sep#Antall aksjer#sepnl#\n" +
-        "STENSENTERET AS#id#2703596#sep#50#sep#100#sepnl#\n" +  
-        "ARILD C. GUSTAVSEN#id##sep#25#sep#50#sepnl#\n" +
-        "INGER A. O. GUSTAVSEN#id##sep#25#sep#50#sepnl#";
-        	*/
+        return internalRender(ypRoles, writer, node);
+    }
 
-        List<ShareHolder> shareHolders = parse(ypRoles);
+    // Private --------------------------------------------------------
 
-        if(shareHolders.size() == 0 )
-        {
-        		return true;
+    // -- Inerntal Render
+    private boolean internalRender(String shareHoldersRaw, Writer writer,
+            Node node) throws IOException {
+
+        List<ShareHolder> shareHolders = parse(shareHoldersRaw);
+
+        if (hasShareHolders(shareHolders)) {
+            return true;
         }
-		Document content = internalRender(parse(ypRoles));
+        Document root = createDocument();
+        Element header = root.createElement(HTML_DIV);
+        header.setAttribute(HTML_CLASS, "tabs_header");
+        header.appendChild(root.createTextNode(MSG_NAME_SHAREHOLDER_TITLE));
+        root.appendChild(header);
+        internalWriteDocument(root, writer);
+        writer.write("\n");
+        // Write the parsed shareholders information
+        Document content = createDocumentFromShareHolders(shareHolders);
+        internalWriteDocument(content, writer);
+        return true;
+    }
 
-		// If we found shareHolders then print header.
-		Document root = DocumentHelper.createDocument();
-		Element header = root.addElement(HTML_DIV).addAttribute(HTML_CLASS,
-				"tabs_header");
-		header.addText(MSG_NAME_SHAREHOLDER_TITLE);
-		writer.write(stripXmlHeader(header.asXML()));
-		writer.write("\n");
-		writer.write(stripXmlHeader(content.asXML()));
-		return true;
-	}
+    // -- Check if we should print header and stuff
+    private boolean hasShareHolders(List<ShareHolder> shareHolders) {
+        return shareHolders.size() > 0;
+    }
 
-	/*
-	 * internal render content
-	 */
-	private Document internalRender(List<ShareHolder> shareHolders) {
+    // -- Thransform objects into xml document
+    private Document createDocumentFromShareHolders(
+            List<ShareHolder> shareHolders) {
+        Document doc = createDocument();
 
-		Document document = DocumentHelper.createDocument();
-		Element div = document.addElement(HTML_DIV);
-		Element table = div.addElement(HTML_TABLE);
-		table.addAttribute(HTML_CLASS, "roletable").
-		      addAttribute("cellspacing", "1");
+        Element root = doc.createElement(HTML_DIV);
+        Element table = doc.createElement(HTML_TABLE);
+        table.setAttribute(HTML_CLASS, "roletable");
+        table.setAttribute("cellspacing", "1");
+        root.appendChild(table);
 
-		Element tr1 = table.addElement(HTML_TR);
-		tr1.addElement(HTML_TH).addAttribute(HTML_CLASS, "sh_left").
-	 	   addText(MSG_NAME);
-		tr1.addElement(HTML_TH).addAttribute(HTML_CLASS, "sh_middle").
-		   addText(MSG_NUMB_OF_SHARES);
-		tr1.addElement(HTML_TH).addAttribute(HTML_CLASS, "sh_right").
-		   addText(MSG_SHARES_IN_PERCENT);
+        Element trH = doc.createElement(HTML_TR);
 
-		// Body goes here
-		table.addAttribute(HTML_CLASS, "roletable").
-		      addAttribute("cellspacing","1");
+        Element th = doc.createElement(HTML_TH);
+        th.setAttribute(HTML_CLASS, "sh_left");
+        th.appendChild(doc.createTextNode(MSG_NAME));
+        trH.appendChild(th);
 
-		for (ShareHolder sh : shareHolders) 
-		{
-			Element tr = table.addElement(HTML_TR);
-			addTd(tr, "sh_left").addText(sh.name);
-			addTd(tr, "sh_middle").addText(sh.numberOfShares);
-			addTd(tr, "sh_right").addText(sh.sharesInPercent);
+        th = doc.createElement(HTML_TH);
+        th.setAttribute(HTML_CLASS, "sh_middle");
+        th.appendChild(doc.createTextNode(MSG_NUMB_OF_SHARES));
+        trH.appendChild(th);
 
-			switchBgColor();
-		}
-		return document;
-	}
+        th = doc.createElement(HTML_TH);
+        th.setAttribute(HTML_CLASS, "sh_right");
+        th.appendChild(doc.createTextNode(MSG_SHARES_IN_PERCENT));
+        trH.appendChild(th);
 
-	/** 
-	 * Strip away the xml header generated by dom4j
-	 * 
-	 * @param xml to be striped
-	 * @return xml without header
-	 */
-	public String stripXmlHeader(String xml) 
-	{
-		return xml.replace("<?xml version=\"1.0\" encoding=\"UTF-8\"?>", "");
-	}
+        table.appendChild(trH);
 
-	/**
-	 * Switch color
-	 */
-	private void switchBgColor() 
-	{
-		if (tableBgColor == TableBgColor.WHITE) 
-		{
-			tableBgColor = TableBgColor.GRAY;
-		}
-		else 
-		{
-			tableBgColor = TableBgColor.WHITE;
-		}
-	}
+        // Loop through all the shareholders and add them to the table
+        for (ShareHolder sh : shareHolders) {
+            Element tr = doc.createElement(HTML_TR);
+            addTd(doc, tr, "sh_left").appendChild(doc.createTextNode(sh.name));
+            addTd(doc, tr, "sh_middle").appendChild(
+                    doc.createTextNode(sh.numberOfShares));
+            addTd(doc, tr, "sh_right").appendChild(
+                    doc.createTextNode(sh.sharesInPercent));
+            table.appendChild(tr);
+            // Hover the td background color(white/gray)
+            switchBgColor();
+        }
+        doc.appendChild(root);
+        return doc;
+    }
+    
+    // -- Switch bg color
+    private void switchBgColor() {
+        if (tableBgColor == TableBgColor.WHITE) {
+            tableBgColor = TableBgColor.GRAY;
+        } else {
+            tableBgColor = TableBgColor.WHITE;
+        }
+    }
+    
+    // -- Add td to table row
+    private Element addTd(Document doc, Element tableRow, String cssClass) {
 
-	/*
-	 * Add a HTML_TD element to a HTML_TR element and add td attributes.
-	 */
-	private Element addTd(Element tableRow, String cssClass) 
-	{
+        if (tableBgColor == TableBgColor.WHITE) {
+            Element td = doc.createElement(HTML_TD);
+            td.setAttribute(HTML_CLASS, cssClass);
+            tableRow.appendChild(td);
+            return td;
+        } else {
+            Element td = doc.createElement(HTML_TD);
+            td.setAttribute(HTML_CLASS, cssClass + " hover_on");
+            tableRow.appendChild(td);
+            return td;
+        }
+    }
 
-		if (tableBgColor == TableBgColor.WHITE) 
-		{
-			return tableRow.addElement(HTML_TD).addAttribute(HTML_CLASS,
-					cssClass);
-		}
-		else
-		{
-			return tableRow.addElement(HTML_TD).addAttribute(HTML_CLASS,
-					cssClass + " hover_on");
-		}
-	}
-	
-	List<ShareHolder> parse(String content) {
-	
-		List<ShareHolder> shareHolders = new ArrayList();
-		boolean isShareHoldersStarted = false;
-		boolean isShareHolderRow = false;
+    // -- Parse the the inpurt , using old school seperators like #sep#
+    List<ShareHolder> parse(String content) {
+        List<ShareHolder> shareHolders = new ArrayList();
+        boolean isShareHoldersStarted = false;
+        boolean isShareHolderRow = false;
+        
+        // Return empty list
+        if (content == null) {
+            return shareHolders;
+        }
+        if ("".equals(content.trim())) {
+            return shareHolders;
+        }
+        String row[] = content.split("#sepnl#");
 
-			// Check input
-		if(content == null) {
-			return shareHolders;
-		}
-		if("".equals(content.trim())) {
-			return shareHolders;
-		}
-		
-		String row[] = content.split("#sepnl#");
+        for (String s : content.split("#sepnl#")) {
+            s = s.trim();
+            if (isShareHolderRow) {
+                String tmp[] = s.split("#sep#");
 
-		for(String s : content.split("#sepnl#")) 
-		{
-			s= s.trim();
-			if(isShareHolderRow) {
-				String tmp[] = s.split("#sep#");
-			
-				if(tmp.length == 3) {
-					ShareHolder sh = new ShareHolder();
-					String tmp2[] = tmp[0].split("#id#");
-					sh.name = tmp2[0];
-					if(tmp2.length==2){
-						sh.id = tmp2[1];
-					}
-					sh.sharesInPercent = tmp[1];
-					sh.numberOfShares = tmp[2];
-					shareHolders.add(sh);
-				}
-			}
-			if(s.startsWith("#aksjonaer")) 
-			{
-				isShareHoldersStarted = true;
-			}
-			if(s.startsWith("#bold#Navn#sep") && isShareHoldersStarted) 
-			{
-				isShareHolderRow = true;
-			}
-		}
-		return shareHolders;
-	}
+                if (tmp.length == 3) {
+                    ShareHolder sh = new ShareHolder();
+                    String tmp2[] = tmp[0].split("#id#");
+                    sh.name = tmp2[0];
+                    if (tmp2.length == 2) {
+                        sh.id = tmp2[1];
+                    }
+                    sh.sharesInPercent = tmp[1];
+                    sh.numberOfShares = tmp[2];
+                    shareHolders.add(sh);
+                }
+            }
+            if (s.startsWith("#aksjonaer")) {
+                isShareHoldersStarted = true;
+            }
+            if (s.startsWith("#bold#Navn#sep") && isShareHoldersStarted) {
+                isShareHolderRow = true;
+            }
+        }
+        return shareHolders;
+    }
+
+    // -- Write the document to the writer
+    private void internalWriteDocument(Document d, Writer w) {
+        DOMSource source = new DOMSource(d);
+        StreamResult result = new StreamResult(new OutputStreamWriter(
+                System.out));
+
+        TransformerFactory factory = TransformerFactory.newInstance();
+        Transformer transformer;
+        try {
+            transformer = factory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
+                    "yes");
+            transformer.transform(source, result);
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException("Xml Parser: " + e);
+        } catch (TransformerException ignore) {
+        }
+    }
+
+    // -- Create a DOM document
+    private Document createDocument() {
+        DocumentBuilderFactory docFactory = DocumentBuilderFactory
+                .newInstance();
+        DocumentBuilder builder = null;
+        try {
+            builder = docFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+
+        Document doc = builder.newDocument();
+        return doc;
+    }
+
+    /*
+    public static void main(String[] argv) throws TransformerException,
+            ResourceNotFoundException, ParseErrorException,
+            MethodInvocationException, IOException {
+        String shareHolders = "#aksjonaer0##sepnl#\n "
+                + "#bold#Navn#sep#Eierandel i %#sep#Antall aksjer#sepnl#\n"
+                + "STENSENTERET AS#id#2703596#sep#50#sep#100#sepnl#\n"
+                + "ARILD C. GUSTAVSEN#id##sep#25#sep#50#sepnl#\n"
+                + "INGER A. O. GUSTAVSEN#id##sep#25#sep#50#sepnl#";
+
+        new ShareHoldersDirective().internalRender(shareHolders,
+                new OutputStreamWriter(System.out), null);
+    }
+    */
 }
