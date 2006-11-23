@@ -29,6 +29,9 @@ public final class RolesDirective extends Directive {
     private static final Logger LOG = Logger.getLogger(RolesDirective.class);
 
 
+    
+    private static int LAST_ROW = 30;
+    
     private static final String NAME = "roles";
 
     /**
@@ -73,14 +76,18 @@ public final class RolesDirective extends Directive {
             final Node node)
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
 
+
+        
         if (node.jjtGetNumChildren() != 2) {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
 
         // The text string from datafield which all the roledata is stored
-        final String s = node.jjtGetChild(0).value(context).toString();
+        final String raw = node.jjtGetChild(0).value(context).toString();
 
+        String s = preprocessInput(raw);
+        
         // Yellow or Person page (used for linking)
         final String page = node.jjtGetChild(1).value(context).toString();
 
@@ -101,23 +108,26 @@ public final class RolesDirective extends Directive {
 
         html = "<div><table class=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
 
+        
         // print rows
         for (int i = 0; i < row.length; i++) {
+
             html += "<tr>";
 
             // show 30 first rows
-            if (i==30) {
+            if (i==LAST_ROW) {
                 html += "</tr></table></div><div id=\"more_roles\" style=\"display: none;\"><table class=\"roletable\" bgcolor=\"#CCCCCC\" cellspacing=\"1\">";
             }
             // column seperator
             col = row[i].split("#sep#");
-
+            
             // print columns
             for (int k = 0; k < col.length; k++) {
 
                 if (k==1) {
                     // recordid seperator
                     name = StringUtils.substringBefore(col[1], "#id#");
+                    
                     recordid = StringUtils.substringAfter(col[1], "#id#").trim();
                     if (recordid.equals(""))
                         text = name;
@@ -171,8 +181,21 @@ public final class RolesDirective extends Directive {
         if (lastToken.image.endsWith("\n")) {
             writer.write("\n");
         }
-
         return true;
     }
-
+    
+    
+    /**
+     * Process input so the result contains "roles" only. That way we dont have 
+     * to rewrite the beutiful parsing implementation :-)
+     * 
+     * @param rawInput
+     * @return rawInput containing roles only
+     */
+    protected String preprocessInput(String rawInput) {
+        String rawSplit[] = rawInput.split("#aksjonaer0#");
+        String rolesRaw = rawSplit[0];
+        rolesRaw = rolesRaw.replace("#roller0#", ""); 
+        return rolesRaw;
+    }
 }
