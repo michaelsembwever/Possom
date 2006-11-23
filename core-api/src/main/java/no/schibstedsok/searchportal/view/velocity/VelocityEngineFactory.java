@@ -60,6 +60,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.PublishDirective,"
             + "no.schibstedsok.searchportal.view.velocity.AccountingDirective,"
             + "no.schibstedsok.searchportal.view.velocity.RolesDirective,"
+            + "no.schibstedsok.searchportal.view.velocity.ShareHoldersDirective,"
             + "no.schibstedsok.searchportal.view.velocity.XmlEscapeDirective,"
             + "no.schibstedsok.searchportal.view.velocity.WikiDirective,"
             + "no.schibstedsok.searchportal.view.velocity.UpperCaseDirective,"
