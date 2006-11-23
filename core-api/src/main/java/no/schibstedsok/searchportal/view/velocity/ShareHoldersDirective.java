@@ -164,10 +164,11 @@ public class ShareHoldersDirective extends Directive {
             Node node) throws IOException {
 
         List<ShareHolder> shareHolders = parse(shareHoldersRaw);
-
-        if (hasShareHolders(shareHolders)) {
+        
+        if (!hasShareHolders(shareHolders)) {
             return true;
         }
+        
         Document root = createDocument();
         Element header = root.createElement(HTML_DIV);
         header.setAttribute(HTML_CLASS, "tabs_header");
@@ -176,7 +177,7 @@ public class ShareHoldersDirective extends Directive {
         internalWriteDocument(root, writer);
         writer.write("\n");
         // Write the parsed shareholders information
-        Document content = createDocumentFromShareHolders(shareHolders);
+        Document content = createXmlDocumentFromShareHolders(shareHolders);
         internalWriteDocument(content, writer);
         return true;
     }
@@ -187,7 +188,7 @@ public class ShareHoldersDirective extends Directive {
     }
 
     // -- Thransform objects into xml document
-    private Document createDocumentFromShareHolders(
+    private Document createXmlDocumentFromShareHolders(
             List<ShareHolder> shareHolders) {
         Document doc = createDocument();
 
@@ -219,21 +220,21 @@ public class ShareHoldersDirective extends Directive {
         // Loop through all the shareholders and add them to the table
         for (ShareHolder sh : shareHolders) {
             Element tr = doc.createElement(HTML_TR);
-            addTd(doc, tr, "sh_left").appendChild(doc.createTextNode(sh.name));
-            addTd(doc, tr, "sh_middle").appendChild(
+            addTdToTr(doc, tr, "sh_left").appendChild(doc.createTextNode(sh.name));
+            addTdToTr(doc, tr, "sh_middle").appendChild(
                     doc.createTextNode(sh.numberOfShares));
-            addTd(doc, tr, "sh_right").appendChild(
+            addTdToTr(doc, tr, "sh_right").appendChild(
                     doc.createTextNode(sh.sharesInPercent));
             table.appendChild(tr);
             // Hover the td background color(white/gray)
-            switchBgColor();
+            switchTdBgColor();
         }
         doc.appendChild(root);
         return doc;
     }
     
     // -- Switch bg color
-    private void switchBgColor() {
+    private void switchTdBgColor() {
         if (tableBgColor == TableBgColor.WHITE) {
             tableBgColor = TableBgColor.GRAY;
         } else {
@@ -242,17 +243,16 @@ public class ShareHoldersDirective extends Directive {
     }
     
     // -- Add td to table row
-    private Element addTd(Document doc, Element tableRow, String cssClass) {
-
+    private Element addTdToTr(Document doc, Element tr, String cssClass) {
         if (tableBgColor == TableBgColor.WHITE) {
             Element td = doc.createElement(HTML_TD);
             td.setAttribute(HTML_CLASS, cssClass);
-            tableRow.appendChild(td);
+            tr.appendChild(td);
             return td;
         } else {
             Element td = doc.createElement(HTML_TD);
             td.setAttribute(HTML_CLASS, cssClass + " hover_on");
-            tableRow.appendChild(td);
+            tr.appendChild(td);
             return td;
         }
     }
@@ -270,10 +270,11 @@ public class ShareHoldersDirective extends Directive {
         if ("".equals(content.trim())) {
             return shareHolders;
         }
-        String row[] = content.split("#sepnl#");
 
         for (String s : content.split("#sepnl#")) {
             s = s.trim();
+            log.debug("Parsing " + s);
+
             if (isShareHolderRow) {
                 String tmp[] = s.split("#sep#");
 
@@ -289,12 +290,18 @@ public class ShareHoldersDirective extends Directive {
                     shareHolders.add(sh);
                 }
             }
-            if (s.startsWith("#aksjonaer")) {
+            if(s.startsWith("#")){
+                isShareHoldersStarted = false;
+                isShareHolderRow = false;
+            }
+            if (s.startsWith("#aksjonaer0#")) {
                 isShareHoldersStarted = true;
+                isShareHolderRow = true;
             }
             if (s.startsWith("#bold#Navn#sep") && isShareHoldersStarted) {
                 isShareHolderRow = true;
             }
+            
         }
         return shareHolders;
     }
@@ -302,8 +309,7 @@ public class ShareHoldersDirective extends Directive {
     // -- Write the document to the writer
     private void internalWriteDocument(Document d, Writer w) {
         DOMSource source = new DOMSource(d);
-        StreamResult result = new StreamResult(new OutputStreamWriter(
-                System.out));
+        StreamResult result = new StreamResult(w);
 
         TransformerFactory factory = TransformerFactory.newInstance();
         Transformer transformer;
@@ -328,23 +334,7 @@ public class ShareHoldersDirective extends Directive {
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
-
         Document doc = builder.newDocument();
         return doc;
     }
-
-    /*
-    public static void main(String[] argv) throws TransformerException,
-            ResourceNotFoundException, ParseErrorException,
-            MethodInvocationException, IOException {
-        String shareHolders = "#aksjonaer0##sepnl#\n "
-                + "#bold#Navn#sep#Eierandel i %#sep#Antall aksjer#sepnl#\n"
-                + "STENSENTERET AS#id#2703596#sep#50#sep#100#sepnl#\n"
-                + "ARILD C. GUSTAVSEN#id##sep#25#sep#50#sepnl#\n"
-                + "INGER A. O. GUSTAVSEN#id##sep#25#sep#50#sepnl#";
-
-        new ShareHoldersDirective().internalRender(shareHolders,
-                new OutputStreamWriter(System.out), null);
-    }
-    */
 }
