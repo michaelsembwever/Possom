@@ -89,7 +89,7 @@ public final class VelocityResultHandler implements ResultHandler {
         final Site fallbackSite = (Site) engine.getProperty("site.fallback");
         // site
         context.put(Site.NAME_KEY, site);
-        context.put("fallbackSite", fallbackSite);
+        //context.put("fallbackSite", fallbackSite);
         context.put("locale", site.getLocale());
         // publishing system
         context.put(PUBLISH_URL, engine.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL));
