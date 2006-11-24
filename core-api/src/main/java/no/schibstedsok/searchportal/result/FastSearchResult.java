@@ -31,6 +31,10 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         return ((FastSearchCommand) getSearchCommand()).getNavigatedTo(navigatorName);
     }
 
+    public Map<String,Navigator> getNavigatedTo() {
+        return ((FastSearchCommand) getSearchCommand()).getNavigatedTo();
+    }
+    
     public void addModifier(final String navigatorName, final Modifier modifier) {
 
         List modifiers;
@@ -46,8 +50,8 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
     }
 
 
-    public List getModifiers(final String navigatorName) {
-        return (List) navigators.get(navigatorName);
+    public List<Modifier> getModifiers(final String navigatorName) {
+        return (List<Modifier>) navigators.get(navigatorName);
     }
 
     public Modifier getModifier(final String navigatorName, final String modifierName) {
