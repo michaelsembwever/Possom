@@ -64,10 +64,11 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.XmlEscapeDirective,"
             + "no.schibstedsok.searchportal.view.velocity.WikiDirective,"
             + "no.schibstedsok.searchportal.view.velocity.UpperCaseDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.WeekdayDirective,"
+            + "no.schibstedsok.searchportal.view.velocity.WeekdayDirective," 
             + "no.schibstedsok.searchportal.view.velocity.MD5ParameterDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.FinnImgLinkDirective," 
+            + "no.schibstedsok.searchportal.view.velocity.FinnImgLinkDirective,"  
             + "no.schibstedsok.searchportal.view.velocity.TopDomainDirective,"
+            + "no.schibstedsok.searchportal.view.velocity.DateFormattingDirective,"
             + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective";
 
     private final VelocityEngine engine;
