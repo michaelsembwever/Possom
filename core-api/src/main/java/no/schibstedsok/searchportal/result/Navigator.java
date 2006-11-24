@@ -15,12 +15,19 @@ public final class Navigator implements Serializable {
     private String field;
     private Navigator childNavigator;
     private String displayName;
-
+    private Sort sort;
+    
+    public enum Sort {
+        COUNT(),
+        CHANNEL();
+    }
+    
     /** TODO comment me. **/
-    public Navigator(final String name, final String field, final String displayName) {
+    public Navigator(final String name, final String field, final String displayName, final Sort sort) {
         this.name = name;
         this.field = field;
         this.displayName = displayName;
+        this.sort = sort;
     }
 
     /** TODO comment me. **/
@@ -72,6 +79,15 @@ public final class Navigator implements Serializable {
         this.displayName = displayName;
     }
 
+    /**
+     * Get navigator sort by enum.
+     *
+     * @return sort enum.
+     */
+    public final Sort getSort() {
+        return this.sort;
+    }
+    
     /**
      * Holds value of property id.
      */
