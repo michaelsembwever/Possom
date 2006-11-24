@@ -346,7 +346,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("newscountry") && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("wt");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
-
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t");
             executeQuery |= null != filter && filter.length() > 0;
             LOG.debug("executeQuery==" + executeQuery
                     + " ; queryToUse:" + queryToUse

@@ -28,6 +28,7 @@ import no.schibstedsok.searchportal.mode.config.StaticSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.StockSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.StormWeatherSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.TvWaitSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.WebSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.WhiteSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
@@ -347,6 +348,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         STOCK_COMMAND(StockSearchConfiguration.class),
         STORMWEATHER_COMMAND(StormWeatherSearchConfiguration.class),
         TVSEARCH_COMMAND(TvSearchConfiguration.class),
+        TVWAITSEARCH_COMMAND(TvWaitSearchConfiguration.class),
         YAHOO_IDP_COMMAND(YahooIdpSearchConfiguration.class),
         YAHOO_MEDIA_COMMAND(YahooMediaSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
@@ -672,6 +674,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     tssc.setResultsToFetch(Integer.parseInt(commandE.getAttribute("results-to-fetch")));
 
                 }
+                
+                if (sc instanceof TvWaitSearchConfiguration) {
+                    final TvWaitSearchConfiguration twsc = (TvWaitSearchConfiguration) sc;
+                    fillBeanProperty(twsc, inherit, "index", ParseType.Int, commandE, "0");
+                    fillBeanProperty(twsc, inherit, "waitOn", ParseType.String, commandE, null);
+                }
+                
                 if (sc instanceof BlogSearchConfiguration) {
                     final BlogSearchConfiguration bsc = (BlogSearchConfiguration) sc;
                 }
@@ -777,11 +786,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final Element navE = (Element)child;
                     final String id = navE.getAttribute("id");
                     final String name = navE.getAttribute("name");
+                    final String sortAttr = navE.getAttribute("sort") != null && navE.getAttribute("sort").length() > 0 
+                            ? navE.getAttribute("sort").toUpperCase() : "COUNT";
                     LOG.info(INFO_PARSING_NAVIGATOR + id + " [" + name + "]");
+                    final Navigator.Sort sort = Navigator.Sort.valueOf(sortAttr);
+
                     final Navigator nav = new Navigator(
                             name,
                             navE.getAttribute("field"),
-                            navE.getAttribute("display-name"));
+                            navE.getAttribute("display-name"),
+                            sort);
                     nav.setId(id);
                     final Collection<Navigator> childNavigators = parseNavigators(navE);
                     if(childNavigators.size() > 1){

@@ -36,7 +36,6 @@ import no.fast.ds.search.IQueryResult;
 import no.fast.ds.search.IQueryTransformation;
 import no.fast.ds.search.IQueryTransformations;
 import no.fast.ds.search.ISearchParameters;
-import no.fast.ds.search.NoSuchParameterException;
 import no.fast.ds.search.Query;
 import no.fast.ds.search.SearchEngineException;
 import no.fast.ds.search.SearchParameter;
@@ -47,21 +46,17 @@ import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.XorClause;
-
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.view.spell.RelevantQuery;
-
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.util.Channels;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -183,7 +178,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             return null;
         }
     }
-
+    
     /** TODO comment me. **/
     public Navigator getParentNavigator(final String navigatorKey, final String name) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
@@ -325,7 +320,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return links;
     }
 
-
+    
     // Z implementation ----------------------------------------------
 
     // SearchCommand overrides ----------------------------------------------
@@ -869,7 +864,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     }
 
-    private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
+    protected void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
 
         final Navigator nav = (Navigator) navigatedTo.get(navigatorKey);
 
@@ -886,7 +881,19 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             }
 
             if (searchResult.getModifiers(navigatorKey) != null) {
-                Collections.sort(searchResult.getModifiers(navigatorKey));
+                LOG.error("Navigator sort order: " + nav.getSort().name());
+                switch (nav.getSort()) {
+                    case CHANNEL:
+                        final Channels channels = (Channels) getParameters().get("channels");
+                        Collections.sort(searchResult.getModifiers(navigatorKey), channels.getComparator());
+                        break;
+                    case COUNT:
+                        /* Fall through */
+                    default:
+                        Collections.sort(searchResult.getModifiers(navigatorKey));
+                        break;
+                }
+                
             }
 
         } 
