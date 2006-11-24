@@ -8,7 +8,6 @@
 
 package no.schibstedsok.searchportal.run;
 
-import no.schibstedsok.searchportal.mode.config.SearchMode;
 import org.apache.log4j.Logger;
 
 /**

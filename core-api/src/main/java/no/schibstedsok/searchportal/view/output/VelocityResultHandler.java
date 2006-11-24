@@ -35,6 +35,7 @@ import java.io.Writer;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
+import java.util.Properties;
 
 /** Handles the populating the velocity contexts.
  * Strictly view domain.
@@ -84,20 +85,14 @@ public final class VelocityResultHandler implements ResultHandler {
     }
 
     public static VelocityContext newContextInstance(final VelocityEngine engine){
+        
         final VelocityContext context = new VelocityContext();
         final Site site = (Site) engine.getProperty(Site.NAME_KEY);
-        final Site fallbackSite = (Site) engine.getProperty("site.fallback");
+        
         // site
         context.put(Site.NAME_KEY, site);
-        //context.put("fallbackSite", fallbackSite);
-        context.put("locale", site.getLocale());
-        // publishing system
-        context.put(PUBLISH_URL, engine.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL));
-        context.put(PUBLISH_HOST, engine.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST));
         // coord helper
         context.put("coordHelper", new CoordHelper());
-        // properties
-        context.put("linkpulse", new Linkpulse(site, SiteConfiguration.valueOf(site).getProperties()));
         // decoder
         context.put("decoder", new Decoder());
         // math tool
@@ -210,27 +205,25 @@ public final class VelocityResultHandler implements ResultHandler {
         }
 
         // populate context with request and response // TODO remove, since all attributes are copied in
-        final HttpServletRequest request = (HttpServletRequest) parameters.get("request");
-        final HttpServletResponse response = (HttpServletResponse) parameters.get("response");
-        context.put("request", request);
-        context.put("response", response);
+        context.put("request", parameters.get("request"));
+        context.put("response", parameters.get("response"));
 
         // search-portal attributes
         context.put("result", cxt.getSearchResult());
         context.put("query", queryStringURLEncoded);
         context.put("queryHTMLEscaped", queryString);
-        context.put("currentTab", cxt.getSearchTab()); // duplicate of "tab"
-        context.put("contextPath", request.getContextPath());
-        context.put("tradedoubler", new TradeDoubler(request));
+        context.put("currentTab", cxt.getSearchTab()); // FIXME duplicate of "tab"
 
         // following are deprecated as the view domain should not be accessing them
-        context.put("globalSearchTips", ((RunningQuery) request.getAttribute("query")).getGlobalSearchTips());
-        context.put("runningQuery", (RunningQuery) request.getAttribute("query"));
+        context.put("globalSearchTips", ((RunningQuery) parameters.get("query")).getGlobalSearchTips());
+        context.put("runningQuery", (RunningQuery) parameters.get("query"));
         context.put("command", cxt.getSearchResult().getSearchCommand());
-
-        /* TODO: check where this went */
-        /* context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt))); */
-        context.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, cxt)));
+        
+        // TODO remove. deprecated since the template can access the configuration property directly now.
+        final Properties props = (Properties)parameters.get("configuration");
+        context.put(PUBLISH_URL, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL));
+        context.put(PUBLISH_HOST, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST));
+        
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 

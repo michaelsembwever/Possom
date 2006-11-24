@@ -79,7 +79,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     protected boolean allCancelled = false;
     /** TODO comment me. **/
     protected final Map<String,Object> parameters;
-    private final Locale locale = new Locale("no", "NO");
+    private final Locale locale;
     private final List<Modifier> sources = new Vector<Modifier>();
     /** TODO comment me. **/
     protected final TokenEvaluationEngine engine;
@@ -104,8 +104,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         queryStr = trimDuplicateSpaces(query);
 
+        locale = cxt.getSite().getLocale();
+        
         this.parameters = parameters;
-
+        parameters.put("query", this);
+        parameters.put("locale", locale);
+        
         final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
                 ContextWrapper.wrap(
                     TokenEvaluationEngine.Context.class,
@@ -481,12 +485,24 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
     }
 
+    /** Remove modifiers with invalid count.
+     * Sum duplicates together.
+     * Sort by HintPriorityComparator.
+     **/
     private void performModifierHandling(){
 
+        final Map<String,Modifier> map = new HashMap<String,Modifier>();
         final List<Modifier> toRemove = new ArrayList<Modifier>();
         for(Modifier m : sources){
             if(m.getCount() > -1 ){
-                m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
+                final Modifier prior = map.get(m.getName());
+                if( null == prior ){
+                    m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
+                    map.put(m.getName(), prior);
+                }else{
+                    prior.addCount(m.getCount());
+                    toRemove.add(m);
+                }
             }else{
                 toRemove.add(m);
             }
@@ -498,23 +514,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         } else {
             Collections.sort(sources);
         }
-    }
-
-    private String getSingleParameter(final String paramName) {
-
-        LOG.trace("getSingleParameter()");
-
-        final String[] param = (String[]) parameters.get(paramName);
-
-        return (param != null) ? param[0] : null;
-    }
-
-    private boolean isInternational(final SearchConfiguration searchConfiguration) {
-        return "globalSearch".equals(searchConfiguration.getName());
-    }
-
-    private boolean isNorwegian(final SearchConfiguration searchConfiguration) {
-        return "defaultSearch".equals(searchConfiguration.getName());
     }
 
     /** TODO comment me. **/

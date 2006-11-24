@@ -8,12 +8,12 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class Modifier implements Comparable<Modifier> {
+public final class Modifier implements Comparable<Modifier> {
     
     private int count = 0;
 
-    final private String name;
-    final private Navigator navigator;
+    private final String name;
+    private final Navigator navigator;
 
     private static final Comparator<Modifier> HINT_PRIO_COMPARATOR =
             new Comparator<Modifier>() {
@@ -68,7 +68,7 @@ public class Modifier implements Comparable<Modifier> {
     }
 
     public String toString() {
-        return name + "(" + getCount() + ")";
+        return name + '(' + getCount() + ')';
     }
 
     /**

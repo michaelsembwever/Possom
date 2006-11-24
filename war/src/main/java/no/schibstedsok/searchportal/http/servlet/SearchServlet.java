@@ -32,6 +32,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import no.schibstedsok.searchportal.result.Linkpulse;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
+import no.schibstedsok.searchportal.util.TradeDoubler;
 import org.apache.log4j.Logger;
 
 /** The Central Controller to incoming queries.
@@ -144,6 +147,9 @@ public final class SearchServlet extends HttpServlet {
             throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
         }
 
+        final Properties props = SiteConfiguration.valueOf(
+                        ContextWrapper.wrap(SiteConfiguration.Context.class, genericCxt)).getProperties();
+        request.setAttribute("configuration", props);
         request.setAttribute("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
         request.setAttribute("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, genericCxt)));
 
@@ -157,6 +163,9 @@ public final class SearchServlet extends HttpServlet {
 
         request.setAttribute("tab", searchTab);
         request.setAttribute("c", searchTabKey);
+        request.setAttribute("contextPath", request.getContextPath());
+        request.setAttribute("linkpulse", new Linkpulse(site, props));
+        request.setAttribute("tradedoubler", new TradeDoubler(request));
 
         try {
 
@@ -174,9 +183,6 @@ public final class SearchServlet extends HttpServlet {
             );//</editor-fold>
 
             final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
-
-            request.setAttribute("locale", query.getLocale());
-            request.setAttribute("query", query);
 
             query.run();
 
