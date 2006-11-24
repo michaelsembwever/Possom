@@ -208,6 +208,8 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
                 <div class="clearFloat">&nbsp;</div>
             </div>
+        <% } else if (currentC.equals("t")) { %>
+            <search:velocity template="results/tvSearch" command="tvSearch"/>
         <% } else { %>
             <decorator:getProperty property="page.search-results"/>
             <search:velocity template="results/giftProviders" command="giftProviders"/>            
