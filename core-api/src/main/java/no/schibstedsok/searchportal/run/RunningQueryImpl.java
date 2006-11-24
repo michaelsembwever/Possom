@@ -330,6 +330,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             if( !allCancelled ){
 
+                final StringBuilder noHitsOutput = new StringBuilder();
+                
                 for (Future<SearchResult> task : results.values()) {
 
                     if (task.isDone() && !task.isCancelled()) {
@@ -353,6 +355,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 // update hit status
                                 hitsToShow |= searchResult.getHitCount() > 0;
                                 hits.put(name, searchResult.getHitCount());
+                                if( searchResult.getHitCount() <= 0 && config.isPaging() ){
+                                    noHitsOutput.append("<command>" + config.getStatisticalName() + "</command>");
+                                }
 
                                 // score
                                 if(eHint != null && searchResult.getHitCount() > 0 && score >= eHint.getThreshold()) {
@@ -371,8 +376,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 performModifierHandling();
 
                 if (!hitsToShow) {
-                    PRODUCT_LOG.info("<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
-                            + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query></no-hits>");
+                    noHitsOutput.append("<absolute/>");
     // FIXME: i do not know how to reset/clean the sitemesh's outputStream so
     //                  the result from the new RunningQuery are used.
     //                int sourceHits = 0;
@@ -392,6 +396,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 }  else  {
 
                     performEnrichmentHandling(results.values());
+                }
+                
+                if( noHitsOutput.length() > 0 ){
+                    
+                    noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
+                            + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query>");
+                    noHitsOutput.append("</no-hits>");
+                    PRODUCT_LOG.info(noHitsOutput.toString());
                 }
             }
         } catch (Exception e) {
