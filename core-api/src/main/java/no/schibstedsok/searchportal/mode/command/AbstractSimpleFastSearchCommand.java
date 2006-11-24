@@ -881,7 +881,6 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             }
 
             if (searchResult.getModifiers(navigatorKey) != null) {
-                LOG.error("Navigator sort order: " + nav.getSort().name());
                 switch (nav.getSort()) {
                     case CHANNEL:
                         final Channels channels = (Channels) getParameters().get("channels");
