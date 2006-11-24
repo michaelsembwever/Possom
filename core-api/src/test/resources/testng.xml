@@ -5,6 +5,7 @@
     <test name="UnitTests" junit="true">
         <classes>
             <class name="no.schibstedsok.searchportal.util.test.PagingDisplayHelperUnitTest"/>
+            <class name="no.schibstedsok.searchportal.util.test.ChannelUnitTest"/>
             <class name="no.schibstedsok.searchportal.view.velocity.RolesDirectiveTest" />
             <class name="no.schibstedsok.searchportal.view.velocity.ShareHoldersDirectiveTest" />
         </classes>
