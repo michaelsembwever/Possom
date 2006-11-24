@@ -165,8 +165,7 @@ abstract class AbstractResourceLoader
             final long time = System.currentTimeMillis();
             future.get();
             LOG.debug("abut() for " + getResource(context.getSite()) + '\n' 
-                    + "waited " + (System.currentTimeMillis() - time) + "ms\n"
-                    + "future: " + future + "; props:" + props + "; document:" + document);
+                    + "waited " + (System.currentTimeMillis() - time) + "ms\n");
             
 
         } catch (InterruptedException ex) {
