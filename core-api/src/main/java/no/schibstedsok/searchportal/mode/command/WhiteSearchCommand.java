@@ -10,10 +10,10 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
 
-import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
+import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 
@@ -92,16 +92,16 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
      * which case only the right clause is visited. Phrase and organisation searches are not
      * possible against the white index.
      */
-    protected void visitImpl(final XorClause clause) {
+    protected void visitXorClause(final Visitor visitor, final XorClause clause) {
         // If we have a match on an international phone number, but it is not recognized as
         // a local phone number, force it to use the original number string.
         if (clause.getHint() == XorClause.Hint.PHONE_NUMBER_ON_LEFT
                 && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
-            clause.getSecondClause().accept(this);
+            clause.getSecondClause().accept(visitor);
         } else if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT || clause.getHint() == XorClause.Hint.NUMBER_GROUP_ON_LEFT) {
-            clause.getSecondClause().accept(this);
+            clause.getSecondClause().accept(visitor);
         } else {
-            clause.getFirstClause().accept(this);
+            clause.getFirstClause().accept(visitor);
         }
     }
 }

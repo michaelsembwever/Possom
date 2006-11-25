@@ -43,7 +43,6 @@ import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
 import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.LeafClause;
@@ -372,9 +371,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 
             }
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(DEBUG_QUERY_DUMP + fastQuery);
-            }
+            LOG.info(DEBUG_QUERY_DUMP + fastQuery);
             
             final FastSearchResult searchResult = collectResults(result);
 
@@ -568,9 +565,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         final int suggestionIndex = custom.indexOf("->");
         final int qualityIndex = custom.indexOf("Quality:");
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Custom is " + custom);
-        }
+        LOG.debug("Custom is " + custom);
 
         final String orig = custom.substring(0, suggestionIndex);
         final String string = custom.substring(suggestionIndex + 2, qualityIndex - 2);
@@ -727,9 +722,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
 
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("createQuery: superFilter=" + superFilter);
-        }
+        LOG.debug("createQuery: superFilter=" + superFilter);
+
         params.setParameter(new SearchParameter("filtertype", "any"));
 
         params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
@@ -782,9 +776,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (getParameters().containsKey("userSortBy")) {
 
             String sortBy = getParameter("userSortBy");
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("createQuery: SortBY " + sortBy);
-            }
+            LOG.debug("createQuery: SortBY " + sortBy);
+            
             if ("standard".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retriever"));
             } else if ("datetime".equals(sortBy)) {

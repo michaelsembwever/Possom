@@ -9,16 +9,8 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.*;
-import no.schibstedsok.searchportal.query.AndClause;
-import no.schibstedsok.searchportal.query.AndNotClause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
-import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.PhraseClause;
+import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 
 /**
  *
@@ -42,13 +34,16 @@ public class WebSearchCommand extends FastSearchCommand {
      *
      * @param clause The clause to examine.
      */
-    protected void visitImpl(final XorClause clause) {
-        if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT) {
-            // Web searches should use phrases over separate words.
-            clause.getFirstClause().accept(this);
-        } else {
-            // All other high level clauses are ignored.
-            clause.getSecondClause().accept(this);
+    protected void visitXorClause(final Visitor visitor, final XorClause clause) {
+        switch(clause.getHint()){
+            case PHRASE_ON_LEFT:
+                // Web searches should use phrases over separate words.
+                clause.getFirstClause().accept(visitor);
+                break;
+            default:
+                // All other high level clauses are ignored.
+                clause.getSecondClause().accept(visitor);
+                break;
         }
     }
 

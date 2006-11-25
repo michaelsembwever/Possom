@@ -9,6 +9,7 @@ import java.util.Map;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
+import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenMatch;
@@ -293,16 +294,16 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
      * case only the right clause is visited. Phrase searches are not possible
      * against the yellow index.
      */
-    protected void visitImpl(final XorClause clause) {
+    protected void visitXorClause(final Visitor visitor, final XorClause clause) {
         // If we have a match on an international phone number, but it is not recognized as
         // a local phone number, force it to use the original number string.
         if (clause.getHint() == XorClause.Hint.PHONE_NUMBER_ON_LEFT
                 && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
-            clause.getSecondClause().accept(this);
+            clause.getSecondClause().accept(visitor);
         } else if(XorClause.Hint.PHRASE_ON_LEFT == clause.getHint()){
-            clause.getSecondClause().accept(this);
+            clause.getSecondClause().accept(visitor);
         } else {
-            super.visitImpl(clause);
+            super.visitXorClause(visitor, clause);
         }
     }
 }

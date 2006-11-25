@@ -3,8 +3,6 @@
  *
  * Created on July 11, 2006, 12:34 PM
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.mode.command;
@@ -14,7 +12,6 @@ import no.schibstedsok.searchportal.query.UrlClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
 
 /**
  *
@@ -29,7 +26,7 @@ import no.schibstedsok.searchportal.result.BasicSearchResult;
  *
  * @author maek
  */
-public class BlogSearchCommand extends AbstractESPFastSearchCommand {
+public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
     /** Creates a new instance of FastSearchCommand
      *

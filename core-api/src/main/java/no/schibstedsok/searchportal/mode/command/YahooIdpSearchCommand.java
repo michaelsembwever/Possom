@@ -4,8 +4,6 @@
  *
  * Created on May 18, 2006, 10:47 AM
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.mode.command;

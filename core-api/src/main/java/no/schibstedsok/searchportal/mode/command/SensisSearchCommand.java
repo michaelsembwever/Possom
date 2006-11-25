@@ -9,7 +9,6 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.*;
 
 /**
  *

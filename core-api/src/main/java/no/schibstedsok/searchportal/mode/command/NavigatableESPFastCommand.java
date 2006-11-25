@@ -3,8 +3,6 @@
  *
  * Created on July 20, 2006, 11:57 AM
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.mode.command;
@@ -20,7 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.searchportal.mode.command.ESPFastSearchCommand;
 import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;

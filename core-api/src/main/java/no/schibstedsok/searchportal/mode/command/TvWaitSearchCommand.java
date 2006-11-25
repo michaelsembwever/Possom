@@ -3,8 +3,6 @@
  *
  * Created on 26 October 2006, 14:03
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.mode.command;

@@ -10,6 +10,7 @@ import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.site.SiteContext;
 
@@ -37,6 +38,9 @@ public interface QueryTransformer extends Visitor, Cloneable{
         /** For evaluation acitions on individual (or the whole query) terms.
          **/
         TokenEvaluationEngine getTokenEvaluationEngine();
+        
+        /** QueryTransformers must follow the same XorClause hints as the search command. **/
+        void visitXorClause(Visitor visitor, XorClause clause);
     }
 
     /** TODO comment me. **/

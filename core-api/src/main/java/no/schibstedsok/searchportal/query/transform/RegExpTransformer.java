@@ -6,11 +6,10 @@ package no.schibstedsok.searchportal.query.transform;
 import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-import no.schibstedsok.searchportal.query.AndClause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.Clause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
-import no.schibstedsok.searchportal.query.OrClause;
 import org.apache.log4j.Logger;
 
 /**
@@ -23,7 +22,7 @@ import org.apache.log4j.Logger;
  * <b>It is therefore critical to use non-capturing groups for |?+* operations in the expressions.</b>
  *
  * @version $Id: TermPrefixTransformer.java 3369 2006-08-07 08:26:53Z mickw $
- * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
+ * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  *
  */
 public final class RegExpTransformer extends AbstractQueryTransformer {
@@ -57,25 +56,7 @@ public final class RegExpTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final OrClause clause) {
-        clause.getFirstClause().accept(this);
-        clause.getSecondClause().accept(this);
-    }
-
-    /**
-     *
-     * @param clause The clause to prefix.
-     */
-    public void visitImpl(final DefaultOperatorClause clause) {
-        clause.getFirstClause().accept(this);
-        clause.getSecondClause().accept(this);
-    }
-
-    /**
-     *
-     * @param clause The clause to prefix.
-     */
-    public void visitImpl(final AndClause clause) {
+    public void visitImpl(final DoubleOperatorClause clause) {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
@@ -90,7 +71,7 @@ public final class RegExpTransformer extends AbstractQueryTransformer {
 
 
 
-    private Map getTransformedTerms() {
+    private Map<Clause,String> getTransformedTerms() {
         return getContext().getTransformedTerms();
     }
 

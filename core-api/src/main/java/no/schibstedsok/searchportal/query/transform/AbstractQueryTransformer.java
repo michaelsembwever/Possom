@@ -2,6 +2,7 @@
 package no.schibstedsok.searchportal.query.transform;
 
 
+import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import org.apache.log4j.Logger;
 
@@ -56,5 +57,9 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
         return retValue;
     }
 
+    protected final void visitImpl(final XorClause clause) {
+        
+        getContext().visitXorClause(this, clause);
+    }
 
 }

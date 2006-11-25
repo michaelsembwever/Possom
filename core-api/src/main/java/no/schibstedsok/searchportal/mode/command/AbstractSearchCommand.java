@@ -285,12 +285,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getFirstClause().accept(this);
         }
     }
-    /** TODO comment me. **/
-    protected void visitImpl(final XorClause clause) {
+    protected void visitXorClause(final Visitor visitor, final XorClause clause){
         // [TODO] we need to determine which branch in the query-tree we want to use.
         //  Both branches to a XorClause should never be used.
-        clause.getFirstClause().accept(this);
+        clause.getFirstClause().accept(visitor);
         // clause.getSecondClause().accept(this);
+    }
+    /** TODO comment me. **/
+    protected final void visitImpl(final XorClause clause) {
+        visitXorClause(this, clause);
     }
 
    // Protected -----------------------------------------------------
@@ -348,7 +351,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t");
             executeQuery |= null != filter && filter.length() > 0;
-            LOG.debug("executeQuery==" + executeQuery
+            LOG.info("executeQuery==" + executeQuery
                     + " ; queryToUse:" + queryToUse
                     + "; filter:" + filter
                     + "; tabKey:" + parameters.get("c") + ';');
@@ -356,9 +359,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
             hitCount = result.getHitCount();
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
-            }
+            LOG.debug("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
 
             return result;
 
@@ -516,6 +517,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 }
                 public TokenEvaluationEngine getTokenEvaluationEngine(){
                     return engine;
+                }
+                public void visitXorClause(Visitor visitor, XorClause clause){
+                    AbstractSearchCommand.this.visitXorClause(visitor, clause);
                 }
             };
 

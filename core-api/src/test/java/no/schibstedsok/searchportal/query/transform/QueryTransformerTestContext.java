@@ -16,6 +16,8 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.query.XorClause;
 
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -99,5 +101,9 @@ public final class QueryTransformerTestContext extends TestCase implements Query
     /** TODO comment me. **/
     public TokenEvaluationEngine getTokenEvaluationEngine(){
         return tokenEvaluationEngine;
+    }
+
+    public void visitXorClause(Visitor visitor, XorClause clause) {
+       clause.getFirstClause().accept(visitor);
     }
 }

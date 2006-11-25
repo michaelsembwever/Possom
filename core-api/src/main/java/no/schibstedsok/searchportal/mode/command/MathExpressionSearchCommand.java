@@ -18,7 +18,7 @@ import org.nfunk.jep.type.Complex;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class MathExpressionSearchCommand extends AbstractSearchCommand {
+public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(MathExpressionSearchCommand.class);
     private static final String ERR_INTERRUPTED = "Interrupted";

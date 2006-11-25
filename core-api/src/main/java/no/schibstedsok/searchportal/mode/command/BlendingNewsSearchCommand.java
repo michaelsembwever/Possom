@@ -3,8 +3,6 @@
  *
  * Created on May 12, 2006, 2:19 PM
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.mode.command;
@@ -18,7 +16,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;

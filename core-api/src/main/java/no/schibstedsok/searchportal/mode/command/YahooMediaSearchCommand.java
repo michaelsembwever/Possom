@@ -6,15 +6,11 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.mode.config.YahooMediaSearchConfiguration;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
-import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.XorClause;
 
 import java.util.Map;
 import java.text.MessageFormat;
@@ -35,7 +31,7 @@ import org.xml.sax.SAXException;
  *
  * @version $Id$
  */
-public class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
+public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String COMMAND_URL_PATTERN =
             "/std_xmls_a00?type=any&query={0}&offset={1}&custid1={2}&hits={3}&ocr={4}&catalog={5}&encoding=utf-8";

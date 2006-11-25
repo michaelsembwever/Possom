@@ -12,14 +12,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -30,7 +27,7 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * day. For each word there is a code. The words, dates and codes are read
  * from the dailyWords.txt file. 
  */
-public class DailyWordCommand extends AbstractSearchCommand {
+public final class DailyWordCommand extends AbstractSearchCommand {
 
     private final static String FIELD_WORD = "word";
     private final static String FIELD_CODE = "code";

@@ -25,7 +25,6 @@ import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 /** XXX This will get largely rewritten when alternation rotation comes into play.
@@ -95,15 +94,6 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
-
-    }
-
-    /** TODO comment me. **/
-    protected void visitImpl(final XorClause clause) {
-
-        LOG.trace("visitImpl(" + clause + ')');
-
-        clause.getFirstClause().accept(this);
 
     }
 

@@ -3,14 +3,11 @@
  *
  * Created on May 18, 2006, 10:47 AM
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;

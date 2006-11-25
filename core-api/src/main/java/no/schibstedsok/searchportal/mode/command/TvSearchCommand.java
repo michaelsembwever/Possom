@@ -4,18 +4,10 @@
  */
 package no.schibstedsok.searchportal.mode.command;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
-import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
 
 /**
@@ -26,7 +18,7 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(TvSearchCommand.class);
 
-    protected StringBuilder defaultChannelFilter = new StringBuilder();
+    protected final StringBuilder defaultChannelFilter = new StringBuilder();
     private String additionalFilter;
     
     /** Creates a new instance of TvSearchCommand
@@ -37,17 +29,17 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
     public TvSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
         LOG.debug("Creating TvSearchCommand");
-        synchronized (this) {
+            
 //            defaultChannelFilter = new StringBuilder(super.getAdditionalFilter());
 
-            defaultChannelFilter.append("+(");
-            for (String channel : getTvSearchConfiguration().getDefaultChannels()) {
-                defaultChannelFilter.append(" sgeneric5nav:");
-                defaultChannelFilter.append(channel);
-            }
-            defaultChannelFilter.append(")");
-            additionalFilter = "";
+        defaultChannelFilter.append("+(");
+        for (String channel : getTvSearchConfiguration().getDefaultChannels()) {
+            defaultChannelFilter.append(" sgeneric5nav:");
+            defaultChannelFilter.append(channel);
         }
+        defaultChannelFilter.append(')');
+        additionalFilter = "";
+
     }
 
     protected int getResultsToReturn() {

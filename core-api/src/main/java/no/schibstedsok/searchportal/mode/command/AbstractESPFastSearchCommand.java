@@ -8,10 +8,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import com.fastsearch.esp.search.ConfigurationException;
-import com.fastsearch.esp.search.ISearchFactory;
 import com.fastsearch.esp.search.SearchEngineException;
-import com.fastsearch.esp.search.SearchFactory;
 import com.fastsearch.esp.search.query.BaseParameter;
 import com.fastsearch.esp.search.query.IQuery;
 import com.fastsearch.esp.search.query.Query;
@@ -19,7 +16,6 @@ import com.fastsearch.esp.search.query.SearchParameter;
 import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
-import com.fastsearch.esp.search.view.ISearchView;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -39,7 +35,7 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
-import java.util.Properties;
+import no.schibstedsok.searchportal.query.Visitor;
 
 /**
  *
@@ -47,10 +43,9 @@ import java.util.Properties;
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
-    private final static String COLLAPSE_PARAMETER="collapse";
+    private final static String COLLAPSE_PARAMETER = "collapse";
 
-    private static final Logger LOG =
-            Logger.getLogger(AbstractESPFastSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(AbstractESPFastSearchCommand.class);
 
     // Attributes ----------------------------------------------------
     private final ESPFastSearchConfiguration cfg;
@@ -131,9 +126,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             }
 
 
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Query is " + query);
-            }
+            LOG.debug("Query is " + query);
 
             result = cfg.getSearchView().search(query);
 
@@ -149,8 +142,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                     final IDocumentSummary document = result.getDocument(i + 1);
                     searchResult.addResult(createResultItem(document));
                 } catch (NullPointerException e) { // THe doc count is not 100% accurate.
-                    if (LOG.isDebugEnabled())
-                        LOG.debug("Error finding document " + e);
+                    LOG.debug("Error finding document " + e);
                     return searchResult;
                 }
             }
@@ -256,13 +248,16 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      *
      * @param clause The clause to examine.
      */
-    protected void visitImpl(final XorClause clause) {
-        if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT) {
-            // Web searches should use phrases over separate words.
-            clause.getFirstClause().accept(this);
-        } else {
-            // All other high level clauses are ignored.
-            clause.getSecondClause().accept(this);
+    protected void visitXorClause(final Visitor visitor, final XorClause clause) {
+        switch(clause.getHint()){
+            case PHRASE_ON_LEFT:
+                // Web searches should use phrases over separate words.
+                clause.getFirstClause().accept(visitor);
+                break;
+            default:
+                // All other high level clauses are ignored.
+                clause.getSecondClause().accept(visitor);
+                break;
         }
     }
 
@@ -306,7 +301,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 if (! document.getSummaryField("fcocount").isEmpty() && Integer.parseInt(document.getSummaryField("fcocount").getStringValue()) > 1) {
                         item.addField("moreHits", "true");
                         item.addField("collapseParameter", COLLAPSE_PARAMETER);
-                    item.addField("collapseId", document.getSummaryField("collapseid").getStringValue());
+                        item.addField("collapseId", document.getSummaryField("collapseid").getStringValue());
                     }
                 }
             }

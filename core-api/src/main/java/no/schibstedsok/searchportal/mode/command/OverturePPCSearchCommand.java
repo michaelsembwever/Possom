@@ -1,11 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
-import no.schibstedsok.searchportal.query.QueryStringContext;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.OvertureSearchResult;
