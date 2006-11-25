@@ -498,7 +498,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 final Modifier prior = map.get(m.getName());
                 if( null == prior ){
                     m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
-                    map.put(m.getName(), prior);
+                    map.put(m.getName(), m);
                 }else{
                     prior.addCount(m.getCount());
                     toRemove.add(m);

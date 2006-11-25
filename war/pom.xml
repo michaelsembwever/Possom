@@ -223,28 +223,6 @@
             </properties>
         </profile>
         <profile>
-            <id>test</id>
-            <activation />
-            <build>
-                <finalName>ROOT.test</finalName>
-            </build>
-            <distributionManagement>
-                <repository>
-                    <id>Sesam-Searchdev</id>
-                    <name>Schibsted Søk's Searchdev repository</name>
-                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-searchdev</url>
-                </repository>
-            </distributionManagement>
-            <properties>
-                <tradedoubler.form.action>$$url</tradedoubler.form.action>
-                <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
-                <msearch.configuration.url>http://mobil.sesam.no/mobil.sesam.no/conf/msearch-client.properties</msearch.configuration.url>
-                <linkpulse.url>http://go.sesam.no/</linkpulse.url>
-                <log.file>sesam</log.file>
-                <linkpulse.enable>true</linkpulse.enable>
-            </properties>
-        </profile>
-        <profile>
             <id>production</id>
             <activation />
             <build>
