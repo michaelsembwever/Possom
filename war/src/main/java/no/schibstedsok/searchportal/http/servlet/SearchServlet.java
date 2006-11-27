@@ -151,7 +151,7 @@ public final class SearchServlet extends HttpServlet {
                         ContextWrapper.wrap(SiteConfiguration.Context.class, genericCxt)).getProperties();
         request.setAttribute("configuration", props);
         request.setAttribute("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
-        request.setAttribute("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, genericCxt)));
+//        request.setAttribute("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, genericCxt)));
 
         if (request.getParameter("offset") == null || "".equals(request.getParameter("offset"))) {
             request.setAttribute("offset", "0");
