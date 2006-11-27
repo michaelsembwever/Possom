@@ -119,18 +119,24 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             /* Abort all but the first command on one-command-searches */
             
             /* If using channel navigator and sorting by channels */
-            if (userSortBy == SortBy.CHANNEL && getParameters().get("nav_channels") != null) {
-                executeQuery = false;
+            if (userSortBy == SortBy.CHANNEL) {
+                if (getParameters().get("nav_channels") != null || wosr.getModifiers("channels").size() < index) {
+                    executeQuery = false;
+                }
             }
             
             /* If using category navigator and sorting by category */
-            if (userSortBy == SortBy.CATEGORY && getParameters().get("nav_categories") != null) {
-                executeQuery = false;
+            if (userSortBy == SortBy.CATEGORY) {
+                if (getParameters().get("nav_categories") != null || wosr.getModifiers("categories").size() < index) {
+                    executeQuery = false;
+                }
             }
             
             /* If using day navigator and sorting on day */
-            if (userSortBy == SortBy.DAY && getParameters().get("day") != null) {
-                executeQuery = false;
+            if (userSortBy == SortBy.DAY) {
+                if (getParameters().get("day") != null || wosr.getModifiers("channels").size() < index) { 
+                    executeQuery = false;
+                }
             }
             
             if (executeQuery == false) {
@@ -183,6 +189,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 }
                 filter.append(")");
             }
+            
         } else if (userSortBy == SortBy.CATEGORY) {
             /* Adjust time to selected day */
             cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * day);
