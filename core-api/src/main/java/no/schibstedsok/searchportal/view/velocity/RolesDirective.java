@@ -85,8 +85,8 @@ public final class RolesDirective extends Directive {
 
         // The text string from datafield which all the roledata is stored
         final String raw = node.jjtGetChild(0).value(context).toString();
-
-        String s = preprocessInput(raw);
+        // Convert the input to old format since the parsing will break otherwise
+        String s = convert2OldFormat(raw);
         
         // Yellow or Person page (used for linking)
         final String page = node.jjtGetChild(1).value(context).toString();
@@ -189,13 +189,16 @@ public final class RolesDirective extends Directive {
      * Process input so the result contains "roles" only. That way we dont have 
      * to rewrite the beutiful parsing implementation :-)
      * 
-     * @param rawInput
-     * @return rawInput containing roles only
+     * @param newOrOldFormat the input either as new or old format
+     * @return oldFormat as String
      */
-    protected String preprocessInput(String rawInput) {
-        String rawSplit[] = rawInput.split("#aksjonaer0#");
-        String rolesRaw = rawSplit[0];
-        rolesRaw = rolesRaw.replace("#roller0#", ""); 
-        return rolesRaw;
+    protected String convert2OldFormat(String newOrOldFormat) {
+
+        if(newOrOldFormat == null ) {
+            return null;
+        }
+        String oldFormat = newOrOldFormat.split("#aksjonaer0#")[0];
+        oldFormat = oldFormat.replace("#roller0#", "");  
+        return oldFormat;
     }
 }
