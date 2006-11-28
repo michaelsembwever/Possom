@@ -266,6 +266,21 @@ public final class SyndicationGenerator {
             cxt.put("uri", origUri);
 
             cxt.put("channels", channels);
+            
+            if (request.getParameter("c").equals("m")) {
+                if (request.getParameter("contentsource") != null && request.getParameter("contentsource").startsWith("Interna"))
+                    cxt.put("newstype", "- Internasjonale nyheter -");
+                else if (request.getParameter("contentsource") != null && request.getParameter("contentsource").equals("Mediearkivet"))
+                    cxt.put("newstype", "- Papiraviser -");
+                else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Sverige")) 
+                    cxt.put("newstype", "- Svenske nyheter -");
+                else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Island")) 
+                    cxt.put("newstype", "- Islandske nyheter -");
+                else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Finland")) 
+                    cxt.put("newstype", "- Finske nyheter -");
+                else
+                    cxt.put("newstype", "-");
+            }
 
             final Template tpl = VelocityResultHandler.getTemplate(engine, site, templateUri);
 
