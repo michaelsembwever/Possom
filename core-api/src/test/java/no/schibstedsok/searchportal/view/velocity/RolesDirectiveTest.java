@@ -14,9 +14,9 @@ public class RolesDirectiveTest extends TestCase {
         
         RolesDirective rd = new RolesDirective();
         
-        String split1 = rd.preprocessInput(input1);
-        String split2 = rd.preprocessInput(input2);
-        String split3 = rd.preprocessInput(input3);
+        String split1 = rd.convert2OldFormat(input1);
+        String split2 = rd.convert2OldFormat(input2);
+        String split3 = rd.convert2OldFormat(input3);
         
         // Make a very raw split. Seperate roles and shareholders
         assertEquals(split1, split2);
