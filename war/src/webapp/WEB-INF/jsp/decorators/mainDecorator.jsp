@@ -215,13 +215,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <search:velocity template="results/giftProviders" command="giftProviders"/>            
         <%}%>      
 
-        <%--  offset  --%>
-        <%if (currentC.equals("pp")) {%>
-            <search:velocity template="fragments/offsetPager" command="scanpix"/>
-        <% } else { %>
-            <decorator:getProperty property="page.offsetPager"/>
-         <% } %>
-
         </td>
         <td class="cell_four">
             <% if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") ) {%>
@@ -240,6 +233,17 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <% if ( currentC.equals("sw") || currentC.equals("swip") ) {%>
         <decorator:getProperty property="page.ads_floating"/>
     <% } %>
+    <tr>
+        <td>&nbsp;</td>
+        <td colspan="2">
+        <%--  offset  --%>
+        <%if (currentC.equals("pp")) {%>
+            <search:velocity template="fragments/offsetPager" command="scanpix"/>
+        <% } else { %>
+            <decorator:getProperty property="page.offsetPager"/>
+         <% } %>
+        </td>
+    </tr>
      
 </table>
     <decorator:getProperty property="page.verbosePager"/>
