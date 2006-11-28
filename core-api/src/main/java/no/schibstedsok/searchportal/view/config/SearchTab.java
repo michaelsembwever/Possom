@@ -439,6 +439,9 @@ public final class SearchTab {
                 final String image,
                 final int priority,
                 final SearchTabFactory tabFactory){
+            
+            
+            assert null != tabFactory : "Must supply a tabFactory for getTab() to work";
 
             this.id = id;
             this.name = name;

@@ -263,7 +263,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         urlSuffix, 
                         image, 
                         priority, 
-                        context.getLeafSearchTabFactory());
+                        this);
                 navigations.add(navHint);
             }
 
