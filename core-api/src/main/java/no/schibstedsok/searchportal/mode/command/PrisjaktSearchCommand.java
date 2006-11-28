@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 public class PrisjaktSearchCommand extends AbstractSearchCommand {
 
     private static final String SOAP_ENDPOINT = "http://www.prisjakt.nu/sesam/soap.php";
-
     private static final Logger LOG = Logger.getLogger(OverturePPCSearchCommand.class);
 
 
@@ -49,13 +48,15 @@ public class PrisjaktSearchCommand extends AbstractSearchCommand {
 
         LOG.debug("Executing");
 
-        try {
+        try 
+        {
 
             final PrisjaktPortType port = service.getPrisjaktPort(new java.net.URL(SOAP_ENDPOINT));
-
             final Resultat prisjaktResult= port.getData(getTransformedQuery());
+            
             String query = getTransformedQuery();
             result.addField("searchquery", query);
+            
             Produkt[] products = prisjaktResult.getProdukter();
             Butik[] butiker = prisjaktResult.getButiker();
             Kategori[] kategorier = prisjaktResult.getKategorier();
@@ -64,25 +65,43 @@ public class PrisjaktSearchCommand extends AbstractSearchCommand {
             /*
              * FIXME: Ta bort hårdkodningen för söktyp
              */
+            
+            
             result.addField("searchtype", "productsearch");
+            //result.addField("searchtype", "storesearch");
+            //result.addField("searchtype", "categorysearch");
             
             LOG.debug("Number of results " + result.getHitCount());
             
             /*
              * FIXME: Ta bort hårdkodning för söktyp
              */
-            if(products!=null)
+            
+            if((products!=null) && (result.getField("searchtype")=="productsearch"))
             {
             	productConverter(result, products);
             }
+            if(kategorier!=null && (result.getField("searchtype")=="categorysearch"))
+            {
+            	catagorieConverter(result, kategorier);
+            }
+            if(butiker!=null && (result.getField("searchtype")=="storesearch"))
+            {
+            	storeConverter(result, butiker);
+            }
             
-
             return result;
-        } catch (ServiceException e) {
+        }
+        catch (ServiceException e) 
+        {
             throw new InfrastructureException(e);
-        } catch (MalformedURLException e) {
+        } 
+        catch (MalformedURLException e) 
+        {
             throw new InfrastructureException(e);
-        } catch (RemoteException e) {
+        } 
+        catch (RemoteException e) 
+        {
             throw new InfrastructureException(e);
         }
     }
@@ -93,17 +112,40 @@ public class PrisjaktSearchCommand extends AbstractSearchCommand {
     	for (final Produkt product : products) {
             final SearchResultItem item = new BasicSearchResultItem();
             item.addField("productName", product.getProduktnamn());
-            item.addField("categorieName", product.getKategorinamn());
             item.addField("lowestPrice", Integer.toString(product.getLagstaPris()));
             item.addField("numberofStores", Integer.toString(product.getAntalButiker()));
             /* &st=4 tillägget gör att vi får en liten bild ifrån prisjakt*/
             item.addField("pruductPicture", product.getBild()+"&st=4");
             item.addField("categorieURL", product.getKategoriurl());
             item.addField("pruductURL", product.getUrl());
+            item.addField("categorieName", product.getKategorinamn());
+            
             result.addResult(item);
         }
     }
     
+    private void catagorieConverter(SearchResult result, Kategori [] kategorier)
+    {
+    	for (final Kategori katag : kategorier) {
+            final SearchResultItem item = new BasicSearchResultItem();
+            item.addField("numberofProducts", Integer.toString(katag.getAntalProdukter()));
+            item.addField("categorieURL", katag.getUrl());
+            item.addField("categorieName", katag.getKategorinamn());
+            
+            result.addResult(item);
+        }
+    }
     
-
+    private void storeConverter(SearchResult result, Butik [] stores)
+    {
+    	for (final Butik store : stores) {
+            final SearchResultItem item = new BasicSearchResultItem();
+            item.addField("numberofProducts", Integer.toString(store.getAntalProdukter()));
+            item.addField("storeURL", store.getUrl());
+            item.addField("storeName", store.getButiksnamn());
+            
+            result.addResult(item);
+        }
+    }
+    
 }
