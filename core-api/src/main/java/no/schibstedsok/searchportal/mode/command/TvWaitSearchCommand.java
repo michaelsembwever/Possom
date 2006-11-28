@@ -32,6 +32,9 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     
     /** Wait on search result */
     private FastSearchResult wosr;
+
+    /** Index to use when creating filters */
+    private final int index;
     
     /** Millis in day */
     private static final int MILLIS_IN_DAY = 86400000;
@@ -60,35 +63,22 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         final String usbp = getParameters().containsKey("userSortBy") ? ((String) getParameters().get("userSortBy")).toUpperCase() : "CHANNEL";
         userSortBy = SortBy.valueOf(usbp);
         blankQuery = cxt.getQuery().isBlank();
+        
+        final Object v = getParameters().get("offset");
+        final int offset = Integer.parseInt(v instanceof String[] && ((String[]) v).length == 1 
+                ? ((String[]) v)[0]
+                : (String) v);
+     
+        if (userSortBy == SortBy.DAY || !config.isPaging()) {
+            index = config.getIndex();
+        } else {
+            index = config.getIndex() + (offset * 8);
+        }
     }
     
     public SearchResult execute() {
         if (!executeQuery) {
             return new BasicSearchResult(this);
-        }
-        final int index = config.getIndex();
-        
-        if (index > 0) {
-            /* Abort all but the first command on one-command-searches */
-            
-            /* If using channel navigator and sorting by channels */
-            if (userSortBy == SortBy.CHANNEL && getParameters().get("nav_channels") != null) {
-                executeQuery = false;
-            }
-            
-            /* If using category navigator and sorting by category */
-            if (userSortBy == SortBy.CATEGORY && getParameters().get("nav_categories") != null) {
-                executeQuery = false;
-            }
-            
-            /* If using day navigator and sorting on day */
-            if (userSortBy == SortBy.DAY && getParameters().get("day") != null) {
-                executeQuery = false;
-            }
-            
-            if (executeQuery == false) {
-                return new BasicSearchResult(this);
-            }
         }
         
         final String waitOn = config.getWaitOn();
@@ -105,17 +95,15 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 return new BasicSearchResult(this);
             }
         }
-        LOG.debug("EXECUTING TvWaitSearchCommand");
-        return super.execute();
-    }
-    
-    public String getAdditionalFilter() {
-        LOG.debug("getAdditionalFilter()");
-        final int day = getParameters().containsKey("day") ? Integer.parseInt((String) getParameters().get("day")) - 1 : 0;
-        final StringBuilder filter = new StringBuilder();
-        final int index = config.getIndex();
         
-        if (index > 0) {
+        if (waitOn != null) {
+            /* Abort if navigator gave no result */
+            if (wosr.getHitCount() == 0) {
+                executeQuery = false;
+            }
+        }
+        
+        if (executeQuery && index > 0) {
             /* Abort all but the first command on one-command-searches */
             
             /* If using channel navigator and sorting by channels */
@@ -138,11 +126,19 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                     executeQuery = false;
                 }
             }
-            
-            if (executeQuery == false) {
-                return "";
-            }
         }
+        
+        if (executeQuery == false) {
+            return new BasicSearchResult(this);
+        }        
+        
+        return super.execute();
+    }
+    
+    public String getAdditionalFilter() {
+        LOG.debug("getAdditionalFilter()");
+        final int day = getParameters().containsKey("day") ? Integer.parseInt((String) getParameters().get("day")) - 1 : 0;
+        final StringBuilder filter = new StringBuilder();
         
         Calendar cal = Calendar.getInstance();
         
@@ -221,5 +217,12 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         }
         
         return filter.toString();
+    }
+    
+    /** Return offset to use when collecting results.
+     * @return Will always return 0
+     */
+    protected int getCurrentOffset(final int i) {
+        return 0;
     }
 }
