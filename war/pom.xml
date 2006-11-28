@@ -136,7 +136,7 @@
                 <finalName>ROOT</finalName>
             </build>
             <properties>
-                <msearch.configuration.url>http://mobile:8080/mobile/conf/msearch-client.properties</msearch.configuration.url>
+                <msearch.configuration.url>http://mobil:8080/mobil/conf/msearch-client.properties</msearch.configuration.url>
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
