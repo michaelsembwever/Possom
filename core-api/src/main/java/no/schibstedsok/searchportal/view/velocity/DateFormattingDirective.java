@@ -67,23 +67,23 @@ public final class DateFormattingDirective extends Directive {
         final String input = node.jjtGetChild(0).value(context).toString();
         String fDate = "";
         Map<String, String> map = new HashMap<String, String>();
-        map.put("01", "januar");
-        map.put("02", "februar");
-        map.put("03", "mars");
-        map.put("04", "april");
-        map.put("05", "mai");
-        map.put("06", "juni");
-        map.put("07", "juli");
-        map.put("08", "august");
-        map.put("09", "september");
-        map.put("10", "oktober");
-        map.put("11", "november");
-        map.put("12", "desember");
+        map.put("01", "Januar");
+        map.put("02", "Februar");
+        map.put("03", "Mars");
+        map.put("04", "April");
+        map.put("05", "Mai");
+        map.put("06", "Juni");
+        map.put("07", "Juli");
+        map.put("08", "August");
+        map.put("09", "September");
+        map.put("10", "Oktober");
+        map.put("11", "November");
+        map.put("12", "Desember");
 
         if (input.length() == 7)
             fDate = map.get(input.substring(0,2)) + " " + input.substring(3,7);
         else if (input.length() == 10)
-            fDate = input.substring(0, 2) + ". " + map.get(input.substring(3,5)) + " " + input.substring(6,10);
+            fDate = input.substring(0, 2) + ". " + map.get(input.substring(3,5)).toLowerCase() + " " + input.substring(6,10);
         else
             fDate = input;    
             
