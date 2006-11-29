@@ -356,6 +356,19 @@ public final class SearchTab {
         return Collections.unmodifiableList(ancestry);
     }
 
+    /**
+     * Holds value of property css.
+     */
+    private final List<String> css = new ArrayList<String>();
+
+    /**
+     * Getter for property css.
+     * @return Value of property css.
+     */
+    public List<String> getCss() {
+        return Collections.unmodifiableList(css);
+    }
+    
     // Inner classes -------------------------------------------------
 
     /** Immutable POJO holding Enrichment properties from a given tab.
@@ -568,18 +581,6 @@ public final class SearchTab {
         }
     }
 
-    /**
-     * Holds value of property css.
-     */
-    private final List<String> css = new ArrayList<String>();
-
-    /**
-     * Getter for property css.
-     * @return Value of property css.
-     */
-    public List<String> getCss() {
-        return Collections.unmodifiableList(css);
-    }
 
 
 
