@@ -24,6 +24,8 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.tools.generic.MathTool;
+import org.apache.velocity.tools.generic.DateTool;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -94,6 +96,8 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("decoder", new Decoder());
         // math tool
         context.put("math", new MathTool());
+        // date tool
+        context.put("date", new DateTool());
         return context;
     }
 
