@@ -223,7 +223,6 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <%}else if (currentC.equals("b") ) {%>
                 <decorator:getProperty property="page.feedback"/>
             <%} else if (currentC.equals("t")) {%>
-                <decorator:getProperty property="page.tvSearchWebTv"/>
                 <decorator:getProperty property="page.ads"/>
             <%} else {%>
                 <decorator:getProperty property="page.ads"/>
