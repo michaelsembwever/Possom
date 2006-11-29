@@ -10,13 +10,10 @@ import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.result.Decoder;
-import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
-import no.schibstedsok.searchportal.util.TradeDoubler;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
