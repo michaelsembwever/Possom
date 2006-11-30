@@ -152,7 +152,7 @@ public class ShareHoldersDirective extends Directive {
             return false;
         }
         // The text string from datafield which all the roledata is stored
-        String ypRoles = node.jjtGetChild(0).value(ica).toString();
+        String ypRoles = node.jjtGetChild(0).value(ica) != null ? node.jjtGetChild(0).value(ica).toString() : "";
 
         return internalRender(ypRoles, writer, node);
     }
