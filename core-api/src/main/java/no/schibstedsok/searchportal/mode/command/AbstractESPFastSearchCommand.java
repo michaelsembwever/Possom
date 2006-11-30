@@ -74,7 +74,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     /** {@inheritDoc} */
     public SearchResult execute() {
 
-
         try {
                                                   
             final StringBuilder filterBuilder = new StringBuilder();
@@ -100,13 +99,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             if (cfg.isCollapsingEnabled()) {
                 if (collapseId == null || collapseId.equals("")) {
-//                    query.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
-              
                     if (cfg.isCollapsingRemoves()) {
-//                        query.setParameter(new SearchParameter(BaseParameter.DUPLICATIONREMOVAL, true));
                         query.setParameter(new SearchParameter("collapseon", "batvcollapseid"));
                     }
-
                 } else {
                     filterBuilder.append("+collapseid:").append(collapseId);
                 }
@@ -176,10 +171,13 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
+
+    /** {@inheritDoc} */
+    protected String escapeFieldedLeaf(final LeafClause clause) {
+        return '"' + clause.getField() + ":" + getTransformedTerm(clause) + '"';
+    }
+
     // Generate query in FQL.
-
-
-
     /** {@inheritDoc} */
     protected void visitImpl(final AndClause clause) {
         // The leaf clauses might not produce any output. For example terms 
@@ -299,15 +297,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             if (currCollapseId == null || currCollapseId.equals("")) {
 
                 if (! document.getSummaryField("fcocount").isEmpty() && Integer.parseInt(document.getSummaryField("fcocount").getStringValue()) > 1) {
-                        item.addField("moreHits", "true");
-                        item.addField("collapseParameter", COLLAPSE_PARAMETER);
-                        item.addField("collapseId", document.getSummaryField("collapseid").getStringValue());
-                    }
+                    item.addField("moreHits", "true");
+                    item.addField("collapseParameter", COLLAPSE_PARAMETER);
+                    item.addField("collapseId", document.getSummaryField("collapseid").getStringValue());
                 }
             }
-            return item;
         }
-
-        // Inner classes -------------------------------------------------
+        return item;
     }
+    // Inner classes -------------------------------------------------
+}
 

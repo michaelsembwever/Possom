@@ -59,6 +59,8 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
         if (clause.getField() == null
                 && !getTransformedTerm(clause).trim().equals("")) {
             appendTermRepresentation(getTransformedTerm(clause));
+        } else if (getFieldFilter(clause) == null) {
+            appendTermRepresentation(escapeFieldedLeaf(clause));
         }
     }
     

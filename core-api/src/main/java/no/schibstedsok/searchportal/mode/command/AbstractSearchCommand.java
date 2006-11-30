@@ -244,9 +244,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             
         }else if(null == getFieldFilter(clause)){
             // we also accept terms with fields that haven't been permitted for the searchConfiguration
-            appendToQueryRepresentation(clause.getField() + "\\:" + transformedTerms.get(clause));
+            appendToQueryRepresentation(escapeFieldedLeaf(clause));
         }
     }
+
     /** TODO comment me. **/
     protected void visitImpl(final OperationClause clause) {
         clause.getFirstClause().accept(this);
@@ -298,6 +299,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
    // Protected -----------------------------------------------------
 
+
+    /**
+     * Returns the leaf representation with the special characters making it a fielded leaf escaped.
+     *
+     * @param clause The fielded leaf to escape.
+     * @return The escaped string representation of the leaf.
+     */
+    protected String escapeFieldedLeaf(final LeafClause clause) {
+        return clause.getField() + "\\:" + transformedTerms.get(clause);
+    }
 
     /** TODO comment me. **/
     protected final String performQueryTransformation(){
