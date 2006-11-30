@@ -21,7 +21,7 @@ public class BasicSearchResult implements SearchResult {
 
     private final SearchCommand searchCommand;
     /** TODO comment me. **/
-    protected int hitCount = -1;
+    private int hitCount = -1;
     private final List<SearchResultItem> results = new ArrayList<SearchResultItem>();
     private final Map<String,List<SpellingSuggestion>> spellingSuggestions = new HashMap<String,List<SpellingSuggestion>>();
     private final List<QuerySuggestion> querySuggestions = new ArrayList<QuerySuggestion>();

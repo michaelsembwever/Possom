@@ -53,12 +53,16 @@ public final class YellowSearchResult extends FastSearchResult {
             
             if (Integer.parseInt(item.getField("rank")) > 100000) {
 
-                if ((localResult == null || !localResult.getResults().contains(item)) &&
-                    (pseudoLocalResults == null || !pseudoLocalResult.getResults().contains(item)))
-                {
-                    resultsToAdd.add(item);
-                    ++addedTop3;
+                if (localResult != null && localResult.getResults().contains(item)) {
+                    localResult.getResults().remove(item);
                 }
+                
+                if (pseudoLocalResults != null && pseudoLocalResult.getResults().contains(item)) {
+                    pseudoLocalResult.getResults().remove(item);
+                }
+                
+                resultsToAdd.add(item);
+                ++addedTop3;
             }
         }
 
@@ -123,7 +127,7 @@ public final class YellowSearchResult extends FastSearchResult {
     }
 
     public int getHitCount() {
-        return getDelegator().getHitCount() + addedTop3;
+        return getDelegator().getHitCount();
     }
 
     public String getField(final String name) {
@@ -146,11 +150,11 @@ public final class YellowSearchResult extends FastSearchResult {
         int hits = 0;
 
         if (localResult != null) {
-            hits += localResult.hitCount;
+            hits += localResult.getHitCount();
         }
 
         if (pseudoLocalResult != null) {
-            hits += pseudoLocalResult.hitCount;
+            hits += pseudoLocalResult.getHitCount();
         }
 
 	hits += addedTop3;
