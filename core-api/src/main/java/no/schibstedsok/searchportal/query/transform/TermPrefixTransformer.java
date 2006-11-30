@@ -25,8 +25,6 @@ public final class TermPrefixTransformer extends AbstractQueryTransformer {
 
     private static final Logger LOG = Logger.getLogger(TermPrefixTransformer.class);
 
-    private static final String DEBUG_ADDING_PREFIX = "Adding prefix to term ";
-
     private String numberPrefix;
     private String prefix;
 
@@ -37,7 +35,7 @@ public final class TermPrefixTransformer extends AbstractQueryTransformer {
      * @param clause The clause to prefix.
      */
     public void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null) {
+        if (clause.getField() != null && getContext().getFieldFilter(clause) == null) {
             addPrefix(clause, getPrefix());
         }
     }
@@ -141,13 +139,13 @@ public final class TermPrefixTransformer extends AbstractQueryTransformer {
     private void addPrefix(final Clause clause, final String prefix) {
         final String term = (String) getTransformedTerms().get(clause);
 
-        if (!(term.equals("") || isAlreadyPrefixed(term))) {
+        if (!(term.equals("") || isAlreadyPrefixed(term, prefix))) {
             getTransformedTerms().put(clause, prefix + ':' + term);
         }
     }
 
-    private static boolean isAlreadyPrefixed(final String term) {
-        return term.indexOf(':') > -1;
+    private static boolean isAlreadyPrefixed(final String term, final String prefix) {
+        return term.indexOf(prefix + ':') > -1;
     }
 
     private Map getTransformedTerms() {

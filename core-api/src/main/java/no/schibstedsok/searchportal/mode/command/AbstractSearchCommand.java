@@ -236,16 +236,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
-
-        final String field = clause.getField();
-        if (null == field) {
-            // we accept terms without fields
-            appendToQueryRepresentation(getTransformedTerm(clause));
-            
-        }else if(null == getFieldFilter(clause)){
-            // we also accept terms with fields that haven't been permitted for the searchConfiguration
-            appendToQueryRepresentation(escapeFieldedLeaf(clause));
-        }
+        appendToQueryRepresentation(getTransformedTerm(clause));
     }
 
     /** TODO comment me. **/
@@ -307,7 +298,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @return The escaped string representation of the leaf.
      */
     protected String escapeFieldedLeaf(final LeafClause clause) {
-        return clause.getField() + "\\:" + transformedTerms.get(clause);
+        return clause.getField() + "\\:" + clause.getTerm();
     }
 
     /** TODO comment me. **/
@@ -532,6 +523,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 public void visitXorClause(Visitor visitor, XorClause clause){
                     AbstractSearchCommand.this.visitXorClause(visitor, clause);
                 }
+                public String getFieldFilter(final LeafClause clause) {
+                    return AbstractSearchCommand.this.getFieldFilter(clause);
+                }
             };
 
             for (QueryTransformer transformer : transformers) {
@@ -660,7 +654,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
    // Inner classes -------------------------------------------------
 
 
-    private static class MapInitialisor extends AbstractReflectionVisitor {
+    private class MapInitialisor extends AbstractReflectionVisitor {
 
         private final Map map;
 
@@ -669,7 +663,13 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         protected void visitImpl(final LeafClause clause) {
-            map.put(clause, clause.getTerm());
+            if (clause.getField() != null && getFieldFilter(clause) == null) {
+                // Escape any fielded leafs for fields that are not supported by this command.
+                // Performed here inorder to make the correct terms visible to the query transformers.
+                map.put(clause, escapeFieldedLeaf(clause));
+            } else {
+                map.put(clause, clause.getTerm());
+            }
         }
         protected void visitImpl(final OperationClause clause) {
             clause.getFirstClause().accept(this);

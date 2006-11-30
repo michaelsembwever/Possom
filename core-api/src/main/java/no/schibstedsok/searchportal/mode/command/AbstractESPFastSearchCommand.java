@@ -71,7 +71,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     }
 
     // Public --------------------------------------------------------
-    /** {@inheritDoc} */
+    /** {@insheritDoc} */
     public SearchResult execute() {
 
         try {
@@ -174,7 +174,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     /** {@inheritDoc} */
     protected String escapeFieldedLeaf(final LeafClause clause) {
-        return '"' + clause.getField() + ":" + getTransformedTerm(clause) + '"';
+        return '"' + clause.getField() + ":" + clause.getTerm() + '"';
     }
 
     // Generate query in FQL.

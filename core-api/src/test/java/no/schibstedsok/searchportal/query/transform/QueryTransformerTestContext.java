@@ -24,6 +24,7 @@ import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
+import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineTestContext;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
@@ -105,5 +106,10 @@ public final class QueryTransformerTestContext extends TestCase implements Query
 
     public void visitXorClause(Visitor visitor, XorClause clause) {
        clause.getFirstClause().accept(visitor);
+    }
+
+    public String getFieldFilter(final LeafClause clause) {
+        // TODO. Return some thing as AbstractSearchCommand.getFieldFilter
+        return null;
     }
 }

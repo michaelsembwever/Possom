@@ -11,6 +11,7 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.site.SiteContext;
 
@@ -41,6 +42,9 @@ public interface QueryTransformer extends Visitor, Cloneable{
         
         /** QueryTransformers must follow the same XorClause hints as the search command. **/
         void visitXorClause(Visitor visitor, XorClause clause);
+
+        /** QueryTransformers needs information about supported field filters. **/
+        String getFieldFilter(LeafClause clause);
     }
 
     /** TODO comment me. **/

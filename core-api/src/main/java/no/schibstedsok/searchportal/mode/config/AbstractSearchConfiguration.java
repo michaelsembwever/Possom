@@ -37,6 +37,8 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     private String queryParameter;
     private boolean alwaysRun = false;
 
+    private String prefix;
+
     private String statisticalName;
 
     /** TODO comment me. **/
@@ -54,6 +56,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
             child = asc.child;
             queryParameter = asc.queryParameter;
             alwaysRun = asc.alwaysRun;
+            prefix = asc.prefix;
         }
     }
 
