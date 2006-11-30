@@ -11,6 +11,7 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.UrlClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenMatch;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
@@ -285,6 +286,15 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             }
 
         }
+    }
+
+    /**
+     * Quote URL clauses. Otherwise the entire index is returned.
+     *
+     * @param clause The URL clause handle.
+     */
+    protected void visitImpl(final UrlClause clause) {
+        appendToQueryRepresentation(PREFIX_INTEGER + '"' + getTransformedTerm(clause) + '"');
     }
 
     /**
