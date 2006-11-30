@@ -269,17 +269,19 @@ public final class SyndicationGenerator {
             
             if (request.getParameter("c").equals("m")) {
                 if (request.getParameter("contentsource") != null && request.getParameter("contentsource").startsWith("Interna"))
-                    cxt.put("newstype", "- Internasjonale nyheter -");
+                    cxt.put("newstype", "- Internasjonale nyheter");
                 else if (request.getParameter("contentsource") != null && request.getParameter("contentsource").equals("Mediearkivet"))
-                    cxt.put("newstype", "- Papiraviser -");
+                    cxt.put("newstype", "- Papiraviser");
                 else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Sverige")) 
-                    cxt.put("newstype", "- Svenske nyheter -");
+                    cxt.put("newstype", "- Svenske nyheter");
                 else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Island")) 
-                    cxt.put("newstype", "- Islandske nyheter -");
+                    cxt.put("newstype", "- Islandske nyheter");
                 else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Finland")) 
-                    cxt.put("newstype", "- Finske nyheter -");
+                    cxt.put("newstype", "- Finske nyheter");
+                else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Danmark")) 
+                    cxt.put("newstype", "- Danske nyheter");
                 else
-                    cxt.put("newstype", "-");
+                    cxt.put("newstype", "- Norske nyheter");
             }
 
             final Template tpl = VelocityResultHandler.getTemplate(engine, site, templateUri);
