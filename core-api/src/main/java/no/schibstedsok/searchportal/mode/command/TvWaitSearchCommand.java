@@ -58,11 +58,14 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     /** Creates a new instance of TvWaitSearchCommand */
     public TvWaitSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
-        LOG.debug("Creating TvWaitSearchCommand");
-        this.config = (TvWaitSearchConfiguration) cxt.getSearchConfiguration();
-        final String usbp = getParameters().containsKey("userSortBy") ? ((String) getParameters().get("userSortBy")).toUpperCase() : "CHANNEL";
-        userSortBy = SortBy.valueOf(usbp);
+        
         blankQuery = cxt.getQuery().isBlank();
+        this.config = (TvWaitSearchConfiguration) cxt.getSearchConfiguration();
+        
+        final String defaultUserSortBy = blankQuery ? "CHANNEL" : "DAY";
+        final String usbp = getParameters().containsKey("userSortBy") ? ((String) getParameters().get("userSortBy")).toUpperCase() : defaultUserSortBy;
+        userSortBy = SortBy.valueOf(usbp);
+        
         
         final Object v = getParameters().get("offset");
         final int offset = Integer.parseInt(v instanceof String[] && ((String[]) v).length == 1 
@@ -108,21 +111,21 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             
             /* If using channel navigator and sorting by channels */
             if (userSortBy == SortBy.CHANNEL) {
-                if (getParameters().get("nav_channels") != null || wosr.getModifiers("channels").size() < index) {
+                if (getParameters().get("nav_channels") != null || wosr.getModifiers("channels").size() < index + 1 ) {
                     executeQuery = false;
                 }
             }
             
             /* If using category navigator and sorting by category */
             if (userSortBy == SortBy.CATEGORY) {
-                if (getParameters().get("nav_categories") != null || wosr.getModifiers("categories").size() < index) {
+                if (getParameters().get("nav_categories") != null || wosr.getModifiers("categories").size() < index + 1) {
                     executeQuery = false;
                 }
             }
             
             /* If using day navigator and sorting on day */
             if (userSortBy == SortBy.DAY) {
-                if (getParameters().get("day") != null || wosr.getModifiers("channels").size() < index) { 
+                if (getParameters().get("day") != null || wosr.getModifiers("channels").size() < index + 1) { 
                     executeQuery = false;
                 }
             }
@@ -137,15 +140,15 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     
     public String getAdditionalFilter() {
         LOG.debug("getAdditionalFilter()");
-        final int day = getParameters().containsKey("day") ? Integer.parseInt((String) getParameters().get("day")) - 1 : 0;
+        final int day = getParameters().containsKey("day") ? Integer.parseInt((String) getParameters().get("day")) : 0;
         final StringBuilder filter = new StringBuilder();
         
         Calendar cal = Calendar.getInstance();
+       
+         /* Adjust time to selected day */
+        cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * (SortBy.DAY == userSortBy ? index : day));
         
         if (userSortBy == SortBy.CHANNEL) {
-            /* Adjust time to selected day */
-            cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * day);
-            
             /* Starttime greater than now() or 05:00 on selected day */
             final String dateFmt = day == 0 ? "yyyy-MM-dd'T'HH:mm:ss'Z'" : "yyyy-MM-dd'T'05:00:00'Z'";
             filter.append("+starttime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
@@ -161,18 +164,16 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 filter.append("+").append(navigator.getField()).append(":").append(modifier.getName()).append(" ");
             }
         } else if (userSortBy == SortBy.DAY) {
-            /* Adjust time to selected day */
-            cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * index);
-            
-            /* Startime greater than now() or 05:00 selected day */
-            if (index == 0) {
-                filter.append("+starttime:>").append(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(cal.getTime())).append(" ");
-            } else {
-                filter.append("+starttime:>").append(new SimpleDateFormat("yyyy-MM-dd'T05:00:00Z'").format(cal.getTime())).append(" ");
-            }
+            /* Starttime greater than now() or 05:00 on selected day */
+            final String dateFmt = index == 0 ? "yyyy-MM-dd'T'HH:mm:ss'Z'" : "yyyy-MM-dd'T'05:00:00'Z'";
+            filter.append("+starttime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
         
-            /* Starttime less than 05:00 the next day */
-            cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY);
+            /* Starttime less than 05:00 the next day or less than 05:00 seven days from now for the navigator */
+            if (config.getWaitOn() != null) {
+                cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY);
+            } else {
+                cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * 7);
+            }
             filter.append("+starttime:<").append(new SimpleDateFormat("yyyy-MM-dd'T05:00:00Z'").format(cal.getTime())).append(" ");
             
             /* Use channels navigator to add filter for top 5 channels */
@@ -187,9 +188,6 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             }
             
         } else if (userSortBy == SortBy.CATEGORY) {
-            /* Adjust time to selected day */
-            cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * day);
-            
             /* Starttime greater than now() or 05:00 on selected day */
             final String dateFmt = day == 0 ? "yyyy-MM-dd'T'HH:mm:ss'Z'" : "yyyy-MM-dd'T'05:00:00'Z'";
             filter.append("+starttime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
