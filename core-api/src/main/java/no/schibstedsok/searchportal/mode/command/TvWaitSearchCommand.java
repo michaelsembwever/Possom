@@ -125,7 +125,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             
             /* If using day navigator and sorting on day */
             if (userSortBy == SortBy.DAY) {
-                if (getParameters().get("day") != null || wosr.getModifiers("channels").size() < index + 1) { 
+                if (getParameters().get("day") != null) { 
                     executeQuery = false;
                 }
             }
