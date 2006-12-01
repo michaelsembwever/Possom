@@ -220,4 +220,9 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     public void clearResultHandlers() {
         resultHandlers.clear();
     }
+    
+    /** {@inheritDoc} **/
+    public void clearFieldFilters() {
+        fieldFilters.clear();
+    }
 }

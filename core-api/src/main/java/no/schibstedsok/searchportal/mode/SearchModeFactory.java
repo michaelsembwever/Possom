@@ -397,17 +397,24 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     asc.setName(id);
                     fillBeanProperty(sc, inherit, "alwaysRun", ParseType.Boolean , commandE, "false");
 
-                    if(commandE.getAttribute("field-filters").length() >0){
-                        final String[] fieldFilters = commandE.getAttribute("field-filters").split(",");
-                        for(String fieldFilter : fieldFilters){
-                            if(fieldFilter.contains(" AS ")){
-                                final String[] ff = fieldFilter.split(" AS ");
-                                asc.addFieldFilter(ff[0].trim(), ff[1].trim());
-                            }else{
-                                asc.addFieldFilter(fieldFilter, fieldFilter);
+                    if (commandE.hasAttribute("field-filters")) {
+                        if(commandE.getAttribute("field-filters").length() >0){
+                            final String[] fieldFilters = commandE.getAttribute("field-filters").split(",");
+                            for(String fieldFilter : fieldFilters){
+                                if(fieldFilter.contains(" AS ")){
+                                    final String[] ff = fieldFilter.split(" AS ");
+                                    asc.addFieldFilter(ff[0].trim(), ff[1].trim());
+                                }else{
+                                    asc.addFieldFilter(fieldFilter, fieldFilter);
+                                }
                             }
+                        } else {
+                            // If attribute is present and empty, clear the field filters. This creates an option
+                            // for child commands to not inherit field filters.
+                            asc.clearFieldFilters();
                         }
                     }
+
                     fillBeanProperty(sc, inherit, "paging", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "queryParameter", ParseType.String , commandE, "");
 

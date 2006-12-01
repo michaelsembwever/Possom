@@ -111,4 +111,9 @@ public interface SearchConfiguration {
 
     /** TODO comment me. **/
     void clearResultHandlers();
+
+    /**
+     * Removes all field filters associated with this configuration.
+     */
+    void clearFieldFilters();
 }

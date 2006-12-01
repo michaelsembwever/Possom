@@ -93,10 +93,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     // Constructors --------------------------------------------------
 
     /**
-     * @param query         The query to act on.
-     * @param configuration The search configuration associated with this
-     *                      command.
-     * @param parameters    Command parameters.
+     * @param cxt The context to execute in.
+     * @param parameters The search parameters to use.
      */
     public AbstractSearchCommand(final SearchCommand.Context cxt,
                                  final Map<String,Object> parameters) {
@@ -665,7 +663,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         protected void visitImpl(final LeafClause clause) {
             if (clause.getField() != null && getFieldFilter(clause) == null) {
                 // Escape any fielded leafs for fields that are not supported by this command.
-                // Performed here inorder to make the correct terms visible to the query transformers.
+                // Performed here in order to make the correct terms visible to the query transformers.
                 map.put(clause, escapeFieldedLeaf(clause));
             } else {
                 map.put(clause, clause.getTerm());
