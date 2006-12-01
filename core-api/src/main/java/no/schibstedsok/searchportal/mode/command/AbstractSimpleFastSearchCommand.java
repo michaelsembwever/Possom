@@ -869,8 +869,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             while (modifers.hasNext()) {
                 IModifier modifier = (IModifier) modifers.next();
-                Modifier mod = new Modifier(modifier.getName(), modifier.getCount(), nav);
-                searchResult.addModifier(navigatorKey, mod);
+                if (!navigatedValues.containsKey(nav.getField()) || modifier.getName().equals(navigatedValues.get(nav.getField())[0])) {
+                    Modifier mod = new Modifier(modifier.getName(), modifier.getCount(), nav);
+                    searchResult.addModifier(navigatorKey, mod);
+                }
             }
 
             if (searchResult.getModifiers(navigatorKey) != null) {
