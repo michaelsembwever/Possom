@@ -34,8 +34,8 @@ public final class TermPrefixTransformer extends AbstractQueryTransformer {
      *
      * @param clause The clause to prefix.
      */
-    public void visitImpl(final LeafClause clause) {
-        if (clause.getField() != null && getContext().getFieldFilter(clause) == null) {
+     public void visitImpl(final LeafClause clause) {
+        if (clause.getField() == null || getContext().getFieldFilter(clause) == null) {
             addPrefix(clause, getPrefix());
         }
     }
