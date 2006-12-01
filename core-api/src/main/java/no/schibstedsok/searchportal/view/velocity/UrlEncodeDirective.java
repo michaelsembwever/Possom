@@ -66,7 +66,7 @@ public final class UrlEncodeDirective extends Directive {
 
         String charset = DEFAULT_CHARSET;
 
-        final String input = node.jjtGetChild(0).value(context).toString();
+        final String input = node.jjtGetChild(0).value(context) != null ? node.jjtGetChild(0).value(context).toString() : "";
 
         if (node.jjtGetNumChildren() == 2) {
             charset = node.jjtGetChild(1).value(context).toString();
