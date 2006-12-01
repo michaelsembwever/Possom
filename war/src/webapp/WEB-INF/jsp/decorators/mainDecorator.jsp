@@ -184,7 +184,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 
         <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
 	<%}else {%>
-            <%if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn") || currentC.equals("t") || currentC.equals("wt")) {%>
+            <%if (currentC.equals("d") || currentC.equals("g") || currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn") || currentC.equals("t") || currentC.equals("wt")) {%>
                 <search:velocity template="fragments/middlebar" />
             <% }else if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
             <% }else { %>
