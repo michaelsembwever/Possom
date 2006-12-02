@@ -19,7 +19,10 @@ public final class Navigator implements Serializable {
     
     public enum Sort {
         COUNT(),
-        CHANNEL();
+        CHANNEL(),
+        YEAR(),
+        MONTH_YEAR(),
+        DAY_MONTH_YEAR(),
     }
     
     /** TODO comment me. **/

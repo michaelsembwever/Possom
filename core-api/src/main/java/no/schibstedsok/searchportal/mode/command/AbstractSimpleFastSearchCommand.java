@@ -56,6 +56,7 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.view.spell.RelevantQuery;
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 import no.schibstedsok.searchportal.util.Channels;
+import no.schibstedsok.searchportal.util.ModifierDateComparator;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -880,6 +881,15 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                     case CHANNEL:
                         final Channels channels = (Channels) getParameters().get("channels");
                         Collections.sort(searchResult.getModifiers(navigatorKey), channels.getComparator());
+                        break;
+                    case DAY_MONTH_YEAR:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.DAY_MONTH_YEAR);
+                        break;
+                    case YEAR:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR);
+                        break;
+                    case MONTH_YEAR:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.MONTH_YEAR);
                         break;
                     case COUNT:
                         /* Fall through */
