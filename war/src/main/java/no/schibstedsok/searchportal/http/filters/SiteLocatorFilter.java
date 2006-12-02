@@ -93,6 +93,7 @@ public final class SiteLocatorFilter implements Filter {
         request.setAttribute(Site.NAME_KEY, site);
         request.setAttribute("startTime", START_TIME);
         MDC.put(Site.NAME_KEY, site.getName());
+        MDC.put("UNIQUE_ID", getRequestId(request));
     }
 
     private void doAfterProcessing(final ServletRequest request, final ServletResponse response)
@@ -331,5 +332,10 @@ public final class SiteLocatorFilter implements Filter {
     }
     
     
-
+    private static String getRequestId(final ServletRequest servletRequest){
+        
+        return null != servletRequest.getAttribute("UNIQUE_ID")
+                ? (String)servletRequest.getAttribute("UNIQUE_ID")
+                : String.valueOf(System.currentTimeMillis());
+    }
 }
