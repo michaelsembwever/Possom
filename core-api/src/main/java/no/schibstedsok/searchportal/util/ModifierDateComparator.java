@@ -18,9 +18,9 @@ import org.apache.log4j.Logger;
  */
 public enum ModifierDateComparator implements Comparator<Modifier> {
 
-    YEAR("Y"),
-    MONTH_YEAR("M-Y"),
-    DAY_MONTH_YEAR("d-M-Y");
+    YEAR("y"),
+    MONTH_YEAR("M-y"),
+    DAY_MONTH_YEAR("d-M-y");
 
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
     private static final String ERR_PARSE_ERROR = "Unable to parse date {0} or {1}";
