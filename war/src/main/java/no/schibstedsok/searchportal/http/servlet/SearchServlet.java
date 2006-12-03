@@ -166,6 +166,7 @@ public final class SearchServlet extends HttpServlet {
         request.setAttribute("contextPath", request.getContextPath());
         request.setAttribute("linkpulse", new Linkpulse(site, props));
         request.setAttribute("tradedoubler", new TradeDoubler(request));
+        request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
 
         try {
 
@@ -192,6 +193,7 @@ public final class SearchServlet extends HttpServlet {
                 "<search-servlet>"
                     + "<query>" + query.getQueryString() + "</query>"
                     + "<time>" + stopWatch + "</time>"
+                    + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
                 + "</search-servlet>");
 
 

@@ -57,7 +57,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private static final String FIELD_TRANSFORMED_QUERY = "transformedQuery";
 
     private static final Logger LOG = Logger.getLogger(AbstractSearchCommand.class);
-    private static final Logger STATISTICS_LOG = Logger.getLogger("no.schibstedsok.Statistics");
 
     private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_TRANSFORMED_QUERY_USED
@@ -368,7 +367,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             watch.stop();
             LOG.info("Search " + getSearchConfiguration().getName() + " took " + watch);
 
-            STATISTICS_LOG.info(
+            ((StringBuffer)parameters.get("no.schibstedsok.Statistics")).append(
                 "<search-command name=\"" + getSearchConfiguration().getStatisticalName() + "\">"
                     + "<query>" + context.getQuery().getQueryString() + "</query>"
                     + "<search-name>" + getClass().getSimpleName() + "</search-name>"
