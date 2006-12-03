@@ -31,7 +31,7 @@
 <testelement class="org.apache.jmeter.threads.ThreadGroup">
 <property xml:space="preserve" name="ThreadGroup.scheduler" propType="org.apache.jmeter.testelement.property.BooleanProperty">false</property>
 <property xml:space="preserve" name="ThreadGroup.duration" propType="org.apache.jmeter.testelement.property.StringProperty"/>
-<property xml:space="preserve" name="ThreadGroup.num_threads" propType="org.apache.jmeter.testelement.property.StringProperty">15</property>
+<property xml:space="preserve" name="ThreadGroup.num_threads" propType="org.apache.jmeter.testelement.property.StringProperty">30</property>
 <property xml:space="preserve" name="ThreadGroup.delay" propType="org.apache.jmeter.testelement.property.StringProperty"/>
 <property xml:space="preserve" name="TestElement.gui_class" propType="org.apache.jmeter.testelement.property.StringProperty">org.apache.jmeter.threads.gui.ThreadGroupGui</property>
 <property xml:space="preserve" name="ThreadGroup.start_time" propType="org.apache.jmeter.testelement.property.LongProperty">1159861671000</property>
