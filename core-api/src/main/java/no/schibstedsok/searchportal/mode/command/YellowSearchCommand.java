@@ -6,6 +6,7 @@ package no.schibstedsok.searchportal.mode.command;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
@@ -162,7 +163,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
     /** TODO comment me. **/
     public String getTransformedQuery() {
 
-        final String t = super.getTransformedQuery();
+        String t = super.getTransformedQuery();
 
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
@@ -173,15 +174,17 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
         if (companyRank) {
             return t.replaceAll("yellowphon", "yellownamephon");
         }
+        
+        t = t.replaceAll("-", QL_AND + PREFIX_PHONETIC);
 
         if (isTop3) {
-            return t.replaceAll("yellowphon:", "").replaceAll("-", " ");
+            return t.replaceAll("yellowphon:", "");
         }
 
         if (isLocal) {
-            return t.replaceAll("-", " ");
+            return t;
         } else {
-            return t.replaceAll("yellowphon", "yellowgeophon").replaceAll("-", " ");
+            return t.replaceAll("yellowphon", "yellowgeophon");
         }
     }
 
@@ -234,8 +237,8 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
     // Query Builder
 
-    private static final String PREFIX_INTEGER="yellowpages:";
-    private static final String PREFIX_PHONETIC="yellowphon:";
+    private static final String PREFIX_INTEGER = "yellowpages:";
+    private static final String PREFIX_PHONETIC = "yellowphon:";
 
     /**
      * Adds non phonetic prefix to integer terms.
@@ -270,10 +273,10 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
      */
     protected void visitImpl(final LeafClause clause) {
         
-        if (clause.getField() == null) {
+        if (null == clause.getField()) {
             if (!getTransformedTerm(clause).equals("")) {
                 appendToQueryRepresentation(PREFIX_PHONETIC 
-                        + getTransformedTerm(clause).replaceAll("\\.", " "));
+                        + getTransformedTerm(clause).replaceAll("\\.", QL_AND + PREFIX_PHONETIC));
             }
             
         }else if(null == getFieldFilter(clause)){
@@ -281,7 +284,8 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             if (!getTransformedTerm(clause).equals("")) {
                 // we also accept terms with fields that haven't been permitted for the searchConfiguration
                 appendToQueryRepresentation(PREFIX_PHONETIC 
-                        + clause.getField() + "\\:" + getTransformedTerm(clause).replaceAll("\\.", " "));
+                        + clause.getField() + "\\:" 
+                        + getTransformedTerm(clause).replaceAll("\\.", QL_AND + PREFIX_PHONETIC)); 
                 
             }
 
@@ -305,13 +309,17 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
      * against the yellow index.
      */
     protected void visitXorClause(final Visitor visitor, final XorClause clause) {
+        
         // If we have a match on an international phone number, but it is not recognized as
         // a local phone number, force it to use the original number string.
         if (clause.getHint() == XorClause.Hint.PHONE_NUMBER_ON_LEFT
                 && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
+            
             clause.getSecondClause().accept(visitor);
+            
         } else if(XorClause.Hint.PHRASE_ON_LEFT == clause.getHint()){
             clause.getSecondClause().accept(visitor);
+            
         } else {
             super.visitXorClause(visitor, clause);
         }

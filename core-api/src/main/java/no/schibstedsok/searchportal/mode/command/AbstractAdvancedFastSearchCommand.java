@@ -16,10 +16,10 @@ import java.util.Map;
  */
 public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFastSearchCommand {
     // Query Language Operators and Terms
-    private static final String QL_AND = " AND ";
-    private static final String QL_OR = " OR ";
-    private static final String QL_ANDNOT = " ANDNOT ";
-    private static final String QL_TRUE = "#";
+    protected static final String QL_AND = " AND ";
+    protected static final String QL_OR = " OR ";
+    protected static final String QL_ANDNOT = " ANDNOT ";
+    protected static final String QL_TRUE = "#";
 
     /**
      * Creates new advanced commmand.

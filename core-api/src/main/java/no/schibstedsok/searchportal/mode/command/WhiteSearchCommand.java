@@ -23,8 +23,8 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
  */
 public class WhiteSearchCommand extends CorrectingFastSearchCommand {
 
-    private static final String PREFIX_INTEGER="whitepages:";
-    private static final String PREFIX_PHONETIC="whitephon:";
+    private static final String PREFIX_INTEGER = "whitepages:";
+    private static final String PREFIX_PHONETIC = "whitephon:";
 
     /**
      *
@@ -67,10 +67,10 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
      */
     protected void visitImpl(final LeafClause clause) {
         
-        if (clause.getField() == null) {
+        if (null == clause.getField()) {
             if (!getTransformedTerm(clause).equals("")) {
                 appendToQueryRepresentation(PREFIX_PHONETIC 
-                        + getTransformedTerm(clause).replaceAll("\\.", " "));
+                        + getTransformedTerm(clause).replaceAll("\\.|-", QL_AND + PREFIX_PHONETIC));
             }
             
         }else if(null == getFieldFilter(clause)){
@@ -78,7 +78,8 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
             if (!getTransformedTerm(clause).equals("")) {
                 // we also accept terms with fields that haven't been permitted for the searchConfiguration
                 appendToQueryRepresentation(PREFIX_PHONETIC 
-                        + clause.getField() + "\\:" + getTransformedTerm(clause).replaceAll("\\.", " "));
+                        + clause.getField() + "\\:" 
+                        + getTransformedTerm(clause).replaceAll("\\.|-", QL_AND + PREFIX_PHONETIC));
                 
             }
 
@@ -93,13 +94,19 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
      * possible against the white index.
      */
     protected void visitXorClause(final Visitor visitor, final XorClause clause) {
+        
         // If we have a match on an international phone number, but it is not recognized as
         // a local phone number, force it to use the original number string.
         if (clause.getHint() == XorClause.Hint.PHONE_NUMBER_ON_LEFT
                 && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
+            
             clause.getSecondClause().accept(visitor);
-        } else if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT || clause.getHint() == XorClause.Hint.NUMBER_GROUP_ON_LEFT) {
+            
+        } else if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT 
+                || clause.getHint() == XorClause.Hint.NUMBER_GROUP_ON_LEFT) {
+            
             clause.getSecondClause().accept(visitor);
+            
         } else {
             clause.getFirstClause().accept(visitor);
         }
