@@ -130,7 +130,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             </div>
         </div>        
     <% } else { %>
-        <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("sw") || currentC.equals("b") )) {%>
+        <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("pp") || currentC.equals("sw") || currentC.equals("b") )) {%>
             <decorator:getProperty property="page.newsearch-bar"/>
 	<% }else if(q.trim().equals("") && currentC.equals("d") && publish) {%>
 	    <decorator:getProperty property="page.omsesam-bar"/>
@@ -168,7 +168,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                         <search:velocity template="navigators/scanpix" command="scanpix"/>
                         <decorator:getProperty property="page.blogDateNavigation"/>
 
-                        <c:if test='${!(empty tab.rssResultName)}'>
+                        <c:if test='${tab.showRss}'>
                             <decorator:getProperty property="page.rss-nav"/>
                         </c:if>
                     </td>
@@ -195,7 +195,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <decorator:getProperty property="page.publishing_page"/>
         <decorator:getProperty property="page.spellcheck"/>
         <decorator:getProperty property="page.main_ads"/>
-        <%if (currentC.equals("d") || "g".equals(currentC) || "pss".equals(currentC)) {%>                      
+        <%if (currentC.equals("d") || "g".equals(currentC) ) {%>    
             <search:velocity template="/enrichments/enrichment-handler"/>
         <% } else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
         <% } else if (currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip")) {%>

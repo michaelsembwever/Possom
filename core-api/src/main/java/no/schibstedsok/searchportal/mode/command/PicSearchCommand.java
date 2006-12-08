@@ -68,29 +68,32 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
         LOG.info("Using " + url);
 
-        final Document doc = doSearch(url);
-
         final BasicSearchResult searchResult = new BasicSearchResult(this);
+            
+        if( psConfig.getQueryServerPort() > 0 ){
+            
+            final Document doc = doSearch(url);
 
-        if (doc != null) {
+            if (doc != null) {
 
-            final Element resultElement = doc.getDocumentElement();
+                final Element resultElement = doc.getDocumentElement();
 
-            searchResult.setHitCount(Integer.parseInt(resultElement.getAttribute("hits")));
+                searchResult.setHitCount(Integer.parseInt(resultElement.getAttribute("hits")));
 
-            final NodeList list = resultElement.getElementsByTagName("image");
-            for (int i = 0; i < list.getLength(); i++) {
+                final NodeList list = resultElement.getElementsByTagName("image");
+                for (int i = 0; i < list.getLength(); i++) {
 
-                final Element picture = (Element) list.item(i);
+                    final Element picture = (Element) list.item(i);
 
-                final BasicSearchResultItem item = new BasicSearchResultItem();
+                    final BasicSearchResultItem item = new BasicSearchResultItem();
 
-                for (final Map.Entry<String,String> entry : psConfig.getResultFields().entrySet()) {
+                    for (final Map.Entry<String,String> entry : psConfig.getResultFields().entrySet()) {
 
-                    item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
+                        item.addField(entry.getValue(), picture.getAttribute(entry.getKey()));
+                    }
+                    searchResult.addResult(item);
+
                 }
-                searchResult.addResult(item);
-
             }
         }
         return searchResult;
@@ -111,6 +114,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     }
     
     private Document doSearch(final String url) {
+        
         try {
             return client.getXmlDocument("picture_search", url);
         } catch (IOException e) {

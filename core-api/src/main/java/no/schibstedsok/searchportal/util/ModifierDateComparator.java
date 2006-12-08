@@ -18,21 +18,29 @@ import org.apache.log4j.Logger;
  */
 public enum ModifierDateComparator implements Comparator<Modifier> {
 
-    YEAR("y"),
-    MONTH_YEAR("M-y"),
-    DAY_MONTH_YEAR("d-M-y");
+    YEAR("y",SortOrder.DESCENDING),
+    MONTH_YEAR("M-y", SortOrder.ASCENDING),
+    DAY_MONTH_YEAR("d-M-y", SortOrder.ASCENDING),
+    DAY_MONTH_YEAR_DESCENDING("d-M-y", SortOrder.DESCENDING);
 
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
     private static final String ERR_PARSE_ERROR = "Unable to parse date {0} or {1}";
-
+                
     private final String format;
+    private final SortOrder sortOrder;
+
+    private enum SortOrder {
+        ASCENDING,
+        DESCENDING,
+    }
 
     /**
      *
      * @param format A DateFormat string.
      */
-    ModifierDateComparator(final String format) {
+    ModifierDateComparator(final String format, final SortOrder sortOrder) {
         this.format = format;
+        this.sortOrder = sortOrder;
     }
 
     /** @{inheritDoc} */
@@ -45,8 +53,14 @@ public enum ModifierDateComparator implements Comparator<Modifier> {
             final Date d1 = fmt.parse(m1.getName());
             final Date d2 = fmt.parse(m2.getName());
 
-            return d2.compareTo(d1);
-
+            switch(sortOrder) {
+                case ASCENDING:
+                    return d1.compareTo(d2);
+                case DESCENDING:
+                    return d2.compareTo(d1);
+                default:
+                    return d2.compareTo(d1);
+            }
         } catch (ParseException e) {
             LOG.warn(MessageFormat.format(ERR_PARSE_ERROR, m1.getName(), m2.getName()));
             return 0;

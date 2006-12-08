@@ -885,6 +885,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                     case DAY_MONTH_YEAR:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.DAY_MONTH_YEAR);
                         break;
+                    case DAY_MONTH_YEAR_DESCENDING:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.DAY_MONTH_YEAR_DESCENDING);
+                        break;
                     case YEAR:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR);
                         break;

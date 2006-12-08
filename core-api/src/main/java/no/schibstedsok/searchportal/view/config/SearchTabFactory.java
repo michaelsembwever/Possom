@@ -274,6 +274,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     key,
                     parentKey,
                     tabE.getAttribute("rss-result-name"),
+                    parseBoolean(tabE.getAttribute("rss-hidden"), false),
                     parseInt(tabE.getAttribute("page-size"), inherit != null ? inherit.getPageSize() : -1),
                     navigations,
                     parseInt(tabE.getAttribute("enrichment-limit"), inherit != null ? inherit.getEnrichmentLimit() : -1),

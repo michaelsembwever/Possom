@@ -138,6 +138,15 @@ public final class SearchServlet extends HttpServlet {
             return;
         }
 
+        // If the rss is hidden, require a partnerId. The security by obscurity has been somewhat improved by the
+        // addition of rssPartnerId as a md5-protected parameter (MD5ProtectedParametersFilter). 
+        if (request.getParameter("output") != null && request.getParameter("output").equals("rss")) {
+            if (searchTab.getRssHidden() && request.getParameter("rssPartnerId") == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+        }
+
         final SearchMode mode = SearchModeFactory.valueOf(
                 ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
                 .getMode(searchTab.getMode());

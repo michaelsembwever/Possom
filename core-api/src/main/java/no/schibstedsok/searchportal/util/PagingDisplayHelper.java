@@ -43,6 +43,10 @@ public class PagingDisplayHelper {
         return pageSize;
     }
 
+    public final void setPageSize(final int pageSize) {
+        this.pageSize = pageSize;
+    }
+    
     public boolean isFirstPage() {
         return getCurrentPage() == 1;
     }

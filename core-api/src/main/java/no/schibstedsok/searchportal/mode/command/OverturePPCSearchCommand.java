@@ -100,10 +100,14 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
         try {
             url.append("&Partner=" + getPartnerId());
+            if( null != ppcConfig.getType() && ppcConfig.getType().length() > 0){
+                url.append("&type=" + ppcConfig.getType());
+            }
             url.append("&Keywords=");
             url.append(URLEncoder.encode(getTransformedQuery().replace(' ', '+'), ppcConfig.getEncoding()));
             url.append("&maxCount=");
             url.append(getResultsToReturn());
+            
         }  catch (UnsupportedEncodingException e) {
             throw new InfrastructureException(e);
         }

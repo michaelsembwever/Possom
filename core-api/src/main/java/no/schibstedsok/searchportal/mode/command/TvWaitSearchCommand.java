@@ -72,10 +72,10 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 ? ((String[]) v)[0]
                 : (String) v);
      
-        if (userSortBy == SortBy.DAY || !config.isPaging()) {
+        if (userSortBy == SortBy.DAY || !config.isPaging() || config.getIndex() == -1) {
             index = config.getIndex();
         } else {
-            index = config.getIndex() + (offset * 8);
+            index = config.getIndex() + (offset);
         }
     }
     

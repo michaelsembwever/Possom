@@ -17,6 +17,7 @@ import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.common.ioc.BaseContext;
@@ -54,6 +55,10 @@ import org.apache.log4j.Logger;
  * @version <tt>$Revision$</tt>
  */
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {
+    
+    private final int TIMEOUT = Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) 
+            ? 10000 
+            : Integer.MAX_VALUE;
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.searchportal.analyzer.Analysis");
@@ -307,12 +312,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             // mark state that we're about to execute the sub threads
             allCancelled = true;
 
-            final int timeout = Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) ? 10000 : Integer.MAX_VALUE;
-            
             /* Entering CS */
             resultsLock.writeLock().lock();
             try {
-                context.getSearchMode().getExecutor().invokeAll(commands, results, timeout);
+                context.getSearchMode().getExecutor().invokeAll(commands, results, TIMEOUT);
             } finally {
                 /* Leaving CS */
                 resultsLock.writeLock().unlock();
@@ -324,7 +327,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             /* Give the commands a chance to finish its work */
             for (Future<SearchResult> task : results.values()) {
-                task.get(timeout, TimeUnit.MILLISECONDS);
+                try{
+                    task.get(TIMEOUT, TimeUnit.MILLISECONDS);
+                }catch(TimeoutException te){
+                    LOG.error(ERR_EXECUTION_ERROR, te);
+                }
             }
             
             // Ensure any cancellations are properly handled

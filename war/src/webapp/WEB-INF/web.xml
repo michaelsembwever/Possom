@@ -51,7 +51,7 @@
         </init-param>
         <init-param>
             <param-name>protectedParameters</param-name>
-            <param-value>companyId,personId,emailTo</param-value>
+            <param-value>companyId,personId,emailTo,rssPartnerId</param-value>
         </init-param>
     </filter>
 

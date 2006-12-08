@@ -46,6 +46,7 @@ public final class SearchTab {
                 final String key,
                 final String parentKey,
                 final String rssResultName,
+                final boolean rssHidden,
                 final int pageSize,
                 final Collection<NavigatorHint> navigations,
                 final int enrichmentLimit,
@@ -88,6 +89,7 @@ public final class SearchTab {
         this.rssResultName = rssResultName;
         this.css.addAll(css);
         this.absoluteOrdering = absoluteOrdering;
+        this.rssHidden = rssHidden;
     }
 
     // Getters --------------------------------------------------------
@@ -240,6 +242,20 @@ public final class SearchTab {
         return rssResultName;
     }
 
+    private final boolean rssHidden;
+
+    /**
+     * Returns true if there should be no visible links to the rss version of this tab.
+     *
+     * @return true if hidden.
+     */
+    public boolean getRssHidden() {
+        return rssHidden;
+    }
+    
+    public boolean getShowRss() {
+        return rssResultName != "" && !getRssHidden();
+    }
 
     /**
      * Holds the value of property absoluteOrdering

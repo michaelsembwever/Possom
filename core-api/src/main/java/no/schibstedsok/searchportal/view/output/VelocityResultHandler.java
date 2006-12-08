@@ -238,7 +238,8 @@ public final class VelocityResultHandler implements ResultHandler {
             pager.setCurrentOffset(Integer.parseInt(v instanceof String[]
                     ? ((String[]) v)[0]
                     : (String) v));
-
+            pager.setPageSize(cxt.getSearchTab().getPageSize());
+            
             context.put("pager", pager);
         }
     }
