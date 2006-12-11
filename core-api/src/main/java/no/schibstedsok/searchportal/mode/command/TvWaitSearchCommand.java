@@ -54,7 +54,9 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     
     /** Execute query */
     private boolean executeQuery = true;
-    
+
+    /** Channels to exclude from blank query */
+    private static final String excludeFilter = "-sgeneric5nav:'star' -sgeneric5nav:'reality' -sgeneric5nav:'club' -sgeneric5nav:'jetix' -sgeneric5nav:'tv8' -sgeneric5nav:'ztvsve' -sgeneric5nav:'extreme' -sgeneric5nav:'pro7' -sgeneric5nav:'rtl2' -sgeneric5nav:'dsf' -sgeneric5nav:'eurospo2' -sgeneric5nav:'3sat' -sgeneric5nav:'sat1' -sgeneric5nav:'tv3pldan' -sgeneric5nav:'tv3dan' -sgeneric5nav:'tv3sve' -sgeneric5nav:'bbcfood' -sgeneric5nav:'cnbcnatgeoch' -sgeneric5nav:'skyntgeo' -sgeneric5nav:'dr2' -sgeneric5nav:'rtl1' -sgeneric5nav:'tcmcartoon' -sgeneric5nav:'kanal5' -sgeneric5nav:'toondisney' -sgeneric5nav:'dtravel'";
     /** Creates a new instance of TvWaitSearchCommand */
     public TvWaitSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
@@ -146,12 +148,12 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         Calendar cal = Calendar.getInstance();
        
          /* Adjust time to selected day */
-        cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * (SortBy.DAY == userSortBy ? index : day));
+        cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * (SortBy.DAY == userSortBy && getParameters().get("day") == null ? index : day));
         
         if (userSortBy == SortBy.CHANNEL) {
             /* Starttime greater than now() or 05:00 on selected day */
             final String dateFmt = day == 0 ? "yyyy-MM-dd'T'HH:mm:ss'Z'" : "yyyy-MM-dd'T'05:00:00'Z'";
-            filter.append("+starttime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
+            filter.append("+endtime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
             
             /* Starttime less than 05:00 the next day */
             cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY);
@@ -166,7 +168,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         } else if (userSortBy == SortBy.DAY) {
             /* Starttime greater than now() or 05:00 on selected day */
             final String dateFmt = index == 0 ? "yyyy-MM-dd'T'HH:mm:ss'Z'" : "yyyy-MM-dd'T'05:00:00'Z'";
-            filter.append("+starttime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
+            filter.append("+endtime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
         
             /* Starttime less than 05:00 the next day or less than 05:00 seven days from now for the navigator */
             if (config.getWaitOn() != null) {
@@ -190,7 +192,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         } else if (userSortBy == SortBy.CATEGORY) {
             /* Starttime greater than now() or 05:00 on selected day */
             final String dateFmt = day == 0 ? "yyyy-MM-dd'T'HH:mm:ss'Z'" : "yyyy-MM-dd'T'05:00:00'Z'";
-            filter.append("+starttime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
+            filter.append("+endtime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
             
             /* Starttime less than 05:00 the next day */
             cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY);
@@ -209,9 +211,13 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                     final Navigator channelNavigator = channelModifier.getNavigator();
                     filter.append(channelNavigator.getField()).append(":").append(channelModifier.getName()).append(" ");
                 }
-                filter.append(")");
+                filter.append(") ");
             }
     
+        }
+        
+        if (blankQuery) {
+            filter.append(excludeFilter);
         }
         
         return filter.toString();

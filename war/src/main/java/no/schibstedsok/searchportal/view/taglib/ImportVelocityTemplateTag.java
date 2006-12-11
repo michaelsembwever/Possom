@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.tools.generic.MathTool;
 
 /** Imports (and merges) a velocity template from a site-config into the jsp. 
  *
@@ -41,7 +42,8 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
 
     private static final Logger LOG = Logger.getLogger(ImportVelocityTemplateTag.class);
     private static final String ERR_MERGE_FAILURE = "Template merging failed";
-
+    
+    private static final MathTool mathTool = new MathTool();
     /**
      * Initialization of template property.
      */
@@ -101,7 +103,8 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
                 context.put("contextPath", ((HttpServletRequest)cxt.getRequest()).getContextPath());
                 context.put("text", text);
                 context.put("configuration", SiteConfiguration.valueOf(site).getProperties());
-                
+                context.put("math", mathTool);
+
                 // push all parameters into velocity context attributes
                 for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames(); e.hasMoreElements();) {
                     final String attrName = e.nextElement();
