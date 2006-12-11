@@ -8,7 +8,8 @@ import no.schibstedsok.searchportal.site.Site;
  * Linkpulse adds a part in front of the url for userlogging.
  * getUrl() is called from the templates by the links which should be logged.
  * Logging should only happen in prod.
- * <b> Must be threadsafe </b>
+ * <b> Must be threadsafe. </b>
+ * <b> Immutable. </b>
  *
  * @author Thomas Kjærstad <a href="thomas@schibstedsok.no">thomas@schibstedsok.no</a>
  * @version $Id$

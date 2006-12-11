@@ -58,28 +58,40 @@ public final class UrlEncodeDirective extends Directive {
     /**
      * {@inheritDoc}
      */
-    public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+    public boolean render(
+            final InternalContextAdapter context, 
+            final Writer writer, 
+            final Node node) 
+                throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
+        
+        
+        
         if (node.jjtGetNumChildren() < 1) {
             rsvc.error("#" + getName() + " - missing argument");
-            return false;
+            
+        }else{
+
+            String charset = DEFAULT_CHARSET;
+
+            final String input = null != node.jjtGetChild(0).value(context)
+                    ? node.jjtGetChild(0).value(context).toString() 
+                    : "";
+
+            if (node.jjtGetNumChildren() == 2) {
+                charset = node.jjtGetChild(1).value(context).toString();
+            }
+
+            writer.write(URLEncoder.encode(input, charset));
+
+            final Token lastToken = node.getLastToken();
+
+            if (lastToken.image.endsWith("\n")) {
+                writer.write("\n");
+            }
+
+            return true;
         }
-
-        String charset = DEFAULT_CHARSET;
-
-        final String input = node.jjtGetChild(0).value(context) != null ? node.jjtGetChild(0).value(context).toString() : "";
-
-        if (node.jjtGetNumChildren() == 2) {
-            charset = node.jjtGetChild(1).value(context).toString();
-        }
-
-        writer.write(URLEncoder.encode(input, charset));
-
-        final Token lastToken = node.getLastToken();
-
-        if (lastToken.image.endsWith("\n")) {
-            writer.write("\n");
-        }
-
-        return true;
+        return false;
     }
+    
 }
