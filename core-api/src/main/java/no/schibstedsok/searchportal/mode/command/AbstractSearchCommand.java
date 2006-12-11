@@ -101,6 +101,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
 
+        assert null != parameters : "Not allowed to pass in null parameters";
         this.parameters = parameters;
 
         // XXX should be null so we know neither applyQueryTransformers or performQueryTranformation has been called
@@ -367,7 +368,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             watch.stop();
             LOG.info("Search " + getSearchConfiguration().getName() + " took " + watch);
 
-            ((StringBuffer)parameters.get("no.schibstedsok.Statistics")).append(
+            statisticsInfo(
                 "<search-command name=\"" + getSearchConfiguration().getStatisticalName() + "\">"
                     + "<query>" + context.getQuery().getQueryString() + "</query>"
                     + "<search-name>" + getClass().getSimpleName() + "</search-name>"
@@ -423,8 +424,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @return i plus the offset of the current page.
      */
     protected int getCurrentOffset(final int i) {
-        if (getSearchConfiguration().isPaging()) {
-            final Object v = parameters.get("offset");
+        
+        
+        final Object v = parameters.get("offset");
+            
+        if (null != v && getSearchConfiguration().isPaging()) {
             return i + Integer.parseInt(v instanceof String[] && ((String[])v).length ==1
                     ? ((String[]) v)[0]
                     : (String) v);
@@ -490,7 +494,87 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected String getAdditionalFilter() {
         return additionalFilter;
     }
+    
+    /** returns null when array is null **/
+    protected final String getSingleParameter(final String paramName) {
+        return parameters.get(paramName) instanceof String[]
+                ? ((String[]) parameters.get(paramName))[0]
+                : (String) parameters.get(paramName);
+    }
 
+    protected final ReconstructedQuery createQuery(final String queryString) {
+
+
+        final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                TokenEvaluationEngine.Context.class,
+                    context,
+                    new QueryStringContext() {
+                        public String getQueryString() {
+                            return queryString;
+                        }
+                    }
+        );
+
+        // This will among other things perform the initial fast search
+        // for textual analysis.
+        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+
+        // queryStr parser
+        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
+            public TokenEvaluationEngine getTokenEvaluationEngine() {
+                return engine;
+            }
+        });
+
+        try  {
+            return new ReconstructedQuery(parser.getQuery(), engine);
+
+        } catch (TokenMgrError ex)  {
+            // Errors (as opposed to exceptions) are fatal.
+            LOG.fatal(ERR_PARSING, ex);
+        }
+        return null;
+    }
+
+    /** Returns null when no field exists. **/
+    protected final String getFieldFilter(final LeafClause clause){
+
+        String field = null;
+        if(null != clause.getField()){
+            final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
+            if(fieldFilters.containsKey(clause.getField())){
+                field = clause.getField();
+            }else{
+                final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
+                for(String fieldFilter : fieldFilters.keySet()){
+                    try{
+                        final TokenPredicate tp = TokenPredicate.valueOf(fieldFilter);
+                        // if the field is the token then mask the field and include the term.
+                        // XXX why are we checking the known and possible predicates?
+                        boolean result = clause.getKnownPredicates().contains(tp);
+                        result |= clause.getPossiblePredicates().contains(tp);
+                        result &= engine.evaluateTerm(tp, clause.getField());
+                        if(result){
+                            field = fieldFilter;
+                            break;
+                        }
+                    }catch(IllegalArgumentException iae){
+                        LOG.trace(TRACE_NOT_TOKEN_PREDICATE + filter);
+                    }
+                }
+            }
+        }
+        return field;
+    }
+    
+    protected final void statisticsInfo(final String msg){
+        
+        final StringBuffer logger = (StringBuffer) parameters.get("no.schibstedsok.Statistics");
+        if( null != logger ){
+            logger.append(msg);
+        }
+    }
+    
     // Private -------------------------------------------------------
 
     /**
@@ -576,78 +660,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         transformedQuerySesamSyntax = builder.getQueryRepresentation();
     }
 
-    /** returns null when array is null **/
-    protected final String getSingleParameter(final String paramName) {
-        return parameters.get(paramName) instanceof String[]
-                ? ((String[]) parameters.get(paramName))[0]
-                : (String) parameters.get(paramName);
-    }
-
-    protected final ReconstructedQuery createQuery(final String queryString) {
-
-
-        final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                TokenEvaluationEngine.Context.class,
-                    context,
-                    new QueryStringContext() {
-                        public String getQueryString() {
-                            return queryString;
-                        }
-                    }
-        );
-
-        // This will among other things perform the initial fast search
-        // for textual analysis.
-        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
-
-        // queryStr parser
-        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-            public TokenEvaluationEngine getTokenEvaluationEngine() {
-                return engine;
-            }
-        });
-
-        try  {
-            return new ReconstructedQuery(parser.getQuery(), engine);
-
-        } catch (TokenMgrError ex)  {
-            // Errors (as opposed to exceptions) are fatal.
-            LOG.fatal(ERR_PARSING, ex);
-        }
-        return null;
-    }
-
-    /** Returns null when no field exists. **/
-    protected final String getFieldFilter(final LeafClause clause){
-
-        String field = null;
-        if(null != clause.getField()){
-            final Map<String,String> fieldFilters = getSearchConfiguration().getFieldFilters();
-            if(fieldFilters.containsKey(clause.getField())){
-                field = clause.getField();
-            }else{
-                final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
-                for(String fieldFilter : fieldFilters.keySet()){
-                    try{
-                        final TokenPredicate tp = TokenPredicate.valueOf(fieldFilter);
-                        // if the field is the token then mask the field and include the term.
-                        // XXX why are we checking the known and possible predicates?
-                        boolean result = clause.getKnownPredicates().contains(tp);
-                        result |= clause.getPossiblePredicates().contains(tp);
-                        result &= engine.evaluateTerm(tp, clause.getField());
-                        if(result){
-                            field = fieldFilter;
-                            break;
-                        }
-                    }catch(IllegalArgumentException iae){
-                        LOG.trace(TRACE_NOT_TOKEN_PREDICATE + filter);
-                    }
-                }
-            }
-        }
-        return field;
-    }
-        
+    
    // Inner classes -------------------------------------------------
 
 

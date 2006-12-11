@@ -1,6 +1,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Collections;
+
+import java.util.Hashtable;
 import org.testng.annotations.Test;
 
 /**
@@ -79,7 +80,7 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
      */
     private void executeTestOfQuery(final String query, final String wantedQuery, final String wantedFilter) {
         final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
-        final AbstractAdvancedFastSearchCommand cmd = new AdvancedFastSearchCommand(cxt, Collections.EMPTY_MAP);
+        final AbstractAdvancedFastSearchCommand cmd = new AdvancedFastSearchCommand(cxt, new Hashtable<String,Object>());
         final String generatedQuery = cmd.getQueryRepresentation(cxt.getQuery());
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
         assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getAdditionalFilter());

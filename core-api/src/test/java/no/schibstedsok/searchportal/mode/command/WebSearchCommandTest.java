@@ -8,7 +8,8 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Collections;
+
+import java.util.Hashtable;
 import org.testng.annotations.Test;
 
 /**
@@ -50,8 +51,8 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
     @Test
     public void testPhraseSearches() {
         executeTestOfQuery(
-                "\"george bush\"",
-                "\"george bush\"",
+                "\"george bush stands on a chair to raise his IQ\"",
+                "\"george bush stands on a chair to raise his IQ\"",
                 "");
     }
 
@@ -119,7 +120,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
 
         final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
 
-        final WebSearchCommand cmd = new WebSearchCommand(cxt, Collections.EMPTY_MAP);
+        final WebSearchCommand cmd = new WebSearchCommand(cxt, new Hashtable<String,Object>());
 
         final String generatedQuery = cmd.getQueryRepresentation(cxt.getQuery());
 

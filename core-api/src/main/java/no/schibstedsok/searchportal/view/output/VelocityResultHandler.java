@@ -26,12 +26,11 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.tools.generic.MathTool;
 import org.apache.velocity.tools.generic.DateTool;
 
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.net.URLEncoder;
 import java.util.Properties;
@@ -41,6 +40,8 @@ import java.util.Properties;
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
+ * 
+ * @deprecated Please use the DataModelResultHandler instead.
  */
 public final class VelocityResultHandler implements ResultHandler {
 
@@ -111,14 +112,6 @@ public final class VelocityResultHandler implements ResultHandler {
 
         LOG.trace("handleResult()");
 
-        // This requirement of the users of this class to send the web stuff
-        // as parameters is a bit too implicit...
-        final HttpServletRequest request = (HttpServletRequest) parameters.get("request");
-        final HttpServletResponse response = (HttpServletResponse) parameters.get("response");
-        if (request == null || response == null) {
-            throw new IllegalStateException("Both request and response must be set in the parameters");
-        }
-
         // write to a separate writer first for threading reasons
         final Writer w = new StringWriter();
         final SearchConfiguration searchConfiguration 
@@ -143,7 +136,7 @@ public final class VelocityResultHandler implements ResultHandler {
                 try {
 
                     template.merge(context, w);
-                    response.getWriter().write(w.toString());
+                    writeToResponse(parameters, w.toString());
 
                 } catch (MethodInvocationException ex) {
                     LOG.error("Exception for reference: " + ex.getReferenceName());
@@ -243,4 +236,36 @@ public final class VelocityResultHandler implements ResultHandler {
             context.put("pager", pager);
         }
     }
+    
+    /** HACKS around having to import javax.servlet stuff into the core-api.
+     * Also handles tests by not writing at all.
+     * */
+    private void writeToResponse(final Map<String,Object> parameters, final String string){
+        
+        try {
+            final Object object = parameters.get("response");
+            if( null != object ){
+                final Method method = object.getClass().getMethod("getWriter", new Class[]{});
+                if( null != method ){
+                    final Writer writer = (Writer) method.invoke(object, new Object[]{});
+                    writer.write(string);
+                }
+            }
+            
+            
+        }catch (InvocationTargetException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }catch (IllegalAccessException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }catch (IllegalArgumentException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }catch (IOException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }catch (NoSuchMethodException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }catch (SecurityException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
+    
 }

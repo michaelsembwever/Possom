@@ -36,6 +36,10 @@
             <param name="ConversionPattern" value="%-5p %d{HH:mm:ss,SSS} (%F:%M)-%m%n"/>
         </layout>
     </appender>
+    
+    <!-- These are here to avoid their DEBUG messages flooding our logfiles -->
+    <logger name="org.apache"><level value="INFO"/></logger>
+    <logger name="httpclient.wire"><level value="INFO"/></logger>
 
     <root>
         <priority value="DEBUG"/>

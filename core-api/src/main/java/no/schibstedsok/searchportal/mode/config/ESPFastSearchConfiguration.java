@@ -3,8 +3,6 @@
  *
  * Created on May 30, 2006, 4:16 PM
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.mode.config;
@@ -17,7 +15,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.fastsearch.esp.search.view.ISearchView;
-import com.fastsearch.esp.search.ISearchFactory;
 import com.fastsearch.esp.search.SearchFactory;
 import com.fastsearch.esp.search.ConfigurationException;
 import com.fastsearch.esp.search.SearchEngineException;

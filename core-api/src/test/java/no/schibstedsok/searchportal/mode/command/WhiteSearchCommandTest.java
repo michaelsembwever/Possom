@@ -7,19 +7,8 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Collections;
-import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.run.RunningQuery;
-import no.schibstedsok.searchportal.run.RunningQueryImpl;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.view.config.SearchTabFactory;
+
+import java.util.Hashtable;
 import org.testng.annotations.Test;
 
 
@@ -86,7 +75,7 @@ public final class WhiteSearchCommandTest extends AbstractSearchCommandTest {
     }
 
     private WhiteSearchCommand createSearchCommand(final SearchCommand.Context cxt) {
-        return new WhiteSearchCommand(cxt, Collections.EMPTY_MAP);
+        return new WhiteSearchCommand(cxt, new Hashtable<String,Object>());
     }
 
 }

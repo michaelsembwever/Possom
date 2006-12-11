@@ -3,7 +3,8 @@
  */
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Collections;
+
+import java.util.Hashtable;
 import org.testng.annotations.Test;
 
 
@@ -33,7 +34,7 @@ public final class YellowGeoSearchTest extends AbstractSearchCommandTest {
     }
 
     private YellowSearchCommand createSearchCommand(final SearchCommand.Context cxt) {
-        return new YellowSearchCommand(cxt, Collections.EMPTY_MAP);
+        return new YellowSearchCommand(cxt, new Hashtable<String,Object>());
     }
 
 }

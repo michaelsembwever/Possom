@@ -1,6 +1,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Collections;
+
+import java.util.Hashtable;
 
 /**
  *
@@ -65,7 +66,7 @@ public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
         executeTestOfQuery("banan site:aftonbladet.se", "banan", "");
         
         final SearchCommand.Context cxt = createCommandContext("site:aftonbladet.se banan", "d", "yahoo-image-search");
-        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, Collections.EMPTY_MAP);
+        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, new Hashtable<String,Object>());
         cmd.getQueryRepresentation(cxt.getQuery());
         assertTrue(cmd.createRequestURL().contains("rurl=http://aftonbladet.se"));
     }
@@ -80,7 +81,7 @@ public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
      */
     private void executeTestOfQuery(final String query, final String wantedQuery, final String wantedFilter) {
         final SearchCommand.Context cxt = createCommandContext(query, "d", "yahoo-image-search");
-        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, Collections.EMPTY_MAP);
+        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, new Hashtable<String,Object>());
         final String generatedQuery = cmd.getQueryRepresentation(cxt.getQuery());
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
         assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getAdditionalFilter());

@@ -26,6 +26,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
  * @version <tt>$Id: SimpleSiteSearchTransformer.java 3359 2006-08-03 08:13:22Z mickw $</tt>
+ * @deprecated Old style sitesearch. Use skins instead.
  */
 public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer implements QueryTransformer {
 
@@ -78,7 +79,7 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
                 ? ((String[])parameters.get("q"))[0]
                 : (String)parameters.get("q");
 
-            if (query.trim().equals("")){
+            if (null == query || "".equals(query.trim()) ){
                 return null;
             }
 

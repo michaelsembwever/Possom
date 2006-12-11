@@ -31,5 +31,5 @@ public interface ResultHandler {
         void addSource(Modifier modifier);
     }
 
-    void handleResult(Context cxt, Map parameters);
+    void handleResult(Context cxt, Map<String,Object> parameters);
 }

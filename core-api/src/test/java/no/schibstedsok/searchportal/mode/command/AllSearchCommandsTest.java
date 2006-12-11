@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
@@ -93,7 +94,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
             final SearchCommand.Context cxt = createCommandContext(query, rqCxt, conf.getName());
 
             final AbstractSearchCommand cmd
-                    = (AbstractSearchCommand) SearchCommandFactory.createSearchCommand(cxt, Collections.EMPTY_MAP);
+                    = (AbstractSearchCommand) SearchCommandFactory.createSearchCommand(cxt, new Hashtable<String,Object>());
 
             commands.add(cmd);
         }
