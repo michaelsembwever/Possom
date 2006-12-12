@@ -174,7 +174,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     /** {@inheritDoc} */
     protected String escapeFieldedLeaf(final LeafClause clause) {
-        return '"' + clause.getField() + ":" + clause.getTerm() + '"';
+        
+        return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + clause.getTerm() + '"';
     }
 
     // Generate query in FQL.
