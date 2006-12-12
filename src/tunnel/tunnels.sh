@@ -1,6 +1,9 @@
 #!/bin/bash
 
+# TODO merge all the tunnel scripts into one, and take a second argument to use 'alternative' tunnel destinations.
+
 # Description of port mappings for the development profile. PELASE KEEP UPTODATE.
+# 14000 ---> publishing system
 # 15000 ---> queryServerURL.3  
 # 15100 ---> queryServerURL.1, sesam.se newsQueryServerURL
 # 15200 ---> queryServerURL.2
@@ -16,6 +19,7 @@
 #-L 15500:10.16.195.250:15400 \
 
 ssh \
+-L 14000:alpha.test.sesam.no:80 \
 -L 15000:cobraprod.bos3.fastsearch.net:15100 \
 -L 15700:sch-fast-query.osl.basefarm.net:15100 \
 -L 15200:sch-fast-search.osl.basefarm.net:15300 \
