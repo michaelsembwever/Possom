@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 import org.apache.log4j.Logger;
 
@@ -36,7 +37,7 @@ public final class RetrieverLogServlet extends HttpServlet {
                     "<collection>" + req.getParameter("c") + "</collection>" +
                     "<type>" + req.getParameter("type") + "</type>" +
                     "<query>" + req.getParameter("q") + "</query>" +
-                    "<name>" + req.getParameter("name") + "</name>" +
+                    "<name>" + URLEncoder.encode(req.getParameter("name"), "utf-8") + "</name>" +
                     ((req.getParameter("pos") != null)
                             ? "<position>" + req.getParameter("pos") + "</position>"
                             : "") +
