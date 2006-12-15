@@ -12,19 +12,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.common.ioc.ContextWrapper;
+
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
-import static no.schibstedsok.searchportal.site.config.SiteConfiguration.*;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.searchportal.util.Channels;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -45,17 +44,19 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     private static final Map<Site,VelocityEngineFactory> INSTANCES = new HashMap<Site,VelocityEngineFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
-    
+
     private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.SimpleLog4JLogSystem";
     private static final String LOG_NAME = "runtime.log.logsystem.log4j.category";
-    
+
     // TODO change when velocity 1.5 is out
     //private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.Log4JLogChute";
     //private static final String LOG_NAME = "runtime.log.logsystem.log4j.logger";
-    
-    private static final String DIRECTIVES = 
+
+    private static final String DIRECTIVES =
             "no.schibstedsok.searchportal.view.velocity.UrlEncodeDirective,"
+            + "no.schibstedsok.searchportal.view.velocity.UrlEncodeRequestParameterDirective,"
             + "no.schibstedsok.searchportal.view.velocity.HtmlEscapeDirective,"
+            + "no.schibstedsok.searchportal.view.velocity.HtmlEscapeRequestParameterDirective,"
             + "no.schibstedsok.searchportal.view.velocity.CapitalizeWordsDirective,"
             + "no.schibstedsok.searchportal.view.velocity.ChopStringDirective,"
             + "no.schibstedsok.searchportal.view.velocity.PublishDirective,"
@@ -65,9 +66,9 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.XmlEscapeDirective,"
             + "no.schibstedsok.searchportal.view.velocity.WikiDirective,"
             + "no.schibstedsok.searchportal.view.velocity.UpperCaseDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.WeekdayDirective," 
+            + "no.schibstedsok.searchportal.view.velocity.WeekdayDirective,"
             + "no.schibstedsok.searchportal.view.velocity.MD5ParameterDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.FinnImgLinkDirective,"  
+            + "no.schibstedsok.searchportal.view.velocity.FinnImgLinkDirective,"
             + "no.schibstedsok.searchportal.view.velocity.TopDomainDirective,"
             + "no.schibstedsok.searchportal.view.velocity.DateFormattingDirective,"
             + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective";
@@ -122,7 +123,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 engine.setProperty("output.encoding", "UTF-8");
                 engine.setProperty("userdirective", DIRECTIVES);
                 engine.setProperty(
-                        "velocimacro.library", 
+                        "velocimacro.library",
                         site.getTemplateDir() + "/VM_global_library.vm,"
                         + site.getTemplateDir() + "/VM_site_library.vm");
                 engine.init();
@@ -181,17 +182,17 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 return site;
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public DocumentLoader newDocumentLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final DocumentBuilder builder) {
-                
+
                 return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
         });
