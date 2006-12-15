@@ -14,7 +14,6 @@ import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -25,7 +24,6 @@ import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.tools.generic.MathTool;
 import org.apache.velocity.tools.generic.DateTool;
-
 import java.io.StringWriter;
 import java.io.Writer;
 import java.io.UnsupportedEncodingException;
@@ -33,7 +31,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 import java.net.URLEncoder;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 /** Handles the populating the velocity contexts.
  * Strictly view domain.
@@ -188,11 +188,15 @@ public final class VelocityResultHandler implements ResultHandler {
         }
 
         // push all parameters into velocity context attributes. make a copy first as others could be updating it.
-        for(Map.Entry<String,Object> entry : Collections.unmodifiableSet(parameters.entrySet())){
+        final Set<Map.Entry<String,Object>> set  = new HashSet<Map.Entry<String,Object>>(parameters.entrySet());
+        for(Map.Entry<String,Object> entry : set){
+            
             /* do not overwrite parameters already in the velocity context */
             if (!context.containsKey(entry.getKey())) {
+                
                 // don't put back in String array that only contains one element
-                context.put(entry.getKey(), entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1
+                context.put(entry.getKey(), 
+                        entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1
                         ? context.put(entry.getKey(), ((String[])entry.getValue())[0])
                         : entry.getValue());
             }
