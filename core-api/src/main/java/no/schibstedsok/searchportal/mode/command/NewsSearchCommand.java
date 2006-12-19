@@ -74,7 +74,7 @@ public class NewsSearchCommand extends FastSearchCommand {
                 if (containsJustThePrefix() || getTransformedQuery().equals("")) {
                     filterBuilder.append(FAST_SIZE_HACK);
                 }
-
+                                
                 if (!getSearchConfiguration().isIgnoreNavigation()) {
 
                     final String contentSource = getParameter("contentsource");
@@ -82,7 +82,7 @@ public class NewsSearchCommand extends FastSearchCommand {
 
                     // AAhhrghh. Need to provide backwards compatibility.
                     // People are linking us using contentsource="Norske nyheter"
-                    if (contentSource != null && !contentSource.equals("")) {
+                    if (contentSource != null && !contentSource.equals("")) {                        
                         if (contentSource.equals("Norske nyheter")) {
                             filterBuilder.append(" +newscountry:Norge");
                         } else {
@@ -91,6 +91,11 @@ public class NewsSearchCommand extends FastSearchCommand {
                     }
                     if (newsCountry != null && !newsCountry.equals("")) {
                         filterBuilder.append(" +newscountry:"+ newsCountry);
+                    }
+  
+                    // Add filter to remove papernews from norwegian newssearch
+                    if (!contentSource.equals("Mediearkivet")) {
+                        filterBuilder.append(" -meta.collection:mano");
                     }
                 }
             }
