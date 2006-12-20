@@ -60,11 +60,12 @@ public class CombineNavigatorsHandler implements ResultHandler {
                 if (modifier != null) {
                     final Navigator navigator = new Navigator();
                     final Modifier newMod = new Modifier(mod, modifier.getCount(), navigator);
-
                     newMod.setNavigationHint(cxt.getSearchTab().getNavigationHint(newMod.getName()));
+                    if (newMod.getName().equals("Norge")) {                        
+                        newMod.subtractCount( result.getModifierCount("sources", "Mediearkivet") );
+                    }
                     result.addModifier(target, newMod);
-                } 
-                
+                }                 
             }
         }
 

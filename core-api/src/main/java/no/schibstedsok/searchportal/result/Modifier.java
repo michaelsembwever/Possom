@@ -50,6 +50,10 @@ public final class Modifier implements Comparable<Modifier> {
         this.count += count;
     }
 
+    public void subtractCount(final int count) {
+        this.count -= count;
+    }    
+    
     public Navigator getNavigator() {
         return navigator;
     }
