@@ -35,7 +35,7 @@ public class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand {
 			.getLogger(PrisjaktSearchCommand.class);
 
 	private static final String ERR_FAILED_PRISJAKT_SEARCH = "Failed Prisjakt search command";
-
+	private static final String ERR_FAILED_ENCODE_PRISJAKT = "Failed to encode Prisjakt search query";
 	/**
 	 * Format för siffror utan decimaler med tusenavskiljare.
 	 */
@@ -151,9 +151,9 @@ public class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand {
 			} catch (RemoteException re) {
 				LOG.error(ERR_FAILED_PRISJAKT_SEARCH, re);
 				throw new InfrastructureException(re);
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (UnsupportedEncodingException usee) {
+				
+				LOG.error(ERR_FAILED_ENCODE_PRISJAKT,usee);
 			}
 		}
 
