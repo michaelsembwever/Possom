@@ -8,6 +8,7 @@ import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.DailyWordConfiguration;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
@@ -357,7 +358,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         WHITEPAGES_COMMAND(WhiteSearchConfiguration.class),
         DAILY_WORD_COMMAND(DailyWordConfiguration.class),
         BLOG_COMMAND(BlogSearchConfiguration.class),
-        PRISJAKT_COMMAND(PrisjaktSearchConfiguration.class);
+        PRISJAKT_COMMAND(PrisjaktSearchConfiguration.class),
+        CATALOGUE_COMMAND(CatalogueSearchConfiguration.class);
 
 
         private final Class<? extends SearchConfiguration> clazz;
@@ -622,6 +624,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if(sc instanceof YellowSearchConfiguration){
                     final YellowSearchConfiguration ysc = (YellowSearchConfiguration) sc;
                 }
+
+                if(sc instanceof CatalogueSearchConfiguration){
+                    final CatalogueSearchConfiguration ysc = (CatalogueSearchConfiguration) sc;
+                }                
+                
                 if(sc instanceof YellowGeoSearchConfiguration){
                     final YellowGeoSearchConfiguration ysc = (YellowGeoSearchConfiguration) sc;
                 }                
