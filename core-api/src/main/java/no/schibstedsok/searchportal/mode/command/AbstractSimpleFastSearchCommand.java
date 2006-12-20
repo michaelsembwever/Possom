@@ -452,6 +452,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         clause.getSecondClause().accept(this);
         writeAnd = originalWriteAnd;
     }
+    
     /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         final Boolean originalWriteAnd = writeAnd;

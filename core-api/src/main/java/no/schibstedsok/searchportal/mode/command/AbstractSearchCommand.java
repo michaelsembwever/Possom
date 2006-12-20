@@ -766,7 +766,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * Query builder for creating a query syntax similar to sesam's own.
      */
     private final class SesamSyntaxQueryBuilder extends AbstractReflectionVisitor {
+        
         private final StringBuilder sb = new StringBuilder();
+        private boolean insideOr = false;
 
         /**
          * Returns the generated query.
@@ -791,16 +793,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         /**
          * {@inheritDoc}
          */
-        protected void visitImpl(final OperationClause clause) {
-            clause.getFirstClause().accept(this);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
         protected void visitImpl(final AndClause clause) {
+            
             clause.getFirstClause().accept(this);
-            sb.append(" ");
+            sb.append(" +");
             clause.getSecondClause().accept(this);
         }
 
@@ -808,16 +804,26 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final OrClause clause) {
-            sb.append("(");
+            
+            boolean wasInside = insideOr;
+            if(! insideOr ){
+                sb.append('(');
+            }
+            insideOr = true;
             clause.getFirstClause().accept(this);
+            sb.append(' ');
             clause.getSecondClause().accept(this);
-            sb.append(")");
+            insideOr = wasInside;
+            if(! insideOr ){
+                sb.append(')');
+            }
         }
 
         /**
          * {@inheritDoc}
          */
         protected void visitImpl(final DefaultOperatorClause clause) {
+            
             clause.getFirstClause().accept(this);
             sb.append(' ');
             clause.getSecondClause().accept(this);
@@ -827,9 +833,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final NotClause clause) {
+            
             final String childsTerm = transformedTerms.get(clause.getFirstClause());
             if (childsTerm != null && childsTerm.length() > 0) {
-                sb.append("-");
+                sb.append('-');
                 clause.getFirstClause().accept(this);
             }
         }
@@ -838,9 +845,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final AndNotClause clause) {
+            
             final String childsTerm = transformedTerms.get(clause.getFirstClause());
             if (childsTerm != null && childsTerm.length() > 0) {
-                sb.append("-");
+                sb.append('-');
                 clause.getFirstClause().accept(this);
             }
         }
@@ -849,6 +857,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final XorClause clause) {
+            
             clause.getFirstClause().accept(this);
         }
     }
