@@ -10,8 +10,10 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.io.IOException;
 import java.util.Map;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -30,7 +32,8 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
 
     // Attributes ----------------------------------------------------
 
-    private HTTPClient client;
+    private final HTTPClient client;
+    private final String partnerId;
 
     // Static --------------------------------------------------------
 
@@ -51,9 +54,17 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
 
         final AbstractYahooSearchConfiguration conf = (AbstractYahooSearchConfiguration)cxt.getSearchConfiguration();
         
+        final SiteConfiguration siteConf 
+                = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+        final String host = siteConf.getProperty(conf.getHost());
+        final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
+                
+        
         client = null != conf.getHostHeader() && conf.getHostHeader().length() >0
-                ? HTTPClient.instance(conf.getName(), conf.getHost(), conf.getPort(), conf.getHostHeader())
-                : HTTPClient.instance(conf.getName(), conf.getHost(), conf.getPort());
+                ? HTTPClient.instance(conf.getName(), host, port, conf.getHostHeader())
+                : HTTPClient.instance(conf.getName(), host, port);
+        
+        partnerId = siteConf.getProperty(conf.getPartnerId());
     }
 
     // Public --------------------------------------------------------
@@ -73,6 +84,9 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
         return context.getSearchConfiguration().getResultsToReturn();
     }
 
+    protected String getPartnerId(){
+        return partnerId;
+    }
 
     protected final Document getXmlResult() throws IOException, SAXException {
 

@@ -1,18 +1,25 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.config;
 
-import no.schibstedsok.searchportal.mode.command.PicSearchCommand;
-import no.schibstedsok.searchportal.mode.command.SearchCommand;
-import no.schibstedsok.searchportal.run.RunningQuery;
-
-import java.util.Map;
-
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id $</tt>
  */
 public final class PicSearchConfiguration extends AbstractSearchConfiguration {
 
+    /**
+     * Holds value of property key for the queryServerHost.
+     */
+    private String queryServerHost;
+    
+    /**
+     * Holds value of property key for the queryServerPort.
+     */
+    private String queryServerPort;
+    
+    private String country;
+    
+    
     public PicSearchConfiguration(){
         super(null);
     }
@@ -20,56 +27,45 @@ public final class PicSearchConfiguration extends AbstractSearchConfiguration {
     public PicSearchConfiguration(final SearchConfiguration asc){
         super(asc);
     }
-
+    
     /**
-     * Holds value of property queryServerHost.
-     */
-    private String queryServerHost;
-
-    /**
-     * Getter for property queryServerUrl.
+     * Getter for property key for queryServerUrl.
      * @return Value of property queryServerUrl.
      */
     public String getQueryServerHost() {
-        return this.queryServerHost;
+        return queryServerHost;
     }
 
     /**
-     * Setter for property queryServerURL.
+     * Setter for property key for queryServerURL.
      * @param queryServerURL New value of property queryServerURL.
      */
-    public void setQueryServerHost(final String queryServerURL) {
+    public void setQueryServerHost(final String queryServerHost) {
+        this.queryServerHost = queryServerHost;
     }
 
     /**
-     * Holds value of property queryServerPort.
-     */
-    private int queryServerPort;
-
-    /**
-     * Getter for property queryServerPort.
+     * Getter for property key for queryServerPort.
      * @return Value of property queryServerPort.
      */
-    public int getQueryServerPort() {
-        return this.queryServerPort;
+    public String getQueryServerPort() {
+        return queryServerPort;
     }
 
     /**
-     * Setter for property queryServerPort.
+     * Setter for property key for queryServerPort.
      * @param queryServerPort New value of property queryServerPort.
      */
-    public void setQueryServerPort(final int queryServerPort) {
+    public void setQueryServerPort(final String queryServerPort) {
         this.queryServerPort = queryServerPort;
     }
 
-    private String picsearchCountry;
-
-    public String getPicsearchCountry() {
-        return picsearchCountry;
+    public String getCountry() {
+        return country;
     }
 
-    public void setPicsearchCountry(final String country) {
-        picsearchCountry = country;
+    public void setCountry(final String country) {
+        this.country = country;
     }
 
 }

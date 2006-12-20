@@ -32,6 +32,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(PicSearchCommand.class);
     private final HTTPClient client;
+    private final int port;
 
     /**
      * Creates a new command in given context.
@@ -40,13 +41,16 @@ public final class PicSearchCommand extends AbstractSearchCommand {
      * @param parameters Command parameters.
      */
     public PicSearchCommand(final Context cxt, final Map parameters) {
+        
         super(cxt, parameters);
+        
         final SiteConfiguration siteConfig
                 = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
-        client = HTTPClient.instance(
-                "picture_search",
-                siteConfig.getProperty("picsearch.host"),
-                Integer.valueOf(siteConfig.getProperty("picsearch.port")));
+        final PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
+        
+        final String host = siteConfig.getProperty(psConfig.getQueryServerHost());
+        port = Integer.parseInt(siteConfig.getProperty(psConfig.getQueryServerPort()));
+        client = HTTPClient.instance("picture_search", host, port);
     }
 
     /** {@inheritDoc} */
@@ -61,7 +65,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
             LOG.error(e);
         }
 
-        final String url = "/query?ie=UTF-8&tldb=" + psConfig.getPicsearchCountry()
+        final String url = "/query?ie=UTF-8&tldb=" + psConfig.getCountry()
                 + "&filter=medium&custid=558735&version=2.6&thumbs=" + psConfig.getResultsToReturn()
                 + "&q=" + query
                 + "&start=" + getCurrentOffset(1);
@@ -70,7 +74,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
         final BasicSearchResult searchResult = new BasicSearchResult(this);
             
-        if( psConfig.getQueryServerPort() > 0 ){
+        if( port > 0 ){
             
             final Document doc = doSearch(url);
 

@@ -130,7 +130,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
             return MessageFormat.format(
                     COMMAND_URL_PATTERN,
-                    conf.getPartnerId(),
+                    getPartnerId(),
                     conf.getDatabase(),
                     URLEncoder.encode(conf.getDateRange().length() >0 ? conf.getDateRange() : dateRange , "UTF-8"),
                     getParameter("offset"),

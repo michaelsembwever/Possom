@@ -110,7 +110,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
                     COMMAND_URL_PATTERN,
                     URLEncoder.encode(query, URL_ENCODING),
                     getCurrentOffset(0),
-                    cfg.getPartnerId(),
+                    getPartnerId(),
                     cfg.getResultsToReturn(),
                     ocr,
                     cfg.getCatalog());

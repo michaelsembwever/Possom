@@ -141,7 +141,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED
             = "Each FastNavigator is only allowed to have one child. Parent was ";
     private static final String ERR_FAST_EPS_QR_SERVER =
-            "Query server adressen cannot contain the scheme (http://): ";
+            "Query server address cannot contain the scheme (http://): ";
     private static final String INFO_PARSING_MODE = "Parsing mode ";
     private static final String INFO_PARSING_CONFIGURATION = " Parsing configuration ";
     private static final String INFO_PARSING_NAVIGATOR = "  Parsing navigator ";
@@ -437,9 +437,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             : null;
                     fillBeanProperty(sc, inherit, "clustering", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "collapsing", ParseType.Boolean , commandE, "false");
-                    // TODO use fillBeanProperty pattern instead
-                    fsc.setExpansionEnabled(parseBoolean(commandE.getAttribute("expansion"),
-                            fscInherit != null ? fscInherit.isExpansionEnabled() : false));
+                    fillBeanProperty(sc, inherit, "expansion", ParseType.Boolean , commandE, "false");
 
                     if(commandE.getAttribute("collections").length() >0){
                         fsc.getCollections().clear();
@@ -452,11 +450,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "filter", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "ignoreNavigation", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "offensiveScoreLimit", ParseType.Int , commandE, "-1");
-                    fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
-                    final String queryServerUrl = commandE.getAttribute("query-server-url");
-                    // TODO use fillBeanProperty pattern instead
-                    fsc.setQueryServerURL(parseProperty(cxt, queryServerUrl,
-                            fscInherit != null ? fscInherit.getQueryServerURL() : null));
+                    fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");                    
+                    fillBeanProperty(sc, inherit, "queryServerUrl", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "relevantQueries", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "spamScoreLimit", ParseType.Int , commandE, "-1");
@@ -493,11 +488,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "collapsingEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "expansionEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
-
-                    final String queryServer = commandE.getAttribute("query-server");
-                    // TODO use fillBeanProperty pattern instead
-                    esc.setQueryServer(parseProperty(cxt, queryServer,
-                           ascInherit != null ? ascInherit.getQueryServer() : null));
+                    fillBeanProperty(sc, inherit, "queryServer", ParseType.String , commandE, "");                    
 
                     if (null != esc.getQueryServer() && esc.getQueryServer().startsWith("http://")) {
                         throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + esc.getQueryServer());
@@ -511,12 +502,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             esc.addNavigator(navigator, navigator.getId());
                         }
 
-                    }
-
-                    try {
-                        esc.initializeSearchView();
-                    } catch (InfrastructureException e) {
-                        LOG.error(ERR_INIT_SEARCH_VIEW + esc.getName());
                     }
                 }
 
@@ -540,39 +525,21 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 	
                 
                 }
-                	
-                if(sc instanceof MathExpressionSearchConfiguration){
-                    final MathExpressionSearchConfiguration msc = (MathExpressionSearchConfiguration) sc;
-                }
-                if(sc instanceof NewsSearchConfiguration){
-                }
+                                
                 if(sc instanceof AbstractYahooSearchConfiguration){
-                    final AbstractYahooSearchConfiguration aysc = (AbstractYahooSearchConfiguration)sc;
-                    final AbstractYahooSearchConfiguration ayscInherit = inherit instanceof AbstractYahooSearchConfiguration
-                            ? (AbstractYahooSearchConfiguration)inherit
-                            : null;
                     fillBeanProperty(sc, inherit, "encoding", ParseType.String , commandE, "");
-                    aysc.setHost(parseProperty(cxt, commandE.getAttribute("host"),
-                            ayscInherit != null ? ayscInherit.getHost() : null));
-                    aysc.setPartnerId(parseProperty(cxt, commandE.getAttribute("partner-id"),
-                            ayscInherit != null ? ayscInherit.getPartnerId() : null));
-                    fillBeanProperty(sc, inherit, "port", ParseType.Int , commandE, "80");
+                    fillBeanProperty(sc, inherit, "partnerId", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "host", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "port", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "hostHeader", ParseType.String , commandE, "");
                 }
                 if (sc instanceof YahooMediaSearchConfiguration) {
 
-                    final YahooMediaSearchConfiguration ymsc = (YahooMediaSearchConfiguration) sc;
-                    final YahooMediaSearchConfiguration ymscInherit = (YahooMediaSearchConfiguration) (inherit instanceof YahooMediaSearchConfiguration ? inherit : null);
-
-                    final String host = commandE.getAttribute("host");
-                    final String port = commandE.getAttribute("port");
-
-                    ymsc.setPort(Integer.valueOf(parseProperty(cxt, port, ymscInherit != null ? String.valueOf(ymscInherit.getPort()) : "0")));
-                    ymsc.setHost(parseProperty(cxt, host, ymscInherit != null ? ymscInherit.getHost() : ""));
-
-                    fillBeanProperty(ymsc, inherit, "catalog", ParseType.String, commandE, YahooMediaSearchConfiguration.DEFAULT_CATALOG);
-                    fillBeanProperty(ymsc, inherit, "ocr", ParseType.String, commandE, YahooMediaSearchConfiguration.DEFAULT_OCR);
-                    fillBeanProperty(ymsc, inherit, "site", ParseType.String, commandE, "");
+                    fillBeanProperty(sc, inherit, "catalog", ParseType.String, commandE, 
+                            YahooMediaSearchConfiguration.DEFAULT_CATALOG);
+                    fillBeanProperty(sc, inherit, "ocr", ParseType.String, commandE, 
+                            YahooMediaSearchConfiguration.DEFAULT_OCR);
+                    fillBeanProperty(sc, inherit, "site", ParseType.String, commandE, "");
                 }
                 if(sc instanceof OverturePPCSearchConfiguration){
                     fillBeanProperty(sc, inherit, "url", ParseType.String , commandE, "");
@@ -594,43 +561,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "unique", ParseType.String , commandE, "");
                 }
                 if(sc instanceof PicSearchConfiguration){
-                    final PicSearchConfiguration psc = (PicSearchConfiguration) sc;
-                    final PicSearchConfiguration pscInherit = inherit instanceof PicSearchConfiguration
-                            ? (PicSearchConfiguration)inherit
-                            : null;
-                    final String queryServerHost = commandE.getAttribute("query-server-host");
-                    // TODO use fillBeanProperty pattern instead
-                    psc.setQueryServerHost(parseProperty(cxt, queryServerHost,
-                            pscInherit != null ? pscInherit.getQueryServerHost() : null));
-                    // TODO use fillBeanProperty pattern instead
-                    final String queryServerPort = commandE.getAttribute("query-server-port");
-                    // TODO use fillBeanProperty pattern instead
-                    psc.setQueryServerPort(Integer.valueOf(parseProperty(cxt, queryServerPort,
-                            pscInherit != null ? String.valueOf(pscInherit.getQueryServerPort()) : "0")));
-                    fillBeanProperty(sc, inherit, "picsearchCountry", ParseType.String , commandE, "no");
-                }
-                if(sc instanceof SensisSearchConfiguration){
-                    final SensisSearchConfiguration ssc = (SensisSearchConfiguration) sc;
-                }
-                if(sc instanceof StockSearchConfiguration){
-                    final StockSearchConfiguration ssc = (StockSearchConfiguration) sc;
-                }
-                if(sc instanceof WebSearchConfiguration){
-                    final WebSearchConfiguration wsc = (WebSearchConfiguration) sc;
-                }
-                if(sc instanceof WhiteSearchConfiguration){
-                    final WhiteSearchConfiguration wsc = (WhiteSearchConfiguration) sc;
-                }
-                if(sc instanceof YellowSearchConfiguration){
-                    final YellowSearchConfiguration ysc = (YellowSearchConfiguration) sc;
-                }
+                    
+                    fillBeanProperty(sc, inherit, "queryServerHost", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "queryServerPort", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "country", ParseType.String , commandE, "no");
 
-                if(sc instanceof CatalogueSearchConfiguration){
-                    final CatalogueSearchConfiguration ysc = (CatalogueSearchConfiguration) sc;
-                }                
-                
-                if(sc instanceof YellowGeoSearchConfiguration){
-                    final YellowGeoSearchConfiguration ysc = (YellowGeoSearchConfiguration) sc;
                 }                
                 if (sc instanceof MobileSearchConfiguration) {
                     final MobileSearchConfiguration msc = (MobileSearchConfiguration) sc;
@@ -695,10 +630,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final TvWaitSearchConfiguration twsc = (TvWaitSearchConfiguration) sc;
                     fillBeanProperty(twsc, inherit, "index", ParseType.Int, commandE, "0");
                     fillBeanProperty(twsc, inherit, "waitOn", ParseType.String, commandE, null);
-                }
-                
-                if (sc instanceof BlogSearchConfiguration) {
-                    final BlogSearchConfiguration bsc = (BlogSearchConfiguration) sc;
                 }
 
                 // query transformers
@@ -779,17 +710,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             }while(config == null && m != null);
 
             return config;
-        }
-
-        private String parseProperty(final Context cxt, final String s, final String def){
-
-            final String key = s.trim().length() == 0 ? def != null ? def : "" : s;
-            final String value = SiteConfiguration.valueOf(
-                    ContextWrapper.wrap(SiteConfiguration.Context.class, cxt))
-                    .getProperty(key);
-            final String result = value != null ? value : key;
-            LOG.debug(DEBUG_PARSED_PROPERTY + key + " --> " + result);
-            return result;
         }
 
         private Collection<Navigator> parseNavigators(final Element navsE){

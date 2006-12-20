@@ -30,6 +30,9 @@ public class YahooMediaSearchConfiguration extends AbstractYahooSearchConfigurat
         super(parent);
         if(parent != null && parent instanceof YahooMediaSearchConfiguration){
             final YahooMediaSearchConfiguration ysc = (YahooMediaSearchConfiguration) parent;
+            catalog = ysc.catalog;
+            ocr = ysc.ocr;
+            site = ysc.site;
         }
     }
 

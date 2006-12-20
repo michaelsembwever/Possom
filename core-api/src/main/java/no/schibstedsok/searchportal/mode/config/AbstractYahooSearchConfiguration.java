@@ -23,7 +23,7 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
     private String partnerId;
 
     /**
-     * Holds value of property host.
+     * Holds value of property key for host.
      */
     private String host;
 
@@ -33,9 +33,9 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
     private String encoding;
 
     /**
-     * Holds value of property port.
+     * Holds value of property key for port.
      */
-    private int port;
+    private String port;
 
     // Static --------------------------------------------------------
 
@@ -129,7 +129,7 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * Getter for property port.
      * @return Value of property port.
      */
-    public int getPort() {
+    public String getPort() {
         return this.port;
     }
 
@@ -137,7 +137,7 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * Setter for property port.
      * @param port New value of property port.
      */
-    public void setPort(final int port) {
+    public void setPort(final String port) {
         this.port = port;
     }
 

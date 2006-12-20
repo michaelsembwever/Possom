@@ -8,7 +8,9 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import com.fastsearch.esp.search.ConfigurationException;
 import com.fastsearch.esp.search.SearchEngineException;
+import com.fastsearch.esp.search.SearchFactory;
 import com.fastsearch.esp.search.query.BaseParameter;
 import com.fastsearch.esp.search.query.IQuery;
 import com.fastsearch.esp.search.query.Query;
@@ -16,6 +18,7 @@ import com.fastsearch.esp.search.query.SearchParameter;
 import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
+import com.fastsearch.esp.search.view.ISearchView;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -31,11 +34,14 @@ import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
-
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 
 /**
  *
@@ -43,16 +49,28 @@ import no.schibstedsok.searchportal.query.Visitor;
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
 
-    private final static String COLLAPSE_PARAMETER = "collapse";
-
-    private static final Logger LOG = Logger.getLogger(AbstractESPFastSearchCommand.class);
 
     // Attributes ----------------------------------------------------
     private final ESPFastSearchConfiguration cfg;
+    private final String queryServer;
+    private final ISearchView searchView;
     private IQueryResult result;
     
     // Static --------------------------------------------------------
+    
+    private static final Map<String,ISearchView> SEARCH_VIEWS = new HashMap<String,ISearchView>();
 
+    private final static String FACTORY_PROPERTY = "com.fastsearch.esp.search.SearchFactory";
+    private final static String HTTP_FACTORY = "com.fastsearch.esp.search.http.HttpSearchFactory";
+    private final static String QR_SERVER_PROPERTY = "com.fastsearch.esp.search.http.qrservers";
+    private final static String ENCODER_PROPERTY = "com.fastsearch.esp.search.http.encoderclass";
+    private final static String ENCODER_CLASS = "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
+    
+    private final static String COLLAPSE_PARAMETER = "collapse";
+
+    private static final Logger LOG = Logger.getLogger(AbstractESPFastSearchCommand.class);
+    private static final String ERR_CALL_SET_VIEW = "setView() must be called prior to calling this method";
+    
     // Constructors --------------------------------------------------
 
     /**
@@ -68,9 +86,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         super(cxt, parameters);
 
         cfg = (ESPFastSearchConfiguration) getSearchConfiguration();
+        final SiteConfiguration siteConf 
+                = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+        queryServer = siteConf.getProperty(cfg.getQueryServer());
+        searchView = initialiseSearchView();
     }
 
     // Public --------------------------------------------------------
+    
     /** {@insheritDoc} */
     public SearchResult execute() {
 
@@ -80,12 +103,12 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             if (getFilter() != null) {
                 filterBuilder.append(getFilter());
-                filterBuilder.append(" ");
+                filterBuilder.append(' ');
             }
 
             if (getAdditionalFilter() != null) {
                 filterBuilder.append(getAdditionalFilter());
-                filterBuilder.append(" ");
+                filterBuilder.append(' ');
             }
 
 
@@ -98,7 +121,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             final IQuery query = new Query(transformedQuery);
 
             if (cfg.isCollapsingEnabled()) {
-                if (collapseId == null || collapseId.equals("")) {
+                if (collapseId == null || "".equals(collapseId)) {
                     if (cfg.isCollapsingRemoves()) {
                         query.setParameter(new SearchParameter("collapseon", "batvcollapseid"));
                     }
@@ -116,14 +139,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 query.setParameter(new SearchParameter(BaseParameter.NAVIGATION, 0));
             }
 
-            if (! cfg.getQtPipeline().equals("")) {
+            if (! "".equals(cfg.getQtPipeline())) {
                 query.setParameter(new SearchParameter(BaseParameter.QT_PIPELINE, cfg.getQtPipeline()));
             }
 
 
-            LOG.debug("Query is " + query);
+            LOG.info(query);
 
-            result = cfg.getSearchView().search(query);
+            result = searchView.search(query);
 
             final FastSearchResult searchResult = new FastSearchResult(this);
 
@@ -136,6 +159,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 try {
                     final IDocumentSummary document = result.getDocument(i + 1);
                     searchResult.addResult(createResultItem(document));
+                    
                 } catch (NullPointerException e) { // THe doc count is not 100% accurate.
                     LOG.debug("Error finding document " + e);
                     return searchResult;
@@ -155,10 +179,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             return searchResult;
 
         } catch (SearchEngineException ex) {
-            LOG.error(ex.getMessage() + " " + ex.getCause());
+            LOG.error(ex.getMessage() + ' ' + ex.getCause());
             return new FastSearchResult(this);
         } catch (IOException ex) {
-            LOG.error("exeute ", ex);
+            LOG.error(ex.getMessage(), ex);
             throw new InfrastructureException(ex);
         }
     }
@@ -272,6 +296,50 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     
     // Private -------------------------------------------------------
     
+    private ISearchView initialiseSearchView() {
+        
+
+        final String view = cfg.getView();
+        
+        if (view == null) {
+            throw new IllegalStateException(ERR_CALL_SET_VIEW);
+        }
+
+        // XXX There is no synchronisation around this static map.
+        //   Not critical as any clashing threads will just override the values,
+        //    and the cost of the occasional double-up creation probably doesn't compare
+        //    to the synchronisation overhead.
+        ISearchView searchView = SEARCH_VIEWS.get(queryServer);
+        
+        if( null == searchView ){
+            final Properties props = new Properties();
+
+            props.setProperty(FACTORY_PROPERTY, HTTP_FACTORY);
+            props.setProperty(QR_SERVER_PROPERTY, queryServer);
+            props.setProperty(ENCODER_PROPERTY, ENCODER_CLASS);
+
+            try {
+                searchView = SearchFactory.newInstance(props).getSearchView(view);
+
+                // Force server address since we want to use the hardware load balancer.
+                // This also enables us to do tunneling.
+                final String serverName = queryServer.substring(0, queryServer.indexOf(':'));
+                final String serverPort = queryServer.substring(queryServer.indexOf(':') + 1);
+                searchView.setServerAddress(serverName, Integer.parseInt(serverPort), false);
+
+            } catch (ConfigurationException e) {
+                throw new InfrastructureException(e);
+            } catch (SearchEngineException e) {
+                throw new InfrastructureException(e);
+            }
+            SEARCH_VIEWS.put(queryServer, searchView);
+        }
+        
+        LOG.debug("Using searchView " + searchView);
+        
+        return searchView;
+    }
+    
     private int getMaxDocIndex(
             final IQueryResult iQueryResult,
             final int cnt,
@@ -306,6 +374,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
         return item;
     }
+    
+    
     // Inner classes -------------------------------------------------
 }
 

@@ -50,11 +50,11 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();
     private String sortBy;
     private boolean collapsing;
-    private String queryServerURL;
+    private String queryServerUrl;
     private boolean keywordClusteringEnabled = false;
     private String qtPipeline;
     private transient volatile String collectionString;
-    private boolean expansionEnabled;
+    private boolean expansion;
     
     private String resultView;
     private boolean clustering = false;
@@ -70,6 +70,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         super(null);
     }
 
+    /** Copy Constructor. **/
     public FastSearchConfiguration(final SearchConfiguration asc){
 
         super(asc);
@@ -82,7 +83,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
             navigators.putAll(fsc.navigators);
             sortBy = fsc.sortBy;
             collapsing = fsc.collapsing;
-            queryServerURL = fsc.queryServerURL;
+            queryServerUrl = fsc.queryServerUrl;
             keywordClusteringEnabled = fsc.keywordClusteringEnabled;
             qtPipeline = fsc.qtPipeline;
             collectionString = fsc.collectionString;
@@ -139,8 +140,8 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         return coll;
     }
 
-    public String getQueryServerURL() {
-        return queryServerURL;
+    public String getQueryServerUrl() {
+        return queryServerUrl;
     }
 
     public Map getSearchParameters() {
@@ -207,8 +208,8 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         this.resultView = resultView;
     }
 
-    public void setQueryServerURL(final String queryServerURL) {
-        this.queryServerURL = queryServerURL;
+    public void setQueryServerUrl(final String queryServerUrl) {
+        this.queryServerUrl = queryServerUrl;
     }
 
     public boolean isKeywordClusteringEnabled() {
@@ -301,7 +302,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         this.relevantQueries = relevantQueriesEnabled;
     }
     
-        /**
+    /**
      * Returns true if expansion is enabled. Expansion means the possibility 
      * to retrieve all of the documents that has been collapsed for a domain. If
      * this is set to false the templates won't get the information that there
@@ -309,8 +310,8 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
      *
      * @return true if expansion is enabled.
      */
-    public boolean isExpansionEnabled() {
-        return expansionEnabled;
+    public boolean isExpansion() {
+        return expansion;
     }
 
     /**
@@ -318,7 +319,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
      *
      * @param expansionEnabled 
      */
-    public void setExpansionEnabled(final boolean expansionEnabled) {
-        this.expansionEnabled = expansionEnabled;
+    public void setExpansion(final boolean expansion) {
+        this.expansion = expansion;
     }
 }

@@ -27,10 +27,7 @@ import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration
  */
 public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
-    /** TODO comment me. **/
-    public static final String OVERTURE_PPC_ELEMENT = "Listing";
-
-    private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_sitesearch";
+    private static final String OVERTURE_PPC_ELEMENT = "Listing";
 
     private static final Logger LOG = Logger.getLogger(OverturePPCSearchCommand.class);
 
@@ -43,8 +40,10 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      * @param configuration
      * @param parameters
      */
-    public OverturePPCSearchCommand(final Context cxt,
+    public OverturePPCSearchCommand(
+                             final Context cxt,
                              final Map parameters) {
+        
         super(cxt, parameters);
 
     }
@@ -126,20 +125,6 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         } else {
             return resultsToShow;
         }
-    }
-
-    /** TODO comment me. **/
-    protected String getPartnerId(){
-
-        final AbstractYahooSearchConfiguration conf
-                = (AbstractYahooSearchConfiguration)context.getSearchConfiguration();
-
-        // FIXME. When vg and the other site searches have their own context
-        // remove this and use the property partnerId of OverturePPCConfiguration
-        // instead.
-        return getParameters().containsKey("ss") || isVgSiteSearch()
-                ? SITE_SEARCH_OVERTURE_PARTNER_ID
-                : conf.getPartnerId();
     }
 
     /**

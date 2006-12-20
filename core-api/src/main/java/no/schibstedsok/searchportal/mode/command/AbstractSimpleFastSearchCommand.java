@@ -21,7 +21,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.ConfigurationException;
 import no.fast.ds.search.FastSearchEngineFactory;
@@ -40,6 +39,7 @@ import no.fast.ds.search.Query;
 import no.fast.ds.search.SearchEngineException;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
 import no.schibstedsok.searchportal.result.Navigator;
@@ -53,11 +53,11 @@ import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.view.spell.RelevantQuery;
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.util.ModifierDateComparator;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -84,6 +84,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     // Attributes ----------------------------------------------------
     private final Map<String, Navigator> navigatedTo = new HashMap<String,Navigator>();
     private final Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
+    
+    private final String queryServerUrl;
 
     // Static --------------------------------------------------------
     private static final Map<String,IFastSearchEngine> SEARCH_ENGINES = new HashMap<String,IFastSearchEngine>();
@@ -105,6 +107,11 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                     final Map parameters) {
 
         super(cxt, parameters);
+        
+        final FastSearchConfiguration conf = (FastSearchConfiguration) cxt.getSearchConfiguration();
+        final SiteConfiguration siteConf 
+                = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+        queryServerUrl = siteConf.getProperty(conf.getQueryServerUrl());
     }
 
     // Public --------------------------------------------------------
@@ -350,7 +357,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             IQueryResult result = null;
             try {
                 
-                LOG.debug(DEBUG_EXECUTE_QR_URL + getSearchConfiguration().getQueryServerURL());
+                LOG.debug(DEBUG_EXECUTE_QR_URL + queryServerUrl);
                 LOG.debug(DEBUG_EXECUTE_COLLECTIONS + getSearchConfiguration().getCollections());
                 LOG.debug(DEBUG_EXECUTE_QUERY + fastQuery.getQueryString());
                 LOG.debug(DEBUG_EXECUTE_FILTER + getSearchConfiguration().getCollectionFilterString());
@@ -392,7 +399,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             final String collapseId = getParameter(COLLAPSE_PARAMETER);
 
-            if (getSearchConfiguration().isCollapsing() && getSearchConfiguration().isExpansionEnabled()) {
+            if (getSearchConfiguration().isCollapsing() && getSearchConfiguration().isExpansion()) {
                 
                 if (collapseId != null && !collapseId.equals("")) {
                     
@@ -501,13 +508,16 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     /** TODO comment me. **/
     protected IFastSearchEngine getSearchEngine() throws ConfigurationException, MalformedURLException {
 
-        if (!SEARCH_ENGINES.containsKey(getSearchConfiguration().getQueryServerURL())) {
-            LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getSearchConfiguration().getQueryServerURL());
-            final IFastSearchEngine engine
-                    = engineFactory.createSearchEngine(getSearchConfiguration().getQueryServerURL());
-            SEARCH_ENGINES.put(getSearchConfiguration().getQueryServerURL(), engine);
+        // XXX There is no synchronisation around this static map.
+        //   Not critical as any clashing threads will just override the values,
+        //    and the cost of the occasional double-up creation probably doesn't compare
+        //    to the synchronisation overhead.
+        if (!SEARCH_ENGINES.containsKey(queryServerUrl)) {
+            LOG.debug(DEBUG_FAST_SEARCH_ENGINE + queryServerUrl);
+            final IFastSearchEngine engine = engineFactory.createSearchEngine(queryServerUrl);
+            SEARCH_ENGINES.put(queryServerUrl, engine);
         }
-        return (IFastSearchEngine) SEARCH_ENGINES.get(getSearchConfiguration().getQueryServerURL());
+        return (IFastSearchEngine) SEARCH_ENGINES.get(queryServerUrl);
     }
 
     protected String getSortBy() {
@@ -618,7 +628,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
         
         
-        if (getSearchConfiguration().isCollapsing() && getSearchConfiguration().isExpansionEnabled()) {
+        if (getSearchConfiguration().isCollapsing() && getSearchConfiguration().isExpansion()) {
             final String currCollapseId = getParameter(COLLAPSE_PARAMETER);
 
             if (currCollapseId == null || currCollapseId.equals("")) {

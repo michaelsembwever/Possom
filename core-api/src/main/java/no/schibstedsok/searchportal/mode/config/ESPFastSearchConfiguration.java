@@ -26,16 +26,6 @@ import com.fastsearch.esp.search.SearchEngineException;
 public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
 
     // Constants -----------------------------------------------------
-    private final static String FACTORY_PROPERTY =
-            "com.fastsearch.esp.search.SearchFactory";
-    private final static String HTTP_FACTORY =
-            "com.fastsearch.esp.search.http.HttpSearchFactory";
-    private final static String QR_SERVER_PROPERTY =
-            "com.fastsearch.esp.search.http.qrservers";
-    private final static String ENCODER_PROPERTY =
-            "com.fastsearch.esp.search.http.encoderclass";
-    private final static String ENCODER_CLASS =
-            "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
     
     private String view;
     private String queryServer;
@@ -44,8 +34,6 @@ public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
     private boolean expansionEnabled;
     private boolean collapsingRemoves;
     private String qtPipeline;
-    private ISearchView searchView;
-    private static final String ERR_CALL_SET_VIEW = "setView() must be called prior to calling this method";
 
     public void setCollapsingEnabled(final boolean collapsingEnabled) {
         this.collapsingEnabled = collapsingEnabled;
@@ -100,37 +88,6 @@ public class ESPFastSearchConfiguration extends AbstractSearchConfiguration {
 
     public void setView(final String view) {
         this.view = view;
-    }
-
-    public ISearchView getSearchView() {
-         return searchView;
-    }
-
-    public void initializeSearchView() {
-        if (view == null) {
-            throw new IllegalStateException(ERR_CALL_SET_VIEW);
-        }
-
-        final Properties props = new Properties();
-
-        props.setProperty(FACTORY_PROPERTY, HTTP_FACTORY);
-        props.setProperty(QR_SERVER_PROPERTY, getQueryServer());
-        props.setProperty(ENCODER_PROPERTY, ENCODER_CLASS);
-
-        try {
-            searchView = SearchFactory.newInstance(props).getSearchView(getView());
-
-            // Force server address since we want to use the hardware load balancer.
-            // This also enables us to do tunneling.
-            final String serverAndPort = getQueryServer();
-            final String serverName = serverAndPort.substring(0, serverAndPort.indexOf(':'));
-            final String serverPort = serverAndPort.substring(serverAndPort.indexOf(':') + 1);
-            searchView.setServerAddress(serverName, Integer.parseInt(serverPort), false);
-        } catch (ConfigurationException e) {
-            throw new InfrastructureException(e);
-        } catch (SearchEngineException e) {
-            throw new InfrastructureException(e);
-        }
     }
 
     public String getQueryServer() {

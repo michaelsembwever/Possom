@@ -110,7 +110,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
     protected String createRequestURL() {
         final PlatefoodPPCSearchConfiguration ppcConfig
                 = (PlatefoodPPCSearchConfiguration) context.getSearchConfiguration();
-        final String partnerId = ppcConfig.getPartnerId();
+        final String partnerId = getPartnerId();
         final StringBuilder url = new StringBuilder(ppcConfig.getUrl());
 
         try {
