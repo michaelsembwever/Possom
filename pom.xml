@@ -18,13 +18,52 @@
         <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk</url>
         <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk</developerConnection>
     </scm>
-    
-    <modules>
-        <module>httpclient-api</module>
-        <module>site-spi</module>
-        <module>query-api</module>
-        <module>core-api</module>
-        <module>war</module>
-    </modules>
 
+    <!-- The following provides precise handling of building profile independant subprojects (jars)
+       -  versus profile-dependant subproject (war). 
+       - Used mainly by continuum when deploying the different profile repositories.
+       -->
+    <profiles>
+        <profile>
+            <id>build-all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation> 
+            <modules>
+                <module>httpclient-api</module>
+                <module>site-spi</module>
+                <module>query-api</module>
+                <module>core-api</module>
+                <module>war</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>build-jars-only</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>build-jars-only</name>
+                </property>
+            </activation> 
+            <modules>
+                <module>httpclient-api</module>
+                <module>site-spi</module>
+                <module>query-api</module>
+                <module>core-api</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>build-wars-only</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+                <property>
+                    <name>build-wars-only</name>
+                </property>
+            </activation> 
+            <modules>
+                <module>war</module>
+            </modules>
+        </profile>
+    </profiles>
+  
 </project>
