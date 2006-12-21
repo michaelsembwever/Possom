@@ -22,6 +22,8 @@ import java.io.Writer;
 import java.io.IOException;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Date;
+import java.text.SimpleDateFormat;
 
 
 /**
@@ -32,6 +34,7 @@ import java.util.HashMap;
  * 1. 10-2006     -> oktober 2006
  * 2. 10-24-2006  -> 10. oktober 2006
  *
+ * if 'newsdateOnly' navigator, we shuold check if the date is today or yesterday
  *
  */
 public final class DateFormattingDirective extends Directive {
@@ -59,13 +62,15 @@ public final class DateFormattingDirective extends Directive {
      */
     public boolean render(final InternalContextAdapter context, final Writer writer, final Node node) throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
 
-        if (node.jjtGetNumChildren() != 1) {
+        if (node.jjtGetNumChildren() < 1) {
             rsvc.error("#" + getName() + " - missing argument");
             return false;
         }
 
         final String input = node.jjtGetChild(0).value(context).toString();
-        String fDate = "";
+        final String navName = node.jjtGetChild(1).value(context).toString();        
+        
+        final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         Map<String, String> map = new HashMap<String, String>();
         map.put("01", "Januar");
         map.put("02", "Februar");
@@ -79,14 +84,25 @@ public final class DateFormattingDirective extends Directive {
         map.put("10", "Oktober");
         map.put("11", "November");
         map.put("12", "Desember");
-
-        if (input.length() == 7)
+        
+        String fDate = "";
+        final Date today = new Date();
+        long time = today.getTime();
+        time -= 24*60*60*1000;
+        final Date yesterday = new Date(time);
+        String sToday = formatter.format(today);
+        String sYesterday = formatter.format(yesterday);                        
+        
+        if (sToday.equals(input) && "newsdateOnly".equals(navName))
+            fDate = "I dag";
+        else if (sYesterday.equals(input) && "newsdateOnly".equals(navName))
+            fDate = "I g&#229;r"; 
+        else if (input.length() == 7)
             fDate = map.get(input.substring(0,2)) + " " + input.substring(3,7);
         else if (input.length() == 10)
             fDate = input.substring(0, 2) + ". " + map.get(input.substring(3,5)).toLowerCase() + " " + input.substring(6,10);
         else
             fDate = input;    
-            
 
         writer.write(fDate);
 
