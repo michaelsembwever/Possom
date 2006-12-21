@@ -91,7 +91,7 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
 
     /** TODO comment me. **/
     public SearchResult execute() {
-        LOG.error("Execute");
+        LOG.info("Execute");
 
         boolean viewAll = false;
 
@@ -139,7 +139,7 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
 
             final YellowSearchResult result = new YellowSearchResult(this, null, nationalHits, top3, false);
             
-            fetchProducts(result);
+ //           fetchProducts(result);
             final String yprank = companyRank ? "company" : "default";
             result.addField("yprank", yprank);
 
@@ -378,7 +378,7 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
     		Connection con = null;
     		try {
     			InitialContext ctxt = new InitialContext();
-        		DataSource ds = (DataSource) ctxt.lookup("java:ag");
+        		DataSource ds = (DataSource) ctxt.lookup("java:comp/env/jdbc/ag");
         		
         		con = ds.getConnection();
 				
