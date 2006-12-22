@@ -33,6 +33,7 @@
                 <module>httpclient-api</module>
                 <module>site-spi</module>
                 <module>query-api</module>
+                <module>query-transform-spi</module>
                 <module>core-api</module>
                 <module>war</module>
             </modules>
@@ -49,6 +50,7 @@
                 <module>httpclient-api</module>
                 <module>site-spi</module>
                 <module>query-api</module>
+                <module>query-transform-spi</module>
                 <module>core-api</module>
             </modules>
         </profile>

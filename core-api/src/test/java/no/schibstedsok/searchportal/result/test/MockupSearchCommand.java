@@ -12,7 +12,7 @@ import no.schibstedsok.searchportal.result.SearchResult;
 
 import java.util.HashMap;
 import java.util.Properties;
-import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
@@ -26,7 +26,7 @@ import no.schibstedsok.searchportal.view.config.SearchTabFactory;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class MockupSearchCommand extends TestCase implements SearchCommand {
+public class MockupSearchCommand extends SiteTestCase implements SearchCommand {
 
     private final RunningQuery.Context rqCxt = new RunningQuery.Context() {
 

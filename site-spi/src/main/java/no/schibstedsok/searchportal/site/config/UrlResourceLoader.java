@@ -65,6 +65,18 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         return dl;
     }
     
+    public static ClasspathLoader newClassLoader(
+            final SiteContext siteCxt,
+            final ClassLoader parent){
+        
+        final ClasspathLoader cl = new UrlResourceLoader(siteCxt);
+        cl.init("src/", parent);
+        return cl;
+    }
+    
+    
+    
+    
     public static boolean doesUrlExist(final String url){
         
         boolean success = false;

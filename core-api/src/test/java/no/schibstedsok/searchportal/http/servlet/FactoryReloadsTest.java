@@ -10,7 +10,7 @@ package no.schibstedsok.searchportal.http.servlet;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
@@ -23,7 +23,7 @@ import org.testng.annotations.Test;
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public class FactoryReloadsTest extends TestCase {
+public class FactoryReloadsTest extends SiteTestCase {
     
     private static final Logger LOG = Logger.getLogger(FactoryReloadsTest.class);
     

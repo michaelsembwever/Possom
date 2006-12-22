@@ -18,6 +18,23 @@
         <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk/site-spi</url>
         <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/site-spi</developerConnection>
     </scm>
+    
+    <build>
+        <plugins>
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-jar-plugin</artifactId>
+               <executions>
+                 <execution>
+                   <goals>
+                     <goal>test-jar</goal>
+                   </goals>
+                 </execution>
+               </executions>
+             </plugin>
+         </plugins>
+    </build> 
+    
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>

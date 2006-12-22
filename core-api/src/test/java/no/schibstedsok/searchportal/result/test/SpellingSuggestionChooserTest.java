@@ -1,7 +1,7 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
-import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class SpellingSuggestionChooserTest extends TestCase {
+public class SpellingSuggestionChooserTest extends SiteTestCase {
 
     public SpellingSuggestionChooserTest(final String testName) {
         super(testName);

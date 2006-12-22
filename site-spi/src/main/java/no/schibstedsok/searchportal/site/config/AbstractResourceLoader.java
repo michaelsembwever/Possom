@@ -13,6 +13,8 @@ package no.schibstedsok.searchportal.site.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -36,7 +38,30 @@ import org.xml.sax.SAXParseException;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 abstract class AbstractResourceLoader
-        implements Runnable, DocumentLoader, PropertiesLoader {
+        implements Runnable, DocumentLoader, PropertiesLoader, ClasspathLoader {
+    
+    private enum Polymorphism{
+        FIRST_FOUND,
+        DOWN_HIERARCHY,
+        UP_HEIRARCHY
+    }
+    
+    private enum Resource{
+        
+        PROPERTIES(Polymorphism.UP_HEIRARCHY),
+        DOM_DOCUMENT(Polymorphism.FIRST_FOUND),
+        CLASSPATH(Polymorphism.FIRST_FOUND);
+        
+        final private Polymorphism polymorphism;
+        
+        Resource(final Polymorphism polymorphism){
+            this.polymorphism = polymorphism;
+        }
+        
+        Polymorphism getPolymorphism(){
+            return polymorphism;
+        }
+    }
 
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
 
@@ -47,12 +72,16 @@ abstract class AbstractResourceLoader
     private String resource;
     private Future future;
 
+    private Resource resourceType;
     /** the properties resource holder. **/
     protected Properties props;
-    /** DocumentBuilder builder **/
+    /** DocumentBuilder builder. **/
     protected DocumentBuilder builder;
-    /** Document **/
+    /** Document. **/
     protected Document document;
+    /** Classloader. **/
+    private ClassLoader parentClassloader;
+    protected ClassLoader classloader;
 
     private static final String ERR_MUST_USE_PROPS_INITIALISER = "Must use properties initialiser to use this method!";
     private static final String ERR_MUST_USE_XSTREAM_INITIALISER = "Must use xstream initialiser to use this method!";
@@ -116,22 +145,18 @@ abstract class AbstractResourceLoader
         return document;
     }
 
+    public ClassLoader getClassLoader() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     /** {@inheritDoc}
      */
     public void init(final String resource, final Properties props) {
 
-        if (future != null && !future.isDone()) {
-            throw new IllegalStateException(ERR_ONE_USE_ONLY);
-        }
-        this.resource = resource;
+        resourceType = Resource.PROPERTIES;
+        preInit(resource);
         this.props = props;
-        future = EXECUTOR.submit(this);
-        
-        if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
-            final ThreadPoolExecutor tpe = (ThreadPoolExecutor)EXECUTOR;
-            LOG.debug(DEBUG_POOL_COUNT + tpe.getActiveCount() + '/' + tpe.getPoolSize());
-        }
+        postInit();
     }
 
 
@@ -139,11 +164,30 @@ abstract class AbstractResourceLoader
      */
     public void init(final String resource, final DocumentBuilder builder) {
 
+        resourceType = Resource.DOM_DOCUMENT;
+        preInit(resource);
+        this.builder = builder;
+        postInit();
+    }
+    
+    public void init(String classpath, final ClassLoader parent) {
+
+        resourceType = Resource.CLASSPATH;
+        preInit(classpath);
+        parentClassloader = parent;
+        postInit();
+    }
+    
+    private void preInit(final String resource){
+        
         if (future != null && !future.isDone()) {
             throw new IllegalStateException(ERR_ONE_USE_ONLY);
         }
         this.resource = resource;
-        this.builder = builder;
+    }
+    
+    private void postInit(){
+        
         future = EXECUTOR.submit(this);
         
         if(LOG.isDebugEnabled() && EXECUTOR instanceof ThreadPoolExecutor){
@@ -178,30 +222,38 @@ abstract class AbstractResourceLoader
     /** {@inheritDoc}
      */
     public void run() {
-        if(props != null){
-            // Properties inherent through the fallback process. Keys are *not* overridden.
-            for(Site site = getContext().getSite(); site != null; site = site.getParent()){
-                loadResource(getResource(site));
-            }
-        }else{
-            // Default behavour: only load first found resource
-            Site site = getContext().getSite();
-
-            do {
-                if (loadResource(getResource(site))) {
-                    break;
-                } else {
-                    site = site.getParent();
-                    if( null != site ){
-                        LOG.warn(WARN_USING_FALLBACK + getResource(site));
-                        LOG.warn(WARN_PARENT_SITE + site.getParent());
-                    }
+        
+        switch(resourceType.getPolymorphism()){
+            case UP_HEIRARCHY:
+                // Properties inherent through the fallback process. Keys are *not* overridden.
+                for(Site site = getContext().getSite(); site != null; site = site.getParent()){
+                    loadResource(getResource(site));
                 }
-            } while (site != null);
-
-            if (site == null) {
-                LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
-            }
+                break;
+                
+            case DOWN_HIERARCHY:
+                throw new UnsupportedOperationException("Not yet implemented");
+                
+            case FIRST_FOUND:
+                // Default behavour: only load first found resource
+                Site site = getContext().getSite();
+                
+                do {
+                    if (loadResource(getResource(site))) {
+                        break;
+                    } else {
+                        site = site.getParent();
+                        if( null != site ){
+                            LOG.warn(WARN_USING_FALLBACK + getResource(site));
+                            LOG.warn(WARN_PARENT_SITE + site.getParent());
+                        }
+                    }
+                } while (site != null);
+                
+                if (site == null) {
+                    LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
+                }
+                break;
         }
     }
 
@@ -215,26 +267,35 @@ abstract class AbstractResourceLoader
 
             try {
 
-                if (props != null) {
+                switch(resourceType){
                     
-                    // only add properties that don't already exist!
-                    // allows us to inherent back through the fallback process.
-                    final Properties newProps = new Properties();
-                    newProps.load(is);
-                    
-                    props.put(context.getSite().getName(), getUrlFor(resource));
-                    
-                    for(Object p : newProps.keySet()){
-
-                        if(!props.containsKey(p)){
-                            final String prop = (String)p;
-                            props.setProperty(prop, newProps.getProperty(prop));
+                    case PROPERTIES:
+                        
+                        // only add properties that don't already exist!
+                        // allows us to inherent back through the fallback process.
+                        final Properties newProps = new Properties();
+                        newProps.load(is);
+                        
+                        props.put(context.getSite().getName(), getUrlFor(resource));
+                        
+                        for(Object p : newProps.keySet()){
+                            
+                            if(!props.containsKey(p)){
+                                final String prop = (String)p;
+                                props.setProperty(prop, newProps.getProperty(prop));
+                            }
                         }
-                    }
-                    
-                }
-                if (builder != null) {
-                    document = builder.parse( new InputSource(new InputStreamReader(is)) );
+                        break;
+                        
+                    case DOM_DOCUMENT:
+                        document = builder.parse( new InputSource(new InputStreamReader(is)) );
+                        break;
+                        
+                    case CLASSPATH:
+                        final URL url = new URL(getUrlFor(resource));
+                        //FIXME Broken. Manual localhost URLs with host-header required in findClass() method.
+                        classloader = new URLClassLoader(new URL[]{url}, parentClassloader);
+                        break;
                 }
 
                 LOG.info(readResourceDebug(resource));

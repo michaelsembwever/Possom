@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision: 3359 $</tt>
  */
-public class SearchModeTest extends TestCase {
+public class SearchModeTest extends SiteTestCase {
 
     public SearchModeTest(final String testName) {
         super(testName);

@@ -10,7 +10,7 @@ package no.schibstedsok.searchportal.mode.config;
 
 
 import java.util.Properties;
-import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.Site;
 import org.testng.annotations.Test;
@@ -22,7 +22,7 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id: UrlResourcesSiteConfigurationtest.java 3359 2006-08-03 08:13:22Z mickw $
  */
-public final class UrlResourcesSiteConfigurationtest extends TestCase {
+public final class UrlResourcesSiteConfigurationtest extends SiteTestCase {
 
     private static final String FAIL_CONFIG_NOT_RUNNING =
             "\n\n"

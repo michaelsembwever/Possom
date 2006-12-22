@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
@@ -35,7 +35,7 @@ import no.schibstedsok.searchportal.view.config.SearchTabFactory;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public abstract class AbstractSearchCommandTest extends TestCase {
+public abstract class AbstractSearchCommandTest extends SiteTestCase {
 
 
     // Constants -----------------------------------------------------

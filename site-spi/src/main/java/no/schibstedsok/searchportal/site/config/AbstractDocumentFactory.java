@@ -49,71 +49,106 @@ public abstract class AbstractDocumentFactory {
 
 
 
-    protected enum ParseType{
+    public enum ParseType{
         /** TODO comment me. **/
-        Boolean, 
-        Int, 
-        Float, 
-        String, 
+        Boolean,
+        Int,
+        Float,
+        String,
         Property
     };
-    
+
     /** TODO implement Type.Property. **/
-    protected static final void fillBeanProperty(
-            final Object beanObj, 
-            final Object beanParent, 
+    public static final void fillBeanProperty(
+            final Object beanObj,
+            final Object beanParent,
             final String property,
             final ParseType type,
             final Element element,
             final String def){
 
       try {
-            
-            final StringBuilder attributeName = new StringBuilder(property);
-            for(int i = 0; i < attributeName.length(); ++i){
-                final char c = attributeName.charAt(i);
-                if(Character.isUpperCase(c)){
-                    attributeName.replace(i, i+1, "-" + Character.toLowerCase(c));
-                    ++i;
-                }
-            }
-            
-            final String attributeValue = element.getAttribute(attributeName.toString());
-            
+
+            final String attributeValue = element.getAttribute(beanToXmlName(property));
+
             if(attributeValue != null && attributeValue.length()>0 ){
                 BeanUtils.setProperty(beanObj, property, attributeValue);
             }else{
-                
+
                 String inheritedValue = null;
                 if( beanParent != null ){
                     try{
                         inheritedValue = BeanUtils.getProperty(beanParent, property);
+
                     }catch(NoSuchMethodException nsme){
                         // normal occurance when the bean to inherit values from is not of the same class
                         LOG.debug(DEBUG_UNABLE_TO_INHERIT_VALUE_1 + property
                                 + DEBUG_UNABLE_TO_INHERIT_VALUE_1 + beanParent);
                     }
                 }
-                
+
                 if(inheritedValue != null && inheritedValue.length()>0 ){
                     BeanUtils.setProperty(beanObj, property, inheritedValue);
                 }else{
                     BeanUtils.setProperty(beanObj, property, def);
                 }
             }
-            
+
         } catch (IllegalAccessException ex) {
             LOG.error(ERR_FILL_PROPERTY, ex);
         } catch (InvocationTargetException ex) {
             LOG.error(ERR_FILL_PROPERTY, ex);
         }
     }
-    
+
+    /***
+    * <p>The words within the bean name are deduced assuming the
+    * first-letter-capital (for example camel's hump) naming convention. For
+    * example, the words in <code>FooBar</code> are <code>foo</code>
+    * and <code>bar</code>.</p>
+    *
+    * <p>Then the {@link #getSeparator} property value is inserted so that it separates
+    * each word.</p>
+    *
+    * @param typeName The name string to convert.  If a JavaBean
+    * class name, should included only the last part of the name
+    * rather than the fully qualified name (e.g. FooBar rather than
+    * org.example.FooBar).
+    * @return the bean name converted to either upper or lower case with words separated
+    * by the separator.
+    **/
+    public static String beanToXmlName(final String beanName){
+
+        final StringBuilder xmlName = new StringBuilder(beanName);
+        for(int i = 0; i < xmlName.length(); ++i){
+            final char c = xmlName.charAt(i);
+            if(Character.isUpperCase(c)){
+                xmlName.replace(i, i+1, "-" + Character.toLowerCase(c));
+                ++i;
+            }
+        }
+        return xmlName.toString();
+    }
+
+    /** The reverse transformation to beanToXmlName(string). **/
+    public static String xmlToBeanName(final String xmlName){
+
+        final StringBuilder beanName = new StringBuilder(xmlName);
+        for(int i = 0; i < beanName.length(); ++i){
+            final char c = beanName.charAt(i);
+            if('-' == c){
+                beanName.replace(i, i+2, String.valueOf(Character.toUpperCase(beanName.charAt(i+1))));
+                ++i;
+            }
+        }
+        return beanName.toString();
+    }
+
     /** @deprecated use fillBeanProperty instead. **/
     protected static final boolean parseBoolean(final String s, final boolean def){
         return s.trim().length() == 0 ? def : Boolean.parseBoolean(s);
     }
-    
+
     /** @deprecated use fillBeanProperty instead. **/
     protected static final float parseFloat(final String s, final float def){
         return s.trim().length() == 0 ? def : Float.parseFloat(s);
@@ -123,15 +158,15 @@ public abstract class AbstractDocumentFactory {
     protected static final int parseInt(final String s, final int def){
         return s.trim().length() == 0 ? def : Integer.parseInt(s);
     }
-    
+
     /** @deprecated use fillBeanProperty instead. **/
     protected static final String parseString(final String s, final String def){
         return s.trim().length() == 0 ? def : s;
     }
-    
+
 
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
-    
+
 }

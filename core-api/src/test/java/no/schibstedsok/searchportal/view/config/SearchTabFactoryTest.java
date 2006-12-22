@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
-import no.schibstedsok.searchportal.site.config.AbstractFactoryTest;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public final class SearchTabFactoryTest extends AbstractFactoryTest {
+public final class SearchTabFactoryTest extends SiteTestCase {
 
     private static final Logger LOG = Logger.getLogger(SearchTabFactoryTest.class);
 

@@ -270,15 +270,15 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      private BasicSearchResultItem getItem(final Element element) {
 
          final BasicSearchResultItem e = new BasicSearchResultItem();
-         for (final Iterator iter = getConfiguration().getElementValues().iterator(); iter.hasNext();) {
+         for (final Iterator iter = getSearchConfiguration().getElementValues().iterator(); iter.hasNext();) {
              final String field = (String) iter.next();
              e.addField(field, getTextValue(element, field));
          }
          return e;
      }
 
-     private StormWeatherSearchConfiguration getConfiguration() {
-         return (StormWeatherSearchConfiguration)context.getSearchConfiguration();
+     public StormWeatherSearchConfiguration getSearchConfiguration() {
+         return (StormWeatherSearchConfiguration)super.getSearchConfiguration();
      }
 
 

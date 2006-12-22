@@ -84,7 +84,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     // Attributes ----------------------------------------------------
     private final Map<String, Navigator> navigatedTo = new HashMap<String,Navigator>();
     private final Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
-    
+
     private final String queryServerUrl;
 
     // Static --------------------------------------------------------
@@ -107,9 +107,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                     final Map parameters) {
 
         super(cxt, parameters);
-        
+
         final FastSearchConfiguration conf = (FastSearchConfiguration) cxt.getSearchConfiguration();
-        final SiteConfiguration siteConf 
+        final SiteConfiguration siteConf
                 = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
         queryServerUrl = siteConf.getProperty(conf.getQueryServerUrl());
     }
@@ -185,7 +185,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             return null;
         }
     }
-    
+
     /** TODO comment me. **/
     public Navigator getParentNavigator(final String navigatorKey, final String name) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
@@ -327,7 +327,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return links;
     }
 
-    
+
     // Z implementation ----------------------------------------------
 
     // SearchCommand overrides ----------------------------------------------
@@ -356,7 +356,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             IQueryResult result = null;
             try {
-                
+
                 LOG.debug(DEBUG_EXECUTE_QR_URL + queryServerUrl);
                 LOG.debug(DEBUG_EXECUTE_COLLECTIONS + getSearchConfiguration().getCollections());
                 LOG.debug(DEBUG_EXECUTE_QUERY + fastQuery.getQueryString());
@@ -365,22 +365,22 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 result = engine.search(fastQuery);
 
             } catch (IOException ioe) {
-                
+
                 LOG.error(getSearchConfiguration().getName() + ERR_FAST_FAILURE, ioe);
                 return new FastSearchResult(this);
-                
+
             } catch (SearchEngineException fastException) {
-                
+
                 LOG.error(
-                        getSearchConfiguration().getName() 
-                        + ERR_FAST_FAILURE + '[' + fastException.getErrorCode() + ']', 
+                        getSearchConfiguration().getName()
+                        + ERR_FAST_FAILURE + '[' + fastException.getErrorCode() + ']',
                         fastException);
                 return new FastSearchResult(this);
-                
+
             }
 
             LOG.info(DEBUG_QUERY_DUMP + fastQuery);
-            
+
             final FastSearchResult searchResult = collectResults(result);
 
             if (getSearchConfiguration().isSpellcheck()) {
@@ -400,9 +400,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             final String collapseId = getParameter(COLLAPSE_PARAMETER);
 
             if (getSearchConfiguration().isCollapsing() && getSearchConfiguration().isExpansion()) {
-                
+
                 if (collapseId != null && !collapseId.equals("")) {
-                    
+
                     if (searchResult.getResults().size() > 0) {
                         final SearchResultItem itm = searchResult.getResults().get(0);
                         final URL url = new URL(itm.getField("url"));
@@ -431,7 +431,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     /** TODO comment me. **/
     protected void visitImpl(final LeafClause clause) {
-        
+
         final String transformedTerm = (String) getTransformedTerm(clause);
         if (null == null && null != transformedTerm && transformedTerm.length() > 0) {
             if (insideNot) {
@@ -452,7 +452,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         clause.getSecondClause().accept(this);
         writeAnd = originalWriteAnd;
     }
-    
+
     /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         final Boolean originalWriteAnd = writeAnd;
@@ -514,7 +514,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         //    and the cost of the occasional double-up creation probably doesn't compare
         //    to the synchronisation overhead.
         if (!SEARCH_ENGINES.containsKey(queryServerUrl)) {
-            LOG.debug(DEBUG_FAST_SEARCH_ENGINE + queryServerUrl);
+            LOG.debug(DEBUG_FAST_SEARCH_ENGINE + getSearchConfiguration().getQueryServerUrl() + "-->" + queryServerUrl);
+
             final IFastSearchEngine engine = engineFactory.createSearchEngine(queryServerUrl);
             SEARCH_ENGINES.put(queryServerUrl, engine);
         }
@@ -528,7 +529,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     /** TODO comment me */
     protected void setAdditionalParameters(final ISearchParameters params) {
     }
-    
+
 
 
     // Private -------------------------------------------------------
@@ -627,14 +628,14 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 item.addField(entry.getValue(), summary.getSummary());
             }
         }
-        
-        
+
+
         if (getSearchConfiguration().isCollapsing() && getSearchConfiguration().isExpansion()) {
             final String currCollapseId = getParameter(COLLAPSE_PARAMETER);
 
             if (currCollapseId == null || currCollapseId.equals("")) {
                 final String moreHits = document.getSummaryField("morehits").getSummary();
-                
+
                 if (moreHits.equals("1")) {
                     item.addField("moreHits", "true");
                     item.addField("collapseParameter", COLLAPSE_PARAMETER);
@@ -660,7 +661,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (getSearchConfiguration().getName() != null && getSearchConfiguration().getName().equals("relevantQueries")) {
             params.setParameter(new SearchParameter("sources", "alone"));
         }
-        
+
         String kwString = "";
         String queryString = getTransformedQuery();
 
@@ -695,8 +696,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (getSearchConfiguration().getSpamScoreLimit() > 0) {
             filter.append(" ").append("+spamscore:<").append(getSearchConfiguration().getSpamScoreLimit());
         }
-        
-        
+
+
         final String collapseId = getParameter(COLLAPSE_PARAMETER);
 
         if (getSearchConfiguration().isCollapsing()) {
@@ -721,7 +722,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
             final String updatedFilter = getSearchConfiguration().getFilter()
                     .replaceAll("\\{NOW\\}", sdf.format(c.getTime()));
-            
+
             filter.append(' ' + updatedFilter);
         }
 
@@ -765,29 +766,29 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (getSortBy() != null && getSortBy().length() >0) {
             params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getSortBy()));
         }
-        
+
         if (getParameter("c").equals("yg")) {
             if (getParameter("type").equals("f")) {
                 params.setParameter(new SearchParameter("qtf_geosearch:center", "(" + getParameter("cla") + "," + getParameter("clo")));
-                params.setParameter(new SearchParameter("qtf_geosearch:filterbox", "[(" + getParameter("la1") + "," + getParameter("lo1") + ");(" + getParameter("la2") + "," + getParameter("lo2") + ")]"));            
+                params.setParameter(new SearchParameter("qtf_geosearch:filterbox", "[(" + getParameter("la1") + "," + getParameter("lo1") + ");(" + getParameter("la2") + "," + getParameter("lo2") + ")]"));
                 params.setParameter(new SearchParameter("sortdirection", "ascending"));
             } else {
                 params.setParameter(new SearchParameter("qtf_geosearch:center", "(" + getParameter("cla") + "," + getParameter("clo")));
-                params.setParameter(new SearchParameter("qtf_geosearch:radius", getParameter("rad")));            
-                params.setParameter(new SearchParameter("sortdirection", "ascending"));                
+                params.setParameter(new SearchParameter("qtf_geosearch:radius", getParameter("rad")));
+                params.setParameter(new SearchParameter("sortdirection", "ascending"));
             }
         }
 
         if (getParameters().containsKey("rank")) {
             params.setParameter(new SearchParameter(BaseParameter.SORT_BY, getParameter("rank")));
         }
-        
+
         // TODO: Refactor
         if (getParameters().containsKey("userSortBy")) {
 
             String sortBy = getParameter("userSortBy");
             LOG.debug("createQuery: SortBY " + sortBy);
-            
+
             if ("standard".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retriever"));
             } else if ("datetime".equals(sortBy)) {
@@ -798,7 +799,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         params.setParameter(new SearchParameter(BaseParameter.NAVIGATORS, getNavigatorsString()));
 
         setAdditionalParameters(params);
-        
+
         IQuery query = new Query(params);
 
         return query;
@@ -909,10 +910,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                         Collections.sort(searchResult.getModifiers(navigatorKey));
                         break;
                 }
-                
+
             }
 
-        } 
+        }
     }
 
     private Navigator findChildNavigator(Navigator nav, String nameToFind) {

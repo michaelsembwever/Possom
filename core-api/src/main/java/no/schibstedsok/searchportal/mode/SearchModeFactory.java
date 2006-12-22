@@ -24,7 +24,6 @@ import no.schibstedsok.searchportal.mode.config.PrisjaktSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.config.SensisSearchConfiguration;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.mode.config.StaticSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.StockSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.StormWeatherSearchConfiguration;
@@ -40,20 +39,7 @@ import no.schibstedsok.searchportal.mode.config.YahooMediaSearchConfiguration;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
-import no.schibstedsok.searchportal.query.transform.AgeFilterTransformer;
-import no.schibstedsok.searchportal.query.transform.ExactTitleMatchTransformer;
-import no.schibstedsok.searchportal.query.transform.InfopageQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.MobileTvQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.NewsTransformer;
 import no.schibstedsok.searchportal.query.transform.QueryTransformer;
-import no.schibstedsok.searchportal.query.transform.RegExpTransformer;
-import no.schibstedsok.searchportal.query.transform.SimpleSiteSearchTransformer;
-import no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.TermPrefixTransformer;
-import no.schibstedsok.searchportal.query.transform.TokenMaskTransformer;
-import no.schibstedsok.searchportal.query.transform.TvSearchQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.WeatherInfopageQueryTransformer;
-import no.schibstedsok.searchportal.query.transform.WeatherQueryTransformer;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
 import no.schibstedsok.searchportal.result.handler.AgeCalculatorResultHandler;
@@ -648,10 +634,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element qt = (Element) node;
-                        for (QueryTransformerTypes qtType : QueryTransformerTypes.values()) {
-                            if (qt.getTagName().equals(qtType.getXmlName())) {
-                                sc.addQueryTransformer(qtType.parseQueryTransformer(qt));
-                            }
+                        if( QueryTransformerFactory.supported(qt.getTagName()) ){
+                            sc.addQueryTransformer(QueryTransformerFactory.parseQueryTransformer(qt));
                         }
                     }
                 }
@@ -748,85 +732,22 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
-    private enum QueryTransformerTypes {
-        AGEFILTER(AgeFilterTransformer.class),
-        EXACT_TITLE_MATCH(ExactTitleMatchTransformer.class),
-        INFOPAGE(InfopageQueryTransformer.class),
-        // @deprecated see deprecated note in class
-        MOBILE_TV(MobileTvQueryTransformer.class),
-        NEWS(NewsTransformer.class),
-        // @deprecated use token-remover match="prefix" instead.
-        PREFIX_REMOVER(TokenMaskTransformer.class),
-        REGEXP(RegExpTransformer.class),
-        SIMPLE_SITE_SEARCH(SimpleSiteSearchTransformer.class),
-        SYNONYM(SynonymQueryTransformer.class),
-        TERM_PREFIX(TermPrefixTransformer.class),
-        TOKEN_MASK(TokenMaskTransformer.class),
-        TVSEARCH(TvSearchQueryTransformer.class),
-        WEATHER(WeatherQueryTransformer.class),
-        WEATHERINFOPAGE(WeatherInfopageQueryTransformer.class);
+    private static final class QueryTransformerFactory {
 
-        private final Class<? extends QueryTransformer> clazz;
-        private final String xmlName;
-
-        QueryTransformerTypes(final Class<? extends QueryTransformer> c){
-            clazz = c;
-            xmlName = name().replaceAll("_","-").toLowerCase();
+        private QueryTransformerFactory(){}
+        
+        static boolean supported(final String xmlName){
+            
+            return null != findClass(xmlName);
         }
 
-        public String getXmlName(){
-            return xmlName;
-        }
-
-        public QueryTransformer parseQueryTransformer(final Element qt){
+        static QueryTransformer parseQueryTransformer(final Element qt){
+            
+            final String xmlName = qt.getTagName();
+            LOG.info(INFO_PARSING_QUERY_TRANSFORMER + xmlName);
+            
             try {
-
-                LOG.info(INFO_PARSING_QUERY_TRANSFORMER + xmlName);
-                final QueryTransformer transformer = clazz.newInstance();
-                switch(this){
-                    case AGEFILTER:
-                        final AgeFilterTransformer agft = (AgeFilterTransformer) transformer;
-                        agft.setAgeField(qt.getAttribute("field"));
-                        break;
-                    case PREFIX_REMOVER:
-                        final TokenMaskTransformer prqt = (TokenMaskTransformer) transformer;
-                        prqt.addPredicates(qt.getAttribute("prefixes").split(","));
-                        prqt.setMatch(TokenMaskTransformer.Position.PREFIX);
-                        break;
-                    case REGEXP:
-                        fillBeanProperty(transformer, null, "regexp", ParseType.String, qt, "");
-                        fillBeanProperty(transformer, null, "replacement", ParseType.String, qt, "");
-                        break;
-                    case SIMPLE_SITE_SEARCH:
-                        final SimpleSiteSearchTransformer ssqt = (SimpleSiteSearchTransformer) transformer;
-                        ssqt.setParameterName(qt.getAttribute("parameter"));
-                        break;
-                    case TERM_PREFIX:
-                        fillBeanProperty(transformer, null, "prefix", ParseType.String, qt, "");
-                        fillBeanProperty(transformer, null, "numberPrefix", ParseType.String, qt, "");
-                        break;
-                    case TOKEN_MASK:
-                        final TokenMaskTransformer trqt = (TokenMaskTransformer) transformer;
-                        trqt.addPredicates(qt.getAttribute("predicates").split(","));
-                        if(qt.getAttribute("match").length() > 0){
-                            trqt.setMatch(
-                                    TokenMaskTransformer.Position.valueOf(qt.getAttribute("position").toUpperCase()));
-                        }
-                        if(qt.getAttribute("mask").length() >0){
-                            trqt.setMask(
-                                    TokenMaskTransformer.Mask.valueOf(qt.getAttribute("mask").toUpperCase()));
-                        }
-                        break;
-                    case TVSEARCH:
-                        fillBeanProperty(transformer, null, "with-endtime", ParseType.Boolean, qt, "");
-                        break;
-                    case WEATHER:
-                        final WeatherQueryTransformer wqt = (WeatherQueryTransformer) transformer;
-                        wqt.setDefaultLocations(qt.getAttribute("default-locations").split(","));
-                    default:
-                        break;
-                }
-                return transformer;
+                return findClass(xmlName).newInstance().readQueryTransformer(qt);
 
             } catch (InstantiationException ex) {
                 throw new InfrastructureException(ex);
@@ -834,9 +755,27 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 throw new InfrastructureException(ex);
             }
         }
+        
+        private static Class<? extends QueryTransformer> findClass(final String xmlName){
+            
+            Class clazz = null;
+            final String bName = xmlToBeanName(xmlName);
+            final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
+            try{
+                clazz = (Class<? extends QueryTransformer>) Class.forName(
+                    "no.schibstedsok.searchportal.query.transform."
+                    + className 
+                    + "QueryTransformer");
+            
+            }catch(ClassNotFoundException cnfe){
+                LOG.error(cnfe.getMessage(), cnfe);
+            }
+            return clazz;
+        }
 
     }
 
+    /** TODO rewrite following the cleaner architecture of QueryTransformerFactory. **/
     private enum ResultHandlerTypes {
         ADD_DOC_COUNT(AddDocCountModifier.class),
         AGE_CALCULATOR(AgeCalculatorResultHandler.class),

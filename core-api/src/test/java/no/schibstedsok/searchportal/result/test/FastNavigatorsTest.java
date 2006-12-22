@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
@@ -37,7 +37,7 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public final class FastNavigatorsTest extends TestCase {
+public final class FastNavigatorsTest extends SiteTestCase {
 
     private static final Logger LOG = Logger.getLogger(FastNavigatorsTest.class);
 

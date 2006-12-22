@@ -80,6 +80,11 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-query-transform-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
             <artifactId>commons-ioc</artifactId>
         </dependency>
         <dependency>
@@ -149,6 +154,14 @@
         <dependency>
             <groupId>jep</groupId>
             <artifactId>jep</artifactId>
+        </dependency>
+        <!-- Testin -->
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-site-spi</artifactId>
+            <version>${version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testng</groupId>

@@ -3,9 +3,7 @@ package no.schibstedsok.searchportal.result.test;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.TestCase;
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
@@ -29,7 +27,7 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public final class DateFormatHandlerTest extends TestCase {
+public final class DateFormatHandlerTest extends SiteTestCase {
 
     private static final Logger LOG = Logger.getLogger(DateFormatHandlerTest.class);
 

@@ -17,24 +17,24 @@ import java.util.List;
  * @author larsj
  */
 public class StormWeatherSearchConfiguration extends FastSearchConfiguration {
-
-	private List<String> elementValues = new ArrayList<String>();
-	
-	public StormWeatherSearchConfiguration(){
+    
+    private List<String> elementValues = new ArrayList<String>();
+    
+    public StormWeatherSearchConfiguration(){
         super(null);
     }
-
+    
     public StormWeatherSearchConfiguration(final SearchConfiguration asc){
         super(asc);
     }
-
-	public List<String> getElementValues() {
-		return elementValues;
-	}
-
-	public void addElementValue(String string) {
-		this.elementValues.add(string);
-	}
-	
+    
+    public List<String> getElementValues() {
+        return elementValues;
+    }
+    
+    public void addElementValue(String string) {
+        this.elementValues.add(string);
+    }
+    
     
 }

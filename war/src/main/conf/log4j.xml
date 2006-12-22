@@ -16,7 +16,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] (%X{UNIQUE_ID}) %-5p %c{1}\: %m%n"/>
+            <param name="ConversionPattern" value="%-5p %d{HH\:mm\:ss,SSS} [%X{site} %t] (%X{UNIQUE_ID}) %c{1}\: %m%n"/>
         </layout>
     </appender>
     
@@ -27,7 +27,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ERROR"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] (%X{UNIQUE_ID}) %-5p %c{1}\: %m%n"/>
+            <param name="ConversionPattern" value="%-5p %d{HH\:mm\:ss,SSS} [%X{site} %t] (%X{UNIQUE_ID}) %c{1}\: %m%n"/>
         </layout>
     </appender>
     

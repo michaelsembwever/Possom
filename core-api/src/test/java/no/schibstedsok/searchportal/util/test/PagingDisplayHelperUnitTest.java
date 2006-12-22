@@ -4,7 +4,7 @@
  */
 package no.schibstedsok.searchportal.util.test;
 
-import no.schibstedsok.searchportal.TestCase;
+import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
 import junit.framework.TestResult;
 
@@ -13,7 +13,7 @@ import junit.framework.TestResult;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class PagingDisplayHelperUnitTest extends TestCase {
+public class PagingDisplayHelperUnitTest extends SiteTestCase {
 
     private PagingDisplayHelper pager;
     
