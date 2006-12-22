@@ -26,7 +26,7 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
     protected AbstractQueryTransformer(){
     }
 
-    @Override
+    //@Override // TODO uncomment for java 6
     public void setContext(final Context cxt) {
         context = cxt;
     }
@@ -35,18 +35,18 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
         return context;
     }
 
-    @Override
+    //@Override // TODO uncomment for java 6
     public String getFilter() {
         return "";
     }
 
-    @Override
+    //@Override // TODO uncomment for java 6
     public String getFilter(final java.util.Map parameters) {
         return "";
     }
 
     /** @deprecated modify the context's transformedTerms map instead **/
-    @Override
+    //@Override // TODO uncomment for java 6
     public String getTransformedQuery() {
         return getContext().getTransformedQuery();
     }
@@ -61,14 +61,14 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
         getContext().visitXorClause(this, clause);
     }
 
-    @Override
+    //@Override // TODO uncomment for java 6
     public Object clone() throws CloneNotSupportedException {
         final AbstractQueryTransformer retValue = (AbstractQueryTransformer)super.clone();
         retValue.context = context;
         return retValue;
     }
 
-    @Override
+    //@Override // TODO uncomment for java 6
     public QueryTransformer readQueryTransformer(final Element element){
         
         // Override me to add custom deserialisation
