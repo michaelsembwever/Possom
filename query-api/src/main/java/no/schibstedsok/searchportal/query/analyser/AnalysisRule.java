@@ -6,8 +6,10 @@ package no.schibstedsok.searchportal.query.analyser;
 
 import java.util.HashMap;
 import java.util.Map;
+import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineContext;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
@@ -21,6 +23,10 @@ import org.apache.log4j.Logger;
  * @version $Revision$
  */
 public final class AnalysisRule {
+    
+    public interface Context extends TokenEvaluationEngineContext{
+        Appendable getReportBuffer();
+    }
 
     private static final Logger LOG = Logger.getLogger(AnalysisRule.class);
 
@@ -59,19 +65,21 @@ public final class AnalysisRule {
      *            predicates.
      * @return the score of this rule when applied to query.
      */
-    public int evaluate(final Query query, final TokenEvaluationEngine engine) {
+    public int evaluate(final Query query, final Context context) {
 
         final boolean additivity = true; // TODO implement inside NOT ANDNOT clauses to deduct from score.
 
-        final Scorer scorer = new Scorer(new Scorer.Context() {
-            public String getNameForAnonymousPredicate(final Predicate predicate) {
-                return predicateNames.get(predicate);
-            }
-        });
+        final Scorer scorer = new Scorer(ContextWrapper.wrap(Scorer.Context.class, 
+                new BaseContext() {
+                    public String getNameForAnonymousPredicate(final Predicate predicate) {
+                        return predicateNames.get(predicate);
+                    }
+                },
+                context));
 
         try{
             // update the engine with the query's evaluation state
-            engine.setState(query.getEvaluationState());
+            context.getTokenEvaluationEngine().setState(query.getEvaluationState());
 
             for (PredicateScore predicateScore : predicates.keySet()) {
                 try{
@@ -79,7 +87,7 @@ public final class AnalysisRule {
                     assert null != predicateScore.getPredicate() 
                             : "Disappearing predicate from score " + predicateScore;
                     
-                    if (predicateScore.getPredicate().evaluate(engine)) {
+                    if (predicateScore.getPredicate().evaluate(context.getTokenEvaluationEngine())) {
 
                         if (additivity) {
                             scorer.addScore(predicateScore);
@@ -94,7 +102,7 @@ public final class AnalysisRule {
                 }
             }
         }finally{
-            engine.setState(null);
+            context.getTokenEvaluationEngine().setState(null);
         }
 
         return scorer.getScore();

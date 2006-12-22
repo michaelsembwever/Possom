@@ -216,7 +216,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public void run() throws InterruptedException {
 
         LOG.trace("run()");
-        ANALYSIS_LOG.info("<analyse><query>" + queryStr + "</query>");
+        final StringBuilder analysisReport = new StringBuilder(" <analyse><query>" + queryStr + "</query>\n");
 
         try {
 
@@ -268,22 +268,28 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                             int score = 0;
 
-                            if (scoresByRule.get(eHint.getRule()) == null) {
+                            if (null == scoresByRule.get(eHint.getRule())) {
+                                
+                                final StringBuilder analysisRuleReport = new StringBuilder();
 
-                                ANALYSIS_LOG.info(" <analysis name=\"" + eHint.getRule() + "\">");
-
-                                score = rule.evaluate(queryObj, engine);
+                                score = rule.evaluate(queryObj, ContextWrapper.wrap(
+                                        AnalysisRule.Context.class, 
+                                        new BaseContext(){
+                                            public Appendable getReportBuffer(){
+                                                return analysisRuleReport;
+                                            }
+                                        },
+                                        searchCmdCxt));
                                 scoresByRule.put(eHint.getRule(), score);
 
                                 if (LOG.isDebugEnabled()) {
                                     LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
                                 }
-
-                                if (score != 0) {
-                                    ANALYSIS_LOG.info("  <score>" + score + "</score>");
-                                }
-
-                                ANALYSIS_LOG.info(" </analysis>");
+                                
+                                analysisReport.append(
+                                        "  <analysis name=\"" + eHint.getRule() + "\" score=\"" + score + "\">\n"
+                                        +     analysisRuleReport.toString()
+                                        + "  </analysis>\n");
 
                             } else {
                                 score = scoresByRule.get(eHint.getRule());
@@ -305,7 +311,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     }
                 }
             }
-            ANALYSIS_LOG.info("</analyse>");
+            ANALYSIS_LOG.info(analysisReport.toString() + " </analyse>");
 
             LOG.info(INFO_COMMAND_COUNT + commands.size());
 
@@ -588,4 +594,5 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public Query getQuery() {
         return queryObj;
     }
+    
 }

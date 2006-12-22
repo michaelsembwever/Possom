@@ -12,6 +12,7 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.mode.command.*;
 import no.schibstedsok.searchportal.query.QueryContext;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineContext;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryContext;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -27,10 +28,7 @@ public interface SearchCommand extends Callable<SearchResult> {
      * creates.
      */
     public interface Context extends BaseContext, QueryContext, ResourceContext, RunningQueryContext,
-            SearchConfigurationContext, SiteContext {
-        
-        /** get the engine for the current query. **/
-        TokenEvaluationEngine getTokenEvaluationEngine();
+            SearchConfigurationContext, SiteContext, TokenEvaluationEngineContext {
     }
 
     /**

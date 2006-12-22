@@ -9,13 +9,11 @@
 
 package no.schibstedsok.searchportal.query.parser;
 
-import java.util.Set;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
-import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.EmailClause;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.NotClause;
@@ -28,7 +26,7 @@ import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.UrlClause;
 import no.schibstedsok.searchportal.query.WordClause;
 import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineContext;
 
 
 /** Parser responsible for building the Query and its clause heirarchy.
@@ -45,15 +43,7 @@ public interface QueryParser {
      *  - holding the tokenEvalautorFactory responsible for tokenPredicate to evaluator mappings,
      *  - creation of Clause subtypes.
      **/
-    public interface Context extends BaseContext, QueryStringContext {
-
-        /** Get the tokenEvalautorFactory.
-         * Responsible for  handing out evaluators against TokenPredicates.
-         * Also holds state information about the current term/clause we are finding predicates against.
-         *
-         * @return the TokenEvaluationEngine this Parser will use.
-         */
-        TokenEvaluationEngine getTokenEvaluationEngine();
+    public interface Context extends BaseContext, QueryStringContext, TokenEvaluationEngineContext {
 
         //// Operation creators
 

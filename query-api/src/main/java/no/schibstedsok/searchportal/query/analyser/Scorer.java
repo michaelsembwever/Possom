@@ -8,6 +8,7 @@
 
 package no.schibstedsok.searchportal.query.analyser;
 
+import java.io.IOException;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.commons.collections.Predicate;
@@ -23,15 +24,13 @@ import org.apache.log4j.Logger;
 public final class Scorer extends AbstractReflectionVisitor {
 
     /** The contextual dependencies the Scorer requires to calculate a total score for this Query it will visit. */
-    public interface Context {
+    public interface Context extends AnalysisRule.Context {
 
         /** TODO comment me. **/
         String getNameForAnonymousPredicate(Predicate predicate);
-
     }
 
     private static final Logger LOG = Logger.getLogger(Scorer.class);
-    private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.searchportal.analyzer.Analysis");
 
     private int score = 0;
     private final Context context;
@@ -58,10 +57,10 @@ public final class Scorer extends AbstractReflectionVisitor {
 
         LOG.debug(DEBUG_UPDATE_SCORE + toString(predicate) + " adds " + predicateScore.getScore());
 
-        ANALYSIS_LOG.info("  <predicate-add name=\"" + toString(predicate) + "\">"
+        report("   <predicate-add name=\"" + toString(predicate) + "\">"
                 + predicateScore.getScore()
-                + "</predicate>");
-
+                + "</predicate>\n");
+        
         score += predicateScore.getScore();
     }
 
@@ -72,9 +71,9 @@ public final class Scorer extends AbstractReflectionVisitor {
 
         LOG.debug(DEBUG_UPDATE_SCORE + toString(predicate) + " subtracts " + predicateScore.getScore());
 
-        ANALYSIS_LOG.info("  <predicate-minus name=\"" + toString(predicate) + "\">"
+        report("   <predicate-minus name=\"" + toString(predicate) + "\">"
                 + predicateScore.getScore()
-                + "</predicate>");
+                + "</predicate>\n");
 
         score -= predicateScore.getScore();
     }
@@ -86,9 +85,19 @@ public final class Scorer extends AbstractReflectionVisitor {
 
         LOG.info(INFO_STALE_SCORE + toString(predicate));
 
-        ANALYSIS_LOG.info("  <predicate-error name=\"" + toString(predicate) + "\">±"
+        report("   <predicate-error name=\"" + toString(predicate) + "\">±"
                 + predicateScore.getScore()
-                + "</predicate>");
+                + "</predicate>\n");
+    }
+    
+    private void report(final String msg){
+        
+        try{
+            context.getReportBuffer().append(msg);
+        
+        }catch(IOException ioe){
+            LOG.warn(ioe.getMessage());
+        }
     }
 
     private String toString(final Predicate predicate){

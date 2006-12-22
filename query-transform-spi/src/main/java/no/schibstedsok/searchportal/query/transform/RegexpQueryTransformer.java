@@ -28,9 +28,9 @@ import org.w3c.dom.Element;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  *
  */
-public final class RegExpQueryTransformer extends AbstractQueryTransformer {
+public final class RegexpQueryTransformer extends AbstractQueryTransformer {
 
-    private static final Logger LOG = Logger.getLogger(RegExpQueryTransformer.class);
+    private static final Logger LOG = Logger.getLogger(RegexpQueryTransformer.class);
 
     private static final String DEBUG_APPLIED_REGEXP = "Applied regexp to term ";
 
@@ -89,7 +89,7 @@ public final class RegExpQueryTransformer extends AbstractQueryTransformer {
     /** TODO comment me. **/
     @Override
     public Object clone() throws CloneNotSupportedException {
-        final RegExpQueryTransformer retValue = (RegExpQueryTransformer)super.clone();
+        final RegexpQueryTransformer retValue = (RegexpQueryTransformer)super.clone();
         retValue.regexp = regexp;
         retValue.replacement = replacement;
         return retValue;
