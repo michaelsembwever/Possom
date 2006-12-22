@@ -62,6 +62,7 @@
     id CDATA #IMPLIED
     spam-score-limit CDATA #IMPLIED
     spellcheck CDATA #IMPLIED
+    spellchecklanguage CDATA #IMPLIED
     synonyms CDATA #IMPLIED
     result-fields CDATA #IMPLIED
     results-to-return CDATA #IMPLIED
@@ -161,6 +162,7 @@
 <!ELEMENT web-command (result-handlers|query-transformers)*>
 <!ATTLIST web-command
     spellcheck CDATA #IMPLIED
+    spellchecklanguage CDATA #IMPLIED
     results-to-return CDATA #IMPLIED
     result-fields CDATA #IMPLIED
     paging CDATA #IMPLIED

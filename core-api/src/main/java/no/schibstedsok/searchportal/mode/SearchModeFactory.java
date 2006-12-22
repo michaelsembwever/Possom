@@ -456,6 +456,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "spamScoreLimit", ParseType.Int , commandE, "-1");
                     fillBeanProperty(sc, inherit, "spellcheck", ParseType.Boolean , commandE, "false");
+                    fillBeanProperty(sc, inherit, "spellchecklanguage", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "lemmatise", ParseType.Boolean , commandE, "false");
 
                     // navigators

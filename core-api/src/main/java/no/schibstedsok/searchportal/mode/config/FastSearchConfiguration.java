@@ -47,6 +47,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private Map searchParameters;
     private boolean lemmatise;
     private boolean spellcheck;
+    private String spellchecklanguage;
     private final Map<String, Navigator> navigators = new HashMap<String,Navigator>();
     private String sortBy;
     private boolean collapsing;
@@ -80,6 +81,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
             searchParameters = fsc.searchParameters;
             lemmatise = fsc.lemmatise;
             spellcheck = fsc.spellcheck;
+            spellchecklanguage = fsc.spellchecklanguage;
             navigators.putAll(fsc.navigators);
             sortBy = fsc.sortBy;
             collapsing = fsc.collapsing;
@@ -171,6 +173,15 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     public void setSpellcheck(final boolean spellcheckEnabled) {
         this.spellcheck = spellcheckEnabled;
     }
+    
+    public String getSpellchecklanguage() {
+        return spellchecklanguage;
+    }
+
+    public void setSpellchecklanguage(final String spellchecklanguage) {
+        this.spellchecklanguage = spellchecklanguage;
+    }
+
 
     public Map<String, Navigator> getNavigators() {
         return navigators;

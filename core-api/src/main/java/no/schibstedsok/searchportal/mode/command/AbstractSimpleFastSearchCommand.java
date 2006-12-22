@@ -749,9 +749,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
         params.setParameter(new SearchParameter(BaseParameter.QUERY, queryString));
         params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, getSearchConfiguration().isCollapsing()));
-
-        params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, "no"));
-
+        params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, getSearchConfiguration().getSpellchecklanguage()));
 
         if (getNavigators() != null && getNavigators().size() > 0) {
             params.setParameter(new SearchParameter(BaseParameter.NAVIGATION, true));
