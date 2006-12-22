@@ -19,6 +19,7 @@ import no.schibstedsok.searchportal.query.token.RegExpEvaluatorFactory;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
 
 /**
  * Mask (inclusively or exclusively) terms in the query that
@@ -29,9 +30,9 @@ import org.apache.log4j.Logger;
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@sesam.no">Mick Wever</a>
- * @version <tt>$Id: TokenMaskTransformer.java 3596 2006-09-20 10:46:58Z mickw $</tt>
+ * @version <tt>$Id: TokenMaskQueryTransformer.java 4223 2006-12-22 12:11:49Z ssmiweve $</tt>
  */
-public final class TokenMaskTransformer extends AbstractQueryTransformer {
+public final class TokenMaskQueryTransformer extends AbstractQueryTransformer {
 
     /** Position restrictions when searching for matching predicates. **/
     public enum Position {
@@ -49,7 +50,7 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
         EXCLUDE
     };
 
-    private static final Logger LOG = Logger.getLogger(TokenMaskTransformer.class);
+    private static final Logger LOG = Logger.getLogger(TokenMaskQueryTransformer.class);
 
     // do not remove token predicates by default any more
     private static final Collection<TokenPredicate> DEFAULT_PREDICATES = Collections.EMPTY_SET;
@@ -198,9 +199,10 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
     }
 
     /** TODO comment me. **/
+    @Override
     public Object clone() throws CloneNotSupportedException {
 
-        final TokenMaskTransformer retValue = (TokenMaskTransformer)super.clone();
+        final TokenMaskQueryTransformer retValue = (TokenMaskQueryTransformer)super.clone();
         retValue.customPredicates = customPredicates;
 
         retValue.prefixes = prefixes;
@@ -213,6 +215,20 @@ public final class TokenMaskTransformer extends AbstractQueryTransformer {
         return retValue;
     }
 
+    @Override
+    public QueryTransformer readQueryTransformer(final Element qt){
+        
+        super.readQueryTransformer(qt);
+        addPredicates(qt.getAttribute("predicates").split(","));
+        if(qt.getAttribute("match").length() > 0){
+            setMatch(Position.valueOf(qt.getAttribute("position").toUpperCase()));
+        }
+        if(qt.getAttribute("mask").length() >0){
+            setMask(Mask.valueOf(qt.getAttribute("mask").toUpperCase()));
+        }     
+        return this;
+    }
+    
     /** TODO comment me. **/
     public void setContext(final QueryTransformer.Context cxt) {
 

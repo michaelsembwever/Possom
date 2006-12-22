@@ -12,9 +12,9 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version <tt>$Revision: 3359 $</tt>
  */
-public final class ExactTitleMatchTransformer extends AbstractQueryTransformer {
+public final class ExactTitleMatchQueryTransformer extends AbstractQueryTransformer {
     
-    private static final Logger LOG = Logger.getLogger(ExactTitleMatchTransformer.class);
+    private static final Logger LOG = Logger.getLogger(ExactTitleMatchQueryTransformer.class);
     
     private transient boolean writtenStart = false;
     private transient boolean visitingLast = true;

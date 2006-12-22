@@ -10,7 +10,10 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
 
 /**
  * A transformer to apply a regular expression to each term.
@@ -21,17 +24,25 @@ import org.apache.log4j.Logger;
  * not the match to the whole regular expression.
  * <b>It is therefore critical to use non-capturing groups for |?+* operations in the expressions.</b>
  *
- * @version $Id: TermPrefixTransformer.java 3369 2006-08-07 08:26:53Z mickw $
+ * @version $Id: RegExpQueryTransformer.java 4223 2006-12-22 12:11:49Z ssmiweve $
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  *
  */
-public final class RegExpTransformer extends AbstractQueryTransformer {
+public final class RegExpQueryTransformer extends AbstractQueryTransformer {
 
-    private static final Logger LOG = Logger.getLogger(RegExpTransformer.class);
+    private static final Logger LOG = Logger.getLogger(RegExpQueryTransformer.class);
 
     private static final String DEBUG_APPLIED_REGEXP = "Applied regexp to term ";
 
     private volatile Pattern regExPattern;
+    /**
+     * Holds value of property regexp.
+     */
+    private String regexp;
+    /**
+     * Holds value of property replacement.
+     */
+    private String replacement = "";
 
     /**
      *
@@ -76,18 +87,23 @@ public final class RegExpTransformer extends AbstractQueryTransformer {
     }
 
     /** TODO comment me. **/
+    @Override
     public Object clone() throws CloneNotSupportedException {
-        final RegExpTransformer retValue = (RegExpTransformer)super.clone();
+        final RegExpQueryTransformer retValue = (RegExpQueryTransformer)super.clone();
         retValue.regexp = regexp;
         retValue.replacement = replacement;
         return retValue;
     }
 
-    /**
-     * Holds value of property regexp.
-     */
-    private String regexp;
-
+    @Override
+    public QueryTransformer readQueryTransformer(final Element qt){
+        
+        super.readQueryTransformer(qt);
+        AbstractDocumentFactory.fillBeanProperty(this, null, "regexp", ParseType.String, qt, "");
+        AbstractDocumentFactory.fillBeanProperty(this, null, "replacement", ParseType.String, qt, "");
+        return this;
+    }
+    
     /**
      * Setter for property regexp.
      * @param regexp New value of property regexp.
@@ -95,11 +111,6 @@ public final class RegExpTransformer extends AbstractQueryTransformer {
     public void setRegexp(final String regexp) {
         this.regexp = regexp;
     }
-
-    /**
-     * Holds value of property replacement.
-     */
-    private String replacement = "";
 
     /**
      * Setter for property replacement.

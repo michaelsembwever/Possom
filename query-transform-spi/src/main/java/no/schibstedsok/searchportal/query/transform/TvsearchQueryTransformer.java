@@ -4,18 +4,20 @@ package no.schibstedsok.searchportal.query.transform;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
-
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
 
 /**
  * TvSearcQueryTransformer is part of no.schibstedsok.searchportal.query
  *
  * @author ajamtli
- * @version $Id: TvQueryTransformer.java 2918 2006-05-15 11:40:31Z magnuse $
+ * @version $Id: TvsearchQueryTransformer.java 4223 2006-12-22 12:11:49Z ssmiweve $
  */
-public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
+public final class TvsearchQueryTransformer extends AbstractQueryTransformer {
 
-    private static final Logger LOG = Logger.getLogger(TvSearchQueryTransformer.class);
+    private static final Logger LOG = Logger.getLogger(TvsearchQueryTransformer.class);
 
     private boolean withEndtime;
 
@@ -23,6 +25,7 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
      * Set time window
      * @return filter for time window to search from
      */
+    @Override
     public String getFilter(final Map parameters) {
 
         final boolean blankQuery = getContext().getQuery().isBlank();
@@ -95,5 +98,22 @@ public final class TvSearchQueryTransformer extends AbstractQueryTransformer {
     /** TODO comment me. **/
     public void setWithEndtime(final boolean withEndtime) {
         this.withEndtime = withEndtime;
+    }
+    
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+
+        final TvsearchQueryTransformer retValue = (TvsearchQueryTransformer)super.clone();
+        retValue.withEndtime = withEndtime;
+
+        return retValue;
+    }
+    
+    @Override
+    public QueryTransformer readQueryTransformer(final Element qt){
+        
+        super.readQueryTransformer(qt);
+        AbstractDocumentFactory.fillBeanProperty(this, null, "withEndtime", ParseType.Boolean, qt, "");
+        return this;
     }
 }
