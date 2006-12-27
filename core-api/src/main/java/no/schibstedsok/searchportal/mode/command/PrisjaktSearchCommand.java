@@ -99,12 +99,13 @@ public class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand {
 				 */
 				String urlencQuery = URLEncoder.encode(query, "iso-8859-1");
 				int index = urlencQuery.indexOf('+');
-				if (index != -1) {
-					StringBuffer strb = new StringBuffer(urlencQuery);
-					strb.insert(index + 1, "%20");
-					strb.deleteCharAt(index);
-					result.addField("urlEncodedsearchquery", strb.toString());
-				} else {
+				if (index != -1) 
+				{
+					String urlS =StringUtils.replace(urlencQuery, "+", "%20");
+					result.addField("urlEncodedsearchquery", urlS);
+					
+				} else 
+				{
 					result.addField("urlEncodedsearchquery", urlencQuery);
 				}
 
