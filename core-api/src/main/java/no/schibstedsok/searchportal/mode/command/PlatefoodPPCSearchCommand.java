@@ -136,6 +136,8 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         }  catch (UnsupportedEncodingException e) {
             throw new InfrastructureException(e);
         }
+
+        LOG.debug("Platefood-url: " + url.toString());
         return url.toString();
     }
 
