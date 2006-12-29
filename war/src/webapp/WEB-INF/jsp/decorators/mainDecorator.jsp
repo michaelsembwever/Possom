@@ -195,6 +195,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <decorator:getProperty property="page.publishing_page"/>
         <decorator:getProperty property="page.spellcheck"/>
         <decorator:getProperty property="page.main_ads"/>
+        <search:velocity template="fragments/top3AdsTop" command="top3Ads"/>
         <%if (currentC.equals("d") || "g".equals(currentC) ) {%>    
             <search:velocity template="/enrichments/enrichment-handler"/>
         <% } else if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
@@ -241,6 +242,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <% } else { %>
             <decorator:getProperty property="page.offsetPager"/>
          <% } %>
+         <search:velocity template="fragments/top3AdsBottom" command="top3Ads"/>
         </td>
     </tr>
      
