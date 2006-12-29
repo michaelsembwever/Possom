@@ -236,14 +236,20 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
     <tr>
         <td>&nbsp;</td>
         <td colspan="2">
-        <%--  offset  --%>
-        <%if (currentC.equals("pp")) {%>
+          <%--  offset  --%>
+          <%if (currentC.equals("pp")) {%>
             <search:velocity template="fragments/offsetPager" command="scanpix"/>
-        <% } else { %>
-            <decorator:getProperty property="page.offsetPager"/>
-         <% } %>
-         <search:velocity template="fragments/top3AdsBottom" command="top3Ads"/>
+          <% } else { %>
+              <decorator:getProperty property="page.offsetPager"/>
+          <% } %>
         </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td>
+          <search:velocity template="fragments/top3AdsBottom" command="top3Ads"/>
+        </td>
+        <td>&nbsp;</td>
     </tr>
      
 </table>
