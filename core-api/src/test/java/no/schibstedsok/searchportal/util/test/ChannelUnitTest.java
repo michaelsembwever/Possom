@@ -17,9 +17,9 @@ import org.testng.annotations.Test;
  */
 public class ChannelUnitTest extends junit.framework.TestCase {
     
-    private final Channel c1 = Channel.newInstance("nrk1", "NRK1", 1);
-    private final Channel c2 = Channel.newInstance("tv3", "TV3", 2);
-    private final Channel c3 = Channel.newInstance("ztv", "ZTV", 3);
+    private final Channel c1 = Channel.newInstance("nrk1", "NRK1", 1, Channel.Category.NORWEGIAN);
+    private final Channel c2 = Channel.newInstance("tv3", "TV3", 2, Channel.Category.NORWEGIAN);
+    private final Channel c3 = Channel.newInstance("ztv", "ZTV", 3, Channel.Category.NORWEGIAN);
     
     /** Creates a new instance of ChannelUnitTest */
     public ChannelUnitTest(String testName) {
