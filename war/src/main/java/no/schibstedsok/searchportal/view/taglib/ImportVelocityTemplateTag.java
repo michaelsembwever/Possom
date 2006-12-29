@@ -23,6 +23,7 @@ import no.schibstedsok.searchportal.http.filters.SiteLocatorFilter;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
+import no.schibstedsok.searchportal.util.Channel;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
@@ -104,7 +105,8 @@ public final class ImportVelocityTemplateTag extends SimpleTagSupport {
                 context.put("text", text);
                 context.put("configuration", SiteConfiguration.valueOf(site).getProperties());
                 context.put("math", mathTool);
-
+                context.put("channelCategories", Channel.Category.values());
+                
                 // push all parameters into velocity context attributes
                 for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames(); e.hasMoreElements();) {
                     final String attrName = e.nextElement();

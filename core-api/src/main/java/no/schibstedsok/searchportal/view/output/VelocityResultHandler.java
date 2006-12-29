@@ -2,7 +2,6 @@
 package no.schibstedsok.searchportal.view.output;
 
 import java.io.IOException;
-import java.util.Collections;
 import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
@@ -14,6 +13,7 @@ import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
+import no.schibstedsok.searchportal.util.Channels;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
@@ -34,6 +34,7 @@ import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import no.schibstedsok.searchportal.util.Channel;
 
 /** Handles the populating the velocity contexts.
  * Strictly view domain.
@@ -99,6 +100,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("math", new MathTool());
         // date tool
         context.put("date", new DateTool());
+        
         return context;
     }
 
@@ -165,6 +167,7 @@ public final class VelocityResultHandler implements ResultHandler {
 
             }else{
                 LOG.error(ERR_TEMPLATE_NOT_FOUND + templateName);
+                LOG.error("Configuration: " + searchConfiguration.getName() + " " + searchConfiguration.getStatisticalName());
                 throw new UnsupportedOperationException(ERR_TEMPLATE_NOT_FOUND + templateName);
             }
 
@@ -221,8 +224,13 @@ public final class VelocityResultHandler implements ResultHandler {
         final Properties props = (Properties)parameters.get("configuration");
         context.put(PUBLISH_URL, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL));
         context.put(PUBLISH_HOST, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST));
-        
 
+        /* TODO: check where this went */
+        /* context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt))); */
+        context.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, cxt)));
+        
+        context.put("channelCategories", Channel.Category.values());
+        
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
         if (config.isPaging()) {

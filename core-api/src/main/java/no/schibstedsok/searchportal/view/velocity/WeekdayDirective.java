@@ -40,44 +40,28 @@ public class WeekdayDirective extends Directive {
             rsvc.error("#" + getName() + " - wrong number of arguments");
             return false;
         }
-        
-//        if (node.jjtGetChild(0).value(context) != null) {
-//            final int daysToAdd = Integer.parseInt(node.jjtGetChild(0).value(context).toString());
-            
-            Calendar cal = Calendar.getInstance();
-            if (node.jjtGetNumChildren() == 1) {
-                int offset = Integer.parseInt(node.jjtGetChild(0).value(context).toString());
-                cal.add(Calendar.DAY_OF_YEAR, offset);
-            }
-            
-            List<HashMap> list = new ArrayList();
-            
-            for (int i = 0; i < 7; i++) {
-                HashMap tmp = new HashMap();
-                tmp.put("weekday", Integer.toString((cal.get(Calendar.DAY_OF_WEEK) + 5) % 7));
-                tmp.put("day", Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
-                if (cal.get(Calendar.MONTH) > 9) {
-                    tmp.put("month", Integer.toString(cal.get(Calendar.MONTH)));
-                } else {
-                    tmp.put("month", "0" + Integer.toString(cal.get(Calendar.MONTH)));
-                }
-                list.add(tmp);
-                cal.add(Calendar.DAY_OF_YEAR, 1);
-            }
-            context.put("weekdaylist", list);
-//            final String input = node.jjtGetChild(0).value(context).toString();
-//
-//            if (input != null) {
-//                writer.write(StringEscapeUtils.escapeXml(input));
-//            }
-//
-//            final Token lastToken = node.getLastToken();
-//
-//            if (lastToken.image.endsWith("\n")) {
-//                writer.write("\n");
-//            }
 
-//        }
+        Calendar cal = Calendar.getInstance();
+        if (node.jjtGetNumChildren() == 1) {
+            int offset = Integer.parseInt(node.jjtGetChild(0).value(context).toString());
+            cal.add(Calendar.DAY_OF_YEAR, offset);
+        }
+
+        List<HashMap> list = new ArrayList();
+
+        for (int i = 0; i < 7; i++) {
+            HashMap tmp = new HashMap();
+            tmp.put("weekday", Integer.toString((cal.get(Calendar.DAY_OF_WEEK) + 5) % 7));
+            tmp.put("day", Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
+            if (cal.get(Calendar.MONTH) > 9) {
+                tmp.put("month", Integer.toString(cal.get(Calendar.MONTH)));
+            } else {
+                tmp.put("month", "0" + Integer.toString(cal.get(Calendar.MONTH)));
+            }
+            list.add(tmp);
+            cal.add(Calendar.DAY_OF_YEAR, 1);
+        }
+        context.put("weekdaylist", list);
         return true;
     }
 }

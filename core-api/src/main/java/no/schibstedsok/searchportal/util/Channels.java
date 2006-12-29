@@ -11,8 +11,12 @@ package no.schibstedsok.searchportal.util;
 
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.xml.parsers.DocumentBuilder;
@@ -68,9 +72,15 @@ public class Channels {
     /** Name of element holding channel priority */
     private static final String CHANNEL_PRIORITY = "priority";
 
+    /** Name of element holding channel category */
+    private static final String CHANNEL_CATEGORY = "category";
+    
     /** Map of channelId and channel object pairs */
     private final Map<String, Channel> channels = new HashMap<String,Channel>();
 
+    /** List of channel categories */
+    private final Map<Channel.Category, List<Channel>> categoryLists = new HashMap<Channel.Category, List<Channel>>();
+    
     /** Channel comparator */
     private final Comparator<Modifier> CHANNEL_COMPARATOR;
             
@@ -119,7 +129,8 @@ public class Channels {
             String id = null;
             String name = null;
             int priority = -1;
-
+            Channel.Category category = null;
+            
             NodeList channelChildNodes = channelNode.getChildNodes();
             for (int n = 0; n < channelChildNodes.getLength(); n++) {
                 Node childNode = channelChildNodes.item(n);
@@ -134,14 +145,22 @@ public class Channels {
                                 name = textNode.getNodeValue();
                             } else if (CHANNEL_PRIORITY.equals(childNode.getNodeName())) {
                                 priority = Integer.parseInt(textNode.getNodeValue());
+                            } else if (CHANNEL_CATEGORY.equals(childNode.getNodeName())) {
+                                category = Channel.Category.valueOf(textNode.getNodeValue().toUpperCase());
                             }
                         }
                     }
                 }
             }
-            final Channel channel = Channel.newInstance(id, name, priority);
+            final Channel channel = Channel.newInstance(id, name, priority, category);
             addChannel(channel);
         }
+        
+        /* Sort channel lists */
+        for (Channel.Category category : Channel.Category.values()) {
+            Collections.sort(getChannelsByCategory(category));
+        }
+            
     }
     
     private void internalWriteDocument(Document d, Writer w) {
@@ -186,6 +205,10 @@ public class Channels {
      */
     private final void addChannel(final Channel channel) {
         this.channels.put(channel.getId(), channel);
+        if (this.categoryLists.get(channel.getCategory()) == null) {
+            this.categoryLists.put(channel.getCategory(), new ArrayList<Channel>());
+        }
+        this.categoryLists.get(channel.getCategory()).add(channel);
     }
     
     /**
@@ -196,6 +219,16 @@ public class Channels {
      */
     public final Channel getChannel(final String channelId) {
         return channels.get(channelId);
+    }
+
+    /**
+     * Get list of channels in category
+     * 
+     * @param category Category to fetch
+     * @retun list of channels in category
+     */
+    public final List<Channel> getChannelsByCategory(final Channel.Category category) {
+        return this.categoryLists.get(category);
     }
     
     /**

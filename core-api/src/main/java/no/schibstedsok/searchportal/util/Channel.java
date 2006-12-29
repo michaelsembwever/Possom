@@ -21,17 +21,33 @@ public class Channel implements Comparable {
     private final String name;
     /** Channel priority */
     private final Integer priority;
-
-    private Channel(final String id, final String name, final Integer priority) {
+    /** Channel category */
+    private final Category category;
+    
+    /** Channel category enumeration */
+    public enum Category {
+        NORWEGIAN(),
+        NORDIC(),
+        INTERNATIONAL(),
+        MOVIE(),
+        NEWS(),
+        SPORT(),
+        MUSIC(),
+        NATURE(),
+        CHILDREN()
+    }
+    
+    private Channel(final String id, final String name, final Integer priority, final Category category) {
         this.id = id;
         this.name = name;
         this.priority = priority;
+        this.category = category;
     }
 
     /** Create a new instance of a channel object */
     /* TODO: cache objects */
-    public static final Channel newInstance(String id, String name, int priority) {
-        return new Channel(id, name, priority);
+    public static final Channel newInstance(final String id, final String name, final int priority, final Category category) {
+        return new Channel(id, name, priority, category);
     }
 
     public final String getId() {
@@ -46,11 +62,19 @@ public class Channel implements Comparable {
         return this.priority;
     }
 
+    public final Category getCategory() {
+        return this.category;
+    }
+    
     public final int compareTo(Object o) {
         final Channel other = (Channel) o;
         
         if (other.getPriority() != this.getPriority()) {
             return this.getPriority() - other.getPriority();
+        }
+    
+        if (other.getCategory() != this.getCategory()) {
+            return this.getCategory().compareTo(other.getCategory());
         }
         
         return this.getName().compareTo(other.getName());

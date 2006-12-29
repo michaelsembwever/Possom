@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 import no.schibstedsok.searchportal.mode.config.TvWaitSearchConfiguration;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
@@ -56,7 +55,8 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     private boolean executeQuery = true;
 
     /** Channels to exclude from blank query */
-    private static final String excludeFilter = "-sgeneric5nav:'star' -sgeneric5nav:'reality' -sgeneric5nav:'club' -sgeneric5nav:'jetix' -sgeneric5nav:'tv8' -sgeneric5nav:'ztvsve' -sgeneric5nav:'extreme' -sgeneric5nav:'pro7' -sgeneric5nav:'rtl2' -sgeneric5nav:'dsf' -sgeneric5nav:'eurospo2' -sgeneric5nav:'3sat' -sgeneric5nav:'sat1' -sgeneric5nav:'tv3pldan' -sgeneric5nav:'tv3dan' -sgeneric5nav:'tv3sve' -sgeneric5nav:'bbcfood' -sgeneric5nav:'cnbcnatgeoch' -sgeneric5nav:'skyntgeo' -sgeneric5nav:'dr2' -sgeneric5nav:'rtl1' -sgeneric5nav:'tcmcartoon' -sgeneric5nav:'kanal5' -sgeneric5nav:'toondisney' -sgeneric5nav:'dtravel'";
+    private static final String excludeFilter = "-sgeneric5nav:'star' -sgeneric5nav:'reality' -sgeneric5nav:'club' -sgeneric5nav:'jetix' -sgeneric5nav:'tv8' -sgeneric5nav:'ztvsve' -sgeneric5nav:'extreme' -sgeneric5nav:'pro7' -sgeneric5nav:'rtl2' -sgeneric5nav:'dsf' -sgeneric5nav:'eurospo2' -sgeneric5nav:'3sat' -sgeneric5nav:'sat1' -sgeneric5nav:'tv3pldan' -sgeneric5nav:'tv3dan' -sgeneric5nav:'tv3sve' -sgeneric5nav:'bbcfood' -sgeneric5nav:'cnbcnatgeoch' -sgeneric5nav:'skyntgeo' -sgeneric5nav:'dr2' -sgeneric5nav:'rtl1' -sgeneric5nav:'tcmcartoon' -sgeneric5nav:'kanal5' -sgeneric5nav:'toondisney' -sgeneric5nav:'dtravel' -sgeneric5nav:'canplfilm3' -sgeneric5nav:'canplhd' -sgeneric5nav:'canplspo2' -sgeneric5nav:'canplmix' -sgeneric5nav:'tv2film' -sgeneric5nav:'disneyplay' -sgeneric5nav:'viatv6' ";
+    
     /** Creates a new instance of TvWaitSearchCommand */
     public TvWaitSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
@@ -79,11 +79,12 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         } else {
             index = config.getIndex() + (offset);
         }
+        
     }
     
     public SearchResult execute() {
         if (!executeQuery) {
-            return new BasicSearchResult(this);
+            return new FastSearchResult(this);
         }
         
         final String waitOn = config.getWaitOn();
@@ -97,7 +98,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 }
             } catch (Exception e) {
                 LOG.error(e);
-                return new BasicSearchResult(this);
+                return new FastSearchResult(this);
             }
         }
         
@@ -108,7 +109,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             }
         }
         
-        if (executeQuery && index > 0) {
+        if (waitOn != null && executeQuery && index > 0 && wosr.getHitCount() > 0) {
             /* Abort all but the first command on one-command-searches */
             
             /* If using channel navigator and sorting by channels */
@@ -132,12 +133,42 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 }
             }
         }
+
+                
+        /* If navigator root command and blankQuery, set default navigator */
+        if (executeQuery && blankQuery && !getParameters().containsKey("nav_channelcategories")) {
+            if ("tvmc".equals(getParameter("c")) && getParameters().containsKey("myChannels")) {
+                final String myChannels = getParameter("myChannels");
+                if (myChannels.split(",").length > 50) {
+                    executeQuery = addChannelCategoryNavigator();
+                }
+            } else {
+                executeQuery = addChannelCategoryNavigator();
+            }
+        }
+
+        if (executeQuery && "tvmc".equals(getParameter("c")) 
+                && (getParameters().containsKey("setMyChannels") || !getParameters().containsKey("myChannels"))) {
+            executeQuery = false;
+        }
         
         if (executeQuery == false) {
-            return new BasicSearchResult(this);
+            return new FastSearchResult(this);
         }        
         
         return super.execute();
+    }
+    
+    private final boolean addChannelCategoryNavigator() {
+        final Navigator navigator = getNavigators().get("channelcategories");
+        if (navigator == null) {
+            return false;
+        }            
+        
+        getParameters().put("nav_channelcategories", navigator.getName());
+        getParameters().put(navigator.getField(), "Norske");
+        
+        return true;
     }
     
     public String getAdditionalFilter() {
@@ -216,9 +247,20 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     
         }
         
-        if (blankQuery) {
-            filter.append(excludeFilter);
+        if (getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("+(");
+            for (String str : getParameter("myChannels").split(",")) {
+                sb.append(" sgeneric5nav:'");
+                sb.append(str);
+                sb.append("'");
+            }
+            filter.append(sb);
+            filter.append(") ");
         }
+//        if (blankQuery) {
+//            filter.append(excludeFilter);
+//        }
         
         return filter.toString();
     }

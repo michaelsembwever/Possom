@@ -2,6 +2,7 @@
 package no.schibstedsok.searchportal.run;
 
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import no.schibstedsok.searchportal.util.QueryStringHelper;
@@ -67,6 +68,16 @@ public final class QueryFactoryImpl extends QueryFactory {
 
                 if ("".equals(q) && request.getParameter("contentsource") == null && (request.getParameter("newscountry") == null || request.getParameter("newscountry").equals(""))) {
                     query.addParameter("newscountry", "Norge");
+                }
+            } 
+            else if ("tvmc".equals(request.getParameter("c"))) {
+                final Cookie cookies[] = request.getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("myChannels".equals(cookie.getName())){
+                            query.addParameter("myChannels", cookie.getValue());
+                        }
+                    }
                 }
             }
         }

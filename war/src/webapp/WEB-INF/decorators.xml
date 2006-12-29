@@ -10,6 +10,7 @@
 
     <decorator name="mobiledecorator" page="mobileDecorator.jsp"/>
 
+    <decorator name="savedecorator" page="saveDecorator.jsp"/>
     
     <decorator name="maindecorator" page="mainDecorator.jsp">
 	    <pattern>*</pattern>
