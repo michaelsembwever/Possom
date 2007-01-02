@@ -245,46 +245,48 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         final Document doc = loader.getDocument();
         final Element root = doc.getDocumentElement();
 
-        templatePrefix = root.getAttribute("template-prefix");
+        if( null != root ){
+            templatePrefix = root.getAttribute("template-prefix");
 
-        // loop through modes.
-        final NodeList modeList = root.getElementsByTagName("mode");
-        for (int i = 0; i < modeList.getLength(); ++i) {
-            final Element modeE = (Element) modeList.item(i);
-            final String id = modeE.getAttribute("id");
-            LOG.info(INFO_PARSING_MODE + modeE.getLocalName() + " " + id);
-            final SearchMode inherit = getMode(modeE.getAttribute("inherit"));
-            final SearchMode mode = new SearchMode(inherit);
-            mode.setId(id);
-            mode.setExecutor(parseExecutor(modeE.getAttribute("executor"),
-                    inherit != null ? inherit.getExecutor() : new SequentialSearchCommandExecutor()));
-            fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
+            // loop through modes.
+            final NodeList modeList = root.getElementsByTagName("mode");
+            for (int i = 0; i < modeList.getLength(); ++i) {
+                final Element modeE = (Element) modeList.item(i);
+                final String id = modeE.getAttribute("id");
+                LOG.info(INFO_PARSING_MODE + modeE.getLocalName() + " " + id);
+                final SearchMode inherit = getMode(modeE.getAttribute("inherit"));
+                final SearchMode mode = new SearchMode(inherit);
+                mode.setId(id);
+                mode.setExecutor(parseExecutor(modeE.getAttribute("executor"),
+                        inherit != null ? inherit.getExecutor() : new SequentialSearchCommandExecutor()));
+                fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
 
-            // setup new commands list for this mode
-            final Map<String,SearchConfiguration> modesCommands = new HashMap<String,SearchConfiguration>();
-            try{
-                COMMANDS_LOCK.writeLock().lock();
-                COMMANDS.put(mode, modesCommands);
-            }finally{
-                COMMANDS_LOCK.writeLock().unlock();
-            }
-
-            // now loop through commands
-            for(CommandTypes commandType : CommandTypes.values()){
-                final NodeList commandsList = modeE.getElementsByTagName(commandType.getXmlName());
-                for (int j = 0; j < commandsList.getLength(); ++j) {
-                    final Element commandE = (Element) commandsList.item(j);
-                    final SearchConfiguration sc = commandType.parseSearchConfiguration(context, commandE, mode);
-                    modesCommands.put(sc.getName(), sc);
-                    mode.addSearchConfiguration(sc);
+                // setup new commands list for this mode
+                final Map<String,SearchConfiguration> modesCommands = new HashMap<String,SearchConfiguration>();
+                try{
+                    COMMANDS_LOCK.writeLock().lock();
+                    COMMANDS.put(mode, modesCommands);
+                }finally{
+                    COMMANDS_LOCK.writeLock().unlock();
                 }
-            }
-            // add mode
-            try{
-                modesLock.writeLock().lock();
-                modes.put(id, mode);
-            }finally{
-                modesLock.writeLock().unlock();
+
+                // now loop through commands
+                for(CommandTypes commandType : CommandTypes.values()){
+                    final NodeList commandsList = modeE.getElementsByTagName(commandType.getXmlName());
+                    for (int j = 0; j < commandsList.getLength(); ++j) {
+                        final Element commandE = (Element) commandsList.item(j);
+                        final SearchConfiguration sc = commandType.parseSearchConfiguration(context, commandE, mode);
+                        modesCommands.put(sc.getName(), sc);
+                        mode.addSearchConfiguration(sc);
+                    }
+                }
+                // add mode
+                try{
+                    modesLock.writeLock().lock();
+                    modes.put(id, mode);
+                }finally{
+                    modesLock.writeLock().unlock();
+                }
             }
         }
 

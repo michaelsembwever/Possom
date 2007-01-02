@@ -9,10 +9,8 @@
 
 package no.schibstedsok.searchportal.util;
 
-import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -40,11 +38,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Class that holds channels keys and names
+ * Class that holds channels keys and names.
  *
  * @author andersjj
  */
-public class Channels {
+public final class Channels {
     
     public interface Context extends SiteContext, DocumentContext { };
     
@@ -116,13 +114,13 @@ public class Channels {
     }
 
     private final void loadChannels() {
-        final DocumentLoader loader =
-                context.newDocumentLoader(context, CHANNELS_RESOURCE, db);
+        
+        final DocumentLoader loader = context.newDocumentLoader(context, CHANNELS_RESOURCE, db);
         loader.abut();
         
-        Document doc = loader.getDocument();
+        final Document doc = loader.getDocument();
         
-        NodeList channelNodes = doc.getElementsByTagName(CHANNELS_TAG);
+        final NodeList channelNodes = doc.getElementsByTagName(CHANNELS_TAG);
         for(int i = 0; i < channelNodes.getLength(); i++) {
             final Node channelNode = channelNodes.item(i);
 
@@ -131,13 +129,13 @@ public class Channels {
             int priority = -1;
             Channel.Category category = null;
             
-            NodeList channelChildNodes = channelNode.getChildNodes();
+            final NodeList channelChildNodes = channelNode.getChildNodes();
             for (int n = 0; n < channelChildNodes.getLength(); n++) {
-                Node childNode = channelChildNodes.item(n);
+                final Node childNode = channelChildNodes.item(n);
                 if (childNode.getNodeType() == Node.ELEMENT_NODE) {
-                    NodeList textNodes = childNode.getChildNodes();
+                    final NodeList textNodes = childNode.getChildNodes();
                     for (int m = 0; m < textNodes.getLength(); m++) {
-                        Node textNode = textNodes.item(m);
+                        final Node textNode = textNodes.item(m);
                         if (textNode.getNodeType() == Node.TEXT_NODE) {
                             if (CHANNEL_ID.equals(childNode.getNodeName())) {
                                 id = textNode.getNodeValue();
@@ -222,13 +220,16 @@ public class Channels {
     }
 
     /**
-     * Get list of channels in category
+     * Get list of channels in category.
      * 
      * @param category Category to fetch
      * @retun list of channels in category
      */
     public final List<Channel> getChannelsByCategory(final Channel.Category category) {
-        return this.categoryLists.get(category);
+        
+        return null != categoryLists.get(category)
+                ? categoryLists.get(category)
+                : Collections.EMPTY_LIST;
     }
     
     /**
@@ -257,7 +258,7 @@ public class Channels {
     }
     
     /** 
-     * Getter for channel comparator
+     * Getter for channel comparator.
      * 
      * @return CHANNEL_COMPARATOR
      */

@@ -275,6 +275,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 score = rule.evaluate(queryObj, ContextWrapper.wrap(
                                         AnalysisRule.Context.class, 
                                         new BaseContext(){
+                                            public String getRuleName(){
+                                                return eHint.getRule();
+                                            }
                                             public Appendable getReportBuffer(){
                                                 return analysisRuleReport;
                                             }
@@ -285,11 +288,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 if (LOG.isDebugEnabled()) {
                                     LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
                                 }
-                                
-                                analysisReport.append(
-                                        "  <analysis name=\"" + eHint.getRule() + "\" score=\"" + score + "\">\n"
-                                        +     analysisRuleReport.toString()
-                                        + "  </analysis>\n");
 
                             } else {
                                 score = scoresByRule.get(eHint.getRule());

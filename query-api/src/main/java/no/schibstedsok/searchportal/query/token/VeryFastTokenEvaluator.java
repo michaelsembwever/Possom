@@ -161,7 +161,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
             // initialise this site's configuration
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            factory.setValidating(false);
+//            factory.setValidating(false);
             final DocumentBuilder builder = factory.newDocumentBuilder();
             final DocumentLoader loader = cxt.newDocumentLoader(cxt, VERYFAST_EVALUATOR_XMLFILE, builder);
             loader.abut();
@@ -169,21 +169,23 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
             final Map<TokenPredicate,String> listNames = LIST_NAMES.get(site);
             final Document doc = loader.getDocument();
             final Element root = doc.getDocumentElement();
-            final NodeList lists = root.getElementsByTagName("list");
-            for (int i = 0; i < lists.getLength(); ++i) {
+            if( null != root ){
+                final NodeList lists = root.getElementsByTagName("list");
+                for (int i = 0; i < lists.getLength(); ++i) {
 
-                final Element list = (Element) lists.item(i);
+                    final Element list = (Element) lists.item(i);
 
-                final String tokenName = list.getAttribute("token");
-                LOG.info(" ->list@token: " + tokenName);
+                    final String tokenName = list.getAttribute("token");
+                    LOG.info(" ->list@token: " + tokenName);
 
-                final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+                    final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
-                final String listName = list.getAttribute("list-name");
-                LOG.info(" ->list: " + listName);
+                    final String listName = list.getAttribute("list-name");
+                    LOG.info(" ->list: " + listName);
 
-                listNames.put(token, listName);
+                    listNames.put(token, listName);
 
+                }
             }
             LOG.info("Parsing " + VERYFAST_EVALUATOR_XMLFILE + " finished");
         }

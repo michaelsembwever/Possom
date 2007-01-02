@@ -111,45 +111,50 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         if (!init) {
             loader.abut();
             LOG.info("Parsing " + ANALYSIS_RULES_XMLFILE + " started for " + context.getSite());
+            
             final Document doc = loader.getDocument();
+            assert null != doc : "No document loaded for " + context.getSite().getName();
+            
             final Element root = doc.getDocumentElement();
 
             final Map inheritedPredicates = getInheritedPredicates();
 
-            readPredicates(root, globalPredicates, inheritedPredicates);
+            if( null != root) {
+                readPredicates(root, globalPredicates, inheritedPredicates);
 
-            // ruleList
-            final NodeList ruleList = root.getElementsByTagName("rule");
-            for (int i = 0; i < ruleList.getLength(); ++i) {
-                
-                final Element rule = (Element) ruleList.item(i);
-                final String id = rule.getAttribute("id");
-                final AnalysisRule analysisRule = new AnalysisRule();
-                LOG.info(DEBUG_STARTING_RULE + id + " " + analysisRule);
+                // ruleList
+                final NodeList ruleList = root.getElementsByTagName("rule");
+                for (int i = 0; i < ruleList.getLength(); ++i) {
 
-                // private predicates
-                final Map privatePredicates = new HashMap(globalPredicates);
+                    final Element rule = (Element) ruleList.item(i);
+                    final String id = rule.getAttribute("id");
+                    final AnalysisRule analysisRule = new AnalysisRule();
+                    LOG.info(DEBUG_STARTING_RULE + id + " " + analysisRule);
 
-                readPredicates(rule, privatePredicates, inheritedPredicates);
+                    // private predicates
+                    final Map privatePredicates = new HashMap(globalPredicates);
 
-                // scores
-                final NodeList scores = rule.getElementsByTagName("score");
-                for (int j = 0; j < scores.getLength(); ++j) {
-                    final Element score = (Element) scores.item(j);
-                    final String predicateName = score.getAttribute("predicate");
-                    final Predicate predicate = findPredicate(predicateName, privatePredicates, inheritedPredicates);
-                    final int scoreValue = Integer.parseInt(score.getFirstChild().getNodeValue());
+                    readPredicates(rule, privatePredicates, inheritedPredicates);
 
-                    analysisRule.addPredicateScore(predicate, scoreValue);
-                    analysisRule.setPredicateNameMap(Collections.unmodifiableMap(predicateIds));
+                    // scores
+                    final NodeList scores = rule.getElementsByTagName("score");
+                    for (int j = 0; j < scores.getLength(); ++j) {
+                        final Element score = (Element) scores.item(j);
+                        final String predicateName = score.getAttribute("predicate");
+                        final Predicate predicate = findPredicate(predicateName, privatePredicates, inheritedPredicates);
+                        final int scoreValue = Integer.parseInt(score.getFirstChild().getNodeValue());
+
+                        analysisRule.addPredicateScore(predicate, scoreValue);
+                        analysisRule.setPredicateNameMap(Collections.unmodifiableMap(predicateIds));
+                    }
+                    try{
+                        rulesLock.writeLock().lock();
+                        rules.put(id, analysisRule);
+                    }finally{
+                        rulesLock.writeLock().unlock();
+                    }
+                    LOG.info(DEBUG_FINISHED_RULE + id + " " + analysisRule);
                 }
-                try{
-                    rulesLock.writeLock().lock();
-                    rules.put(id, analysisRule);
-                }finally{
-                    rulesLock.writeLock().unlock();
-                }
-                LOG.info(DEBUG_FINISHED_RULE + id + " " + analysisRule);
             }
             LOG.info("Parsing " + ANALYSIS_RULES_XMLFILE + " finished");
         }
@@ -158,38 +163,16 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
     private AnalysisRuleFactory getParentFactory() {
 
-        if (context.getSite().getParent() != null) {
+        if (null != context.getSite().getParent()) {
 
-            return valueOf(ContextWrapper.wrap(// <editor-fold defaultstate="collapsed" desc=" parentSiteContext ">
+            return valueOf(ContextWrapper.wrap(
                     Context.class,
                     new SiteContext() {
                         public Site getSite() {
                             return context.getSite().getParent();
                         }
-//                        public PropertiesLoader newPropertiesLoader(
-//                                final String resource, 
-//                                final Properties properties) {
-//                            
-//
-//                            return ProxyResourceLoaderFactory.newPropertiesLoader(
-//                                    context.newPropertiesLoader(resource, properties).getClass(), 
-//                                    this, 
-//                                    resource, 
-//                                    properties);
-//                        }
-//                        public DocumentLoader newDocumentLoader(
-//                                final String resource, 
-//                                final DocumentBuilder builder) {
-//                            
-//
-//                            return ProxyResourceLoaderFactory.newDocumentLoader(
-//                                    context.newDocumentLoader(resource, builder).getClass(), 
-//                                    this, 
-//                                    resource, 
-//                                    builder);
-//                        }
                     }, 
-                    context));//</editor-fold>
+                    context));
         }
         return null;
     }
@@ -344,6 +327,37 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         return result;
     }
 
+    public Map<String,AnalysisRule> getRulesMap(){
+        
+        LOG.trace("getRulesMap()");
+
+        init();        
+        
+        final Map<String,AnalysisRule> result = new HashMap<String,AnalysisRule>();
+        
+        try{
+            rulesLock.readLock().lock();
+            result.putAll(rules);
+        }finally{
+            rulesLock.readLock().unlock();
+        }
+
+        if(null != context.getSite().getParent()) {
+            
+            result.putAll(valueOf(ContextWrapper.wrap(
+                    Context.class,
+                    new SiteContext() {
+                        public Site getSite() {
+                            return context.getSite().getParent();
+                        }
+                    },
+                    context
+                    )).getRulesMap());
+
+        }
+        
+        return result;
+    }
     /**
      *
      * Returns the rule with the name <code>ruleName</code>.
@@ -353,7 +367,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
      */
     public AnalysisRule getRule(final String ruleName) {
         
-        LOG.trace("getRule(" + ruleName + ")");
+        LOG.trace("getRule(" + ruleName + ')');
 
         init();
         
@@ -371,12 +385,6 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                     new SiteContext() {
                         public Site getSite() {
                             return context.getSite().getParent();
-                        }
-                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                        }
-                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
                         }
                     },
                     context

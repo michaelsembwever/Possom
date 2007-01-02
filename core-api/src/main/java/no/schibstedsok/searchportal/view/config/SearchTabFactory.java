@@ -202,99 +202,101 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         LOG.debug("Parsing " + VIEWS_XMLFILE + " started");
         final Document doc = loader.getDocument();
         final Element root = doc.getDocumentElement();
-        final TextMessages msgs = TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, context));
+        if( null != root ){
+            final TextMessages msgs = TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, context));
 
-        final NodeList tabList = root.getElementsByTagName("tab");
-        for(int i = 0 ; i < tabList.getLength(); ++i){
-            final Element tabE = (Element) tabList.item(i);
-            final String id = tabE.getAttribute("id");
-            LOG.info(INFO_PARSING_TAB + id);
-            final SearchTab inherit = getTabByName(tabE.getAttribute("inherit"));
-            final String mode = parseString(tabE.getAttribute("mode"), inherit != null ? inherit.getMode() : "");
-            final String key = parseString(tabE.getAttribute("key"), inherit != null ? inherit.getKey() : "");
-            final String parentKey = parseString(tabE.getAttribute("parent-key"),
-                    inherit != null ? inherit.getParentKey() : "");
-            final String adCommand = parseString(tabE.getAttribute("ad-command"),
-                    inherit != null ? inherit.getAdCommand() : "");
-            final String allCss = parseString(tabE.getAttribute("css"), null);
-            final String[] css = allCss != null ? allCss.split(",") : new String[]{};
+            final NodeList tabList = root.getElementsByTagName("tab");
+            for(int i = 0 ; i < tabList.getLength(); ++i){
+                final Element tabE = (Element) tabList.item(i);
+                final String id = tabE.getAttribute("id");
+                LOG.info(INFO_PARSING_TAB + id);
+                final SearchTab inherit = getTabByName(tabE.getAttribute("inherit"));
+                final String mode = parseString(tabE.getAttribute("mode"), inherit != null ? inherit.getMode() : "");
+                final String key = parseString(tabE.getAttribute("key"), inherit != null ? inherit.getKey() : "");
+                final String parentKey = parseString(tabE.getAttribute("parent-key"),
+                        inherit != null ? inherit.getParentKey() : "");
+                final String adCommand = parseString(tabE.getAttribute("ad-command"),
+                        inherit != null ? inherit.getAdCommand() : "");
+                final String allCss = parseString(tabE.getAttribute("css"), null);
+                final String[] css = allCss != null ? allCss.split(",") : new String[]{};
 
-            // enrichment hints
-            final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");
-            final Collection<SearchTab.EnrichmentHint> enrichments = new ArrayList<SearchTab.EnrichmentHint>();
-            for(int j = 0 ; j < enrichmentNodeList.getLength(); ++j){
-                final Element e = (Element) enrichmentNodeList.item(j);
-                final String rule = e.getAttribute("rule");
-                LOG.info(INFO_PARSING_ENRICHMENT + rule);
-                final int threshold = parseInt(e.getAttribute("threshold"), -1);
-                final float weight = parseFloat(e.getAttribute("weight"), -1);
-                final String command = e.getAttribute("command");
-                final SearchTab.EnrichmentHint enrichment
-                        = new SearchTab.EnrichmentHint(rule, threshold, weight, command);
-                enrichments.add(enrichment);
-            }
+                // enrichment hints
+                final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");
+                final Collection<SearchTab.EnrichmentHint> enrichments = new ArrayList<SearchTab.EnrichmentHint>();
+                for(int j = 0 ; j < enrichmentNodeList.getLength(); ++j){
+                    final Element e = (Element) enrichmentNodeList.item(j);
+                    final String rule = e.getAttribute("rule");
+                    LOG.info(INFO_PARSING_ENRICHMENT + rule);
+                    final int threshold = parseInt(e.getAttribute("threshold"), -1);
+                    final float weight = parseFloat(e.getAttribute("weight"), -1);
+                    final String command = e.getAttribute("command");
+                    final SearchTab.EnrichmentHint enrichment
+                            = new SearchTab.EnrichmentHint(rule, threshold, weight, command);
+                    enrichments.add(enrichment);
+                }
 
-            // navigation hints
-            final NodeList navigationNodeList = tabE.getElementsByTagName("navigation");
-            final Collection<SearchTab.NavigatorHint> navigations = new ArrayList<SearchTab.NavigatorHint>();
-            for(int j = 0 ; j < navigationNodeList.getLength(); ++j){
-                final Element n = (Element) navigationNodeList.item(j);
-                final String navId = n.getAttribute("id");
-                LOG.info(INFO_PARSING_NAVIGATION + navId);
-                final String name = msgs.getMessage(MSG_NAV_PREFIX + navId);
+                // navigation hints
+                final NodeList navigationNodeList = tabE.getElementsByTagName("navigation");
+                final Collection<SearchTab.NavigatorHint> navigations = new ArrayList<SearchTab.NavigatorHint>();
+                for(int j = 0 ; j < navigationNodeList.getLength(); ++j){
+                    final Element n = (Element) navigationNodeList.item(j);
+                    final String navId = n.getAttribute("id");
+                    LOG.info(INFO_PARSING_NAVIGATION + navId);
+                    final String name = msgs.getMessage(MSG_NAV_PREFIX + navId);
 
-                final String displayName = msgs.hasMessage(MSG_DISPLAY_NAV_PREFIX + navId)
-                    ? msgs.getMessage(MSG_DISPLAY_NAV_PREFIX + navId)
-                    : name;
-                
-                LOG.info(INFO_PARSING_NAVIGATION + name);
-                final SearchTab.NavigatorHint.MatchType match
-                        = SearchTab.NavigatorHint.MatchType.valueOf(n.getAttribute("match").toUpperCase());
-                final String tab = n.getAttribute("tab");
-                final String urlSuffix = n.getAttribute("url-suffix");
-                final String image = n.getAttribute("image");
-                final int priority = parseInt(n.getAttribute("priority"), 0);
-                final SearchTab.NavigatorHint navHint = new SearchTab.NavigatorHint(
-                        navId, 
-                        name, 
-                        displayName, 
-                        match, 
-                        tab, 
-                        urlSuffix, 
-                        image, 
-                        priority, 
-                        null == context.getLeafSearchTabFactory() ? this : context.getLeafSearchTabFactory());
-                navigations.add(navHint);
-            }
+                    final String displayName = msgs.hasMessage(MSG_DISPLAY_NAV_PREFIX + navId)
+                        ? msgs.getMessage(MSG_DISPLAY_NAV_PREFIX + navId)
+                        : name;
 
-            final SearchTab tab = new SearchTab(
-                    inherit,
-                    id,
-                    mode,
-                    key,
-                    parentKey,
-                    tabE.getAttribute("rss-result-name"),
-                    parseBoolean(tabE.getAttribute("rss-hidden"), false),
-                    parseInt(tabE.getAttribute("page-size"), inherit != null ? inherit.getPageSize() : -1),
-                    navigations,
-                    parseInt(tabE.getAttribute("enrichment-limit"), inherit != null ? inherit.getEnrichmentLimit() : -1),
-                    parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null ? inherit.getEnrichmentOnTop() : -1),
-                    parseInt(tabE.getAttribute("enrichment-on-top-score"), inherit != null
-                        ? inherit.getEnrichmentOnTopScore()
-                        : -1),
-                    enrichments,
-                    adCommand,
-                    parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
-                    parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
-                    Arrays.asList(css),
-                    parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null ? inherit.getAbsoluteOrdering() : false));
-            
-            try{
-                tabsLock.writeLock().lock();
-                tabsByName.put(id, tab);
-                tabsByKey.put(key, tab);
-            }finally{
-                tabsLock.writeLock().unlock();
+                    LOG.info(INFO_PARSING_NAVIGATION + name);
+                    final SearchTab.NavigatorHint.MatchType match
+                            = SearchTab.NavigatorHint.MatchType.valueOf(n.getAttribute("match").toUpperCase());
+                    final String tab = n.getAttribute("tab");
+                    final String urlSuffix = n.getAttribute("url-suffix");
+                    final String image = n.getAttribute("image");
+                    final int priority = parseInt(n.getAttribute("priority"), 0);
+                    final SearchTab.NavigatorHint navHint = new SearchTab.NavigatorHint(
+                            navId, 
+                            name, 
+                            displayName, 
+                            match, 
+                            tab, 
+                            urlSuffix, 
+                            image, 
+                            priority, 
+                            null == context.getLeafSearchTabFactory() ? this : context.getLeafSearchTabFactory());
+                    navigations.add(navHint);
+                }
+
+                final SearchTab tab = new SearchTab(
+                        inherit,
+                        id,
+                        mode,
+                        key,
+                        parentKey,
+                        tabE.getAttribute("rss-result-name"),
+                        parseBoolean(tabE.getAttribute("rss-hidden"), false),
+                        parseInt(tabE.getAttribute("page-size"), inherit != null ? inherit.getPageSize() : -1),
+                        navigations,
+                        parseInt(tabE.getAttribute("enrichment-limit"), inherit != null ? inherit.getEnrichmentLimit() : -1),
+                        parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null ? inherit.getEnrichmentOnTop() : -1),
+                        parseInt(tabE.getAttribute("enrichment-on-top-score"), inherit != null
+                            ? inherit.getEnrichmentOnTopScore()
+                            : -1),
+                        enrichments,
+                        adCommand,
+                        parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
+                        parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
+                        Arrays.asList(css),
+                        parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null ? inherit.getAbsoluteOrdering() : false));
+
+                try{
+                    tabsLock.writeLock().lock();
+                    tabsByName.put(id, tab);
+                    tabsByKey.put(key, tab);
+                }finally{
+                    tabsLock.writeLock().unlock();
+                }
             }
         }
 

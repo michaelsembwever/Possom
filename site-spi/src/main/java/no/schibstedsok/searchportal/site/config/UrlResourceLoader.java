@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class UrlResourceLoader extends AbstractResourceLoader {
+public class UrlResourceLoader extends AbstractResourceLoader {
 
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
 
@@ -46,7 +46,6 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         pl.init(resource, properties);
         return pl;
     }
-
 
     /** Create a new DocumentLoader for the given resource name/path and load it with the given DocumentBuilder.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.
@@ -73,9 +72,6 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         cl.init("src/", parent);
         return cl;
     }
-    
-    
-    
     
     public static boolean doesUrlExist(final String url){
         
@@ -126,11 +122,11 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
 
     /** {@inheritDoc}
      */
-    private UrlResourceLoader(final SiteContext cxt) {
+    protected UrlResourceLoader(final SiteContext cxt) {
         super(cxt);
     }
 
-    protected String getResource(final Site site) {
+    protected final String getResource(final Site site) {
         
         return "http://"
                 + site.getName()
@@ -139,12 +135,12 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
                 + getResource();
     }
    
-    public boolean urlExists(final String url) {
+    public final boolean urlExists(final String url) {
 
         return doesUrlExist(url);
     }
     
-    protected String getHostHeaderFor(final String resource){
+    protected final String getHostHeaderFor(final String resource){
         
         return getHostHeader(resource);
     }
@@ -154,7 +150,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         return getURL(resource);
     }
 
-    protected InputStream getInputStreamFor(String resource) {
+    protected final InputStream getInputStreamFor(String resource) {
         
         try {
             final URLConnection urlConn = new URL(getUrlFor(resource)).openConnection();
@@ -169,7 +165,7 @@ public final class UrlResourceLoader extends AbstractResourceLoader {
         
     }
     
-    protected String readResourceDebug(final String resource){
+    protected final String readResourceDebug(final String resource){
         
         return "Read Configuration from " + getUrlFor(resource) + " [" + getHostHeaderFor(resource) + ']';
     }

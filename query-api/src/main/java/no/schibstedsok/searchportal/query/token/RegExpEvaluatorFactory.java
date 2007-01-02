@@ -111,39 +111,41 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                 assert null != doc : "No document loaded for " + context.getSite().getName();
                 
                 final Element root = doc.getDocumentElement();
-                final NodeList evaluators = root.getElementsByTagName("evaluator");
-                for (int i = 0; i < evaluators.getLength(); ++i) {
+                if(null != root){
+                    final NodeList evaluators = root.getElementsByTagName("evaluator");
+                    for (int i = 0; i < evaluators.getLength(); ++i) {
 
-                    final Element evaluator = (Element) evaluators.item(i);
+                        final Element evaluator = (Element) evaluators.item(i);
 
-                    final String tokenName = evaluator.getAttribute("token");
-                    LOG.info(" ->evaluator@token: " + tokenName);
+                        final String tokenName = evaluator.getAttribute("token");
+                        LOG.info(" ->evaluator@token: " + tokenName);
 
-                    final TokenPredicate token = TokenPredicate.valueOf(tokenName);
+                        final TokenPredicate token = TokenPredicate.valueOf(tokenName);
 
-                    final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
-                    LOG.info(" ->evaluator@query-dependant: " + queryDep);
+                        final boolean queryDep = Boolean.parseBoolean(evaluator.getAttribute("query-dependant"));
+                        LOG.info(" ->evaluator@query-dependant: " + queryDep);
 
-                    final Collection compiled = new ArrayList();
+                        final Collection compiled = new ArrayList();
 
-                    final NodeList patterns = ((Element) evaluator).getElementsByTagName("pattern");
-                    for (int j = 0; j < patterns.getLength(); ++j) {
-                        final Element pattern = (Element) patterns.item(j);
+                        final NodeList patterns = ((Element) evaluator).getElementsByTagName("pattern");
+                        for (int j = 0; j < patterns.getLength(); ++j) {
+                            final Element pattern = (Element) patterns.item(j);
 
-                        final String expression = pattern.getFirstChild().getNodeValue();
-                        LOG.info(" --->pattern: " + expression);
+                            final String expression = pattern.getFirstChild().getNodeValue();
+                            LOG.info(" --->pattern: " + expression);
 
-                        // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
-                        final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
-                        final String suffix = expression.endsWith("$") ? "" : "(\\:|$|\\s)";
-                        // compile pattern
-                        final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
-                        compiled.add(p);
+                            // (^|\s) or ($|\s) is neccessary to avoid matching fragments of words.
+                            final String prefix = expression.startsWith("^") ? "" : "(^|\\s)";
+                            final String suffix = expression.endsWith("$") ? "" : "(\\:|$|\\s)";
+                            // compile pattern
+                            final Pattern p = Pattern.compile(prefix + expression + suffix, REG_EXP_OPTIONS);
+                            compiled.add(p);
+                        }
+
+                        final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
+                        regExpEvaluators.put(token, regExpTokenEvaluator);
+
                     }
-
-                    final RegExpTokenEvaluator regExpTokenEvaluator = new RegExpTokenEvaluator(compiled, queryDep);
-                    regExpEvaluators.put(token, regExpTokenEvaluator);
-
                 }
                 LOG.info("Parsing " + REGEXP_EVALUATOR_XMLFILE + " finished");
                 init = true;
@@ -193,27 +195,6 @@ public final class RegExpEvaluatorFactory implements SiteKeyedFactory{
                         public Site getSite(){
                             return context.getSite().getParent();
                         }
-//                        public PropertiesLoader newPropertiesLoader(
-//                                final String resource,
-//                                final Properties properties) {
-//                            
-//                            
-//                            return ProxyResourceLoaderFactory.newPropertiesLoader(
-//                                    context.newPropertiesLoader(resource, properties).getClass(), 
-//                                    this, 
-//                                    resource, 
-//                                    properties);
-//                        }
-//                        public DocumentLoader newDocumentLoader(
-//                                final String resource,
-//                                final DocumentBuilder builder) {
-//                            
-//                            return ProxyResourceLoaderFactory.newDocumentLoader(
-//                                    context.newDocumentLoader(resource, builder).getClass(), 
-//                                    this, 
-//                                    resource, 
-//                                    builder);
-//                        }
                     },
                     context
                 )).getEvaluator(token);

@@ -41,6 +41,7 @@ abstract class AbstractResourceLoader
         implements Runnable, DocumentLoader, PropertiesLoader, ClasspathLoader {
     
     private enum Polymorphism{
+        NONE,
         FIRST_FOUND,
         DOWN_HIERARCHY,
         UP_HEIRARCHY
@@ -49,7 +50,7 @@ abstract class AbstractResourceLoader
     private enum Resource{
         
         PROPERTIES(Polymorphism.UP_HEIRARCHY),
-        DOM_DOCUMENT(Polymorphism.FIRST_FOUND),
+        DOM_DOCUMENT(Polymorphism.NONE),
         CLASSPATH(Polymorphism.FIRST_FOUND);
         
         final private Polymorphism polymorphism;
@@ -254,9 +255,47 @@ abstract class AbstractResourceLoader
                     LOG.fatal(FATAL_RESOURCE_NOT_LOADED);
                 }
                 break;
+                
+            case NONE:
+                // if the resource doesn't exist then fake an empty result.
+                if (!loadResource(getResource(getContext().getSite()))) {
+                    loadEmptyResource(getResource(getContext().getSite()));
+                }
+                break;
         }
     }
 
+    private boolean loadEmptyResource(final String resource) {
+        
+        LOG.debug("Loading empty resource for " + resource);
+
+        boolean success = false;
+        switch(resourceType){
+
+            case PROPERTIES:
+
+
+                props.put(context.getSite().getName(), getUrlFor(resource));
+
+                break;
+
+            case DOM_DOCUMENT:
+                document = builder.newDocument();
+                break;
+
+            case CLASSPATH:
+                //FIXME Broken. Manual localhost URLs with host-header required in findClass() method.
+                classloader = new URLClassLoader(new URL[]{}, parentClassloader);
+                break;
+        }
+
+        success = true;
+
+        
+        return true;
+    }
+    
+    
     private boolean loadResource(final String resource) {
 
         boolean success = false;
