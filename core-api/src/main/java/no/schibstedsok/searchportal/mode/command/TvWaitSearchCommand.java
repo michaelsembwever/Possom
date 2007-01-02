@@ -54,8 +54,8 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     /** Execute query */
     private boolean executeQuery = true;
 
-    /** Channels to exclude from blank query */
-    private static final String excludeFilter = "-sgeneric5nav:'star' -sgeneric5nav:'reality' -sgeneric5nav:'club' -sgeneric5nav:'jetix' -sgeneric5nav:'tv8' -sgeneric5nav:'ztvsve' -sgeneric5nav:'extreme' -sgeneric5nav:'pro7' -sgeneric5nav:'rtl2' -sgeneric5nav:'dsf' -sgeneric5nav:'eurospo2' -sgeneric5nav:'3sat' -sgeneric5nav:'sat1' -sgeneric5nav:'tv3pldan' -sgeneric5nav:'tv3dan' -sgeneric5nav:'tv3sve' -sgeneric5nav:'bbcfood' -sgeneric5nav:'cnbcnatgeoch' -sgeneric5nav:'skyntgeo' -sgeneric5nav:'dr2' -sgeneric5nav:'rtl1' -sgeneric5nav:'tcmcartoon' -sgeneric5nav:'kanal5' -sgeneric5nav:'toondisney' -sgeneric5nav:'dtravel' -sgeneric5nav:'canplfilm3' -sgeneric5nav:'canplhd' -sgeneric5nav:'canplspo2' -sgeneric5nav:'canplmix' -sgeneric5nav:'tv2film' -sgeneric5nav:'disneyplay' -sgeneric5nav:'viatv6' ";
+    /** Use all channels */
+    private boolean useAllChannels = false;
     
     /** Creates a new instance of TvWaitSearchCommand */
     public TvWaitSearchCommand(final Context cxt, final Map parameters) {
@@ -73,13 +73,14 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         final int offset = Integer.parseInt(v instanceof String[] && ((String[]) v).length == 1 
                 ? ((String[]) v)[0]
                 : (String) v);
-     
+
         if (userSortBy == SortBy.DAY || !config.isPaging() || config.getIndex() == -1) {
             index = config.getIndex();
         } else {
             index = config.getIndex() + (offset);
         }
-        
+    
+        useAllChannels = getParameter("allChannels") != null && "true".equals(getParameter("allChannels"));
     }
     
     public SearchResult execute() {
@@ -137,7 +138,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 
         /* If navigator root command and blankQuery, set default navigator */
         if (executeQuery && blankQuery && !getParameters().containsKey("nav_channelcategories")) {
-            if ("tvmc".equals(getParameter("c")) && getParameters().containsKey("myChannels")) {
+            if (config.getUseMyChannels() && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
                 final String myChannels = getParameter("myChannels");
                 if (myChannels.split(",").length > 50) {
                     executeQuery = addChannelCategoryNavigator();
@@ -146,9 +147,8 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 executeQuery = addChannelCategoryNavigator();
             }
         }
-
-        if (executeQuery && "tvmc".equals(getParameter("c")) 
-                && (getParameters().containsKey("setMyChannels") || !getParameters().containsKey("myChannels"))) {
+        
+        if (executeQuery && config.getUseMyChannels() && getParameters().containsKey("setMyChannels")) {
             executeQuery = false;
         }
         
@@ -247,7 +247,11 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     
         }
         
-        if (getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
+        LOG.error("useMyChannels: " + config.getUseMyChannels());
+        LOG.error("useAllChannels: " + useAllChannels);
+        LOG.error("myChannels: " + getParameter("myChannels"));
+        
+        if (config.getUseMyChannels() && !useAllChannels && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
             StringBuilder sb = new StringBuilder();
             sb.append("+(");
             for (String str : getParameter("myChannels").split(",")) {
@@ -258,9 +262,6 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             filter.append(sb);
             filter.append(") ");
         }
-//        if (blankQuery) {
-//            filter.append(excludeFilter);
-//        }
         
         return filter.toString();
     }

@@ -70,7 +70,7 @@ public final class QueryFactoryImpl extends QueryFactory {
                     query.addParameter("newscountry", "Norge");
                 }
             } 
-            else if ("tvmc".equals(request.getParameter("c"))) {
+            else if ("t".equals(request.getParameter("c"))) {
                 final Cookie cookies[] = request.getCookies();
                 if (cookies != null) {
                     for (Cookie cookie : cookies) {

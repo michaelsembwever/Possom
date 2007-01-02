@@ -19,6 +19,9 @@ public class TvWaitSearchConfiguration extends FastSearchConfiguration {
     
     /** Name of search command to wait on */
     private String waitOn;
+
+    /** Turn on/off cookie channel selection */
+    private boolean useMyChannels = false;
     
     /**
      * Creates a new instance of TvWaitSearchConfiguration
@@ -41,5 +44,13 @@ public class TvWaitSearchConfiguration extends FastSearchConfiguration {
     
     public final String getWaitOn() {
         return waitOn;
+    }
+    
+    public final void setUseMyChannels(final boolean useMyChannels) {
+        this.useMyChannels = useMyChannels;
+    }
+    
+    public final boolean getUseMyChannels() {
+        return useMyChannels;
     }
 }

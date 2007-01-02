@@ -141,7 +141,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <table border="0" cellspacing="0" cellpadding="0" id="body_table">
         <%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
             <tr>
-        <%} else if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt") && !currentC.equals("tvmc")) {%>
+        <%} else if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
             <tr>
                 <td class="cell_one">&nbsp;</td>
                 <td class="cell_three">&nbsp;</td>
@@ -150,9 +150,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
         <% }else{ %>
             <tr>
                 <%if (q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")) {%>
-                <%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d") || currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("tvmc") || currentC.equals("wt")) {%>
+                <%}else if ((currentC.equals("b") || currentC.equals("m") || currentC.equals("l") || currentC.equals("d") || currentC.equals("g") || currentC.equals("pss")) || !q.trim().equals("") || currentC.equals("t") || currentC.equals("wt")) {%>
                     <td class="cell_one" valign="top">
-                        <%if (q.trim().equals("") && (currentC.equals("t") || currentC.equals("tvmc") || currentC.equals("m") || currentC.equals("l"))) { %>
+                        <%if (q.trim().equals("") && (currentC.equals("t") || currentC.equals("m") || currentC.equals("l"))) { %>
                             <decorator:getProperty property="page.frontMenu"/>
                         <% } else { %>     
                             <search:velocity template="/navigators/navbarMain"/>
@@ -174,7 +174,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                     </td>
                 <% } %>
         <% } %>
-        <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("tvmc") && !currentC.equals("l") && !currentC.equals("m") && !currentC.equals("wt")) {%>
+        <%if (q.trim().equals("") && !currentC.equals("t") && !currentC.equals("l") && !currentC.equals("m") && !currentC.equals("wt")) {%>
             <td valign="top" colspan="3">
         <%}else if (!currentC.equals("y") && !currentC.equals("yip") && !currentC.equals("w") && !currentC.equals("wip")&& !currentC.equals("swip") && !currentC.equals("wipgift")) {%>
             <td class="cell_three" valign="top">
@@ -182,9 +182,9 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
             <td class="cell_three" valign="top" colspan="2">
  	<%}%>
 
-        <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt") && !currentC.equals("tvmc")) {%>
+        <%if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
 	<%}else {%>
-            <%if (currentC.equals("d") || currentC.equals("g") || currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn") || currentC.equals("t") || currentC.equals("tvmc") || currentC.equals("wt")) {%>
+            <%if (currentC.equals("d") || currentC.equals("g") || currentC.equals("p") || currentC.equals("pp") || currentC.equals("pip") || currentC.equals("pipn") || currentC.equals("t") || currentC.equals("wt")) {%>
                 <search:velocity template="fragments/middlebar" />
             <% }else if(q.trim().equals("") && currentC.equals("m") && vertikal.equals("m")){ %>	
             <% }else { %>
@@ -209,7 +209,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <%}%>
                 <div class="clearFloat">&nbsp;</div>
             </div>
-        <% } else if (currentC.equals("t") || currentC.equals("tvmc")) { %>
+        <% } else if (currentC.equals("t")) { %>
             <search:velocity template="results/tvSearch" command="tvSearch"/>
         <% } else { %>
             <decorator:getProperty property="page.search-results"/>
@@ -223,7 +223,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
                 <decorator:getProperty property="page.ads-logo"/>
             <%}else if (currentC.equals("b") ) {%>
                 <decorator:getProperty property="page.feedback"/>
-            <%} else if (currentC.equals("t") || currentC.equals("tvmc")) {%>
+            <%} else if (currentC.equals("t")) {%>
                 <decorator:getProperty property="page.ads"/>
             <%} else {%>
                 <decorator:getProperty property="page.ads"/>

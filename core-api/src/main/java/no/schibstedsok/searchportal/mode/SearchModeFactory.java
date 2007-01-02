@@ -620,6 +620,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final TvWaitSearchConfiguration twsc = (TvWaitSearchConfiguration) sc;
                     fillBeanProperty(twsc, inherit, "index", ParseType.Int, commandE, "0");
                     fillBeanProperty(twsc, inherit, "waitOn", ParseType.String, commandE, null);
+                    fillBeanProperty(twsc, inherit, "useMyChannels", ParseType.Boolean, commandE, "false");
                 }
 
                 // query transformers
