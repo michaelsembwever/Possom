@@ -60,6 +60,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private String resultView;
     private boolean clustering = false;
     private boolean ignoreNavigation = false;
+    private boolean norwegianNewsNavigator = false;
     private int offensiveScoreLimit = 0;
     private int spamScoreLimit = 0;
 
@@ -92,6 +93,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
             resultView = fsc.resultView;
             clustering = fsc.clustering;
             ignoreNavigation = fsc.ignoreNavigation;
+            norwegianNewsNavigator = fsc.norwegianNewsNavigator;
             offensiveScoreLimit = fsc.offensiveScoreLimit;
             spamScoreLimit = fsc.spamScoreLimit;
             filter = fsc.filter;
@@ -251,6 +253,14 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         this.ignoreNavigation = ignoreNavigationEnabled;
     }
 
+    public boolean isNorwegianNewsNavigator() {
+        return norwegianNewsNavigator;
+    }
+
+    public void setNorwegianNewsNavigator(final boolean norwegianNewsNavigatorEnabled) {
+        this.norwegianNewsNavigator = norwegianNewsNavigatorEnabled;
+    }
+    
     public int getOffensiveScoreLimit() {
         return offensiveScoreLimit;
     }
