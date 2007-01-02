@@ -27,6 +27,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
@@ -88,7 +89,7 @@ public final class Channels {
             INSTANCES_LOCK.writeLock().lock();
             context = cxt;
             db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            loadChannels();
+            loadChannels(cxt);
             CHANNEL_COMPARATOR = new Comparator<Modifier>() {
             
                 public final Map<String, Channel> getChannels() {
@@ -113,52 +114,65 @@ public final class Channels {
         }
     }
 
-    private final void loadChannels() {
+    private final void loadChannels(final Context cxt) {
         
-        final DocumentLoader loader = context.newDocumentLoader(context, CHANNELS_RESOURCE, db);
+        final DocumentLoader loader = context.newDocumentLoader(cxt, CHANNELS_RESOURCE, db);
         loader.abut();
         
         final Document doc = loader.getDocument();
         
-        final NodeList channelNodes = doc.getElementsByTagName(CHANNELS_TAG);
-        for(int i = 0; i < channelNodes.getLength(); i++) {
-            final Node channelNode = channelNodes.item(i);
+        if (doc.getDocumentElement() == null) {
+            if (cxt.getSite().getParent() != null) {
+                final Context parentContext = ContextWrapper.wrap(
+                        Context.class,
+                        new SiteContext() {
+                            public Site getSite() {
+                                return cxt.getSite().getParent();
+                            }
+                        },
+                        cxt);
+                loadChannels(parentContext);
+            }
+        } else {
+            final NodeList channelNodes = doc.getElementsByTagName(CHANNELS_TAG);
+            for(int i = 0; i < channelNodes.getLength(); i++) {
+                final Node channelNode = channelNodes.item(i);
 
-            String id = null;
-            String name = null;
-            int priority = -1;
-            Channel.Category category = null;
-            
-            final NodeList channelChildNodes = channelNode.getChildNodes();
-            for (int n = 0; n < channelChildNodes.getLength(); n++) {
-                final Node childNode = channelChildNodes.item(n);
-                if (childNode.getNodeType() == Node.ELEMENT_NODE) {
-                    final NodeList textNodes = childNode.getChildNodes();
-                    for (int m = 0; m < textNodes.getLength(); m++) {
-                        final Node textNode = textNodes.item(m);
-                        if (textNode.getNodeType() == Node.TEXT_NODE) {
-                            if (CHANNEL_ID.equals(childNode.getNodeName())) {
-                                id = textNode.getNodeValue();
-                            } else if (CHANNEL_NAME.equals(childNode.getNodeName())) {
-                                name = textNode.getNodeValue();
-                            } else if (CHANNEL_PRIORITY.equals(childNode.getNodeName())) {
-                                priority = Integer.parseInt(textNode.getNodeValue());
-                            } else if (CHANNEL_CATEGORY.equals(childNode.getNodeName())) {
-                                category = Channel.Category.valueOf(textNode.getNodeValue().toUpperCase());
+                String id = null;
+                String name = null;
+                int priority = -1;
+                Channel.Category category = null;
+
+                final NodeList channelChildNodes = channelNode.getChildNodes();
+                for (int n = 0; n < channelChildNodes.getLength(); n++) {
+                    final Node childNode = channelChildNodes.item(n);
+                    if (childNode.getNodeType() == Node.ELEMENT_NODE) {
+                        final NodeList textNodes = childNode.getChildNodes();
+                        for (int m = 0; m < textNodes.getLength(); m++) {
+                            final Node textNode = textNodes.item(m);
+                            if (textNode.getNodeType() == Node.TEXT_NODE) {
+                                if (CHANNEL_ID.equals(childNode.getNodeName())) {
+                                    id = textNode.getNodeValue();
+                                } else if (CHANNEL_NAME.equals(childNode.getNodeName())) {
+                                    name = textNode.getNodeValue();
+                                } else if (CHANNEL_PRIORITY.equals(childNode.getNodeName())) {
+                                    priority = Integer.parseInt(textNode.getNodeValue());
+                                } else if (CHANNEL_CATEGORY.equals(childNode.getNodeName())) {
+                                    category = Channel.Category.valueOf(textNode.getNodeValue().toUpperCase());
+                                }
                             }
                         }
                     }
                 }
+                final Channel channel = Channel.newInstance(id, name, priority, category);
+                addChannel(channel);
             }
-            final Channel channel = Channel.newInstance(id, name, priority, category);
-            addChannel(channel);
-        }
-        
-        /* Sort channel lists */
-        for (Channel.Category category : Channel.Category.values()) {
-            Collections.sort(getChannelsByCategory(category));
-        }
-            
+
+            /* Sort channel lists */
+            for (Channel.Category category : Channel.Category.values()) {
+                Collections.sort(getChannelsByCategory(category));
+            }
+        }            
     }
     
     private void internalWriteDocument(Document d, Writer w) {
