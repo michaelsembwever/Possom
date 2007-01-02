@@ -95,15 +95,16 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
 
                     final String lat = result.getField("lat");
                     final String lon = result.getField("long");
-
+                    final String alt = result.getField("altitude");
+                    
                     //infopage or resultlisting?
                     if(getParameter("igeneric1") != null &! "".equals(getParameter("igeneric1"))){
 
-                        getForecasts(forecasts, lat, lon);
+                        getForecasts(forecasts, lat, lon, alt);
 
                     } else {
 
-                        forecasts.addResult(getCurrentForecast(lat, lon));
+                        forecasts.addResult(getCurrentForecast(lat, lon, alt));
 
                     }
                 }
@@ -119,14 +120,14 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
     }
 
     private SearchResultItem getCurrentForecast(final String la, final String lo){
-        return getCurrentForecast(la, lo, null);
+        return getCurrentForecast(la, lo, "0");
     }
 
-    private SearchResultItem getCurrentForecast(final String la, final String lo, final String height) {
+    private SearchResultItem getCurrentForecast(final String la, final String lo, final String altitude) {
 
         BasicSearchResultItem e = null;
 
-        final String cacheKey = la + "#" +lo;
+        final String cacheKey = la + "#" +lo + "#" + altitude;
         boolean updated = false; //cache flag used for eviction/update deadlock.
 
         try {
@@ -141,7 +142,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
             try {
 
                 // Get from Storm service
-                final Document doc = getForecastDocument(la, lo, height);
+                final Document doc = getForecastDocument(la, lo, altitude);
 
                 final Element resultElement = doc.getDocumentElement();
 
@@ -191,7 +192,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
 
     /** TODO comment me. **/
     protected void getForecasts(final SearchResult result, final String la, final String lo){
-        getForecasts(result, la, lo, null);
+        getForecasts(result, la, lo, "0");
     }
 
 
@@ -203,9 +204,9 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      * @param height
      * @return
      */
-    private void getForecasts(final SearchResult result, final String la, final String lo, String height) {
+    private void getForecasts(final SearchResult result, final String la, final String lo, String altitude) {
 
-        final Document doc = getForecastDocument(la, lo, height);
+        final Document doc = getForecastDocument(la, lo, altitude);
 
         final Element resultElement = doc.getDocumentElement();
 
@@ -232,7 +233,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      * @param height
      * @return
      */
-    private Document getForecastDocument(String la, String lo, String height) {
+    private Document getForecastDocument(String la, String lo, String altitude) {
          //use dot notation
          if(la!=null){
              la = la.replace(',', '.');
@@ -249,9 +250,9 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
              throw new InfrastructureException(e1);
          }
 
-         if(height!=null){
-             height = height.replace(',', '.');
-             url.append("&m=").append(height);
+         if(altitude != null){
+             altitude = altitude.replace(',', '.');
+             url.append("&m=").append(altitude);
          }
 
          LOG.debug("Using url:" + url.toString());
