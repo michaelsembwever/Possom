@@ -150,12 +150,6 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         public Site getSite(){
                             return context.getSite().getParent();
                         }
-                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                        }
-                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                        }
                         public SearchTabFactory getLeafSearchTabFactory(){
                             return null == context.getLeafSearchTabFactory()
                                     ? SearchTabFactory.this
@@ -169,25 +163,32 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         return tab;
     }
 
-    /** getTabsByKey will only look at tabs in this site.
-     * It will NOT falback to the parent site.
-     ***/
     public SearchTab getTabByKey(final String key){
 
         LOG.trace("getTabByKey(" + key + ")");
 
-        try{
-            tabsLock.readLock().lock();
-            
-            final SearchTab result = tabsByKey.get(key);
-            assert null != result : "getTabByKey(" + key + ") returned null" + tabsByKey;
-            
-            return result;
-            
-        }finally{
-            tabsLock.readLock().unlock();
+        SearchTab tab = getTabByKeyImpl(key);
+        if(null == tab && null != context.getSite().getParent()){
+            // not found in this site's views.xml. look in parent's site.
+            final SearchTabFactory factory = valueOf(ContextWrapper.wrap(
+                    Context.class,
+                    new SiteContext(){
+                        public Site getSite(){
+                            return context.getSite().getParent();
+                        }
+                        public SearchTabFactory getLeafSearchTabFactory(){
+                            return null == context.getLeafSearchTabFactory()
+                                    ? SearchTabFactory.this
+                                    : context.getLeafSearchTabFactory();
+                        }
+                    },
+                    context
+                ));
+            tab = factory.getTabByKeyImpl(key);
         }
+        return tab;
     }
+    
 
     // Package protected ---------------------------------------------
 
@@ -313,6 +314,19 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
             tabsLock.readLock().lock();
             return tabsByName.get(id);
 
+        }finally{
+            tabsLock.readLock().unlock();
+        }
+    }
+    
+    private SearchTab getTabByKeyImpl(final String key){
+
+        LOG.trace("getTabByKeyImpl(" + key + ")");
+
+        try{
+            tabsLock.readLock().lock();
+            return tabsByKey.get(key);
+            
         }finally{
             tabsLock.readLock().unlock();
         }
