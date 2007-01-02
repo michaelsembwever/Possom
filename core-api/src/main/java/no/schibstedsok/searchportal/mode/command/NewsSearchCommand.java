@@ -9,6 +9,10 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Map;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
@@ -94,13 +98,18 @@ public class NewsSearchCommand extends FastSearchCommand {
                     }
   
                     // Add filter to remove papernews from norwegian newssearch
+                    // and only display news fresher than 2 years (deal with Retriever)
                     if (!contentSource.equals("Mediearkivet")) {
                         filterBuilder.append(" -meta.collection:mano");
+                        GregorianCalendar calendar = new java.util.GregorianCalendar();
+                        calendar.add( java.util.Calendar.MONTH, -24 );
+                        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                        String xx = formatter.format(calendar.getTime());
+                        filterBuilder.append(" +docdatetime:>" + xx);
                     }
                 }
             }
         }
-
         return filterBuilder.toString();
     }
 
