@@ -7,14 +7,18 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import no.schibstedsok.searchportal.mode.config.TvWaitSearchConfiguration;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
 
 /**
@@ -156,7 +160,25 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             return new FastSearchResult(this);
         }        
         
-        return super.execute();
+        SearchResult sr = super.execute();
+        if (sr.getHitCount() > 0) {
+            SearchResultItem sri = sr.getResults().get(0);
+            String startTime = sri.getField("starttime");
+            String endTime = sri.getField("endtime");
+            Calendar cal = Calendar.getInstance();
+            Date now = cal.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+            try {
+                Date st = sdf.parse(startTime);
+                Date et = sdf.parse(endTime);
+
+                if (now.compareTo(st) >= 0 && now.compareTo(et) < 0) {
+                    sri.addField("current", "true");
+                }
+            } catch (ParseException e) {}
+        }
+        return sr;
     }
     
     private final boolean addChannelCategoryNavigator() {
