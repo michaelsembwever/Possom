@@ -83,6 +83,7 @@ public class NewsSearchCommand extends FastSearchCommand {
 
                     final String contentSource = getParameter("contentsource");
                     final String newsCountry = getParameter("newscountry");
+                    final String newsSource = getParameter("newssource");
 
                     // AAhhrghh. Need to provide backwards compatibility.
                     // People are linking us using contentsource="Norske nyheter"
@@ -98,14 +99,16 @@ public class NewsSearchCommand extends FastSearchCommand {
                     }
   
                     // Add filter to remove papernews from norwegian newssearch
-                    // and only display news fresher than 2 years (deal with Retriever)
+                    // and only display news fresher than 2 years except for some newssources (deal with Retriever)
                     if (!contentSource.equals("Mediearkivet")) {
                         filterBuilder.append(" -meta.collection:mano");
-                        GregorianCalendar calendar = new java.util.GregorianCalendar();
-                        calendar.add( java.util.Calendar.MONTH, -24 );
-                        final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                        String xx = formatter.format(calendar.getTime());
-                        filterBuilder.append(" +docdatetime:>" + xx);
+                        if (!newsSource.equals("DinSide") && !newsSource.equals("Digi.no") && !newsSource.equals("ITavisen") && !newsSource.equals("iMarkedet") && !newsSource.equals("Propaganda")) {
+                            GregorianCalendar calendar = new java.util.GregorianCalendar();
+                            calendar.add( java.util.Calendar.MONTH, -24 );
+                            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                            String xx = formatter.format(calendar.getTime());
+                            filterBuilder.append(" +docdatetime:>" + xx);
+                        }
                     }
                 }
                 
