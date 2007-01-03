@@ -36,6 +36,8 @@ import org.apache.commons.collections.ExtendedProperties;
  */
 public final class URLVelocityTemplateLoader extends ResourceLoader {
 
+    // Constants -----------------------------------------------------
+    
     private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
 
     private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
@@ -45,8 +47,20 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     private static final String DEBUG_HOST_HEADER_IS = "URL's host-header is ";
     private static final String DEBUG_DOESNT_EXIST = "Using fallback URL";
 
+    
+    // Attributes ----------------------------------------------------
+    
     private Site site;
 
+    
+    // Static --------------------------------------------------------
+    
+    
+    // Constructors --------------------------------------------------
+    
+    
+    // Public --------------------------------------------------------
+    
     /** {@inheritDoc}
      */
     public void init(final ExtendedProperties configuration) {
@@ -108,6 +122,13 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     }
 
+    
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+    
     private URLConnection getResourceURLConnection( final String url )
         throws ResourceNotFoundException{
 
@@ -165,5 +186,9 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         conn.addRequestProperty("host", hostHeader);
         return conn;
     }
+    
+    
+    // Inner classes -------------------------------------------------
+    
 }
 

@@ -59,6 +59,25 @@ import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResult
  */
 public final class SyndicationGenerator {
 
+    
+    // Constants -----------------------------------------------------
+    
+   
+    // Any other way to get rid of the dc:date tags that ROME generates.
+    private static final String DCDATE_PATTERN = "<dc:date>[^<]+</dc:date>";
+
+    private static final Logger LOG = Logger.getLogger(SyndicationGenerator.class);
+
+    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    private static final String ERR_TEMPLATE_NOT_FOUND =
+            " Unable to find template for rss field: ";
+    private static final String ERR_TEMPLATE_ERR =
+            " Parse error in template: ";
+    private static final String DEBUG_TEMPLATE_NOT_FOUND = "Could not find template ";
+    private static final String DEBUG_USING_DEFAULT_DATE_FORMAT = "Using default date format";
+    
+    // Attributes ----------------------------------------------------
+    
     private final SearchResult result;
     private final Site site;
     private final TextMessages text;
@@ -72,18 +91,10 @@ public final class SyndicationGenerator {
     private String encoding = "UTF-8";
     private String nowStringUTC;
 
-    // Any other way to get rid of the dc:date tags that ROME generates.
-    private static final String DCDATE_PATTERN = "<dc:date>[^<]+</dc:date>";
-
-    private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
-
-    private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    private static final String ERR_TEMPLATE_NOT_FOUND =
-            " Unable to find template for rss field: ";
-    private static final String ERR_TEMPLATE_ERR =
-            " Parse error in template: ";
-    private static final String DEBUG_TEMPLATE_NOT_FOUND = "Could not find template ";
-    private static final String DEBUG_USING_DEFAULT_DATE_FORMAT = "Using default date format";
+    
+    // Static --------------------------------------------------------
+    
+    // Constructors --------------------------------------------------
 
     public SyndicationGenerator(final SearchResult result,
                                 final Site site,
@@ -115,6 +126,8 @@ public final class SyndicationGenerator {
         engine = VelocityEngineFactory.valueOf(site).getEngine();
     }
 
+    // Public --------------------------------------------------------
+    
     /** TODO comment me. **/
     public String generate() {
 
@@ -242,6 +255,12 @@ public final class SyndicationGenerator {
     }
 
 
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+    
     private String render(
             final String name,
             final SearchResultItem item,
@@ -250,7 +269,7 @@ public final class SyndicationGenerator {
         final String templateUri = templateDir + name;
 
         try {
-            final VelocityContext cxt = VelocityResultHandler.newContextInstance(engine);
+            final VelocityContext cxt = VelocityEngineFactory.newContextInstance(engine);
 
             cxt.put("text", text);
             cxt.put("now", nowStringUTC);
@@ -284,11 +303,7 @@ public final class SyndicationGenerator {
                     cxt.put("newstype", "- Norske nyheter");
             }
 
-            final Template tpl = VelocityResultHandler.getTemplate(engine, site, templateUri);
-
-            if (tpl == null) {
-                throw new ResourceNotFoundException(DEBUG_TEMPLATE_NOT_FOUND + templateUri);
-            }
+            final Template tpl = VelocityEngineFactory.getTemplate(engine, site, templateUri);
 
             final StringWriter writer = new StringWriter();
             tpl.merge(cxt, writer);
@@ -311,3 +326,6 @@ public final class SyndicationGenerator {
         }
     }
 }
+
+
+    // Inner classes -------------------------------------------------

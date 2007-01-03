@@ -12,9 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import javax.xml.parsers.DocumentBuilder;
-
+import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
@@ -23,15 +22,18 @@ import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
-
+import no.schibstedsok.searchportal.result.Decoder;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.tools.generic.DateTool;
+import org.apache.velocity.tools.generic.MathTool;
 
 /**
  * @version $Id$
@@ -39,7 +41,20 @@ import org.apache.velocity.runtime.RuntimeConstants;
  */
 public final class VelocityEngineFactory implements SiteKeyedFactory{
 
+    /**
+     * The context the AnalysisRules must work against. *
+     */
+    public interface Context extends SiteContext, ResourceContext {
+    }
+    
+    // Constants -----------------------------------------------------
+
     private static final Logger LOG = Logger.getLogger(VelocityEngineFactory.class);
+    
+    private static final String INFO_TEMPLATE_NOT_FOUND = "Could not find template ";
+    private static final String ERR_IN_TEMPLATE = "Error parsing template ";
+    private static final String ERR_GETTING_TEMPLATE = "Error getting template ";
+    
     private static final String VELOCITY_LOGGER = "org.apache.velocity";
 
     private static final Map<Site,VelocityEngineFactory> INSTANCES = new HashMap<Site,VelocityEngineFactory>();
@@ -73,76 +88,61 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.DateFormattingDirective,"
             + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective";
 
+    
+    // Attributes ----------------------------------------------------
+    
     private final VelocityEngine engine;
-
-    /**
-     * The context the AnalysisRules must work against. *
-     */
-    public interface Context extends SiteContext, ResourceContext {
-    }
-
+    
     private final Context context;
+    
+    // Static --------------------------------------------------------
+    
 
-    /** Creates a new instance of VelocityEngineFactory */
-    private VelocityEngineFactory(final Context cxt) {
+    public static Template getTemplate(
+        final VelocityEngine engine,
+        final Site site,
+        final String templateName) throws ResourceNotFoundException{
 
-        try{
-            INSTANCES_LOCK.writeLock().lock();
-            context = cxt;
-            final Site site = cxt.getSite();
+        final String templateUrl = site.getTemplateDir() + "/" + templateName + ".vm";
+        
+        try {
+            return engine.getTemplate(templateUrl);
 
-            engine = new VelocityEngine(){
-                /** We override this method to dampen the <ERROR velocity: ResourceManager : unable to find resource ...>
-                 * error messages in sesam.error
-                 **/
-                public Template getTemplate(final String name) throws ResourceNotFoundException, ParseErrorException, Exception {
+            
+        } catch (ParseErrorException ex) {
+            LOG.error(ERR_IN_TEMPLATE + templateUrl, ex);
+            throw new InfrastructureException(ex);
 
-                    final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
-                    Logger.getLogger(VELOCITY_LOGGER).setLevel(Level.FATAL);
+        } catch (ResourceNotFoundException ex) {
+            // throw this so callers know we did not find the resource.
+            throw ex;
 
-                    final Template retValue = super.getTemplate(name);
-
-                    Logger.getLogger(VELOCITY_LOGGER).setLevel(level);
-                    return retValue;
-                }
-
-            };
-
-            try  {
-                final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
-
-                engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
-                engine.setProperty(LOG_NAME, logger.getName());
-                engine.setProperty(Velocity.RESOURCE_LOADER, "url");
-                engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
-                engine.setProperty("url.resource.loader.cache", "true");
-                engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
-                engine.setProperty(Site.NAME_KEY, site);
-
-                engine.setProperty("input.encoding", "UTF-8");
-                engine.setProperty("output.encoding", "UTF-8");
-                engine.setProperty("userdirective", DIRECTIVES);
-                engine.setProperty(
-                        "velocimacro.library",
-                        site.getTemplateDir() + "/VM_global_library.vm,"
-                        + site.getTemplateDir() + "/VM_site_library.vm");
-                engine.init();
-
-            } catch (Exception e) {
-                throw new InfrastructureException(e);
-            }
-
-
-            INSTANCES.put(site, this);
-        }finally{
-            INSTANCES_LOCK.writeLock().unlock();
+        } catch (Exception ex) {
+            LOG.error(ERR_GETTING_TEMPLATE + templateUrl, ex);
+            throw new InfrastructureException(ex);
         }
     }
-
-    public VelocityEngine getEngine() {
-        return engine;
+        
+    public static VelocityContext newContextInstance(final VelocityEngine engine){
+        
+        final VelocityContext context = new VelocityContext();
+        final Site site = (Site) engine.getProperty(Site.NAME_KEY);
+        
+        // site
+        context.put(Site.NAME_KEY, site);
+        // coord helper
+        context.put("coordHelper", new CoordHelper());
+        // decoder
+        context.put("decoder", new Decoder());
+        // math tool
+        context.put("math", new MathTool());
+        // date tool
+        context.put("date", new DateTool());
+        
+        return context;
     }
-
+        
+        
     /** Main method to retrieve the correct VelocityEngine to further obtain
      * AnalysisRule.
      * @param cxt the contextual needs the VelocityEngine must use to operate.
@@ -199,6 +199,71 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         return instance;
     }
 
+
+    // Constructors --------------------------------------------------
+    
+    /** Creates a new instance of VelocityEngineFactory */
+    private VelocityEngineFactory(final Context cxt) {
+
+        try{
+            INSTANCES_LOCK.writeLock().lock();
+            context = cxt;
+            final Site site = cxt.getSite();
+
+            engine = new VelocityEngine(){
+                /** We override this method to dampen the <ERROR velocity: ResourceManager : unable to find resource ...>
+                 * error messages in sesam.error
+                 **/
+                public Template getTemplate(final String name) throws ResourceNotFoundException, ParseErrorException, Exception {
+
+                    final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
+                    Logger.getLogger(VELOCITY_LOGGER).setLevel(Level.FATAL);
+
+                    final Template retValue = super.getTemplate(name);
+
+                    Logger.getLogger(VELOCITY_LOGGER).setLevel(level);
+                    return retValue;
+                }
+
+            };
+
+            try  {
+                final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
+
+                engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
+                engine.setProperty(LOG_NAME, logger.getName());
+                engine.setProperty(Velocity.RESOURCE_LOADER, "url");
+                engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
+                engine.setProperty("url.resource.loader.cache", "true");
+                engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
+                engine.setProperty(Site.NAME_KEY, site);
+
+                engine.setProperty("input.encoding", "UTF-8");
+                engine.setProperty("output.encoding", "UTF-8");
+                engine.setProperty("userdirective", DIRECTIVES);
+                engine.setProperty(
+                        "velocimacro.library",
+                        site.getTemplateDir() + "/VM_global_library.vm,"
+                        + site.getTemplateDir() + "/VM_site_library.vm");
+                engine.init();
+
+            } catch (Exception e) {
+                throw new InfrastructureException(e);
+            }
+
+
+            INSTANCES.put(site, this);
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
+    }
+    
+    // Public --------------------------------------------------------
+
+    public VelocityEngine getEngine() {
+        return engine;
+    }
+
     public boolean remove(final Site site) {
 
         try{
@@ -209,4 +274,12 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         }
     }
 
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+    
+    
+    // Inner classes -------------------------------------------------
 }

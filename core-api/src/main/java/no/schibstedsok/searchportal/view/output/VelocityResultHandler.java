@@ -2,13 +2,11 @@
 package no.schibstedsok.searchportal.view.output;
 
 import java.io.IOException;
-import no.geodata.maputil.CoordHelper;
 import no.schibstedsok.common.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.run.RunningQuery;
-import no.schibstedsok.searchportal.result.Decoder;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.searchportal.site.Site;
@@ -22,8 +20,6 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.tools.generic.MathTool;
-import org.apache.velocity.tools.generic.DateTool;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.io.UnsupportedEncodingException;
@@ -51,57 +47,12 @@ public final class VelocityResultHandler implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(VelocityResultHandler.class);
 
-    private static final String INFO_TEMPLATE_NOT_FOUND = "Could not find template ";
-    private static final String ERR_IN_TEMPLATE = "Error parsing template ";
-    private static final String ERR_GETTING_TEMPLATE = "Error getting template ";
     private static final String DEBUG_TEMPLATE_SEARCH = "Looking for template ";
     private static final String DEBUG_TEMPLATE_FOUND = "Created template ";
     private static final String ERR_TEMPLATE_NOT_FOUND = "Could not find the template ";
     private static final String ERR_NP_WRITING_TO_STREAM 
             = "Possible client cancelled request. (NullPointerException writing to response's stream).";
     private static final String ERR_MERGE = "Error merging template ";
-
-    public static Template getTemplate(
-            final VelocityEngine engine,
-            final Site site,
-            final String templateName){
-
-        final String templateUrl = site.getTemplateDir() + '/' + templateName + ".vm";
-        try {
-            return engine.getTemplate(templateUrl);
-
-        } catch (ResourceNotFoundException ex) {
-            LOG.error(ERR_TEMPLATE_NOT_FOUND + templateUrl);
-            throw new InfrastructureException(ERR_TEMPLATE_NOT_FOUND + templateName, ex);
-            
-        } catch (ParseErrorException ex) {
-            LOG.error(ERR_IN_TEMPLATE + templateUrl, ex);
-            throw new InfrastructureException(ex);
-
-        } catch (Exception ex) {
-            LOG.error(ERR_GETTING_TEMPLATE + templateUrl, ex);
-            throw new InfrastructureException(ex);
-        }
-    }
-
-    public static VelocityContext newContextInstance(final VelocityEngine engine){
-        
-        final VelocityContext context = new VelocityContext();
-        final Site site = (Site) engine.getProperty(Site.NAME_KEY);
-        
-        // site
-        context.put(Site.NAME_KEY, site);
-        // coord helper
-        context.put("coordHelper", new CoordHelper());
-        // decoder
-        context.put("decoder", new Decoder());
-        // math tool
-        context.put("math", new MathTool());
-        // date tool
-        context.put("date", new DateTool());
-        
-        return context;
-    }
 
     public void handleResult(final Context cxt, final Map parameters) {
 
@@ -125,44 +76,52 @@ public final class VelocityResultHandler implements ResultHandler {
             final Site site = cxt.getSite();
             final VelocityEngine engine = VelocityEngineFactory.valueOf(
                     ContextWrapper.wrap(VelocityEngineFactory.Context.class, cxt)).getEngine();
-            final Template template = getTemplate(engine, site, searchConfiguration.getName());
 
+            try{
+                
+                final Template template 
+                        = VelocityEngineFactory.getTemplate(engine, site, searchConfiguration.getName());
+            
+                LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
 
-            LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
+                final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
+                populateVelocityContext(context, cxt, parameters);
 
-            final VelocityContext context = newContextInstance(engine);
-            populateVelocityContext(context, cxt, parameters);
+                try {
 
-            try {
+                    template.merge(context, w);
+                    writeToResponse(parameters, w.toString());
 
-                template.merge(context, w);
-                writeToResponse(parameters, w.toString());
+                } catch (MethodInvocationException ex) {
+                    LOG.error("Exception for reference: " + ex.getReferenceName());
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-            } catch (MethodInvocationException ex) {
-                LOG.error("Exception for reference: " + ex.getReferenceName());
-                throw new InfrastructureException(ERR_MERGE + templateName, ex);
+                } catch (ResourceNotFoundException ex) {
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-            } catch (ResourceNotFoundException ex) {
-                throw new InfrastructureException(ERR_MERGE + templateName, ex);
+                } catch (ParseErrorException ex) {
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-            } catch (ParseErrorException ex) {
-                throw new InfrastructureException(ERR_MERGE + templateName, ex);
+                } catch (IOException ex) {
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-            } catch (IOException ex) {
-                throw new InfrastructureException(ERR_MERGE + templateName, ex);
+                } catch (NullPointerException ex) {
+                    //at com.opensymphony.module.sitemesh.filter.RoutablePrintWriter.write(RoutablePrintWriter.java:132)
 
-            } catch (NullPointerException ex) {
-                //at com.opensymphony.module.sitemesh.filter.RoutablePrintWriter.write(RoutablePrintWriter.java:132)
+                    // indicates an error in the underlying RoutablePrintWriter stream
+                    //  typically the client has closed the connection
+                    LOG.warn(ERR_NP_WRITING_TO_STREAM);
 
-                // indicates an error in the underlying RoutablePrintWriter stream
-                //  typically the client has closed the connection
-                LOG.warn(ERR_NP_WRITING_TO_STREAM);
+                } catch (Exception ex) {
+                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-            } catch (Exception ex) {
-                throw new InfrastructureException(ERR_MERGE + templateName, ex);
+                }
 
+            }catch(ResourceNotFoundException rnfe){
+                LOG.error(ERR_TEMPLATE_NOT_FOUND + templateName);
+                LOG.error("Configuration: " + searchConfiguration.getName() + " " + searchConfiguration.getStatisticalName());
+                throw new InfrastructureException(ERR_TEMPLATE_NOT_FOUND + templateName, rnfe);
             }
-
 
     }
 
