@@ -7,6 +7,7 @@ import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.BlocketSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.DailyWordConfiguration;
@@ -347,6 +348,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         DAILY_WORD_COMMAND(DailyWordConfiguration.class),
         BLOG_COMMAND(BlogSearchConfiguration.class),
         PRISJAKT_COMMAND(PrisjaktSearchConfiguration.class),
+        BLOCKET_COMMAND(BlocketSearchConfiguration.class),
         CATALOGUE_COMMAND(CatalogueSearchConfiguration.class);
 
 
@@ -515,6 +517,34 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 	
                 
                 }
+                
+                if(sc instanceof BlocketSearchConfiguration)
+                {
+                	final BlocketSearchConfiguration bsc = (BlocketSearchConfiguration)sc; 
+                	
+                	
+                	/**
+                	 * Läser in blocket specifika properties.
+                	 */
+                	final Map<String,String> blocketmap = new HashMap<String,String>();
+                	Properties props = new Properties();
+                	PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, bsc.getBlocketConfigFileName(), props);
+                	loader.abut();
+                	/**
+                	 * Lägger properties i en Map för snabbare åtkomst.
+                	 */
+                	for(Map.Entry<Object,Object> entry : props.entrySet())
+                	{
+
+                         final String key = ((String)entry.getKey()).toLowerCase();
+                         final String value = ((String)entry.getValue()).toLowerCase();
+                         blocketmap.put(key, value);
+                         
+                     }
+                	
+                	 bsc.setBlocketMap(blocketmap);
+                	
+                	}
                                 
                 if(sc instanceof AbstractYahooSearchConfiguration){
                     fillBeanProperty(sc, inherit, "encoding", ParseType.String , commandE, "");
