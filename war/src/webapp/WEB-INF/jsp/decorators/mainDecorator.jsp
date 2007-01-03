@@ -20,49 +20,21 @@
 <%
 final TextMessages text = (TextMessages) request.getAttribute("text");
 final Site site = (Site)request.getAttribute(Site.NAME_KEY);
-String locale = site.getLocale().toString();
 final SearchTab tab = (SearchTab)request.getAttribute("tab");
-
 String currentC = "d";    //default collection
 currentC = (String) request.getAttribute("c");
 String q = (String) request.getAttribute("q");
-final String contentsource = (String) request.getParameter("contentsource");
-final String newscountry = (String) request.getParameter("newscountry");
-final String qURLEncoded = URLEncoder.encode(q, "utf-8");
 q = (String) request.getAttribute("queryHTMLEscaped");
 final boolean publish = null != request.getParameter("page");
 final String ss = request.getParameter("ss");
 final String ssr = request.getParameter("ssr");
 final String vertikal = request.getParameter("vertikal") == null ? "" : request.getParameter("vertikal");
 
-final List<Enrichment> enrichments = (List<Enrichment>) request.getAttribute("enrichments");
-final int enrichmentSize = enrichments.size();
-pageContext.setAttribute("enrichmentSize", enrichmentSize);
-
 final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
 pageContext.setAttribute("siteMeshPage", siteMeshPage);
 
-final List<Modifier> sources = (List<Modifier>)request.getAttribute("sources");
-final Map<String,Integer> hits = (Map<String,Integer>)request.getAttribute("hits");
-final Integer dHits = hits.get("defaultSearch");
-final Integer gHits = hits.get("globalSearch");
-final int no_hits = dHits!= null&&dHits > 0 ? dHits.intValue() : gHits!= null&&gHits > 0 ? gHits.intValue() : 0;
-
-/* TODO: add tvSearch hits */
-/*    final Integer tHits = (Integer) query.getNumberOfHits("tvSearch");
-    final int no_hits = dHits != null && dHits > 0
-            ? dHits.intValue()
-            : gHits != null && gHits > 0 ? gHits.intValue() :
-            tHits != null && tHits > 0 ? tHits.intValue() : 0;
-*/
-
-pageContext.setAttribute("no_hits", no_hits);
-
 final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).getProperties());
 
-String searchButton = "../tradedoubler/searchbox/button-sesam-long.png";
-if (currentC.equals("y")) searchButton = "../tradedoubler/searchbox/button-company.png";
-else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-person.png";
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -138,7 +110,7 @@ else if (currentC.equals("w")) searchButton = "../tradedoubler/searchbox/button-
 	    <decorator:getProperty property="page.search-bar"/>
 	<% } %>
 
-        <table border="0" cellspacing="0" cellpadding="0" id="body_table">
+        <table cellspacing="0" cellpadding="0" id="body_table">
         <%if(q.trim().equals("") && currentC.equals("d") && publish) {%>
             <tr>
         <%} else if (q.trim().equals("") && !currentC.equals("m") && !currentC.equals("l") && !currentC.equals("t") && !currentC.equals("wt")) {%>
