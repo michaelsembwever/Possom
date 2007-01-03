@@ -66,7 +66,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     public synchronized InputStream getResourceStream( final String url )
         throws ResourceNotFoundException{
 
-        LOG.trace("start getResourceStream( "+url+" )");
+        LOG.trace("start getResourceStream( " + url + " )");
         try{
 
             final URLConnection conn = getResourceURLConnection(url);
@@ -155,6 +155,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     private URLConnection getURLConnection(final String url) throws IOException{
 
+        // TODO make this loopback to call a context's ResourceLoader method from the site-spi.
         LOG.trace(DEBUG_EXISTS + url);
         final URL u = new URL( UrlResourceLoader.getURL(url) );
         LOG.trace(DEBUG_FULL_URL_IS + u);

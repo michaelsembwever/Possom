@@ -69,7 +69,7 @@ public final class DataModelResultHandler implements ResultHandler{
             final PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), 
                     config.getResultsToReturn(), tab.getPageSize());
 
-            final Object v = parameters.get("offset");
+            final Object v = null != parameters.get("offset") ? parameters.get("offset") : "0";
             pager.setCurrentOffset(Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
                     ? ((String[]) v)[0]
                     : (String) v));

@@ -66,14 +66,14 @@ public final class VelocityResultHandler implements ResultHandler {
             final Site site,
             final String templateName){
 
-        final String templateUrl = site.getTemplateDir() + "/" + templateName + ".vm";
+        final String templateUrl = site.getTemplateDir() + '/' + templateName + ".vm";
         try {
-            return  engine.getTemplate(templateUrl);
+            return engine.getTemplate(templateUrl);
 
         } catch (ResourceNotFoundException ex) {
-            // expected possible behaviour
-            LOG.debug(INFO_TEMPLATE_NOT_FOUND + templateUrl);
-
+            LOG.error(ERR_TEMPLATE_NOT_FOUND + templateUrl);
+            throw new InfrastructureException(ERR_TEMPLATE_NOT_FOUND + templateName, ex);
+            
         } catch (ParseErrorException ex) {
             LOG.error(ERR_IN_TEMPLATE + templateUrl, ex);
             throw new InfrastructureException(ex);
@@ -82,7 +82,6 @@ public final class VelocityResultHandler implements ResultHandler {
             LOG.error(ERR_GETTING_TEMPLATE + templateUrl, ex);
             throw new InfrastructureException(ex);
         }
-        return null;
     }
 
     public static VelocityContext newContextInstance(final VelocityEngine engine){
@@ -128,48 +127,42 @@ public final class VelocityResultHandler implements ResultHandler {
                     ContextWrapper.wrap(VelocityEngineFactory.Context.class, cxt)).getEngine();
             final Template template = getTemplate(engine, site, searchConfiguration.getName());
 
-            if(template != null){
 
-                LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
+            LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
 
-                final VelocityContext context = newContextInstance(engine);
-                populateVelocityContext(context, cxt, parameters);
+            final VelocityContext context = newContextInstance(engine);
+            populateVelocityContext(context, cxt, parameters);
 
-                try {
+            try {
 
-                    template.merge(context, w);
-                    writeToResponse(parameters, w.toString());
+                template.merge(context, w);
+                writeToResponse(parameters, w.toString());
 
-                } catch (MethodInvocationException ex) {
-                    LOG.error("Exception for reference: " + ex.getReferenceName());
-                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
+            } catch (MethodInvocationException ex) {
+                LOG.error("Exception for reference: " + ex.getReferenceName());
+                throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-                } catch (ResourceNotFoundException ex) {
-                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
+            } catch (ResourceNotFoundException ex) {
+                throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-                } catch (ParseErrorException ex) {
-                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
+            } catch (ParseErrorException ex) {
+                throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-                } catch (IOException ex) {
-                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
+            } catch (IOException ex) {
+                throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-                } catch (NullPointerException ex) {
-                    //at com.opensymphony.module.sitemesh.filter.RoutablePrintWriter.write(RoutablePrintWriter.java:132)
+            } catch (NullPointerException ex) {
+                //at com.opensymphony.module.sitemesh.filter.RoutablePrintWriter.write(RoutablePrintWriter.java:132)
 
-                    // indicates an error in the underlying RoutablePrintWriter stream
-                    //  typically the client has closed the connection
-                    LOG.warn(ERR_NP_WRITING_TO_STREAM);
+                // indicates an error in the underlying RoutablePrintWriter stream
+                //  typically the client has closed the connection
+                LOG.warn(ERR_NP_WRITING_TO_STREAM);
 
-                } catch (Exception ex) {
-                    throw new InfrastructureException(ERR_MERGE + templateName, ex);
+            } catch (Exception ex) {
+                throw new InfrastructureException(ERR_MERGE + templateName, ex);
 
-                }
-
-            }else{
-                LOG.error(ERR_TEMPLATE_NOT_FOUND + templateName);
-                LOG.error("Configuration: " + searchConfiguration.getName() + " " + searchConfiguration.getStatisticalName());
-                throw new UnsupportedOperationException(ERR_TEMPLATE_NOT_FOUND + templateName);
             }
+
 
     }
 

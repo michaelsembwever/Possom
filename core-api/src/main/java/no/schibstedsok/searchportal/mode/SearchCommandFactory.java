@@ -46,18 +46,29 @@ public final class SearchCommandFactory {
                     = commandCls.getConstructor(SearchCommand.Context.class, Map.class);
             return commandConstr.newInstance(cxt, parameters);
             
+            
         } catch (ClassNotFoundException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            
         } catch (SecurityException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            
         } catch (NoSuchMethodException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            
         } catch (IllegalArgumentException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            
         } catch (InvocationTargetException ex) {
-            throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            throw ex.getCause() instanceof RuntimeException
+                    ? (RuntimeException)ex.getCause()
+                    : new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            
         } catch (InstantiationException ex) {
-            throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            throw ex.getCause() instanceof RuntimeException
+                    ? (RuntimeException)ex.getCause()
+                    : new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            
         } catch (IllegalAccessException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
         }

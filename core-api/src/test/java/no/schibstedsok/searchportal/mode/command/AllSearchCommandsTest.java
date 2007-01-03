@@ -9,15 +9,15 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
@@ -84,6 +84,9 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
         // proxy it back to the RunningQuery context.
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
+        
+        final Map<String,Object> map = updateAttributes(new HashMap<String,Object>(), rqCxt);
+        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, map);
 
         final Collection<Callable<SearchResult>> commands = new ArrayList<Callable<SearchResult>>();
 
@@ -93,17 +96,39 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
             final SearchCommand.Context cxt = createCommandContext(query, rqCxt, conf.getName());
 
-            final AbstractSearchCommand cmd
-                    = (AbstractSearchCommand) SearchCommandFactory.createSearchCommand(cxt, new Hashtable<String,Object>());
+            final SearchCommand cmd = SearchCommandFactory.createSearchCommand(cxt, map);
 
             commands.add(cmd);
         }
-        try {
+        try{
 
-            rqCxt.getSearchMode().getExecutor().invokeAll(commands, new HashMap<String, Future<SearchResult>>(), 10000);
+            rqCxt.getSearchMode().getExecutor()
+                    .invokeAll(commands, new HashMap<String, Future<SearchResult>>(), Integer.MAX_VALUE);
+            
         } catch (InterruptedException ex) {
             throw new AssertionError(ex);
         }
+    }
+    
+    /** Matchs the same method in SearchServlet. **/
+    private static Map<String,Object> updateAttributes(
+            final Map<String,Object> map,
+            final RunningQuery.Context rqCxt){
+        
+        
+        if (map.get("offset") == null || "".equals(map.get("offset"))) {
+            map.put("offset", "0");
+        }
+
+        map.put("contextPath", "/");
+        //map.set("tradedoubler", new TradeDoubler(request));
+        map.put("no.schibstedsok.Statistics", new StringBuffer());
+        
+        //final Properties props = SiteConfiguration.valueOf(
+        //                ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
+        //
+        //map.set("linkpulse", new Linkpulse(rqCxt.getSite(), props));
+        return map;
     }
 
 }

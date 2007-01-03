@@ -23,18 +23,18 @@ import org.testng.annotations.Test;
 /** SearchMode tests.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision: 3359 $</tt>
+ * @version <tt>$Id$</tt>
  */
-public class SearchModeTest extends SiteTestCase {
+public final class SearchModeTest extends SiteTestCase {
 
     public SearchModeTest(final String testName) {
         super(testName);
     }	
     
-    /** Test the WebCrawl index.
+    /** Test the FastSearchConfiguration.
      **/
     @Test
-    public void testWebCrawl() {
+    public void testFastSearchConfiguration() throws InterruptedException {
 
         final SearchMode mode = new SearchMode();
 
@@ -42,7 +42,8 @@ public class SearchModeTest extends SiteTestCase {
 
         final FastSearchConfiguration webCrawl = new FastSearchConfiguration();
 
-        webCrawl.setQueryServerUrl("http://localhost:15100");
+        webCrawl.setName("test-fast-search-configuration");
+        webCrawl.setQueryServerUrl("queryServerURL.1");
         webCrawl.addCollection("webcrawlno1");
         webCrawl.addCollection("webcrawlno1deep1");
         webCrawl.addCollection("webcrawlno2");
@@ -50,6 +51,7 @@ public class SearchModeTest extends SiteTestCase {
         webCrawl.addResultField("url");
         webCrawl.addResultField("title");
         webCrawl.addResultField("body");
+        webCrawl.setSpellchecklanguage("no");
         webCrawl.setResultsToReturn(10);
 
         mode.addSearchConfiguration(webCrawl);
@@ -87,23 +89,27 @@ public class SearchModeTest extends SiteTestCase {
 
         final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no", new HashMap());
 
-        try {
-            query.run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        query.run();
+        
     }
 
-
+    /** Test the OverturePPCSearchConfiguration.
+     **/
     @Test
-    public void testOverturePPCConfiguration() throws Exception {
+    public void testOverturePPCConfiguration() throws InterruptedException {
 
         final String query = "linux";
 
         final SearchMode mode = new SearchMode();
         mode.setExecutor(new ParallelSearchCommandExecutor());
-        final SearchConfiguration searchConfiguration = new OverturePPCSearchConfiguration();
+        final OverturePPCSearchConfiguration searchConfiguration = new OverturePPCSearchConfiguration();
+        searchConfiguration.setName("test-overture-ppc-command");
         searchConfiguration.setResultsToReturn(3);
+        searchConfiguration.setHost("overtureHost");
+        searchConfiguration.setPort("overturePort");
+        searchConfiguration.setPartnerId("overturePartnerId");
+        searchConfiguration.setUrl("/d/search/p/standard/eu/xml/rlb/?mkt=se&amp;adultFilter=clean&amp;accountFilters=schibstedsok_se");
+        searchConfiguration.setEncoding("UTF-8");
         mode.addSearchConfiguration(searchConfiguration);
 
         final RunningQuery.Context rqCxt = new RunningQuery.Context(){

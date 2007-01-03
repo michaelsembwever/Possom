@@ -21,52 +21,70 @@ import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
+import org.apache.log4j.Logger;
 
 /**
  * Command used for P4 summer compatition. There is one trigger word for each
  * day. For each word there is a code. The words, dates and codes are read
- * from the dailyWords.txt file. 
+ * from the dailyWords.txt file.
  */
 public final class DailyWordCommand extends AbstractSearchCommand {
 
-    private final static String FIELD_WORD = "word";
-    private final static String FIELD_CODE = "code";
-    private final static String DATE_FORMAT = "yyyy-MM-dd";
-    
-    static Map<String, DailyWord> words;
+    // Constants -----------------------------------------------------
+
+    private static final Logger LOG = Logger.getLogger(DailyWordCommand.class);
+
+    private static final String FIELD_WORD = "word";
+    private static final String FIELD_CODE = "code";
+    private static final String DATE_FORMAT = "yyyy-MM-dd";
+
+    private static final Map<String,DailyWord> WORDS = new HashMap<String,DailyWord>();
+
+
+    // Attributes ----------------------------------------------------
+
+
+    // Static --------------------------------------------------------
+
+    static{
+
+        final InputStream wordStream = DailyWordCommand.class.getResourceAsStream("/dailyWords.txt");
+
+        if( null != wordStream ){
+            try {
+                final BufferedReader reader = new BufferedReader(new InputStreamReader(wordStream, "UTF-8"));
+                String row = "";
+                while ((row = reader.readLine()) != null) {
+                    addDailyWord(row);
+                }
+                
+            } catch (ParseException ex) {
+                LOG.error(ex.getMessage(), ex);
+            } catch (UnsupportedEncodingException ex) {
+                LOG.error(ex.getMessage(), ex);
+            } catch (IOException ex) {
+                LOG.error(ex.getMessage(), ex);
+            }
+        }
+    }
+
+    // Constructors --------------------------------------------------
 
     /** Creates a new instance of P4SearchCommand */
     public DailyWordCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
     }
 
+    // Public --------------------------------------------------------
+
     public SearchResult execute() {
 
-        if (words == null) {
-            words = new HashMap();
-            final InputStream wordStream = DailyWordCommand.class.getResourceAsStream("/dailyWords.txt");
-            BufferedReader reader;
-            try {
-            reader = new BufferedReader(new InputStreamReader(wordStream, "UTF-8"));
-            String row = "";
-                while ((row = reader.readLine()) != null) {
-                    addDailyWord(row);
-                }
-            } catch (ParseException ex) {
-                ex.printStackTrace();
-            } catch (UnsupportedEncodingException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        
         final SearchResult result = new BasicSearchResult(this);
 
         result.setHitCount(0);
-        
-        if (words.containsKey(context.getQuery().getQueryString().toLowerCase())) {
-            final DailyWord word = words.get(context.getQuery().getQueryString().toLowerCase());
+
+        if (WORDS.containsKey(context.getQuery().getQueryString().toLowerCase())) {
+            final DailyWord word = WORDS.get(context.getQuery().getQueryString().toLowerCase());
             if (word.isActive(new Date())) {
                 final SearchResultItem item = new BasicSearchResultItem();
                 item.addField(FIELD_WORD, word.getWord());
@@ -78,8 +96,14 @@ public final class DailyWordCommand extends AbstractSearchCommand {
         return result;
     }
 
+    // Package protected ---------------------------------------------
 
-    private static void addDailyWord(String row) throws ParseException {
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+
+    private static void addDailyWord(final String row) throws ParseException {
+        
         final String[] fields = row.split(";");
 
         if (fields.length == 4) {
@@ -87,16 +111,18 @@ public final class DailyWordCommand extends AbstractSearchCommand {
             final Date endDate = new SimpleDateFormat(DATE_FORMAT).parse(fields[1]);
 
             final DailyWord word = new DailyWord(fields[2], startDate, endDate, fields[3]);
-            words.put(word.getWord(), word);
+            WORDS.put(word.getWord(), word);
         }
     }
-    
+
+    // Inner classes -------------------------------------------------
+
     private static class DailyWord {
         final String word;
         final Date startDate;
         final Date endDate;
         final String code;
-        
+
         public DailyWord(final String word, final Date startDate, final Date endDate, final String code) {
             this.word = word;
             this.startDate = startDate;

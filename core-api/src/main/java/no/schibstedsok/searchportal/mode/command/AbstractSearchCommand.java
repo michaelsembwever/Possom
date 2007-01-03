@@ -77,7 +77,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
    // Attributes ----------------------------------------------------
 
-    /** TODO comment me. **/
+    /** The context to work against. **/
     protected final Context context;
     protected final String untransformedQuery;
     private String filter = "";
@@ -673,10 +673,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         protected void visitImpl(final LeafClause clause) {
-            if (clause.getField() != null && getFieldFilter(clause) == null) {
-                // Escape any fielded leafs for fields that are not supported by this command.
-                // Performed here in order to make the correct terms visible to the query transformers.
-                map.put(clause, escapeFieldedLeaf(clause));
+            
+            if (null != clause.getField()){
+                if( null == getFieldFilter(clause) ){
+                    // Escape any fielded leafs for fields that are not supported by this command.
+                    // Performed here in order to make the correct terms visible to the query transformers.
+                    map.put(clause, escapeFieldedLeaf(clause));
+                }else{
+                    map.put(clause, "");
+                }
             } else {
                 map.put(clause, clause.getTerm());
             }

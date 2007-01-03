@@ -66,7 +66,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
     /** TODO comment me. **/
     public String getProperty(final String key) {
         
-        //assert null != key : "Expecting a value for a null key!?";
+        assert null != key : "Expecting a value for a null key!?";
         final String result = properties.getProperty(key);
         //assert null != result && key.length() > 0 : "Couldn't find " + key + " in " + properties;
         return result;

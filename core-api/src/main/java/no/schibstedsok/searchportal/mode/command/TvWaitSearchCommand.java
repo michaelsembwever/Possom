@@ -25,10 +25,24 @@ import org.apache.log4j.Logger;
  *
  * @author andersjj
  */
-public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
+public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
+    
+    // Constants -----------------------------------------------------
     
     /** Logger */
     private static final Logger LOG = Logger.getLogger(TvWaitSearchCommand.class);
+    
+    /** Millis in day */
+    private static final int MILLIS_IN_DAY = 86400000;
+    
+    /** Sort options */
+    private static enum SortBy {
+        CHANNEL,
+        DAY,
+        CATEGORY;
+    }
+    
+    // Attributes ----------------------------------------------------
     
     /** Search command configuration */
     private final TvWaitSearchConfiguration config;
@@ -38,17 +52,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
 
     /** Index to use when creating filters */
     private final int index;
-    
-    /** Millis in day */
-    private static final int MILLIS_IN_DAY = 86400000;
-
-    /** Sort options */
-    private static enum SortBy {
-        CHANNEL(),
-        DAY(),
-        CATEGORY();
-    }
-    
+        
     /** Sort mode */
     private final SortBy userSortBy; 
    
@@ -61,6 +65,11 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     /** Use all channels */
     private boolean useAllChannels = false;
     
+    // Static --------------------------------------------------------
+
+    
+    // Constructors --------------------------------------------------
+    
     /** Creates a new instance of TvWaitSearchCommand */
     public TvWaitSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
@@ -72,11 +81,7 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         final String usbp = getParameters().containsKey("userSortBy") ? ((String) getParameters().get("userSortBy")).toUpperCase() : defaultUserSortBy;
         userSortBy = SortBy.valueOf(usbp);
         
-        
-        final Object v = getParameters().get("offset");
-        final int offset = Integer.parseInt(v instanceof String[] && ((String[]) v).length == 1 
-                ? ((String[]) v)[0]
-                : (String) v);
+        final int offset = getParameter("offset").length() > 0 ? Integer.parseInt(getParameter("offset")) : 0;
 
         if (userSortBy == SortBy.DAY || !config.isPaging() || config.getIndex() == -1) {
             index = config.getIndex();
@@ -87,7 +92,11 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         useAllChannels = getParameter("allChannels") != null && "true".equals(getParameter("allChannels"));
     }
     
+    
+    // Public --------------------------------------------------------
+    
     public SearchResult execute() {
+        
         if (!executeQuery) {
             return new FastSearchResult(this);
         }
@@ -181,19 +190,9 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         return sr;
     }
     
-    private final boolean addChannelCategoryNavigator() {
-        final Navigator navigator = getNavigators().get("channelcategories");
-        if (navigator == null) {
-            return false;
-        }            
-        
-        getParameters().put("nav_channelcategories", navigator.getName());
-        getParameters().put(navigator.getField(), "Norske");
-        
-        return true;
-    }
     
     public String getAdditionalFilter() {
+        
         LOG.debug("getAdditionalFilter()");
         final int day = getParameters().containsKey("day") ? Integer.parseInt((String) getParameters().get("day")) : 0;
         final StringBuilder filter = new StringBuilder();
@@ -288,10 +287,36 @@ public class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         return filter.toString();
     }
     
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    
     /** Return offset to use when collecting results.
      * @return Will always return 0
      */
     protected int getCurrentOffset(final int i) {
+        
         return 0;
     }
+    
+    
+    // Private -------------------------------------------------------
+    
+    
+    private final boolean addChannelCategoryNavigator() {
+        
+        final Navigator navigator = getNavigators().get("channelcategories");
+        if (navigator == null) {
+            return false;
+        }            
+        
+        getParameters().put("nav_channelcategories", navigator.getName());
+        getParameters().put(navigator.getField(), "Norske");
+        
+        return true;
+    }
+    
+    // Inner classes -------------------------------------------------
+
 }

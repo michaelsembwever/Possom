@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -22,6 +23,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.common.ioc.BaseContext;
 import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.searchportal.query.QueryStringContext;
@@ -42,7 +44,10 @@ import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.Enrichment;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
+import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
+import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -56,9 +61,13 @@ import org.apache.log4j.Logger;
  */
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {
     
-    private final int TIMEOUT = Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) 
+   // Constants -----------------------------------------------------    
+    
+    private static final int TIMEOUT = Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) 
             ? 10000 
             : Integer.MAX_VALUE;
+    
+    private static final String PARAM_OUTPUT = "output";
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.searchportal.analyzer.Analysis");
@@ -69,6 +78,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private static final String ERR_EXECUTION_ERROR = "Failure on a search command: ";
     private static final String INFO_COMMAND_COUNT = "Commands to invoke ";
 
+    // Attributes ----------------------------------------------------
+    
     private final AnalysisRuleFactory rules;
     private final String queryStr;
     private final Query queryObj;
@@ -92,8 +103,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final Map<String,Integer> hits = new HashMap<String,Integer>();
     private final Map<String,Integer> scores = new HashMap<String,Integer>();
     private final Map<String,Integer> scoresByRule = new HashMap<String,Integer>();
-    private static final String PARAM_OUTPUT = "output";
 
+    // Static --------------------------------------------------------
+    
+    // Constructors --------------------------------------------------
+    
     /**
      * Create a new Running Query instance.
      *
@@ -101,7 +115,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      * @param queryStr
      * @param parameters
      */
-    public RunningQueryImpl(final Context cxt, final String query, final Map parameters) {
+    public RunningQueryImpl(final Context cxt, final String query, final Map<String,Object> parameters) {
 
         super(cxt);
 
@@ -112,8 +126,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         locale = cxt.getSite().getLocale();
         
         this.parameters = parameters;
-        parameters.put("query", this);
-        parameters.put("locale", locale);
+        initParameters(cxt);
         
         final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
                 ContextWrapper.wrap(
@@ -142,11 +155,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     }
 
-    private List<TokenMatch> getTokenMatches(final TokenPredicate token) throws VeryFastListQueryException {
-
-        final ReportingTokenEvaluator e = (ReportingTokenEvaluator) engine.getEvaluator(token);
-        return e.reportToken(token, queryStr);
-    }
+    // Public --------------------------------------------------------
+    
 
     /** TODO comment me. **/
     public List<TokenMatch> getGeographicMatches() {
@@ -210,6 +220,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     
     /**
      * Thread run. Guts of the logic behind this class.
+     * XXX Insanely long method. Divide & Conquer.
      *
      * @throws InterruptedException
      */
@@ -421,111 +432,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     PRODUCT_LOG.info(noHitsOutput.toString());
                 }
             }
+            
         } catch (Exception e) {
             LOG.error(ERR_RUN_QUERY, e);
+            throw new InfrastructureException(e);
+            
         }
     }
 
-    private void performEnrichmentHandling(final Collection<Future<SearchResult>> results) throws InterruptedException, ExecutionException {
-
-        Collections.sort(enrichments);
-        
-        final StringBuilder log = new StringBuilder();
-
-        log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
-                + "\" size=\"" + enrichments.size() + "\">"
-                + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query>");
-
-        Enrichment tvEnrich = null;
-        Enrichment webtvEnrich = null;
-
-        /* Write product log and find webtv and tv enrichments */
-        for(Enrichment e : enrichments){
-            log.append("<enrichment name=\"" + e.getName()
-                    + "\" score=\"" + e.getAnalysisResult() + "\"/>");
-
-            /* Store reference to webtv and tv enrichments */
-            if ("webtvEnrich".equals(e.getName())) {
-                webtvEnrich = e;
-            } else if ("tvEnrich".equals(e.getName())) {
-                tvEnrich = e;
-            }
-        }
-        log.append("</enrichments>");
-        PRODUCT_LOG.info(log.toString());
-
-
-        /* Update score and if necessary the enrichment name */
-        if (webtvEnrich != null && tvEnrich != null) {
-            if (webtvEnrich.getAnalysisResult() > tvEnrich.getAnalysisResult()) {
-                tvEnrich.setAnalysisResult(webtvEnrich.getAnalysisResult());
-            }
-            enrichments.remove(webtvEnrich);
-        } else if (webtvEnrich != null && tvEnrich == null) {
-            tvEnrich = webtvEnrich;
-            webtvEnrich.setName("tvEnrich");
-        }
-
-        if (tvEnrich != null) {
-            SearchResult tvResult = null;
-            SearchResult webtvResult = null;
-
-            /* Find webtv and tv results */
-            for (Future<SearchResult> task : results) {
-                if (task.isDone() && !task.isCancelled()) {
-                    final SearchResult sr = task.get();
-                    if ("webtvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
-                        webtvResult = sr;
-                    } else if ("tvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
-                        tvResult = sr;
-                    }
-                }
-            }
-
-            /* Merge webtv results into tv results */
-            if (webtvResult != null && webtvResult.getResults().size() > 0) {
-                if (tvResult != null) {
-                    /* If tv results exists we only want the two first results from webtv. */
-                    if (tvResult.getResults().size() > 0 && webtvResult.getResults().size() > 2) {
-                        webtvResult.getResults().remove(2);
-                    }
-                    tvResult.getResults().addAll(webtvResult.getResults());
-                    tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
-                }
-            }
-        }
-    }
-
-    /** Remove modifiers with invalid count.
-     * Sum duplicates together.
-     * Sort by HintPriorityComparator.
-     **/
-    private void performModifierHandling(){
-
-        final Map<String,Modifier> map = new HashMap<String,Modifier>();
-        final List<Modifier> toRemove = new ArrayList<Modifier>();
-        for(Modifier m : sources){
-            if(m.getCount() > -1 ){
-                final Modifier prior = map.get(m.getName());
-                if( null == prior ){
-                    m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
-                    map.put(m.getName(), m);
-                }else{
-                    prior.addCount(m.getCount());
-                    toRemove.add(m);
-                }
-            }else{
-                toRemove.add(m);
-            }
-        }
-        sources.removeAll(toRemove);
-
-        if (getSearchTab().getAbsoluteOrdering()) {
-            Collections.sort(sources, Modifier.getHintPriorityComparator());
-        } else {
-            Collections.sort(sources);
-        }
-    }
 
     /** TODO comment me. **/
     protected void addParameter(final String key, final Object obj) {
@@ -593,4 +507,143 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return queryObj;
     }
     
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+    
+    // Private -------------------------------------------------------
+    
+    private List<TokenMatch> getTokenMatches(final TokenPredicate token) throws VeryFastListQueryException {
+
+        final ReportingTokenEvaluator e = (ReportingTokenEvaluator) engine.getEvaluator(token);
+        return e.reportToken(token, queryStr);
+    }    
+    
+    private void performEnrichmentHandling(final Collection<Future<SearchResult>> results) 
+            throws InterruptedException{
+
+        Collections.sort(enrichments);
+        
+        final StringBuilder log = new StringBuilder();
+
+        log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
+                + "\" size=\"" + enrichments.size() + "\">"
+                + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query>");
+
+        Enrichment tvEnrich = null;
+        Enrichment webtvEnrich = null;
+
+        /* Write product log and find webtv and tv enrichments */
+        for(Enrichment e : enrichments){
+            log.append("<enrichment name=\"" + e.getName()
+                    + "\" score=\"" + e.getAnalysisResult() + "\"/>");
+
+            /* Store reference to webtv and tv enrichments */
+            if ("webtvEnrich".equals(e.getName())) {
+                webtvEnrich = e;
+            } else if ("tvEnrich".equals(e.getName())) {
+                tvEnrich = e;
+            }
+        }
+        log.append("</enrichments>");
+        PRODUCT_LOG.info(log.toString());
+
+
+        /* Update score and if necessary the enrichment name */
+        if (webtvEnrich != null && tvEnrich != null) {
+            if (webtvEnrich.getAnalysisResult() > tvEnrich.getAnalysisResult()) {
+                tvEnrich.setAnalysisResult(webtvEnrich.getAnalysisResult());
+            }
+            enrichments.remove(webtvEnrich);
+        } else if (webtvEnrich != null && tvEnrich == null) {
+            tvEnrich = webtvEnrich;
+            webtvEnrich.setName("tvEnrich");
+        }
+
+        if (tvEnrich != null) {
+            SearchResult tvResult = null;
+            SearchResult webtvResult = null;
+
+            /* Find webtv and tv results */
+            for (Future<SearchResult> task : results) {
+                if (task.isDone() && !task.isCancelled()) {
+                    try{
+                        final SearchResult sr = task.get();
+                        if ("webtvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
+                            webtvResult = sr;
+                        } else if ("tvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
+                            tvResult = sr;
+                        }
+                    
+                    }catch(ExecutionException ee){
+                        LOG.error(ERR_EXECUTION_ERROR, ee);
+                    }
+                }
+            }
+
+            /* Merge webtv results into tv results */
+            if (webtvResult != null && webtvResult.getResults().size() > 0) {
+                if (tvResult != null) {
+                    /* If tv results exists we only want the two first results from webtv. */
+                    if (tvResult.getResults().size() > 0 && webtvResult.getResults().size() > 2) {
+                        webtvResult.getResults().remove(2);
+                    }
+                    tvResult.getResults().addAll(webtvResult.getResults());
+                    tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
+                }
+            }
+        }
+    }
+
+    /** Remove modifiers with invalid count.
+     * Sum duplicates together.
+     * Sort by HintPriorityComparator.
+     **/
+    private void performModifierHandling(){
+
+        final Map<String,Modifier> map = new HashMap<String,Modifier>();
+        final List<Modifier> toRemove = new ArrayList<Modifier>();
+        for(Modifier m : sources){
+            if(m.getCount() > -1 ){
+                final Modifier prior = map.get(m.getName());
+                if( null == prior ){
+                    m.setNavigationHint(context.getSearchTab().getNavigationHint(m.getName()));
+                    map.put(m.getName(), m);
+                }else{
+                    prior.addCount(m.getCount());
+                    toRemove.add(m);
+                }
+            }else{
+                toRemove.add(m);
+            }
+        }
+        sources.removeAll(toRemove);
+
+        if (getSearchTab().getAbsoluteOrdering()) {
+            Collections.sort(sources, Modifier.getHintPriorityComparator());
+        } else {
+            Collections.sort(sources);
+        }
+    }
+    
+    private void initParameters(final RunningQuery.Context rqCxt){
+        
+        parameters.put("query", this);
+        parameters.put("locale", locale);
+        if( null == parameters.get("offset") ){
+            parameters.put("offset", "0");
+        }
+        
+        final Properties props = SiteConfiguration.valueOf(
+                        ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
+
+        parameters.put("configuration", props);
+        parameters.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, rqCxt)));
+        parameters.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, rqCxt)));
+        
+        parameters.put("tab", rqCxt.getSearchTab());
+        parameters.put("c", rqCxt.getSearchTab().getKey());
+    }
+    
+    // Inner classes -------------------------------------------------
 }

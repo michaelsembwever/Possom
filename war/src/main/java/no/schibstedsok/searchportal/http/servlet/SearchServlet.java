@@ -46,6 +46,8 @@ import org.apache.log4j.Logger;
  */
 public final class SearchServlet extends HttpServlet {
 
+   // Constants -----------------------------------------------------    
+
     /** The serialVersionUID. */
     private static final long serialVersionUID = 3068140845772756438L;
 
@@ -54,15 +56,32 @@ public final class SearchServlet extends HttpServlet {
 
     private static final String ERR_MISSING_TAB = "No existing implementation for tab ";
     private static final String ERR_MISSING_MODE = "No existing implementation for mode ";
+    
+    
+    // Attributes ----------------------------------------------------
+    //  Important that a Servlet does not have instance fields for synchronisation reasons.
+    //
+    
+    // Static --------------------------------------------------------
+    
+    // Constructors --------------------------------------------------
+    
+    // Public --------------------------------------------------------
 
     /** {@inheritDoc}
      */
+    @Override
     public void destroy() {
-        //tabs.stopAll();
+        super.destroy();
     }
 
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+    
     /** {@inheritDoc}
      */
+    @Override
     protected void doGet(
             final HttpServletRequest request,
             final HttpServletResponse response)
@@ -136,45 +155,22 @@ public final class SearchServlet extends HttpServlet {
                         throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
                     }
 
-                    final Properties props = SiteConfiguration.valueOf(
-                                    ContextWrapper.wrap(SiteConfiguration.Context.class, genericCxt)).getProperties();
-
-                    request.setAttribute("configuration", props);
-                    request.setAttribute("text",
-                            TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, genericCxt)));
-                    request.setAttribute("channels",
-                            Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, genericCxt)));
-
-                    if (request.getParameter("offset") == null || "".equals(request.getParameter("offset"))) {
-                        request.setAttribute("offset", "0");
-                    }
-
-                    if (request.getParameter("q") != null) {
-                        request.setAttribute("q", QueryStringHelper.safeGetParameter(request, "q"));
-                    }
-
-                    request.setAttribute("tab", searchTab);
-                    request.setAttribute("c", searchTabKey);
-                    request.setAttribute("contextPath", request.getContextPath());
-                    request.setAttribute("linkpulse", new Linkpulse(site, props));
-                    request.setAttribute("tradedoubler", new TradeDoubler(request));
-                    request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
+                    final RunningQuery.Context rqCxt = ContextWrapper.wrap(
+                            RunningQuery.Context.class,
+                            new BaseContext() {
+                                public SearchMode getSearchMode() {
+                                    return mode;
+                                }
+                                public SearchTab getSearchTab() {
+                                    return searchTab;
+                                }
+                            },
+                            genericCxt
+                    );
+                                
+                    updateAttributes(request, rqCxt);
 
                     try {
-
-                        final RunningQuery.Context rqCxt = ContextWrapper.wrap(
-                                RunningQuery.Context.class,
-                                new BaseContext() {
-                                    public SearchMode getSearchMode() {
-                                        return mode;
-                                    }
-                                    public SearchTab getSearchTab() {
-                                        return searchTab;
-                                    }
-                                },
-                                genericCxt
-                        );
-
                         final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
 
                         query.run();
@@ -200,8 +196,9 @@ public final class SearchServlet extends HttpServlet {
 
     }
 
+    // Private -------------------------------------------------------
 
-    private boolean isEmptyQuery(
+    private static boolean isEmptyQuery(
             final HttpServletRequest request,
             final HttpServletResponse response) throws IOException{
 
@@ -229,7 +226,7 @@ public final class SearchServlet extends HttpServlet {
         return null != redirect;
     }
 
-    private void updateContentType(
+    private static void updateContentType(
             final Site site,
             final HttpServletResponse response,
             final HttpServletRequest request){
@@ -273,12 +270,36 @@ public final class SearchServlet extends HttpServlet {
         }
     }
 
-    /*
+    private static void updateAttributes(
+            final HttpServletRequest request,
+            final RunningQuery.Context rqCxt){
+        
+        
+        if (request.getParameter("offset") == null || "".equals(request.getParameter("offset"))) {
+            request.setAttribute("offset", "0");
+        }
+
+        if (request.getParameter("q") != null) {
+            request.setAttribute("q", QueryStringHelper.safeGetParameter(request, "q"));
+        }
+
+        request.setAttribute("contextPath", request.getContextPath());
+        request.setAttribute("tradedoubler", new TradeDoubler(request));
+        request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
+        
+        final Properties props = SiteConfiguration.valueOf(
+                        ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
+        
+        request.setAttribute("linkpulse", new Linkpulse(rqCxt.getSite(), props));
+    }
+    
+    /* TODO please move this to a more skin-dependant appropriate location.
+     * 
      *  redirects to yellowinfopage if request is from finn.no -> req.param("finn") = "finn"
      *  finn sends orgnumber as queryparam, if only 1 hit, then redirect.
      * @return true if a response.sendRedirect(..) was performed.
      */
-    private boolean checkFinn(
+    private static boolean checkFinn(
             final HttpServletRequest request,
             final HttpServletResponse response) throws IOException{
 
@@ -313,7 +334,7 @@ public final class SearchServlet extends HttpServlet {
         return false;
     }
 
-    private SearchTab findSearchTab(final BaseContext genericCxt, final String searchTabKey){
+    private static SearchTab findSearchTab(final BaseContext genericCxt, final String searchTabKey){
 
         SearchTab result = null;
         try{
@@ -334,4 +355,6 @@ public final class SearchServlet extends HttpServlet {
         return result;
     }
 
+    // Inner classes -------------------------------------------------
+    
 }

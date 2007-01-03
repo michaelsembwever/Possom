@@ -56,13 +56,13 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
                 "");
     }
 
-    /** Test that the nyhetskilde prefix is ignored.
+    /** Test that the nyhetskilde prefix is escaped.
      */
     @Test
     public void testIgnoreField() {
         executeTestOfQuery(
                 "nyhetskilde:vg bil",
-                "bil",
+                "nyhetskilde\\:vg bil",
                 "");
     }
 

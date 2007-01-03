@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 
 /**
  *
