@@ -77,6 +77,7 @@ public enum TokenPredicate implements Predicate {
     TRADEMARK (Type.FAST),
     WIKIPEDIA (Type.FAST),
     EXACT_WIKI (Type.FAST),
+    BLOCKET (Type.FAST),
     
 
     // RegExp TokenPredicates -- magic words
