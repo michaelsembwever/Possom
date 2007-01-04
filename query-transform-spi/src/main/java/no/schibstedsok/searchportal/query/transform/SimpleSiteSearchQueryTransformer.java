@@ -1,6 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 /*
- * SimpleSiteSearchTransformer.java
+ * SimpleSiteSearchQueryTransformer.java
  *
  * Created on January 25, 2006, 4:39 PM
  *
@@ -17,7 +17,7 @@ import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseTyp
 import org.w3c.dom.Element;
 
 /**
- * SimpleSiteSearchTransformer.
+ * SimpleSiteSearchQueryTransformer.
  * TODO remove this class once all sitesearches are using the new model.
  *
  * This transformer can be used in tabs.xml to create a simple site search.
@@ -29,10 +29,10 @@ import org.w3c.dom.Element;
  * <code>parameterName</code>.
  *
  * @author <a href="mailto:magnus.eklund@sesam.no">Magnus Eklund</a>
- * @version <tt>$Id$</tt>
+ * @version <tt>$Id: SimpleSiteSearchQueryTransformer.java 4265 2007-01-04 13:54:03Z ssmiweve $</tt>
  * @deprecated Old style sitesearch. Use skins instead.
  */
-public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer implements QueryTransformer {
+public final class SimpleSiteSearchQueryTransformer extends AbstractQueryTransformer implements QueryTransformer {
 
     private static final Map<String,String> DEFAULT_SITES;
 
@@ -113,7 +113,7 @@ public final class SimpleSiteSearchTransformer extends AbstractQueryTransformer 
 
     @Override
     public Object clone() throws CloneNotSupportedException {
-        final SimpleSiteSearchTransformer retValue = (SimpleSiteSearchTransformer)super.clone();
+        final SimpleSiteSearchQueryTransformer retValue = (SimpleSiteSearchQueryTransformer)super.clone();
         retValue.parameter = parameter;
         retValue.sites = sites;
         return retValue;
