@@ -97,6 +97,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.text.MessageFormat;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -135,6 +136,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String INFO_PARSING_RESULT_HANDLER = "  Parsing result handler ";
     private static final String INFO_PARSING_QUERY_TRANSFORMER = "  Parsing query transformer ";
     private static final String DEBUG_PARSED_PROPERTY = "  Property property ";
+    private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent mode {0} not found for command {1}";
 
     // Attributes ----------------------------------------------------
 
@@ -365,8 +367,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final Element commandE,
                 final SearchMode mode){
 
-            final SearchConfiguration inherit = findParent(commandE.getAttribute("inherit"), mode);
+            final String parentName = commandE.getAttribute("inherit");
             final String id = commandE.getAttribute("id");
+
+            final SearchConfiguration inherit = findParent(parentName, mode);
+
+            if (!"".equals(parentName) && inherit == null) {
+                throw new IllegalArgumentException(MessageFormat.format(ERR_PARENT_COMMAND_NOT_FOUND, parentName, id));
+            }
+
             LOG.info(INFO_PARSING_CONFIGURATION + commandE.getLocalName() + " " + id);
 
             try {
