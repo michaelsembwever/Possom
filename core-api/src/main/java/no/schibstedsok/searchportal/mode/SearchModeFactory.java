@@ -450,6 +450,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "spellchecklanguage", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "lemmatise", ParseType.Boolean , commandE, "false");
 
+                    if (fsc.getQueryServerUrl() == null || "".equals(fsc.getQueryServerUrl())) {
+                        LOG.debug("queryServerURL is empty for " + fsc.getName());
+                    }
+
                     // navigators
                     if (fscInherit != null && fscInherit.getNavigators() != null) {
                         for (final Map.Entry<String, Navigator> nav : fscInherit.getNavigators().entrySet()) {
