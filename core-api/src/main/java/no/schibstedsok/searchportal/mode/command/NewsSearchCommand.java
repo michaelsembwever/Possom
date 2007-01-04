@@ -110,16 +110,17 @@ public class NewsSearchCommand extends FastSearchCommand {
                             filterBuilder.append(" +docdatetime:>" + xx);
                         }
                     }
-                }
-                
-                if (getSearchConfiguration().isNorwegianNewsNavigator()) {
+                } else {
                     GregorianCalendar calendar = new java.util.GregorianCalendar();
                     calendar.add( java.util.Calendar.MONTH, -24 );
                     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
                     String xx = formatter.format(calendar.getTime());
-                    filterBuilder.append(" +docdatetime:>" + xx);           
-                    filterBuilder.append(" +newscountry:Norge");
-                }
+                    filterBuilder.append(" +docdatetime:>" + xx);         
+                    
+                    if (getSearchConfiguration().isNorwegianNewsNavigator()) {
+                        filterBuilder.append(" +newscountry:Norge");
+                    }
+                }                
             }
         }
         return filterBuilder.toString();
