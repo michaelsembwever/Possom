@@ -91,7 +91,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
     public void testGetMode() {
         LOG.trace("testGetMode");
 
-        final String id = "norsk-magic";
+        final String id = "default-mode";
         final Site.Context siteConstructorContext = getSiteConstructingContext();
         final SearchModeFactory instance = getModeFactory(siteConstructorContext, null);
 
