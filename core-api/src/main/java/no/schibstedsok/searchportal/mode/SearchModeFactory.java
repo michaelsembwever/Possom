@@ -219,12 +219,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         public Site getSite(){
                             return context.getSite().getParent();
                         }
-                        public PropertiesLoader newPropertiesLoader(final String resource, final Properties properties) {
-                            return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
-                        }
-                        public DocumentLoader newDocumentLoader(final String resource, final DocumentBuilder builder) {
-                            return UrlResourceLoader.newDocumentLoader(this, resource, builder);
-                        }
                     },
                     context
                     ));
