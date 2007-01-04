@@ -13,7 +13,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 import no.schibstedsok.searchportal.mode.config.TvWaitSearchConfiguration;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
@@ -267,10 +266,6 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             }
     
         }
-        
-        LOG.error("useMyChannels: " + config.getUseMyChannels());
-        LOG.error("useAllChannels: " + useAllChannels);
-        LOG.error("myChannels: " + getParameter("myChannels"));
         
         if (config.getUseMyChannels() && !useAllChannels && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
             StringBuilder sb = new StringBuilder();
