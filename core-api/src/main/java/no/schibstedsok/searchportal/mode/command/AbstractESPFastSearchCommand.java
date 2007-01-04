@@ -305,11 +305,13 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             throw new IllegalStateException(ERR_CALL_SET_VIEW);
         }
 
+        final String searchViewKey = queryServer + "/" + view;
+        
         // XXX There is no synchronisation around this static map.
         //   Not critical as any clashing threads will just override the values,
         //    and the cost of the occasional double-up creation probably doesn't compare
         //    to the synchronisation overhead.
-        ISearchView searchView = SEARCH_VIEWS.get(queryServer);
+        ISearchView searchView = SEARCH_VIEWS.get(searchViewKey);
         
         if( null == searchView ){
             final Properties props = new Properties();
@@ -332,10 +334,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             } catch (SearchEngineException e) {
                 throw new InfrastructureException(e);
             }
-            SEARCH_VIEWS.put(queryServer, searchView);
+            SEARCH_VIEWS.put(searchViewKey, searchView);
         }
         
-        LOG.debug("Using searchView " + searchView);
+        LOG.debug("Using searchView: " + searchViewKey);
         
         return searchView;
     }
