@@ -11,6 +11,7 @@ import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.holders.LongHolder;
 import javax.xml.rpc.holders.StringHolder;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import se.blocket.www2.search.SearchLocator;
@@ -60,8 +61,8 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 			
 				LongHolder lholder = new LongHolder();
 				StringHolder sholder = new StringHolder();
-				
-				String categoryIndex =(String) m.get(query);
+				String trimQ = StringUtils.deleteWhitespace(query);
+				String categoryIndex =(String) m.get(trimQ);
 				if(categoryIndex!=null)
 				{
 					port.search(query, Integer.parseInt(categoryIndex), lholder, sholder);
