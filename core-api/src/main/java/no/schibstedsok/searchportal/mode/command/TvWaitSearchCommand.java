@@ -78,7 +78,15 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         
         final String defaultUserSortBy = blankQuery ? "CHANNEL" : "DAY";
         final String usbp = getParameters().containsKey("userSortBy") ? ((String) getParameters().get("userSortBy")).toUpperCase() : defaultUserSortBy;
-        userSortBy = SortBy.valueOf(usbp);
+        
+        SortBy tmpUserSortBy = null;
+        try {
+            tmpUserSortBy = SortBy.valueOf(usbp);
+        } catch (IllegalArgumentException e) {
+            tmpUserSortBy = SortBy.valueOf(defaultUserSortBy);
+        } finally {
+            userSortBy = tmpUserSortBy;
+        }
         
         final int offset = getParameter("offset").length() > 0 ? Integer.parseInt(getParameter("offset")) : 0;
 
