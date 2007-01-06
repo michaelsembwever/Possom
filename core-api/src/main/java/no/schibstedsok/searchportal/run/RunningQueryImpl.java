@@ -587,6 +587,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     /* If tv results exists we only want the two first results from webtv. */
                     if (tvResult.getResults().size() > 0 && webtvResult.getResults().size() > 2) {
                         webtvResult.getResults().remove(2);
+                        if (tvResult.getResults().size() > 2) {
+                            tvResult.getResults().remove(2);
+                        }
                     }
                     tvResult.getResults().addAll(webtvResult.getResults());
                     tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
