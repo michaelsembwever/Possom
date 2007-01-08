@@ -78,48 +78,55 @@ public class NewsSearchCommand extends FastSearchCommand {
                 if (containsJustThePrefix() || getTransformedQuery().equals("")) {
                     filterBuilder.append(FAST_SIZE_HACK);
                 }
+                
+                GregorianCalendar calendar = new java.util.GregorianCalendar();
+                calendar.add( java.util.Calendar.MONTH, -24 );
+                final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                String newsdate = formatter.format(calendar.getTime());                
                                 
                 if (!getSearchConfiguration().isIgnoreNavigation()) {
 
                     final String contentSource = getParameter("contentsource");
                     final String newsCountry = getParameter("newscountry");
-                    final String newsSource = getParameter("newssource");
+                    final String newsSource = getParameter("newssource");                                        
 
-                    // AAhhrghh. Need to provide backwards compatibility.
-                    // People are linking us using contentsource="Norske nyheter"
-                    if (contentSource != null && !contentSource.equals("")) {                        
-                        if (contentSource.equals("Norske nyheter")) {
-                            filterBuilder.append(" +newscountry:Norge");
+                    // general rule is to display news fresher than 2 years, but with exceptions for:
+                    // "norske papiraviser" -> display for all years
+                    // certain newssources (as listed below) -> display for all years
+                    if (!contentSource.equals("Mediearkivet")) {             
+                        
+                        // AAhhrghh. Need to provide backwards compatibility.
+                        // People are linking us using contentsource="Norske nyheter"
+                        if (contentSource != null && !contentSource.equals("")) {                        
+                            if (contentSource.equals("Norske nyheter")) {
+                                filterBuilder.append(" AND newscountry:Norge");
+                            } else {
+                                filterBuilder.append(" AND contentsource:\""+ contentSource + "\"");
+                            }
                         } else {
-                            filterBuilder.append(" +contentsource:"+ contentSource);
+                            if (newsCountry != null && !newsCountry.equals(""))
+                                filterBuilder.append(" AND newscountry:\""+ newsCountry + "\"");
                         }
-                    }
-                    if (newsCountry != null && !newsCountry.equals("")) {
-                        filterBuilder.append(" +newscountry:"+ newsCountry);
-                    }
+                        filterBuilder.append(" ANDNOT meta.collection:mano");
+                        filterBuilder.append(" AND (docdatetime:>" + newsdate);
+                        filterBuilder.append(" OR newssource:Digi.no");
+                        filterBuilder.append(" OR newssource:DinSide");
+                        filterBuilder.append(" OR newssource:ITavisen");
+                        filterBuilder.append(" OR newssource:iMarkedet");
+                        filterBuilder.append(" OR newssource:Propaganda )");                                                
   
-                    // Add filter to remove papernews from norwegian newssearch
-                    // and only display news fresher than 2 years except for some newssources (deal with Retriever)
-                    if (!contentSource.equals("Mediearkivet")) {
-                        filterBuilder.append(" -meta.collection:mano");
-                        if (!newsSource.equals("DinSide") && !newsSource.equals("Digi.no") && !newsSource.equals("ITavisen") && !newsSource.equals("iMarkedet") && !newsSource.equals("Propaganda")) {
-                            GregorianCalendar calendar = new java.util.GregorianCalendar();
-                            calendar.add( java.util.Calendar.MONTH, -24 );
-                            final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                            String xx = formatter.format(calendar.getTime());
-                            filterBuilder.append(" +docdatetime:>" + xx);
-                        }
+                    // PAPERNEWS:    
+                    } else {
+                        filterBuilder.append(" AND contentsource:" + contentSource);
                     }
                 } else {
-                    GregorianCalendar calendar = new java.util.GregorianCalendar();
-                    calendar.add( java.util.Calendar.MONTH, -24 );
-                    final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    String xx = formatter.format(calendar.getTime());
-                    filterBuilder.append(" +docdatetime:>" + xx);         
-                    
-                    if (getSearchConfiguration().isNorwegianNewsNavigator()) {
-                        filterBuilder.append(" +newscountry:Norge");
-                    }
+                    filterBuilder.append(" AND (docdatetime:>" + newsdate);    
+                    filterBuilder.append(" OR newssource:Digi.no");
+                    filterBuilder.append(" OR newssource:DinSide");
+                    filterBuilder.append(" OR newssource:ITavisen");
+                    filterBuilder.append(" OR newssource:iMarkedet");
+                    filterBuilder.append(" OR newssource:Propaganda ");                                            
+                    filterBuilder.append(" OR meta.collection:mano )");
                 }                
             }
         }

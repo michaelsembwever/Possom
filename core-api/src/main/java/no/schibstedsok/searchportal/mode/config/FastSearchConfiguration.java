@@ -23,6 +23,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private static final Logger LOG = Logger.getLogger(FastSearchConfiguration.class);
     
     private static final String[] ALL_COLLECTIONS = {
+        "retriever",
         "tv",
         "webcrawlno1",
         "webcrawlno1",
@@ -35,8 +36,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         "yellow",
         "white",
         "weather",
-        "carelscrawl",
-        "retriever",
+        "carelscrawl",        
         "moreover",
         "retrievernordic",
         "mano",
@@ -60,11 +60,11 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     private String resultView;
     private boolean clustering = false;
     private boolean ignoreNavigation = false;
-    private boolean norwegianNewsNavigator = false;
     private int offensiveScoreLimit = 0;
     private int spamScoreLimit = 0;
 
     private String filter;
+    private String filtertype;
 
     private boolean relevantQueries = false;
 
@@ -93,10 +93,10 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
             resultView = fsc.resultView;
             clustering = fsc.clustering;
             ignoreNavigation = fsc.ignoreNavigation;
-            norwegianNewsNavigator = fsc.norwegianNewsNavigator;
             offensiveScoreLimit = fsc.offensiveScoreLimit;
             spamScoreLimit = fsc.spamScoreLimit;
             filter = fsc.filter;
+            filtertype = fsc.filtertype;
             relevantQueries = fsc.relevantQueries;
         }
     }
@@ -138,8 +138,17 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         
         final String coll[] = collectionStrings.toArray(new String[collectionStrings.size()]);
 
-        for (int i = 0; i < coll.length; i++) {
-            coll[i] = "-meta.collection:" + coll[i];
+        if ("adv".equals(this.filtertype)) {
+            for (int i = 0; i < coll.length; i++) {
+                if (i == 0)
+                    coll[i] = " size:>0 ANDNOT meta.collection:" + coll[i];
+                else
+                    coll[i] = " ANDNOT meta.collection:" + coll[i];
+            }
+        } else { 
+            for (int i = 0; i < coll.length; i++) {
+                coll[i] = " -meta.collection:" + coll[i];
+            }            
         }
         return coll;
     }
@@ -252,14 +261,6 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     public void setIgnoreNavigation(final boolean ignoreNavigationEnabled) {
         this.ignoreNavigation = ignoreNavigationEnabled;
     }
-
-    public boolean isNorwegianNewsNavigator() {
-        return norwegianNewsNavigator;
-    }
-
-    public void setNorwegianNewsNavigator(final boolean norwegianNewsNavigatorEnabled) {
-        this.norwegianNewsNavigator = norwegianNewsNavigatorEnabled;
-    }
     
     public int getOffensiveScoreLimit() {
         return offensiveScoreLimit;
@@ -276,6 +277,15 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
     public String getFilter() {
         return filter;
     }
+    
+    public String getFiltertype() {
+        return filtertype;
+    }
+
+    public void setFiltertype(final String filtertype) {
+        this.filtertype = filtertype;
+    }
+    
 
     void setSpamScoreLimit(final int i) {
         spamScoreLimit = i;

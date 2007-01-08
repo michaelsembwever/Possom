@@ -441,8 +441,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     }
 
                     fillBeanProperty(sc, inherit, "filter", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "filtertype", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "ignoreNavigation", ParseType.Boolean , commandE, "false");
-                    fillBeanProperty(sc, inherit, "norwegianNewsNavigator", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "offensiveScoreLimit", ParseType.Int , commandE, "-1");
                     fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");                    
                     fillBeanProperty(sc, inherit, "queryServerUrl", ParseType.String , commandE, "");

@@ -126,9 +126,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             final String modifiers[] = (String[]) navigatedValues.get(field);
 
 
-            for (int i = 0; i < modifiers.length; i++) {
-                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")){
-                    filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
+            for (int i = 0; i < modifiers.length; i++) {                
+                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")) {                   
+                    if ( "adv".equals(getSearchConfiguration().getFiltertype()) )
+                        filterStrings.add(" AND " + field + ":\"" + modifiers[i] + "\"");
+                    else
+                        filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
                 }
             }
         }
@@ -731,7 +734,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         LOG.debug("createQuery: superFilter=" + superFilter);
 
-        params.setParameter(new SearchParameter("filtertype", "any"));
+        if (getSearchConfiguration().getFiltertype() != null && getSearchConfiguration().getFiltertype().equals("adv"))
+            params.setParameter(new SearchParameter("filtertype", "adv"));
+        else
+            params.setParameter(new SearchParameter("filtertype", "any"));
 
         params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
 
