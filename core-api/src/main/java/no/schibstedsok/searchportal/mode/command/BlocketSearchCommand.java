@@ -66,12 +66,16 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 				}
 
 				String nads = Long.toString(lholder.value);
-				result.addField("searchquery", query);
-				result.addField("numberofads", nads);
-				result.addField("blocketbackurl", sholder.value);
+				if(!nads.equalsIgnoreCase("0"))
+				{
+					result.addField("searchquery", query);
+					result.addField("numberofads", nads);
+					result.addField("blocketbackurl", sholder.value);
 
-				result.setHitCount(1);
+					result.setHitCount(1);
 
+				}
+				
 			} catch (ServiceException se) {
 				LOG.error(ERR_FAILED_BLOCKET_SEARCH, se);
 				throw new InfrastructureException(se);
