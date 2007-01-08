@@ -325,15 +325,21 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     }
 
     private String getFastListName(final TokenPredicate token){
+        
         init();
-        LIST_NAMES_LOCK.readLock().lock();
-        Site site = context.getSite();
+        
         String listName = null;
-        while(listName == null && site != null){
-            listName = getFastListNameImpl(token, site);
-            site = site.getParent();
+        try{
+            LIST_NAMES_LOCK.readLock().lock();
+            Site site = context.getSite();
+            
+            while(listName == null && site != null){
+                listName = getFastListNameImpl(token, site);
+                site = site.getParent();
+            }
+        }finally{
+            LIST_NAMES_LOCK.readLock().unlock();
         }
-        LIST_NAMES_LOCK.readLock().unlock();
         return REAL_TOKEN_PREFIX + listName + REAL_TOKEN_SUFFIX;
     }
 

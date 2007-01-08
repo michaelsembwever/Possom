@@ -6,12 +6,15 @@
  * Created on April 19, 2006, 3:31 PM
  */
 
-package no.schibstedsok.searchportal.mode.config;
+package no.schibstedsok.searchportal.mode;
+
 
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
+import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
@@ -54,6 +57,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
     }
 
     private SearchModeFactory getModeFactory(final Site.Context siteConstructorContext, final Locale locale) {
+        
         LOG.trace("getModeFactory");
 
         final SearchModeFactory.Context cxt = new SearchModeFactory.Context(){
@@ -79,7 +83,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
         };
 
         final SearchModeFactory result = SearchModeFactory.valueOf(cxt);
-        assertNotNull(result);
+        assert null != result : "Mode cannot be null for mode " + cxt.getSite();
 
         return result;
     }
@@ -89,6 +93,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
      */
     @Test
     public void testGetMode() {
+        
         LOG.trace("testGetMode");
 
         final String id = "default-mode";
@@ -96,8 +101,9 @@ public final class SearchModeFactoryTest extends SiteTestCase {
         final SearchModeFactory instance = getModeFactory(siteConstructorContext, null);
 
         final SearchMode result = instance.getMode(id);
-        assertNotNull(result);
+        assert null != result : "Result cannot be null for mode " + id;
     }
+    
 
     /**
      * Test of memory against getMode method,
@@ -105,9 +111,10 @@ public final class SearchModeFactoryTest extends SiteTestCase {
      */
     @Test
     public void testGetModeOnAllAvailableLocales() {
+        
         LOG.trace("testGetModeOnAllAvailableLocales");
 
-        final String id = "norsk-magic";
+        final String id = "default-mode";
         final Site.Context siteConstructorContext = getSiteConstructingContext();
         
         System.gc();
@@ -118,7 +125,7 @@ public final class SearchModeFactoryTest extends SiteTestCase {
         for(Locale l : Locale.getAvailableLocales()){
             
             final Site site = Site.valueOf(siteConstructorContext, getTestingSite().getName(), l);
-            final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
+            final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
                 public PropertiesLoader newPropertiesLoader(
                         final SiteContext siteCxt, 
                         final String resource, 
@@ -129,14 +136,14 @@ public final class SearchModeFactoryTest extends SiteTestCase {
                 public Site getSite() {
                     return site;
                 }
-            };//</editor-fold>
+            };
             final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
             
             if( siteConf.isSiteLocaleSupported(l) ){
                 final SearchModeFactory instance = getModeFactory(siteConstructorContext, l);
 
                 final SearchMode result = instance.getMode(id);
-                assertNotNull(result);
+                assert null != result : "Result cannot be null for mode " + id;
             }
         }
         LOG.info("Total memory increased "+(Runtime.getRuntime().totalMemory()-initialTotal) + " bytes");
@@ -144,4 +151,24 @@ public final class SearchModeFactoryTest extends SiteTestCase {
         System.gc();
     }
 
+    
+    /**
+     * Test of deserialisation of all modes that exist in this site's modes.xml.
+     */
+    @Test
+    public void testAllModes() throws NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+        
+        LOG.trace("testAllModes");
+
+        final Site.Context siteConstructorContext = getSiteConstructingContext();
+        final SearchModeFactory instance = getModeFactory(siteConstructorContext, null);
+
+        final Map<String,SearchMode> modes = instance.getModes();
+
+        for( String id : modes.keySet()){
+            final SearchMode result = instance.getMode(id);
+            assert null != result : "Result cannot be null for mode " + id;
+        }
+    }
+    
 }

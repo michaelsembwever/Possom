@@ -238,6 +238,7 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
     }
 
     /** TODO comment me. **/
+    @Override
     public Object clone() throws CloneNotSupportedException {
         final SynonymQueryTransformer retValue = (SynonymQueryTransformer)super.clone();
 

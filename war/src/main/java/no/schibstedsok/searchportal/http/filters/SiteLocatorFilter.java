@@ -39,6 +39,8 @@ import org.apache.log4j.MDC;
  */
 
 public final class SiteLocatorFilter implements Filter {
+    
+    // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(SiteLocatorFilter.class);
 
@@ -59,12 +61,7 @@ public final class SiteLocatorFilter implements Filter {
                 PUBLISH_DIR, "/css/", "/images/", "/javascript/"
     }));
 
-    // The filter configuration object we are associated with.  If
-    // this value is null, this filter instance is not currently
-    // configured.
-    private FilterConfig filterConfig = null;
-
-    /** TODO comment me. **/
+    /** The context that we'll need to use every invocation of doFilter(..)  **/
     public static final Site.Context SITE_CONTEXT = new Site.Context(){
         public String getParentSiteName(final SiteContext siteContext) {
             // we have to do this manually instead of using SiteConfiguration,
@@ -79,34 +76,26 @@ public final class SiteLocatorFilter implements Filter {
     };
 
     private static final long START_TIME = System.currentTimeMillis();
+    
+    // Attributes ----------------------------------------------------
+    
+    // The filter configuration object we are associated with.  If
+    // this value is null, this filter instance is not currently
+    // configured.
+    private FilterConfig filterConfig = null;
 
-    /** TODO comment me. **/
+    
+    // Static --------------------------------------------------------
+    
+
+    // Constructors --------------------------------------------------
+    
+    /** Default constructor. **/
     public SiteLocatorFilter() {
     }
 
-    private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)
-            throws IOException, ServletException {
-
-        LOG.trace("doBeforeProcessing()");
-
-        final Site site = getSite(request);
-        request.setAttribute(Site.NAME_KEY, site);
-        request.setAttribute("startTime", START_TIME);
-        MDC.put(Site.NAME_KEY, site.getName());
-        MDC.put("UNIQUE_ID", getRequestId(request));
-    }
-
-    private void doAfterProcessing(final ServletRequest request, final ServletResponse response)
-            throws IOException, ServletException {
-
-        LOG.trace("doAfterProcessing()");
-        //
-        // Write code here to process the request and/or response after
-        // the rest of the filter chain is invoked.
-        //
-
-    }
-
+    // Public --------------------------------------------------------
+    
     /** Will redirect to correct (search-front-config) url for resources (css,images, javascript).
      *
      * @param request The servlet request we are processing
@@ -116,6 +105,7 @@ public final class SiteLocatorFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
+    @Override
     public void doFilter(
             final ServletRequest request,
             final ServletResponse response,
@@ -199,25 +189,6 @@ public final class SiteLocatorFilter implements Filter {
 
     }
 
-
-    private String recursivelyFindResource(final String resource, final Site site) {
-        
-        final String datedResource = resource
-                .replaceAll("/", "/" + START_TIME + "/")
-                .replaceFirst("/" + START_TIME + "/", "");
-        
-        final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
-
-        if (UrlResourceLoader.doesUrlExist(url)) {
-            // return a relative url to ensure it can survice through an out-of-cluster server.
-            return '/' + site.getConfigContext() + '/' + datedResource;
-        } else if (site.getParent() != null) {
-            return recursivelyFindResource(resource, site.getParent());
-        } else {
-            return null;
-        }
-    }
-
     /**
      * Return the filter configuration object for this filter.
      */
@@ -240,6 +211,7 @@ public final class SiteLocatorFilter implements Filter {
      * Destroy method for this filter
      *
      */
+    @Override
     public void destroy() {
     }
 
@@ -248,6 +220,7 @@ public final class SiteLocatorFilter implements Filter {
      * Init method for this filter
      *
      */
+    @Override
     public void init(final FilterConfig filterConfig) {
 
         this.filterConfig = filterConfig;
@@ -259,6 +232,7 @@ public final class SiteLocatorFilter implements Filter {
     /**
      * Return a String representation of this object.
      */
+    @Override
     public String toString() {
 
         return filterConfig == null
@@ -330,7 +304,30 @@ public final class SiteLocatorFilter implements Filter {
 
 
     }
+     
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
     
+    private String recursivelyFindResource(final String resource, final Site site) {
+        
+        final String datedResource = resource
+                .replaceAll("/", "/" + START_TIME + "/")
+                .replaceFirst("/" + START_TIME + "/", "");
+        
+        final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
+
+        if (UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(url))) {
+            // return a relative url to ensure it can survice through an out-of-cluster server.
+            return '/' + site.getConfigContext() + '/' + datedResource;
+        } else if (site.getParent() != null) {
+            return recursivelyFindResource(resource, site.getParent());
+        } else {
+            return null;
+        }
+    }   
     
     private static String getRequestId(final ServletRequest servletRequest){
         
@@ -338,4 +335,28 @@ public final class SiteLocatorFilter implements Filter {
                 ? (String)servletRequest.getAttribute("UNIQUE_ID")
                 : String.valueOf(System.currentTimeMillis());
     }
+    
+    private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)
+            throws IOException, ServletException {
+
+        LOG.trace("doBeforeProcessing()");
+
+        final Site site = getSite(request);
+        request.setAttribute(Site.NAME_KEY, site);
+        request.setAttribute("startTime", START_TIME);
+        MDC.put(Site.NAME_KEY, site.getName());
+        MDC.put("UNIQUE_ID", getRequestId(request));
+    }
+
+    private void doAfterProcessing(final ServletRequest request, final ServletResponse response)
+            throws IOException, ServletException {
+
+        LOG.trace("doAfterProcessing()");
+        //
+        // Write code here to process the request and/or response after
+        // the rest of the filter chain is invoked.
+        //
+
+    }
+
 }

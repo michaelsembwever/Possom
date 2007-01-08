@@ -83,9 +83,13 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         final Site site = cxt.getSite();
         assert null != site;
         
-        INSTANCES_LOCK.readLock().lock();
-        SearchTabFactory instance = INSTANCES.get(site);
-        INSTANCES_LOCK.readLock().unlock();
+        SearchTabFactory instance;
+        try{
+            INSTANCES_LOCK.readLock().lock();
+            instance = INSTANCES.get(site);
+        }finally{
+            INSTANCES_LOCK.readLock().unlock();
+        }
 
         if (instance == null) {
             try {

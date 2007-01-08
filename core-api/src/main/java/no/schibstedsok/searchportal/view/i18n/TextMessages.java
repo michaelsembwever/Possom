@@ -48,9 +48,13 @@ public final class TextMessages {
     public static TextMessages valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
-        INSTANCES_LOCK.readLock().lock();
-        TextMessages instance = INSTANCES.get(site);
-        INSTANCES_LOCK.readLock().unlock();
+        TextMessages instance;
+        try{
+            INSTANCES_LOCK.readLock().lock();
+            instance = INSTANCES.get(site);
+        }finally{
+            INSTANCES_LOCK.readLock().unlock();
+        }
 
         if (instance == null) {
             instance = new TextMessages(cxt);

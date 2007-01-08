@@ -85,6 +85,7 @@ public final class Channels {
             
     /** Creates a new instance of Channels */
     private Channels(final Context cxt) throws ParserConfigurationException {
+        
         try{
             INSTANCES_LOCK.writeLock().lock();
             context = cxt;
@@ -193,11 +194,15 @@ public final class Channels {
     }
     
     public static final Channels valueOf(final Context cxt) {
-        final Site site = cxt.getSite();
         
-        INSTANCES_LOCK.readLock().lock();
-        Channels instance = instances.get(site);
-        INSTANCES_LOCK.readLock().unlock();
+        final Site site = cxt.getSite();
+        Channels instance;
+        try{
+            INSTANCES_LOCK.readLock().lock();
+            instance = instances.get(site);
+        }finally{
+            INSTANCES_LOCK.readLock().unlock();
+        }
         
         if (instance == null) {
             try {

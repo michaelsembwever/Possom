@@ -84,7 +84,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -98,6 +97,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.text.MessageFormat;
+import java.util.Collections;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -155,9 +155,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
         final Site site = cxt.getSite();
 
-        INSTANCES_LOCK.readLock().lock();
-        SearchModeFactory instance = INSTANCES.get(site);
-        INSTANCES_LOCK.readLock().unlock();
+        SearchModeFactory instance;
+        try{
+            INSTANCES_LOCK.readLock().lock();
+            instance = INSTANCES.get(site);
+        }finally{
+            INSTANCES_LOCK.readLock().unlock();
+        }
 
         if (instance == null) {
             try {
@@ -187,21 +191,25 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             throws ParserConfigurationException {
 
         LOG.trace("ModeFactory(cxt)");
-        INSTANCES_LOCK.writeLock().lock();
+        try{
+            INSTANCES_LOCK.writeLock().lock();
 
-        context = cxt;
+            context = cxt;
 
-        // configuration files
-        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(false);
-        final DocumentBuilder builder = factory.newDocumentBuilder();
-        loader = context.newDocumentLoader(cxt, MODES_XMLFILE, builder);
+            // configuration files
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(false);
+            final DocumentBuilder builder = factory.newDocumentBuilder();
+            loader = context.newDocumentLoader(cxt, MODES_XMLFILE, builder);
 
-        // update the store of factories
-        INSTANCES.put(context.getSite(), this);
-        // start initialisation
-        init();
-        INSTANCES_LOCK.writeLock().unlock();
+            // update the store of factories
+            INSTANCES.put(context.getSite(), this);
+            // start initialisation
+            init();
+
+        }finally{
+            INSTANCES_LOCK.writeLock().unlock();
+        }
 
     }
 
@@ -230,6 +238,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
     // Package protected ---------------------------------------------
+    
+    /* Test use it. **/
+    Map<String,SearchMode> getModes(){
+        
+        return Collections.unmodifiableMap(modes);
+    } 
 
     // Protected -----------------------------------------------------
 
@@ -728,11 +742,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             SearchMode m = mode;
             SearchConfiguration config = null;
             do{
-                COMMANDS_LOCK.readLock().lock();
-                final Map<String,SearchConfiguration> configs = COMMANDS.get(m);
-                COMMANDS_LOCK.readLock().unlock();
+                final Map<String,SearchConfiguration> configs;
+                try{
+                    COMMANDS_LOCK.readLock().lock();
+                    configs = COMMANDS.get(m);
+                }finally{
+                    COMMANDS_LOCK.readLock().unlock();
+                }
                 config = configs.get(id);
                 m = m.getParentSearchMode();
+                
             }while(config == null && m != null);
 
             return config;

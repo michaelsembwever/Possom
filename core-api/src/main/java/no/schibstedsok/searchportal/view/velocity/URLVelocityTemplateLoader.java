@@ -63,6 +63,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     
     /** {@inheritDoc}
      */
+    @Override
     public void init(final ExtendedProperties configuration) {
         // the engine's properties actually come from the RuntimeServices *not* the ExtendedProperties
         site = (Site)rsvc.getProperty(Site.NAME_KEY);
@@ -77,6 +78,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
      * @throws ResourceNotFoundException if template not found
      *         in the file template path.
      */
+    @Override
     public synchronized InputStream getResourceStream( final String url )
         throws ResourceNotFoundException{
 
@@ -97,6 +99,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     /** {@inheritDoc}
      */
+    @Override
     public boolean isSourceModified(Resource resource){
 
         final boolean result =  getLastModified(resource) > resource.getLastModified();
@@ -106,6 +109,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     /** {@inheritDoc}
      */
+    @Override
     public long getLastModified(Resource resource){
 
         final String url = resource.getName();
@@ -129,8 +133,8 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     // Private -------------------------------------------------------
     
-    private URLConnection getResourceURLConnection( final String url )
-        throws ResourceNotFoundException{
+    private URLConnection getResourceURLConnection(final String url)
+            throws ResourceNotFoundException{
 
         try{
             LOG.trace(DEBUG_LOOKING_FOR + url );
@@ -142,11 +146,13 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     }
 
     private URLConnection doGetResourceURLConnection(
-            final String url, final Site currentSite)
-            throws IOException, ResourceNotFoundException {
+            final String url, 
+            final Site currentSite)
+                throws IOException, ResourceNotFoundException {
 
-        if (UrlResourceLoader.doesUrlExist(url)) {
+        if (UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(url))) {
             return getURLConnection(url);
+            
         } else {
             final Site parent = currentSite.getParent();
 
@@ -159,13 +165,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             }
 
             // Recursively look for the resource in ancestor sites.
-            return doGetResourceURLConnection(
-                    getFallbackURL(url, currentSite, parent), parent);
+            return doGetResourceURLConnection(getFallbackURL(url, currentSite, parent), parent);
         }
     }
 
-    private String getFallbackURL(
-            final String url, final Site currSite, final Site ancestorSite) {
+    private String getFallbackURL(final String url, final Site currSite, final Site ancestorSite) {
 
         final String oldUrl = currSite.getName() + currSite.getConfigContext();
         final String newUrl = ancestorSite.getName() + ancestorSite.getConfigContext();
@@ -179,11 +183,14 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         // TODO make this loopback to call a context's ResourceLoader method from the site-spi.
         LOG.trace(DEBUG_EXISTS + url);
         final URL u = new URL( UrlResourceLoader.getURL(url) );
+        
         LOG.trace(DEBUG_FULL_URL_IS + u);
         final URLConnection conn = u.openConnection();
         final String hostHeader = UrlResourceLoader.getHostHeader(url);
+        
         LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
         conn.addRequestProperty("host", hostHeader);
+        
         return conn;
     }
     

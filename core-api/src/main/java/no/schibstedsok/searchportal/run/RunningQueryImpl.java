@@ -204,9 +204,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     /** {@inheritDoc} */
     public final SearchResult getSearchResult(final String id) throws InterruptedException, ExecutionException {
+        
         final Future<SearchResult> task;
-        resultsLock.readLock().lock();
         try {
+            resultsLock.readLock().lock();
             if (!results.containsKey(id)) {
                 return null;
             }
@@ -328,8 +329,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             allCancelled = true;
 
             /* Entering CS */
-            resultsLock.writeLock().lock();
             try {
+                resultsLock.writeLock().lock();
                 context.getSearchMode().getExecutor().invokeAll(commands, results, TIMEOUT);
             } finally {
                 /* Leaving CS */
