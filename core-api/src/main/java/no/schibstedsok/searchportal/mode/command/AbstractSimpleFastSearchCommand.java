@@ -649,7 +649,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     private IQuery createQuery() {
 
-        ISearchParameters params = new SearchParameters();
+        final ISearchParameters params = new SearchParameters();
         params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getSearchConfiguration().isLemmatise()));
 
         if (getSearchConfiguration().isSpellcheck()) {
@@ -684,35 +684,34 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (!getSearchConfiguration().isIgnoreNavigation() && getNavigators() != null) {
 
             Collection navStrings = createNavigationFilterStrings();
-            filter.append(" ");
-            filter.append(" ").append(StringUtils.join(navStrings.iterator(), " "));
+            filter.append(' ');
+            filter.append(' ').append(StringUtils.join(navStrings.iterator(), " "));
         }
 
         if (getSearchConfiguration().getOffensiveScoreLimit() > 0) {
-            filter.append(" ").append("-ocfscore:>").append(getSearchConfiguration().getOffensiveScoreLimit());
+            filter.append(' ').append("-ocfscore:>").append(getSearchConfiguration().getOffensiveScoreLimit());
 
         }
 
         if (getSearchConfiguration().getSpamScoreLimit() > 0) {
-            filter.append(" ").append("+spamscore:<").append(getSearchConfiguration().getSpamScoreLimit());
+            filter.append(' ').append("+spamscore:<").append(getSearchConfiguration().getSpamScoreLimit());
         }
 
 
         final String collapseId = getParameter(COLLAPSE_PARAMETER);
 
         if (getSearchConfiguration().isCollapsing()) {
-            if (collapseId == null || collapseId.equals("")) {
-                params.setParameter(new SearchParameter(
-                        BaseParameter.COLLAPSING, true));
+            if (null == collapseId || "".equals(collapseId)) {
+                params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
+                
             } else {
-                params.setParameter(new SearchParameter(
-                        BaseParameter.COLLAPSING, false));
+                params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, false));
                 filter.append(" +collapseid:").append(collapseId);
             }
         }
 
         if (getAdditionalFilter() != null) {
-            filter.append(" ");
+            filter.append(' ');
             filter.append(getAdditionalFilter());
         }
 
@@ -728,12 +727,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         // Init dynamic filters
         // TODO: Is the following used anywhere?
-        String superFilter = super.getFilter();
-
-        if (superFilter == null) {
-            superFilter = "";
-        }
-
+        final String superFilter = null == super.getFilter() ? "" : super.getFilter();
 
         LOG.debug("createQuery: superFilter=" + superFilter);
 
@@ -741,16 +735,16 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         params.setParameter(new SearchParameter(BaseParameter.TYPE, "all"));
 
-        params.setParameter(new SearchParameter(BaseParameter.FILTER,
-                filter.toString() + " " + superFilter));
+        params.setParameter(new SearchParameter(BaseParameter.FILTER, filter.toString() + ' ' + superFilter));
 
         if (getSearchConfiguration().getQtPipeline() != null && getSearchConfiguration().getQtPipeline().length() >0) {
-            params.setParameter(new SearchParameter(BaseParameter.QTPIPELINE,
-                    getSearchConfiguration().getQtPipeline()));
+            params.setParameter(
+                    new SearchParameter(BaseParameter.QTPIPELINE, getSearchConfiguration().getQtPipeline()));
         }
         params.setParameter(new SearchParameter(BaseParameter.QUERY, queryString));
         params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, getSearchConfiguration().isCollapsing()));
-        params.setParameter(new SearchParameter(BaseParameter.LANGUAGE, getSearchConfiguration().getSpellchecklanguage()));
+        params.setParameter(
+                new SearchParameter(BaseParameter.LANGUAGE, getSearchConfiguration().getSpellchecklanguage()));
 
         if (getNavigators() != null && getNavigators().size() > 0) {
             params.setParameter(new SearchParameter(BaseParameter.NAVIGATION, true));
@@ -760,7 +754,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         params.setParameter(new SearchParameter(BaseParameter.CLUSTERING, getSearchConfiguration().isClustering()));
 
         if (getSearchConfiguration().getResultView() != null && getSearchConfiguration().getResultView().length() >0) {
-            params.setParameter(new SearchParameter(BaseParameter.RESULT_VIEW, getSearchConfiguration().getResultView()));
+            params.setParameter(
+                    new SearchParameter(BaseParameter.RESULT_VIEW, getSearchConfiguration().getResultView()));
+            
         }
 
         if (getSortBy() != null && getSortBy().length() >0) {
@@ -769,11 +765,22 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         if (getParameter("c").equals("yg")) {
             if (getParameter("type").equals("f")) {
-                params.setParameter(new SearchParameter("qtf_geosearch:center", "(" + getParameter("cla") + "," + getParameter("clo")));
-                params.setParameter(new SearchParameter("qtf_geosearch:filterbox", "[(" + getParameter("la1") + "," + getParameter("lo1") + ");(" + getParameter("la2") + "," + getParameter("lo2") + ")]"));
+                params.setParameter(new SearchParameter(
+                        "qtf_geosearch:center", 
+                        '(' + getParameter("cla") + ',' + getParameter("clo")));
+                
+                params.setParameter( new SearchParameter(
+                        "qtf_geosearch:filterbox", 
+                        "[(" + getParameter("la1") + "," + getParameter("lo1") + ");(" 
+                        + getParameter("la2") + ',' + getParameter("lo2") + ")]"));
+                
                 params.setParameter(new SearchParameter("sortdirection", "ascending"));
+                
             } else {
-                params.setParameter(new SearchParameter("qtf_geosearch:center", "(" + getParameter("cla") + "," + getParameter("clo")));
+                params.setParameter(new SearchParameter(
+                        "qtf_geosearch:center", 
+                        '(' + getParameter("cla") + "," + getParameter("clo")));
+                
                 params.setParameter(new SearchParameter("qtf_geosearch:radius", getParameter("rad")));
                 params.setParameter(new SearchParameter("sortdirection", "ascending"));
             }
@@ -786,8 +793,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         // TODO: Refactor
         if (getParameters().containsKey("userSortBy")) {
 
-            String sortBy = getParameter("userSortBy");
-            LOG.debug("createQuery: SortBY " + sortBy);
+            final String sortBy = getParameter("userSortBy");
+            LOG.debug("createQuery: SortBy " + sortBy);
 
             if ("standard".equals(sortBy)) {
                 params.setParameter(new SearchParameter(BaseParameter.SORT_BY, "retriever"));
@@ -800,9 +807,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         setAdditionalParameters(params);
 
-        IQuery query = new Query(params);
-
-        return query;
+        return new Query(params);
     }
 
     private String getDynamicParams(final Map map, final String key, final String defaultValue) {
