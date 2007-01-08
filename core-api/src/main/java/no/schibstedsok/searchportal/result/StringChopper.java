@@ -60,11 +60,11 @@ public final class StringChopper {
             }
             
             // append the dot-dot-dot
-            switch( choppedString.charAt( choppedString.length() - 1 ) ){
+            switch( choppedString.length() >0 ? choppedString.charAt( choppedString.length() - 1 ) : ' '){
                 case '.':
                     if( !choppedString.toString().endsWith("...")){
                         if( choppedString.toString().endsWith("..")){
-                            choppedString.append(".");
+                            choppedString.append('.');
                         }else {
                             choppedString.append("..");
                         }
@@ -78,7 +78,7 @@ public final class StringChopper {
                     }
                     choppedString.append("...");
                     break;
-	        }
+	    }
             
             // balance opening tags if the chop happened inbetween open and close tags.
             final LinkedList<String> tags = new LinkedList<String>();
