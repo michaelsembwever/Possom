@@ -105,7 +105,7 @@ public final class SiteLocatorFilter implements Filter {
      * @exception IOException if an input/output error occurs
      * @exception ServletException if a servlet error occurs
      */
-    @Override
+    //@Override jdk 1.6
     public void doFilter(
             final ServletRequest request,
             final ServletResponse response,
@@ -211,7 +211,7 @@ public final class SiteLocatorFilter implements Filter {
      * Destroy method for this filter
      *
      */
-    @Override
+    //@Override jdk 1.6
     public void destroy() {
     }
 
@@ -220,7 +220,7 @@ public final class SiteLocatorFilter implements Filter {
      * Init method for this filter
      *
      */
-    @Override
+    //@Override jdk 1.6
     public void init(final FilterConfig filterConfig) {
 
         this.filterConfig = filterConfig;
