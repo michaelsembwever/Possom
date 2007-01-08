@@ -3,9 +3,6 @@ package no.schibstedsok.searchportal.view.velocity;
 import java.io.IOException;
 
 import java.io.Writer;
-import java.util.LinkedList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import no.schibstedsok.searchportal.result.StringChopper;
 
 import org.apache.commons.lang.StringEscapeUtils;
@@ -36,8 +33,6 @@ public final class ChopStringDirective extends Directive {
 
     private static final Logger LOG = Logger.getLogger(ChopStringDirective.class);
     
-    
-
     private static final String NAME = "chopString";
 
     /**
