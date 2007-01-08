@@ -77,7 +77,9 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         this.config = (TvWaitSearchConfiguration) cxt.getSearchConfiguration();
         
         final String defaultUserSortBy = blankQuery ? "CHANNEL" : "DAY";
-        final String usbp = getParameters().containsKey("userSortBy") ? ((String) getParameters().get("userSortBy")).toUpperCase() : defaultUserSortBy;
+        final String usbp = getParameters().containsKey("userSortBy") 
+                ? ((String) getParameters().get("userSortBy")).toUpperCase() 
+                : defaultUserSortBy;
         
         SortBy tmpUserSortBy = null;
         try {
