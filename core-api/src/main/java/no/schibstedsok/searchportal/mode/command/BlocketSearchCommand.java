@@ -26,7 +26,7 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 	private static final Logger LOG = Logger
 			.getLogger(BlocketSearchCommand.class);
 
-	private static final String ERR_FAILED_BLOCKET_SEARCH = "Failed Prisjakt search command";
+	private static final String ERR_FAILED_BLOCKET_SEARCH = "Failed Blocket search command";
 
 	public BlocketSearchCommand(final Context cxt,
 			final Map<String, Object> parameters) {
