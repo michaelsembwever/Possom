@@ -8,8 +8,6 @@
 
 package no.schibstedsok.searchportal.query.parser.alt;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,27 +18,87 @@ import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
-import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
-import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.finder.ForestFinder;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
 import org.apache.log4j.Logger;
 
-/** SEARCH-439 - Rotation Alternation.
+/** <b><a href="https://jira.sesam.no/jira/browse/SEARCH-439">SEARCH-439 - Rotation Alternation</a></b>
  *
- * Variable notation:
- *  oXX -> original XX clause
- *  rXX -> XX clause from last rotation
- *  nXX -> newly rotated XX clause
+ * <p>Rotates like-joined DoubleOperatorClauses (forests).
+ * Tree rotation on the Query clause heirarchy is expensive, 
+ * and as clauses are immutable and are reused through a weak-referenced cache map,
+ * performing and remembering the rotations directly after tree construction
+ * is a performance benefit over repeated on-the-fly rotations.<br/>
+ * The memory increase, taking into account the weak-reference maps is (N-1)^2 +2N -2, 
+ *  where N is the number leaf clauses in the forest. 
+ * From this it can also be shown that the asymptotic complexity is just shy of O(n^2).<br/>
+ * XorClauses with Hint.ROTATION_ALTERNATION are used to store these alternations within the query tree.</p>
+ * <p>
+ * Typical usecases of these Rotation-variant XorClauses are visitors that are 
+ *  interested in possible combinations, or joins, between leaf clauses, 
+ *   for example the query evaluation and analysis, and the synonym query transformer.</p>
+ * 
+ * <p>Here's an example of the sequencial rotations on a query clause heirarchy of eight leaf clauses,
+ *  all eight leaf clauses are joined by DefaultOperatorClause, 
+ *   so there is only one forest to perform rotations on.<br/>
+ * The numbers one through to eight represent the eight terms in the query string and hence the eight leaf clauses.
+ *  In every rotation these leaf clauses refer to the same reused immutable instances.<br/>
+ * The letters A through to G represent the DoubleOperatorClauses.
+ *  In every rotation these are always different instances as their layout of grandchildren differ.<br/>
+ * The number of rotations in any forest is always one less than the number of DoubleOperatorClauses in the forest.<br/>
+ * The leaf clauses from left to right always remain in order 
+ *  so visitors can be assured that the query string at large remains the same.</p>
+ * 
+ * <img src="doc-files/RotationAlternation-1.png"/>
+ * 
+ * <p>To perform each rotation, the iterate, top, bottom, and orphan clause must be all determined.
+ *  This is indicated in the diagram on the forest before the rotation occurs.
+ * <ul>
+ * <li>The iterate starts at the deepest clause and works itself back one each rotation,
+ *  eg G for the first rotation process, F for the second rotation process, etc.</li>
+ * <li>The bottom clause is the right-most parent of the iterate clause.</li>
+ * <li>The top clause is the left-most parent of the bottom clause
+ *  where its parent inturn does not have parent to the right.
+ *   There is an exception here, it is allowed for the top clause's parent to be on the right-side
+ *    when the top is the direct left parent to the bottom.</li>
+ * <li>The orphan clause is the left child leaf clause to the deepest double operator clause.
+ * </ul>
+ * The process of rotation is then split into three steps, pre-rotation, post-rotation, and centre-of-rotation.
+ *  This is indicated in the diagram on the forest after it has been rotated.
+ * <ul>
+ * <li>Pre-Rotation, or 'RIGHT-LEANING-LOWER BRANCH ROTATION', is responsible for rotating the double operator clauses
+ *  from the bottom's parent up til and including the top clause.</li>
+ * <li> Post-Rotation, or 'LEFT-LEANING-UPPER-BRANCH ROTATION', is the rotation from the orphan's parent
+ *  (the double operator clause), which is to become the top's (in it's new position) new parent, up til and including 
+ *  the bottom clause.</li>
+ * <li> Centre-of-Rotation, or 'ORIGINAL TREE ROOT ROTATION', is the reconstruction of the forest above the bottom's
+ *  new position up til and including the root clause of the forest. This section remains in appearance the same as the
+ *  previous rotation but must be reconstructed due to differences in how the grandchildren are laid out.
+ * </ul>
+ * </p>
  *
+ * <b>References:</b><br/>
+ * <a href="http://www.cs.queensu.ca/home/jstewart/applets/bst/bst-rotation.html">Binary Tree Rotation</a><br/>
+ * <a href="http://www.nist.gov/dads/HTML/rotation.html">Institute of Standards and Technology - Rotation</a><br/>
+ * <a href="http://en.wikipedia.org/wiki/Expressed_sequence_tag">Sequence tagging</a><br/>
+ * 
+ * 
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ * 
  */
 public final class RotationAlternation {
+    
+    /*
+     * Variable notation:
+     *  oXX -> original XX clause
+     *  rXX -> XX clause from last rotation
+     *  nXX -> newly rotated XX clause
+     */
 
     /** Context to work within. **/
     public interface Context extends BaseContext, QueryParser.Context { 
@@ -86,7 +144,11 @@ public final class RotationAlternation {
 
     // Public --------------------------------------------------------
 
-    /** TODO comment me. **/
+    /** Returns a alternated clause where all child forests contain XorClauses.
+     * These XorClauses hold all possible rotations for the corresponding forest.
+     * Each XorClause always puts the left-leaning rotation as the left child, 
+     *  and the right-leaning rotation (or the next XorClause) as the right child.
+     **/
     public Clause createRotations(final Clause originalRoot) {
 
         // find forests (subtrees) of AndClauses and OrClauses.
@@ -395,8 +457,8 @@ public final class RotationAlternation {
                 XorClause.Hint.ROTATION_ALTERNATION);
     }
 
-    /** TODO comment me. **/
-    public Map<DoubleOperatorClause, DoubleOperatorClause> getBeforeRotationFromNew() {
+
+    private Map<DoubleOperatorClause, DoubleOperatorClause> getBeforeRotationFromNew() {
         return beforeRotationFromNew;
     }
 
