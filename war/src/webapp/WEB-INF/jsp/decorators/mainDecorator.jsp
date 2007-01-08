@@ -3,16 +3,12 @@
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
-<%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
 <%@ page import="no.schibstedsok.searchportal.view.config.SearchTab"%>
+<%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
 <%@ page import="no.schibstedsok.searchportal.view.i18n.TextMessages"%>
-<%@ page import="no.schibstedsok.searchportal.result.Enrichment"%>
-<%@ page import="no.schibstedsok.searchportal.result.Modifier"%>
 <%@ page import="no.schibstedsok.searchportal.site.Site"%>
 <%@ page import="no.schibstedsok.searchportal.result.Linkpulse"%>
 <%@ page import="no.schibstedsok.searchportal.site.config.SiteConfiguration"%>
-<%@ page import="no.schibstedsok.searchportal.view.config.SearchTab" %>
-<%@ page import="org.apache.commons.lang.StringEscapeUtils" %>
 <%@ taglib uri="http://java.sun.com/jstl/core_rt" prefix="c" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/decorator" prefix="decorator" %>
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
