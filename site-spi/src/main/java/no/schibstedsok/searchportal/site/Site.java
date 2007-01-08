@@ -44,11 +44,11 @@ public final class Site {
             + "to define what the default site is.";
 
     /** Found from the configuration.properties resource found in this class's ClassLoader. **/
-    public static final String DEFAULT_SITE_KEY = "site.default";
-    public static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
-    public static final String DEFAULT_SERVER_PORT_KEY = "server.port";
+    private static final String DEFAULT_SITE_KEY = "site.default";
+    private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
     /** Property key for site parent's name. **/
     public static final String PARENT_SITE_KEY = "site.parent";
+    private static final String DEFAULT_SERVER_PORT_KEY = "server.port";
     /** Property key for a site object. **/
     public static final String NAME_KEY = "site";
     /** Name of the resource to find the PARENT_SITE_KEY property. **/
@@ -111,6 +111,7 @@ public final class Site {
                     return thisSite;
                 }
             };
+
 
             final String parentSiteName = null != cxt ? cxt.getParentSiteName(siteContext) : siteName;
 
@@ -231,38 +232,26 @@ public final class Site {
         return site;
     }
 
+    // should never used except in catastrophe.
+    private static final String SITE_DEFAULT_FALLBACK = "sesam.no";
+    private static final String SITE_DEFAULT_LOCALE_FALLBACK = "no";
+
     static {
 
-        // XXX This approach of solving access to configuration properties at the static level
-        //      is pretty lame programming.
-        //     Some sort of lookup mechanism, or Factory around the Site class, is required.
         final Properties props = new Properties();
         try  {
-            final Class cl = 
-                    null != Site.class.getResource('/' + CORE_CONF_FILE)
-                    ? Site.class
-                    : Thread.currentThread().getClass();
-            
-            if( null != cl.getResource('/' + CORE_CONF_FILE) ){
-                props.load(cl.getResourceAsStream('/' + CORE_CONF_FILE));
-            }
-            
+            props.load(Site.class.getResourceAsStream('/' + CORE_CONF_FILE));
         }  catch (IOException ex) {
             LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
         }
-        final String defaultSiteName 
-                = props.getProperty(DEFAULT_SITE_KEY, System.getProperty(DEFAULT_SITE_KEY));
-        
-        final String defaultSiteLocaleName 
-                = props.getProperty(DEFAULT_SITE_LOCALE_KEY, System.getProperty(DEFAULT_SITE_LOCALE_KEY));
-        
-        SERVER_PORT = Integer.parseInt(
-                props.getProperty(DEFAULT_SERVER_PORT_KEY, System.getProperty(DEFAULT_SERVER_PORT_KEY)));
+        final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, SITE_DEFAULT_FALLBACK);
+        final String defaultSiteLocaleName = props.getProperty(DEFAULT_SITE_LOCALE_KEY, SITE_DEFAULT_LOCALE_FALLBACK);
+        SERVER_PORT = Integer.parseInt(props.getProperty(DEFAULT_SERVER_PORT_KEY));
 
         constructingDefault = true;
         final Locale defaultLocale = new Locale(defaultSiteLocaleName);
         DEFAULT = new Site(null, defaultSiteName, defaultLocale);
-        // all locales along-side DEFAULT
+        // FIXME and all locales along-side DEFAULT
         for(Locale l : Locale.getAvailableLocales()){
             if(defaultLocale != l){
                 new Site(null, defaultSiteName, l);

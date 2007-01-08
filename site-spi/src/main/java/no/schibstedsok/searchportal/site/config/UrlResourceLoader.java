@@ -27,16 +27,10 @@ import org.apache.log4j.Logger;
  */
 public class UrlResourceLoader extends AbstractResourceLoader {
 
-    // Constants -----------------------------------------------------
-    
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
 
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
 
-    // Attributes ----------------------------------------------------
-    
-    // Static --------------------------------------------------------
-    
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.
      * @param resource the resource name/path.
@@ -79,14 +73,14 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return cl;
     }
     
-    public static boolean doesUrlExist(String url){
+    public static boolean doesUrlExist(final String url){
         
         boolean success = false;
         HttpURLConnection con = null;
         try {
 
-            //final URL u = new URL(url);
             final URL u = new URL(getURL(url));
+
             con = (HttpURLConnection) u.openConnection();
             con.setInstanceFollowRedirects(false);
             con.setRequestMethod("HEAD");
@@ -126,28 +120,12 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return resource.substring(7,resource.indexOf('/',8));
     }
 
-    // Constructors --------------------------------------------------
-    
     /** {@inheritDoc}
      */
     protected UrlResourceLoader(final SiteContext cxt) {
         super(cxt);
     }
 
-    // Public --------------------------------------------------------
-    
-    @Override
-    public final boolean urlExists(final String url) {
-
-        //return doesUrlExist(url);
-        return doesUrlExist(getUrlFor(url));
-    }
-    
-    // Package protected ---------------------------------------------
-
-    // Protected -----------------------------------------------------
-    
-    @Override
     protected final String getResource(final Site site) {
         
         return "http://"
@@ -157,18 +135,21 @@ public class UrlResourceLoader extends AbstractResourceLoader {
                 + getResource();
     }
    
+    public final boolean urlExists(final String url) {
+
+        return doesUrlExist(url);
+    }
+    
     protected final String getHostHeaderFor(final String resource){
         
         return getHostHeader(resource);
     }
 
-    @Override
     protected String getUrlFor(final String resource){
         
         return getURL(resource);
     }
 
-    @Override
     protected final InputStream getInputStreamFor(String resource) {
         
         try {
@@ -184,13 +165,9 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         
     }
     
-    @Override
     protected final String readResourceDebug(final String resource){
         
         return "Read Configuration from " + getUrlFor(resource) + " [" + getHostHeaderFor(resource) + ']';
     }
 
-    // Private -------------------------------------------------------
-    
-    // Inner classes -------------------------------------------------
 }
