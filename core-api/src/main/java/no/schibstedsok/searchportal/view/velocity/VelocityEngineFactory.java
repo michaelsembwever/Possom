@@ -212,10 +212,12 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             final Site site = cxt.getSite();
 
             engine = new VelocityEngine(){
-                /** We override this method to dampen the <ERROR velocity: ResourceManager : unable to find resource ...>
+                /** We override this method to dampen the 
+                 * <ERROR velocity: ResourceManager : unable to find resource ...>
                  * error messages in sesam.error
                  **/
-                public Template getTemplate(final String name) throws ResourceNotFoundException, ParseErrorException, Exception {
+                public Template getTemplate(final String name) 
+                        throws ResourceNotFoundException, ParseErrorException, Exception {
 
                     final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
                     Logger.getLogger(VELOCITY_LOGGER).setLevel(Level.FATAL);
