@@ -262,7 +262,7 @@ public final class Site {
         constructingDefault = true;
         final Locale defaultLocale = new Locale(defaultSiteLocaleName);
         DEFAULT = new Site(null, defaultSiteName, defaultLocale);
-        // FIXME and all locales along-side DEFAULT
+        // all locales along-side DEFAULT
         for(Locale l : Locale.getAvailableLocales()){
             if(defaultLocale != l){
                 new Site(null, defaultSiteName, l);

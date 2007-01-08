@@ -88,7 +88,7 @@ case "$RIG" in
 esac
 export RIG_DOMAIN
 
-#  Update update-test.sh
+#  Update update.sh
 #
 rm -f update.tmp
 wget https://dev.schibstedsok.no/svn/search-portal/trunk/src/main/bin/update.sh -q -O update.tmp >/dev/null

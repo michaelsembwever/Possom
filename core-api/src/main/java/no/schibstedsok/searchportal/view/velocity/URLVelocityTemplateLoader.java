@@ -150,7 +150,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             final Site currentSite)
                 throws IOException, ResourceNotFoundException {
 
-        if (UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(url))) {
+        if (UrlResourceLoader.doesUrlExist(url)) {
             return getURLConnection(url);
             
         } else {

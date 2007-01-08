@@ -260,7 +260,7 @@ public final class SiteLocatorFilter implements Filter {
         // Construct the site object off the browser's locale, even if it won't finally be used.
         final Locale locale = servletRequest.getLocale();
         final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
-        final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){// <editor-fold defaultstate="collapsed" desc=" genericCxt ">
+        final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
             public PropertiesLoader newPropertiesLoader(
                     final SiteContext siteCxt, 
                     final String resource, 
@@ -271,7 +271,7 @@ public final class SiteLocatorFilter implements Filter {
             public Site getSite() {
                 return result;
             }
-        };//</editor-fold>
+        };
         final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
 
         // Check if the browser's locale is supported by this skin. Use it if so.
@@ -319,7 +319,7 @@ public final class SiteLocatorFilter implements Filter {
         
         final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
 
-        if (UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(url))) {
+        if (UrlResourceLoader.doesUrlExist(url)) {
             // return a relative url to ensure it can survice through an out-of-cluster server.
             return '/' + site.getConfigContext() + '/' + datedResource;
         } else if (site.getParent() != null) {

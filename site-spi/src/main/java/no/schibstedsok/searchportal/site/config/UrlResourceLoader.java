@@ -85,7 +85,8 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         HttpURLConnection con = null;
         try {
 
-            final URL u = new URL(url);
+            //final URL u = new URL(url);
+            final URL u = new URL(getURL(url));
             con = (HttpURLConnection) u.openConnection();
             con.setInstanceFollowRedirects(false);
             con.setRequestMethod("HEAD");
@@ -138,6 +139,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     @Override
     public final boolean urlExists(final String url) {
 
+        //return doesUrlExist(url);
         return doesUrlExist(getUrlFor(url));
     }
     
