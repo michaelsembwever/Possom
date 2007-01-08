@@ -133,23 +133,25 @@ cnt=${#PROJECTS[*]}
 #
 for (( i = 0 ; i < cnt ; i++ )) ; do
 
-    # Find the latest build in the version
-    #
-    for f in /www/${DEPLOY_PARTITION}/data/$RIG-builds/${PROJECTS[$i]}/${VERSION}/*.war ; do
-        warFile=$f
-    done
+    if [[ "x" != "x${PROJECTS[$i]}" ]] ; then
+        # Find the latest build in the version
+        #
+        for f in /www/${DEPLOY_PARTITION}/data/$RIG-builds/${PROJECTS[$i]}/${VERSION}/*.war ; do
+            warFile=$f
+        done
 
-    # Check that it's not already being used and copy it to tomcat's deploy directory
-    #
-    if ! diff $warFile /www/${DEPLOY_PARTITION}/${RIG_DOMAIN}.no/${CONTEXTS[$i]} >/dev/null ; then
-        echo "cp $warFile   ${CONTEXTS[$i]}"
-        cp $warFile /www/${DEPLOY_PARTITION}/${RIG_DOMAIN}.no/${CONTEXTS[$i]}
+        # Check that it's not already being used and copy it to tomcat's deploy directory
+        #
+        if ! diff $warFile /www/${DEPLOY_PARTITION}/${RIG_DOMAIN}.no/${CONTEXTS[$i]} >/dev/null ; then
+            echo "cp $warFile   ${CONTEXTS[$i]}"
+            cp $warFile /www/${DEPLOY_PARTITION}/${RIG_DOMAIN}.no/${CONTEXTS[$i]}
+        fi
+
+        # Keep permissions on it friendly
+        #
+        chmod g+w /www/${DEPLOY_PARTITION}/${RIG_DOMAIN}.no/${CONTEXTS[$i]} 2>/dev/null
+
     fi
-
-    # Keep permissions on it friendly
-    #
-    chmod g+w /www/${DEPLOY_PARTITION}/${RIG_DOMAIN}.no/${CONTEXTS[$i]} 2>/dev/null
-
 done
 
 # Update our version.txt accordingly
