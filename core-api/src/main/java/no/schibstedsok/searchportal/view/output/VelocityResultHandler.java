@@ -55,6 +55,7 @@ public final class VelocityResultHandler implements ResultHandler {
     private static final String ERR_MERGE = "Error merging template ";
     
     /* This is the paging size when browsing resultset like <- 1 2 3 4 5 6 7 8 9 10 ->  Hardcoded to max 10 and independent of the  pageSize */
+    // TODO Put this as parameter in views.xml  
     private static final int PAGING_SIZE =  10;
 
     public void handleResult(final Context cxt, final Map parameters) {
