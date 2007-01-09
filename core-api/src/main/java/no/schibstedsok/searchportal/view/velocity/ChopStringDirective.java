@@ -58,29 +58,34 @@ public final class ChopStringDirective extends Directive {
                 final Node node) 
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
         
-        if (node.jjtGetNumChildren() != 2 && node.jjtGetNumChildren() != 3) {
-            rsvc.error("#" + getName() + " - wrong number of arguments");
-            return false;
-        }
-
-        final String s = node.jjtGetChild(0).value(context).toString();
-        final int length = Integer.parseInt(node.jjtGetChild(1).value(context).toString());
-
-        String chopped = StringChopper.chop(s, length);
+        final int argCount = node.jjtGetNumChildren();
         
-        if (node.jjtGetNumChildren() > 2) {
-            final String htmlescape = node.jjtGetChild(2).value(context).toString();
-            if (htmlescape.equals("esc")){
-                chopped = StringEscapeUtils.escapeHtml(chopped);
+        if (argCount > 0 && argCount < 4) {
+
+            final String s = node.jjtGetChild(0).value(context).toString();
+            
+            final int length = argCount > 1
+                    ? Integer.parseInt(node.jjtGetChild(1).value(context).toString())
+                    : Integer.MAX_VALUE;
+
+            if (argCount > 2 && "esc".equals(node.jjtGetChild(2).value(context).toString())) {
+                
+                writer.write(StringEscapeUtils.escapeHtml(StringChopper.chop(s, length)));
+            }else{
+                
+                writer.write(StringChopper.chop(s, length));
             }
-        }
-        
-        writer.write(chopped);
-        
-        final Token lastToken = node.getLastToken();
 
-        if (lastToken.image.endsWith("\n")) {
-            writer.write('\n');
+            if (node.getLastToken().image.endsWith("\n")) {
+                writer.write('\n');
+            }
+        
+        }else{
+            
+            final String msg = '#' + getName() + " - wrong number of arguments";
+            LOG.error(msg);
+            rsvc.error(msg);
+            return false;
         }
 
         return true;

@@ -80,25 +80,26 @@ public final class StringChopper {
                     break;
 	    }
             
-            // balance opening tags if the chop happened inbetween open and close tags.
-            final LinkedList<String> tags = new LinkedList<String>();
 
-            final Matcher matcher = openTag.matcher(choppedString);
-            while( matcher.find() ){
-                if( closeTag.matcher(matcher.group()).find() ){
-                    tags.removeFirst();
-                }else if( !singleTag.matcher(matcher.group()).find() ){
-                    tags.addFirst(matcher.group());
-                }
-            }
-
-            for(String tag : tags){
-                choppedString.append(tag.replaceFirst("<","</"));
-            }
-
-            LOG.trace(DEBUG_CHOPSUEY + choppedString);
-        
         }
+
+        // balance opening tags if the chop happened inbetween open and close tags.
+        final LinkedList<String> tags = new LinkedList<String>();
+
+        final Matcher matcher = openTag.matcher(choppedString);
+        while( matcher.find() ){
+            if( closeTag.matcher(matcher.group()).find() ){
+                tags.removeFirst();
+            }else if( !singleTag.matcher(matcher.group()).find() ){
+                tags.addFirst(matcher.group());
+            }
+        }
+
+        for(String tag : tags){
+            choppedString.append(tag.replaceFirst("<","</"));
+        }        
+        
+        LOG.trace(DEBUG_CHOPSUEY + choppedString);
         
         return choppedString.toString();
     }
