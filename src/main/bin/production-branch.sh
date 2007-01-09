@@ -1,9 +1,9 @@
 #!/bin/bash
 #
 #
-# Version to use in production (& searchdev)
-#  Used by update-searchdev.sh & update-production.sh
+# Version to use in production (& beta)
+#  Used by update.sh beta & update.sh production
 #
 
-VERSION=2.6.1-SNAPSHOT
+VERSION=2.8-SNAPSHOT
 export VERSION
