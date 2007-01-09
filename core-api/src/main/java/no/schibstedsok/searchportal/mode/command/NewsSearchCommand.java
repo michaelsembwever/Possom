@@ -106,6 +106,8 @@ public class NewsSearchCommand extends FastSearchCommand {
                         } else {
                             if (newsCountry != null && !newsCountry.equals(""))
                                 filterBuilder.append(" AND newscountry:\""+ newsCountry + "\"");
+                            else // for newscount navigator
+                                filterBuilder.append(" AND newscountry:Norge");
                         }
                         filterBuilder.append(" ANDNOT meta.collection:mano");
                         filterBuilder.append(" AND (docdatetime:>" + newsdate);
