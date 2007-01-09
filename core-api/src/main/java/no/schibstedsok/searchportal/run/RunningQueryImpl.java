@@ -295,7 +295,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                             }
                                         },
                                         searchCmdCxt));
+                                        
                                 scoresByRule.put(eHint.getRule(), score);
+                                analysisReport.append(analysisRuleReport);
 
                                 if (LOG.isDebugEnabled()) {
                                     LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);

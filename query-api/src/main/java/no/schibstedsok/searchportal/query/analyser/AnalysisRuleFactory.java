@@ -73,10 +73,9 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
     private static final Map<Site,AnalysisRuleFactory> INSTANCES = new HashMap<Site,AnalysisRuleFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
-    /** TODO comment me. **/
+    /** Name of the configuration file. **/
     public static final String ANALYSIS_RULES_XMLFILE = "AnalysisRules.xml";
 
-    private final Map predicateIds = new HashMap();
     private final Map<String, Predicate> globalPredicates = new HashMap<String, Predicate>();
 
     private final Map<String,AnalysisRule> rules = new HashMap<String,AnalysisRule>();
@@ -117,7 +116,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
             
             final Element root = doc.getDocumentElement();
 
-            final Map inheritedPredicates = getInheritedPredicates();
+            final Map<String, Predicate> inheritedPredicates = getInheritedPredicates();
 
             if( null != root) {
                 readPredicates(root, globalPredicates, inheritedPredicates);
@@ -132,7 +131,7 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                     LOG.info(DEBUG_STARTING_RULE + id + " " + analysisRule);
 
                     // private predicates
-                    final Map privatePredicates = new HashMap(globalPredicates);
+                    final Map<String, Predicate> privatePredicates = new HashMap<String, Predicate>(globalPredicates);
 
                     readPredicates(rule, privatePredicates, inheritedPredicates);
 
@@ -145,7 +144,14 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                         final int scoreValue = Integer.parseInt(score.getFirstChild().getNodeValue());
 
                         analysisRule.addPredicateScore(predicate, scoreValue);
-                        analysisRule.setPredicateNameMap(Collections.unmodifiableMap(predicateIds));
+                        final Map<Predicate,String> predicateToNameMap = new HashMap<Predicate,String>();
+                        for( String key : inheritedPredicates.keySet()){
+                            predicateToNameMap.put(inheritedPredicates.get(key), key);
+                        }
+                        for( String key : privatePredicates.keySet()){
+                            predicateToNameMap.put(privatePredicates.get(key), key);
+                        }
+                        analysisRule.setPredicateNameMap(Collections.unmodifiableMap(predicateToNameMap));
                     }
                     try{
                         rulesLock.writeLock().lock();
@@ -177,10 +183,10 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
         return null;
     }
 
-    private Map readPredicates(
+    private Map<String, Predicate> readPredicates(
             final Element element,
-            final Map predicateMap,
-            final Map inheritedPredicates){
+            final Map<String, Predicate> predicateMap,
+            final Map<String, Predicate> inheritedPredicates){
 
         final NodeList predicates = element.getChildNodes();
 
@@ -198,8 +204,8 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
     private Predicate readPredicate(
             final Element element,
-            final Map predicateMap,
-            final Map inheritedPredicates) {
+            final Map<String, Predicate> predicateMap,
+            final Map<String, Predicate> inheritedPredicates) {
         
         Predicate result = null;
 
@@ -228,7 +234,6 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
                 // its got an ID so we must remember it.
                 final String id = element.getAttribute("id");
                 predicateMap.put(id, result);
-                predicateIds.put(result, id);
                 LOG.debug(DEBUG_CREATED_PREDICATE + id + " " + result);
             }
         }
@@ -238,8 +243,8 @@ public final class AnalysisRuleFactory implements SiteKeyedFactory{
 
     private Predicate findPredicate(
             final String name,
-            final Map predicateMap,
-            final Map parentPredicateMap) {
+            final Map<String, Predicate> predicateMap,
+            final Map<String, Predicate> parentPredicateMap) {
 
         Predicate result = null;
         // first check our predicateMap
