@@ -4,7 +4,7 @@
 package no.schibstedsok.searchportal.query.token;
 
 import java.util.Set;
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.site.config.ResourceContext;

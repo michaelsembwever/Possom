@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;

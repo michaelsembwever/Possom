@@ -8,7 +8,7 @@
 package no.schibstedsok.searchportal.site.config;
 
 
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 
 /** Defines the utility context for consumers of all types of ResourceLoaders.
  * Since the file format a configuration resource exists in is really an implementation detail

@@ -39,7 +39,7 @@ import no.fast.ds.search.Query;
 import no.fast.ds.search.SearchEngineException;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
 import no.schibstedsok.searchportal.result.Navigator;

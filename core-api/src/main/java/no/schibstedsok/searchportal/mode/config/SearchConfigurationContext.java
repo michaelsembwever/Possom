@@ -6,7 +6,7 @@
 
 package no.schibstedsok.searchportal.mode.config;
 
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 
 /**
  * @version $Id$

@@ -3,8 +3,8 @@ package no.schibstedsok.searchportal.mode.command;
 
 
 import java.util.LinkedHashMap;
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;

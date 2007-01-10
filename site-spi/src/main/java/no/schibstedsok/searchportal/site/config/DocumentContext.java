@@ -6,7 +6,7 @@
 package no.schibstedsok.searchportal.site.config;
 
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.searchportal.site.SiteContext;
 
 /** Defines the context for consumers of DocumentLoaders.

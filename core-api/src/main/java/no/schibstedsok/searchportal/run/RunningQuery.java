@@ -10,7 +10,7 @@ package no.schibstedsok.searchportal.run;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.site.config.ResourceContext;

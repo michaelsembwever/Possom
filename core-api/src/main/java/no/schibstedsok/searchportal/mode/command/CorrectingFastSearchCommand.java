@@ -8,8 +8,8 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.result.SearchResult;

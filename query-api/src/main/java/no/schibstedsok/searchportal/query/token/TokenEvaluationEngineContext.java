@@ -7,7 +7,7 @@
 
 package no.schibstedsok.searchportal.query.token;
 
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 
 /**
  *

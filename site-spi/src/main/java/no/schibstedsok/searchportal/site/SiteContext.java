@@ -3,13 +3,11 @@
  *
  * Created on 23 January 2006, 13:55
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.site;
 
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 
 /** Defines the context for consumers of Site objects.
  *

@@ -10,8 +10,8 @@ package no.schibstedsok.searchportal.query.parser;
 
 import java.util.Iterator;
 import java.util.Stack;
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.QueryStringContext;

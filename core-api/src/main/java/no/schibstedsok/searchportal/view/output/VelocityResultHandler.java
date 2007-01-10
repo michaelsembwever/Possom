@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.view.output;
 
 import java.io.IOException;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;

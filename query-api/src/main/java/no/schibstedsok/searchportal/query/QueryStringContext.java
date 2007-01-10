@@ -9,7 +9,7 @@
 
 package no.schibstedsok.searchportal.query;
 
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 
 /**
  * @version $Id$

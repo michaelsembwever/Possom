@@ -10,7 +10,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.io.IOException;
 import java.util.Map;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;

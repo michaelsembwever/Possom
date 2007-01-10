@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 import org.apache.log4j.Logger;
 
 /** A Site object idenetifies an unique SiteSearch implementation.

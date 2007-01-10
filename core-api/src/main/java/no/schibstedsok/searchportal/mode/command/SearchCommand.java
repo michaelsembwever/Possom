@@ -5,7 +5,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.util.concurrent.Callable;
-import no.schibstedsok.common.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchConfigurationContext;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.Date;
 
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 
 
 import no.schibstedsok.searchportal.view.i18n.TextMessages;

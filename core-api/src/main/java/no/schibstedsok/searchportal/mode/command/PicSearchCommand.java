@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.result.BasicSearchResult;

@@ -5,8 +5,8 @@ package no.schibstedsok.searchportal.http.servlet;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.common.ioc.BaseContext;
-import no.schibstedsok.common.ioc.ContextWrapper;
+import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
 import no.schibstedsok.searchportal.result.SearchResult;
