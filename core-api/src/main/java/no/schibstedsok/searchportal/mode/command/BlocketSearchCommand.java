@@ -38,9 +38,6 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 
 		final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
-		final boolean isBlocket = engine.evaluateQuery(TokenPredicate.BLOCKET,
-				context.getQuery());
-
 		BlocketSearchConfiguration bsc = (BlocketSearchConfiguration) context
 				.getSearchConfiguration();
 
@@ -49,34 +46,37 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 		final SearchLocator service = new SearchLocator();
 
 		final SearchResult result = new BasicSearchResult(this);
-		if (isBlocket) {
-			try {
-				final SearchPortType port = service
-						.getsearchPort(new java.net.URL(service
-								.getsearchPortAddress()));
-				String query = getTransformedQuery();
 
-				LongHolder lholder = new LongHolder();
-				StringHolder sholder = new StringHolder();
-				String trimQ = StringUtils.deleteWhitespace(query);
-				String categoryIndex = (String) m.get(trimQ);
-				if (categoryIndex != null) {
-					port.search(query, Integer.parseInt(categoryIndex),
-							lholder, sholder);
-				}
+		try {
+			final SearchPortType port = service
+					.getsearchPort(new java.net.URL(service
+							.getsearchPortAddress()));
+			String query = getTransformedQuery();
 
-				String nads = Long.toString(lholder.value);
-				if(!nads.equalsIgnoreCase("0"))
-				{
-					result.addField("searchquery", query);
-					result.addField("numberofads", nads);
-					result.addField("blocketbackurl", sholder.value);
+			LongHolder lholder = new LongHolder();
+			StringHolder sholder = new StringHolder();
+			String trimQ = StringUtils.deleteWhitespace(query);
+			String categoryIndex = (String) m.get(trimQ);
 
-					result.setHitCount(1);
+			LOG.debug("Executing blocket search command with searchquery: "
+					+ query);
+			if (categoryIndex != null) {
+				port.search(query, Integer.parseInt(categoryIndex),
+						lholder, sholder);
+			}
 
-				}
-				
-			} catch (ServiceException se) {
+			String nads = Long.toString(lholder.value);
+			if((nads!=null)&&(!nads.equalsIgnoreCase("0")))
+			{
+				result.addField("searchquery", query);
+				result.addField("numberofads", nads);
+				result.addField("blocketbackurl", sholder.value);
+
+				result.setHitCount(Integer.parseInt(nads));
+
+			}
+
+		} catch (ServiceException se) {
 				LOG.error(ERR_FAILED_BLOCKET_SEARCH, se);
 				throw new InfrastructureException(se);
 			} catch (MalformedURLException murle) {
@@ -87,7 +87,7 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 				throw new InfrastructureException(re);
 			}
 
-		}
+
 
 		return result;
 
