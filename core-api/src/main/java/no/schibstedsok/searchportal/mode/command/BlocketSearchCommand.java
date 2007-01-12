@@ -1,6 +1,8 @@
 package no.schibstedsok.searchportal.mode.command;
 
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLEncoder;
 import java.rmi.RemoteException;
 
 import java.util.Map;
@@ -56,8 +58,14 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 			LongHolder lholder = new LongHolder();
 			StringHolder sholder = new StringHolder();
 			String trimQ = StringUtils.deleteWhitespace(query);
-			String categoryIndex = (String) m.get(trimQ);
-
+			
+			String trimQ1 =StringUtils.replace(trimQ, "å", "a");
+			String trimQ2 =StringUtils.replace(trimQ1, "ä", "a");
+			String trimQ3 =StringUtils.replace(trimQ2, "ö", "o");
+			
+			String categoryIndex = (String) m.get(trimQ3);
+			
+			
 			LOG.debug("Executing blocket search command with searchquery: "
 					+ query);
 			if (categoryIndex != null) {
@@ -86,6 +94,7 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 				LOG.error(ERR_FAILED_BLOCKET_SEARCH, re);
 				throw new InfrastructureException(re);
 			}
+		
 
 
 
