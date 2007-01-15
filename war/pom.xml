@@ -43,16 +43,18 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <warSourceDirectory>src/webapp</warSourceDirectory>
+<!--
 			        <webResources>        
          	 			<resource>
   		          			<directory>war/src/webapp/META-INF</directory>
   		          			<targetPath>META-INF</targetPath>
-            				<includes>
-               					<include>*.xml</include>
-        	    			</includes>           
+            					<includes>
+               						<include>*.xml</include>
+        	    				</includes>           
 			           		<filtering>true</filtering>            			
 	          			</resource>
         			</webResources>
+-->
                 </configuration>
             </plugin>
         </plugins>
