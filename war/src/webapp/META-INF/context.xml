@@ -1,0 +1,8 @@
+﻿<Context path="/" debug="0">
+       <Resource name="jdbc/catalogue" auth="Container"
+              type="javax.sql.DataSource" driverClassName="com.mysql.jdbc.Driver"
+              url="@catalogue_ds.db@"
+              username="@catalogue_ds.username@" password="@catalogue_ds.password@" maxActive="20" maxIdle="10"
+              removeAbandoned="true" removeAbandonedTimeout="60" logAbandoned="true"
+              maxWait="2000"/>
+</Context>

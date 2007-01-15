@@ -43,6 +43,16 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <warSourceDirectory>src/webapp</warSourceDirectory>
+			        <webResources>        
+         	 			<resource>
+  		          			<directory>war/src/webapp/META-INF</directory>
+  		          			<targetPath>META-INF</targetPath>
+            				<includes>
+               					<include>*.xml</include>
+        	    			</includes>           
+			           		<filtering>true</filtering>            			
+	          			</resource>
+        			</webResources>
                 </configuration>
             </plugin>
         </plugins>
@@ -145,6 +155,9 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>false</linkpulse.enable>
+				<catalogue_ds.db>jdbc:mysql://localhost:3306/aguiden</catalogue_ds.db>                
+				<catalogue_ds.username>root</catalogue_ds.username>
+				<catalogue_ds.password></catalogue_ds.password>
             </properties>
         </profile>
        <profile>
@@ -161,6 +174,9 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>true</linkpulse.enable>
+				<catalogue_ds.db>jdbc:mysql://sch-mysql01.dev.osl.basefarm.net:3306/alfa</catalogue_ds.db>                
+				<catalogue_ds.username>alfaweb</catalogue_ds.username>
+				<catalogue_ds.password>cwxDdTRv</catalogue_ds.password>
             </properties>
         </profile>
        <profile>
@@ -177,6 +193,9 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>true</linkpulse.enable>
+				<catalogue_ds.db>jdbc:mysql://sch-mysql01.dev.osl.basefarm.net:3306/alfa</catalogue_ds.db>                
+				<catalogue_ds.username>alfaweb</catalogue_ds.username>
+				<catalogue_ds.password>cwxDdTRv</catalogue_ds.password>
             </properties>
         </profile>
        <profile>
@@ -193,6 +212,9 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>true</linkpulse.enable>
+				<catalogue_ds.db>jdbc:mysql://sch-mysql01.dev.osl.basefarm.net:3306/alfa</catalogue_ds.db>                
+				<catalogue_ds.username>alfaweb</catalogue_ds.username>
+				<catalogue_ds.password>cwxDdTRv</catalogue_ds.password>
             </properties>
         </profile>
        <profile>
@@ -209,6 +231,9 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>true</linkpulse.enable>
+				<catalogue_ds.db>jdbc:mysql://sch-mysql01.dev.osl.basefarm.net:3306/alfa</catalogue_ds.db>                
+				<catalogue_ds.username>alfaweb</catalogue_ds.username>
+				<catalogue_ds.password>cwxDdTRv</catalogue_ds.password>
             </properties>
         </profile>
        <profile>
@@ -225,6 +250,9 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>true</linkpulse.enable>
+				<catalogue_ds.db>jdbc:mysql://sch-mysql01.dev.osl.basefarm.net:3306/alfa</catalogue_ds.db>                
+				<catalogue_ds.username>alfaweb</catalogue_ds.username>
+				<catalogue_ds.password>cwxDdTRv</catalogue_ds.password>
             </properties>
         </profile>
         <profile>
@@ -249,6 +277,9 @@
                 <linkpulse.url>http://go.sesam.no/</linkpulse.url>
                 <log.file>sesam</log.file>
                 <linkpulse.enable>true</linkpulse.enable>
+				<catalogue_ds.db>jdbc:mysql://sch-mysql01.dev.osl.basefarm.net:3306/alfa</catalogue_ds.db>                
+				<catalogue_ds.username>alfaweb</catalogue_ds.username>
+				<catalogue_ds.password>cwxDdTRv</catalogue_ds.password>
             </properties>
         </profile>
     </profiles>

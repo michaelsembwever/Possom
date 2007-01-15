@@ -41,9 +41,11 @@ import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
 import no.schibstedsok.searchportal.query.transform.QueryTransformer;
+import no.schibstedsok.searchportal.query.transform.CatalogueInfopageQueryTransformer;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
 import no.schibstedsok.searchportal.result.handler.AgeCalculatorResultHandler;
+import no.schibstedsok.searchportal.result.handler.CatalogueResultHandler;
 import no.schibstedsok.searchportal.result.handler.CategorySplitter;
 import no.schibstedsok.searchportal.result.handler.CombineNavigatorsHandler;
 import no.schibstedsok.searchportal.result.handler.ContentSourceCollector;
@@ -261,17 +263,21 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             // loop through modes.
             final NodeList modeList = root.getElementsByTagName("mode");
+            
             for (int i = 0; i < modeList.getLength(); ++i) {
                 final Element modeE = (Element) modeList.item(i);
                 final String id = modeE.getAttribute("id");
+                
                 LOG.info(INFO_PARSING_MODE + modeE.getLocalName() + " " + id);
                 final SearchMode inherit = getMode(modeE.getAttribute("inherit"));
+                
                 final SearchMode mode = new SearchMode(inherit);
+                
                 mode.setId(id);
                 mode.setExecutor(parseExecutor(modeE.getAttribute("executor"),
                         inherit != null ? inherit.getExecutor() : new SequentialSearchCommandExecutor()));
                 fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
-
+                
                 // setup new commands list for this mode
                 final Map<String,SearchConfiguration> modesCommands = new HashMap<String,SearchConfiguration>();
                 try{
@@ -283,9 +289,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                 // now loop through commands
                 for(CommandTypes commandType : CommandTypes.values()){
-                    final NodeList commandsList = modeE.getElementsByTagName(commandType.getXmlName());
+                	final NodeList commandsList = modeE.getElementsByTagName(commandType.getXmlName());
+
+                    
                     for (int j = 0; j < commandsList.getLength(); ++j) {
                         final Element commandE = (Element) commandsList.item(j);
+                    	
                         final SearchConfiguration sc = commandType.parseSearchConfiguration(context, commandE, mode);
                         modesCommands.put(sc.getName(), sc);
                         mode.addSearchConfiguration(sc);
@@ -673,6 +682,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(twsc, inherit, "waitOn", ParseType.String, commandE, null);
                     fillBeanProperty(twsc, inherit, "useMyChannels", ParseType.Boolean, commandE, "false");
                 }
+                
+                if(sc instanceof CatalogueSearchConfiguration){
+                	final CatalogueSearchConfiguration csc = (CatalogueSearchConfiguration) sc;
+                    fillBeanProperty(csc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
+                }
 
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
@@ -792,6 +806,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
+
     private static final class QueryTransformerFactory {
 
         private QueryTransformerFactory(){}
@@ -864,7 +879,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         TEXT_OUTPUT(TextOutputResultHandler.class),
         VELOCITY_OUTPUT(VelocityResultHandler.class),
         FIELD_ESCAPE(FieldEscapeHandler.class),
-        XML_OUTPUT(XmlOutputResultHandler.class);
+        XML_OUTPUT(XmlOutputResultHandler.class),
+        CATALOGUE(CatalogueResultHandler.class);
 
 
         private final Class<? extends ResultHandler> clazz;
@@ -885,6 +901,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 LOG.info(INFO_PARSING_RESULT_HANDLER + xmlName);
                 final ResultHandler handler = clazz.newInstance();
                 switch(this){
+                	case CATALOGUE: 
+                		final CatalogueResultHandler crh = (CatalogueResultHandler) handler;
+                		break;
+                		
                     case ADD_DOC_COUNT:
                         final AddDocCountModifier adc = (AddDocCountModifier) handler;
                         adc.setModifierName(rh.getAttribute("modifier"));
