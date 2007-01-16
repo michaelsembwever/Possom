@@ -5,5 +5,5 @@
 #  Used by update-searchdev.sh & update-production.sh
 #
 
-VERSION=2.8-SNAPSHOT
+VERSION=2.9-SNAPSHOT
 export VERSION
