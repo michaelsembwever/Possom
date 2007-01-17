@@ -30,6 +30,8 @@ public final class SiteConfiguration implements SiteKeyedFactory{
     public static final String PUBLISH_SYSTEM_HOST = "publishing.system.host-header";
     private static final String SITE_LOCALE_SUPPORTED = "site.locale.supported";
 
+    /** Property key to find out if this Site is a sitesearch**/
+    public static final String IS_SITESEARCH_KEY = "site.issitesearch";
     public interface Context extends BaseContext, PropertiesContext, SiteContext {
     }
 

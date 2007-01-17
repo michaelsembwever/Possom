@@ -210,7 +210,7 @@ public final class SearchServlet extends HttpServlet {
         // check if this is a sitesearch
         final Properties props = SiteConfiguration.valueOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class, ctx)).getProperties();
-        final boolean isSitesearch = Boolean.valueOf(props.getProperty(Site.IS_SITESEARCH_KEY)).booleanValue();
+        final boolean isSitesearch = Boolean.valueOf(props.getProperty(SiteConfiguration.IS_SITESEARCH_KEY)).booleanValue();
         
         if (qParam == null) {
             redirect = null != request.getContextPath()
