@@ -89,16 +89,7 @@ public final class SearchServlet extends HttpServlet {
 
 
         // TODO Break the method down. It is way too long for a controlling class.
-
-        if (!isEmptyQuery(request, response)) {
-
-            LOG.trace("doGet()");
-            LOG.debug("Character encoding ="  + request.getCharacterEncoding());
-
-            final StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
-
-            final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+          final Site site = (Site) request.getAttribute(Site.NAME_KEY);
             // BaseContext providing SiteContext and ResourceContext.
             //  We need it casted as a SiteContext for the ResourceContext code to be happy.
             final SiteContext genericCxt = new SiteContext(){
@@ -120,6 +111,15 @@ public final class SearchServlet extends HttpServlet {
                     return site;
                 }
             };
+        if (!isEmptyQuery(request, response,genericCxt)) {
+
+            LOG.trace("doGet()");
+            LOG.debug("Character encoding ="  + request.getCharacterEncoding());
+
+            final StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+
+            
 
             FactoryReloads.performReloads(genericCxt, request.getParameter("reload"));
 
@@ -200,18 +200,24 @@ public final class SearchServlet extends HttpServlet {
 
     private static boolean isEmptyQuery(
             final HttpServletRequest request,
-            final HttpServletResponse response) throws IOException{
+            final HttpServletResponse response,
+            final SiteContext ctx) throws IOException{
 
         String redirect = null;
         final String qParam = request.getParameter("q");
         final String cParm = request.getParameter("c");
 
+        // check if this is a sitesearch
+        final Properties props = SiteConfiguration.valueOf(
+                        ContextWrapper.wrap(SiteConfiguration.Context.class, ctx)).getProperties();
+        final boolean isSitesearch = Boolean.valueOf(props.getProperty(Site.IS_SITESEARCH_KEY)).booleanValue();
+        
         if (qParam == null) {
             redirect = null != request.getContextPath()
                     ? request.getContextPath()
                     : "/";
 
-        }else if (null != cParm && ("d".equals(cParm) || "g".equals(cParm)) ) {
+        }else if (null != cParm && ("d".equals(cParm) || "g".equals(cParm)) && !isSitesearch) {
             // Extra check for the Norwegian web search. Search with an empty query string
             // should return the first page.
             if (qParam.trim().length() == 0) {

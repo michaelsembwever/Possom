@@ -54,7 +54,8 @@ public final class Site {
     /** Name of the resource to find the PARENT_SITE_KEY property. **/
     public static final String CONFIGURATION_FILE = "configuration.properties";
     private static final String CORE_CONF_FILE = "core.properties";
-
+    /** Property key to find out if this Site is a sitesearch**/
+    public static final String IS_SITESEARCH_KEY = "site.issitesearch";
     private static final Map<String,Site> INSTANCES = new HashMap<String,Site>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
