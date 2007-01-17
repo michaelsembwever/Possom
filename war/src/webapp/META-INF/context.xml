@@ -1,4 +1,4 @@
-<Context path="/" debug="0">
+﻿<Context path="/" debug="0">
        <Resource name="jdbc/catalogue" auth="Container"
               type="javax.sql.DataSource" driverClassName="com.mysql.jdbc.Driver"
               url="@catalogue_ds.db@"
