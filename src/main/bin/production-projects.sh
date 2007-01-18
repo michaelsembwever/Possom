@@ -38,6 +38,7 @@ PROJECTS[29]="genericno.sesam.no"
 PROJECTS[30]="genericse.sesam.se"
 PROJECTS[31]="genericsitesearch.sesam.se"
 PROJECTS[32]="search-portal-war"
+PROJECTS[33]="metro.sesam.se"
 
 CONTEXTS[0]="$RIG_DOMAIN.se.war"
 CONTEXTS[1]="aftonbladet.$RIG_DOMAIN.se.war"
@@ -72,5 +73,6 @@ CONTEXTS[29]="genericno.$RIG_DOMAIN.no.war"
 CONTEXTS[30]="genericse.$RIG_DOMAIN.se.war"
 CONTEXTS[31]="genericsitesearch.$RIG_DOMAIN.se.war"
 CONTEXTS[32]="ROOT.war"
+CONTEXTS[33]="metro.$RIG_DOMAIN.se.war"
 
 export PROJECTS CONTEXTS
