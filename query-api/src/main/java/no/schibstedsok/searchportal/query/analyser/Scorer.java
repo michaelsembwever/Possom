@@ -59,7 +59,7 @@ public final class Scorer extends AbstractReflectionVisitor {
 
         report("   <predicate-add name=\"" + toString(predicate) + "\">"
                 + predicateScore.getScore()
-                + "</predicate>\n");
+                + "</predicate-add>\n");
         
         score += predicateScore.getScore();
     }
@@ -73,7 +73,7 @@ public final class Scorer extends AbstractReflectionVisitor {
 
         report("   <predicate-minus name=\"" + toString(predicate) + "\">"
                 + predicateScore.getScore()
-                + "</predicate>\n");
+                + "</predicate-minus>\n");
 
         score -= predicateScore.getScore();
     }
@@ -87,7 +87,7 @@ public final class Scorer extends AbstractReflectionVisitor {
 
         report("   <predicate-error name=\"" + toString(predicate) + "\">±"
                 + predicateScore.getScore()
-                + "</predicate>\n");
+                + "</predicate-error>\n");
     }
     
     private void report(final String msg){
