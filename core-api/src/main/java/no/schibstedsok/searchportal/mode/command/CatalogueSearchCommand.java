@@ -9,6 +9,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import no.fast.ds.search.ISearchParameters;
+import no.fast.ds.search.SearchParameter;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
@@ -42,6 +44,7 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
 	        final Query query = rq.getQuery();
 	
 	    	queryTwo = query.getQueryString();
+
     	}
    
     }

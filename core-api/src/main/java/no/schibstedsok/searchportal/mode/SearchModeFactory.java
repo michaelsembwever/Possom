@@ -9,6 +9,7 @@ import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration
 import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlocketSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.CatalogueAdsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.DailyWordConfiguration;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
@@ -368,8 +369,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         BLOG_COMMAND(BlogSearchConfiguration.class),
         PRISJAKT_COMMAND(PrisjaktSearchConfiguration.class),
         BLOCKET_COMMAND(BlocketSearchConfiguration.class),
-        CATALOGUE_COMMAND(CatalogueSearchConfiguration.class);
-
+        CATALOGUE_COMMAND(CatalogueSearchConfiguration.class),
+        CATALOGUE_ADS_COMMAND(CatalogueAdsSearchConfiguration.class);
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
@@ -687,6 +688,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 	final CatalogueSearchConfiguration csc = (CatalogueSearchConfiguration) sc;
                     fillBeanProperty(csc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
                 }
+                if(sc instanceof CatalogueAdsSearchConfiguration){
+                	final CatalogueAdsSearchConfiguration casc = (CatalogueAdsSearchConfiguration) sc;
+                    fillBeanProperty(casc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
+                }                
+                
+                
 
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
