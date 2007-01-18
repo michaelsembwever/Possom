@@ -49,7 +49,7 @@ public class CatalogueAdsSearchCommand extends FastSearchCommand {
 	
 	    	queryTwo = query.getQueryString();
     	}else{
-    		queryTwo = " ingen";
+    		queryTwo = "ingensteds";
     	}
 	    	
     }

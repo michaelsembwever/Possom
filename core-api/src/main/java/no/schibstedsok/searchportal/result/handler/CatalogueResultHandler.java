@@ -3,41 +3,60 @@ package no.schibstedsok.searchportal.result.handler;
 
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
-
+import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.ProductResult;
 import no.schibstedsok.searchportal.result.ProductResultItem;
 import no.schibstedsok.searchportal.result.ProductSearchResult;
 import no.schibstedsok.searchportal.result.ProductSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
+
+import org.apache.log4j.Logger;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ * Resulthandler to fetch sales from the catalogue sales system.
+ * This class is called after a search command with <catalogue/> 
+ * resulthandler tag is defined. It loops through all result
+ * items and load data with sql/jdbc from the sales system.
+ * 
+ * @todo Replace all JDBC/SQL code with call to Webservice in
+ * 		 sales system.
+ * 
+ * @author <a href="mailto:daniele@conduct.no">Daniel Engfeldt</a>
  * @version <tt>$Revision: 3436 $</tt>
  */
 public final class CatalogueResultHandler implements ResultHandler {
     
     private static final Logger LOG = Logger.getLogger(CatalogueResultHandler.class);
+    private String url = null;
+    private String username = null;
+    private String password = null;
     
     public void handleResult(final Context cxt, final Map parameters) {
     	LOG.info("Starter Catalogue ResultHandler.");
+    	
+        final SiteConfiguration siteConf
+    	= SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+
+        url = siteConf.getProperty("catalogue_ds.db");
+		username = siteConf.getProperty("catalogue_ds.username");
+		password = siteConf.getProperty("catalogue_ds.password");
 
     	final SearchResult result = cxt.getSearchResult();
-
         fetchProducts(result);
-        
+
     }
 
     
@@ -48,7 +67,7 @@ public final class CatalogueResultHandler implements ResultHandler {
      */
     private void fetchProducts(SearchResult result) {
         LOG.info("fetchProducts");
-		
+
         // if result is missing, just exit this method
         if(result == null)
     		return;
@@ -64,11 +83,13 @@ public final class CatalogueResultHandler implements ResultHandler {
 		//placeholder for products
 		ProductResult products = new ProductSearchResult();    	
 		try {
-			InitialContext ctxt = new InitialContext();
-    		DataSource ds = (DataSource) ctxt.lookup("java:comp/env/jdbc/catalogue");
-    		
-    		con = ds.getConnection();
+		
+				
+			Class.forName("com.mysql.jdbc.Driver");
 
+	        con 
+	      		= DriverManager.getConnection(url,username,password);    		
+    		
 			stmt = con.prepareStatement("select S.companyId, C.organizationNo, C.businessName, S.textShort, S.text1" +
 					  " from AG_SALE S, AG_COMPANY C " +
 					  " where C.companyId = S.companyId and C.organizationNo = ? and toDate > now() and S.text1 is not null");
@@ -78,7 +99,7 @@ public final class CatalogueResultHandler implements ResultHandler {
 	
 					
 					stmt.setString(1,resultItem.getField("iyporgnr"));
-					LOG.info("Hent produkter for firma med organisasjonsnr> "+resultItem.getField("iyporgnr"));
+					LOG.info("Hent produkter for firma med organisasjonsnr: "+resultItem.getField("iyporgnr"));
 					
 					res = stmt.executeQuery();
 					LOG.info("sql er kjørt");
@@ -113,9 +134,8 @@ public final class CatalogueResultHandler implements ResultHandler {
 				
 			} catch (SQLException e) {
 				LOG.error("SQLException, Feil ved uthenting av produkter",e);
-
-			} catch (NamingException e) {
-				LOG.error("NamingException, Feil ved uthenting av produkter",e);
+			}catch(ClassNotFoundException e){
+				LOG.error("ClassNotFoundException, Feil ved uthenting av jdbc driver",e);
 			}finally {
 			      try {if (res != null) res.close();} catch (SQLException e) { LOG.error("Could not close ResultSet",e);}
 			      try {if (stmt != null) stmt.close();} catch (SQLException e) { LOG.error("Could not close Statement",e);}
