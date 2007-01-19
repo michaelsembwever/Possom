@@ -54,7 +54,6 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
      */
     public PlatefoodPPCSearchCommand(final Context cxt, final Map parameters) {
         super(cxt, parameters);
-
     }
 
     /**
@@ -69,7 +68,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         final ReconstructedQuery rq = createQuery(getTransformedQuery());
 
         final PlatefoodPPCSearchConfiguration ppcConfig
-                = (PlatefoodPPCSearchConfiguration) context.getSearchConfiguration();
+            = (PlatefoodPPCSearchConfiguration) context.getSearchConfiguration();
 
 
         top = rq.getEngine().evaluateQuery(TokenPredicate.LOAN_TRIGGER, rq.getQuery());
@@ -79,6 +78,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         try {
             final Document doc = getXmlResult();
             final PlatefoodSearchResult searchResult = new PlatefoodSearchResult(this, top);
+
             if (doc != null) {
                 final Element elem = doc.getDocumentElement();
                 final NodeList list = elem.getElementsByTagName("chan:impression");
@@ -126,10 +126,9 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
                     url.append("&locationTerm=");
                     url.append(URLEncoder.encode(location, ppcConfig.getEncoding()));
                 }
-
             } else {
                 url.append("&searchTerm=");
-                url.append(URLEncoder.encode(getTransformedQuery().replace(' ', '+'), ppcConfig.getEncoding()));
+                url.append(URLEncoder.encode(getTransformedQuery(), ppcConfig.getEncoding()));
             }
 
             url.append("&page=1");
