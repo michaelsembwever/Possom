@@ -8,24 +8,20 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import java.util.Formatter;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
-import no.fast.ds.search.SearchParameter;
-import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.Visitor;
-import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.result.SearchResult;
+
+import org.apache.log4j.Logger;
 
 /**
  *
  * A search command for the web search.
  * @author magnuse
  */
-public class CatalogueAdsSearchCommand extends FastSearchCommand {
+public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 	
     private static final Logger LOG = Logger.getLogger(CatalogueAdsSearchCommand.class);
     
@@ -55,23 +51,76 @@ public class CatalogueAdsSearchCommand extends FastSearchCommand {
     }
 
     
+    String subQuery1 = "";
+    String subQuery2 = "";
+    String subQuery3 = "";
+    String subQuery4 = "";
+    String subQuery5 = "";
+    
     /**
      * Legg til  iypcfspkeywords forran alle ord.
      *
      */
     protected void visitImpl(final LeafClause clause) {
-    	appendToQueryRepresentation("iypcfspkeywords:");
-        super.visitImpl(clause);
-                
+    	
+    	
+    	subQuery1 += (subQuery1.length()>0?QL_AND:" ") + " iypcfspkeywords1:"+clause.getTerm()+" ";
+    	subQuery2 += (subQuery2.length()>0?QL_AND:" ") + " iypcfspkeywords2:"+clause.getTerm()+" ";
+    	subQuery3 += (subQuery3.length()>0?QL_AND:" ") + " iypcfspkeywords3:"+clause.getTerm()+" ";
+    	subQuery4 += (subQuery4.length()>0?QL_AND:" ") + " iypcfspkeywords4:"+clause.getTerm()+" ";
+    	subQuery5 += (subQuery5.length()>0?QL_AND:" ") + " iypcfspkeywords5:"+clause.getTerm()+" ";    	
     }
     
     
-    /**
-     * 	hent hele den transformerte querien.
-     * 	Den innholder query to også for qeo.
-     */
+    @Override
     public String getTransformedQuery() {
-    	// hvis det finnes en ekstra query, legg til denne i søket.    	
-        return queryTwo!=null ? super.getTransformedQuery()+" iypcfspgeo:\""+queryTwo+"\"" : super.getTransformedQuery();
+    	StringBuilder sb = new StringBuilder();
+    	sb.append("( ");
+    	sb.append(" (%5$s AND iypspgeo5:%6$s) OR ");
+    	sb.append(" ( ");
+    	sb.append("  (%5$s AND iypspgeo5:ingensteds) ANDNOT ");
+    	sb.append("  (%5$s AND iypspgeo5:\"%6$s\") ");
+    	sb.append(" ) ");
+    	sb.append(") ");
+    	sb.append("OR ");
+    	sb.append("( ");
+    	sb.append(" (%4$s AND iypspgeo4:%6$s) OR ");
+    	sb.append(" ( ");
+    	sb.append("  (%4$s AND iypspgeo4:ingensteds) ANDNOT ");
+    	sb.append("  (%4$s AND iypspgeo4:\"%6$s\") ");
+    	sb.append(" ) ");
+    	sb.append(") ");
+    	sb.append("OR ");
+    	sb.append("( ");
+    	sb.append(" (%3$s AND iypspgeo3:%6$s) OR ");
+    	sb.append(" ( ");
+    	sb.append("  (%3$s AND iypspgeo3:ingensteds) ANDNOT ");
+    	sb.append("  (%3$s AND iypspgeo3:\"%6$s\") ");
+    	sb.append(" ) ");
+    	sb.append(") ");
+    	sb.append("OR ");
+    	sb.append("( ");
+    	sb.append(" (%2$s AND iypspgeo2:\"%6$s\") OR ");
+    	sb.append(" ( ");
+    	sb.append("  (%2$s AND iypspgeo2:ingensteds) ANDNOT ");
+    	sb.append("  (%2$s AND iypspgeo2:\"%6$s\") ");
+    	sb.append(" ) ");
+    	sb.append(") ");
+    	sb.append("OR ");
+    	sb.append("( ");
+    	sb.append(" (%1$s AND iypspgeo1:\"%6$s\") OR ");
+    	sb.append(" ( ");
+    	sb.append("  (%1$s AND iypspgeo1:ingensteds) ANDNOT ");
+    	sb.append("  (%1$s AND iypspgeo1:\"%6$s\") ");
+    	sb.append(" ) ");
+    	sb.append(")");    	
+    	
+    	StringBuilder result = new StringBuilder();
+    	Formatter formatter = new Formatter(result);
+
+    	formatter.format(sb.toString(), subQuery1, subQuery2, subQuery3,subQuery4, subQuery5,queryTwo);
+    	
+    	LOG.info("Sponsorquery: "+result);
+    	return result.toString();
     }
 }

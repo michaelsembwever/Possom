@@ -11,6 +11,7 @@ import java.util.Map;
 
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
+import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
@@ -26,8 +27,9 @@ import org.apache.log4j.Logger;
 public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
-    private String queryTwo=null;
-    
+    private String queryTwo = null;
+    private String queryName = "";
+    private boolean searchForName = false;
 
     /** Creates a new catalogue search command.
      * TODO. Rewrite from scratch. This is insane.
@@ -52,13 +54,23 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
     /** TODO comment me. **/
     public SearchResult execute() {
         LOG.info("execute()");
-    	LOG.info("Catalogue query is :" + getTransformedQuery());     
     	
 
     	
-        // kør vanligt søk.
-        SearchResult result = super.execute();
-		
+        // kør vanligt søk, keywords.
+        searchForName=false;
+    	LOG.info("Søk med keyword query is :" + getTransformedQuery());     
+    	SearchResult result = super.execute();
+        
+        // søk etter firmanavn
+    	searchForName=true;
+    	LOG.info("Søk med firmanavn query is :" + getTransformedQuery());     
+        SearchResult nameQueryResult = super.execute();
+        
+        // legg til navnsøk.
+        result.getResults().addAll(nameQueryResult.getResults());
+        result.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());
+        
         // konverter til denne.
         List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
 		
@@ -89,11 +101,28 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
     /** TODO comment me. **/
     public String getTransformedQuery() {
     	LOG.info("Catalogue Transformed Query");
+    	String query=null;
     	
-    	// hvis det finnes en ekstra query, legg til denne i søket.    	
-        return queryTwo!=null ? super.getTransformedQuery()+" iypcfgeo:\""+queryTwo+"\"" : super.getTransformedQuery();
+    	if(searchForName){
+    		// hvis det finnes en ekstra query, legg til denne i søket.    	
+    		query = queryTwo!=null ? queryName +" iypcfgeo:\""+queryTwo+"\"" : queryName;
+    	}else{
+    		query = queryTwo!=null ? super.getTransformedQuery()+" iypcfgeo:\""+queryTwo+"\"" : super.getTransformedQuery();    		
+    	}
+    	
+    	return query;
     }
     
+    /**
+     * Legg til  iypcfspkeywords forran alle ord.
+     *
+     */
+    protected void visitImpl(final LeafClause clause) {
+//    	
+    	queryName += " iypcfnavn:"+clause.getTerm()+" ";
+    	appendToQueryRepresentation(clause.getTerm());
+//    	super.visitImpl(clause);
+    }
     
 
 }
