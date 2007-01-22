@@ -93,9 +93,6 @@ public abstract class AbstractSearchCommandTest extends SiteTestCase {
             public Site getSite() {
                 return getTestingSite();
             }
-            public SearchTabFactory getLeafSearchTabFactory(){
-                return null;
-            }
         };
     }
 

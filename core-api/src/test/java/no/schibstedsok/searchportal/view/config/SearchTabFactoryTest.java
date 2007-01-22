@@ -156,9 +156,6 @@ public final class SearchTabFactoryTest extends SiteTestCase {
                         ? getTestingSite()
                         : Site.valueOf(siteConstructorContext, getTestingSite().getName(), locale);
             }
-            public SearchTabFactory getLeafSearchTabFactory(){
-                return null;
-            }
         };
 
         final SearchTabFactory result = SearchTabFactory.valueOf(cxt);

@@ -82,9 +82,6 @@ public final class SearchModeTest extends SiteTestCase {
             public Site getSite() {
                 return getTestingSite();
             }
-            public SearchTabFactory getLeafSearchTabFactory(){
-                return null;
-            }
         };
 
         final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no", new HashMap());
@@ -137,9 +134,6 @@ public final class SearchModeTest extends SiteTestCase {
             }
             public Site getSite() {
                 return getTestingSite();
-            }
-            public SearchTabFactory getLeafSearchTabFactory(){
-                return null;
             }
         };
 

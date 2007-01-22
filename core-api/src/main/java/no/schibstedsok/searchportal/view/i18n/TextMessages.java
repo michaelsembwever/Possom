@@ -73,10 +73,10 @@ public final class TextMessages {
                 return site;
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
 
@@ -99,14 +99,14 @@ public final class TextMessages {
             loadKeys(cxt.getSite().getLocale());
 
             // import messages from site's preferred locale [will not override already loaded messages]
-            final SiteConfiguration siteConf 
+            final SiteConfiguration siteConf
                     =  SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
-            final String defaultLocale = siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT); 
-            
-            assert null != defaultLocale 
-                    : SiteConfiguration.SITE_LOCALE_DEFAULT + " null in " 
+            final String defaultLocale = siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT);
+
+            assert null != defaultLocale
+                    : SiteConfiguration.SITE_LOCALE_DEFAULT + " null in "
                     + context.getSite() + ' ' + siteConf.getProperties();
-            
+
             final String[] prefLocale = defaultLocale.split("_");
 
 
@@ -155,8 +155,8 @@ public final class TextMessages {
 
         final PropertiesLoader loader
                 = context.newPropertiesLoader(
-                context, 
-                MESSAGE_RESOURCE + "_" + locale.toString() + ".properties", 
+                context,
+                MESSAGE_RESOURCE + "_" + locale.toString() + ".properties",
                 keys);
         loader.abut();
         //loader.getProperties();

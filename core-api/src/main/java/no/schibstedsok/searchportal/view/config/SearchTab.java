@@ -1,5 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
-/*
+/* Copyright (2006) Schibsted Søk AS
  * SearchTab.java
  *
  * Created on 20 April 2006, 07:55
@@ -33,6 +32,96 @@ public final class SearchTab {
 
 
     // Attributes ----------------------------------------------------
+
+    /**
+     * Holds value of property id.
+     */
+    private final String id;
+    
+    /**
+     * Holds value of property pageSize.
+     */
+    private final int pageSize;
+
+    /**
+     * Holds value of property enrichmentLimit.
+     */
+    private final int enrichmentLimit;
+
+    /**
+     * Holds value of property enrichmentOnTop.
+     */
+    private final int enrichmentOnTop;
+
+    /**
+     * Holds value of property adCommand.
+     */
+    private final String adCommand;
+
+    /**
+     * Holds value of property adLimit.
+     */
+    private final int adLimit;
+
+    /**
+     * Holds value of property adOnTop.
+     */
+    private final int adOnTop;
+
+    /**
+     * Holds value of property inherit.
+     */
+    private final SearchTab inherit;
+
+    /**
+     * Holds value of property key.
+     */
+    private final String key;
+
+    /**
+     * Holds value of property parentKey.
+     */
+    private final String parentKey;
+
+    /**
+     * Holds value of property rssResultName.
+     */
+    private final String rssResultName;
+
+    /**
+     * Holds the value of property rssHidden.
+     */
+    private final boolean rssHidden;
+
+    /**
+     * Holds the value of property absoluteOrdering.
+     */
+    private final boolean absoluteOrdering;
+    
+    /**
+     * Holds value of property enrichments.
+     */
+    private final Collection<EnrichmentHint> enrichments = new ArrayList<EnrichmentHint> ();
+
+    /**
+     * Holds value of property mode.
+     */
+    private final String mode;
+
+    /**
+     * Holds value of property navigations.
+     */
+    private final Collection<NavigatorHint> navigators = new ArrayList<NavigatorHint>();
+
+    /**
+     * Holds value of property enrichmentOnTopScore.
+     */
+    private int enrichmentOnTopScore;
+
+    /**
+     * Holds value of property css.
+     */
+    private final List<String> css = new ArrayList<String>();
 
     // Static --------------------------------------------------------
 
@@ -82,7 +171,8 @@ public final class SearchTab {
         this.adLimit = adLimit >=0 || inherit == null ? adLimit : inherit.adLimit;
         this.adOnTop = adOnTop >=0 || inherit == null ? adOnTop : inherit.adOnTop;
         if(inherit != null){
-            this.navigators.addAll(inherit.navigators);
+            // we cannot inherit navigators because there require a live reference to the applicable SearchTabFactory
+            // but we do inherit enrichments and css
             this.enrichments.addAll(inherit.enrichments);
             this.css.addAll(inherit.css);
         }
@@ -94,10 +184,7 @@ public final class SearchTab {
 
     // Getters --------------------------------------------------------
 
-    /**
-     * Holds value of property id.
-     */
-    private final String id;
+    
 
     /**
      * Getter for property id.
@@ -108,22 +195,12 @@ public final class SearchTab {
     }
 
     /**
-     * Holds value of property pageSize.
-     */
-    private final int pageSize;
-
-    /**
      * Getter for property pageSize.
      * @return Value of property pageSize.
      */
     public int getPageSize() {
         return this.pageSize;
     }
-
-    /**
-     * Holds value of property enrichmentLimit.
-     */
-    private final int enrichmentLimit;
 
     /**
      * Getter for property enrichmentLimit.
@@ -134,22 +211,12 @@ public final class SearchTab {
     }
 
     /**
-     * Holds value of property enrichmentOnTop.
-     */
-    private final int enrichmentOnTop;
-
-    /**
      * Getter for property enrichmentOnTop.
      * @return Value of property enrichmentOnTop.
      */
     public int getEnrichmentOnTop() {
         return this.enrichmentOnTop;
     }
-
-    /**
-     * Holds value of property adCommand.
-     */
-    private final String adCommand;
 
     /**
      * Getter for property adCommand.
@@ -160,22 +227,12 @@ public final class SearchTab {
     }
 
     /**
-     * Holds value of property adLimit.
-     */
-    private final int adLimit;
-
-    /**
      * Getter for property adsLimit.
      * @return Value of property adsLimit.
      */
     public int getAdLimit() {
         return this.adLimit;
     }
-
-    /**
-     * Holds value of property adOnTop.
-     */
-    private final int adOnTop;
 
     /**
      * Getter for property adOnTop.
@@ -186,22 +243,12 @@ public final class SearchTab {
     }
 
     /**
-     * Holds value of property inherit.
-     */
-    private final SearchTab inherit;
-
-    /**
      * Getter for property inherit.
      * @return Value of property inherit.
      */
     public SearchTab getInherit() {
         return this.inherit;
     }
-
-    /**
-     * Holds value of property key.
-     */
-    private final String key;
 
     /**
      * Getter for property key.
@@ -217,11 +264,6 @@ public final class SearchTab {
     }
 
     /**
-     * Holds value of property parentKey.
-     */
-    private final String parentKey;
-
-    /**
      * Getter for property parentKey.
      * @return Value of property parentKey.
      */
@@ -230,19 +272,12 @@ public final class SearchTab {
     }
 
     /**
-     * Holds value of property rssResultName
-     */
-    private final String rssResultName;
-
-    /**
      * Getter for property rssResultName.
      * @return Value of property rssResultName.
      */
     public String getRssResultName() {
         return rssResultName;
     }
-
-    private final boolean rssHidden;
 
     /**
      * Returns true if there should be no visible links to the rss version of this tab.
@@ -258,11 +293,6 @@ public final class SearchTab {
     }
 
     /**
-     * Holds the value of property absoluteOrdering
-     */
-    private final boolean absoluteOrdering;
-    
-    /**
      * Getter for property absoluteOrdering
      */
     public boolean getAbsoluteOrdering() {
@@ -270,11 +300,6 @@ public final class SearchTab {
     }
     
     
-    /**
-     * Holds value of property enrichments.
-     */
-    private final Collection<EnrichmentHint> enrichments = new ArrayList<EnrichmentHint> ();
-
     /**
      * Getter for property enrichments.
      * @return Value of property enrichments.
@@ -294,22 +319,12 @@ public final class SearchTab {
     }
 
     /**
-     * Holds value of property mode.
-     */
-    private final String mode;
-
-    /**
      * Getter for property mode.
      * @return Value of property mode.
      */
     public String getMode() {
         return this.mode;
     }
-
-    /**
-     * Holds value of property navigations.
-     */
-    private final Collection<NavigatorHint> navigators = new ArrayList<NavigatorHint>();
 
     /**
      * Getter for property navigations.
@@ -350,11 +365,6 @@ public final class SearchTab {
     }
 
     /**
-     * Holds value of property enrichmentOnTopScore.
-     */
-    private int enrichmentOnTopScore;
-
-    /**
      * Getter for property enrichmentScoreOnTop.
      * @return Value of property enrichmentScoreOnTop.
      */
@@ -371,11 +381,6 @@ public final class SearchTab {
         Collections.reverse(ancestry);
         return Collections.unmodifiableList(ancestry);
     }
-
-    /**
-     * Holds value of property css.
-     */
-    private final List<String> css = new ArrayList<String>();
 
     /**
      * Getter for property css.
@@ -458,6 +463,8 @@ public final class SearchTab {
 
     /** Immutable POJO holding navigation information for a given tab **/
     public static final class NavigatorHint {
+        
+        /** Plain constructor. */
         public NavigatorHint(
                 final String id,
                 final String name,
@@ -480,6 +487,25 @@ public final class SearchTab {
             this.urlSuffix = urlSuffix;
             this.image = image;
             this.priority = priority;
+            this.tabFactory = tabFactory;
+        }
+        
+        /** Copy constructor. */
+        public NavigatorHint(
+                final NavigatorHint copy,
+                final SearchTabFactory tabFactory){
+            
+            
+            assert null != tabFactory : "Must supply a tabFactory for getTab() to work";
+
+            this.id = copy.id;
+            this.name = copy.name;
+            this.displayName = copy.displayName;
+            this.match = copy.match;
+            this.tabName = copy.tabName;
+            this.urlSuffix = copy.urlSuffix;
+            this.image = copy.image;
+            this.priority = copy.priority;
             this.tabFactory = tabFactory;
         }
 

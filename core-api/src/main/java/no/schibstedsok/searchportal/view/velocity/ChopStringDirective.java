@@ -61,8 +61,16 @@ public final class ChopStringDirective extends Directive {
         final int argCount = node.jjtGetNumChildren();
         
         if (argCount > 0 && argCount < 4) {
+            
+            final Object nodeValue = node.jjtGetChild(0).value(context);
 
-            final String s = node.jjtGetChild(0).value(context).toString();
+            if(nodeValue == null) {
+                // No need to do anything since the string is empty anyway 
+                writer.write("");
+                return true;
+
+            }
+            final String s = nodeValue.toString();
             
             final int length = argCount > 1
                     ? Integer.parseInt(node.jjtGetChild(1).value(context).toString())

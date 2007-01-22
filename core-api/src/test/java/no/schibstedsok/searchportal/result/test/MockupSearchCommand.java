@@ -57,9 +57,6 @@ public class MockupSearchCommand extends SiteTestCase implements SearchCommand {
         public Site getSite() {
             return getTestingSite();
         }
-        public SearchTabFactory getLeafSearchTabFactory(){
-            return null;
-        }
     };
 
     private RunningQuery query;

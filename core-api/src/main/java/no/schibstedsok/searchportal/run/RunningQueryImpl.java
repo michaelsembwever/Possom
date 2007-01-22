@@ -237,90 +237,95 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             final boolean isRss = parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).equals("rss");
 
             for (SearchConfiguration searchConfiguration : context.getSearchMode().getSearchConfigurations()) {
-
+                
                 final SearchConfiguration config = searchConfiguration;
                 final String configName = config.getName();
 
-                // If output is rss, only run the one command that will produce the rss output.
-                if (!isRss || context.getSearchTab().getRssResultName().equals(configName)) {
+                try{
 
-                    hits.put(config.getName(), Integer.valueOf(0));
+                    // If output is rss, only run the one command that will produce the rss output.
+                    if (!isRss || context.getSearchTab().getRssResultName().equals(configName)) {
 
-                    final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
-                            SearchCommand.Context.class,
-                            context,
-                            new BaseContext() {
-                                public SearchConfiguration getSearchConfiguration() {
-                                    return config;
+                        hits.put(config.getName(), Integer.valueOf(0));
+
+                        final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
+                                SearchCommand.Context.class,
+                                context,
+                                new BaseContext() {
+                                    public SearchConfiguration getSearchConfiguration() {
+                                        return config;
+                                    }
+
+                                    public RunningQuery getRunningQuery() {
+                                        return RunningQueryImpl.this;
+                                    }
+
+                                    public Query getQuery() {
+                                        return queryObj;
+                                    }
+
+                                    public TokenEvaluationEngine getTokenEvaluationEngine() {
+                                        return engine;
+                                    }
+                                }
+                        );
+
+                        final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
+
+                        if (eHint != null && !queryObj.isBlank()) {
+
+                            final AnalysisRule rule = rules.getRule(eHint.getRule());
+
+                            if (context.getSearchMode().isAnalysis()
+                                    && "0".equals(parameters.get("offset"))
+                                    && eHint.getWeight() > 0) {
+
+                                int score = 0;
+
+                                if (null == scoresByRule.get(eHint.getRule())) {
+
+                                    final StringBuilder analysisRuleReport = new StringBuilder();
+
+                                    score = rule.evaluate(queryObj, ContextWrapper.wrap(
+                                            AnalysisRule.Context.class, 
+                                            new BaseContext(){
+                                                public String getRuleName(){
+                                                    return eHint.getRule();
+                                                }
+                                                public Appendable getReportBuffer(){
+                                                    return analysisRuleReport;
+                                                }
+                                            },
+                                            searchCmdCxt));
+
+                                    scoresByRule.put(eHint.getRule(), score);
+                                    analysisReport.append(analysisRuleReport);
+
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
+                                    }
+
+                                } else {
+                                    score = scoresByRule.get(eHint.getRule());
                                 }
 
-                                public RunningQuery getRunningQuery() {
-                                    return RunningQueryImpl.this;
+                                scores.put(config.getName(), score);
+
+                                if (config.isAlwaysRun() || score >= eHint.getThreshold()) {
+                                    commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                                 }
 
-                                public Query getQuery() {
-                                    return queryObj;
-                                }
-
-                                public TokenEvaluationEngine getTokenEvaluationEngine() {
-                                    return engine;
-                                }
-                            }
-                    );
-
-                    final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
-
-                    if (eHint != null && !queryObj.isBlank()) {
-
-                        final AnalysisRule rule = rules.getRule(eHint.getRule());
-
-                        if (context.getSearchMode().isAnalysis()
-                                && "0".equals(parameters.get("offset"))
-                                && eHint.getWeight() > 0) {
-
-                            int score = 0;
-
-                            if (null == scoresByRule.get(eHint.getRule())) {
-                                
-                                final StringBuilder analysisRuleReport = new StringBuilder();
-
-                                score = rule.evaluate(queryObj, ContextWrapper.wrap(
-                                        AnalysisRule.Context.class, 
-                                        new BaseContext(){
-                                            public String getRuleName(){
-                                                return eHint.getRule();
-                                            }
-                                            public Appendable getReportBuffer(){
-                                                return analysisRuleReport;
-                                            }
-                                        },
-                                        searchCmdCxt));
-                                        
-                                scoresByRule.put(eHint.getRule(), score);
-                                analysisReport.append(analysisRuleReport);
-
-                                if (LOG.isDebugEnabled()) {
-                                    LOG.debug("Score for " + searchConfiguration.getName() + " is " + score);
-                                }
-
-                            } else {
-                                score = scoresByRule.get(eHint.getRule());
-                            }
-
-                            scores.put(config.getName(), score);
-
-                            if (config.isAlwaysRun() || score >= eHint.getThreshold()) {
+                            } else if (config.isAlwaysRun()) {
                                 commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                             }
 
-                        } else if (config.isAlwaysRun()) {
+                        } else {
+
                             commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                         }
-
-                    } else {
-
-                        commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
                     }
+                }catch(RuntimeException re){
+                    LOG.error("Failed to add command " + configName, re);
                 }
             }
             ANALYSIS_LOG.info(analysisReport.toString() + " </analyse>");
@@ -436,6 +441,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 }
             }
             
+        } catch (RuntimeException e) {
+            LOG.error(ERR_RUN_QUERY, e);
+            throw e;
+           
         } catch (Exception e) {
             LOG.error(ERR_RUN_QUERY, e);
             throw new InfrastructureException(e);

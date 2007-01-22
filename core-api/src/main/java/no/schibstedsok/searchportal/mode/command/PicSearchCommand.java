@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 
 /**
  *
@@ -33,6 +34,8 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     private static final Logger LOG = Logger.getLogger(PicSearchCommand.class);
     private final HTTPClient client;
     private final int port;
+    private static final String REQ_URL_FMT = "/query?ie=UTF-8&tldb={0}&filter={1}" +
+            "&custid={2}&version=2.6&thumbs={3}&q={4}&start={5}";
 
     /**
      * Creates a new command in given context.
@@ -65,10 +68,14 @@ public final class PicSearchCommand extends AbstractSearchCommand {
             LOG.error(e);
         }
 
-        final String url = "/query?ie=UTF-8&tldb=" + psConfig.getCountry()
-                + "&filter=medium&custid=558735&version=2.6&thumbs=" + psConfig.getResultsToReturn()
-                + "&q=" + query
-                + "&start=" + getCurrentOffset(1);
+
+        final String url = MessageFormat.format(REQ_URL_FMT,
+                psConfig.getCountry(),
+                psConfig.getFilter(),
+                psConfig.getCustomerId(),
+                psConfig.getResultsToReturn(),
+                query,
+                getCurrentOffset(1));
 
         LOG.info("Using " + url);
 

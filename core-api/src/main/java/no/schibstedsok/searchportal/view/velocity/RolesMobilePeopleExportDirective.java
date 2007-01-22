@@ -65,7 +65,14 @@ public class RolesMobilePeopleExportDirective extends Directive {
         }
 
         // The text string from datafield which all the roledata is stored
-        final String raw = node.jjtGetChild(0).value(context).toString();
+        final Object nodeValue = node.jjtGetChild(0).value(context);
+        
+        if(nodeValue == null) { 
+            return true;
+        }
+        
+        final String raw = nodeValue.toString(); 
+        
         // Convert the input to old format since the parsing will break otherwise
         String s = convert2OldFormat(raw);
         

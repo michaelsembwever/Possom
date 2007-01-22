@@ -181,7 +181,7 @@ public final class SiteLocatorFilter implements Filter {
             // Don't let anything through without logging it.
             //  Otherwise it ends in a different logfile.
             LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION + req.getQueryString());
-            for (Throwable t = e; t != null; t = e.getCause()) {
+            for (Throwable t = e; t != null; t = t.getCause()) {
                 LOG.error("", t);
             }
             throw new ServletException(e);

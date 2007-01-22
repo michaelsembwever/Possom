@@ -4,12 +4,12 @@
     final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
     final TextMessages text = (TextMessages) request.getAttribute("text");
     final VelocityEngine engine = VelocityEngineFactory.valueOf(site).getEngine();
-    final Template template = VelocityResultHandler.getTemplate(engine, site, "/pages/main");
+    final Template template = VelocityEngineFactory.getTemplate(engine, site, "/pages/main");
     final RunningQuery query = (RunningQuery) request.getAttribute("query");
     final List sources = query.getSources();
 
     if (template != null) {
-        final VelocityContext context = VelocityResultHandler.newContextInstance(engine);
+        final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
 
         for (Iterator iter = sources.iterator(); iter.hasNext();) {
             Modifier mod = (Modifier) iter.next();

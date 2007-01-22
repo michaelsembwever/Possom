@@ -96,6 +96,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -465,6 +466,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     }
 
                     fillBeanProperty(sc, inherit, "filter", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "project", ParseType.String , commandE, "");
+                    fillBeanProperty(sc, inherit, "project", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "filtertype", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "ignoreNavigation", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "offensiveScoreLimit", ParseType.Int , commandE, "-1");
@@ -554,6 +557,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 	final BlocketSearchConfiguration bsc = (BlocketSearchConfiguration)sc; 
                 	
                 	
+                	Locale locale = new Locale("sv","SE");
+
                 	/**
                 	 * Läser in blocket specifika properties.
                 	 */
@@ -567,8 +572,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 	for(Map.Entry<Object,Object> entry : props.entrySet())
                 	{
 
-                         final String key = ((String)entry.getKey()).toLowerCase();
-                         final String value = ((String)entry.getValue()).toLowerCase();
+
+                         final String key = ((String)entry.getKey()).toLowerCase(locale);
+                         final String value = ((String)entry.getValue()).toLowerCase(locale);
                          blocketmap.put(key, value);
                          
                      }
@@ -616,8 +622,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "queryServerHost", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "queryServerPort", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "country", ParseType.String , commandE, "no");
+                    fillBeanProperty(sc, inherit, "filter", ParseType.String, commandE, "medium");
+                    fillBeanProperty(sc, inherit, "customerId", ParseType.String, commandE, "558735");
 
-                }                
+                    LOG.debug("Inherited customerid " + ((PicSearchConfiguration)sc).getCustomerId());
+
+                }
                 if (sc instanceof MobileSearchConfiguration) {
                     final MobileSearchConfiguration msc = (MobileSearchConfiguration) sc;
 

@@ -561,9 +561,6 @@ public final class FastNavigatorsTest extends SiteTestCase {
             public Site getSite() {
                 return getTestingSite();
             }
-            public SearchTabFactory getLeafSearchTabFactory(){
-                return null;
-            }
         };
 
         final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());

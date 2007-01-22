@@ -18,8 +18,9 @@ public final class PicSearchConfiguration extends AbstractSearchConfiguration {
     private String queryServerPort;
     
     private String country;
-    
-    
+    private String filter;
+    private String customerId;
+
     public PicSearchConfiguration(){
         super(null);
     }
@@ -37,8 +38,8 @@ public final class PicSearchConfiguration extends AbstractSearchConfiguration {
     }
 
     /**
-     * Setter for property key for queryServerURL.
-     * @param queryServerURL New value of property queryServerURL.
+     * Setter for property key for queryServerHost.
+     * @param queryServerHost New value of property queryServerHost.
      */
     public void setQueryServerHost(final String queryServerHost) {
         this.queryServerHost = queryServerHost;
@@ -68,4 +69,39 @@ public final class PicSearchConfiguration extends AbstractSearchConfiguration {
         this.country = country;
     }
 
+    /**
+     * Returns the offensive content filtering level.
+     *
+     * @return Filtering level.
+     */
+    public String getFilter() {
+        return filter;
+    }
+
+    /**
+     * Returns the customer id to use for picsearch queries associated with this configuration.
+     *
+     * @return The customer id.
+     */
+    public String getCustomerId() {
+        return customerId;
+    }
+
+    /**
+     * Sets property filter.
+     *
+     * @param filter New value for filter.
+     */
+    public void setFilter(final String filter) {
+        this.filter = filter;
+    }
+
+    /**
+     * Sets property customerId
+     *
+     * @param customerId New value for customerId
+     */
+    public void setCustomerId(final String customerId) {
+        this.customerId = customerId;
+    }
 }

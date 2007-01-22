@@ -53,7 +53,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String DATE_PATTERN = "yyyy/MM/dd";
 
     private static final String HEADER_ELEMENT = "HEADER";
-    private static final String TOTALHITS_ELEMENT ="DEEPHITS";
+    private static final String TOTALHITS_ELEMENT ="TOTALHITS";
     private static final String RESULT_ELEMENT = "RESULT";
     private static final String WORDCOUNTS_ELEMENT = "WORDCOUNTS";
 

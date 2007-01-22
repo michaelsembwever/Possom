@@ -65,6 +65,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
 
     private String filter;
     private String filtertype;
+    private String project;
 
     private boolean relevantQueries = false;
 
@@ -97,6 +98,7 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
             spamScoreLimit = fsc.spamScoreLimit;
             filter = fsc.filter;
             filtertype = fsc.filtertype;
+            project = fsc.project;
             relevantQueries = fsc.relevantQueries;
         }
     }
@@ -286,6 +288,13 @@ public class FastSearchConfiguration extends AbstractSearchConfiguration {
         this.filtertype = filtertype;
     }
     
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(final String project) {
+        this.project = project;
+    }
 
     void setSpamScoreLimit(final int i) {
         spamScoreLimit = i;

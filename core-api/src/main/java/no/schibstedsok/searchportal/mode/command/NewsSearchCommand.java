@@ -73,63 +73,85 @@ public class NewsSearchCommand extends FastSearchCommand {
         synchronized (this) {
             if (filterBuilder == null) {
                 filterBuilder = new StringBuilder(super.getAdditionalFilter());
-
-                // Add filter to retrieve all documents.
-                if (containsJustThePrefix() || getTransformedQuery().equals("")) {
-                    filterBuilder.append(FAST_SIZE_HACK);
-                }
                 
-                GregorianCalendar calendar = new java.util.GregorianCalendar();
-                calendar.add( java.util.Calendar.MONTH, -24 );
-                final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                String newsdate = formatter.format(calendar.getTime());                
-                                
-                if (!getSearchConfiguration().isIgnoreNavigation()) {
+                if ("se".equals(getSearchConfiguration().getProject())) {
 
-                    final String contentSource = getParameter("contentsource");
-                    final String newsCountry = getParameter("newscountry");
-                    final String newsSource = getParameter("newssource");                                        
+                    // Add filter to retrieve all documents.
+                    if (containsJustThePrefix() || getTransformedQuery().equals("")) {
+                            filterBuilder.append(FAST_SIZE_HACK);
+                    }
+                    
+                    if (!getSearchConfiguration().isIgnoreNavigation()) {
 
-                    // general rule is to display news fresher than 2 years, but with exceptions for:
-                    // "norske papiraviser" -> display for all years
-                    // certain newssources (as listed below) -> display for all years
-                    if (!contentSource.equals("Mediearkivet")) {             
-                        
+                        final String contentSource = getParameter("contentsource");
+                        final String newsCountry = getParameter("newscountry");
+
                         // AAhhrghh. Need to provide backwards compatibility.
                         // People are linking us using contentsource="Norske nyheter"
-                        if (contentSource != null && !contentSource.equals("")) {                        
+                        if (contentSource != null && !contentSource.equals("")) {
                             if (contentSource.equals("Norske nyheter")) {
-                                filterBuilder.append(" AND newscountry:Norge");
+                                filterBuilder.append(" +newscountry:Norge");
                             } else {
-                                filterBuilder.append(" AND contentsource:\""+ contentSource + "\"");
+                                filterBuilder.append(" +contentsource:"+ contentSource);
                             }
-                        } else {
-                            if (newsCountry != null && !newsCountry.equals(""))
-                                filterBuilder.append(" AND newscountry:\""+ newsCountry + "\"");
-                            else // for newscount navigator
-                                filterBuilder.append(" AND newscountry:Norge");
                         }
-                        filterBuilder.append(" ANDNOT meta.collection:mano");
-                        filterBuilder.append(" AND (docdatetime:>" + newsdate);
+                        if (newsCountry != null && !newsCountry.equals("")) {
+                            filterBuilder.append(" +newscountry:"+ newsCountry);
+                        }
+                    }                    
+                } else {
+                    GregorianCalendar calendar = new java.util.GregorianCalendar();
+                    calendar.add( java.util.Calendar.MONTH, -24 );
+                    final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String newsdate = formatter.format(calendar.getTime());                
+
+                    if (!getSearchConfiguration().isIgnoreNavigation()) {
+
+                        final String contentSource = getParameter("contentsource");
+                        final String newsCountry = getParameter("newscountry");
+                        final String newsSource = getParameter("newssource");                                        
+
+                        // general rule is to display news fresher than 2 years, but with exceptions for:
+                        // "norske papiraviser" -> display for all years
+                        // certain newssources (as listed below) -> display for all years
+                        if (!contentSource.equals("Mediearkivet")) {             
+
+                            // AAhhrghh. Need to provide backwards compatibility.
+                            // People are linking us using contentsource="Norske nyheter"
+                            if (contentSource != null && !contentSource.equals("")) {                        
+                                if (contentSource.equals("Norske nyheter")) {
+                                    filterBuilder.append(" AND newscountry:Norge");
+                                } else {
+                                    filterBuilder.append(" AND contentsource:\""+ contentSource + "\"");
+                                }
+                            } else {
+                                if (newsCountry != null && !newsCountry.equals(""))
+                                    filterBuilder.append(" AND newscountry:\""+ newsCountry + "\"");
+                                else // for newscount navigator
+                                    filterBuilder.append(" AND newscountry:Norge");
+                            }
+                            filterBuilder.append(" ANDNOT meta.collection:mano");
+                            filterBuilder.append(" AND ( docdatetime:>" + newsdate);
+                            filterBuilder.append(" OR newssource:Digi.no");
+                            filterBuilder.append(" OR newssource:DinSide");
+                            filterBuilder.append(" OR newssource:ITavisen");
+                            filterBuilder.append(" OR newssource:iMarkedet");
+                            filterBuilder.append(" OR newssource:Propaganda )");
+
+                        // PAPERNEWS:    
+                        } else {
+                            filterBuilder.append(" AND contentsource:" + contentSource);
+                        }
+                    } else {
+                        filterBuilder.append(" AND (docdatetime:>" + newsdate);    
                         filterBuilder.append(" OR newssource:Digi.no");
                         filterBuilder.append(" OR newssource:DinSide");
                         filterBuilder.append(" OR newssource:ITavisen");
                         filterBuilder.append(" OR newssource:iMarkedet");
-                        filterBuilder.append(" OR newssource:Propaganda )");                                                
-  
-                    // PAPERNEWS:    
-                    } else {
-                        filterBuilder.append(" AND contentsource:" + contentSource);
-                    }
-                } else {
-                    filterBuilder.append(" AND (docdatetime:>" + newsdate);    
-                    filterBuilder.append(" OR newssource:Digi.no");
-                    filterBuilder.append(" OR newssource:DinSide");
-                    filterBuilder.append(" OR newssource:ITavisen");
-                    filterBuilder.append(" OR newssource:iMarkedet");
-                    filterBuilder.append(" OR newssource:Propaganda ");                                            
-                    filterBuilder.append(" OR meta.collection:mano )");
-                }                
+                        filterBuilder.append(" OR newssource:Propaganda ");                                            
+                        filterBuilder.append(" OR meta.collection:mano )");
+                    }                
+                }
             }
         }
         return filterBuilder.toString();

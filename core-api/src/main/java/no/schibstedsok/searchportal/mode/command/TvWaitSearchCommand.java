@@ -209,7 +209,8 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         Calendar cal = Calendar.getInstance();
        
          /* Adjust time to selected day */
-        cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * (SortBy.DAY == userSortBy && getParameters().get("day") == null ? index : day));
+        final int adjustment = index < 0 ? 0 : index;
+        cal.setTimeInMillis(cal.getTimeInMillis() + MILLIS_IN_DAY * (SortBy.DAY == userSortBy && getParameters().get("day") == null ? adjustment : day));
         
         if (userSortBy == SortBy.CHANNEL) {
             /* Starttime greater than now() or 05:00 on selected day */
@@ -228,7 +229,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             }
         } else if (userSortBy == SortBy.DAY) {
             /* Starttime greater than now() or 05:00 on selected day */
-            final String dateFmt = index == 0 ? "yyyy-MM-dd'T'HH:mm:ss'Z'" : "yyyy-MM-dd'T'05:00:00'Z'";
+            final String dateFmt = index < 1 ? "yyyy-MM-dd'T'HH:mm:ss'Z'" : "yyyy-MM-dd'T'05:00:00'Z'";
             filter.append("+endtime:>").append(new SimpleDateFormat(dateFmt).format(cal.getTime())).append(" ");
         
             /* Starttime less than 05:00 the next day or less than 05:00 seven days from now for the navigator */

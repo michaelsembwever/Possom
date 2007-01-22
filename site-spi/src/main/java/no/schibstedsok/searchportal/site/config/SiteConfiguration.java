@@ -136,6 +136,7 @@ public final class SiteConfiguration implements SiteKeyedFactory{
             // the DEFAULT site supports all Locales !
             return true;
         }
+        
         final String supportedLocales = getProperty(SITE_LOCALE_SUPPORTED);
         if( null != supportedLocales ){
             final String[] locales = supportedLocales.split(",");

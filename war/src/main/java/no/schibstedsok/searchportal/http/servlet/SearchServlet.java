@@ -213,7 +213,7 @@ public final class SearchServlet extends HttpServlet {
         final boolean isSitesearch = Boolean.valueOf(props.getProperty(SiteConfiguration.IS_SITESEARCH_KEY)).booleanValue();
         
         if (qParam == null) {
-            redirect = null != request.getContextPath()
+            redirect = null != request.getContextPath() && request.getContextPath().length() >0
                     ? request.getContextPath()
                     : "/";
 
@@ -347,12 +347,7 @@ public final class SearchServlet extends HttpServlet {
             result = SearchTabFactory.valueOf(
                 ContextWrapper.wrap(
                     SearchTabFactory.Context.class,
-                    genericCxt,
-                    new BaseContext(){
-                        public SearchTabFactory getLeafSearchTabFactory(){
-                            return null;
-                        }
-                    })).getTabByKey(searchTabKey);
+                    genericCxt)).getTabByKey(searchTabKey);
 
         }catch(AssertionError ae){
             // it's not normal to catch assert errors but we really want a 404 not 500 response error.
