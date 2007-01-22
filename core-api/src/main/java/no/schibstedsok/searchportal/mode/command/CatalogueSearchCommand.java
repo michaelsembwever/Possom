@@ -119,7 +119,7 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
      */
     protected void visitImpl(final LeafClause clause) {
 //    	
-    	queryName += " iypcfnavn:"+clause.getTerm()+" ";
+    	queryName += " lemiypcfkeywords:"+clause.getTerm()+" ";
     	appendToQueryRepresentation(clause.getTerm());
 //    	super.visitImpl(clause);
     }
