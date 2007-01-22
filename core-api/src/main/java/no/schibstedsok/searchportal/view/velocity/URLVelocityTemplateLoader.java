@@ -145,12 +145,12 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             final String url, final Site currentSite)
             throws IOException, ResourceNotFoundException {
 
-        if (UrlResourceLoader.doesUrlExist(url)) {
+        if (UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(url),UrlResourceLoader.getHostHeader(url))) {
             return getURLConnection(url);
         } else {
             final Site parent = currentSite.getParent();
 
-            if (parent == null) {
+            if (null == parent) {
                 throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
             }
 
@@ -178,12 +178,15 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
         // TODO make this loopback to call a context's ResourceLoader method from the site-spi.
         LOG.trace(DEBUG_EXISTS + url);
-        final URL u = new URL( UrlResourceLoader.getURL(url) );
+        final URL u = new URL(UrlResourceLoader.getURL(url));
+        
         LOG.trace(DEBUG_FULL_URL_IS + u);
         final URLConnection conn = u.openConnection();
         final String hostHeader = UrlResourceLoader.getHostHeader(url);
+        
         LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
         conn.addRequestProperty("host", hostHeader);
+        
         return conn;
     }
     

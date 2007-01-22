@@ -9,6 +9,7 @@
 package no.schibstedsok.searchportal.site;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -44,11 +45,11 @@ public final class Site {
             + "to define what the default site is.";
 
     /** Found from the configuration.properties resource found in this class's ClassLoader. **/
-    private static final String DEFAULT_SITE_KEY = "site.default";
-    private static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
+    public static final String DEFAULT_SITE_KEY = "site.default";
+    public static final String DEFAULT_SITE_LOCALE_KEY = "site.default.locale.default";
+    public static final String DEFAULT_SERVER_PORT_KEY = "server.port";
     /** Property key for site parent's name. **/
     public static final String PARENT_SITE_KEY = "site.parent";
-    private static final String DEFAULT_SERVER_PORT_KEY = "server.port";
     /** Property key for a site object. **/
     public static final String NAME_KEY = "site";
     /** Name of the resource to find the PARENT_SITE_KEY property. **/
@@ -231,26 +232,39 @@ public final class Site {
         return site;
     }
 
-    // should never used except in catastrophe.
-    private static final String SITE_DEFAULT_FALLBACK = "sesam.no";
-    private static final String SITE_DEFAULT_LOCALE_FALLBACK = "no";
-
     static {
 
         final Properties props = new Properties();
-        try  {
-            props.load(Site.class.getResourceAsStream('/' + CORE_CONF_FILE));
+        final InputStream is = Site.class.getResourceAsStream('/' + CORE_CONF_FILE);
+        
+        try {
+            if(null != is){
+                props.load(is);
+                is.close();
+            }
+            
         }  catch (IOException ex) {
-            LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);
+            LOG.fatal(FATAL_CANT_FIND_DEFAULT_SITE, ex);    
         }
-        final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, SITE_DEFAULT_FALLBACK);
-        final String defaultSiteLocaleName = props.getProperty(DEFAULT_SITE_LOCALE_KEY, SITE_DEFAULT_LOCALE_FALLBACK);
-        SERVER_PORT = Integer.parseInt(props.getProperty(DEFAULT_SERVER_PORT_KEY));
+        
+        final String defaultSiteName = props.getProperty(DEFAULT_SITE_KEY, System.getProperty(DEFAULT_SITE_KEY));
+        LOG.info("defaultSiteName: " + defaultSiteName);
+        
+        final String defaultSiteLocaleName 
+                = props.getProperty(DEFAULT_SITE_LOCALE_KEY, System.getProperty(DEFAULT_SITE_LOCALE_KEY));
+        LOG.info("defaultSiteLocaleName: " + defaultSiteLocaleName);
+        
+        final String defaultSitePort 
+                = props.getProperty(DEFAULT_SERVER_PORT_KEY, System.getProperty(DEFAULT_SERVER_PORT_KEY));
+        LOG.info("defaultSitePort: " + defaultSitePort);
+        
+        
+        SERVER_PORT = Integer.parseInt(defaultSitePort);
 
         constructingDefault = true;
         final Locale defaultLocale = new Locale(defaultSiteLocaleName);
         DEFAULT = new Site(null, defaultSiteName, defaultLocale);
-        // FIXME and all locales along-side DEFAULT
+        // All locales along-side DEFAULT
         for(Locale l : Locale.getAvailableLocales()){
             if(defaultLocale != l){
                 new Site(null, defaultSiteName, l);

@@ -27,9 +27,17 @@ import org.apache.log4j.Logger;
  */
 public class UrlResourceLoader extends AbstractResourceLoader {
 
+    // Constants -----------------------------------------------------
+
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
 
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
+
+
+    // Attributes ----------------------------------------------------
+
+
+    // Static --------------------------------------------------------
 
     /** Create a new PropertiesLoader for the given resource name/path and load it into the given properties.
      * @param siteCxt the SiteContext that will tell us which site we are dealing with.
@@ -63,28 +71,28 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         dl.init(resource, builder);
         return dl;
     }
-    
+
     public static ClasspathLoader newClassLoader(
             final SiteContext siteCxt,
             final ClassLoader parent){
-        
+
         final ClasspathLoader cl = new UrlResourceLoader(siteCxt);
         cl.init("src/", parent);
         return cl;
     }
-    
-    public static boolean doesUrlExist(final String url){
-        
+
+    public static boolean doesUrlExist(final String url, final String hostHeader){
+
         boolean success = false;
         HttpURLConnection con = null;
         try {
 
-            final URL u = new URL(getURL(url));
+            final URL u = new URL(url);
 
             con = (HttpURLConnection) u.openConnection();
             con.setInstanceFollowRedirects(false);
             con.setRequestMethod("HEAD");
-            con.addRequestProperty("host", getHostHeader(url));
+            con.addRequestProperty("host", hostHeader);
             con.setConnectTimeout(1000);
             con.setReadTimeout(1000);
             success = HttpURLConnection.HTTP_OK == con.getResponseCode();
@@ -92,14 +100,14 @@ public class UrlResourceLoader extends AbstractResourceLoader {
             LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + u + " is " + success);
 
         } catch (NullPointerException e) {
-            LOG.debug( '[' + getURL(url) + "] " + url, e);
+            LOG.debug( '[' + hostHeader + "] " + url, e);
 
         } catch (SocketTimeoutException ste) {
-            LOG.debug( '[' + getURL(url) + "] " + url + '\n' + ste);
+            LOG.debug( '[' + hostHeader + "] " + url + '\n' + ste);
 
         } catch (IOException e) {
-            LOG.warn( '[' + getURL(url) + "] " + url, e);
-            
+            LOG.warn( '[' + hostHeader + "] " + url, e);
+
         }  finally  {
             if (con != null) {
                 con.disconnect();
@@ -108,17 +116,20 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
         return success;
     }
-    
+
     public static String getURL(final String resource){
-                
+
         return "http://localhost"+
                 resource.substring(resource.indexOf(':',8)>0 ? resource.indexOf(':',8) : resource.indexOf('/',8));
     }
-    
+
     public static String getHostHeader(final String resource){
-        
+
         return resource.substring(7,resource.indexOf('/',8));
     }
+
+
+    // Constructors --------------------------------------------------
 
     /** {@inheritDoc}
      */
@@ -126,48 +137,68 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         super(cxt);
     }
 
+
+    // Public --------------------------------------------------------
+
+
+    @Override
+    public final boolean urlExists(final String url) {
+
+        return doesUrlExist(getUrlFor(url), getHostHeaderFor(url));
+    }
+
+
+    // Z implementation ----------------------------------------------
+
+    // Y overrides ---------------------------------------------------
+
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    @Override
     protected final String getResource(final Site site) {
-        
+
         return "http://"
                 + site.getName()
                 + site.getConfigContext()
                 + "conf/"
                 + getResource();
     }
-   
-    public final boolean urlExists(final String url) {
 
-        return doesUrlExist(url);
-    }
-    
     protected final String getHostHeaderFor(final String resource){
-        
+
         return getHostHeader(resource);
     }
 
+    @Override
     protected String getUrlFor(final String resource){
-        
+
         return getURL(resource);
     }
 
+    @Override
     protected final InputStream getInputStreamFor(String resource) {
-        
+
         try {
             final URLConnection urlConn = new URL(getUrlFor(resource)).openConnection();
 
             urlConn.addRequestProperty("host", getHostHeaderFor(resource));
             return urlConn.getInputStream();
-            
+
         }catch (IOException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);
         }
-         
-        
+
+
     }
-    
+
     protected final String readResourceDebug(final String resource){
-        
+
         return "Read Configuration from " + getUrlFor(resource) + " [" + getHostHeaderFor(resource) + ']';
     }
 
+    // Private -------------------------------------------------------
+
+    // Inner classes -------------------------------------------------
 }
