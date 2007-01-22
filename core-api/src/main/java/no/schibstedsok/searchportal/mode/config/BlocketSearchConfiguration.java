@@ -1,17 +1,11 @@
 package no.schibstedsok.searchportal.mode.config;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
-import no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
+import java.util.Map;
+
 
 /**
- * Configuration for the prisjakt command.
+ * Configuration for the blocket command.
  */
 public class BlocketSearchConfiguration extends AbstractSearchConfiguration {
     
@@ -43,13 +37,5 @@ public class BlocketSearchConfiguration extends AbstractSearchConfiguration {
     
     }
     
-    
-   
-    
-
-            
-
-        
-            
 }
     
