@@ -11,7 +11,10 @@ package no.schibstedsok.searchportal.mode.command;
 import java.util.Formatter;
 import java.util.Map;
 
+import no.schibstedsok.searchportal.query.Clause;
+import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.Query;
 
 import org.apache.log4j.Logger;
@@ -51,12 +54,6 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
     }
 
     
-    String subQuery1 = "";
-    String subQuery2 = "";
-    String subQuery3 = "";
-    String subQuery4 = "";
-    String subQuery5 = "";
-    
     /**
      * Legg til  iypcfspkeywords forran alle ord.
      *
@@ -64,63 +61,51 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
     protected void visitImpl(final LeafClause clause) {
     	
     	
-    	subQuery1 += (subQuery1.length()>0?QL_AND:" ") + " iypcfspkeywords1:"+clause.getTerm()+" ";
-    	subQuery2 += (subQuery2.length()>0?QL_AND:" ") + " iypcfspkeywords2:"+clause.getTerm()+" ";
-    	subQuery3 += (subQuery3.length()>0?QL_AND:" ") + " iypcfspkeywords3:"+clause.getTerm()+" ";
-    	subQuery4 += (subQuery4.length()>0?QL_AND:" ") + " iypcfspkeywords4:"+clause.getTerm()+" ";
-    	subQuery5 += (subQuery5.length()>0?QL_AND:" ") + " iypcfspkeywords5:"+clause.getTerm()+" ";    	
+//    	subQuery1 += (subQuery1.length()>0?QL_AND:" ") + " iypcfspkeywords1:"+clause.getTerm()+queryTwo;
+//    	subQuery2 += (subQuery2.length()>0?QL_AND:" ") + " iypcfspkeywords2:"+clause.getTerm()+queryTwo;
+//    	subQuery3 += (subQuery3.length()>0?QL_AND:" ") + " iypcfspkeywords3:"+clause.getTerm()+queryTwo;
+//    	subQuery4 += (subQuery4.length()>0?QL_AND:" ") + " iypcfspkeywords4:"+clause.getTerm()+queryTwo;
+//    	subQuery5 += (subQuery5.length()>0?QL_AND:" ") + " iypcfspkeywords5:"+clause.getTerm()+queryTwo;    	
+    	
+    	String term = clause.getTerm();
+    	appendToQueryRepresentation("(");
+    	appendToQueryRepresentation("( (iypcfspkeywords5:"+term+queryTwo+") OR ((iypcfspkeywords5:"+term+"ingensteds AND iypspgep5:ingensteds) ANDNOT (iypcfspkeywords5:"+term+queryTwo+"))) OR"); 
+    	appendToQueryRepresentation("( (iypcfspkeywords4:"+term+queryTwo+") OR ((iypcfspkeywords4:"+term+"ingensteds AND iypspgeo4:ingensteds) ANDNOT (iypcfspkeywords4:"+term+queryTwo+"))) OR"); 
+		appendToQueryRepresentation("( (iypcfspkeywords3:"+term+queryTwo+") OR ((iypcfspkeywords3:"+term+"ingensteds AND iypspgeo3:ingensteds) ANDNOT (iypcfspkeywords3:"+term+queryTwo+"))) OR"); 
+		appendToQueryRepresentation("( (iypcfspkeywords2:"+term+queryTwo+") OR ((iypcfspkeywords2:"+term+"ingensteds AND iypspgeo2:ingensteds) ANDNOT (iypcfspkeywords2:"+term+queryTwo+"))) OR");
+		appendToQueryRepresentation("( (iypcfspkeywords1:"+term+queryTwo+") OR ((iypcfspkeywords1:"+term+"ingensteds AND iypspgeo1:ingensteds) ANDNOT (iypcfspkeywords1:"+term+queryTwo+")))");
+    	appendToQueryRepresentation(")");
     }
     
-    
-    @Override
-    public String getTransformedQuery() {
-    	StringBuilder sb = new StringBuilder();
-    	sb.append("( ");
-    	sb.append(" (%5$s AND iypspgeo5:%6$s) OR ");
-    	sb.append(" ( ");
-    	sb.append("  (%5$s AND iypspgeo5:ingensteds) ANDNOT ");
-    	sb.append("  (%5$s AND iypspgeo5:\"%6$s\") ");
-    	sb.append(" ) ");
-    	sb.append(") ");
-    	sb.append("OR ");
-    	sb.append("( ");
-    	sb.append(" (%4$s AND iypspgeo4:%6$s) OR ");
-    	sb.append(" ( ");
-    	sb.append("  (%4$s AND iypspgeo4:ingensteds) ANDNOT ");
-    	sb.append("  (%4$s AND iypspgeo4:\"%6$s\") ");
-    	sb.append(" ) ");
-    	sb.append(") ");
-    	sb.append("OR ");
-    	sb.append("( ");
-    	sb.append(" (%3$s AND iypspgeo3:%6$s) OR ");
-    	sb.append(" ( ");
-    	sb.append("  (%3$s AND iypspgeo3:ingensteds) ANDNOT ");
-    	sb.append("  (%3$s AND iypspgeo3:\"%6$s\") ");
-    	sb.append(" ) ");
-    	sb.append(") ");
-    	sb.append("OR ");
-    	sb.append("( ");
-    	sb.append(" (%2$s AND iypspgeo2:\"%6$s\") OR ");
-    	sb.append(" ( ");
-    	sb.append("  (%2$s AND iypspgeo2:ingensteds) ANDNOT ");
-    	sb.append("  (%2$s AND iypspgeo2:\"%6$s\") ");
-    	sb.append(" ) ");
-    	sb.append(") ");
-    	sb.append("OR ");
-    	sb.append("( ");
-    	sb.append(" (%1$s AND iypspgeo1:\"%6$s\") OR ");
-    	sb.append(" ( ");
-    	sb.append("  (%1$s AND iypspgeo1:ingensteds) ANDNOT ");
-    	sb.append("  (%1$s AND iypspgeo1:\"%6$s\") ");
-    	sb.append(" ) ");
-    	sb.append(")");    	
-    	
-    	StringBuilder result = new StringBuilder();
-    	Formatter formatter = new Formatter(result);
+    /**
+     * {@inheritDoc}
+     */
+    protected void visitImpl(final DefaultOperatorClause clause) {
+    	LOG.info("visitImpl DefaultOperatorClause");
+        clause.getFirstClause().accept(this);
 
-    	formatter.format(sb.toString(), subQuery1, subQuery2, subQuery3,subQuery4, subQuery5,queryTwo);
-    	
-    	LOG.info("Sponsorquery: "+result);
-    	return result.toString();
+        final boolean hasEmptyLeaf = isEmptyLeaf(clause.getFirstClause()) || isEmptyLeaf(clause.getSecondClause());
+
+        if (!(hasEmptyLeaf || clause.getSecondClause() instanceof NotClause)) {
+            appendToQueryRepresentation("OR");
+        }
+
+        clause.getSecondClause().accept(this);    	
     }
+    
+    /**
+     * Returns true iff the clause is a leaf clause and if it will not produce any output in the query representation.
+     *
+     * @param clause The clause to examine.
+     *
+     * @return true iff leaf is empty.
+     */
+    private boolean isEmptyLeaf(final Clause clause) {
+        if (clause instanceof LeafClause) {
+            final LeafClause leafClause = (LeafClause) clause;
+            return getFieldFilter(leafClause) != null || getTransformedTerm(clause).equals("");
+        } else {
+            return false;
+        }
+    }    
 }

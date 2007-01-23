@@ -69,7 +69,10 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     	SearchResult result = super.execute();
         
     	
-    	searchForName=true;    	
+    	searchForName=true;
+    	
+    	// kjør query tranformation en gang til, fordi flagget over
+    	// gør at resultatet blir annet enn første gangen.
     	super.performQueryTransformation();
     	
         // søk etter firmanavn
@@ -133,34 +136,14 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     	}	    	
     }
     
-    
-    protected void visitImpl(final AndClause clause) {
-    	super.visitImpl(clause);
+    @Override
+    protected String getSortBy() {
+    	// hvis man søker etter firmanavn, sorterer vi etter "iyprpnavn"
+    	// ellers søker vi etter keywords, og da sorterer vi etter "iyprpkw" istedet.
+    	String sortBy="iyprpkw";
+    	if(searchForName){
+    		sortBy="iyprpnavn";
+    	}
+    	return sortBy;
     }    
-    
-    @Override
-    protected void visitImpl(DefaultOperatorClause clause) {
-    	// TODO Auto-generated method stub
-    	super.visitImpl(clause);
-    }
-    
-    @Override
-    protected void visitImpl(OrClause clause) {
-    	// TODO Auto-generated method stub
-    	super.visitImpl(clause);
-    }
-    
-    @Override
-    protected void visitImpl(AndNotClause clause) {
-    	// TODO Auto-generated method stub
-    	super.visitImpl(clause);
-    }
-    
-    @Override
-    protected void visitImpl(NotClause clause) {
-    	// TODO Auto-generated method stub
-    	super.visitImpl(clause);
-    }
-    
-    
 }
