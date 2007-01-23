@@ -26,7 +26,7 @@ public class ShareHoldersDirectiveTest extends TestCase {
 	 */
 	public void testParsing() {
         ShareHoldersDirective shd = new ShareHoldersDirective();
-        List shareHolders = shd.parse(input1);
+        List shareHolders = shd.parseShareHolders(input1);
         assertEquals(shareHolders.size(), shareHolders.size(), 6);
 	}
 
@@ -35,7 +35,7 @@ public class ShareHoldersDirectiveTest extends TestCase {
 	 */
 	public void testParsing2() {
 		ShareHoldersDirective shd = new ShareHoldersDirective();
-		List shareHolders = shd.parse(null);
+		List shareHolders = shd.parseShareHolders(null);
 		assertEquals(shareHolders.size (), 0);
 
 	}
@@ -45,14 +45,14 @@ public class ShareHoldersDirectiveTest extends TestCase {
 	 */
 	public void testParstingEmpty () {
 		ShareHoldersDirective shd = new ShareHoldersDirective();
-		List shareHolders = shd.parse("");
+		List shareHolders = shd.parseShareHolders("");
 		assertEquals(shareHolders.size (), 0);
 	}
 
     /** Parse the old format */
     public void testParseOldFormat() {
         ShareHoldersDirective shd = new ShareHoldersDirective();
-        List shareHolders = shd.parse(input3);
+        List shareHolders = shd.parseShareHolders(input3);
         assertEquals(shareHolders.size (), 0);
     }
 	
@@ -66,7 +66,7 @@ public class ShareHoldersDirectiveTest extends TestCase {
         "ARILD C. GUSTAVSEN#idsep#25#sep0" +
         "INGER A. O. GUSTAVSENsep#2550e";		
 		ShareHoldersDirective shd = new ShareHoldersDirective();
-		List shareHolders = shd.parse(ypRoles);
+		List shareHolders = shd.parseShareHolders(ypRoles);
 		assertEquals(0, shareHolders.size ());
 		
 	}

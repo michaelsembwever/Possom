@@ -160,13 +160,13 @@ public class ShareHoldersDirective extends Directive {
     // Private --------------------------------------------------------
 
     // -- Inerntal Render
-    private boolean internalRender(String shareHoldersRaw, Writer writer,
+    private boolean internalRender(String rolesAndShareHolders, Writer writer,
             Node node) throws IOException {
 
-        List<ShareHolder> shareHolders = parse(shareHoldersRaw);
+        List<ShareHolder> shareHolders = parseShareHolders(rolesAndShareHolders);
         
         if (!hasShareHolders(shareHolders)) {
-            return true;
+            return false;
         }
         
         Document root = createDocument();
@@ -229,7 +229,14 @@ public class ShareHoldersDirective extends Directive {
             // Hover the td background color(white/gray)
             switchTdBgColor();
         }
+        
+        Element div = doc.createElement(HTML_DIV);
+        div.setAttribute("id", "sh_text");
+        div.appendChild(doc.createTextNode("Andel aksjer i % kan i enkelte tilfeller overstige 100 % på grunn av feil i summering, vår leverandør Lindorff jobber med å rette opp feilen."));
+        root.appendChild(div);
         doc.appendChild(root);
+        //doc.appendChild(div);
+        
         return doc;
     }
     
@@ -258,7 +265,7 @@ public class ShareHoldersDirective extends Directive {
     }
 
     // -- Parse the the inpurt , using old school seperators like #sep#
-    List<ShareHolder> parse(String content) {
+    List<ShareHolder> parseShareHolders(String content) {
         List<ShareHolder> shareHolders = new ArrayList();
         boolean isShareHoldersStarted = false;
         boolean isShareHolderRow = false;
