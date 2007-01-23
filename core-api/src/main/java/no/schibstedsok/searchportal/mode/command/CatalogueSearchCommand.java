@@ -11,7 +11,13 @@ import java.util.Map;
 
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
+import no.schibstedsok.searchportal.query.AndClause;
+import no.schibstedsok.searchportal.query.AndNotClause;
+import no.schibstedsok.searchportal.query.Clause;
+import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.query.NotClause;
+import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
@@ -24,7 +30,7 @@ import org.apache.log4j.Logger;
 /**
  * 
  */
-public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
+public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
     private String queryTwo = null;
@@ -62,8 +68,11 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
     	LOG.info("Søk med keyword query is :" + getTransformedQuery());     
     	SearchResult result = super.execute();
         
+    	
+    	searchForName=true;    	
+    	super.performQueryTransformation();
+    	
         // søk etter firmanavn
-    	searchForName=true;
     	LOG.info("Søk med firmanavn query is :" + getTransformedQuery());     
         SearchResult nameQueryResult = super.execute();
         
@@ -97,18 +106,13 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
     	
     	return result;
     }
-
-    /** TODO comment me. **/
-    public String getTransformedQuery() {
-    	LOG.info("Catalogue Transformed Query");
+    
+    @Override
+    protected String getAdditionalFilter() {
     	String query=null;
     	
-    	if(searchForName){
-    		// hvis det finnes en ekstra query, legg til denne i søket.    	
-    		query = queryTwo!=null ? queryName +" iypcfgeo:\""+queryTwo+"\"" : queryName;
-    	}else{
-    		query = queryTwo!=null ? super.getTransformedQuery()+" iypcfgeo:\""+queryTwo+"\"" : super.getTransformedQuery();    		
-    	}
+		// hvis det finnes en ekstra query, legg til denne i søket som et filter.	
+		query = queryTwo!=null&&queryTwo.length()>0 ? " +iypcfgeo:\""+queryTwo.trim()+"\"" : "";
     	
     	return query;
     }
@@ -118,11 +122,45 @@ public class CatalogueSearchCommand extends AbstractSimpleFastSearchCommand {
      *
      */
     protected void visitImpl(final LeafClause clause) {
-//    	
-    	queryName += " lemiypcfkeywords:"+clause.getTerm()+" ";
-    	appendToQueryRepresentation(clause.getTerm());
-//    	super.visitImpl(clause);
+    	String transformed = getTransformedTerm(clause);
+    	
+    	// to ulike søk utføres av denne komponenten, søk med keywords og søk med firmanavn.
+    	if(!searchForName){	    	
+	    	appendToQueryRepresentation("(lemiypcfkeywords:"+transformed+" ANY lemiypcfkeywordslow:"+transformed+")");
+    	}else{
+    		appendToQueryRepresentation("(iypcfnavn:"+transformed+" ANDNOT (lemiypcfkeywords:"+transformed+" OR lemiypcfkeywordslow:"+transformed+"))");
+    		
+    	}	    	
     }
     
-
+    
+    protected void visitImpl(final AndClause clause) {
+    	super.visitImpl(clause);
+    }    
+    
+    @Override
+    protected void visitImpl(DefaultOperatorClause clause) {
+    	// TODO Auto-generated method stub
+    	super.visitImpl(clause);
+    }
+    
+    @Override
+    protected void visitImpl(OrClause clause) {
+    	// TODO Auto-generated method stub
+    	super.visitImpl(clause);
+    }
+    
+    @Override
+    protected void visitImpl(AndNotClause clause) {
+    	// TODO Auto-generated method stub
+    	super.visitImpl(clause);
+    }
+    
+    @Override
+    protected void visitImpl(NotClause clause) {
+    	// TODO Auto-generated method stub
+    	super.visitImpl(clause);
+    }
+    
+    
 }
