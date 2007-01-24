@@ -113,7 +113,7 @@ TOKEN : { <EMAIL: <WORD>"@"<WORD>"."<WORD>> }
 // Very generic to match any Internation Phone Number !! 
 //   TODO deal with optional area codes. eg australian numbers can be written (02) 4878 9336
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <PHONE_NUMBER: (("+"|"00"(<PHONE_MIDDLE>)?)?(<DIGIT>(<PHONE_MIDDLE>)?){7,14})" "> }
+TOKEN : { <PHONE_NUMBER: (("+"|"00"(<PHONE_MIDDLE>)?)?(<DIGIT>(<PHONE_MIDDLE>)?){5,14})" "> }
 
 // Also prevent organisation numbers when phone numbers are disabled. Prevents a cyclic loop.
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
