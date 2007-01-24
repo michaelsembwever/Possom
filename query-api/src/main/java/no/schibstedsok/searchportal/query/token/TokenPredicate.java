@@ -83,6 +83,8 @@ public enum TokenPredicate implements Predicate {
     // RegExp TokenPredicates -- magic words
     BOOK_MAGIC (Type.REGEX),
     CATALOGUE_MAGIC (Type.REGEX),
+    WHITE_MAGIC (Type.REGEX),
+    YELLOW_MAGIC (Type.REGEX),
     CULTURE_MAGIC (Type.REGEX),
     MOVIE_MAGIC (Type.REGEX),
     NEWS_MAGIC (Type.REGEX),
