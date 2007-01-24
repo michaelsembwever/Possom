@@ -62,11 +62,11 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
     	
     	String term = getTransformedTerm(clause);
     	appendToQueryRepresentation("(");
-    	appendToQueryRepresentation("( (iypcfspkeywords5:"+term+queryTwo+") OR ((iypcfspkeywords5:"+term+"ingensteds AND iypspgep5:ingensteds) ANDNOT (iypcfspkeywords5:"+term+queryTwo+"))) OR"); 
-    	appendToQueryRepresentation("( (iypcfspkeywords4:"+term+queryTwo+") OR ((iypcfspkeywords4:"+term+"ingensteds AND iypspgeo4:ingensteds) ANDNOT (iypcfspkeywords4:"+term+queryTwo+"))) OR"); 
-		appendToQueryRepresentation("( (iypcfspkeywords3:"+term+queryTwo+") OR ((iypcfspkeywords3:"+term+"ingensteds AND iypspgeo3:ingensteds) ANDNOT (iypcfspkeywords3:"+term+queryTwo+"))) OR"); 
-		appendToQueryRepresentation("( (iypcfspkeywords2:"+term+queryTwo+") OR ((iypcfspkeywords2:"+term+"ingensteds AND iypspgeo2:ingensteds) ANDNOT (iypcfspkeywords2:"+term+queryTwo+"))) OR");
-		appendToQueryRepresentation("( (iypcfspkeywords1:"+term+queryTwo+") OR ((iypcfspkeywords1:"+term+"ingensteds AND iypspgeo1:ingensteds) ANDNOT (iypcfspkeywords1:"+term+queryTwo+")))");
+    	appendToQueryRepresentation("( (iypcfspkeywords5:"+term+queryTwo+") OR ((iypcfspkeywords5:"+term+"ingensteds) ANDNOT (iypcfspkeywords5:"+term+queryTwo+"))) OR"); 
+    	appendToQueryRepresentation("( (iypcfspkeywords4:"+term+queryTwo+") OR ((iypcfspkeywords4:"+term+"ingensteds) ANDNOT (iypcfspkeywords4:"+term+queryTwo+"))) OR"); 
+		appendToQueryRepresentation("( (iypcfspkeywords3:"+term+queryTwo+") OR ((iypcfspkeywords3:"+term+"ingensteds) ANDNOT (iypcfspkeywords3:"+term+queryTwo+"))) OR"); 
+		appendToQueryRepresentation("( (iypcfspkeywords2:"+term+queryTwo+") OR ((iypcfspkeywords2:"+term+"ingensteds) ANDNOT (iypcfspkeywords2:"+term+queryTwo+"))) OR");
+		appendToQueryRepresentation("( (iypcfspkeywords1:"+term+queryTwo+") OR ((iypcfspkeywords1:"+term+"ingensteds) ANDNOT (iypcfspkeywords1:"+term+queryTwo+")))");
     	appendToQueryRepresentation(")");
     }
 }
