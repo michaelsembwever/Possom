@@ -102,6 +102,7 @@ import java.util.Properties;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.text.MessageFormat;
 import java.util.Collections;
+import no.schibstedsok.searchportal.mode.config.TvEnrichSearchConfiguration;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -360,6 +361,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         STORMWEATHER_COMMAND(StormWeatherSearchConfiguration.class),
         TVSEARCH_COMMAND(TvSearchConfiguration.class),
         TVWAITSEARCH_COMMAND(TvWaitSearchConfiguration.class),
+        TVENRICH_COMMAND(TvEnrichSearchConfiguration.class),
         YAHOO_IDP_COMMAND(YahooIdpSearchConfiguration.class),
         YAHOO_MEDIA_COMMAND(YahooMediaSearchConfiguration.class),
         YELLOWPAGES_COMMAND(YellowSearchConfiguration.class),
@@ -692,6 +694,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(twsc, inherit, "index", ParseType.Int, commandE, "0");
                     fillBeanProperty(twsc, inherit, "waitOn", ParseType.String, commandE, null);
                     fillBeanProperty(twsc, inherit, "useMyChannels", ParseType.Boolean, commandE, "false");
+                }
+                
+                if (sc instanceof TvEnrichSearchConfiguration) {
+                    final TvEnrichSearchConfiguration tesc = (TvEnrichSearchConfiguration) sc;
+                    fillBeanProperty(tesc, inherit, "waitOn", ParseType.String, commandE, null);
                 }
                 
                 if(sc instanceof CatalogueSearchConfiguration){

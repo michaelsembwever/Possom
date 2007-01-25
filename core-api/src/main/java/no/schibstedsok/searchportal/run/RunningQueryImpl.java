@@ -542,72 +542,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 + "\" size=\"" + enrichments.size() + "\">"
                 + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query>");
 
-        Enrichment tvEnrich = null;
-        Enrichment webtvEnrich = null;
-
         /* Write product log and find webtv and tv enrichments */
         for(Enrichment e : enrichments){
             log.append("<enrichment name=\"" + e.getName()
                     + "\" score=\"" + e.getAnalysisResult() + "\"/>");
-
-            /* Store reference to webtv and tv enrichments */
-            if ("webtvEnrich".equals(e.getName())) {
-                webtvEnrich = e;
-            } else if ("tvEnrich".equals(e.getName())) {
-                tvEnrich = e;
-            }
         }
         log.append("</enrichments>");
         PRODUCT_LOG.info(log.toString());
-
-
-        /* Update score and if necessary the enrichment name */
-        if (webtvEnrich != null && tvEnrich != null) {
-            if (webtvEnrich.getAnalysisResult() > tvEnrich.getAnalysisResult()) {
-                tvEnrich.setAnalysisResult(webtvEnrich.getAnalysisResult());
-            }
-            enrichments.remove(webtvEnrich);
-        } else if (webtvEnrich != null && tvEnrich == null) {
-            tvEnrich = webtvEnrich;
-            webtvEnrich.setName("tvEnrich");
-        }
-
-        if (tvEnrich != null) {
-            SearchResult tvResult = null;
-            SearchResult webtvResult = null;
-
-            /* Find webtv and tv results */
-            for (Future<SearchResult> task : results) {
-                if (task.isDone() && !task.isCancelled()) {
-                    try{
-                        final SearchResult sr = task.get();
-                        if ("webtvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
-                            webtvResult = sr;
-                        } else if ("tvEnrich".equals(sr.getSearchCommand().getSearchConfiguration().getName())) {
-                            tvResult = sr;
-                        }
-                    
-                    }catch(ExecutionException ee){
-                        LOG.error(ERR_EXECUTION_ERROR, ee);
-                    }
-                }
-            }
-
-            /* Merge webtv results into tv results */
-            if (webtvResult != null && webtvResult.getResults().size() > 0) {
-                if (tvResult != null) {
-                    /* If tv results exists we only want the two first results from webtv. */
-                    if (tvResult.getResults().size() > 0 && webtvResult.getResults().size() > 2) {
-                        webtvResult.getResults().remove(2);
-                        if (tvResult.getResults().size() > 2) {
-                            tvResult.getResults().remove(2);
-                        }
-                    }
-                    tvResult.getResults().addAll(webtvResult.getResults());
-                    tvResult.setHitCount(tvResult.getHitCount() + webtvResult.getHitCount());
-                }
-            }
-        }
     }
 
     /** Remove modifiers with invalid count.
