@@ -25,6 +25,7 @@ final boolean publish = null != request.getParameter("page");
 final String ss = request.getParameter("ss");
 final String ssr = request.getParameter("ssr");
 final String vertikal = request.getParameter("vertikal") == null ? "" : request.getParameter("vertikal");
+String commandname = "defaultSearch";
 
 final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
 pageContext.setAttribute("siteMeshPage", siteMeshPage);
@@ -172,7 +173,7 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
                 <% if (currentC.equals("p")) {%>
                     <decorator:getProperty property="page.picsearch-results"/>
                 <% } else { %>
-                    <search:velocity template="results/scanpix" command="scanpix"/>
+                    <search:velocity template="results/scanpix" command="scanpix"/>                    
                     <decorator:getProperty property="page.picsearch-results"/>
                 <%}%>
                 <div class="clearFloat">&nbsp;</div>
@@ -181,6 +182,8 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
             <search:velocity template="results/tvSearch" command="tvSearch"/>
         <% } else { %>
             <decorator:getProperty property="page.search-results"/>
+            <search:velocity template="results/whitePages" command="whitePages"/>
+            <search:velocity template="results/yellowPages" command="yellowPages"/>
             <search:velocity template="results/giftProviders" command="giftProviders"/>            
         <%}%>      
 

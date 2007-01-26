@@ -13,6 +13,7 @@ import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.searchportal.view.config.SearchTab;
+import no.schibstedsok.searchportal.run.RunningQuery;
 import org.apache.log4j.Logger;
 
 /** 
@@ -55,12 +56,12 @@ public final class DataModelResultHandler implements ResultHandler{
         synchronized( parameters ){
             if( parameters.get("results") == null ){
                 parameters.put("results", new Hashtable<String,SearchResult>());
+                parameters.put("runningQuery", (RunningQuery) parameters.get("query"));
                 LOG.debug(DEBUG_CREATED_RESULTS);
             }
         }
         final Hashtable<String,SearchResult> results 
                 = (Hashtable<String,SearchResult>)parameters.get("results");
-
         LOG.debug(DEBUG_ADD_RESULT + config.getName());
         results.put(config.getName(), cxt.getSearchResult());
         
