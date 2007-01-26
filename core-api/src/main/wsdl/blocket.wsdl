@@ -6,9 +6,9 @@
  <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
 </xsd:schema>
 </types>
-<message name="searchRequest"><part name="query" type="xsd:string" /><part name="category" type="xsd:int" /></message>
+<message name="searchRequest"><part name="query" type="xsd:string" /><part name="category" type="xsd:int" /><part name="filter" type="xsd:string" /></message>
 <message name="searchResponse"><part name="total" type="xsd:long" /><part name="url" type="xsd:string" /></message>
 <portType name="searchPortType"><operation name="search"><input message="tns:searchRequest"/><output message="tns:searchResponse"/></operation></portType>
 <binding name="searchBinding" type="tns:searchPortType"><soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/><operation name="search"><soap:operation soapAction="http://www2.blocket.se/search/search" style="rpc"/><input><soap:body use="encoded" namespace="http://www2.blocket.se/search" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input><output><soap:body use="encoded" namespace="http://www2.blocket.se/search" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output></operation></binding>
-<service name="search"><port name="searchPort" binding="tns:searchBinding"><soap:address location="http://www2.blocket.se/sesam"/></port></service>
+<service name="search"><port name="searchPort" binding="tns:searchBinding"><soap:address location="http://www2.blocket.se/sesam/search"/></port></service>
 </definitions>
