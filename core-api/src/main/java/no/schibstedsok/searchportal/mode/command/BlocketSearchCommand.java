@@ -68,7 +68,7 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 					+ query);
 
 			if (categoryIndex != null) {
-				port.search(query, Integer.parseInt(categoryIndex), lholder,
+				port.search(query, Integer.parseInt(categoryIndex),"", lholder,
 						sholder);
 			}
 
