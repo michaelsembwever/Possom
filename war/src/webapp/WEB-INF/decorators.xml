@@ -12,6 +12,8 @@
 
     <decorator name="savedecorator" page="saveDecorator.jsp"/>
     
+    <decorator name="vcarddecorator" page="vcardDecorator.jsp"/>
+    
     <decorator name="maindecorator" page="mainDecorator.jsp">
 	    <pattern>*</pattern>
     </decorator>
