@@ -1,0 +1,13 @@
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+
+<suite name="DataModel API Assertion Tests" verbose="10">
+    
+    <test name="Tests">
+        <packages>
+            <package name="no.schibstedsok.searchportal.datamodel"/>
+            
+        </packages>
+    
+    </test>
+   
+</suite>
