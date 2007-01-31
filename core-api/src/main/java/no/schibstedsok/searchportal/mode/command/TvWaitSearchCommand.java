@@ -241,7 +241,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             filter.append("+starttime:<").append(new SimpleDateFormat("yyyy-MM-dd'T05:00:00Z'").format(cal.getTime())).append(" ");
             
             /* Use channels navigator to add filter for top 5 channels */
-            if (config.getWaitOn() != null && wosr.getModifiers("channels").size() > 0) {
+            if (config.getWaitOn() != null && blankQuery && wosr.getModifiers("channels").size() > 0) {
                 filter.append("+(");
                 final int maxIdx = wosr.getModifiers("channels").size() < 5 ? wosr.getModifiers("channels").size() : 5;
                 for (Modifier modifier : wosr.getModifiers("channels").subList(0, maxIdx)) {
