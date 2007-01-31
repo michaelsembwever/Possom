@@ -274,12 +274,12 @@ public final class SearchServlet extends HttpServlet {
                 String showid = request.getParameter("showId");
                 String userAgent = request.getHeader("User-Agent");
                 String fileName = ".vcf";
-                String charset = "iso-8859-1";
-                //if(userAgent.indexOf("Windows") != -1)
-                //    charset = "iso-8859-1";
+                String charset = "utf-8";
+                if(userAgent.indexOf("Windows") != -1)
+                    charset = "iso-8859-1";
                 if(showid == null)
                    showid="";
-
+                response.setCharacterEncoding(charset);
                 response.setContentType("text/x-vcard; charset=" +charset);
                 response.setHeader("Content-Disposition","attachment;filename=vcard-" +showid + ".vcf");      
        	
