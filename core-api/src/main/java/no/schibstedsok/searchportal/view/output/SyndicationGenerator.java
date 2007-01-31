@@ -286,7 +286,7 @@ public final class SyndicationGenerator {
 
             cxt.put("channels", channels);
             
-            if (request.getParameter("c").equals("m")) {
+            if (request.getParameter("c") != null && request.getParameter("c").equals("m")) {
                 if (request.getParameter("contentsource") != null && request.getParameter("contentsource").startsWith("Interna"))
                     cxt.put("newstype", "- Internasjonale nyheter");
                 else if (request.getParameter("contentsource") != null && request.getParameter("contentsource").equals("Mediearkivet"))
