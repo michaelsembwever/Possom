@@ -206,7 +206,12 @@ public final class SyndicationGenerator {
                         LOG.debug("Publish date set to epoch. Ignoring");
                     }
                 } catch (ParseException ex) {
-                    LOG.error("Cannot parse " + publishedDate + " using df " + dfString);
+                    if (!(publishedDate == null || publishedDate.trim().equals(""))) {
+                        LOG.error("Cannot parse " + publishedDate + " using df " + dfString);
+                    } else {
+                        LOG.debug("Publish date is empty. Using current time");
+                    }
+
                     entry.setPublishedDate(new Date());
                 }
 
@@ -285,7 +290,8 @@ public final class SyndicationGenerator {
             cxt.put("uri", origUri);
 
             cxt.put("channels", channels);
-            
+
+
             if (request.getParameter("c") != null && request.getParameter("c").equals("m")) {
                 if (request.getParameter("contentsource") != null && request.getParameter("contentsource").startsWith("Interna"))
                     cxt.put("newstype", "- Internasjonale nyheter");
