@@ -478,7 +478,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** TODO comment me. **/
     protected final String getTransformedTerm(final Clause clause) {
-        return (String) transformedTerms.get(clause);
+        return escapeTerm(transformedTerms.get(clause));
     }
 
     /**
@@ -535,6 +535,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             LOG.fatal(ERR_PARSING, ex);
         }
         return null;
+    }
+
+    /**
+     * Escapes the term to disarm any reserved words. Override this to do any back-end (index) specific escaping. 
+     *
+     * @param term The term to escape
+     * @return The escaped version of term. 
+     */
+    protected String escapeTerm(final String term) {
+        return term;
     }
 
     /** Returns null when no field exists. **/

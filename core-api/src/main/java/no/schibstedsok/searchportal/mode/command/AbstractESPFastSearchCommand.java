@@ -70,7 +70,23 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     private static final Logger LOG = Logger.getLogger(AbstractESPFastSearchCommand.class);
     private static final String ERR_CALL_SET_VIEW = "setView() must be called prior to calling this method";
-    
+
+    private enum ReservedWord {
+        AND("and"),
+        OR("or"),
+        ANDNOT("andnot");
+
+        private String word;
+
+        ReservedWord(final String word) {
+            this.word = word;
+        }
+
+        public final String getWord() {
+            return word;
+        }
+    }
+
     // Constructors --------------------------------------------------
 
     /**
@@ -200,6 +216,20 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     protected String escapeFieldedLeaf(final LeafClause clause) {
         
         return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + clause.getTerm() + '"';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected final String escapeTerm(final String term) {
+        for (ReservedWord word : ReservedWord.values()) {
+            // Term might already be prefixed by the TermPrefixTransformer.
+            if (term.contains(":") && term.endsWith(':' + word.getWord()) || term.equals(word.getWord())) {
+                return term.replace(word.getWord(), '"' + word.getWord() + '"');
+            }
+        }
+
+        return term;
     }
 
     // Generate query in FQL.
@@ -377,7 +407,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         return item;
     }
     
-    
+
     // Inner classes -------------------------------------------------
 }
 
