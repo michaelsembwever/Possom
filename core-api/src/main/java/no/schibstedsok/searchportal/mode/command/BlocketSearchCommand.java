@@ -53,7 +53,8 @@ public class BlocketSearchCommand extends AbstractWebServiceSearchCommand {
 			/*Trimmar frågan så den har samma format som i blocket.properties, 
 			 dvs inga å ä ö eller mellanslag*/
 			String trimQ = StringUtils.deleteWhitespace(query);
-			String trimQ1 = StringUtils.replace(trimQ, "\u00E5", "a");
+			String lowerCase= trimQ.toLowerCase();
+			String trimQ1 = StringUtils.replace(lowerCase, "\u00E5", "a");
 			String trimQ2 = StringUtils.replace(trimQ1, "\u00E4", "a");
 			String trimQ3 = StringUtils.replace(trimQ2, "\u00F6", "o");
 			/*Innhåller kategorimappningar för blocket*/
