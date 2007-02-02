@@ -14,24 +14,22 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.util.QueryStringHelper;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.run.QueryFactory;
 import no.schibstedsok.searchportal.run.RunningQuery;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import no.schibstedsok.searchportal.security.MD5Generator;
 import org.apache.commons.lang.time.StopWatch;
-
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.TradeDoubler;
@@ -46,7 +44,7 @@ import org.apache.log4j.Logger;
  */
 public final class SearchServlet extends HttpServlet {
 
-   // Constants -----------------------------------------------------    
+   // Constants -----------------------------------------------------
 
     /** The serialVersionUID. */
     private static final long serialVersionUID = 3068140845772756438L;
@@ -56,16 +54,16 @@ public final class SearchServlet extends HttpServlet {
 
     private static final String ERR_MISSING_TAB = "No existing implementation for tab ";
     private static final String ERR_MISSING_MODE = "No existing implementation for mode ";
-    
-    
+
+
     // Attributes ----------------------------------------------------
     //  Important that a Servlet does not have instance fields for synchronisation reasons.
     //
-    
+
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     // Public --------------------------------------------------------
 
     /** {@inheritDoc}
@@ -78,7 +76,7 @@ public final class SearchServlet extends HttpServlet {
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
-    
+
     /** {@inheritDoc}
      */
     @Override
@@ -89,10 +87,10 @@ public final class SearchServlet extends HttpServlet {
 
 
         // TODO Break the method down. It is way too long for a controlling class.
-          final Site site = (Site) request.getAttribute(Site.NAME_KEY);
-            // BaseContext providing SiteContext and ResourceContext.
-            //  We need it casted as a SiteContext for the ResourceContext code to be happy.
-            final SiteContext genericCxt = new SiteContext(){
+        final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+        // BaseContext providing SiteContext and ResourceContext.
+        //  We need it casted as a SiteContext for the ResourceContext code to be happy.
+        final SiteContext genericCxt = new SiteContext(){
                 public PropertiesLoader newPropertiesLoader(
                         final SiteContext siteCxt,
                         final String resource,
@@ -111,6 +109,7 @@ public final class SearchServlet extends HttpServlet {
                     return site;
                 }
             };
+
         if (!isEmptyQuery(request, response,genericCxt)) {
 
             LOG.trace("doGet()");
@@ -119,9 +118,7 @@ public final class SearchServlet extends HttpServlet {
             final StopWatch stopWatch = new StopWatch();
             stopWatch.start();
 
-            
-
-            FactoryReloads.performReloads(genericCxt, request.getParameter("reload"));
+            performFactoryReloads(request.getParameter("reload"), genericCxt);
 
             updateContentType(site, response, request);
 
@@ -167,7 +164,7 @@ public final class SearchServlet extends HttpServlet {
                             },
                             genericCxt
                     );
-                                
+
                     updateAttributes(request, rqCxt);
 
                     try {
@@ -211,7 +208,7 @@ public final class SearchServlet extends HttpServlet {
         final Properties props = SiteConfiguration.valueOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class, ctx)).getProperties();
         final boolean isSitesearch = Boolean.valueOf(props.getProperty(SiteConfiguration.IS_SITESEARCH_KEY)).booleanValue();
-        
+
         if (qParam == null) {
             redirect = null != request.getContextPath() && request.getContextPath().length() >0
                     ? request.getContextPath()
@@ -230,6 +227,21 @@ public final class SearchServlet extends HttpServlet {
             response.sendRedirect(redirect);
         }
         return null != redirect;
+    }
+
+    private static void performFactoryReloads(
+            final String reload,
+            final SiteContext genericCxt){
+
+        if( null != reload && reload.length() >0 ){
+            try{
+                final ReloadArg arg = ReloadArg.valueOf(reload.toUpperCase());
+                FactoryReloads.performReloads(genericCxt, arg);
+
+            }catch(IllegalArgumentException ex){
+                LOG.info("Invalid reload parameter -->" + reload);
+            }
+        }
     }
 
     private static void updateContentType(
@@ -270,6 +282,7 @@ public final class SearchServlet extends HttpServlet {
                    showid="";
                 response.setContentType("text/calendar; charset=" +charset);
                 response.setHeader("Content-Disposition","attachment;filename=sesam-tvsok-" +showid +fileName	);
+
         } else if (request.getParameter("output") != null && request.getParameter("output").equals("vcarddecorator")) {
                 String showid = request.getParameter("showId");
                 String userAgent = request.getHeader("User-Agent");
@@ -284,6 +297,7 @@ public final class SearchServlet extends HttpServlet {
                 response.setHeader("Content-Disposition","attachment;filename=vcard-" +showid + ".vcf");      
        	
         } else { 
+
             response.setContentType("text/html; charset=utf-8");
         }
     }
@@ -291,8 +305,8 @@ public final class SearchServlet extends HttpServlet {
     private static void updateAttributes(
             final HttpServletRequest request,
             final RunningQuery.Context rqCxt){
-        
-        
+
+
         if (request.getParameter("offset") == null || "".equals(request.getParameter("offset"))) {
             request.setAttribute("offset", "0");
         }
@@ -304,15 +318,15 @@ public final class SearchServlet extends HttpServlet {
         request.setAttribute("contextPath", request.getContextPath());
         request.setAttribute("tradedoubler", new TradeDoubler(request));
         request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
-        
+
         final Properties props = SiteConfiguration.valueOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
-        
+
         request.setAttribute("linkpulse", new Linkpulse(rqCxt.getSite(), props));
     }
-    
+
     /* TODO please move this to a more skin-dependant appropriate location.
-     * 
+     *
      *  redirects to yellowinfopage if request is from finn.no -> req.param("finn") = "finn"
      *  finn sends orgnumber as queryparam, if only 1 hit, then redirect.
      * @return true if a response.sendRedirect(..) was performed.
@@ -369,5 +383,5 @@ public final class SearchServlet extends HttpServlet {
     }
 
     // Inner classes -------------------------------------------------
-    
+
 }

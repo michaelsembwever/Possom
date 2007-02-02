@@ -10,6 +10,7 @@ package no.schibstedsok.searchportal.http.servlet;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -37,11 +38,11 @@ public class FactoryReloadsTest extends SiteTestCase {
     @Test
     public void testRemoveAll() {
         
-        FactoryReloads.performReloads(genericContext(), "configuration"); 
-        FactoryReloads.performReloads(genericContext(), "views"); 
-        FactoryReloads.performReloads(genericContext(), "modes"); 
-        FactoryReloads.performReloads(genericContext(), "AnalysisRules"); 
-        FactoryReloads.performReloads(genericContext(), "RegularExpressionEvaluators"); 
+        FactoryReloads.performReloads(genericContext(), ReloadArg.SITE_CONFIGURATION); 
+        FactoryReloads.performReloads(genericContext(), ReloadArg.SEARCH_TAB_FACTORY); 
+        FactoryReloads.performReloads(genericContext(), ReloadArg.SEARCH_MODE_FACTORY); 
+        FactoryReloads.performReloads(genericContext(), ReloadArg.ANALYSIS_RULES_FACTORY); 
+        FactoryReloads.performReloads(genericContext(), ReloadArg.REG_EXP_EVALUATOR_FACTORY); 
         // skip "velocity" because VelocityEngineFactory harcodes to URLVelocityTemplateLoader
         
     }

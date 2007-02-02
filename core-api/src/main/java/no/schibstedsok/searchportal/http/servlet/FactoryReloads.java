@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * FactoryReloads.java
  *
@@ -21,66 +21,96 @@ import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import org.apache.log4j.Logger;
 
-/**
+/** Utility class to remove factory instances for a given Site and its locale derivatives.
+ * The factory class to clean instances from is indicated by the value of ReloadArg.
+ * Also performs a System.gc() to clean out WeakReference caches.
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
 public final class FactoryReloads {
 
+    
+    public enum ReloadArg{
+        ALL,
+        SITE_CONFIGURATION,
+        SEARCH_TAB_FACTORY,
+        SEARCH_MODE_FACTORY,
+        ANALYSIS_RULES_FACTORY,
+        REG_EXP_EVALUATOR_FACTORY,
+        VELOCITY_ENGINE_FACTORY
+    }
 
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(FactoryReloads.class);
 
-    private static final String WARN_TABS_CLEANED = " on cleaning tabs (against all locales) for ";
-    private static final String WARN_CONFIG_CLEANED = " on cleaning configuration (against all locales) for ";
-    private static final String WARN_MODES_CLEANED = " on cleaning modes (against all locales) for ";
-    private static final String WARN_ANALYSIS_CLEANED = " on cleaning AnalysisRules (against all locales) for ";
-    private static final String WARN_REGEXP_CLEANED = " on cleaning RegularExpressionEvaluators (against all locales) for ";
-    private static final String WARN_VELOCITY_CLEANED = " on cleaning VelocityEngines (against all locales) for ";
+    private static final String WARN_CLEANED_1 = " on cleaning ";
+    private static final String WARN_CLEANED_2 = " (against all locales) for ";
 
     // Attributes ----------------------------------------------------
 
     // Static --------------------------------------------------------
 
-    /** TODO comment me. **/
+    /** Remove factory instances for a given Site and its locale derivatives.
+     * The factory class to clean instances from is indicated by the value of ReloadArg. 
+     * Also performs a System.gc() to clean out WeakReference caches.
+     **/
     public static void performReloads(
             final SiteContext genericCxt,
-            final String reload){
+            final ReloadArg reload){
 
         final Site site = genericCxt.getSite();
 
-        if("all".equalsIgnoreCase(reload) || "configuration".equalsIgnoreCase(reload)){
-            LOG.warn(removeAllLocalesFromSiteKeyedFactory(site,
-                    SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, genericCxt)))
-                    + WARN_CONFIG_CLEANED + site);
+        switch(reload){
+            case ALL:
+            case SITE_CONFIGURATION:
+        
+                performReload(site, SiteConfiguration.valueOf(
+                        ContextWrapper.wrap(SiteConfiguration.Context.class, genericCxt)));
+                if(ReloadArg.ALL != reload){ break;}
+        
+            case SEARCH_TAB_FACTORY:
+                
+                performReload(site, SearchTabFactory.valueOf(
+                        ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)));
+                if(ReloadArg.ALL != reload){ break;}
+                
+            case SEARCH_MODE_FACTORY:
+
+                performReload(site, SearchModeFactory.valueOf(
+                        ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt)));
+                if( ReloadArg.ALL != reload){ break;}
+        
+            case ANALYSIS_RULES_FACTORY:
+                
+                performReload(site, AnalysisRuleFactory.valueOf(
+                        ContextWrapper.wrap(AnalysisRuleFactory.Context.class, genericCxt)));
+        
+            case REG_EXP_EVALUATOR_FACTORY:
+                
+                performReload(site, RegExpEvaluatorFactory.valueOf(
+                        ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class, genericCxt)));
+                if(ReloadArg.ALL != reload){ break;}
+        
+            case VELOCITY_ENGINE_FACTORY:
+                
+                performReload(site, VelocityEngineFactory.valueOf(
+                        ContextWrapper.wrap(VelocityEngineFactory.Context.class, genericCxt)));
+                if(ReloadArg.ALL != reload){ break;}
+            
         }
-        if("all".equalsIgnoreCase(reload) || "views".equalsIgnoreCase(reload)){
-            LOG.warn(removeAllLocalesFromSiteKeyedFactory(site,
-                    SearchTabFactory.valueOf(ContextWrapper.wrap(SearchTabFactory.Context.class, genericCxt)))
-                     + WARN_TABS_CLEANED + site);
-        }
-        if("all".equalsIgnoreCase(reload) || "modes".equalsIgnoreCase(reload)){
-            LOG.warn(removeAllLocalesFromSiteKeyedFactory(site,
-                    SearchModeFactory.valueOf(ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt)))
-                     + WARN_MODES_CLEANED + site);
-        }
-        if("all".equalsIgnoreCase(reload) || "AnalysisRules".equalsIgnoreCase(reload)){
-            LOG.warn(removeAllLocalesFromSiteKeyedFactory(site,
-                    AnalysisRuleFactory.valueOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, genericCxt)))
-                     + WARN_ANALYSIS_CLEANED + site);
-        }
-        if("all".equalsIgnoreCase(reload) || "RegularExpressionEvaluators".equalsIgnoreCase(reload)){
-            LOG.warn(removeAllLocalesFromSiteKeyedFactory(site,
-                    RegExpEvaluatorFactory.valueOf(ContextWrapper.wrap(RegExpEvaluatorFactory.Context.class, genericCxt)))
-                     + WARN_REGEXP_CLEANED + site);
-        }
-        if("all".equalsIgnoreCase(reload) || "velocity".equalsIgnoreCase(reload)){
-            LOG.warn(removeAllLocalesFromSiteKeyedFactory(site,
-                    VelocityEngineFactory.valueOf(ContextWrapper.wrap(VelocityEngineFactory.Context.class, genericCxt)))
-                     + WARN_VELOCITY_CLEANED + site);
-        }
+        
+        // clean out WeakReference caches
+        System.gc();
+    }
+    
+    private static void performReload(
+            final Site site,
+            final SiteKeyedFactory factory){
+        
+        LOG.warn(removeAllLocalesFromSiteKeyedFactory(site, factory) 
+                + WARN_CLEANED_1 + factory.getClass().getSimpleName() + WARN_CLEANED_2 + site);
     }
 
     private static int removeAllLocalesFromSiteKeyedFactory(
@@ -115,4 +145,5 @@ public final class FactoryReloads {
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------
+    
 }
