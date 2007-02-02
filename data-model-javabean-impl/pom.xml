@@ -81,12 +81,6 @@
     <reporting>
         <plugins>
             <plugin>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <configLocation>../src/checkstyle/schibstedsok_checks.xml</configLocation>
-                </configuration>
-            </plugin>
-            <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <configuration>
                     <charset>UTF-8</charset>
