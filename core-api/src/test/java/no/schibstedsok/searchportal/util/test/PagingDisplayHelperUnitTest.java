@@ -7,27 +7,36 @@ package no.schibstedsok.searchportal.util.test;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
 import junit.framework.TestResult;
+import org.apache.log4j.Logger;
 
 /** Test a PagingDisplayHelper.
- * 
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class PagingDisplayHelperUnitTest extends SiteTestCase {
+public final class PagingDisplayHelperUnitTest extends SiteTestCase {
 
-    private PagingDisplayHelper pager;
-    
+    // Constants -----------------------------------------------------
+
+    private static final Logger LOG = Logger.getLogger(PagingDisplayHelperUnitTest.class);
+
+    // Attributes ----------------------------------------------------
+
+     private PagingDisplayHelper pager;
+
+    // Static --------------------------------------------------------
+
+   // Constructors --------------------------------------------------
+
     public PagingDisplayHelperUnitTest(final String testName) {
         super(testName);
-    }	     
-
-    protected void setUp() throws Exception {
-        super.setUp();
-
-        pager = new PagingDisplayHelper(10, 10);
     }
 
+    // Public --------------------------------------------------------
+
     public void testPageSets() {
+
+        LOG.info("testPageSets");
         pager.setNumberOfResults(100);
 
         assertEquals(1, pager.getFirstVisiblePage());
@@ -67,6 +76,8 @@ public class PagingDisplayHelperUnitTest extends SiteTestCase {
     }
 
     public void testPaging() {
+
+        LOG.info("testPaging");
         pager.setNumberOfResults(100);
 
         // Default offset is 0
@@ -117,6 +128,7 @@ public class PagingDisplayHelperUnitTest extends SiteTestCase {
 
     public void testDifferentPageSize() {
 
+        LOG.info("testDifferentPageSize");
         pager = new PagingDisplayHelper(12, 10);
         pager.setNumberOfResults(2000);
         pager.setCurrentOffset(120);
@@ -136,9 +148,6 @@ public class PagingDisplayHelperUnitTest extends SiteTestCase {
         assertEquals(16, pager.getFirstVisiblePage());
     }
 
-    protected void tearDown() throws Exception {
-        super.tearDown();    //To change body of overridden methods use File | Settings | File Templates.
-    }
 
     public void run(final TestResult testResult) {
         super.run(testResult);    //To change body of overridden methods use File | Settings | File Templates.
@@ -147,4 +156,24 @@ public class PagingDisplayHelperUnitTest extends SiteTestCase {
     public TestResult run() {
         return super.run();    //To change body of overridden methods use File | Settings | File Templates.
     }
+
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+
+    protected void setUp() throws Exception {
+        super.setUp();
+
+        pager = new PagingDisplayHelper(10, 10);
+    }
+
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
+
+
+    // Private -------------------------------------------------------
+
+    // Inner classes -------------------------------------------------
 }
