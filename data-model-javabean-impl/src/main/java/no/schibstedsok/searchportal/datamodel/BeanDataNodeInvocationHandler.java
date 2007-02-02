@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
  * @version <tt>$Id$</tt>
  */
 @DataObject
-final class BeanDataNodeInvocationHandler<T> implements InvocationHandler {
+class BeanDataNodeInvocationHandler<T> implements InvocationHandler {
 
     // Constants -----------------------------------------------------
 
@@ -69,9 +69,7 @@ final class BeanDataNodeInvocationHandler<T> implements InvocationHandler {
                 // make context to contextChild bindings
                 for(Property p : allProperties){
                     if( p.getName().equals(property.getName()) ){
-                        if(null != p.getValue()){
-                            addChild(p.getValue());
-                        }
+                        addChild(p.getValue());
                         childProperties.add(p);
                         break;
                     }
@@ -153,18 +151,24 @@ final class BeanDataNodeInvocationHandler<T> implements InvocationHandler {
 
     // Private -------------------------------------------------------
 
+    /** obj may be null. **/
     private void addChild(final Object obj){
 
-        final BeanDataObjectInvocationHandler<?> childsNewHandler
-                    = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
-        context.add(childsNewHandler.getBeanContextChild());
+        if( null != obj ){
+            final BeanDataObjectInvocationHandler<?> childsNewHandler
+                        = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
+            context.add(childsNewHandler.getBeanContextChild());
+        }
     }
 
+    /** obj may be null. **/
     private void removeChild(final Object obj){
 
-        final BeanDataObjectInvocationHandler<?> childsOldHandler
-                    = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
-        context.remove(childsOldHandler.getBeanContextChild());
+        if( null != obj ){
+            final BeanDataObjectInvocationHandler<?> childsOldHandler
+                        = (BeanDataObjectInvocationHandler<?>) Proxy.getInvocationHandler(obj);
+            context.remove(childsOldHandler.getBeanContextChild());
+        }
     }
 
     // Inner classes -------------------------------------------------

@@ -18,6 +18,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
+import no.schibstedsok.searchportal.site.config.PropertiesContext;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
@@ -32,7 +33,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
     /**
      * The context any DataModelFactory must work within.
      */
-    public interface Context extends BaseContext, SiteContext {
+    public interface Context extends BaseContext, SiteContext, PropertiesContext {
     }
 
    // Constants -----------------------------------------------------
@@ -143,7 +144,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
             final String clsName = siteConf.getProperty(DATA_MODEL_FACTORY_IMPL);
             final Class<DataModelFactory> cls = (Class<DataModelFactory>) Class.forName(clsName);
 
-            return cls.getConstructor(Context.class).newInstance(cxt);
+            return cls.getDeclaredConstructor(Context.class).newInstance(cxt);
 
 
         }catch (ClassNotFoundException ex) {

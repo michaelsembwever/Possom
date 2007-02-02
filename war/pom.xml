@@ -76,6 +76,16 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-data-model-api</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-data-model-javabean-impl</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
             <artifactId>commons-ioc</artifactId>
         </dependency>
         <dependency>

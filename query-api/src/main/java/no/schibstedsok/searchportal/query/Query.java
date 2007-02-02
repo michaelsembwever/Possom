@@ -3,7 +3,6 @@
  */
 package no.schibstedsok.searchportal.query;
 
-import java.util.Set;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 

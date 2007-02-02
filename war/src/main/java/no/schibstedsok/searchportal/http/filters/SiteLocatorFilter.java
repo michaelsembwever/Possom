@@ -23,6 +23,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
@@ -39,7 +41,7 @@ import org.apache.log4j.MDC;
  */
 
 public final class SiteLocatorFilter implements Filter {
-    
+
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(SiteLocatorFilter.class);
@@ -76,26 +78,26 @@ public final class SiteLocatorFilter implements Filter {
     };
 
     private static final long START_TIME = System.currentTimeMillis();
-    
+
     // Attributes ----------------------------------------------------
-    
+
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
 
-    
+
     // Static --------------------------------------------------------
-    
+
 
     // Constructors --------------------------------------------------
-    
+
     /** Default constructor. **/
     public SiteLocatorFilter() {
     }
 
     // Public --------------------------------------------------------
-    
+
     /** Will redirect to correct (search-front-config) url for resources (css,images, javascript).
      *
      * @param request The servlet request we are processing
@@ -120,7 +122,7 @@ public final class SiteLocatorFilter implements Filter {
             doBeforeProcessing(request, response);
 
             if (request instanceof HttpServletRequest) {
-                
+
                 final HttpServletResponse res = (HttpServletResponse) response;
                 final String uri = req.getRequestURI();
                 final String resource = uri;
@@ -253,8 +255,8 @@ public final class SiteLocatorFilter implements Filter {
             ? (String) servletRequest.getAttribute("SERVER_NAME")
             // falls back to this when not behind Apache. (Development machine).
             : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
-        
-        
+
+
         LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
 
         // Construct the site object off the browser's locale, even if it won't finally be used.
@@ -262,10 +264,10 @@ public final class SiteLocatorFilter implements Filter {
         final Site result = Site.valueOf(SITE_CONTEXT, vhost, locale);
         final SiteConfiguration.Context siteConfCxt = new SiteConfiguration.Context(){
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public Site getSite() {
@@ -273,6 +275,7 @@ public final class SiteLocatorFilter implements Filter {
             }
         };
         final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
+        servletRequest.setAttribute(SiteConfiguration.NAME_KEY, siteConf);
 
         // Check if the browser's locale is supported by this skin. Use it if so.
         if( siteConf.isSiteLocaleSupported(locale) ){
@@ -283,40 +286,40 @@ public final class SiteLocatorFilter implements Filter {
         final String[] prefLocale = siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
 
         switch(prefLocale.length){
-            
+
             case 3:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
                         + '_' + prefLocale[1] + '_' + prefLocale[2]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
-                
+
             case 2:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0] + '_' + prefLocale[1]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1]));
-                
+
             case 1:
             default:
                 LOG.trace(result+INFO_USING_DEFAULT_LOCALE
                         + prefLocale[0]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0]));
-                
+
         }
 
 
     }
-     
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     private String recursivelyFindResource(final String resource, final Site site) {
-        
+
         final String datedResource = resource
                 .replaceAll("/", "/" + START_TIME + "/")
                 .replaceFirst("/" + START_TIME + "/", "");
-        
+
         final String url = HTTP + site.getName() + site.getConfigContext() + '/' + datedResource;
 
         if (UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(url), UrlResourceLoader.getHostHeader(url))) {
@@ -327,21 +330,24 @@ public final class SiteLocatorFilter implements Filter {
         } else {
             return null;
         }
-    }   
-    
+    }
+
     private static String getRequestId(final ServletRequest servletRequest){
-        
+
         return null != servletRequest.getAttribute("UNIQUE_ID")
                 ? (String)servletRequest.getAttribute("UNIQUE_ID")
                 : String.valueOf(System.currentTimeMillis());
     }
-    
+
     private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)
             throws IOException, ServletException {
 
         LOG.trace("doBeforeProcessing()");
 
-        final Site site = getSite(request);
+        final DataModel dataModel = getDataModel(request);
+
+        final Site site = null != dataModel ? dataModel.getSite().getSite() : getSite(request);
+
         request.setAttribute(Site.NAME_KEY, site);
         request.setAttribute("startTime", START_TIME);
         MDC.put(Site.NAME_KEY, site.getName());
@@ -359,4 +365,16 @@ public final class SiteLocatorFilter implements Filter {
 
     }
 
+    private static DataModel getDataModel(final ServletRequest request){
+
+        DataModel datamodel = null;
+        if(request instanceof HttpServletRequest){
+            final HttpServletRequest httpRequest = (HttpServletRequest)request;
+            final HttpSession session = httpRequest.getSession(false);
+            if(null != session){
+                datamodel = (DataModel) session.getAttribute(DataModel.KEY);
+            }
+        }
+        return datamodel;
+    }
 }

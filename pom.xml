@@ -20,7 +20,7 @@
     </scm>
 
     <!-- The following provides precise handling of building profile independant subprojects (jars)
-       -  versus profile-dependant subproject (war). 
+       -  versus profile-dependant subproject (war).
        - Used mainly by continuum when deploying the different profile repositories.
        -->
     <profiles>
@@ -28,13 +28,15 @@
             <id>build-all</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-            </activation> 
+            </activation>
             <modules>
                 <module>httpclient-api</module>
                 <module>site-spi</module>
                 <module>query-api</module>
                 <module>query-transform-spi</module>
                 <module>core-api</module>
+                <module>data-model-api</module>
+                <module>data-model-javabean-impl</module>
                 <module>war</module>
             </modules>
         </profile>
@@ -45,7 +47,7 @@
                 <property>
                     <name>build-jars-only</name>
                 </property>
-            </activation> 
+            </activation>
             <modules>
                 <module>httpclient-api</module>
                 <module>site-spi</module>
@@ -61,11 +63,11 @@
                 <property>
                     <name>build-wars-only</name>
                 </property>
-            </activation> 
+            </activation>
             <modules>
                 <module>war</module>
             </modules>
         </profile>
     </profiles>
-  
+
 </project>

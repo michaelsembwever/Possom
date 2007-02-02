@@ -9,6 +9,8 @@ package no.schibstedsok.searchportal.datamodel;
 
 
 import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import no.schibstedsok.searchportal.datamodel.generic.DataNode;
@@ -41,7 +43,7 @@ final class DataModelFactoryImpl extends DataModelFactory{
 
     // Constructors --------------------------------------------------
 
-    protected DataModelFactoryImpl(final Context cxt){
+    DataModelFactoryImpl(final Context cxt){
         super(cxt);
     }
 
@@ -49,9 +51,23 @@ final class DataModelFactoryImpl extends DataModelFactory{
 
     public DataModel instantiate() {
 
-        DataModel datamodel = null;
-
-        throw new UnsupportedOperationException("Not supported yet.");
+        try{
+            final Class<DataModel> cls = DataModel.class;
+            
+            final PropertyDescriptor[] propDescriptors 
+                    = Introspector.getBeanInfo(DataModel.class).getPropertyDescriptors();
+            final Property[] properties = new Property[propDescriptors.length];
+            for(int i = 0; i < properties.length; ++i){
+                properties[i] = new Property(propDescriptors[i].getName(), null);
+            }
+            
+            final InvocationHandler handler = new BeanDataModelInvocationHandler(properties);
+            
+            return (DataModel) Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, handler);
+            
+        }catch(IntrospectionException ie){
+            throw new IllegalStateException("Need to introspect DataModel properties before instantiation");
+        }
     }
 
     public <T> T instantiate(final Class<T> cls, final Property... properties) {
@@ -78,9 +94,12 @@ final class DataModelFactoryImpl extends DataModelFactory{
 
     public DataModel incrementControlLevel(final DataModel datamodel) {
 
-        // TODO update proxy wrapper with next ControlLevel.
-
-        throw new UnsupportedOperationException("Not supported yet.");
+        final BeanDataModelInvocationHandler handler 
+                = (BeanDataModelInvocationHandler) java.lang.reflect.Proxy.getInvocationHandler(datamodel);
+        
+        handler.incrementControlLevel();
+        
+        return datamodel;
     }
 
     // Package protected ---------------------------------------------

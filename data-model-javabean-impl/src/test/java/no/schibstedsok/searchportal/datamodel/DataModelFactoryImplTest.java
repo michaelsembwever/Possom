@@ -15,10 +15,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Properties;
 import no.schibstedsok.searchportal.datamodel.generic.DataNode;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
@@ -52,7 +56,13 @@ public final class DataModelFactoryImplTest {
             public Site getSite() {
                 return Site.DEFAULT;
             }
-        });
+        
+            public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
+                                                        final String resource,
+                                                        final Properties properties) {
+                return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+            }
+});
     }
 
     // Public --------------------------------------------------------

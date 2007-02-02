@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  */
 public final class SiteConfiguration implements SiteKeyedFactory{
 
-
+    public static final String NAME_KEY = "SiteConfiguration";
     /** TODO comment me. **/
     public static final String SITE_LOCALE_DEFAULT = "site.locale.default";
     /** TODO comment me. **/
@@ -61,13 +61,13 @@ public final class SiteConfiguration implements SiteKeyedFactory{
 
     /** TODO comment me. **/
     public Properties getProperties() {
-        
+
         return properties;
     }
 
     /** TODO comment me. **/
     public String getProperty(final String key) {
-        
+
         assert null != key : "Expecting a value for a null key!?";
         final String result = properties.getProperty(key);
         //assert null != result && key.length() > 0 : "Couldn't find " + key + " in " + properties;
@@ -78,19 +78,19 @@ public final class SiteConfiguration implements SiteKeyedFactory{
      * We need to use a Context instead of the Site directly so we can handle different styles of loading resources.
      **/
     public static SiteConfiguration valueOf(final Context cxt) {
-        
+
         final Site site = cxt.getSite();
         assert null != site : "valueOf(cxt) got null site";
-        
+
         SiteConfiguration instance = null;
-        
+
         try{
             INSTANCES_LOCK.readLock().lock();
             instance = INSTANCES.get(site);
         }finally{
             INSTANCES_LOCK.readLock().unlock();
         }
-        
+
         if (instance == null) {
             instance = new SiteConfiguration(cxt);
         }
@@ -109,10 +109,10 @@ public final class SiteConfiguration implements SiteKeyedFactory{
                 return site;
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return UrlResourceLoader.newPropertiesLoader(this, resource, properties);
             }
         });
@@ -129,9 +129,9 @@ public final class SiteConfiguration implements SiteKeyedFactory{
             INSTANCES_LOCK.writeLock().unlock();
         }
     }
-    
+
     public boolean isSiteLocaleSupported(final Locale locale){
-        
+
         if( Site.DEFAULT.getName().equals(context.getSite().getName())){
             // the DEFAULT site supports all Locales !
             return true;
