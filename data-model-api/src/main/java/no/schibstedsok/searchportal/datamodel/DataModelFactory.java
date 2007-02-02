@@ -142,6 +142,7 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
                     ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
 
             final String clsName = siteConf.getProperty(DATA_MODEL_FACTORY_IMPL);
+            LOG.info("constructing for " + cxt.getSite() + " instance of " + clsName);
             final Class<DataModelFactory> cls = (Class<DataModelFactory>) Class.forName(clsName);
 
             return cls.getDeclaredConstructor(Context.class).newInstance(cxt);
