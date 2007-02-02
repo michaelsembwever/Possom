@@ -39,21 +39,11 @@
             </resource>
         </resources>
        <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <warSourceDirectory>src/webapp</warSourceDirectory>
-			        <webResources>        
-         	 			<resource>
-  		          			<directory>${basedir}/src/webapp/META-INF</directory>
-  		          			<targetPath>META-INF</targetPath>
-            					<includes>
-               						<include>*.xml</include>
-        	    				</includes>           
-			           		<filtering>true</filtering>            			
-	          			</resource>
-        			</webResources>
-                </configuration>
+           <plugin>
+              <artifactId>maven-clean-plugin</artifactId>
+              <configuration>
+                <filesets><fileset><directory>${basedir}/logs</directory></fileset></filesets>
+              </configuration>
             </plugin>
         </plugins>
     </build>
@@ -82,6 +72,11 @@
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>search-portal-core-api</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-data-model-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
