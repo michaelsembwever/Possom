@@ -12,7 +12,9 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.log4j.Logger;
@@ -81,8 +83,15 @@ public final class DataModelTest {
             final Class<?> cls, 
             final Collection<Method> propertyMethods) throws IntrospectionException{
         
+        final List<PropertyDescriptor> props 
+                = Arrays.asList(Introspector.getBeanInfo(cls).getPropertyDescriptors());
+//                = new ArrayList<PropertyDescriptor>();
+//        props.addAll(Arrays.asList(Introspector.getBeanInfo(cls, Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors()));
+//        Introspector.flushFromCaches(cls);
+//        props.addAll(Arrays.asList(Introspector.getBeanInfo(cls, Introspector.USE_ALL_BEANINFO).getPropertyDescriptors()));
+//        Introspector.flushFromCaches(cls);
         
-        for(PropertyDescriptor property : Introspector.getBeanInfo(cls).getPropertyDescriptors()){
+        for(PropertyDescriptor property : props){
             
             LOG.info(" property --> " + property.getName());
             

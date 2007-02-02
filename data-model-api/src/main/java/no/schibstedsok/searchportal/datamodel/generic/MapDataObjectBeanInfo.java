@@ -11,6 +11,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
+import java.lang.reflect.Method;
 import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.log4j.Logger;
 
@@ -46,12 +47,17 @@ public class MapDataObjectBeanInfo extends SimpleBeanInfo{
     public static PropertyDescriptor[] addSingleMappedPropertyDescriptor(final String name, final Class<?> cls){
         
         try{
-            final PropertyDescriptor[] existing 
+            final PropertyDescriptor[] existing
                     = Introspector.getBeanInfo(cls, Introspector.IGNORE_ALL_BEANINFO).getPropertyDescriptors();
+            // remove this introspection from the cache to avoid reuse of the IGNORE_ALL_BEANINFO result
+            Introspector.flushFromCaches(cls);
             
             final PropertyDescriptor[] result = new PropertyDescriptor[existing.length+2];
             System.arraycopy(existing, 0, result, 0, existing.length);
             result[existing.length] = new MappedPropertyDescriptor(name, cls);
+            if( !System.getProperty("java.version").startsWith("1.6") ){
+                fixForJavaBug4984912(cls, (MappedPropertyDescriptor)result[existing.length]);
+            }
             
             final String captialised = Character.toUpperCase(name.charAt(0)) + name.substring(1);
             result[existing.length+1] = new PropertyDescriptor(name + 's', cls, "get" + captialised + 's', null);
@@ -70,7 +76,26 @@ public class MapDataObjectBeanInfo extends SimpleBeanInfo{
     
     // Private -------------------------------------------------------
     
-    
+    /** Work around for 4984912.
+     * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4984912
+     * TODO remove with java6
+     **/
+    private static void fixForJavaBug4984912(
+            final Class<?> cls, 
+            final MappedPropertyDescriptor mpd) throws IntrospectionException{
+        
+        try{
+            final String name = mpd.getName();
+            final String captialised = Character.toUpperCase(name.charAt(0)) + name.substring(1);
+            final Method m = cls.getMethod("get" + captialised + 's', new Class[0]);
+            mpd.setReadMethod(m);
+            
+        }catch (NoSuchMethodException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }catch (SecurityException ex) {
+            LOG.error(ex.getMessage(), ex);
+        }
+    }
     
     // Inner classes -------------------------------------------------
     
