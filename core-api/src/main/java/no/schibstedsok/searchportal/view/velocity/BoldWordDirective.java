@@ -23,6 +23,7 @@ import org.apache.velocity.runtime.parser.node.Node;
  * - "og" and "i" in the query should not be bolded. 
  * - Capitalized words should stay capitalized
  * - remove "," and "!" from query words
+ * - independant word ("Billån" should not match lån)
  *
  * <code>
  * #boldWord('leter du etter hotell i Paris' 'hotell i paris')
@@ -67,23 +68,24 @@ public final class BoldWordDirective extends Directive {
         if (argCount != 1) {
             
             String text = node.jjtGetChild(0).value(context).toString();
-            final String query = node.jjtGetChild(1).value(context).toString();
+            String query = node.jjtGetChild(1).value(context).toString();
             
             if(text == null) {
                 writer.write("");
                 return true;
-            }
-                        
-            String patternstr = "[\\p{Punct}\\p{Space}]+";
+            }                      
+            query = query.replaceAll("\"", "");
+            query = query.replaceAll("'", "");
             String replace = "";
             String replaceUp = "";
-            List list = Arrays.asList(query.split(patternstr));
+            List list = Arrays.asList(query.split("[\\p{Punct}\\p{Space}]+"));
+            
             for (int i=0;i<list.size();i++) {
                 if (!list.get(i).toString().toLowerCase().equals("og") && !list.get(i).toString().toLowerCase().equals("i")) {
-                    replace = "<b>" + list.get(i) + "</b>";
-                    replaceUp = "<b>" + StringUtils.capitalize(list.get(i).toString()) + "</b>";
-                    text = text.replaceAll(list.get(i).toString(), replace);
-                    text = text.replaceAll(StringUtils.capitalize(list.get(i).toString()), replaceUp);
+                    replace = " <b>" + list.get(i) + "</b>";
+                    replaceUp = " <b>" + StringUtils.capitalize(list.get(i).toString()) + "</b>";
+                    text = text.replaceAll("(\\s|^)" + list.get(i).toString() + "(?![a-z])", replace);
+                    text = text.replaceAll("(\\s|^)" + StringUtils.capitalize(list.get(i).toString()) + "(?![a-z])", replaceUp);
                     //text = text.replaceAll("(?i)" + list.get(i), rep);
                 }
             }
