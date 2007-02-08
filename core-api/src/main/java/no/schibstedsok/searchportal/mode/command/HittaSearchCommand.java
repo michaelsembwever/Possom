@@ -34,11 +34,12 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 import se.hitta.www.HittaService.HittaServiceLocator;
 import se.hitta.www.HittaService.HittaServiceSoap;
 
-/** Search against the Swedish Hitta WebService. ✆
+/** Search against the Swedish Hitta WebService. \u2706
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -96,6 +97,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
                 final HittaServiceLocator locator = new HittaServiceLocator();
                 final HittaServiceSoap service = locator.getHittaServiceSoap();
+                ((Stub)service).setTimeout(1000);
                 final SplitQueryTransformer splitter = new SplitQueryTransformer();
 
                 final String[] splitQuery = splitter.getQuery();
