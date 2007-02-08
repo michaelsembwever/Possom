@@ -16,6 +16,7 @@ import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.Query;
+import no.schibstedsok.searchportal.result.SearchResult;
 
 import org.apache.log4j.Logger;
 
@@ -51,8 +52,17 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
     		queryTwo = "ingensteds";
     	}
 	    	
+    	LOG.info("Search configuration name "+getSearchConfiguration().getName());
     }
 
+    @Override
+    public SearchResult execute() {
+    	SearchResult r = null;
+    	
+    	// TODO Auto-generated method stub
+    	r = super.execute();
+    	return r;
+    }
     
     /**
      * Legg til  iypcfspkeywords forran alle ord.

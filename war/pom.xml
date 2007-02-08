@@ -140,13 +140,6 @@
             <groupId>axis</groupId>
             <artifactId>axis-saaj</artifactId>
         </dependency>
-        
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.0.4</version>
-        </dependency>
-        
     </dependencies> 
     <profiles>
         <profile>

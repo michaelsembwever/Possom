@@ -17,6 +17,7 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
+import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
@@ -36,14 +37,14 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private String queryTwo = null;
     private String queryName = "";
     private boolean searchForName = false;
-
+    private List<String> terms = new ArrayList<String>();
+    
+    
     /** Creates a new catalogue search command.
      * TODO. Rewrite from scratch. This is insane.
      **/
     public CatalogueSearchCommand(final Context cxt, final Map parameters) {
     	super(cxt, parameters);
-    	LOG.info("CatalogueSearchCommand constructor.");
-    	LOG.info("Where:"+getSingleParameter("where"));
 
     	// hvis "where" parametern er sendt inn, så tar vi og leser inn query fra
     	// den.
@@ -52,31 +53,21 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 	        final Query query = rq.getQuery();
 	
 	    	queryTwo = query.getQueryString();
-
     	}
    
     }
 
     /** TODO comment me. **/
     public SearchResult execute() {
-        LOG.info("execute()");
-    	
-
+        LOG.debug("execute()");
     	
         // kør vanligt søk, keywords.
         searchForName=false;
-    	LOG.info("Søk med keyword query is :" + getTransformedQuery());     
     	SearchResult result = super.execute();
         
-    	
     	searchForName=true;
     	
-    	// kjør query tranformation en gang til, fordi flagget over
-    	// gør at resultatet blir annet enn første gangen.
-    	super.performQueryTransformation();
-    	
         // søk etter firmanavn
-    	LOG.info("Søk med firmanavn query is :" + getTransformedQuery());     
         SearchResult nameQueryResult = super.execute();
         
         // legg til navnsøk.
@@ -126,15 +117,73 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     protected void visitImpl(final LeafClause clause) {
     	String transformed = getTransformedTerm(clause);
-    	
-    	// to ulike søk utføres av denne komponenten, søk med keywords og søk med firmanavn.
-    	if(!searchForName){	    	
-	    	appendToQueryRepresentation("(lemiypcfkeywords:"+transformed+" ANY lemiypcfkeywordslow:"+transformed+")");
-    	}else{
-    		appendToQueryRepresentation("(iypcfnavn:"+transformed+" ANDNOT (lemiypcfkeywords:"+transformed+" OR lemiypcfkeywordslow:"+transformed+"))");
-    		
-    	}	    	
+    	terms.add(transformed);
     }
+    
+    
+    @Override
+    public String getTransformedQuery() {
+    	String query="";
+    	
+    	if(!searchForName){
+    		String query1="(";
+    		String query2="(";
+    		// (lemiypcfkeywords:ord1 AND lemiypcfkeywords:ord2 AND lemiypcfkeywords:ord3) ANY
+    		// (lemiypcfkeywordslow:ord1 AND lemiypcfkeywordslow:ord2 AND lemiypcfkeywordslow:ord3) 
+    		
+    		Iterator<String> it = terms.iterator();
+    		for(;it.hasNext();){
+    			String t = it.next();
+    			query1 += "lemiypcfkeywords:"+t;
+    			query2 += "lemiypcfkeywordslow:"+t;    			
+    			
+    			// hvis det finnes flere
+    			if(it.hasNext()){
+    				query1 += " "+QL_AND+" ";
+    				query2 += " "+QL_AND+" ";
+    			}
+    		}
+
+    		// close queries.
+			query1 += ") ANY";
+			query2 += ")";
+			query = query1 + query2;    		
+    		
+    	}else{
+        	String query1 = " (";
+        	String query2 = " (";
+        	String query3 = " (";
+        	
+        	// eksempel på query.
+    		// query1 = (iypcfphnavn:ord1 AND iypcfphnavn:ord2 AND iypcfphnavn:ord3) ANDNOT (
+    		// query2 = (lemiypcfkeywords:ord1 AND lemiypcfkeywords:ord2 AND lemiypcfkeywords:ord3) OR
+    		// query3 = (lemiypcfkeywordslow:ord1 AND lemiypcfkeywordslow:ord2 AND lemiypcfkeywordslow:ord3))    	
+
+    		Iterator<String> it = terms.iterator();
+    		for(;it.hasNext();){
+    			String t = it.next();
+    			query1 += "iypcfphnavn:"+t;
+    			query2 += "lemiypcfkeywords:"+t;    			
+    			query3 += "lemiypcfkeywordslow:"+t;
+    			
+    			// hvis det finnes flere
+    			if(it.hasNext()){
+    				query1 += " "+QL_AND+" ";
+    				query2 += " "+QL_AND+" ";
+    				query3 += " "+QL_AND+" ";
+    			}
+    		}
+
+    		// close queries.
+			query1 += ") ANDNOT (";
+			query2 += ") OR";
+			query3 += "))";
+			query=query1+query2+query3;
+    	}
+
+    	return query;
+    }
+    
     
     @Override
     protected String getSortBy() {
@@ -146,4 +195,5 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     	}
     	return sortBy;
     }    
+
 }
