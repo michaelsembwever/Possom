@@ -14,6 +14,7 @@ import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.DailyWordConfiguration;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.HittaMapSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.MathExpressionSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.MobileSearchConfiguration;
@@ -373,7 +374,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         PRISJAKT_COMMAND(PrisjaktSearchConfiguration.class),
         BLOCKET_COMMAND(BlocketSearchConfiguration.class),
         CATALOGUE_COMMAND(CatalogueSearchConfiguration.class),
-        CATALOGUE_ADS_COMMAND(CatalogueAdsSearchConfiguration.class);
+        CATALOGUE_ADS_COMMAND(CatalogueAdsSearchConfiguration.class),
+        HITTAMAP_COMMAND(HittaMapSearchConfiguration.class);
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
