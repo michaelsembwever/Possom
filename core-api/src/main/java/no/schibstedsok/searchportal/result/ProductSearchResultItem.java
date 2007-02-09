@@ -79,4 +79,12 @@ public class ProductSearchResultItem implements ProductResultItem {
         return super.hashCode();
     }
 
+	public HashMap getFields() {
+		return fields;
+	}
+
+	public void setFields(HashMap fields) {
+		this.fields = fields;
+	}
+
 }
