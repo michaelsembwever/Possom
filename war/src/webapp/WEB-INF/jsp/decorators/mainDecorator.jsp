@@ -54,6 +54,7 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
              "fv".equals(ss) ||
              "aa".equals(ss) ||
              "bt".equals(ss) ||
+             "nc".equals(ss) ||
              "sa".equals(ss))) { %>
         <div id="frame">
             <div id="header">
@@ -76,6 +77,7 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
                                 <% } else if ("fv".equals(ssr)) { %> F&#230;drelandsvennen:
                                 <% } else if ("aa".equals(ssr)) { %> Adresseavisen:
                                 <% } else if ("bt".equals(ssr)) { %> bt.no:
+                                <% } else if ("nc".equals(ssr)) { %> bt.no:
                                 <% } else if ("sa".equals(ssr)) { %> Stavanger Aftenblad:
                                 <% } else if ("d".equals(ssr)) { %> Nettet:
                                 <% } %>
@@ -127,8 +129,9 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
                             <search:velocity template="/navigators/navbarMain"/>
                         <% } %>
                         <% if (currentC.equals("m")) { %>
-                            <search:velocity template="navigators/newsSearchNavigator" command="newsSearchNavigator"/>
-                            <decorator:getProperty property="page.media-collection-nav"/>
+                            <search:velocity template="navigators/newsSearchNavigator" command="newsSearchNavigator"/>                            
+                            <decorator:getProperty property="page.media-collection-nav"/>                            
+                            <search:velocity template="navigators/newsSearchLastNews" command="newsSearchLastNews"/>
                         <%}else {%>
                             <decorator:getProperty property="page.sub-navigator"/>
                         <%}%> 
