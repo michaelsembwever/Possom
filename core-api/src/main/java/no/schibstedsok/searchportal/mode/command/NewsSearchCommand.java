@@ -75,7 +75,6 @@ public class NewsSearchCommand extends FastSearchCommand {
                 filterBuilder = new StringBuilder(super.getAdditionalFilter());
                 
                 if ("se".equals(getSearchConfiguration().getProject())) {
-
                     // Add filter to retrieve all documents.
                     if (containsJustThePrefix() || getTransformedQuery().equals("")) {
                             filterBuilder.append(FAST_SIZE_HACK);
@@ -99,18 +98,57 @@ public class NewsSearchCommand extends FastSearchCommand {
                             filterBuilder.append(" +newscountry:"+ newsCountry);
                         }
                     }                    
-                } else {
+                // need a date clause in the query to get the last 50 dates for the lastnews navigator
+                } else if ("lastnews".equals(getSearchConfiguration().getProject())) {
                     GregorianCalendar calendar = new java.util.GregorianCalendar();
-                    calendar.add( java.util.Calendar.MONTH, -24 );
+                    calendar.add( java.util.Calendar.DATE, -49 );
                     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    String newsdate = formatter.format(calendar.getTime());       
+                    
+                    final String contentSource = getParameter("contentsource");
+                    final String newsCountry = getParameter("newscountry");
+                    final String newsSource = getParameter("newssource");                                        
+
+                    if (!contentSource.equals("Mediearkivet")) {             
+                        if (contentSource != null && !contentSource.equals("")) {                        
+                            if (contentSource.equals("Norske nyheter")) {
+                                filterBuilder.append(" AND newscountry:Norge");
+                            } else {
+                                filterBuilder.append(" AND contentsource:\""+ contentSource + "\"");
+                            }
+                        } else {
+                            if (newsCountry != null && !newsCountry.equals(""))
+                                filterBuilder.append(" AND newscountry:\""+ newsCountry + "\"");
+                            else // for newscount navigator
+                                filterBuilder.append(" AND newscountry:Norge");
+                        }
+                        filterBuilder.append(" ANDNOT meta.collection:mano");
+                        filterBuilder.append(" AND docdatetime:>" + newsdate);
+
+                    // PAPERNEWS:    
+                    } else {
+                        filterBuilder.append(" AND contentsource:" + contentSource);
+                        filterBuilder.append(" AND docdatetime:>" + newsdate);                            
+                    }
+
+                } else {
+                    final String nav_newsdateOnly = getParameter("nav_newsdateOnly2");
+                    GregorianCalendar calendar = new java.util.GregorianCalendar();
+                    final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    if (nav_newsdateOnly.equals("newsdatenavigator")) {
+                        calendar.add( java.util.Calendar.DATE, -49 );
+                    } else {
+                        calendar.add( java.util.Calendar.MONTH, -24 );                        
+                    }
+
                     String newsdate = formatter.format(calendar.getTime());                
 
                     if (!getSearchConfiguration().isIgnoreNavigation()) {
 
                         final String contentSource = getParameter("contentsource");
                         final String newsCountry = getParameter("newscountry");
-                        final String newsSource = getParameter("newssource");                                        
-
+                        final String newsSource = getParameter("newssource");                        
+    
                         // general rule is to display news fresher than 2 years, but with exceptions for:
                         // "norske papiraviser" -> display for all years
                         // certain newssources (as listed below) -> display for all years
@@ -131,13 +169,16 @@ public class NewsSearchCommand extends FastSearchCommand {
                                     filterBuilder.append(" AND newscountry:Norge");
                             }
                             filterBuilder.append(" ANDNOT meta.collection:mano");
-                            filterBuilder.append(" AND ( docdatetime:>" + newsdate);
-                            filterBuilder.append(" OR newssource:Digi.no");
-                            filterBuilder.append(" OR newssource:DinSide");
-                            filterBuilder.append(" OR newssource:ITavisen");
-                            filterBuilder.append(" OR newssource:iMarkedet");
-                            filterBuilder.append(" OR newssource:Propaganda )");
-
+                            if (nav_newsdateOnly.equals("newsdatenavigator")) {                             
+                                filterBuilder.append(" AND docdatetime:>" + newsdate);
+                            } else {
+                                filterBuilder.append(" AND ( docdatetime:>" + newsdate);
+                                filterBuilder.append(" OR newssource:Digi.no");
+                                filterBuilder.append(" OR newssource:DinSide");
+                                filterBuilder.append(" OR newssource:ITavisen");
+                                filterBuilder.append(" OR newssource:iMarkedet");
+                                filterBuilder.append(" OR newssource:Propaganda )");
+                            }
                         // PAPERNEWS:    
                         } else {
                             filterBuilder.append(" AND contentsource:" + contentSource);
