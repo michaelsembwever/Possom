@@ -132,14 +132,9 @@ public class NewsSearchCommand extends FastSearchCommand {
                     }
 
                 } else {
-                    final String nav_newsdateOnly = getParameter("nav_newsdateOnly2");
                     GregorianCalendar calendar = new java.util.GregorianCalendar();
                     final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    if (nav_newsdateOnly.equals("newsdatenavigator")) {
-                        calendar.add( java.util.Calendar.DATE, -49 );
-                    } else {
-                        calendar.add( java.util.Calendar.MONTH, -24 );                        
-                    }
+                    calendar.add( java.util.Calendar.MONTH, -24 );
 
                     String newsdate = formatter.format(calendar.getTime());                
 
@@ -169,16 +164,12 @@ public class NewsSearchCommand extends FastSearchCommand {
                                     filterBuilder.append(" AND newscountry:Norge");
                             }
                             filterBuilder.append(" ANDNOT meta.collection:mano");
-                            if (nav_newsdateOnly.equals("newsdatenavigator")) {                             
-                                filterBuilder.append(" AND docdatetime:>" + newsdate);
-                            } else {
-                                filterBuilder.append(" AND ( docdatetime:>" + newsdate);
-                                filterBuilder.append(" OR newssource:Digi.no");
-                                filterBuilder.append(" OR newssource:DinSide");
-                                filterBuilder.append(" OR newssource:ITavisen");
-                                filterBuilder.append(" OR newssource:iMarkedet");
-                                filterBuilder.append(" OR newssource:Propaganda )");
-                            }
+                            filterBuilder.append(" AND ( docdatetime:>" + newsdate);
+                            filterBuilder.append(" OR newssource:Digi.no");
+                            filterBuilder.append(" OR newssource:DinSide");
+                            filterBuilder.append(" OR newssource:ITavisen");
+                            filterBuilder.append(" OR newssource:iMarkedet");
+                            filterBuilder.append(" OR newssource:Propaganda )");                            
                         // PAPERNEWS:    
                         } else {
                             filterBuilder.append(" AND contentsource:" + contentSource);
