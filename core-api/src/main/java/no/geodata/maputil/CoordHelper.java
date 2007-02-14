@@ -10,7 +10,6 @@ package no.geodata.maputil;
 
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-
 import java.util.*;
 
 /**
@@ -42,7 +41,7 @@ public class CoordHelper {
     public final static int iconOverlapOffsetWidth = 12; //hvor mange pixler skal ikonet flyttes for å unngå overlap. Verdi 0 tillater at ikonene kan ha samme plassering
     public final static int iconOverlapOffsetHeigth = 12; //hvor mange pixler skal ikonet flyttes for å unngå overlap. Verdi 0 tillater at ikonene kan ha samme plassering
     public int mapCenterPxX = imgWidth / 2; //kartets midtpunkt i pixler, bredde
-    public int mapCenterPxY = imgHeight / 2; //kartets midtpunkt i pixler - iconets st�rrelse/2, høyde
+    public int mapCenterPxY = imgHeight / 2; //kartets midtpunkt i pixler - iconets størrelse/2, høyde
     public final static double panFactor = 0.45; //faktor som forteller hvor mye kartsentrum skal flyttet iforhold til kartets deltaX og y ved panning.
     public final static double zoomFactor = 2; //faktor som forteller hvor mye kartextentet skal minskes/utvides ved zoom inn/ut. zoom inn = 1/zoomFactor. Brukes ikke dersom fastezoomlevels benyttes.
     public final static double defaultNoCoord = -9999999;
@@ -59,7 +58,7 @@ public class CoordHelper {
     public static final int DPI = 96;
 
     public static final double pixelSize = METERS_PR_INCH / DPI;
-    public double imgMeterSize = pixelSize * imgWidth; //st�rrelse på kart på skjermen i meter.
+    public double imgMeterSize = pixelSize * imgWidth; //størrelse på kart på skjermen i meter.
 
     /** Creates a new instance of CoordHelper */
     public CoordHelper() {
@@ -263,7 +262,7 @@ public class CoordHelper {
      * @return MapEnvelope,
      */
     public MapEnvelope makeEnvelope(Vector vMapPoints, int zoomlevel) {
-        //loope igjennom vector for � finne max/ min verdier
+        //loope igjennom vector for å finne max/ min verdier
         MapPoint mp = new MapPoint();
         MapPoint mp2 = new MapPoint();
         MapEnvelope me = new MapEnvelope();
@@ -275,7 +274,7 @@ public class CoordHelper {
             int counter = 0;
             for (int i = 0; i < vMapPoints.size(); i++ ) {
                 mp = (MapPoint) vMapPoints.get(i);
-                if (!hasCoords) { //dersom mappoint er en dummy, m� initielle verdier settes p� nytt n�r f�rste riktige koordinater kommer
+                if (!hasCoords) { //dersom mappoint er en dummy, må initielle verdier settes på nytt når første riktige koordinater kommer
                     me.maxX = mp.x;
                     if (me.maxX != defaultNoCoord) {
                         hasCoords = true;
@@ -284,7 +283,7 @@ public class CoordHelper {
                         me.minY = mp.y;
                     }
                 }
-                if (mp.x != defaultNoCoord) { //m� se bort fra punkt som er tilordnet en dummy kooordinat verdi
+                if (mp.x != defaultNoCoord) { //må se bort fra punkt som er tilordnet en dummy kooordinat verdi
                     counter++; //teller hvor mange i listen som har riktige koordinater
                     if (mp.x > me.maxX)
                         me.maxX = mp.x;
@@ -322,7 +321,7 @@ public class CoordHelper {
                 //beregner fiktive max/min koordinater.
                 centerX = me.maxX;
                 centerY = me.maxY;
-                //m� finne deltaX
+                //må finne deltaX
                 deltaX = Math.round(pixelSize * imgWidth * zoomscale);
                 deltaY = Math.round(pixelSize * imgHeight * zoomscale);
                 me.maxX = centerX + deltaX / 2;
@@ -337,7 +336,7 @@ public class CoordHelper {
                 //utvider envelop'en litt slik at ingen punkt blir liggende i kartkanten
                 deltaX = (me.maxX - me.minX);
                 deltaY = (me.maxY - me.minY);
-                if (equalCoords) { //sjekker om noen har like koordinater, is�fall forflyttes de en faktor ift hverandre. Nye max/min koordinater m� beregnes.
+                if (equalCoords) { //sjekker om noen har like koordinater, isåfall forflyttes de en faktor ift hverandre. Nye max/min koordinater må beregnes.
                     zoomscale = Math.round(deltaX / imgMeterSize);
                     vMapPoints = checkEqualCoords(vMapPoints, zoomscale);
                     me = getMaxMinCoords(vMapPoints);
@@ -354,20 +353,20 @@ public class CoordHelper {
                     return me;
                 }
                 else  {
-                    if (deltaX == 0)//kan ikke ha nullverdi for deltaverdiene. Alle treff med koordinater m� i dette tilfelle ha forskjellig X men lik Y, eller omvendt. Skal litt til f�r dette sl�r til, men kj�rer allikevel en sjekk.
+                    if (deltaX == 0)//kan ikke ha nullverdi for deltaverdiene. Alle treff med koordinater må i dette tilfelle ha forskjellig X men lik Y, eller omvendt. Skal litt til før dette slår til, men kjører allikevel en sjekk.
                         deltaX = 1;
                     else if (deltaY == 0)
                         deltaY = 1;
                     //beregner delta x og y slik at de har et forhold som er lik imgHeight/imgWidth
                     double factorHW = (double) imgWidth / (double) imgHeight;
                     double factor_dXdY = deltaX / deltaY;
-                    if (factor_dXdY < factorHW ) { //h�yden er iforhold til bildeh�yde/bredde mindre enn bredde. M� utvide bredde for � f� riktige proposisjoner
+                    if (factor_dXdY < factorHW ) { //høyden er iforhold til bildehøyde/bredde mindre enn bredde. Må utvide bredde for å få riktige proposisjoner
                         deltaX = deltaX * (factorHW / factor_dXdY);
                     }
-                    else if (factor_dXdY > factorHW) { //h�yde er st�rre enn bredde. M� utvide bredde for � f� riktige proposisjoner
+                    else if (factor_dXdY > factorHW) { //høyde er større enn bredde. Må utvide bredde for å få riktige proposisjoner
                         deltaY = deltaY * (factor_dXdY / factorHW);
                     }
-                    //utvider kartenvelop med hensyn til st�rrelsen p� ikon og offset, slik at ikonene ikke kommer i kartkanten.
+                    //utvider kartenvelop med hensyn til størrelsen på ikon og offset, slik at ikonene ikke kommer i kartkanten.
                     double extFact = deltaX / imgWidth;
                     double extendTop = Math.round((iconOffsetHeigth + envFactor) * extFact);
                     double extendBottom = Math.round((Math.abs(iconPxSizeHeigth - iconOffsetHeigth) + envFactor) * extFact);
@@ -395,7 +394,7 @@ public class CoordHelper {
         boolean initiert = false;
         for (int i = 0; i < vMapPoints.size(); i++ ) {
             mp = (MapPoint) vMapPoints.get(i);
-            if (!initiert) { //dersom mappoint er en dummy, m� initielle verdier settes p� nytt n�r f�rste riktige koordinater kommer
+            if (!initiert) { //dersom mappoint er en dummy, må initielle verdier settes på nytt når første riktige koordinater kommer
                 me.maxX = mp.x;
                 if (me.maxX != defaultNoCoord) {
                     initiert = true;
@@ -404,7 +403,7 @@ public class CoordHelper {
                     me.minY = mp.y;
                 }
             }
-            if (mp.x != defaultNoCoord) { //m� se bort fra punkt som er tilordnet en dummy kooordinat verdi
+            if (mp.x != defaultNoCoord) { //må se bort fra punkt som er tilordnet en dummy kooordinat verdi
                 if (mp.x > me.maxX)
                     me.maxX = mp.x;
                 else if (mp.x < me.minX)
@@ -427,7 +426,7 @@ public class CoordHelper {
         MapPoint mp2 = new MapPoint();
         double adjustX = iconOverlapOffsetWidth;
         double adjustY = iconOverlapOffsetHeigth;
-        if (zoomscale > 20000) { //iconOverlapOffset justeres avhengig av m�lestokk, dersom denne er mindre enn 20000.
+        if (zoomscale > 20000) { //iconOverlapOffset justeres avhengig av målestokk, dersom denne er mindre enn 20000.
             adjustX = iconOverlapOffsetWidth * 20000 / zoomscale;
             if (adjustX < 5)//Skal uansett forflyttes et gitt antall pixler
                adjustX = 5;
@@ -437,10 +436,11 @@ public class CoordHelper {
         }
         double xOffset = (zoomscale * pixelSize) * adjustX;
         double yOffset = (zoomscale * pixelSize) * adjustY;
-        int counter = 1; //holder rede p� antall like
-        //boolean right = true;//flytter f�rste like til h�yre.
+        
+        //boolean right = true;//flytter første like til høyre.
         for (int i = 0; i < vMapPoints.size(); i++) {
             mp1 = (MapPoint) vMapPoints.get(i);
+            int counter = 1; //keep track of the number of points that matches mp1.
             if (mp1.x != defaultNoCoord) {
                 for (int j = i + 1; j < vMapPoints.size(); j++) {
                     if (i != j) { //sjekker ikke mot seg selv
@@ -484,13 +484,13 @@ public class CoordHelper {
 
         ArrayList arrList = new ArrayList(vMapPoints.size());
 
-         //finne UTM koordinater for �vre h�yre samt nedre venstre.
+         //finne UTM koordinater for øvre høyre samt nedre venstre.
         double upperLeftX = me.getMinX();
         double upperLeftY = me.getMaxY();
-        //m� f�rst sjekke hvilke punkt som ligger innenfor eksisterende MapEnvelope (kan ha kommet utenfor kartextentet etter navigering)
+        //må først sjekke hvilke punkt som ligger innenfor eksisterende MapEnvelope (kan ha kommet utenfor kartextentet etter navigering)
         //double tempX, tempY;
         MapPoint mp = new MapPoint();
-        if (!init) { //dersom det er navigering i kartet m� det sjekkes om punktene faller utenfor nytt extent. Dette skjer ikke slik l�sningen er idag.
+        if (!init) { //dersom det er navigering i kartet må det sjekkes om punktene faller utenfor nytt extent. Dette skjer ikke slik løsningen er idag.
             Vector vMapPointsNew = new Vector();
             boolean inside;
             for (int i = 0; i < vMapPoints.size(); i++) {
@@ -506,12 +506,12 @@ public class CoordHelper {
                     inside = false;
                 else if (mp.y < me.minY)
                     inside = false;
-                if (inside)//dersom punktet ligger innenfor envelop'en tas det var p�.
+                if (inside)//dersom punktet ligger innenfor envelop'en tas det var på.
                     vMapPointsNew.add(mp);
             }
             vMapPoints = vMapPointsNew;
         }
-        //beregne bildepixel koordinater. M� justere ikoner som har samme koordinatverdi.
+        //beregne bildepixel koordinater. Må justere ikoner som har samme koordinatverdi.
         double deltaX = me.maxX - me.minX;
         double deltaY = me.maxY - me.minY;
         double yFactor = imgHeight / deltaY; //meter pr pixel
