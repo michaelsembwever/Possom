@@ -60,7 +60,7 @@ public final class SiteLocatorFilter implements Filter {
     /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
             Collections.unmodifiableCollection(Arrays.asList(new String[]{
-                PUBLISH_DIR, "/css/", "/images/", "/javascript/", "/misc/"
+                PUBLISH_DIR, "/css/", "/images/", "/javascript/"
     }));
 
     /** The context that we'll need to use every invocation of doFilter(..)  **/
