@@ -108,7 +108,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
  * @version <tt>$Id$</tt>
@@ -561,25 +560,69 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                 }
 
+//                if(sc instanceof BlocketSearchConfiguration)
+//                {
+//                    final BlocketSearchConfiguration bsc = (BlocketSearchConfiguration)sc;
+//                    /**
+//                     * Read blocket.se properties.
+//                     */
+//                    final Map<String,String> blocketmap = new HashMap<String,String>();
+//                    Properties props = new Properties();
+//                    PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, bsc.getBlocketConfigFileName(), props);
+//                    loader.abut();
+//
+//                    /**
+//                     * Put properties in a map
+//                     */
+//                    for (Object value : props.values()) {
+//                        final String field[] = ((String)value).split(";");
+//                        if (field.length == 2) {
+//                            blocketmap.put(field[0], field[1]);
+//                        }
+//                     }
+//                     bsc.setBlocketMap(blocketmap);
+//                }
+
                 if(sc instanceof BlocketSearchConfiguration)
                 {
                     final BlocketSearchConfiguration bsc = (BlocketSearchConfiguration)sc;
                     /**
-                     * Läser in blocket specifika properties.
+                     * Read blocket.se properties.
                      */
+
+
+//                  configuration files
+                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    factory.setValidating(false);
+                    final DocumentBuilder builder = factory.newDocumentBuilder();
+                    DocumentLoader loader = UrlResourceLoader.newDocumentLoader(cxt, bsc.getBlocketConfigFileName(), builder);
+
                     final Map<String,String> blocketmap = new HashMap<String,String>();
-                    Properties props = new Properties();
-                    PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, bsc.getBlocketConfigFileName(), props);
+//                    PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, , props);
                     loader.abut();
+                    final Document doc = loader.getDocument();
+                    final Element root = doc.getDocumentElement();
+
+                    // loop through words.
+                    final NodeList wordList = root.getElementsByTagName("word");
+
+                    for (int i = 0; i < wordList.getLength(); ++i) {
+                        final Element wordElement = (Element) wordList.item(i);
+                        final String cid = wordElement.getAttribute("id");
+                        final String catName = wordElement.getAttribute("category");
+                        final String word = wordElement.getTextContent();
+                        blocketmap.put(word, cid+":"+catName);
+                        System.out.println("xml: "+word +" "+cid+":"+catName);
+                    }
                     /**
-                     * Lägger properties i en Map för snabbare åtkomst.
+                     * Put properties in a map
                      */
-                    for (Object value : props.values()) {
-                        final String field[] = ((String)value).split(";");
-                        if (field.length == 2) {
-                            blocketmap.put(field[0], field[1]);
-                        }
-                     }
+//                    for (Object value : props.values()) {
+//                        final String field[] = ((String)value).split(";");
+//                        if (field.length == 2) {
+//                            blocketmap.put(field[0], field[1]);
+//                        }
+//                     }
                      bsc.setBlocketMap(blocketmap);
                 }
 
@@ -587,7 +630,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final VehicleSearchConfiguration vsc = (VehicleSearchConfiguration)sc;
 
                     /**
-                     * Läser in Vehicle search specifika properties.
+                     * Read vehicle specific properties for bytbil.com and blocket.se
                      */
                     final Set<String> accessoriesSet = new HashSet<String>();
                     Properties props = new Properties();
@@ -600,13 +643,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     carLoader.abut();
 
                     /**
-                     * Lägger properties i ett Set och en Map för snabbare åtkomst.
+                     * Put properties in a set
                      */
                     for (Object value : props.values()) {
                         accessoriesSet.add((String)value);
                     }
                     vsc.setAccessoriesSet(accessoriesSet);
 
+                    /**
+                     * Put properties in a map
+                     */
                     for (Object value : carProps.values()) {
                         final String field[] = ((String)value).split(":"); // Ignore the key, the value is key/value tuple, ugly but it works,
                         if (field.length == 2) {                           // example:  property1963=volvo p 1800:volvo;p 1800
@@ -802,6 +848,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 throw new InfrastructureException(ex);
             } catch (InvocationTargetException ex) {
                 throw new InfrastructureException(ex);
+            } catch (ParserConfigurationException e) {
+                // TODO Auto-generated catch block
+                throw new InfrastructureException(e);
             }
         }
 
