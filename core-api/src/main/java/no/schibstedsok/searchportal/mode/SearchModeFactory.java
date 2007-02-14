@@ -1,11 +1,30 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlocketSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
@@ -30,20 +49,20 @@ import no.schibstedsok.searchportal.mode.config.SensisSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.StaticSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.StockSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.StormWeatherSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.TvEnrichSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.TvWaitSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.VehicleSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.WebSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.WhiteSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.YahooMediaSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YellowGeoSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.YellowSearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.YahooMediaSearchConfiguration;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
 import no.schibstedsok.searchportal.query.transform.QueryTransformer;
-import no.schibstedsok.searchportal.query.transform.CatalogueInfopageQueryTransformer;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
 import no.schibstedsok.searchportal.result.handler.AgeCalculatorResultHandler;
@@ -83,27 +102,12 @@ import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.searchportal.view.output.XmlOutputResultHandler;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.text.MessageFormat;
-import java.util.Collections;
-import no.schibstedsok.searchportal.mode.config.TvEnrichSearchConfiguration;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -244,12 +248,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
     // Package protected ---------------------------------------------
-    
+
     /* Test use it. **/
     Map<String,SearchMode> getModes(){
-        
+
         return Collections.unmodifiableMap(modes);
-    } 
+    }
 
     // Protected -----------------------------------------------------
 
@@ -267,21 +271,21 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             // loop through modes.
             final NodeList modeList = root.getElementsByTagName("mode");
-            
+
             for (int i = 0; i < modeList.getLength(); ++i) {
                 final Element modeE = (Element) modeList.item(i);
                 final String id = modeE.getAttribute("id");
-                
+
                 LOG.info(INFO_PARSING_MODE + modeE.getLocalName() + " " + id);
                 final SearchMode inherit = getMode(modeE.getAttribute("inherit"));
-                
+
                 final SearchMode mode = new SearchMode(inherit);
-                
+
                 mode.setId(id);
                 mode.setExecutor(parseExecutor(modeE.getAttribute("executor"),
                         inherit != null ? inherit.getExecutor() : new SequentialSearchCommandExecutor()));
                 fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
-                
+
                 // setup new commands list for this mode
                 final Map<String,SearchConfiguration> modesCommands = new HashMap<String,SearchConfiguration>();
                 try{
@@ -295,10 +299,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 for(CommandTypes commandType : CommandTypes.values()){
                 	final NodeList commandsList = modeE.getElementsByTagName(commandType.getXmlName());
 
-                    
+
                     for (int j = 0; j < commandsList.getLength(); ++j) {
                         final Element commandE = (Element) commandsList.item(j);
-                    	
+
                         final SearchConfiguration sc = commandType.parseSearchConfiguration(context, commandE, mode);
                         modesCommands.put(sc.getName(), sc);
                         mode.addSearchConfiguration(sc);
@@ -373,6 +377,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         BLOG_COMMAND(BlogSearchConfiguration.class),
         PRISJAKT_COMMAND(PrisjaktSearchConfiguration.class),
         BLOCKET_COMMAND(BlocketSearchConfiguration.class),
+        VEHICLE_COMMAND(VehicleSearchConfiguration.class),
         CATALOGUE_COMMAND(CatalogueSearchConfiguration.class),
         CATALOGUE_ADS_COMMAND(CatalogueAdsSearchConfiguration.class),
         HITTAMAP_COMMAND(HittaMapSearchConfiguration.class);
@@ -475,7 +480,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "filtertype", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "ignoreNavigation", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "offensiveScoreLimit", ParseType.Int , commandE, "-1");
-                    fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");                    
+                    fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "queryServerUrl", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "relevantQueries", ParseType.Boolean , commandE, "false");
                     fillBeanProperty(sc, inherit, "sortBy", ParseType.String , commandE, "");
@@ -518,7 +523,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "collapsingEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "expansionEnabled", ParseType.Boolean, commandE, "false");
                     fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String , commandE, "");
-                    fillBeanProperty(sc, inherit, "queryServer", ParseType.String , commandE, "");                    
+                    fillBeanProperty(sc, inherit, "queryServer", ParseType.String , commandE, "");
 
                     if (null != esc.getQueryServer() && esc.getQueryServer().startsWith("http://")) {
                         throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + esc.getQueryServer());
@@ -550,43 +555,68 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "catalog", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "key", ParseType.String , commandE, "");
                 }
-                
+
                 if(sc instanceof PrisjaktSearchConfiguration){
-                	
-                
+
+
                 }
-                
+
                 if(sc instanceof BlocketSearchConfiguration)
                 {
-                	final BlocketSearchConfiguration bsc = (BlocketSearchConfiguration)sc; 
-                	
-                	
-                	Locale locale = new Locale("sv","SE");
-
-                	/**
-                	 * Läser in blocket specifika properties.
-                	 */
-                	final Map<String,String> blocketmap = new HashMap<String,String>();
-                	Properties props = new Properties();
-                	PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, bsc.getBlocketConfigFileName(), props);
-                	loader.abut();
-                	/**
-                	 * Lägger properties i en Map för snabbare åtkomst.
-                	 */
-                	for(Map.Entry<Object,Object> entry : props.entrySet())
-                	{
-
-
-                         final String key = ((String)entry.getKey()).toLowerCase(locale);
-                         final String value = ((String)entry.getValue()).toLowerCase(locale);
-                         blocketmap.put(key, value);
-                         
+                    final BlocketSearchConfiguration bsc = (BlocketSearchConfiguration)sc;
+                    /**
+                     * Läser in blocket specifika properties.
+                     */
+                    final Map<String,String> blocketmap = new HashMap<String,String>();
+                    Properties props = new Properties();
+                    PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, bsc.getBlocketConfigFileName(), props);
+                    loader.abut();
+                    /**
+                     * Lägger properties i en Map för snabbare åtkomst.
+                     */
+                    for (Object value : props.values()) {
+                        final String field[] = ((String)value).split(";");
+                        if (field.length == 2) {
+                            blocketmap.put(field[0], field[1]);
+                        }
                      }
-                	
-                	 bsc.setBlocketMap(blocketmap);
-                	
-                	}
-                                
+                     bsc.setBlocketMap(blocketmap);
+                }
+
+                if(sc instanceof VehicleSearchConfiguration) {
+                    final VehicleSearchConfiguration vsc = (VehicleSearchConfiguration)sc;
+
+                    /**
+                     * Läser in Vehicle search specifika properties.
+                     */
+                    final Set<String> accessoriesSet = new HashSet<String>();
+                    Properties props = new Properties();
+                    PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, vsc.getAccessoriesFileName(), props);
+                    loader.abut();
+
+                    final Map<String,String> carMap = new HashMap<String,String>();
+                    Properties carProps = new Properties();
+                    PropertiesLoader carLoader= UrlResourceLoader.newPropertiesLoader(cxt, vsc.getCarsPropertiesFileName(), carProps);
+                    carLoader.abut();
+
+                    /**
+                     * Lägger properties i ett Set och en Map för snabbare åtkomst.
+                     */
+                    for (Object value : props.values()) {
+                        accessoriesSet.add((String)value);
+                    }
+                    vsc.setAccessoriesSet(accessoriesSet);
+
+                    for (Object value : carProps.values()) {
+                        final String field[] = ((String)value).split(":"); // Ignore the key, the value is key/value tuple, ugly but it works,
+                        if (field.length == 2) {                           // example:  property1963=volvo p 1800:volvo;p 1800
+                            carMap.put(field[0], field[1]);
+                        }
+                     }
+                    vsc.setCarsMap(carMap);
+
+                }
+
                 if(sc instanceof AbstractYahooSearchConfiguration){
                     fillBeanProperty(sc, inherit, "encoding", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "partnerId", ParseType.String , commandE, "");
@@ -596,9 +626,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
                 if (sc instanceof YahooMediaSearchConfiguration) {
 
-                    fillBeanProperty(sc, inherit, "catalog", ParseType.String, commandE, 
+                    fillBeanProperty(sc, inherit, "catalog", ParseType.String, commandE,
                             YahooMediaSearchConfiguration.DEFAULT_CATALOG);
-                    fillBeanProperty(sc, inherit, "ocr", ParseType.String, commandE, 
+                    fillBeanProperty(sc, inherit, "ocr", ParseType.String, commandE,
                             YahooMediaSearchConfiguration.DEFAULT_OCR);
                     fillBeanProperty(sc, inherit, "site", ParseType.String, commandE, "");
                 }
@@ -622,7 +652,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(sc, inherit, "unique", ParseType.String , commandE, "");
                 }
                 if(sc instanceof PicSearchConfiguration){
-                    
+
                     fillBeanProperty(sc, inherit, "queryServerHost", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "queryServerPort", ParseType.String , commandE, "");
                     fillBeanProperty(sc, inherit, "country", ParseType.String , commandE, "no");
@@ -690,19 +720,19 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     tssc.setResultsToFetch(Integer.parseInt(commandE.getAttribute("results-to-fetch")));
 
                 }
-                
+
                 if (sc instanceof TvWaitSearchConfiguration) {
                     final TvWaitSearchConfiguration twsc = (TvWaitSearchConfiguration) sc;
                     fillBeanProperty(twsc, inherit, "index", ParseType.Int, commandE, "0");
                     fillBeanProperty(twsc, inherit, "waitOn", ParseType.String, commandE, null);
                     fillBeanProperty(twsc, inherit, "useMyChannels", ParseType.Boolean, commandE, "false");
                 }
-                
+
                 if (sc instanceof TvEnrichSearchConfiguration) {
                     final TvEnrichSearchConfiguration tesc = (TvEnrichSearchConfiguration) sc;
                     fillBeanProperty(tesc, inherit, "waitOn", ParseType.String, commandE, null);
                 }
-                
+
                 if(sc instanceof CatalogueSearchConfiguration){
                 	final CatalogueSearchConfiguration csc = (CatalogueSearchConfiguration) sc;
                     fillBeanProperty(csc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
@@ -710,9 +740,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if(sc instanceof CatalogueAdsSearchConfiguration){
                 	final CatalogueAdsSearchConfiguration casc = (CatalogueAdsSearchConfiguration) sc;
                     fillBeanProperty(casc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
-                }                
-                
-                
+                }
+
+
 
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
@@ -791,7 +821,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
                 config = configs.get(id);
                 m = m.getParentSearchMode();
-                
+
             }while(config == null && m != null);
 
             return config;
@@ -807,7 +837,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final Element navE = (Element)child;
                     final String id = navE.getAttribute("id");
                     final String name = navE.getAttribute("name");
-                    final String sortAttr = navE.getAttribute("sort") != null && navE.getAttribute("sort").length() > 0 
+                    final String sortAttr = navE.getAttribute("sort") != null && navE.getAttribute("sort").length() > 0
                             ? navE.getAttribute("sort").toUpperCase() : "COUNT";
                     LOG.info(INFO_PARSING_NAVIGATOR + id + " [" + name + "]");
                     final Navigator.Sort sort = Navigator.Sort.valueOf(sortAttr);
@@ -836,17 +866,17 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final class QueryTransformerFactory {
 
         private QueryTransformerFactory(){}
-        
+
         static boolean supported(final String xmlName){
-            
+
             return null != findClass(xmlName);
         }
 
         static QueryTransformer parseQueryTransformer(final Element qt){
-            
+
             final String xmlName = qt.getTagName();
             LOG.info(INFO_PARSING_QUERY_TRANSFORMER + xmlName);
-            
+
             try {
                 return findClass(xmlName).newInstance().readQueryTransformer(qt);
 
@@ -856,18 +886,18 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 throw new InfrastructureException(ex);
             }
         }
-        
+
         private static Class<? extends QueryTransformer> findClass(final String xmlName){
-            
+
             Class clazz = null;
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
             try{
                 clazz = (Class<? extends QueryTransformer>) Class.forName(
                     "no.schibstedsok.searchportal.query.transform."
-                    + className 
+                    + className
                     + "QueryTransformer");
-            
+
             }catch(ClassNotFoundException cnfe){
                 LOG.error(cnfe.getMessage(), cnfe);
             }
@@ -927,10 +957,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 LOG.info(INFO_PARSING_RESULT_HANDLER + xmlName);
                 final ResultHandler handler = clazz.newInstance();
                 switch(this){
-                	case CATALOGUE: 
+                	case CATALOGUE:
                 		final CatalogueResultHandler crh = (CatalogueResultHandler) handler;
                 		break;
-                		
+
                     case ADD_DOC_COUNT:
                         final AddDocCountModifier adc = (AddDocCountModifier) handler;
                         adc.setModifierName(rh.getAttribute("modifier"));
