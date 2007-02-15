@@ -295,7 +295,10 @@ public final class SearchServlet extends HttpServlet {
                 response.setCharacterEncoding(charset);
                 response.setContentType("text/x-vcard; charset=" +charset);
                 response.setHeader("Content-Disposition","attachment;filename=vcard-" +showid + ".vcf");      
-       	
+        } else if (request.getParameter("output") != null && request.getParameter("output").equals("opensearch")) {
+                String charset = "utf-8";
+                response.setCharacterEncoding(charset);
+                response.setContentType("text/xml; charset=utf-8");                
         } else { 
 
             response.setContentType("text/html; charset=utf-8");
