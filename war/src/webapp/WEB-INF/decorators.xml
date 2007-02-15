@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <decorators defaultdir="/WEB-INF/jsp/decorators">
 
@@ -14,7 +14,7 @@
     <decorator name="opensearch" page="opensearchDecorator.jsp"/>
     <decorator name="vcarddecorator" page="vcardDecorator.jsp"/>
     
-    <decorator name="maindecorator" page="mainDecorator.jsp">
+    <decorator name="maindecorator" page="webDecorator.jsp">
 	    <pattern>*</pattern>
     </decorator>
 

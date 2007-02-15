@@ -333,7 +333,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             LOG.info(INFO_COMMAND_COUNT + commands.size());
 
             // mark state that we're about to execute the sub threads
-            allCancelled = true;
+            allCancelled = commands.size() > 0;
 
             /* Entering CS */
             try {

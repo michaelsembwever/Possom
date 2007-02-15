@@ -54,7 +54,8 @@ public final class VelocityResultHandler implements ResultHandler {
             = "Possible client cancelled request. (NullPointerException writing to response's stream).";
     private static final String ERR_MERGE = "Error merging template ";
     
-    /* This is the paging size when browsing resultset like <- 1 2 3 4 5 6 7 8 9 10 ->  Hardcoded to max 10 and independent of the  pageSize */
+    /* This is the paging size when browsing resultset like <- 1 2 3 4 5 6 7 8 9 10 ->  
+     * Hardcoded to max 10 and independent of the  pageSize */
     // TODO Put this as parameter in views.xml  
     private static final int PAGING_SIZE =  10;
 
@@ -169,7 +170,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("result", cxt.getSearchResult());
         context.put("query", queryStringURLEncoded);
         context.put("queryHTMLEscaped", queryString);
-        context.put("currentTab", cxt.getSearchTab()); // FIXME duplicate of "tab"
+        context.put("currentTab", cxt.getSearchTab()); // FIXME duplicate of "tab" [generic. and genericno. are done]
 
         // following are deprecated as the view domain should not be accessing them
         context.put("globalSearchTips", ((RunningQuery) parameters.get("query")).getGlobalSearchTips());
@@ -194,7 +195,7 @@ public final class VelocityResultHandler implements ResultHandler {
         if (config.isPaging()) {
             final PagingDisplayHelper pager = new PagingDisplayHelper(
                     cxt.getSearchResult().getHitCount(),
-                    config.getResultsToReturn(),   PAGING_SIZE);
+                    cxt.getSearchTab().getPageSize(),   PAGING_SIZE);
 
 
             final Object v = parameters.get("offset");

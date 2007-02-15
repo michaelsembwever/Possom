@@ -20,6 +20,17 @@
     </attribute>
   </tag>
   <tag>
+    <name>include</name>
+    <tag-class>no.schibstedsok.searchportal.view.taglib.ImportSearchTabIncludeTag</tag-class>
+    <body-content>empty</body-content>
+    <attribute>
+      <name>include</name>
+      <required>true</required>
+      <rtexprvalue>true</rtexprvalue>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
+  <tag>
     <name>publish</name>
     <tag-class>no.schibstedsok.searchportal.view.taglib.ImportPublishingPageTag</tag-class>
     <body-content>empty</body-content>

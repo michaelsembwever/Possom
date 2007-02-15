@@ -25,6 +25,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.view.config.SearchTab.Layout;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -70,7 +71,6 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
     private final DocumentLoader loader;
     private final Context context;
-    private SearchTabFactory grandfather = null;
 
     // Static --------------------------------------------------------
 
@@ -278,6 +278,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                             this);
                     navigations.add(navHint);
                 }
+                
                 // because navigation hints dynamicaly link back to the leaf site's through the tab attribute
                 //  we need copy in the inherited navigation hints so they are applicable to this site's tabs.
                 if( null != inherit ){
@@ -285,6 +286,9 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         navigations.add(new SearchTab.NavigatorHint(hint, this));
                     }
                 }
+                
+                // the tab's layout
+                final Layout layout = new Layout().readLayout((Element)tabE.getElementsByTagName("layout").item(0));
 
                 final SearchTab tab = new SearchTab(
                         inherit,
@@ -296,8 +300,12 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseBoolean(tabE.getAttribute("rss-hidden"), false),
                         parseInt(tabE.getAttribute("page-size"), inherit != null ? inherit.getPageSize() : -1),
                         navigations,
-                        parseInt(tabE.getAttribute("enrichment-limit"), inherit != null ? inherit.getEnrichmentLimit() : -1),
-                        parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null ? inherit.getEnrichmentOnTop() : -1),
+                        parseInt(tabE.getAttribute("enrichment-limit"), inherit != null 
+                            ? inherit.getEnrichmentLimit() 
+                            : -1),
+                        parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null 
+                            ? inherit.getEnrichmentOnTop() 
+                            : -1),
                         parseInt(tabE.getAttribute("enrichment-on-top-score"), inherit != null
                             ? inherit.getEnrichmentOnTopScore()
                             : -1),
@@ -306,7 +314,10 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
                         parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
                         Arrays.asList(css),
-                        parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null ? inherit.getAbsoluteOrdering() : false));
+                        parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null 
+                            ? inherit.getAbsoluteOrdering() 
+                            : false),
+                        layout);
 
                 try{
                     tabsLock.writeLock().lock();

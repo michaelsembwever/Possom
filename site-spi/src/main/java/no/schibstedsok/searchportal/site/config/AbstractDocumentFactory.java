@@ -144,22 +144,22 @@ public abstract class AbstractDocumentFactory {
         return beanName.toString();
     }
 
-    /** @deprecated use fillBeanProperty instead. **/
+    /** try to use fillBeanProperty instead. **/
     protected static final boolean parseBoolean(final String s, final boolean def){
         return s.trim().length() == 0 ? def : Boolean.parseBoolean(s);
     }
 
-    /** @deprecated use fillBeanProperty instead. **/
+    /** try to use fillBeanProperty instead. **/
     protected static final float parseFloat(final String s, final float def){
         return s.trim().length() == 0 ? def : Float.parseFloat(s);
     }
 
-    /** @deprecated use fillBeanProperty instead. **/
+    /** try to use fillBeanProperty instead. **/
     protected static final int parseInt(final String s, final int def){
         return s.trim().length() == 0 ? def : Integer.parseInt(s);
     }
 
-    /** @deprecated use fillBeanProperty instead. **/
+    /** try to use fillBeanProperty instead. **/
     protected static final String parseString(final String s, final String def){
         return s.trim().length() == 0 ? def : s;
     }

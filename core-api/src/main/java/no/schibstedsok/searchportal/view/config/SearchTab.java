@@ -10,8 +10,12 @@ package no.schibstedsok.searchportal.view.config;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * Immutable POJO holding the view configuration for a given tab.
@@ -116,12 +120,17 @@ public final class SearchTab {
     /**
      * Holds value of property enrichmentOnTopScore.
      */
-    private int enrichmentOnTopScore;
+    private final int enrichmentOnTopScore;
 
     /**
      * Holds value of property css.
      */
     private final List<String> css = new ArrayList<String>();
+    
+    /**
+     * Holds value of property layout.
+     */
+    private final Layout layout;
 
     // Static --------------------------------------------------------
 
@@ -146,7 +155,8 @@ public final class SearchTab {
                 final int adLimit,
                 final int adOnTop,
                 final List<String> css,
-                final boolean absoluteOrdering){
+                final boolean absoluteOrdering,
+                final Layout layout){
 
         this.inherit = inherit;
         this.id = id;
@@ -180,6 +190,7 @@ public final class SearchTab {
         this.css.addAll(css);
         this.absoluteOrdering = absoluteOrdering;
         this.rssHidden = rssHidden;
+        this.layout = layout;
     }
 
     // Getters --------------------------------------------------------
@@ -281,6 +292,7 @@ public final class SearchTab {
 
     /**
      * Returns true if there should be no visible links to the rss version of this tab.
+     * @deprecated Not JavaBean compatable. Use isRssHidden() instead.
      *
      * @return true if hidden.
      */
@@ -288,17 +300,44 @@ public final class SearchTab {
         return rssHidden;
     }
     
+    /**
+     * Returns true if there should be no visible links to the rss version of this tab.
+     *
+     * @return true if hidden.
+     */
+    public boolean isRssHidden() {
+        return rssHidden;
+    }
+    
+    /**
+     * Getter for property showRss
+     * @deprecated Not JavaBean compatable. Use isShowRss() instead.
+     */
     public boolean getShowRss() {
         return rssResultName != "" && !getRssHidden();
+    }
+    
+    /**
+     * Getter for property showRss
+     */
+    public boolean isShowRss() {
+        return rssResultName != "" && !isRssHidden();
     }
 
     /**
      * Getter for property absoluteOrdering
+     * @deprecated Not JavaBean compatable. Use isAbsoluteOrdering() instead.
      */
     public boolean getAbsoluteOrdering() {
         return absoluteOrdering;
     }
     
+    /**
+     * Getter for property absoluteOrdering
+     */
+    public boolean isAbsoluteOrdering() {
+        return absoluteOrdering;
+    }
     
     /**
      * Getter for property enrichments.
@@ -390,10 +429,17 @@ public final class SearchTab {
         return Collections.unmodifiableList(css);
     }
     
+    /**
+     * Getter for property layout.
+     * @return Value of property layout.
+     */
+    public Layout getLayout() {
+        return layout;
+    }
+    
     // Inner classes -------------------------------------------------
 
-    /** Immutable POJO holding Enrichment properties from a given tab.
-     **/
+    /** Immutable POJO holding Enrichment properties from a given tab. **/
     public static final class EnrichmentHint  {
 
         public EnrichmentHint(
@@ -461,7 +507,7 @@ public final class SearchTab {
         }
     }
 
-    /** Immutable POJO holding navigation information for a given tab **/
+    /** Immutable POJO holding navigation information for a given tab. **/
     public static final class NavigatorHint {
         
         /** Plain constructor. */
@@ -623,7 +669,70 @@ public final class SearchTab {
         }
     }
 
+    /** POJO holding layout information for the given tab. 
+     * readLayout(Element) is the only way to mutate the bean.
+     **/
+    public static final class Layout{
+        
+        private String origin;
+        private Map<String,String> includes;
+        private Map<String,String> properties;
+        
+        public Map<String,String> getIncludes(){
+            
+            return includes;
+        }
+        
+        public String getInclude(final String key){
+            
+            return includes.get(key);
+        }
+        
+        public Map<String,String> getProperties(){
+            return properties;
+        }
+        
+        public String getProperty(final String key){
+            return properties.get(key);
+        }
+        
+        /** @deprecated **/
+        public String getOrigin(){
+            return origin;
+        }
+        
+        /** Will return null when the element argument is null. 
+         * Otherwise returns the Layout object deserialised from the contents of the Element.
+         **/
+        public Layout readLayout(final Element element){
+            
+            if( null != origin ){
+                throw new IllegalStateException("Not allowed to call readLayout(element) twice");
+            }
+            if( null != element ){
 
+                origin = element.getAttribute("origin");
+                includes = readMap(element.getElementsByTagName("include"), "key", "template");
+                properties = readMap(element.getElementsByTagName("property"), "key", "value");
+            }
+            
+            return null == element ? null : this;
+        }
+        
+        private Map<String,String> readMap(
+                final NodeList list, 
+                final String keyElementName, 
+                final String valueElementName){
+            
+            final Map<String,String> map = new HashMap<String,String>();
+            for(int i = 0; i< list.getLength(); ++i){
+                final Element include = (Element) list.item(i);
+                final String key = include.getAttribute(keyElementName);
+                map.put(key, include.hasAttribute(valueElementName) ? include.getAttribute(valueElementName) : "");
+            }
+            return Collections.unmodifiableMap(map);
+        }
+    }
 
 
 }

@@ -29,6 +29,11 @@ public final class DataModelResultHandler implements ResultHandler{
     private static final String DEBUG_CREATED_RESULTS = "Creating results Hashtable";
     private static final String DEBUG_ADD_RESULT = "Adding the result ";
     
+    /* This is the paging size when browsing resultset like <- 1 2 3 4 5 6 7 8 9 10 ->  
+     * Hardcoded to max 10 and independent of the  pageSize */
+    // TODO Put this as parameter in views.xml  
+    private static final int PAGING_SIZE =  10;
+    
     // Attributes ----------------------------------------------------
     
     // Static --------------------------------------------------------
@@ -67,8 +72,8 @@ public final class DataModelResultHandler implements ResultHandler{
         
         // Paging helper
         if (config.isPaging()) {
-            final PagingDisplayHelper pager = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), 
-                    config.getResultsToReturn(), tab.getPageSize());
+            final PagingDisplayHelper pager 
+                    = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), tab.getPageSize(), PAGING_SIZE);
 
             final Object v = null != parameters.get("offset") ? parameters.get("offset") : "0";
             pager.setCurrentOffset(Integer.parseInt( v instanceof String[] && ((String[])v).length ==1

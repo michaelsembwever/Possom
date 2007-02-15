@@ -123,8 +123,9 @@ public final class SearchServlet extends HttpServlet {
 
             updateContentType(site, response, request);
 
-            // TODO Make the default tab a property defined in each skins's views.xml
-            final String searchTabKey = null != request.getParameter("c") ? request.getParameter("c") : "d";
+            final String searchTabKey = null == request.getParameter("page") 
+                    ? null != request.getParameter("c") ? request.getParameter("c") : "d"
+                    : "i";
 
             final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
 
