@@ -83,9 +83,15 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
                     BaseParameter.QUERY, getTransformedQuery()));
             params.setParameter(new SearchParameter(
                     "offset", getCurrentOffset(0)));
-            if (!cfg.getFilter().equals("")) {
-                params.setParameter(new SearchParameter(
-                        BaseParameter.FILTER, cfg.getFilter()));
+
+            if (getParameter("msite") != null)  {
+                    params.setParameter(new SearchParameter(
+                            BaseParameter.FILTER, "+domain:" + getParameter("msite") ));
+            } else {            
+                if (!cfg.getFilter().equals("")) {
+                    params.setParameter(new SearchParameter(
+                            BaseParameter.FILTER, cfg.getFilter()));
+                }
             }
 
             final IDeviceCapabilities cap = getDeviceCapabilities();
@@ -181,4 +187,17 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
         return item;
     }
+
+    private StringBuilder filterBuilder = null;
+    protected String getAdditionalFilter() {
+        System.out.println("FILTER");
+        synchronized (this) {
+            if (filterBuilder == null) {
+                filterBuilder = new StringBuilder(super.getAdditionalFilter());
+            }
+        }
+        return filterBuilder.toString();
+    }
+
+    
 }
