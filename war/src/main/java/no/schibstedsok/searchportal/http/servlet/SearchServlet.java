@@ -33,6 +33,7 @@ import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.TradeDoubler;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /** The Central Controller to incoming queries.
@@ -174,12 +175,18 @@ public final class SearchServlet extends HttpServlet {
 
                         stopWatch.stop();
                         LOG.info("Search took " + stopWatch + " " + query.getQueryString());
-                        STATISTICS_LOG.info(
-                            "<search-servlet>"
-                                + "<query>" + query.getQueryString() + "</query>"
-                                + "<time>" + stopWatch + "</time>"
-                                + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
-                            + "</search-servlet>");
+
+                        if(!"NOCOUNT".equals(request.getParameter("IGNORE"))){
+                            final String output = (String) request.getParameter("output");
+
+                            STATISTICS_LOG.info(
+                                "<search-servlet"
+                                    + (null != output ? " output=\"" + output + "\">" : ">")
+                                    + "<query>" + StringEscapeUtils.escapeXml(query.getQueryString()) + "</query>"
+                                    + "<time>" + stopWatch + "</time>"
+                                    + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
+                                + "</search-servlet>");
+                        }
 
 
                         checkFinn(request, response);

@@ -60,13 +60,13 @@ import org.apache.log4j.Logger;
  * @version <tt>$Revision$</tt>
  */
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {
-    
-   // Constants -----------------------------------------------------    
-    
-    private static final int TIMEOUT = Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO) 
-            ? 10000 
+
+   // Constants -----------------------------------------------------
+
+    private static final int TIMEOUT = Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)
+            ? 10000
             : Integer.MAX_VALUE;
-    
+
     private static final String PARAM_OUTPUT = "output";
 
     private static final Logger LOG = Logger.getLogger(RunningQueryImpl.class);
@@ -79,17 +79,17 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private static final String INFO_COMMAND_COUNT = "Commands to invoke ";
 
     // Attributes ----------------------------------------------------
-    
+
     private final AnalysisRuleFactory rules;
     private final String queryStr;
     private final Query queryObj;
-    
+
     /** Map of search command IDs to SearchResult */
     private final Map<String, Future<SearchResult>> results = new HashMap<String,Future<SearchResult>>();
-    
+
     /** Mutext for results variable */
     private final ReadWriteLock resultsLock = new ReentrantReadWriteLock();
-    
+
     /** have all search commands been cancelled.
      * implementation details allowing web subclasses to send correct error to client. **/
     protected boolean allCancelled = false;
@@ -105,9 +105,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final Map<String,Integer> scoresByRule = new HashMap<String,Integer>();
 
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     /**
      * Create a new Running Query instance.
      *
@@ -124,10 +124,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         queryStr = trimDuplicateSpaces(query);
 
         locale = cxt.getSite().getLocale();
-        
+
         this.parameters = parameters;
         initParameters(cxt);
-        
+
         final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
                 ContextWrapper.wrap(
                     TokenEvaluationEngine.Context.class,
@@ -156,7 +156,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     // Public --------------------------------------------------------
-    
+
 
     /** TODO comment me. **/
     public List<TokenMatch> getGeographicMatches() {
@@ -204,7 +204,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     /** {@inheritDoc} */
     public final SearchResult getSearchResult(final String id) throws InterruptedException, ExecutionException {
-        
+
         final Future<SearchResult> task;
         try {
             resultsLock.readLock().lock();
@@ -215,10 +215,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         } finally {
             resultsLock.readLock().unlock();
         }
-        
+
         return task.get();
     }
-    
+
     /**
      * Thread run. Guts of the logic behind this class.
      * XXX Insanely long method. Divide & Conquer.
@@ -237,7 +237,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             final boolean isRss = parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).equals("rss");
 
             for (SearchConfiguration searchConfiguration : context.getSearchMode().getSearchConfigurations()) {
-                
+
                 final SearchConfiguration config = searchConfiguration;
                 final String configName = config.getName();
 
@@ -287,7 +287,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                     final StringBuilder analysisRuleReport = new StringBuilder();
 
                                     score = rule.evaluate(queryObj, ContextWrapper.wrap(
-                                            AnalysisRule.Context.class, 
+                                            AnalysisRule.Context.class,
                                             new BaseContext(){
                                                 public String getRuleName(){
                                                     return eHint.getRule();
@@ -343,7 +343,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                 /* Leaving CS */
                 resultsLock.writeLock().unlock();
             }
-            
+
             // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
             //  spent in task.isDone()
             boolean hitsToShow = false;
@@ -356,7 +356,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     LOG.error(ERR_EXECUTION_ERROR, te);
                 }
             }
-            
+
             // Ensure any cancellations are properly handled
             for(Callable<SearchResult> command : commands){
                 allCancelled &= ((SearchCommand)command).handleCancellation();
@@ -365,7 +365,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             if( !allCancelled ){
 
                 final StringBuilder noHitsOutput = new StringBuilder();
-                
+
                 for (Future<SearchResult> task : results.values()) {
 
                     if (task.isDone() && !task.isCancelled()) {
@@ -389,8 +389,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 // update hit status
                                 hitsToShow |= searchResult.getHitCount() > 0;
                                 hits.put(name, searchResult.getHitCount());
+
                                 if( searchResult.getHitCount() <= 0 && config.isPaging() ){
-                                    noHitsOutput.append("<command>" + config.getStatisticalName() + "</command>");
+                                    noHitsOutput.append("<command id=\"" + config.getName()
+                                            + "\" name=\""  + config.getStatisticalName()
+                                            + "\" type=\"" + searchResult.getSearchCommand().getClass().getSimpleName()
+                                            + "\"/>");
                                 }
 
                                 // score
@@ -431,24 +435,22 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                     performEnrichmentHandling(results.values());
                 }
-                
-                if( noHitsOutput.length() > 0 ){
-                    
-                    noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey() + "\">"
+
+                if( noHitsOutput.length() >0 && queryStr.length() >0 && !"NOCOUNT".equals(parameters.get("IGNORE"))){
+                    final String output = (String) parameters.get("output");
+
+                    noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey()
+                            + (null != output ? "\" output=\"" + output : "") + "\">"
                             + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query>");
                     noHitsOutput.append("</no-hits>");
                     PRODUCT_LOG.info(noHitsOutput.toString());
                 }
             }
-            
-        } catch (RuntimeException e) {
-            LOG.error(ERR_RUN_QUERY, e);
-            throw e;
-           
+
         } catch (Exception e) {
             LOG.error(ERR_RUN_QUERY, e);
             throw new InfrastructureException(e);
-            
+
         }
     }
 
@@ -518,24 +520,24 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public Query getQuery() {
         return queryObj;
     }
-    
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     private List<TokenMatch> getTokenMatches(final TokenPredicate token) throws VeryFastListQueryException {
 
         final ReportingTokenEvaluator e = (ReportingTokenEvaluator) engine.getEvaluator(token);
         return e.reportToken(token, queryStr);
-    }    
-    
-    private void performEnrichmentHandling(final Collection<Future<SearchResult>> results) 
+    }
+
+    private void performEnrichmentHandling(final Collection<Future<SearchResult>> results)
             throws InterruptedException{
 
         Collections.sort(enrichments);
-        
+
         final StringBuilder log = new StringBuilder();
 
         log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
@@ -549,6 +551,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
         log.append("</enrichments>");
         PRODUCT_LOG.info(log.toString());
+
     }
 
     /** Remove modifiers with invalid count.
@@ -581,25 +584,25 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             Collections.sort(sources);
         }
     }
-    
+
     private void initParameters(final RunningQuery.Context rqCxt){
-        
+
         parameters.put("query", this);
         parameters.put("locale", locale);
         if( null == parameters.get("offset") ){
             parameters.put("offset", "0");
         }
-        
+
         final Properties props = SiteConfiguration.valueOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
 
         parameters.put("configuration", props);
         parameters.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, rqCxt)));
         parameters.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, rqCxt)));
-        
+
         parameters.put("tab", rqCxt.getSearchTab());
         parameters.put("c", rqCxt.getSearchTab().getKey());
     }
-    
+
     // Inner classes -------------------------------------------------
 }

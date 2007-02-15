@@ -369,10 +369,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             LOG.info("Search " + getSearchConfiguration().getName() + " took " + watch);
 
             statisticsInfo(
-                "<search-command id=\"" + getSearchConfiguration().getName()
-                    + "\" name=\"" + getSearchConfiguration().getStatisticalName() + "\">"
-                    + "<query>" + getTransformedQuerySesamSyntax() + "</query>"
-                    + "<search-name>" + getClass().getSimpleName() + "</search-name>"
+                "<search-command id=\"" + getSearchConfiguration().getName() 
+                    + "\" name=\"" + getSearchConfiguration().getStatisticalName() 
+                    + "\" type=\"" + getClass().getSimpleName() + "\">"
                     + (hitCount != null ? "<hits>" + hitCount + "</hits>" : "<failure/>")
                     + "<time>" + watch + "</time>"
                 + "</search-command>");

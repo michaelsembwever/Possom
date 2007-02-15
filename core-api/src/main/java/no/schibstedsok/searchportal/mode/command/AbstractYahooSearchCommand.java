@@ -95,10 +95,6 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
         return client.getXmlDocument(context.getSearchConfiguration().getName(), url);
     }
 
-    protected final boolean isVgSiteSearch() {
-        return context.getQuery().getQueryString().contains("site:vg.no");
-    }
-
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------

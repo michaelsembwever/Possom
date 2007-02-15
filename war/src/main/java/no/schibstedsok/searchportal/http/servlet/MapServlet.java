@@ -9,7 +9,6 @@ import no.geodata.arcweb.AuthenticationSoap;
 import no.geodata.maputil.CoordHelper;
 import no.geodata.maputil.MapEnvelope;
 import no.geodata.maputil.MapPoint;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +23,7 @@ import no.geodata.prod.webservices.arcweb.MapImageLocator;
 import no.geodata.prod.webservices.arcweb.MapImageOptions;
 import no.geodata.prod.webservices.arcweb.MapImageSize;
 import no.geodata.prod.webservices.arcweb.MapImageSoap;
+import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 
 
@@ -37,6 +37,20 @@ public final class MapServlet extends HttpServlet {
     /** The serialVersionUID */
     private static final long serialVersionUID = -5879777378093939926L;
 
+    private static final String DEFAULT_IMAGE = "http://www.sesam.no/images/pix.gif";
+    
+    /** 
+     * Timeout for SOAP call to authentication and mapimage service.
+     * The authentication token has a lifetime of 10 minutes. So if Geodata
+     * goes down getUrl() will get called with a 20 sec timeout. 
+     * After the initial 10 minutest the authenticate() method will be executed with a much shorter timeout. If
+     * authenticate() throws an exception getUrl() is not executed.
+     * This should prevent the thread count from going through the roof and at the same time give the mapimage service
+     * enough time to generate the map images.
+     */
+    private static final int AUTHENTICATION_TIMEOUT = 2000;
+    private static final int MAPIMAGE_TIMEOUT = 20000;
+    
     //globale konstanter. Hvor bør disse settes?? xml fil.
     /*final static long zoomLevel1 = 10000; //kartskala ved zoom til ett punkt
     final static long zoomLevel2 = 20000;
@@ -72,6 +86,8 @@ public final class MapServlet extends HttpServlet {
                 if (current - tokenTimeStamp > TOKEN_REFRESH_INTERVAL) {
                     AuthenticationLocator authLocator = new AuthenticationLocator();
                     AuthenticationSoap auth = authLocator.getAuthenticationSoap();
+                    Stub s = (Stub) auth;
+                    s.setTimeout(AUTHENTICATION_TIMEOUT);
                     token = auth.getToken("schi", "zofren");
                     tokenTimeStamp = System.currentTimeMillis();
                 }
@@ -100,6 +116,8 @@ public final class MapServlet extends HttpServlet {
 
          MapImageLocator mapimageLocator = new MapImageLocator();
          MapImageSoap mapImage = mapimageLocator.getMapImageSoap();
+         Stub s = (Stub) mapImage;
+         s.setTimeout(MAPIMAGE_TIMEOUT);
          MapImageInfo result = mapImage.getMap(envelope, mapOptions, token);
          URL = result.getMapURL();
          LOG.info(URL);
@@ -107,8 +125,8 @@ public final class MapServlet extends HttpServlet {
     }
 
     /**
-     * Metoden parser requesten fra kartklienten. Den kan motta to ulike typer sett med parametrer for � generere kart.
-     * Enten i form av fire hj�rnekoordinater, eller iform av et punkt samt m�lestokk.
+     * Metoden parser requesten fra kartklienten. Den kan motta to ulike typer sett med parametrer for å generere kart.
+     * Enten i form av fire hjørnekoordinater, eller iform av et punkt samt målestokk.
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
@@ -141,7 +159,7 @@ public final class MapServlet extends HttpServlet {
             me.setMinY(Double.parseDouble(minY));
         }
         else{
-            //kun sendt koordinater inn i requesten. Envelope m� beregnes.
+            //kun sendt koordinater inn i requesten. Envelope m\uFFFD beregnes.
             String sCoords = request.getParameter("coords");
             Vector vMapPoints = coordHelper.parseCoordString(sCoords);
             //Sjekk om det finnes noen koordinater, hvis ikke kan resten glemmes.
@@ -152,11 +170,11 @@ public final class MapServlet extends HttpServlet {
                 String temp = request.getParameter("zoom");
                 if (temp != null)
                     zoomnivaa = Integer.parseInt(temp);
-                if(action.compareToIgnoreCase("viewone") == 0){//enkelt bedriftstreff. M� beregne envelope utifra ett pkt, zoomlevel og bildest�rrelse
+                if(action.compareToIgnoreCase("viewone") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
                     MapPoint mp = (MapPoint) vMapPoints.get(0);
                     me = coordHelper.makeEnvelope(mp.getX(), mp.getY(), zoomnivaa);
                 }
-                else if(action.compareToIgnoreCase("viewmany") == 0){//enkelt bedriftstreff. M� beregne envelope utifra ett pkt, zoomlevel og bildest�rrelse
+                else if(action.compareToIgnoreCase("viewmany") == 0){//enkelt bedriftstreff. Må beregne envelope utifra ett pkt, zoomlevel og bildestørrelse
                     me = coordHelper.makeEnvelope(vMapPoints);
                 }
             }
@@ -166,14 +184,19 @@ public final class MapServlet extends HttpServlet {
             sUrl = getUrl(token, me, coordHelper);
         }
         catch (ServiceException serviceExcep) {
+            LOG.error(serviceExcep);
+            retriveMapError = true;
         }
         catch (RemoteException remoteExcep){
-
+            LOG.error(remoteExcep);
+            retriveMapError = true;
         }
 
         //redirecter resultat URL tilbake.
         if (!retriveMapError){
             response.sendRedirect(sUrl);
+        } else {
+            response.sendRedirect(DEFAULT_IMAGE);
         }
     }
 

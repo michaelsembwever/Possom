@@ -146,7 +146,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         final int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
         final int resultsOnTop = context.getRunningQuery().getSearchTab().getAdOnTop();
 
-        if (top && (!getParameters().containsKey("ss") && !isVgSiteSearch())) {
+        if (top && !getParameters().containsKey("ss")) {
             return resultsToShow + resultsOnTop;
         } else {
             return resultsToShow;

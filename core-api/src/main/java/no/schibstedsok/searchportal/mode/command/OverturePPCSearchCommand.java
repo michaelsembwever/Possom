@@ -27,6 +27,8 @@ import java.util.Map;
 public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     private static final String OVERTURE_PPC_ELEMENT = "Listing";
+    // Old school sitesearches
+    private static final String SITE_SEARCH_OVERTURE_PARTNER_ID = "schibstedsok_xml_no_searchbox_impl2";
 
     private static final Logger LOG = Logger.getLogger(OverturePPCSearchCommand.class);
 
@@ -119,7 +121,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         final int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
         final int resultsOnTop = context.getRunningQuery().getSearchTab().getAdOnTop();
 
-        if (top && (!getParameters().containsKey("ss") && !isVgSiteSearch())) {
+        if (top && !getParameters().containsKey("ss")) {
             return resultsToShow + resultsOnTop;
         } else {
             return resultsToShow;
@@ -144,7 +146,19 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         return item;
     }
 
+    /** TODO comment me. **/
+    protected String getPartnerId(){
 
+        final OverturePPCSearchConfiguration conf
+                = (OverturePPCSearchConfiguration)context.getSearchConfiguration();
+
+        // FIXME. When the site searches have their own context
+        // remove this and use the property partnerId of OverturePPCConfiguration
+        // instead.
+        return getParameters().containsKey("ss")
+                ? SITE_SEARCH_OVERTURE_PARTNER_ID
+                : super.getPartnerId();
+    }
 }
 
 
