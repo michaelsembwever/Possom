@@ -163,6 +163,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         final NodeList desc1 = ppcListing.getElementsByTagName("chan:desc");
         final NodeList desc2 = ppcListing.getElementsByTagName("chan:line2");
         final NodeList imageUrl = ppcListing.getElementsByTagName("chan:line1");
+        final NodeList phone = ppcListing.getElementsByTagName("chan:phoneNumber");
         final String place =
             ppcListing.getParentNode().getParentNode().getAttributes().getNamedItem("id").getNodeValue();
 
@@ -187,6 +188,9 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         }
         if (imageUrl.getLength() > 0) {
             item.addField("imageUrl", imageUrl.item(0).getFirstChild().getNodeValue());
+        }
+        if (imageUrl.getLength() > 0) {
+            item.addField("phone", phone.item(0).getFirstChild().getNodeValue());
         }
         item.addField("place", place);
 
