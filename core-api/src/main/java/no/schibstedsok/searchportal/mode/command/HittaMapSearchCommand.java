@@ -78,17 +78,18 @@ public class HittaMapSearchCommand extends AbstractWebServiceSearchCommand {
 
 					String hittaURL = "http://www.hitta.se/SearchCombi.aspx?SearchType=4&UCSB%3aWflWhite=1a1b&UCSB%3aWflPink=4a&UCSB%3aTextBoxWho=&UCSB%3aTextBoxWhere="
 							+ encTransQuery;
-					String hittaBigMapURL = "http://www.hitta.se/LargeMap.aspx? pointX="
-							+ yy
-							+ "&pointY="
-							+ xx
-							+ "&cx="
-							+ yy
-							+ "&cy="
-							+ xx
-							+ "&z=3&name=" + encTransQuery;
-					// String hittaBigMapURL =
-					// "http://www.hitta.se/LargeMap.aspx?%20pointX=1628131&pointY=6582373&cx=1628131&cy=6582373&z=3&name=Sveav.%20100";
+					
+					String hittaBigMapURL ="http://www.hitta.se/LargeMap.aspx?ShowSatellite=false&pointX=" 
+					+ yy
+					+ "&pointY="
+					+ xx
+					+ "&cx="
+					+ yy
+					+ "&cy="
+					+ xx
+					+ "&z=3&name=" + encTransQuery;
+					
+					
 					result.addField("hittaURL", hittaURL);
 					result.addField("hittaBigMapURL", hittaBigMapURL);
 					result.addField("searchquery", transQuery);
