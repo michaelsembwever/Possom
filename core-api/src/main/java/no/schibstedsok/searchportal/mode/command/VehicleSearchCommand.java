@@ -60,7 +60,7 @@ public class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
             final SearchPortType port = service.getsearchPort(new java.net.URL(service.getsearchPortAddress()));
 
             String query = getTransformedQuery();
-            /* Svars parametrar ifrån blocket */
+            /* Result from bytbil.com and blocket.se */
             LongHolder lholder = new LongHolder();
             StringHolder sholder = new StringHolder();
             Map carsMap = vsc.getCarsMap();
@@ -71,7 +71,7 @@ public class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
             String nads = "0";
             if (carsMap.get(query.toLowerCase()) != null) {
                 port.search(query, BLOCKET_CAR_CATEGORY, BLOCKET_PRIVATE_ADS_TYPE, lholder, sholder);
-                ((Stub)port).setTimeout(1000);
+                ((Stub) port).setTimeout(1000);
                 nads = Long.toString(lholder.value);
                 if ((nads != null) && (!nads.equals("0"))) {
                     result.addField("searchquery", query);
@@ -81,23 +81,17 @@ public class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
             }
             result.addField("numberofads", nads);
 
-            // bytbil
+            // bytbil cars
             String bbCount = "0";
             if (carsMap.get(query.toLowerCase()) != null) {
                 SAXBuilder sb = new SAXBuilder();
                 String[] queryParts = ((String) carsMap.get(query.toLowerCase())).split(";");
-                Document doc=null;
-                if (queryParts.length == 2) {
-                    doc = sb.build(String.format(BYTBIL_BASE_URL, URLEncoder.encode(queryParts[0], "iso-8859-1"),
-                            URLEncoder.encode(queryParts[1], "iso-8859-1")));
-                    bbCount = doc.getRootElement().getAttribute("count").getValue();
-                } else if ( ((String)carsMap.get(query.toLowerCase())).equals("bytbil")) {
-                    queryParts  = query.toLowerCase().split(" ");
+                Document doc = null;
+                if (queryParts.length == 2 && queryParts[1].length() > 0) {
                     doc = sb.build(String.format(BYTBIL_BASE_URL, URLEncoder.encode(queryParts[0], "iso-8859-1"),
                             URLEncoder.encode(queryParts[1], "iso-8859-1")));
                     bbCount = doc.getRootElement().getAttribute("count").getValue();
                 }
-                System.out.println("bbCount: " + bbCount);
                 if (!bbCount.equals("0")) {
                     String bbUrl = doc.getRootElement().getChildTextTrim("searchquery");
                     result.addField("bytbilbackurl", URLEncoder.encode(bbUrl, "iso-8859-1"));
@@ -110,11 +104,12 @@ public class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
 
             LOG.debug("Executing car accessories search command with searchquery: " + query);
 
+            // Blocket car accessories
             if (blocketContainsAccessories) {
                 LongHolder numberOfAccessories = new LongHolder();
                 StringHolder accUrl = new StringHolder();
                 port.search(query, BLOCKET_CAR_ACCESSORIES_CATEGORY, BLOCKET_ALL_ADS_TYPE, numberOfAccessories, accUrl);
-                ((Stub)port).setTimeout(1000);
+                ((Stub) port).setTimeout(1000);
                 accNads = Long.toString(numberOfAccessories.value);
                 if ((accNads != null) && (!accNads.equalsIgnoreCase("0"))) {
                     result.addField("searchquery", query);

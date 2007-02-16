@@ -12,9 +12,8 @@ public class VehicleSearchConfiguration extends AbstractSearchConfiguration {
 
     private Set accessoriesSet;
 
-//    private static final String VEHICLE_CONFIGURATION_FILE = "blocket.properties";
-    private static final String VEHICLE_ACCESSORIES_PROPERTIES = "vehicle_accessories.properties";
-    private static final String VEHICLE_CARS_PROPERTIES = "vehicle_cars.properties";
+    private static final String VEHICLE_ACCESSORIES_PROPERTIES = "vehicle_accessories.xml";
+    private static final String VEHICLE_CARS_PROPERTIES = "vehicle_cars.xml";
 
     /**
      * Creates a new instance of this search configuration.

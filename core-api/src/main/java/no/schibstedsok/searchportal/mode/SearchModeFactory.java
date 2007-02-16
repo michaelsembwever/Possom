@@ -556,74 +556,36 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 }
 
                 if(sc instanceof PrisjaktSearchConfiguration){
-
-
                 }
 
-//                if(sc instanceof BlocketSearchConfiguration)
-//                {
-//                    final BlocketSearchConfiguration bsc = (BlocketSearchConfiguration)sc;
-//                    /**
-//                     * Read blocket.se properties.
-//                     */
-//                    final Map<String,String> blocketmap = new HashMap<String,String>();
-//                    Properties props = new Properties();
-//                    PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, bsc.getBlocketConfigFileName(), props);
-//                    loader.abut();
-//
-//                    /**
-//                     * Put properties in a map
-//                     */
-//                    for (Object value : props.values()) {
-//                        final String field[] = ((String)value).split(";");
-//                        if (field.length == 2) {
-//                            blocketmap.put(field[0], field[1]);
-//                        }
-//                     }
-//                     bsc.setBlocketMap(blocketmap);
-//                }
-
-                if(sc instanceof BlocketSearchConfiguration)
-                {
+                if(sc instanceof BlocketSearchConfiguration) {
                     final BlocketSearchConfiguration bsc = (BlocketSearchConfiguration)sc;
+
                     /**
-                     * Read blocket.se properties.
+                     * Read blocket.se's around 400 most commonly used search phrases excluding vehicle oriented stuff, from blocket_search_words.xml.
                      */
-
-
-//                  configuration files
                     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                     factory.setValidating(false);
                     final DocumentBuilder builder = factory.newDocumentBuilder();
                     DocumentLoader loader = UrlResourceLoader.newDocumentLoader(cxt, bsc.getBlocketConfigFileName(), builder);
+                    loader.abut();
 
                     final Map<String,String> blocketmap = new HashMap<String,String>();
-//                    PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, , props);
-                    loader.abut();
                     final Document doc = loader.getDocument();
                     final Element root = doc.getDocumentElement();
 
-                    // loop through words.
                     final NodeList wordList = root.getElementsByTagName("word");
 
+                    // loop through words.
                     for (int i = 0; i < wordList.getLength(); ++i) {
                         final Element wordElement = (Element) wordList.item(i);
-                        final String cid = wordElement.getAttribute("id");
+                        final String cid = wordElement.getAttribute("category-id");
                         final String catName = wordElement.getAttribute("category");
                         final String word = wordElement.getTextContent();
+                        // Put words into a map
                         blocketmap.put(word, cid+":"+catName);
-                        System.out.println("xml: "+word +" "+cid+":"+catName);
                     }
-                    /**
-                     * Put properties in a map
-                     */
-//                    for (Object value : props.values()) {
-//                        final String field[] = ((String)value).split(";");
-//                        if (field.length == 2) {
-//                            blocketmap.put(field[0], field[1]);
-//                        }
-//                     }
-                     bsc.setBlocketMap(blocketmap);
+                    bsc.setBlocketMap(blocketmap);
                 }
 
                 if(sc instanceof VehicleSearchConfiguration) {
@@ -632,35 +594,50 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     /**
                      * Read vehicle specific properties for bytbil.com and blocket.se
                      */
-                    final Set<String> accessoriesSet = new HashSet<String>();
-                    Properties props = new Properties();
-                    PropertiesLoader loader= UrlResourceLoader.newPropertiesLoader(cxt, vsc.getAccessoriesFileName(), props);
+                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    factory.setValidating(false);
+                    final DocumentBuilder builder = factory.newDocumentBuilder();
+                    DocumentLoader loader = UrlResourceLoader.newDocumentLoader(cxt, vsc.getAccessoriesFileName(), builder);
                     loader.abut();
 
-                    final Map<String,String> carMap = new HashMap<String,String>();
-                    Properties carProps = new Properties();
-                    PropertiesLoader carLoader= UrlResourceLoader.newPropertiesLoader(cxt, vsc.getCarsPropertiesFileName(), carProps);
-                    carLoader.abut();
+                    final Set<String> accessoriesSet = new HashSet<String>();
+                    final Document doc = loader.getDocument();
+                    final Element root = doc.getDocumentElement();
+
+                    final NodeList accList = root.getElementsByTagName("accessory");
 
                     /**
-                     * Put properties in a set
+                     * Put car accessory search words from xml in a set
                      */
-                    for (Object value : props.values()) {
-                        accessoriesSet.add((String)value);
+                    for (int i = 0; i < accList.getLength(); ++i) {
+                        final Element wordElement = (Element) accList.item(i);
+                        final String acc = wordElement.getTextContent();
+                        accessoriesSet.add(acc);
                     }
                     vsc.setAccessoriesSet(accessoriesSet);
 
-                    /**
-                     * Put properties in a map
-                     */
-                    for (Object value : carProps.values()) {
-                        final String field[] = ((String)value).split(":"); // Ignore the key, the value is key/value tuple, ugly but it works,
-                        if (field.length == 2) {                           // example:  property1963=volvo p 1800:volvo;p 1800
-                            carMap.put(field[0], field[1]);
-                        }
-                     }
-                    vsc.setCarsMap(carMap);
 
+                    final Map<String,String> carMap = new HashMap<String,String>();
+                    final DocumentBuilder builder2 = factory.newDocumentBuilder();
+                    DocumentLoader carLoader = UrlResourceLoader.newDocumentLoader(cxt, vsc.getCarsPropertiesFileName(), builder2);
+                    carLoader.abut();
+
+                    final Document doc2 = carLoader.getDocument();
+                    final Element root2 = doc2.getDocumentElement();
+
+                    /**
+                     * Put car words from xml into a map
+                     */
+                    final NodeList carList = root2.getElementsByTagName("car");
+
+                    for (int i = 0; i < carList.getLength(); ++i) {
+                        final Element wordElement = (Element) carList.item(i);
+                        final String brand = wordElement.getAttribute("brand");
+                        final String model = wordElement.getAttribute("model");
+                        final String car = wordElement.getTextContent();
+                        carMap.put(car, brand+";"+model);   // "volvo p 1800" , "volvo;p 1800"
+                    }
+                    vsc.setCarsMap(carMap);
                 }
 
                 if(sc instanceof AbstractYahooSearchConfiguration){
