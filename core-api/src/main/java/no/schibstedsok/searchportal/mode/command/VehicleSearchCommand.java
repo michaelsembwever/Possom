@@ -93,6 +93,7 @@ public class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
                     bbCount = doc.getRootElement().getAttribute("count").getValue();
                 }
                 if (!bbCount.equals("0")) {
+                    result.addField("searchquery", query);
                     String bbUrl = doc.getRootElement().getChildTextTrim("searchquery");
                     result.addField("bytbilbackurl", URLEncoder.encode(bbUrl, "iso-8859-1"));
                 }
