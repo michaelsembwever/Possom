@@ -125,7 +125,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             }
         }
 
-        
+
 
         final SearchResult result = new WebServiceSearchResult(this);
         result.setHitCount(hits);
@@ -142,6 +142,27 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
 
 
+    private List<OperationClause> parentsOf(Clause clause){
+
+        final Query query = context.getQuery();
+
+        final List<OperationClause> parents = new ArrayList<OperationClause>();
+
+        for(OperationClause oc : query.getParentFinder().getParents(query.getRootClause(), clause)){
+            parents.add(oc);
+            parents.addAll(parentsOf(oc));
+        }
+        return parents;
+    }
+
+    private boolean insideOf(final List<OperationClause> parents, final TokenPredicate token){
+
+        boolean inside = false;
+        for(OperationClause oc : parents){
+            inside |= oc.getKnownPredicates().contains(token);
+        }
+        return inside;
+    }
 
     // Inner classes -------------------------------------------------
 
@@ -206,53 +227,35 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 validQuery ? who.toString().trim() : "",
                 where.toString().trim()
             };
-              
-        }
-        
-        private List<OperationClause> parentsOf(Clause clause){
-            
-            final Query query = context.getQuery();
-            
-            final List<OperationClause> parents = new ArrayList<OperationClause>();
-            
-            for(OperationClause oc : query.getParentFinder().getParents(query.getRootClause(), clause)){
-                parents.add(oc);
-                parents.addAll(parentsOf(oc));
-            }
-            return parents;
+
         }
 
+
         protected void visitImpl(final LeafClause clause) {
-                
+
             final List<OperationClause> parents  = parentsOf(clause);
 
             boolean geo = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL)
                     || clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
-            
+
             boolean onlyGeo = geo && clause.getField() == null;
-            
+
             // check if any possible parents of this clause match the fullname predicate.
-            boolean insideFullname = false;
-            for(OperationClause oc : parents){
-                insideFullname |= oc.getKnownPredicates().contains(TokenPredicate.FULLNAME);
-            }
-            
+            final boolean insideFullname = insideOf(parents, TokenPredicate.FULLNAME);
+
             boolean isNameOrNumber = clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
             isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
             isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.PHONENUMBER);
-            
+
             // check if any possible parents of this clause match the company predicate.
-            boolean isCompany = false;
-            for(OperationClause oc : parents){
-                isCompany |= oc.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT);
-            }
+            final boolean insideCompany = insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
 
             if(hasCompany || hasFullname){
 
-                onlyGeo &= !insideFullname && !isCompany;
+                onlyGeo &= !insideFullname && !insideCompany;
 
             }else{
-                
+
                 // no fullname or company exists in the query, so firstname or lastname will do
                 onlyGeo &= !isNameOrNumber;
             }
@@ -260,9 +263,9 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             if (onlyGeo) {
                 // add this term to the geo query string
                 where.append(getTransformedTerm(clause));
-                
+
             }else{
-                if((hasCompany && !isCompany && isNameOrNumber) || multipleCompany || multipleFullname ){
+                if((hasCompany && !insideCompany && isNameOrNumber) || multipleCompany || multipleFullname ){
                     // this is a company query but this clause isn't the company but a loose name.
                     // abort this hitta search, see SEARCH-966 - hitta enrichment
                     // OR there are multiple fullnames or company names.
@@ -280,7 +283,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         }
 
         protected void visitImpl(final DoubleOperatorClause clause) {
-            
+
             if(validQuery){
                 clause.getFirstClause().accept(this);
                 where.append(' ');
@@ -296,13 +299,13 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
         }
 
         protected void visitImpl(final XorClause clause) {
-            
+
             switch(clause.getHint()){
-                
+
                 case NUMBER_GROUP_ON_LEFT:
                     clause.getSecondClause().accept(this);
                     break;
-                    
+
                 case PHONE_NUMBER_ON_LEFT:
                     if( !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER) ){
                         clause.getSecondClause().accept(this);
@@ -312,7 +315,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                     clause.getFirstClause().accept(this);
                     break;
             }
-            
+
         }
 
         private final class FullnameOrCompanyFinder extends AbstractReflectionVisitor{
@@ -321,20 +324,24 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
                 final Set<TokenPredicate> predicates = clause.getKnownPredicates();
 
-                final boolean company = predicates.contains(TokenPredicate.COMPANYENRICHMENT);
-                multipleCompany = hasCompany && company;
-                hasCompany |= company;
+                final boolean insideFullname = insideOf(parentsOf(clause), TokenPredicate.FULLNAME);
+
+                if(!insideFullname){
+                    final boolean company = predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+                    multipleCompany = hasCompany && company;
+                    hasCompany |= company;
+                }
             }
 
             protected void visitImpl(final OperationClause clause) {
-                
+
                 if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname ){
                     clause.getFirstClause().accept(this);
                 }
             }
 
             protected void visitImpl(final DoubleOperatorClause clause) {
-                
+
                 if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
                     clause.getFirstClause().accept(this);
                     clause.getSecondClause().accept(this);
@@ -343,20 +350,25 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
             protected void visitImpl(final DefaultOperatorClause clause) {
 
-                final Set<TokenPredicate> predicates = clause.getKnownPredicates();
-                
-                boolean fullname = predicates.contains(TokenPredicate.FULLNAME);
-                multipleFullname = fullname && hasFullname;
-                hasFullname |= fullname;
-                
-                hasCompany |= !fullname
-                    && predicates.contains(TokenPredicate.COMPANYENRICHMENT);
-                
-                if(!fullname || !(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
-                    clause.getFirstClause().accept(this);
-                    clause.getSecondClause().accept(this);
-                }
+                final List<OperationClause> parents = parentsOf(clause);
+                final boolean insideFullname = insideOf(parents, TokenPredicate.FULLNAME);
+                final boolean insideCompany = insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
 
+                if(!insideFullname && !insideCompany){
+                    final Set<TokenPredicate> predicates = clause.getKnownPredicates();
+
+                    boolean fullname = predicates.contains(TokenPredicate.FULLNAME);
+                    multipleFullname = fullname && hasFullname;
+                    hasFullname |= fullname;
+
+                    hasCompany |= !fullname
+                        && predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+
+                    if(!fullname || !(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
+                        clause.getFirstClause().accept(this);
+                        clause.getSecondClause().accept(this);
+                    }
+                }
             }
             protected void visitImpl(final NotClause clause) {
             }
@@ -369,7 +381,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                     clause.getFirstClause().accept(this);
                 }
             }
-        }       
+        }
     }
 
 }
