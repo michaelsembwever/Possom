@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import javax.naming.InitialContext;
 
-import no.schibstedsok.alfa.external.service.CompanyService;
+//import no.schibstedsok.alfa.external.service.CompanyService;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.ProductResultItem;
@@ -75,29 +75,29 @@ public final class CatalogueResultHandler implements ResultHandler {
 				properties.put("java.naming.provider.url", url);
 
 				InitialContext ctx = new InitialContext(properties);
-				CompanyService service = (CompanyService) ctx.lookup(jndi);
-				no.schibstedsok.alfa.external.dto.ProductSearchResult eksternt = (no.schibstedsok.alfa.external.dto.ProductSearchResult) service
-						.getProductDataForCompany(intCompanyId);
+				//CompanyService service = (CompanyService) ctx.lookup(jndi);
+				//no.schibstedsok.alfa.external.dto.ProductSearchResult eksternt = (no.schibstedsok.alfa.external.dto.ProductSearchResult) service
+				//		.getProductDataForCompany(intCompanyId);
 
 				
 				/**
 				 * Hent ut alle produkter som er lagt inn på infosiden.
 				 * 
 				 */
-				ProductSearchResult internalResult = new ProductSearchResult();
+				/*ProductSearchResult internalResult = new ProductSearchResult();
 				if (eksternt.hasInfoPageProducts()) {
 					for (no.schibstedsok.alfa.external.dto.ProductResultItem prodItem : eksternt
 							.getInfoPageProducts()) {
 						ProductResultItem item = new ProductSearchResultItem();
 						item.setFields(prodItem.getFields());
 					}
-				}
+				}*/
 
 				/**
 				 * Hent ut alle produkter som er lagt inn på søkeresultatet.
 				 * 
 				 */
-				if (eksternt.hasListingProducts()) {
+				/*if (eksternt.hasListingProducts()) {
 					for (no.schibstedsok.alfa.external.dto.ProductResultItem prodItem : eksternt
 							.getListingProducts()) {
 						ProductResultItem item = new ProductSearchResultItem();
@@ -105,7 +105,7 @@ public final class CatalogueResultHandler implements ResultHandler {
 					}
 				}
 
-				cat.addProducts(internalResult);
+				cat.addProducts(internalResult);*/
 
 			} catch (Exception e) {
 				System.out.print(e);
