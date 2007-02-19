@@ -38,6 +38,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private String queryName = "";
     private boolean searchForName = false;
     private List<String> terms = new ArrayList<String>();
+    private boolean searchForInfoPage = false;
     
     
     /** Creates a new catalogue search command.
@@ -54,7 +55,10 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 	
 	    	queryTwo = query.getQueryString();
     	}
-   
+    	
+    	if(getSingleParameter("companyid")!=null){
+    		searchForInfoPage=true;
+    	}
     }
 
     /** TODO comment me. **/
@@ -108,7 +112,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 		// hvis det finnes en ekstra query, legg til denne i søket som et filter.	
 		query = queryTwo!=null&&queryTwo.length()>0 ? " +iypcfgeo:\""+queryTwo.trim()+"\"" : "";
     	
-    	return query;
+		return query;
     }
     
     /**
@@ -118,12 +122,18 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     protected void visitImpl(final LeafClause clause) {
     	String transformed = getTransformedTerm(clause);
     	terms.add(transformed);
+
+    	appendToQueryRepresentation(transformed);
     }
     
     
     @Override
-    public String getTransformedQuery() {
+    public String getTransformedQuery() {    	
     	String query="";
+    	
+    	if(searchForInfoPage){ 
+    		return super.getTransformedQuery();
+    	}
     	
     	if(!searchForName){
     		String query1="(";
