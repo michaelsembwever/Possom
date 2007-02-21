@@ -288,7 +288,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 }
                 
                 // the tab's layout
-                final Layout layout = new Layout().readLayout((Element)tabE.getElementsByTagName("layout").item(0));
+                final Layout layout = new Layout(null != inherit ? inherit.getLayout() : null)
+                        .readLayout((Element)tabE.getElementsByTagName("layout").item(0));
 
                 final SearchTab tab = new SearchTab(
                         inherit,

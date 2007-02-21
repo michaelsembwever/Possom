@@ -670,13 +670,23 @@ public final class SearchTab {
     }
 
     /** POJO holding layout information for the given tab. 
-     * readLayout(Element) is the only way to mutate the bean.
+     * readLayout(Element) is the only way to mutate the bean and can only be called once.
      **/
     public static final class Layout{
         
         private String origin;
         private Map<String,String> includes;
         private Map<String,String> properties;
+        
+        private Layout(){}
+        
+        public Layout(final Layout inherit){
+            if( null != inherit ){
+                // origin cannot be inherited!
+                includes = inherit.includes;
+                properties = inherit.properties;
+            }
+        }
         
         public Map<String,String> getIncludes(){
             
@@ -712,19 +722,22 @@ public final class SearchTab {
             if( null != element ){
 
                 origin = element.getAttribute("origin");
-                includes = readMap(element.getElementsByTagName("include"), "key", "template");
-                properties = readMap(element.getElementsByTagName("property"), "key", "value");
+                includes = readMap(includes, element.getElementsByTagName("include"), "key", "template");
+                properties = readMap(properties, element.getElementsByTagName("property"), "key", "value");
             }
             
             return null == element ? null : this;
         }
         
         private Map<String,String> readMap(
+                final Map<String,String> inherited,
                 final NodeList list, 
                 final String keyElementName, 
                 final String valueElementName){
             
-            final Map<String,String> map = new HashMap<String,String>();
+            final Map<String,String> map 
+                    = new HashMap<String,String>(null != inherited ? inherited : Collections.EMPTY_MAP);
+            
             for(int i = 0; i< list.getLength(); ++i){
                 final Element include = (Element) list.item(i);
                 final String key = include.getAttribute(keyElementName);
