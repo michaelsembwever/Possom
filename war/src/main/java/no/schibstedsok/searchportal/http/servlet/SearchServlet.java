@@ -123,9 +123,10 @@ public final class SearchServlet extends HttpServlet {
 
             updateContentType(site, response, request);
 
-            final String searchTabKey = null == request.getParameter("page") 
-                    ? null != request.getParameter("c") ? request.getParameter("c") : "d"
-                    : "i";
+            // determine the c parameter. default is 'd' unless there exists a page parameter when it becomes 'i'.
+            final String searchTabKey = null != request.getParameter("c") 
+                    ? request.getParameter("c") 
+                    : null == request.getParameter("page") ? "d" : "i";
 
             final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
 

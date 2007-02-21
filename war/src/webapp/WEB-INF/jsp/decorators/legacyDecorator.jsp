@@ -126,6 +126,7 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
                         <% if (currentC.equals("m")) { %>
                             <search:velocity template="navigators/newsSearchNavigator" command="newsSearchNavigator"/>
                             <decorator:getProperty property="page.media-collection-nav"/>
+                            <search:velocity template="navigators/newsSearchLastNews" command="newsSearchLastNews"/>
                         <%}else {%>
                             <decorator:getProperty property="page.sub-navigator"/>
                         <%}%> 

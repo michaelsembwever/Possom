@@ -80,8 +80,10 @@ public final class DataModelResultHandler implements ResultHandler{
                     ? ((String[]) v)[0]
                     : (String) v));
             
-            if( parameters.get("pagers") == null ){
-                parameters.put("pagers", new Hashtable<String,PagingDisplayHelper>());
+            synchronized( parameters ){
+                if( parameters.get("pagers") == null ){
+                    parameters.put("pagers", new Hashtable<String,PagingDisplayHelper>());
+                }
             }
             final Hashtable<String,PagingDisplayHelper> pagers 
                     = (Hashtable<String,PagingDisplayHelper>)parameters.get("pagers");

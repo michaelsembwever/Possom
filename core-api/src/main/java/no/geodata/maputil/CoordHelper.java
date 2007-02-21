@@ -31,7 +31,7 @@ public class CoordHelper {
     public int defaultZoom = 2;
     public int imgWidth = 363; //bildestørrelse i pixler, bredde
     public int imgHeight = 363; //bildestørrelse i pixler, høyde
-    public final static int envFactor = 30; //faktor for å lage rom rundt envelope. Angis i pixler
+    public int envFactor = 30; //faktor for å lage rom rundt envelope. Angis i pixler
 
     public final static int iconPxSizeHeigth = 32;
     public final static int iconPxSizeWidth = 29;
@@ -63,7 +63,7 @@ public class CoordHelper {
     /** Creates a new instance of CoordHelper */
     public CoordHelper() {
     }
-    
+
     public void setDefaultZoomlevel(int defaultZoom) {
         this.defaultZoom = defaultZoom;
     }
@@ -71,7 +71,7 @@ public class CoordHelper {
     public int getDefaultZoomlevel() {
         return defaultZoom;
     }
-    
+
     /**
      * @param sCoord Coordinate string, x1,y1;x2,y2;x3,y3;x4,y4...osv.
      * @return Vector containing MapPoint objects.
@@ -168,7 +168,7 @@ public class CoordHelper {
         Vector mps = extractMapPoints(companies);
         return makeEnvelope(mps, zoomlevel);
     }
-    
+
     /**
      * Returns MapEnvelope from given list of company objects and converts coords to pixCoords
      * @param companies
@@ -255,7 +255,7 @@ public class CoordHelper {
     public MapEnvelope makeEnvelope(Vector vMapPoints) {
         return makeEnvelope(vMapPoints, getDefaultZoomlevel());
     }
-    
+
     /**
      * Generates MapEnvelope from a vector of points, imgwidth and imgheight.
      * @param vMapPoints vector containg MapPoints
@@ -436,7 +436,7 @@ public class CoordHelper {
         }
         double xOffset = (zoomscale * pixelSize) * adjustX;
         double yOffset = (zoomscale * pixelSize) * adjustY;
-        
+
         //boolean right = true;//flytter første like til høyre.
         for (int i = 0; i < vMapPoints.size(); i++) {
             mp1 = (MapPoint) vMapPoints.get(i);
@@ -549,7 +549,18 @@ public class CoordHelper {
         //double deltaY = me.getMaxY()-me.getMinY();
         zoomscale = Math.round(deltaX / imgMeterSize);
         //finne delta x/y
+
         return zoomscale;
+    }
+
+    public int getZoomScaleInt(final MapEnvelope me) {
+        long zoomscale = 0;
+        double deltaX = me.getMaxX() - me.getMinX();
+        //double deltaY = me.getMaxY()-me.getMinY();
+        zoomscale = Math.round(deltaX / imgMeterSize);
+        int length = (int)zoomscale;
+
+        return length;
     }
 
      /**
@@ -620,12 +631,12 @@ public class CoordHelper {
     public String getDefaultZoom() {
         return Integer.toString(defaultZoom);
     }
-    
+
     public int getImgWidth() {
 
         return imgWidth;
     }
-    
+
     public int getImgHeight() {
 
         return imgHeight;
@@ -646,6 +657,10 @@ public class CoordHelper {
 
     public double getEnvFactor(){
         return envFactor;
+    }
+
+    public void setEnvFactor(int env){
+        this.envFactor = env;
     }
 
     public int getZoomCount() {
@@ -693,19 +708,19 @@ public class CoordHelper {
     public double getIconOffsetHeigth() {
         return iconOffsetHeigth;
     }
-    
+
     public void setIconOffsetHeigth(final int iconOffsetHeigth) {
         this.iconOffsetHeigth = iconOffsetHeigth;
     }
-    
+
     public double getIconOffsetWidth() {
         return iconOffsetWidth;
     }
-    
+
     public void setIconOffsetWidth(final int iconOffsetWidth) {
         this.iconOffsetWidth = iconOffsetWidth;
     }
-    
+
     public double getIconOverlapOffsetWidth() {
         return iconOverlapOffsetWidth;
     }

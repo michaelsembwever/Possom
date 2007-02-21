@@ -138,7 +138,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /**
      * Returns the query as it is after the query transformers have been applied to it.
      */
-     public String getTransformedQuerySesamSyntax() {
+    public String getTransformedQuerySesamSyntax() {
         return transformedQuerySesamSyntax;
     }
 
@@ -199,16 +199,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             completed = true;
             thread = null;
             return result;
-            
+
         }catch(RuntimeException rte){
             LOG.error(ERROR_RUNTIME, rte);
             return new BasicSearchResult(this);
-            
+
         }finally{
             // restore thread name
             Thread.currentThread().setName(t);
         }
-        
+
     }
 
     /** TODO comment me. **/
@@ -311,7 +311,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 : context.getQuery().getQueryString();
 
         if (useParameterAsQuery) {
-            
+
             // OOBS. It's not the query we are looking for but a string held
             // in a different parameter.
             transformedQuery = queryToUse;
@@ -322,14 +322,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
             mapInitialisor.visit(query.getRootClause());
             applyQueryTransformers(query, rq.getEngine(), getSearchConfiguration().getQueryTransformers());
-            
+
         }  else  {
-            
+
             applyQueryTransformers(
-                    context.getQuery(), 
-                    context.getTokenEvaluationEngine(), 
+                    context.getQuery(),
+                    context.getTokenEvaluationEngine(),
                     getSearchConfiguration().getQueryTransformers());
-            
+
         }
         return queryToUse;
     }
@@ -346,7 +346,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             //TODO: Hide this in QueryRule.execute(some parameters)
             boolean executeQuery = queryToUse.length() > 0;
             executeQuery |= null != parameters.get("contentsource");
-            executeQuery |= null != parameters.get("newscountry") && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
+            executeQuery |= null != parameters.get("newscountry")
+                                        && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("wt");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t");
@@ -369,8 +370,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             LOG.info("Search " + getSearchConfiguration().getName() + " took " + watch);
 
             statisticsInfo(
-                "<search-command id=\"" + getSearchConfiguration().getName() 
-                    + "\" name=\"" + getSearchConfiguration().getStatisticalName() 
+                "<search-command id=\"" + getSearchConfiguration().getName()
+                    + "\" name=\"" + getSearchConfiguration().getStatisticalName()
                     + "\" type=\"" + getClass().getSimpleName() + "\">"
                     + (hitCount != null ? "<hits>" + hitCount + "</hits>" : "<failure/>")
                     + "<time>" + watch + "</time>"
@@ -384,7 +385,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         // add some general properties first from the command
         //  if we've somehow blanked out the query altogether then revert to the user's origianl query string
         result.addField(FIELD_TRANSFORMED_QUERY,
-                getTransformedQuerySesamSyntax().length()>0 ? getTransformedQuerySesamSyntax() : context.getQuery().getQueryString());
+                getTransformedQuerySesamSyntax().length() > 0
+                ? getTransformedQuerySesamSyntax()
+                : context.getQuery().getQueryString());
 
         // process listed result handlers
         for (ResultHandler resultHandler : getSearchConfiguration().getResultHandlers()) {
@@ -424,10 +427,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @return i plus the offset of the current page.
      */
     protected int getCurrentOffset(final int i) {
-        
-        
+
+
         final Object v = parameters.get("offset");
-            
+
         if (null != v && getSearchConfiguration().isPaging()) {
             return i + Integer.parseInt(v instanceof String[] && ((String[])v).length ==1
                     ? ((String[]) v)[0]
@@ -494,7 +497,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected String getAdditionalFilter() {
         return additionalFilter;
     }
-    
+
     /** returns null when array is null **/
     protected final String getSingleParameter(final String paramName) {
         return parameters.get(paramName) instanceof String[]
@@ -537,10 +540,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /**
-     * Escapes the term to disarm any reserved words. Override this to do any back-end (index) specific escaping. 
+     * Escapes the term to disarm any reserved words. Override this to do any back-end (index) specific escaping.
      *
      * @param term The term to escape
-     * @return The escaped version of term. 
+     * @return The escaped version of term.
      */
     protected String escapeTerm(final String term) {
         return term;
@@ -576,15 +579,19 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
         return field;
     }
-    
+
     protected final void statisticsInfo(final String msg){
-        
+
         final StringBuffer logger = (StringBuffer) parameters.get("no.schibstedsok.Statistics");
         if( null != logger ){
             logger.append(msg);
         }
     }
-    
+
+    protected SesamSyntaxQueryBuilder newSesamSyntaxQueryBuilder(){
+        return new SesamSyntaxQueryBuilder();
+    }
+
     // Private -------------------------------------------------------
 
     /**
@@ -592,7 +599,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param transformers
      */
     private void applyQueryTransformers(
-            final Query query, 
+            final Query query,
             final TokenEvaluationEngine engine,
             final List<QueryTransformer> transformers) {
 
@@ -665,12 +672,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             transformedQuery = getQueryRepresentation(query);
         }
 
-        final SesamSyntaxQueryBuilder builder = new SesamSyntaxQueryBuilder();
+        final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
         builder.visit(context.getQuery().getRootClause());
         transformedQuerySesamSyntax = builder.getQueryRepresentation();
     }
 
-    
+
    // Inner classes -------------------------------------------------
 
 
@@ -683,7 +690,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         protected void visitImpl(final LeafClause clause) {
-            
+
             if (null != clause.getField()){
                 if( null == getFieldFilter(clause) ){
                     // Escape any fielded leafs for fields that are not supported by this command.
@@ -718,14 +725,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * Visitor to create the FAST filter string. Handles the site: syntax.
      *
-     * @todo add correct handling of NotClause and AndNotClause. This also needs to be added to the query builder visitor above.
+     * @todo add correct handling of NotClause and AndNotClause.
+     *          This also needs to be added to the query builder visitor above.
      * @todo move to an abstract fast search command?
      *
      */
     private final class FilterVisitor extends AbstractReflectionVisitor {
 
         private final StringBuilder filterBuilder = new StringBuilder();
-        
+
         String getFilter(){
             return filterBuilder.toString().trim();
         }
@@ -774,14 +782,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             filterBuilder.append(" +" + (fieldAs.length() >0 ?  fieldAs + ':' + term : term));
         }
 
-        
+
     }
 
     /**
      * Query builder for creating a query syntax similar to sesam's own.
      */
-    private final class SesamSyntaxQueryBuilder extends AbstractReflectionVisitor {
-        
+    protected final class SesamSyntaxQueryBuilder extends AbstractReflectionVisitor {
+
         private final StringBuilder sb = new StringBuilder();
         private boolean insideOr = false;
 
@@ -809,7 +817,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final AndClause clause) {
-            
+
             clause.getFirstClause().accept(this);
             sb.append(" +");
             clause.getSecondClause().accept(this);
@@ -819,7 +827,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final OrClause clause) {
-            
+
             boolean wasInside = insideOr;
             if(! insideOr ){
                 sb.append('(');
@@ -838,7 +846,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final DefaultOperatorClause clause) {
-            
+
             clause.getFirstClause().accept(this);
             sb.append(' ');
             clause.getSecondClause().accept(this);
@@ -848,7 +856,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final NotClause clause) {
-            
+
             final String childsTerm = transformedTerms.get(clause.getFirstClause());
             if (childsTerm != null && childsTerm.length() > 0) {
                 sb.append('-');
@@ -860,7 +868,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final AndNotClause clause) {
-            
+
             final String childsTerm = transformedTerms.get(clause.getFirstClause());
             if (childsTerm != null && childsTerm.length() > 0) {
                 sb.append('-');
@@ -872,8 +880,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          * {@inheritDoc}
          */
         protected void visitImpl(final XorClause clause) {
-            
-            clause.getFirstClause().accept(this);
+
+            AbstractSearchCommand.this.visitXorClause(this, clause);
         }
     }
 

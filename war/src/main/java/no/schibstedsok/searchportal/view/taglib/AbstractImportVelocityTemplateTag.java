@@ -157,6 +157,7 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
 
         } catch (ResourceNotFoundException ex) {
             // often normal usage to 'explore' for templates
+            LOG.debug(ex.getMessage());
             cxt.setAttribute(missing, Boolean.TRUE);
             
         } catch (Exception ex) {

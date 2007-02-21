@@ -112,12 +112,12 @@ TOKEN : { <EMAIL: <WORD>"@"<WORD>"."<WORD>> }
 
 // Very generic to match any Internation Phone Number !! 
 //   TODO deal with optional area codes. eg australian numbers can be written (02) 4878 9336
+// number_group_disabled is a super state to phone_number_disabled
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,QUOTED_WORD_DISABLED>
 TOKEN : { <PHONE_NUMBER: (("+"|"00"(<PHONE_MIDDLE>)?)?(<DIGIT>(<PHONE_MIDDLE>)?){5,14})" "> }
 
-// Also prevent organisation numbers when phone numbers are disabled. Prevents a cyclic loop.
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,QUOTED_WORD_DISABLED>
-TOKEN : { <NUMBER_GROUP: (<DIGIT>(" ")+)+" "> }
+TOKEN : { <NUMBER_GROUP: ((<DIGIT>)+(" ")+){2,}> }
 
 <DEFAULT,URL_DISABLED,EMAIL_DISABLED,PHONE_NUMBER_DISABLED,NUMBER_GROUP_DISABLED>
 TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
@@ -325,7 +325,7 @@ Clause leaf() :{
 Clause fieldedLeaf(final Token field) :{
     enterMethod("fieldedLeaf()");
 }{
-    (<PHONE_NUMBER>) 
+    <PHONE_NUMBER> 
         { 
             try{
                 // remove the PHONE_SYMBOL sub-tokens
@@ -341,7 +341,7 @@ Clause fieldedLeaf(final Token field) :{
             }finally{exitMethod();}
         }
     | 
-    (<NUMBER_GROUP>) 
+    <NUMBER_GROUP>
         { 
             try{
                 // Remove whitespace

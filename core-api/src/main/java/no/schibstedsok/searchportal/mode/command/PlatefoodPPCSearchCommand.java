@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  *
  * PlatefoodPPCSearchCommand.java
  *
@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
 /**
  *
  * @author SSTHKJER
+ * @version $Id$
  */
 public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand {
 
@@ -189,7 +190,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         if (imageUrl.getLength() > 0) {
             item.addField("imageUrl", imageUrl.item(0).getFirstChild().getNodeValue());
         }
-        if (imageUrl.getLength() > 0) {
+        if (phone.getLength() > 0) {
             item.addField("phone", phone.item(0).getFirstChild().getNodeValue());
         }
         item.addField("place", place);

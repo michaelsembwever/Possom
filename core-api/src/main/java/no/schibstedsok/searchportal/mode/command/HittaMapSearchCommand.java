@@ -43,7 +43,7 @@ public class HittaMapSearchCommand extends AbstractWebServiceSearchCommand {
 				TokenPredicate.GEOLOCAL, context.getQuery());
 
 		final SearchResult result = new BasicSearchResult(this);
-		if (isGEOGLOBAL || isGEOLOCAL) {
+		if (isGEOGLOBAL) {
 			try {
 				HittaServiceLocator locator = new HittaServiceLocator();
 				HittaServiceSoap service = locator.getHittaServiceSoap();

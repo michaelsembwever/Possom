@@ -152,7 +152,7 @@ public abstract class AbstractQueryParserContext implements AbstractQueryParser.
         final String term,
         final String field) {
 
-        LOG.debug("createOrganisationNumberClause(" + term + "," + field + ")");
+        LOG.debug("createNumberGroupClause(" + term + "," + field + ")");
         return NumberGroupClauseImpl.createNumberGroupClause(term, field, getTokenEvaluationEngine());
     }
 

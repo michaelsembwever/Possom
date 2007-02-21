@@ -27,6 +27,22 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
 
     /**
+     * Request attributes that should be added to parameter map. This is needed because request.getAttributeNames()
+     * does not include all attributes passed by mod_jk. http://issues.apache.org/bugzilla/show_bug.cgi?id=25363.
+     */
+    private static final String[] ATTRS_TO_COPY = new String[] {
+            "REMOTE_ADDR"
+    };
+
+    /**
+     * Request headers to be copied to parameter map.
+     */
+    private static final String[] HEADERS_TO_COPY = new String[] {
+            "user-agent",
+            "x-forwarded-for"
+    };
+
+    /**
      *
      * @param mode
      * @param query
@@ -83,7 +99,27 @@ public final class RunningWebQuery extends RunningQueryImpl {
                 LOG.trace("Added " + attrName + ", value: " + request.getAttribute(attrName));
             }
         }
-        
+
+        for (final String attrName : ATTRS_TO_COPY) {
+            if (request.getAttribute(attrName) != null) {
+                addParameter(attrName, request.getAttribute(attrName));
+
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Added(Manually) " + attrName + ", value: " + request.getAttribute(attrName));
+                }
+            }
+        }
+
+        for (final String header : HEADERS_TO_COPY) {
+            if (request.getHeader(header) != null) {
+                addParameter(header, request.getHeader(header));
+
+                if (LOG.isTraceEnabled()) {
+                    LOG.trace("Added HTTP header " + header + ", value: " + request.getHeader(header));
+                }
+            }
+        }
+
         this.request = request;
         this.response = response;
         addParameter("request", request);

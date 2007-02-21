@@ -33,6 +33,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.servlet.http.HttpServletRequest;
+
 /*
  * Search against Yahoo! Index Data Protocol 2.0.
  *
@@ -49,7 +51,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             + "FirstResult={3}&Numresults={4}&"
             + "Region={5}&RegionMix={6}&SpellState={7}&Language={8}&LanguageMix={9}&"
             + "QueryEncoding={10}&Fields={11}&Unique={12}&Filter={13}&"
-            + "Query={14}";
+            + "Query={14}&"
+            + "affilData={15}";
+
     private static final String DATE_PATTERN = "yyyy/MM/dd";
 
     private static final String HEADER_ELEMENT = "HEADER";
@@ -120,14 +124,19 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + ")";
 
         final StringBuilder fields = new StringBuilder();
-        for(final String field : context.getSearchConfiguration().getResultFields().keySet()){
+        for(final String field : context.getSearchConfiguration().getResultFields().keySet()) {
             fields.append(field);
             fields.append(',');
         }
         fields.setLength(fields.length()-1);
+
+        final StringBuilder affilData = new StringBuilder();
+
+        appendAffilData(affilData, "ip", getParameter("REMOTE_ADDR"));
+        appendAffilData(affilData, "xfip", getParameter("x-forward-for"));
+        appendAffilData(affilData, "ua", getParameter("user-agent"));
+
         try {
-
-
             return MessageFormat.format(
                     COMMAND_URL_PATTERN,
                     getPartnerId(),
@@ -144,11 +153,18 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     fields.toString(),
                     conf.getUnique(),
                     conf.getFilter(),
-                    URLEncoder.encode(wrappedTransformedQuery, "UTF-8")
+                    URLEncoder.encode(wrappedTransformedQuery, "UTF-8"),
+                    URLEncoder.encode(affilData.toString(), "UTF-8")
                     );
         } catch (UnsupportedEncodingException ex) {
             throw new InfrastructureException(ERR_FAILED_CREATING_URL, ex);
         }
+    }
+
+    /** Assured that associated SearchConfiguration is always of this type. **/
+    public YahooIdpSearchConfiguration getSearchConfiguration() {
+
+        return (YahooIdpSearchConfiguration)super.getSearchConfiguration();
     }
 
     /**
@@ -212,12 +228,13 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
+    private void appendAffilData(final StringBuilder affilData, final String paramName, final String paramValue) {
+        if (! paramValue.equals("")) {
+            if (affilData.length() > 0) {
+                affilData.append("&");
+            }
 
-
-    /** Assured that associated SearchConfiguration is always of this type. **/
-    public YahooIdpSearchConfiguration getSearchConfiguration() {
-
-        return (YahooIdpSearchConfiguration)super.getSearchConfiguration();
+            affilData.append(paramName).append('=').append(paramValue);
+        }
     }
-
 }

@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.query.token.JepTokenEvaluator;
@@ -14,9 +14,10 @@ import java.util.Map;
 import java.text.NumberFormat;
 import org.nfunk.jep.type.Complex;
 
-/**
+/** Create a single result item that transforms the query into a mathematical expression with it's solution.
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
@@ -25,9 +26,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
     private static final double ZERO_THREASHOLD = 0.00000001D;
 
     /**
-     * @param query         The query to act on.
-     * @param configuration The search configuration associated with this
-     *                      command.
+     * @param cxt         The context to work within.
      * @param parameters    Command parameters.
      */
     public MathExpressionSearchCommand(final Context cxt, final Map parameters) {
@@ -35,7 +34,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
     }
 
 
-    /** TODO comment me. **/
+    /** {@inherit} **/
     public SearchResult execute() {
 
 
@@ -44,35 +43,35 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
         final BasicSearchResult searchResult = new BasicSearchResult(this);
 
         try{
-        final Complex result = ((JepTokenEvaluator)context.getTokenEvaluationEngine()
-                .getEvaluator(TokenPredicate.MATHPREDICATE))
-                .getComplex();
+            final Complex result = ((JepTokenEvaluator)context.getTokenEvaluationEngine()
+                    .getEvaluator(TokenPredicate.MATHPREDICATE))
+                    .getComplex();
 
-        if (result != null) {
-            String s = null;
+            if (result != null) {
+                String s = null;
 
-            s = f.format(result.re());
+                s = f.format(result.re());
 
-            if (Math.abs(result.im()) > ZERO_THREASHOLD) {
-                if (result.im() < 0) {
+                if (Math.abs(result.im()) > ZERO_THREASHOLD) {
+                    if (result.im() < 0) {
 
-                    s = s + " - " + f.format(Math.abs(result.im())) + "i";
-                } else {
-                    s = s + " + " + f.format(result.im()) + "i";
+                        s = s + " - " + f.format(Math.abs(result.im())) + "i";
+                    } else {
+                        s = s + " + " + f.format(result.im()) + "i";
+                    }
                 }
+
+                final SearchResultItem item = new BasicSearchResultItem();
+
+                final String r = context.getQuery().getQueryString() + " = " + s;
+
+                LOG.debug("Adding result " + r);
+
+                item.addField("result", r);
+
+                searchResult.setHitCount(1);
+                searchResult.addResult(item);
             }
-
-            final SearchResultItem item = new BasicSearchResultItem();
-
-            final String r = context.getQuery().getQueryString() + " = " + s;
-
-            LOG.debug("Adding result " + r);
-
-            item.addField("result", r);
-
-            searchResult.setHitCount(1);
-            searchResult.addResult(item);
-        }
 
         }catch(VeryFastListQueryException ie){
             LOG.warn(ERR_INTERRUPTED);
