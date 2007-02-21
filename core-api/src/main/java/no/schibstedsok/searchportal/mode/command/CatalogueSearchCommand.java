@@ -37,9 +37,9 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private String queryTwo = null;
     private String queryName = "";
     private boolean searchForName = false;
-    private List<String> terms = new ArrayList<String>();
     private boolean searchForInfoPage = false;
-    
+    private String sortBy="kw"; // defualtsøket er på keyword
+
     
     /** Creates a new catalogue search command.
      * TODO. Rewrite from scratch. This is insane.
@@ -59,25 +59,47 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     	if(getSingleParameter("companyid")!=null){
     		searchForInfoPage=true;
     	}
+    	
+    	if(getSingleParameter("userSortBy")!=null
+    			&& getSingleParameter("userSortBy").length()>0){
+    		sortBy=getSingleParameter("userSortBy");
+    	}
+    	
+    	
     }
 
     /** TODO comment me. **/
     public SearchResult execute() {
         LOG.debug("execute()");
-    	
-        // kør vanligt søk, keywords.
-        searchForName=false;
+
+        // hvis det er keyword sortering, skal vi
+        // først kjøre keyword søket.
+        if(sortBy.equals("kw")){
+        	searchForName=false;
+        }else{
+        	searchForName=true;
+        }        
+        super.performQueryTransformation();
+        LOG.info("1. Search, "+getTransformedQuery());
     	SearchResult result = super.execute();
         
-    	searchForName=true;
-    	
+    	// hvis det er sortert etter Keyword, et det
+    	// navnsøk vi skal kjøre her.
+        if(sortBy.equals("kw")){
+            searchForName=true; 
+        }else{
+        	searchForName=false;
+        }       
+        super.performQueryTransformation();
+        LOG.info("2. Search, "+getTransformedQuery());
+        
         // søk etter firmanavn
         SearchResult nameQueryResult = super.execute();
         
         // legg til navnsøk.
         result.getResults().addAll(nameQueryResult.getResults());
         result.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());
-        
+
         // konverter til denne.
         List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
 		
@@ -120,78 +142,23 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      *
      */
     protected void visitImpl(final LeafClause clause) {
+
+    	
     	String transformed = getTransformedTerm(clause);
-    	terms.add(transformed);
-
-    	appendToQueryRepresentation(transformed);
-    }
-    
-    
-    @Override
-    public String getTransformedQuery() {    	
-    	String query="";
     	
-    	if(searchForInfoPage){ 
-    		return super.getTransformedQuery();
-    	}
-    	
-    	if(!searchForName){
-    		String query1="(";
-    		String query2="(";
-    		// (lemiypcfkeywords:ord1 AND lemiypcfkeywords:ord2 AND lemiypcfkeywords:ord3) ANY
-    		// (lemiypcfkeywordslow:ord1 AND lemiypcfkeywordslow:ord2 AND lemiypcfkeywordslow:ord3) 
-    		
-    		Iterator<String> it = terms.iterator();
-    		for(;it.hasNext();){
-    			String t = it.next();
-    			query1 += "lemiypcfkeywords:"+t;
-    			query2 += "lemiypcfkeywordslow:"+t;    			
-    			
-    			// hvis det finnes flere
-    			if(it.hasNext()){
-    				query1 += " "+QL_AND+" ";
-    				query2 += " "+QL_AND+" ";
-    			}
-    		}
-
-    		// close queries.
-			query1 += ") ANY";
-			query2 += ")";
-			query = query1 + query2;    		
-    		
+    	if(searchForName){
+    		LOG.info("Add transformed to name query \""+transformed+"\"");
+    		appendToQueryRepresentation("(");
+    		appendToQueryRepresentation("(iypcfphnavn:"+transformed+")"); 
+    		appendToQueryRepresentation(" ANDNOT (");
+    		appendToQueryRepresentation("(lemiypcfkeywords:"+transformed+") OR ");
+    		appendToQueryRepresentation("(lemiypcfkeywordslow:"+transformed+")");
+    		appendToQueryRepresentation(")");
+    		appendToQueryRepresentation(")");
     	}else{
-        	String query1 = " (";
-        	String query2 = " (";
-        	String query3 = " (";
-        	
-        	// eksempel på query.
-    		// query1 = (iypcfphnavn:ord1 AND iypcfphnavn:ord2 AND iypcfphnavn:ord3) ANDNOT (
-    		// query2 = (lemiypcfkeywords:ord1 AND lemiypcfkeywords:ord2 AND lemiypcfkeywords:ord3) OR
-    		// query3 = (lemiypcfkeywordslow:ord1 AND lemiypcfkeywordslow:ord2 AND lemiypcfkeywordslow:ord3))    	
-
-    		Iterator<String> it = terms.iterator();
-    		for(;it.hasNext();){
-    			String t = it.next();
-    			query1 += "iypcfphnavn:"+t;
-    			query2 += "lemiypcfkeywords:"+t;    			
-    			query3 += "lemiypcfkeywordslow:"+t;
-    			
-    			// hvis det finnes flere
-    			if(it.hasNext()){
-    				query1 += " "+QL_AND+" ";
-    				query2 += " "+QL_AND+" ";
-    				query3 += " "+QL_AND+" ";
-    			}
-    		}
-
-    		// close queries.
-			query1 += ") ANDNOT (";
-			query2 += ") OR";
-			query3 += "))";
-			query=query1+query2+query3;
-    	}
-
-    	return query;
+    		LOG.info("Add transformed to keyword query \""+transformed+"\"");
+    		appendToQueryRepresentation("(lemiypcfkeywords:"+transformed+" ANY lemiypcfkeywordslow:"+transformed+")");
+    	}    	
     }
     
     
