@@ -1,6 +1,5 @@
 /*
  * FactoryReloadsTest.java
- * JUnit based test
  *
  * Created on 5 May 2006, 07:50
  */
@@ -19,6 +18,7 @@ import no.schibstedsok.searchportal.site.*;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
+
 
 /**
  *

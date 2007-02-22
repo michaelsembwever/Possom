@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 /*
  * FileResourcesSearchTabsCreatorTest.java
- * JUnit based test
  *
  * Created on 22 January 2006, 16:05
  */
@@ -14,6 +13,8 @@ import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.Site;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
+
 
 /**
  * Tests using SearchTabsCreator against URL-based configuration files.

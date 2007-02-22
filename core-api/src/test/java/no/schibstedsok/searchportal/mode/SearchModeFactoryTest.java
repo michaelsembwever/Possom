@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 /*
  * SearchModeFactoryTest.java
- * JUnit based test
  *
  * Created on April 19, 2006, 3:31 PM
  */
@@ -13,7 +12,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.mode.SearchModeFactory;
+import static org.testng.AssertJUnit.*;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.SiteTestCase;

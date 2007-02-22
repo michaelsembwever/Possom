@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 /*
  * WebSearchCommandTest.java
- * JUnit based test
  *
  * Created on March 7, 2006, 4:53 PM
  */
@@ -11,6 +10,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Hashtable;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
 
 /**
  *

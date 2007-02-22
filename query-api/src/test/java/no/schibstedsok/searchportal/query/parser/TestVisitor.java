@@ -28,6 +28,7 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
 
 /** Test the QueryParser and it's generated visitor pattern.
  *

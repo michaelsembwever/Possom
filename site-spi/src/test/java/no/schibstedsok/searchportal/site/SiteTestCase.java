@@ -12,6 +12,10 @@ import java.util.Locale;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.Site.Context;
 import no.schibstedsok.searchportal.site.SiteContext;
@@ -22,7 +26,7 @@ import no.schibstedsok.searchportal.site.config.PropertiesLoader;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public abstract class SiteTestCase extends junit.framework.TestCase {
+public abstract class SiteTestCase {
 
     // Constants -----------------------------------------------------
 
@@ -50,7 +54,6 @@ public abstract class SiteTestCase extends junit.framework.TestCase {
 
     /** Creates a new instance of TestCase */
     public SiteTestCase(final String testName) {
-        super(testName);
     }
 
     // Public --------------------------------------------------------
@@ -59,19 +62,14 @@ public abstract class SiteTestCase extends junit.framework.TestCase {
 
     // no.schibstedsok.searchportal.TestCase overrides ----------------------------
 
-    /** TODO comment me. **/
+    @BeforeClass
     protected void setUp() throws Exception {
-        super.setUp();
-
-        
         MDC.put("test", getClass().getSimpleName());
         
     }
 
-    /** TODO comment me. **/
+    @AfterClass
     protected void tearDown() throws Exception {
-        super.tearDown();
-
         MDC.remove("test");
     }    
 

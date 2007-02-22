@@ -2,6 +2,8 @@ package no.schibstedsok.searchportal.mode.command;
 
 
 import java.util.Hashtable;
+import static org.testng.AssertJUnit.*;
+
 
 /**
  *

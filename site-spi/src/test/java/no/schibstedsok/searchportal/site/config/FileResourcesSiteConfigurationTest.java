@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 /*
  * FileResourcesSiteConfigurationTest.java
- * JUnit based test
  *
  * Created on 22 January 2006, 16:05
  */
@@ -10,9 +9,7 @@ package no.schibstedsok.searchportal.site.config;
 
 import java.util.Properties;
 import no.schibstedsok.searchportal.site.SiteTestCase;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import static org.testng.AssertJUnit.*;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.testng.annotations.Test;

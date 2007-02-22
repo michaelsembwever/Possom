@@ -1,7 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 /*
  * TermPrefixTransformerTest.java
- * JUnit based test
  *
  * Created on March 2, 2006, 9:48 AM
  */
@@ -10,9 +9,6 @@ package no.schibstedsok.searchportal.query.transform;
 
 
 import java.util.Map;
-import no.schibstedsok.searchportal.site.SiteTestCase;
-import no.schibstedsok.searchportal.site.config.FileResourcesSiteConfigurationTest;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -31,6 +27,7 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
 
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
 
 /**
  *

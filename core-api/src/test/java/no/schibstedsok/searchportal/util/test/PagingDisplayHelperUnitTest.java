@@ -8,6 +8,10 @@ import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
 import junit.framework.TestResult;
 import org.apache.log4j.Logger;
+import static org.testng.AssertJUnit.*;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterTest;
+
 
 /** Test a PagingDisplayHelper.
  *
@@ -149,25 +153,20 @@ public final class PagingDisplayHelperUnitTest extends SiteTestCase {
     }
 
 
-    public void run(final TestResult testResult) {
-        super.run(testResult);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    public TestResult run() {
-        return super.run();    //To change body of overridden methods use File | Settings | File Templates.
-    }
 
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
 
 
+    @BeforeTest
     protected void setUp() throws Exception {
         super.setUp();
 
         pager = new PagingDisplayHelper(10, 10);
     }
 
+    @AfterTest
     protected void tearDown() throws Exception {
         super.tearDown();
     }

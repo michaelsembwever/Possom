@@ -20,6 +20,8 @@ import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
+
 
 /** Tests for SearchTabFactory. Using default search-config's configuration files.
  *

@@ -29,6 +29,7 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
 
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
 
 /**
  *

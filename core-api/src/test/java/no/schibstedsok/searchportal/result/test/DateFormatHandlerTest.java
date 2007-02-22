@@ -21,6 +21,8 @@ import org.apache.log4j.Logger;
 
 import static no.schibstedsok.searchportal.result.handler.DateFormatHandler.Fields;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
+
 
 /** Fast navigation tests.
  *

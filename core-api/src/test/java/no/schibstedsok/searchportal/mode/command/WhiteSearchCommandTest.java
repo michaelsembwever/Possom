@@ -10,6 +10,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.util.Hashtable;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
 
 
 /**

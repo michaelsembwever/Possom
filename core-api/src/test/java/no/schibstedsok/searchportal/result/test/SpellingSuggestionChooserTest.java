@@ -21,6 +21,8 @@ import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.testng.annotations.Test;
+import static org.testng.AssertJUnit.*;
+
 
 
 /**
