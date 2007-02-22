@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * HittaSearchCommand.java
  *
@@ -9,25 +9,18 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.xml.rpc.ServiceException;
+import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
-import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
-import no.schibstedsok.searchportal.query.DefaultOperatorClause;
-import no.schibstedsok.searchportal.query.DoubleOperatorClause;
-import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.NotClause;
-import no.schibstedsok.searchportal.query.OperationClause;
-import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.XorClause;
-import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
+import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
+import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -98,23 +91,30 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 final HittaServiceLocator locator = new HittaServiceLocator();
                 final HittaServiceSoap service = locator.getHittaServiceSoap();
                 ((Stub)service).setTimeout(1000);
-                final SplitQueryTransformer splitter = new SplitQueryTransformer();
+                final WhoWhereSplitter splitter = new WhoWhereSplitter(
+                        ContextWrapper.wrap(WhoWhereSplitter.Context.class, 
+                        context,
+                        new BaseContext(){
+                            public Map<Clause,String> getTransformedTerms(){
+                                return HittaSearchCommand.this.getTransformedTerms();
+                            }
+                }));
 
-                final String[] splitQuery = splitter.getQuery();
+                final WhoWhereSplit splitQuery = splitter.getWhoWhereSplit();
 
-                if( splitQuery[0].length() >0 ){
+                if( splitQuery.getWho().length() >0 ){
 
-                    getParameters().put("hittaWho", splitQuery[0]);
-                    getParameters().put("hittaWhere", splitQuery[1]);
+                    getParameters().put("hittaWho", splitQuery.getWho());
+                    getParameters().put("hittaWhere", splitQuery.getWhere());
 
-                    LOG.debug(DEBUG_SEARCHING_1 + splitQuery[0]);
-                    LOG.debug(DEBUG_SEARCHING_2 + splitQuery[1]);
+                    LOG.debug(DEBUG_SEARCHING_1 + splitQuery.getWho());
+                    LOG.debug(DEBUG_SEARCHING_2 + splitQuery.getWhere());
 
                     if(conf.getCatalog().equalsIgnoreCase("white")){
-                        hits = service.getWhiteAmount(splitQuery[0], splitQuery[1], conf.getKey());
+                        hits = service.getWhiteAmount(splitQuery.getWho(), splitQuery.getWhere(), conf.getKey());
 
                     }else if(conf.getCatalog().equalsIgnoreCase("pink")){
-                        hits = service.getPinkAmount(splitQuery[0], splitQuery[1], conf.getKey());
+                        hits = service.getPinkAmount(splitQuery.getWho(), splitQuery.getWhere(), conf.getKey());
 
                     }
                 }
@@ -139,30 +139,6 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-
-
-
-    private List<OperationClause> parentsOf(Clause clause){
-
-        final Query query = context.getQuery();
-
-        final List<OperationClause> parents = new ArrayList<OperationClause>();
-
-        for(OperationClause oc : query.getParentFinder().getParents(query.getRootClause(), clause)){
-            parents.add(oc);
-            parents.addAll(parentsOf(oc));
-        }
-        return parents;
-    }
-
-    private boolean insideOf(final List<OperationClause> parents, final TokenPredicate token){
-
-        boolean inside = false;
-        for(OperationClause oc : parents){
-            inside |= oc.getKnownPredicates().contains(token);
-        }
-        return inside;
-    }
 
     // Inner classes -------------------------------------------------
 
@@ -198,190 +174,6 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
-    }
-
-    private final class SplitQueryTransformer extends AbstractReflectionVisitor{
-
-        private StringBuilder who;
-        private StringBuilder where;
-
-        private boolean hasCompany = false;
-        private boolean hasFullname = false;
-        private boolean multipleCompany = false;
-        private boolean multipleFullname = false;
-        private boolean validQuery = true;
-        private FullnameOrCompanyFinder fullnameOrCompanyFinder = new FullnameOrCompanyFinder();
-
-        public String[] getQuery(){
-
-            if(where == null){
-                who = new StringBuilder();
-                where = new StringBuilder();
-                fullnameOrCompanyFinder.visit(context.getQuery().getRootClause());
-                if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
-                        visit(context.getQuery().getRootClause());
-                }
-            }
-
-            return new String[]{
-                validQuery ? who.toString().trim() : "",
-                where.toString().trim()
-            };
-
-        }
-
-
-        protected void visitImpl(final LeafClause clause) {
-
-            final List<OperationClause> parents  = parentsOf(clause);
-
-            boolean geo = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL)
-                    || clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
-
-            boolean onlyGeo = geo && clause.getField() == null;
-
-            // check if any possible parents of this clause match the fullname predicate.
-            final boolean insideFullname = insideOf(parents, TokenPredicate.FULLNAME);
-
-            boolean isNameOrNumber = clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
-            isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
-            isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.PHONENUMBER);
-
-            // check if any possible parents of this clause match the company predicate.
-            final boolean insideCompany = insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
-
-            if(hasCompany || hasFullname){
-
-                onlyGeo &= !insideFullname && !insideCompany;
-
-            }else{
-
-                // no fullname or company exists in the query, so firstname or lastname will do
-                onlyGeo &= !isNameOrNumber;
-            }
-
-            if (onlyGeo) {
-                // add this term to the geo query string
-                where.append(getTransformedTerm(clause));
-
-            }else{
-                if((hasCompany && !insideCompany && isNameOrNumber) || multipleCompany || multipleFullname ){
-                    // this is a company query but this clause isn't the company but a loose name.
-                    // abort this hitta search, see SEARCH-966 - hitta enrichment
-                    // OR there are multiple fullnames or company names.
-                    validQuery = false;
-                }else{
-                    who.append(getTransformedTerm(clause));
-                }
-            }
-        }
-
-        protected void visitImpl(final OperationClause clause) {
-            if(validQuery){
-                clause.getFirstClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final DoubleOperatorClause clause) {
-
-            if(validQuery){
-                clause.getFirstClause().accept(this);
-                where.append(' ');
-                who.append(' ');
-                clause.getSecondClause().accept(this);
-            }
-        }
-
-        protected void visitImpl(final NotClause clause) {
-        }
-
-        protected void visitImpl(final AndNotClause clause) {
-        }
-
-        protected void visitImpl(final XorClause clause) {
-
-            switch(clause.getHint()){
-
-                case NUMBER_GROUP_ON_LEFT:
-                    clause.getSecondClause().accept(this);
-                    break;
-
-                case PHONE_NUMBER_ON_LEFT:
-                    if( !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER) ){
-                        clause.getSecondClause().accept(this);
-                    }
-                    // intentionally fall through to default!
-                default:
-                    clause.getFirstClause().accept(this);
-                    break;
-            }
-
-        }
-
-        private final class FullnameOrCompanyFinder extends AbstractReflectionVisitor{
-
-            protected void visitImpl(final LeafClause clause) {
-
-                final Set<TokenPredicate> predicates = clause.getKnownPredicates();
-
-                final boolean insideFullname = insideOf(parentsOf(clause), TokenPredicate.FULLNAME);
-
-                if(!insideFullname){
-                    final boolean company = predicates.contains(TokenPredicate.COMPANYENRICHMENT);
-                    multipleCompany = hasCompany && company;
-                    hasCompany |= company;
-                }
-            }
-
-            protected void visitImpl(final OperationClause clause) {
-
-                if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname ){
-                    clause.getFirstClause().accept(this);
-                }
-            }
-
-            protected void visitImpl(final DoubleOperatorClause clause) {
-
-                if(!(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
-                    clause.getFirstClause().accept(this);
-                    clause.getSecondClause().accept(this);
-                }
-            }
-
-            protected void visitImpl(final DefaultOperatorClause clause) {
-
-                final List<OperationClause> parents = parentsOf(clause);
-                final boolean insideFullname = insideOf(parents, TokenPredicate.FULLNAME);
-                final boolean insideCompany = insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
-
-                if(!insideFullname && !insideCompany){
-                    final Set<TokenPredicate> predicates = clause.getKnownPredicates();
-
-                    boolean fullname = predicates.contains(TokenPredicate.FULLNAME);
-                    multipleFullname = fullname && hasFullname;
-                    hasFullname |= fullname;
-
-                    hasCompany |= !fullname
-                        && predicates.contains(TokenPredicate.COMPANYENRICHMENT);
-
-                    if(!fullname || !(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
-                        clause.getFirstClause().accept(this);
-                        clause.getSecondClause().accept(this);
-                    }
-                }
-            }
-            protected void visitImpl(final NotClause clause) {
-            }
-
-            protected void visitImpl(final AndNotClause clause) {
-            }
-
-            protected void visitImpl(final XorClause clause) {
-                if(!(hasCompany && hasFullname)){
-                    clause.getFirstClause().accept(this);
-                }
-            }
-        }
     }
 
 }

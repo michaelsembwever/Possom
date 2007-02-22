@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
 
@@ -481,6 +481,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /** TODO comment me. **/
     protected final String getTransformedTerm(final Clause clause) {
         return escapeTerm(transformedTerms.get(clause));
+    }
+    
+    /** TODO comment me. **/
+    protected final Map<Clause,String> getTransformedTerms() {
+        return transformedTerms;
     }
 
     /**
