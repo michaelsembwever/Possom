@@ -23,7 +23,7 @@
         context.put("base", request.getContextPath());
         context.put("title", OutputConverter.convert(siteMeshPage.getTitle()));
         context.put("text", text);
-        context.put("currentTab", query.getSearchTab());
+        context.put("tab", query.getSearchTab());
         context.put("runningQuery", query);
         context.put("query", query.getQueryString());
         context.put("enrichments", query.getEnrichments());

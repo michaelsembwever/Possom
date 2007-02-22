@@ -1,13 +1,13 @@
 /*
- * Copyright (2005) Schibsted Søk AS
+ * Copyright (2005-2207) Schibsted Søk AS
  * 
  */
 package no.schibstedsok.searchportal.util;
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
-public class PagingDisplayHelper {
+public final class PagingDisplayHelper {
 
     private int pageSize = 10;
     private int maxPages = 10;
@@ -16,17 +16,17 @@ public class PagingDisplayHelper {
 
     private int currentOffset = 0;
 
-    public PagingDisplayHelper(int numberOfResults) {
+    public PagingDisplayHelper(final int numberOfResults) {
         this.numberOfResults = numberOfResults;
     }
 
-    public PagingDisplayHelper(int numberOfResults, int pageSize, int maxPages) {
+    public PagingDisplayHelper(final int numberOfResults, final int pageSize, final int maxPages) {
         this.numberOfResults = numberOfResults;
         this.pageSize = pageSize;
         this.maxPages = maxPages;
     }
 
-    public PagingDisplayHelper(int pageSize, int maxPages) {
+    public PagingDisplayHelper(final int pageSize, final int maxPages) {
         this.pageSize = pageSize;
         this.maxPages = maxPages;
     }
@@ -55,7 +55,7 @@ public class PagingDisplayHelper {
         return getCurrentPage() == getNumberOfPages();
     }
 
-    public void setCurrentOffset(int offset) {
+    public void setCurrentOffset(final int offset) {
         currentOffset = offset;
     }
 
@@ -67,7 +67,7 @@ public class PagingDisplayHelper {
         return (getCurrentPage() - 2) * pageSize;
     }
 
-    public int getOffsetOfPage(int page) {
+    public int getOffsetOfPage(final int page) {
         return (page - 1) * (pageSize);
     }
 
@@ -106,7 +106,7 @@ public class PagingDisplayHelper {
         return Math.min(numberOfResults, getFirstHitOnPage() + pageSize - 1);
     }
 
-    public void setNumberOfResults(int numberOfResults) {
+    public void setNumberOfResults(final int numberOfResults) {
         this.numberOfResults = numberOfResults;
     }
 

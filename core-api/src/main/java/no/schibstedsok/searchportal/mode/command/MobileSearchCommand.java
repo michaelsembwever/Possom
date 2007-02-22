@@ -85,8 +85,14 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
                     "offset", getCurrentOffset(0)));
 
             if (getParameter("msite") != null)  {
-                    params.setParameter(new SearchParameter(
-                            BaseParameter.FILTER, "+domain:" + getParameter("msite") ));
+                String filter = "+(";
+                String [] arr = getParameter("msite").split(";");
+                for (int i=0;i<arr.length;i++) 
+                    filter = filter + " domain:" + arr[i];
+                
+                filter = filter + ")";
+                params.setParameter(new SearchParameter(
+                        BaseParameter.FILTER, filter ));
             } else {            
                 if (!cfg.getFilter().equals("")) {
                     params.setParameter(new SearchParameter(

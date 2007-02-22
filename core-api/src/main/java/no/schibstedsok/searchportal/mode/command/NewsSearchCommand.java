@@ -107,7 +107,8 @@ public class NewsSearchCommand extends FastSearchCommand {
                     
                     final String contentSource = getParameter("contentsource");
                     final String newsCountry = getParameter("newscountry");
-                    final String newsSource = getParameter("newssource");                                        
+                    final String newsSource = getParameter("newssource");
+                    final String language = getParameter("language");
 
                     if (!contentSource.equals("Mediearkivet")) {             
                         if (contentSource != null && !contentSource.equals("")) {                        
@@ -121,6 +122,12 @@ public class NewsSearchCommand extends FastSearchCommand {
                                 filterBuilder.append(" AND newscountry:\""+ newsCountry + "\"");
                             else // for newscount navigator
                                 filterBuilder.append(" AND newscountry:Norge");
+                        }
+                        if (language != null && !language.equals("")) {
+                            filterBuilder.append(" AND language:\"" + language + "\"");
+                        }
+                        if (newsSource != null && !newsSource.equals("")) {
+                            filterBuilder.append(" AND newssource:\"" + newsSource + "\"");
                         }
                         filterBuilder.append(" ANDNOT meta.collection:mano");
                         filterBuilder.append(" AND docdatetime:>" + newsdate);
