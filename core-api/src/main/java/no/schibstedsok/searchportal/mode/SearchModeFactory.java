@@ -567,7 +567,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                     factory.setValidating(false);
                     final DocumentBuilder builder = factory.newDocumentBuilder();
-                    DocumentLoader loader = UrlResourceLoader.newDocumentLoader(cxt, bsc.getBlocketConfigFileName(), builder);
+                    DocumentLoader loader = cxt.newDocumentLoader(cxt, bsc.getBlocketConfigFileName(), builder);
                     loader.abut();
 
                     final Map<String,String> blocketmap = new HashMap<String,String>();
@@ -597,7 +597,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                     factory.setValidating(false);
                     final DocumentBuilder builder = factory.newDocumentBuilder();
-                    DocumentLoader loader = UrlResourceLoader.newDocumentLoader(cxt, vsc.getAccessoriesFileName(), builder);
+                    DocumentLoader loader = cxt.newDocumentLoader(cxt, vsc.getAccessoriesFileName(), builder);
                     loader.abut();
 
                     final Set<String> accessoriesSet = new HashSet<String>();
@@ -619,7 +619,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                     final Map<String,String> carMap = new HashMap<String,String>();
                     final DocumentBuilder builder2 = factory.newDocumentBuilder();
-                    DocumentLoader carLoader = UrlResourceLoader.newDocumentLoader(cxt, vsc.getCarsPropertiesFileName(), builder2);
+                    DocumentLoader carLoader = cxt.newDocumentLoader(cxt, vsc.getCarsPropertiesFileName(), builder2);
                     carLoader.abut();
 
                     final Document doc2 = carLoader.getDocument();
