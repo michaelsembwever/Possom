@@ -91,13 +91,13 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         // viser vi treff på navn først. Hvis det er angitt att
         // det skal sorteres på keywords, viser vi keywords først.
         if(sortBy.equals("kw")){
-        	
-        	
             result.getResults().addAll(nameQueryResult.getResults());
             result.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());
         }else{
         	nameQueryResult.getResults().addAll(result.getResults());
-        	nameQueryResult.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());  
+        	nameQueryResult.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());
+        	
+        	result = nameQueryResult;
         }       
          
         
