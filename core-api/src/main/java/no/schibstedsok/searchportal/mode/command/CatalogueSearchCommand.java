@@ -68,7 +68,9 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     	if(getSingleParameter("userSortBy")!=null
     			&& getSingleParameter("userSortBy").length()>0){
     		sortBy=getSingleParameter("userSortBy");
-    	}    	
+    	}else{
+    		sortBy="kw";
+    	}
     
     
     }
@@ -77,7 +79,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     public SearchResult execute() {
     	// kjør søk for keyword.
     	searchForName=false;
-        super.performQueryTransformation();
+    	super.performQueryTransformation();
     	SearchResult result = super.execute();
         
     	searchForName=true;
@@ -89,11 +91,13 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         // viser vi treff på navn først. Hvis det er angitt att
         // det skal sorteres på keywords, viser vi keywords først.
         if(sortBy.equals("kw")){
+        	
+        	
             result.getResults().addAll(nameQueryResult.getResults());
             result.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());
         }else{
         	nameQueryResult.getResults().addAll(result.getResults());
-        	nameQueryResult.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());        
+        	nameQueryResult.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());  
         }       
          
         
@@ -130,7 +134,8 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     	String query = super.getTransformedQuery();
     	
     	if(queryTwo!=null&&queryTwo.length()>0){
-    		query += " " + QL_AND +" (" + queryTwo+")";
+    		query += ") " + QL_AND +" (" + queryTwo+")";
+    		query= "("+query;
     	}
     		
     	return query;
@@ -200,16 +205,14 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         	}
         }
 
-
-        /**
-         * {@inheritDoc}
-         */
         protected void visitImpl(final AndClause clause) {
             clause.getFirstClause().accept(this);
-            sb.append(QL_AND);
+            if(!(clause.getSecondClause() instanceof NotClause)){
+                sb.append(QL_AND);
+            }
             clause.getSecondClause().accept(this);
         }
-
+        
         /**
          * {@inheritDoc}
          */
@@ -228,7 +231,9 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
          */
         protected void visitImpl(final DefaultOperatorClause clause) {
             clause.getFirstClause().accept(this);
-        	sb.append(QL_AND);
+            if(!(clause.getSecondClause() instanceof NotClause)){
+                sb.append(QL_AND);
+            }
             clause.getSecondClause().accept(this);
         }
 
@@ -244,6 +249,8 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             }
         }
 
+        
+        
         /**
          * {@inheritDoc}
          */
