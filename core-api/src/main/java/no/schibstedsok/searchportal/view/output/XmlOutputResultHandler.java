@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.view.output;
 
@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.OutputKeys;
@@ -19,11 +18,11 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import org.apache.log4j.Logger;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
@@ -37,10 +36,11 @@ public final class XmlOutputResultHandler implements ResultHandler {
     }
 
     /** @inherit **/
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchResult result = cxt.getSearchResult();
 
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         final String[] xmlParam = (String[]) parameters.get("xml");
 
         if (xmlParam != null && xmlParam[0].equals("yes")) {

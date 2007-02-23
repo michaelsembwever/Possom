@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
 
@@ -15,12 +15,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -43,14 +43,16 @@ public final class PicSearchCommand extends AbstractSearchCommand {
      * @param cxt Context to run in.
      * @param parameters Command parameters.
      */
-    public PicSearchCommand(final Context cxt, final Map parameters) {
-        
-        super(cxt, parameters);
-        
+    public PicSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
+
         final SiteConfiguration siteConfig
                 = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
         final PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
-        
+
         final String host = siteConfig.getProperty(psConfig.getQueryServerHost());
         port = Integer.parseInt(siteConfig.getProperty(psConfig.getQueryServerPort()));
         client = HTTPClient.instance("picture_search", host, port);
@@ -80,9 +82,9 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         LOG.info("Using " + url);
 
         final BasicSearchResult searchResult = new BasicSearchResult(this);
-            
+
         if( port > 0 ){
-            
+
             final Document doc = doSearch(url);
 
             if (doc != null) {
@@ -123,9 +125,9 @@ public final class PicSearchCommand extends AbstractSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
-    
+
     private Document doSearch(final String url) {
-        
+
         try {
             return client.getXmlDocument("picture_search", url);
         } catch (IOException e) {

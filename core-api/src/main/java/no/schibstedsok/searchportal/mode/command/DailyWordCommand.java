@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -57,7 +58,7 @@ public final class DailyWordCommand extends AbstractSearchCommand {
                 while ((row = reader.readLine()) != null) {
                     addDailyWord(row);
                 }
-                
+
             } catch (ParseException ex) {
                 LOG.error(ex.getMessage(), ex);
             } catch (UnsupportedEncodingException ex) {
@@ -71,8 +72,11 @@ public final class DailyWordCommand extends AbstractSearchCommand {
     // Constructors --------------------------------------------------
 
     /** Creates a new instance of P4SearchCommand */
-    public DailyWordCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public DailyWordCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     // Public --------------------------------------------------------
@@ -103,7 +107,7 @@ public final class DailyWordCommand extends AbstractSearchCommand {
     // Private -------------------------------------------------------
 
     private static void addDailyWord(final String row) throws ParseException {
-        
+
         final String[] fields = row.split(";");
 
         if (fields.length == 4) {

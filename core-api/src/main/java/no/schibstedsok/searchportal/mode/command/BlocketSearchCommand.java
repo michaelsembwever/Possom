@@ -5,19 +5,16 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.util.Map;
-
 import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.holders.LongHolder;
 import javax.xml.rpc.holders.StringHolder;
-
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.BlocketSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
-
 import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
-
 import se.blocket.www2.search.SearchLocator;
 import se.blocket.www2.search.SearchPortType;
 
@@ -30,8 +27,11 @@ public final class BlocketSearchCommand extends AbstractWebServiceSearchCommand 
 
     private static final String ERR_FAILED_ENCODE_BLOCKET = "Failed to encode Blocket search query";
 
-    public BlocketSearchCommand(final Context cxt, final Map<String, Object> parameters) {
-        super(cxt, parameters);
+    public BlocketSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     @Override

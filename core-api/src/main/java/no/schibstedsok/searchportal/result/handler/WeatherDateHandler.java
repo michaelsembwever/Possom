@@ -1,11 +1,10 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
-
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
@@ -36,7 +35,7 @@ public class WeatherDateHandler implements ResultHandler  {
         this.sourceField = sourceField;
     }
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
             final String datestring = item.getField(sourceField);

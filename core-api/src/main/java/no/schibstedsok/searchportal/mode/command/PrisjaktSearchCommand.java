@@ -21,6 +21,7 @@ import nu.prisjakt.www.wsdl.PrisjaktPortType;
 import nu.prisjakt.www.wsdl.Resultat;
 import nu.prisjakt.www.wsdl.Produkt;
 import javax.xml.rpc.ServiceException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.axis.client.Stub;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -53,8 +54,11 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
      * @param cxt The context to execute in.
      * @param parameters The search parameters.
      */
-    public PrisjaktSearchCommand(final Context cxt, final Map<String, Object> parameters) {
-        super(cxt, parameters);
+    public PrisjaktSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     /** {@inheritDoc} */
@@ -229,8 +233,8 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         numStr = numStr.indexOf("+") > 0 ? numStr.substring(1) : numStr;
         // Spara undan ev. decimaldelen och se till att den alltid bestÃ¥r av ett
         // komma-tecken om den fÃ¶rekommer.
-        final String decPart = numStr.indexOf(',') > 0 
-                ? numStr.substring(numStr.indexOf(',')) 
+        final String decPart = numStr.indexOf(',') > 0
+                ? numStr.substring(numStr.indexOf(','))
                 : numStr.indexOf('.') > 0 ? numStr.substring(numStr.indexOf('.')).replaceFirst(".", ",") : "";
         // Substringa ut heltalsdelen
         final double d;

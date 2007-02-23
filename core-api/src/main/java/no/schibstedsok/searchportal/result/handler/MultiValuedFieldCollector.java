@@ -1,11 +1,11 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 import org.apache.commons.lang.StringUtils;
-
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Iterator;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
@@ -15,12 +15,12 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 public class MultiValuedFieldCollector implements ResultHandler {
 
     private Map<String,String> fieldMap = new HashMap<String,String>();
-    
+
     public void addField(final String field, final String as){
         fieldMap.put(field, as);
     }
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
             for (final Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {

@@ -17,6 +17,7 @@ import java.util.Map;
 import javax.xml.rpc.ServiceException;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
@@ -65,8 +66,11 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
     /**
      * Creates a new instance of HittaSearchCommand.
      */
-    public HittaSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public HittaSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
 
     }
 
@@ -92,7 +96,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 final HittaServiceSoap service = locator.getHittaServiceSoap();
                 ((Stub)service).setTimeout(1000);
                 final WhoWhereSplitter splitter = new WhoWhereSplitter(
-                        ContextWrapper.wrap(WhoWhereSplitter.Context.class, 
+                        ContextWrapper.wrap(WhoWhereSplitter.Context.class,
                         context,
                         new BaseContext(){
                             public Map<Clause,String> getTransformedTerms(){

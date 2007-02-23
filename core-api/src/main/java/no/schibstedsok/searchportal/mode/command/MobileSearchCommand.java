@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * MobileSearchCommand.java
  *
@@ -17,7 +17,6 @@ import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.Query;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
-
 import no.fast.msearch.Exception.ConfigurationException;
 import no.fast.msearch.search.DeviceCapabilitiesFactory;
 import no.fast.msearch.search.IDeviceCapabilities;
@@ -29,19 +28,17 @@ import no.fast.msearch.search.MSearchFactory;
 import no.fast.msearch.search.MSearchInfoFactory;
 import no.fast.personalization.api.ExplicitUserGroupPersonalizationFactory;
 import no.fast.personalization.api.IPersonalizationSpecification;
-
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.MobileSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.log4j.Logger;
 
 /**
@@ -60,8 +57,11 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
     private final MobileSearchConfiguration cfg;
 
-    public MobileSearchCommand(final SearchCommand.Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public MobileSearchCommand(
+            final SearchCommand.Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
         cfg = (MobileSearchConfiguration) cxt.getSearchConfiguration();
     }
 
@@ -87,13 +87,13 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             if (getParameter("msite") != null)  {
                 String filter = "+(";
                 String [] arr = getParameter("msite").split(";");
-                for (int i=0;i<arr.length;i++) 
+                for (int i=0;i<arr.length;i++)
                     filter = filter + " domain:" + arr[i];
-                
+
                 filter = filter + ")";
                 params.setParameter(new SearchParameter(
                         BaseParameter.FILTER, filter ));
-            } else {            
+            } else {
                 if (!cfg.getFilter().equals("")) {
                     params.setParameter(new SearchParameter(
                             BaseParameter.FILTER, cfg.getFilter()));
@@ -134,9 +134,9 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             final IQueryResult result = mResult.getResult();
 
             final SearchResult searchResult = new BasicSearchResult(this);
-            
+
             if( null != result ){
-                
+
                 final int cnt = getCurrentOffset(0);
                 final int maxIndex = Math.min(cnt + cfg.getResultsToReturn(), result.getDocCount());
 
@@ -157,7 +157,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
             }
 
             return searchResult;
-            
+
         } catch (ConfigurationException ex) {
             throw new InfrastructureException(ex);
         } catch (IOException ex) {
@@ -205,5 +205,5 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
         return filterBuilder.toString();
     }
 
-    
+
 }

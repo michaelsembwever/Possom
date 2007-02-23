@@ -1,19 +1,18 @@
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Map;
-
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
  * A Storm result handler that looks into nested searchresults for the field to
  * modify. Needed because we get raw data from Storm.
- * 
+ *
  * @author larsj
- * 
+ *
  */
 public class ForecastWindHandler implements ResultHandler {
 
-	public void handleResult(Context cxt, Map parameters) {
+	public void handleResult(Context cxt, DataModel datamodel) {
 
 		for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
 

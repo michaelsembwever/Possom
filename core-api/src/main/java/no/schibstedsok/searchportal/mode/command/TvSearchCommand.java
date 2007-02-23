@@ -1,10 +1,10 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  *
  */
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -20,16 +20,19 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
 
     protected final StringBuilder defaultChannelFilter = new StringBuilder();
     private String additionalFilter;
-    
+
     /** Creates a new instance of TvSearchCommand
      *
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public TvSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public TvSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
         LOG.debug("Creating TvSearchCommand");
-            
+
 //            defaultChannelFilter = new StringBuilder(super.getAdditionalFilter());
 
         defaultChannelFilter.append("+(");
@@ -53,11 +56,11 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
             return getTvSearchConfiguration().getResultsToReturn();
         }
     }
-    
+
     public SearchResult execute() {
         final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "channel";
         SearchResult sr = null;
-        
+
         if ("day".equals(sortByString)) {
             sr = new BasicSearchResult(this);
             int totalHits = 0;
@@ -84,14 +87,14 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
         if (getRunningQuery().getQuery().isBlank() && !getParameters().containsKey("nav_channels") && !getParameters().containsKey("nav_categories")) {
             return additionalFilter + " " + defaultChannelFilter.toString();
         }
-        
+
         if (getRunningQuery().getQuery().isBlank() && getParameters().containsKey("output") && getParameters().get("output").equals("rss")) {
             return additionalFilter + " " + defaultChannelFilter.toString();
         }
-        
+
         return additionalFilter;
     }
-    
+
     protected void setAdditionalFilter(String additionalFilter) {
         this.additionalFilter = additionalFilter;
     }

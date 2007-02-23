@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
@@ -42,7 +43,7 @@ public final class SumFastModifiers implements ResultHandler {
         modifierNames.add(modifierName);
     }
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchResult result = cxt.getSearchResult();
         if (result.getHitCount() >= 0) {

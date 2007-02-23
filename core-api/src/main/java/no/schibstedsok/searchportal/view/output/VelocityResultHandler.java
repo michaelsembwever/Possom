@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.view.output;
 
 import java.io.IOException;
@@ -30,6 +30,7 @@ import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.util.Channel;
 
 /** Handles the populating the velocity contexts.
@@ -37,7 +38,7 @@ import no.schibstedsok.searchportal.util.Channel;
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
- * 
+ *
  * @deprecated Please use the DataModelResultHandler instead.
  */
 public final class VelocityResultHandler implements ResultHandler {
@@ -50,17 +51,18 @@ public final class VelocityResultHandler implements ResultHandler {
     private static final String DEBUG_TEMPLATE_SEARCH = "Looking for template ";
     private static final String DEBUG_TEMPLATE_FOUND = "Created template ";
     private static final String ERR_TEMPLATE_NOT_FOUND = "Could not find the template ";
-    private static final String ERR_NP_WRITING_TO_STREAM 
+    private static final String ERR_NP_WRITING_TO_STREAM
             = "Possible client cancelled request. (NullPointerException writing to response's stream).";
     private static final String ERR_MERGE = "Error merging template ";
-    
-    /* This is the paging size when browsing resultset like <- 1 2 3 4 5 6 7 8 9 10 ->  
+
+    /* This is the paging size when browsing resultset like <- 1 2 3 4 5 6 7 8 9 10 ->
      * Hardcoded to max 10 and independent of the  pageSize */
-    // TODO Put this as parameter in views.xml  
+    // TODO Put this as parameter in views.xml
     private static final int PAGING_SIZE =  10;
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         // Skip this result handler if xml is wanted.
         final String[] xmlParam = (String[]) parameters.get("xml");
         if (xmlParam != null && xmlParam[0].equals("yes")) {
@@ -71,9 +73,9 @@ public final class VelocityResultHandler implements ResultHandler {
 
         // write to a separate writer first for threading reasons
         final Writer w = new StringWriter();
-        final SearchConfiguration searchConfiguration 
+        final SearchConfiguration searchConfiguration
                 = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
-        
+
             final String templateName = searchConfiguration.getName() + ".vm";
 
             LOG.debug(DEBUG_TEMPLATE_SEARCH + searchConfiguration + templateName);
@@ -83,10 +85,10 @@ public final class VelocityResultHandler implements ResultHandler {
                     ContextWrapper.wrap(VelocityEngineFactory.Context.class, cxt)).getEngine();
 
             try{
-                
-                final Template template 
+
+                final Template template
                         = VelocityEngineFactory.getTemplate(engine, site, searchConfiguration.getName());
-            
+
                 LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
 
                 final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
@@ -150,12 +152,12 @@ public final class VelocityResultHandler implements ResultHandler {
         // push all parameters into velocity context attributes. make a copy first as others could be updating it.
         final Set<Map.Entry<String,Object>> set  = new HashSet<Map.Entry<String,Object>>(parameters.entrySet());
         for(Map.Entry<String,Object> entry : set){
-            
+
             /* do not overwrite parameters already in the velocity context */
             if (!context.containsKey(entry.getKey())) {
-                
+
                 // don't put back in String array that only contains one element
-                context.put(entry.getKey(), 
+                context.put(entry.getKey(),
                         entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1
                         ? context.put(entry.getKey(), ((String[])entry.getValue())[0])
                         : entry.getValue());
@@ -176,7 +178,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("globalSearchTips", ((RunningQuery) parameters.get("query")).getGlobalSearchTips());
         context.put("runningQuery", (RunningQuery) parameters.get("query"));
         context.put("command", cxt.getSearchResult().getSearchCommand());
-        
+
         // TODO remove. deprecated since the template can access the configuration property directly now.
         final Properties props = (Properties)parameters.get("configuration");
         context.put(PUBLISH_URL, props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL));
@@ -185,9 +187,9 @@ public final class VelocityResultHandler implements ResultHandler {
         /* TODO: check where this went */
         /* context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt))); */
         context.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, cxt)));
-        
+
         context.put("channelCategories", Channel.Category.values());
-        
+
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
         final int navBarSize = 10;
@@ -203,16 +205,16 @@ public final class VelocityResultHandler implements ResultHandler {
                     ? ((String[]) v)[0]
                     : (String) v));
             pager.setPageSize(cxt.getSearchTab().getPageSize());
-            
+
             context.put("pager", pager);
         }
     }
-    
+
     /** HACKS around having to import javax.servlet stuff into the core-api.
      * Also handles tests by not writing at all.
      * */
     private void writeToResponse(final Map<String,Object> parameters, final String string){
-        
+
         try {
             final Object object = parameters.get("response");
             if( null != object ){
@@ -222,8 +224,8 @@ public final class VelocityResultHandler implements ResultHandler {
                     writer.write(string);
                 }
             }
-            
-            
+
+
         }catch (InvocationTargetException ex) {
             LOG.error(ex.getMessage(), ex);
         }catch (IllegalAccessException ex) {
@@ -238,5 +240,5 @@ public final class VelocityResultHandler implements ResultHandler {
             LOG.error(ex.getMessage(), ex);
         }
     }
-    
+
 }

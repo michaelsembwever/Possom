@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.run;
 
 
@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
  * should contain all information on how to search in fast.
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola@schibstedsok.no</a>
- * @version $Revision$, $Author$, $Date$
+ * @version $Id$
  */
 public abstract class QueryFactory {
 
@@ -28,7 +28,7 @@ public abstract class QueryFactory {
         if (instance == null) {
 
             if (LOG.isInfoEnabled()) {
-                LOG.info("getInstance(): Creating new QueryFactory instance");
+                LOG.info("Creating new QueryFactory instance");
             }
             instance = new QueryFactoryImpl();
         }

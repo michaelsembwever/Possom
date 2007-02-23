@@ -9,13 +9,13 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import org.apache.log4j.Logger;
-
 import java.util.Map;
 import java.text.NumberFormat;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.nfunk.jep.type.Complex;
 
 /** Create a single result item that transforms the query into a mathematical expression with it's solution.
- * 
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
@@ -29,8 +29,11 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
      * @param cxt         The context to work within.
      * @param parameters    Command parameters.
      */
-    public MathExpressionSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public MathExpressionSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
 

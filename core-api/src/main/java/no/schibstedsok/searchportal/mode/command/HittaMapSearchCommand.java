@@ -3,8 +3,8 @@ package no.schibstedsok.searchportal.mode.command;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
-import java.util.Map;
 import javax.xml.rpc.ServiceException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.log4j.Logger;
 import se.hitta.www.HittaService.GetPlaceStreetDetailsResponseGetPlaceStreetDetailsResult;
 import se.hitta.www.HittaService.HittaServiceLocator;
@@ -15,22 +15,23 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 
-public class HittaMapSearchCommand extends AbstractWebServiceSearchCommand {
+public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand {
 
-	private static final Logger LOG = Logger
-			.getLogger(BlocketSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(BlocketSearchCommand.class);
 
-	private static final String ERR_FAILED_HITTAMAP_SEARCH = "Failed Map search command";
+    private static final String ERR_FAILED_HITTAMAP_SEARCH = "Failed Map search command";
 
-	private static final String ERR_FAILED_ENCODE_HITTAMAP = "Failed to encode Map search query";
+    private static final String ERR_FAILED_ENCODE_HITTAMAP = "Failed to encode Map search query";
 
-	public HittaMapSearchCommand(final Context cxt,
-			final Map<String, Object> parameters) {
-		super(cxt, parameters);
-	}
+    public HittaMapSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
 
-	@Override
-	public SearchResult execute() {
+        super(cxt, datamodel);
+    }
+
+    @Override
+    public SearchResult execute() {
 
 		HittaMapSearchConfiguration bsc = (HittaMapSearchConfiguration) context
 				.getSearchConfiguration();
@@ -78,8 +79,8 @@ public class HittaMapSearchCommand extends AbstractWebServiceSearchCommand {
 
 					String hittaURL = "http://www.hitta.se/SearchCombi.aspx?SearchType=4&UCSB%3aWflWhite=1a1b&UCSB%3aWflPink=4a&UCSB%3aTextBoxWho=&UCSB%3aTextBoxWhere="
 							+ encTransQuery;
-					
-					String hittaBigMapURL ="http://www.hitta.se/LargeMap.aspx?ShowSatellite=false&pointX=" 
+
+					String hittaBigMapURL ="http://www.hitta.se/LargeMap.aspx?ShowSatellite=false&pointX="
 					+ yy
 					+ "&pointY="
 					+ xx
@@ -88,8 +89,8 @@ public class HittaMapSearchCommand extends AbstractWebServiceSearchCommand {
 					+ "&cy="
 					+ xx
 					+ "&z=3&name=" + encTransQuery;
-					
-					
+
+
 					result.addField("hittaURL", hittaURL);
 					result.addField("hittaBigMapURL", hittaBigMapURL);
 					result.addField("searchquery", transQuery);

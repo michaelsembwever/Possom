@@ -1,4 +1,4 @@
-/* Copyright (2005-2006) Schibsted Søk AS
+/* Copyright (2005-2007) Schibsted Søk AS
  *
  * AbstractESPFastSearchCommand.java
  *
@@ -40,6 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 
@@ -55,9 +56,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     private final String queryServer;
     private final ISearchView searchView;
     private IQueryResult result;
-    
+
     // Static --------------------------------------------------------
-    
+
     private static final Map<String,ISearchView> SEARCH_VIEWS = new HashMap<String,ISearchView>();
 
     private final static String FACTORY_PROPERTY = "com.fastsearch.esp.search.SearchFactory";
@@ -65,7 +66,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     private final static String QR_SERVER_PROPERTY = "com.fastsearch.esp.search.http.qrservers";
     private final static String ENCODER_PROPERTY = "com.fastsearch.esp.search.http.encoderclass";
     private final static String ENCODER_CLASS = "com.fastsearch.esp.search.http.DSURLUTF8Encoder";
-    
+
     private final static String COLLAPSE_PARAMETER = "collapse";
 
     private static final Logger LOG = Logger.getLogger(AbstractESPFastSearchCommand.class);
@@ -97,24 +98,24 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      */
     public AbstractESPFastSearchCommand(
                     final Context cxt,
-                    final Map<String, Object> parameters) {
+            final DataModel datamodel) {
 
-        super(cxt, parameters);
+        super(cxt, datamodel);
 
         cfg = (ESPFastSearchConfiguration) getSearchConfiguration();
-        final SiteConfiguration siteConf 
+        final SiteConfiguration siteConf
                 = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
         queryServer = siteConf.getProperty(cfg.getQueryServer());
         searchView = initialiseSearchView();
     }
 
     // Public --------------------------------------------------------
-    
+
     /** {@insheritDoc} */
     public SearchResult execute() {
 
         try {
-                                                  
+
             final StringBuilder filterBuilder = new StringBuilder();
 
             if (getFilter() != null) {
@@ -175,13 +176,13 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 try {
                     final IDocumentSummary document = result.getDocument(i + 1);
                     searchResult.addResult(createResultItem(document));
-                    
+
                 } catch (NullPointerException e) { // THe doc count is not 100% accurate.
                     LOG.debug("Error finding document " + e);
                     return searchResult;
                 }
             }
-            
+
             if (cfg.isCollapsingEnabled() && cfg.isExpansionEnabled()) {
                 if (collapseId != null && !collapseId.equals("")) {
                     if (searchResult.getResults().size() > 0) {
@@ -191,7 +192,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                     }
                 }
             }
-            
+
             return searchResult;
 
         } catch (SearchEngineException ex) {
@@ -214,7 +215,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     /** {@inheritDoc} */
     protected String escapeFieldedLeaf(final LeafClause clause) {
-        
+
         return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + clause.getTerm() + '"';
     }
 
@@ -235,17 +236,17 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     // Generate query in FQL.
     /** {@inheritDoc} */
     protected void visitImpl(final AndClause clause) {
-        // The leaf clauses might not produce any output. For example terms 
-        // having a site: field. In these cases we should not output the 
+        // The leaf clauses might not produce any output. For example terms
+        // having a site: field. In these cases we should not output the
         // operator keyword.
         boolean hasEmptyLeaf = false;
 
         hasEmptyLeaf |= isEmptyLeaf(clause.getFirstClause());
         hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
-        
+
         clause.getFirstClause().accept(this);
 
-        if (! hasEmptyLeaf) 
+        if (! hasEmptyLeaf)
             appendToQueryRepresentation(" and ");
 
         clause.getSecondClause().accept(this);
@@ -267,7 +268,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         hasEmptyLeaf |= isEmptyLeaf(clause.getSecondClause());
 
         clause.getFirstClause().accept(this);
-        
+
         if (! hasEmptyLeaf)
             appendToQueryRepresentation(" and ");
 
@@ -314,7 +315,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
     }
 
-    
+
     /**
      * Returns the fast search result
      *
@@ -323,26 +324,26 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     protected IQueryResult getIQueryResult() {
         return result;
     }
-    
+
     // Private -------------------------------------------------------
-    
+
     private ISearchView initialiseSearchView() {
-        
+
 
         final String view = cfg.getView();
-        
+
         if (view == null) {
             throw new IllegalStateException(ERR_CALL_SET_VIEW);
         }
 
         final String searchViewKey = queryServer + "/" + view;
-        
+
         // XXX There is no synchronisation around this static map.
         //   Not critical as any clashing threads will just override the values,
         //    and the cost of the occasional double-up creation probably doesn't compare
         //    to the synchronisation overhead.
         ISearchView searchView = SEARCH_VIEWS.get(searchViewKey);
-        
+
         if( null == searchView ){
             final Properties props = new Properties();
 
@@ -366,12 +367,12 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             }
             SEARCH_VIEWS.put(searchViewKey, searchView);
         }
-        
+
         LOG.debug("Using searchView: " + searchViewKey);
-        
+
         return searchView;
     }
-    
+
     private int getMaxDocIndex(
             final IQueryResult iQueryResult,
             final int cnt,
@@ -406,7 +407,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
         return item;
     }
-    
+
 
     // Inner classes -------------------------------------------------
 }

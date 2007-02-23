@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 import java.text.DateFormat;
@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 
@@ -21,7 +22,7 @@ public class DiscardOldNewsResultHandler implements ResultHandler {
     //TODO: for performance reasons, is SimpleDateFormat usage avoidable?
     private static transient DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
 
         for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {

@@ -1,11 +1,11 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 
@@ -18,24 +18,24 @@ public class DiscardDuplicatesResultHandler implements ResultHandler {
     private String sourceField;
     private boolean discardCase;
     private final List<String> keys = new ArrayList<String>();
-    
-    public void handleResult(final Context cxt, final Map parameters) {
+
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
 
         	final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
             String uniqueField = searchResultItem.getField(sourceField) + "";	//avoid nullpointers
-            
+
             if(isDiscardCase())
             	uniqueField = uniqueField.toLowerCase();
-            
+
             //remove entries with same name (not emtpy ones)
             if(uniqueField.length() != 0 && keys.contains(uniqueField)){
         		iterator.remove();
         	} else {
         		keys.add(uniqueField);
-        	} 
+        	}
         }
     }
 

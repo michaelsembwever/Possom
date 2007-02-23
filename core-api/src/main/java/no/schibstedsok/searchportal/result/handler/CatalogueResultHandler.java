@@ -1,20 +1,17 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Map;
 import java.util.Properties;
-
 import javax.naming.InitialContext;
-
 import no.schibstedsok.alfa.external.service.CompanyService;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.ProductResultItem;
 import no.schibstedsok.searchportal.result.ProductSearchResult;
 import no.schibstedsok.searchportal.result.ProductSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -22,9 +19,9 @@ import org.apache.log4j.Logger;
  * called after a search command with <catalogue/> resulthandler tag is defined.
  * It loops through all result items and load data with sql/jdbc from the sales
  * system.
- * 
+ *
  * @todo Add code to Jboss EJB3 stateless bean in salesadmin.
- * 
+ *
  * @author <a href="mailto:daniele@conduct.no">Daniel Engfeldt</a>
  * @version <tt>$Revision: 3436 $</tt>
  */
@@ -35,13 +32,13 @@ public final class CatalogueResultHandler implements ResultHandler {
 
 	/**
 	 * Handle the search result.
-	 *  
+	 *
 	 * @param cxt
 	 *            the context in which the resulthandler is executed in.
 	 * @param parameters
 	 *            sent to the resulthandler.
 	 */
-	public void handleResult(final Context cxt, final Map parameters) {
+	public void handleResult(final Context cxt, final DataModel datamodel) {
 		LOG.info("Starter Catalogue ResultHandler.");
 
 		final SiteConfiguration siteConf = SiteConfiguration
@@ -85,7 +82,7 @@ public final class CatalogueResultHandler implements ResultHandler {
 
 				/**
 				 * Hent ut alle produkter som er lagt inn på infosiden.
-				 * 
+				 *
 				 */
 				ProductSearchResult internalResult = new ProductSearchResult();
 				if (eksternt.hasInfoPageProducts()) {
@@ -105,7 +102,7 @@ public final class CatalogueResultHandler implements ResultHandler {
 
 				/**
 				 * Hent ut alle produkter som er lagt inn på søkeresultatet.
-				 * 
+				 *
 				 */
 				if (eksternt.hasListingProducts()) {
 					for (no.schibstedsok.alfa.external.dto.ProductResultItem prodItem : eksternt

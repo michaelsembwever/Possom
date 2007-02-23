@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  *
  */
 package no.schibstedsok.searchportal.run;
@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.searchportal.query.QueryStringContext;
@@ -57,7 +58,7 @@ import org.apache.log4j.Logger;
  *
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public class RunningQueryImpl extends AbstractRunningQuery implements RunningQuery {
 
@@ -94,7 +95,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      * implementation details allowing web subclasses to send correct error to client. **/
     protected boolean allCancelled = false;
     /** TODO comment me. **/
-    protected final Map<String,Object> parameters;
+    protected DataModel datamodel;
     private final Locale locale;
     private final List<Modifier> sources = new Vector<Modifier>();
     /** TODO comment me. **/
@@ -115,9 +116,11 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      * @param queryStr
      * @param parameters
      */
-    public RunningQueryImpl(final Context cxt, final String query, final Map<String,Object> parameters) {
+    public RunningQueryImpl(final Context cxt, final String query, final DataModel datamodel) {
 
         super(cxt);
+        
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
         LOG.trace("RunningQuery(cxt," + query + "," + parameters + ")");
 
@@ -125,7 +128,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         locale = cxt.getSite().getLocale();
 
-        this.parameters = parameters;
+        this.datamodel = datamodel;
         initParameters(cxt);
 
         final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
@@ -229,6 +232,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         LOG.trace("run()");
         final StringBuilder analysisReport = new StringBuilder(" <analyse><query>" + queryStr + "</query>\n");
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
         try {
 
@@ -312,16 +316,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 scores.put(config.getName(), score);
 
                                 if (config.isAlwaysRun() || score >= eHint.getThreshold()) {
-                                    commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
+                                    commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, datamodel));
                                 }
 
                             } else if (config.isAlwaysRun()) {
-                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
+                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, datamodel));
                             }
 
                         } else {
 
-                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, parameters));
+                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, datamodel));
                         }
                     }
                 }catch(RuntimeException re){
@@ -457,7 +461,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     /** TODO comment me. **/
     protected void addParameter(final String key, final Object obj) {
-        parameters.put(key, obj);
+        datamodel.getJunkYard().getValues().put(key, obj);
     }
 
     /** TODO comment me. **/
@@ -587,6 +591,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private void initParameters(final RunningQuery.Context rqCxt){
 
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
+        
         parameters.put("query", this);
         parameters.put("locale", locale);
         if( null == parameters.get("offset") ){

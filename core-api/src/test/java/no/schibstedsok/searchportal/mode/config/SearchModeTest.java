@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.config;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -9,9 +9,9 @@ import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
-
 import java.util.HashMap;
 import java.util.Properties;
+import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
@@ -25,16 +25,12 @@ import org.testng.annotations.Test;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public final class SearchModeTest extends SiteTestCase {
+public final class SearchModeTest extends DataModelTestCase {
 
-    public SearchModeTest(final String testName) {
-        super(testName);
-    }	
-    
     /** Test the FastSearchConfiguration.
      **/
     @Test
-    public void testFastSearchConfiguration() throws InterruptedException {
+    public void testFastSearchConfiguration() throws Exception {
 
         final SearchMode mode = new SearchMode();
 
@@ -66,17 +62,17 @@ public final class SearchModeTest extends SiteTestCase {
                     .getTabByKey("d");
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public DocumentLoader newDocumentLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final DocumentBuilder builder) {
-                
+
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public Site getSite() {
@@ -84,16 +80,16 @@ public final class SearchModeTest extends SiteTestCase {
             }
         };
 
-        final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no", new HashMap());
+        final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no", getDataModel());
 
         query.run();
-        
+
     }
 
     /** Test the OverturePPCSearchConfiguration.
      **/
     @Test
-    public void testOverturePPCConfiguration() throws InterruptedException {
+    public void testOverturePPCConfiguration() throws Exception {
 
         final String query = "linux";
 
@@ -119,17 +115,17 @@ public final class SearchModeTest extends SiteTestCase {
                     .getTabByKey("d");
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public DocumentLoader newDocumentLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final DocumentBuilder builder) {
-                
+
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public Site getSite() {
@@ -137,7 +133,7 @@ public final class SearchModeTest extends SiteTestCase {
             }
         };
 
-        final RunningQuery runningQuery = new RunningQueryImpl(rqCxt, query, new HashMap());
+        final RunningQuery runningQuery = new RunningQueryImpl(rqCxt, query, getDataModel());
 
         runningQuery.run();
 

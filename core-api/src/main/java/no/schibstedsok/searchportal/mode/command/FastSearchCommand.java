@@ -1,10 +1,10 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  *
  */
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.log4j.Logger;
 
 /**
@@ -20,9 +20,11 @@ public class FastSearchCommand extends AbstractSimpleFastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public FastSearchCommand(final Context cxt, final Map parameters) {
+    public FastSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
 
-        super(cxt, parameters);
+        super(cxt, datamodel);
     }
 
 }

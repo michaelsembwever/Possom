@@ -1,14 +1,14 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
@@ -21,7 +21,6 @@ import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.fast.searchengine.test.MockupFastSearchEngineFactory;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
-
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.Site;
@@ -39,16 +38,12 @@ import static org.testng.AssertJUnit.*;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public final class FastNavigatorsTest extends SiteTestCase {
+public final class FastNavigatorsTest extends DataModelTestCase {
 
     private static final Logger LOG = Logger.getLogger(FastNavigatorsTest.class);
 
     FastSearchConfiguration config;
     MockupResultHandler resultHandler;
-    
-    public FastNavigatorsTest(String testName) {
-        super(testName);
-    }    
 
     public SearchConfiguration getSearchConfiguration() {
         return config;
@@ -57,17 +52,17 @@ public final class FastNavigatorsTest extends SiteTestCase {
     @BeforeClass
     protected void setUp() throws Exception {
 
-        //final FastSearchConfiguration 
+        //final FastSearchConfiguration
                 config = new FastSearchConfiguration();
         //this.config = config;
         config.setResultsToReturn(10);
         resultHandler = new MockupResultHandler();
         config.addResultHandler(resultHandler);
     }
-    
+
     @Test
     public void testNoNavigators() {
-        
+
         final FastSearchConfiguration config = new FastSearchConfiguration();
         assertTrue(config.getNavigators().isEmpty());
     }
@@ -440,7 +435,9 @@ public final class FastNavigatorsTest extends SiteTestCase {
 //        }
 //    }
 
-    public void tBackLinks() {
+    public void tBackLinks() throws Exception{
+
+        final DataModel datamodel = getDataModel();
 
         final Navigator navigator = new Navigator();
         navigator.setName("ywfylkesnavigator");
@@ -457,12 +454,12 @@ public final class FastNavigatorsTest extends SiteTestCase {
         child2.setField("ywbydel");
         child.setChildNavigator(child2);
 
-        final Map params;
+        final Map<String,Object> params = datamodel.getJunkYard().getValues();
 
         // Nothing navigated
-        params = new HashMap();
-        FastSearchCommand command
-                = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+
+        FastSearchCommand command = (FastSearchCommand) SearchCommandFactory
+                .createSearchCommand(createTestSearchCommandContext("bil") , datamodel);
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         command.call();
@@ -480,7 +477,8 @@ public final class FastNavigatorsTest extends SiteTestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+        command = (FastSearchCommand) SearchCommandFactory
+                .createSearchCommand(createTestSearchCommandContext("bil") , datamodel);
         command.call();
 
         List links = command.getNavigatorBackLinks("geographic");
@@ -500,7 +498,8 @@ public final class FastNavigatorsTest extends SiteTestCase {
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue2);
 
-        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+        command = (FastSearchCommand) SearchCommandFactory
+                .createSearchCommand(createTestSearchCommandContext("bil") , datamodel);
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -522,7 +521,8 @@ public final class FastNavigatorsTest extends SiteTestCase {
         params.put("ywkommune", navigatedValue2);
         params.put("ywbydel", navigatedValue3);
 
-        command = (FastSearchCommand) SearchCommandFactory.createSearchCommand(createTestSearchCommandContext("bil") , params);
+        command = (FastSearchCommand) SearchCommandFactory
+                .createSearchCommand(createTestSearchCommandContext("bil") , datamodel);
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -532,7 +532,7 @@ public final class FastNavigatorsTest extends SiteTestCase {
 
     }
 
-    private SearchCommand.Context createTestSearchCommandContext(final String query) {
+    private SearchCommand.Context createTestSearchCommandContext(final String query) throws Exception{
 
         final RunningQuery.Context rqCxt = new RunningQuery.Context() {
 
@@ -547,17 +547,17 @@ public final class FastNavigatorsTest extends SiteTestCase {
                     .getTabByKey("d");
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public DocumentLoader newDocumentLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final DocumentBuilder builder) {
-                
+
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public Site getSite() {
@@ -565,7 +565,7 @@ public final class FastNavigatorsTest extends SiteTestCase {
             }
         };
 
-        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, new HashMap());
+        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, getDataModel());
 
         final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                 SearchCommand.Context.class,

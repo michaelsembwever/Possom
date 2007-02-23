@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
@@ -39,8 +40,11 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     
     
     
-    public NavigatableESPFastCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public NavigatableESPFastCommand(
+            final Context cxt, 
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
     
     public Collection createNavigationFilterStrings() {

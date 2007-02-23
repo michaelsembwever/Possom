@@ -8,8 +8,8 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
-
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  * Command producing queries in advanced query syntax for Fast FDS4.
@@ -29,9 +29,9 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
      */
     public AbstractAdvancedFastSearchCommand(
             final Context cxt,
-            final Map parameters) {
+            final DataModel datamodel) {
 
-        super(cxt, parameters);
+        super(cxt, datamodel);
     }
 
     // AbstractReflectionVisitor overrides ----------------------------------------------
@@ -45,7 +45,7 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
      * {@inheritDoc}
      */
     protected void visitImpl(final LeafClause clause) {
-        
+
         final String transformedTerm = getTransformedTerm(clause);
         if (transformedTerm != null && transformedTerm.length() > 0) {
             super.visitImpl(clause);

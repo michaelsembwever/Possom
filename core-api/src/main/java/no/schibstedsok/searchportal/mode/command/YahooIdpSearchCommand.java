@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * StaticSearchCommand.java
  *
@@ -32,8 +32,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import javax.servlet.http.HttpServletRequest;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /*
  * Search against Yahoo! Index Data Protocol 2.0.
@@ -66,8 +66,11 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String PHRASEWORDS = "PHRASEWORDS(";
 
     /** TODO comment me. **/
-    public YahooIdpSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public YahooIdpSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     /** TODO comment me. **/

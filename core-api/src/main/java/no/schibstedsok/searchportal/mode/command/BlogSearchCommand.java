@@ -7,7 +7,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.UrlClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -33,8 +33,11 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public BlogSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public BlogSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     // Public --------------------------------------------------------
@@ -63,7 +66,7 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
             appendTermRepresentation(escapeFieldedLeaf(clause));
         }
     }
-    
+
     /**
      * Adds quotes around the URL. Failing so will produce syntax error in filter.
      *

@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * WebSearchCommandTest.java
  *
@@ -8,7 +8,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import java.util.Hashtable;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
 
@@ -18,15 +18,11 @@ import static org.testng.AssertJUnit.*;
  */
 public final class WebSearchCommandTest extends AbstractSearchCommandTest {
 
-    public WebSearchCommandTest(final String testName) {
-        super(testName);
-    }
-
     /**
      * Test of the site prefix.
      */
     @Test
-    public void testSiteFilter() {
+    public void testSiteFilter()  throws Exception{
         executeTestOfQuery(
                 "site:zmag.org bil",
                 "bil",
@@ -37,7 +33,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
      * Test of the site prefix whith quotes.
      */
     @Test
-    public void testSiteFilterWithQuotes() {
+    public void testSiteFilterWithQuotes()  throws Exception{
         executeTestOfQuery(
                 "site:\"zmag.org\" bil",
                 "bil",
@@ -49,7 +45,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
      * Make sure that that phrase searches works.
      */
     @Test
-    public void testPhraseSearches() {
+    public void testPhraseSearches()  throws Exception{
         executeTestOfQuery(
                 "\"george bush stands on a chair to raise his IQ\"",
                 "\"george bush stands on a chair to raise his IQ\"",
@@ -59,7 +55,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
     /** Test that the nyhetskilde prefix is escaped.
      */
     @Test
-    public void testIgnoreField() {
+    public void testIgnoreField()  throws Exception{
         executeTestOfQuery(
                 "nyhetskilde:vg bil",
                 "nyhetskilde\\:vg bil",
@@ -67,7 +63,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
     }
 
     @Test
-    public void testExclusion() {
+    public void testExclusion()  throws Exception{
         executeTestOfQuery("magnus -eklund",
                 "magnus -eklund",
                 "");
@@ -78,7 +74,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
 
 
     @Test
-    public void testTwoTerms() {
+    public void testTwoTerms()  throws Exception{
         executeTestOfQuery("magnus eklund",
                 "magnus eklund",
                 "");
@@ -89,7 +85,7 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
      *
      */
     @Test
-    public void testSiteExclusion() {
+    public void testSiteExclusion()  throws Exception{
 //        executeTestOfQuery(
 //                "-site:zmag.org bil",
 //                "bil",
@@ -109,18 +105,21 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
      *
      */
     @Test
-    public void testPhoneNumberSearches() {
+    public void testPhoneNumberSearches()  throws Exception{
         executeTestOfQuery(
                 "97 40 33 06",
                 "97 40 33 06",
                 "");
     }
 
-    private void executeTestOfQuery(final String query, final String wantedQuery, final String wantedFilter) {
+    private void executeTestOfQuery(
+            final String query,
+            final String wantedQuery,
+            final String wantedFilter) throws SiteKeyedFactoryInstantiationException{
 
         final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
 
-        final WebSearchCommand cmd = new WebSearchCommand(cxt, new Hashtable<String,Object>());
+        final WebSearchCommand cmd = new WebSearchCommand(cxt, getDataModel());
 
         final String generatedQuery = cmd.getQueryRepresentation(cxt.getQuery());
 

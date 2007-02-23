@@ -11,13 +11,12 @@ import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.LeafClause;
-
 import java.util.Map;
 import java.text.MessageFormat;
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
-
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -27,7 +26,7 @@ import org.xml.sax.SAXException;
  * Command for searching images and videos using Yahoo! as a provider.
  *
  * Yahoo API documentation can be found here:
- * https://dev.schibstedsok.no/confluence/display/TECHDEV/Yahoo+Media+Search 
+ * https://dev.schibstedsok.no/confluence/display/TECHDEV/Yahoo+Media+Search
  *
  * @version $Id$
  */
@@ -87,8 +86,11 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
      * @param cxt Context to execute in.
      * @param parameters Command parameters to use.
      */
-    public YahooMediaSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public YahooMediaSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     /** {@inheritDoc} */
@@ -99,7 +101,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         final YahooMediaSearchConfiguration cfg = (YahooMediaSearchConfiguration) context.getSearchConfiguration();
 
         if (cfg.getSite().length() > 0) {
-            query += " +site:" + cfg.getSite(); 
+            query += " +site:" + cfg.getSite();
         }
 
         try {
@@ -175,12 +177,12 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
     /** {@inheritDoc} */
     protected void visitImpl(final LeafClause clause) {
-        
+
         final String transformedTerm = getTransformedTerm(clause);
         if (clause.getField() != null && clause.getField().equals(SITE_FILTER)) {
             appendToQueryRepresentation("+" + clause.getField() + ":");
             appendToQueryRepresentation(transformedTerm);
-            
+
         } else if (null == clause.getField() || null == getFieldFilter(clause)) {
             if (transformedTerm != null && transformedTerm.length() > 0) {
                 if (insideNot) {
@@ -211,7 +213,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     protected void visitImpl(final OrClause clause) {
         final Boolean originalWriteAnd = writeAnd;
         writeAnd = Boolean.FALSE;
-//        appendToQueryRepresentation(" ("); 
+//        appendToQueryRepresentation(" (");
         clause.getFirstClause().accept(this);
         appendToQueryRepresentation(" ");
         clause.getSecondClause().accept(this);

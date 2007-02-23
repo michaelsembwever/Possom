@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * WebSearchCommand.java
  *
@@ -8,7 +8,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 
@@ -24,11 +24,14 @@ public class WebSearchCommand extends FastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public WebSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public WebSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
-    
+
 
     /**
      *

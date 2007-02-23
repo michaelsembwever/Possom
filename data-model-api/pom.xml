@@ -21,7 +21,7 @@
     
     <build>
         <plugins>
-            <!--plugin>
+            <plugin>
                <groupId>org.apache.maven.plugins</groupId>
                <artifactId>maven-jar-plugin</artifactId>
                <executions>
@@ -31,7 +31,7 @@
                    </goals>
                  </execution>
                </executions>
-             </plugin-->
+             </plugin>
              <!--plugin>
                 <groupId>com.thoughtworks.paranamer</groupId>
                 <artifactId>paranamer</artifactId>

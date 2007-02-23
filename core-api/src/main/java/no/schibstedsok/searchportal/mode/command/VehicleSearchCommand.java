@@ -6,26 +6,23 @@ import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.util.Map;
-
 import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.holders.LongHolder;
 import javax.xml.rpc.holders.StringHolder;
-
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.VehicleSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
-
 import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-
 import se.blocket.www2.search.SearchLocator;
 import se.blocket.www2.search.SearchPortType;
 
-public class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
+public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(VehicleSearchCommand.class);
 
@@ -43,8 +40,11 @@ public class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
 
     private final static String BLOCKET_ALL_ADS_TYPE = "";
 
-    public VehicleSearchCommand(final Context cxt, final Map<String, Object> parameters) {
-        super(cxt, parameters);
+    public VehicleSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     @Override

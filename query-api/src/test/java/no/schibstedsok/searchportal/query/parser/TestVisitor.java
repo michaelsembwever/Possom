@@ -213,7 +213,7 @@ public final class TestVisitor extends SiteTestCase {
         basicQueryParserWithTestVisitorImpl(
                 "9222 1689",
                 "92221689 OR 9222 1689",
-                "92221689 (9222 1689)");
+                "92221689 92221689 (9222 1689)");
     }
 
     /** TODO comment me. **/
@@ -222,7 +222,7 @@ public final class TestVisitor extends SiteTestCase {
         basicQueryParserWithTestVisitorImpl(
                 "+47 9222 1689",
                 "+4792221689 OR 47 9222 1689",
-                "+4792221689 ((47 9222) 1689) (47 (9222 1689))");
+                "+4792221689 4792221689 ((47 9222) 1689) (47 (9222 1689))");
     }
 
     /** TODO comment me. **/

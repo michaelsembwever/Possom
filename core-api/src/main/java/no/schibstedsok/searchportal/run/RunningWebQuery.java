@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.run;
 
 
@@ -9,12 +9,13 @@ import java.util.Map;
 import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /*
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  */
 public final class RunningWebQuery extends RunningQueryImpl {
@@ -54,7 +55,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
                            final HttpServletRequest request,
                            final HttpServletResponse response) {
 
-        super(cxt, query, new Hashtable<String,Object>());
+        super(cxt, query, (DataModel)request.getSession().getAttribute(DataModel.KEY));
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("RunningWebQuery(mode, " + query + ", request, response)");
@@ -72,6 +73,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
             }
         }
         
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         // Hack to keep vg site search working. Dependent on old query
         // parameters. Remove when vg has been reimplented a proper site search.
         if (parameters.containsKey("nav_newspaperNames")) {
@@ -144,7 +146,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
         }else{
             
             // push all parameters into request attributes, they are needed by jsp and taglib
-            for( Map.Entry<String,Object> entry : parameters.entrySet() ){
+            for( Map.Entry<String,Object> entry : datamodel.getJunkYard().getValues().entrySet() ){
                 // don't put back in String array that only contains one element
                 if( entry.getValue() instanceof String[] && ((String[])entry.getValue()).length ==1 ){
                     request.setAttribute(entry.getKey(), ((String[])entry.getValue())[0]);

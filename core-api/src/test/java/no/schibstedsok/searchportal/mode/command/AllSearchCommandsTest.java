@@ -13,11 +13,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
 
@@ -34,59 +36,59 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
     private static final String DEBUG_EXECUTE_COMMAND = "Testing command ";
 
-    public AllSearchCommandsTest(final String name) {
-        super(name);
-    }
-
     
     @Test
-    public void testAllNorskNettsokSearchCommands() {
+    public void testAllNorskNettsokSearchCommands() throws Exception{
         executeTestOfQuery("linux", "d");
     }
 
     
     @Test
-    public void testAllInternasjonalNettsokSearchCommands() {
+    public void testAllInternasjonalNettsokSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "g");
     }
 
     @Test
-    public void testAllWhitepagesSearchCommands() {
+    public void testAllWhitepagesSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "w");
     }
 
     @Test
-    public void testAllYellowpagesSearchCommands() {
+    public void testAllYellowpagesSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "y");
     }
 
     @Test
-    public void testAllNyheterSearchCommands() {
+    public void testAllNyheterSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "m");
     }
 
     @Test
-    public void testAllBilderSearchCommands() {
+    public void testAllBilderSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "p");
     }
 
     @Test
-    public void testAllTvSearchCommands() {
+    public void testAllTvSearchCommands() throws Exception{
         executeTestOfQuery("linux", "t");
     }
     
-    private void executeTestOfQuery(final String query, final String key) {
+    private void executeTestOfQuery(
+            final String query, 
+            final String key) throws SiteKeyedFactoryInstantiationException{
 
+        final DataModel datamodel = getDataModel();
         // proxy it back to the RunningQuery context.
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
         
-        final Map<String,Object> map = updateAttributes(new HashMap<String,Object>(), rqCxt);
-        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, map);
+        updateAttributes(datamodel.getJunkYard().getValues(), rqCxt);
+        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, getDataModel());
+        datamodel.getJunkYard().getValues().put("query", rq);
 
         final Collection<Callable<SearchResult>> commands = new ArrayList<Callable<SearchResult>>();
 
@@ -96,7 +98,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
             final SearchCommand.Context cxt = createCommandContext(query, rqCxt, conf.getName());
 
-            final SearchCommand cmd = SearchCommandFactory.createSearchCommand(cxt, map);
+            final SearchCommand cmd = SearchCommandFactory.createSearchCommand(cxt, datamodel);
 
             commands.add(cmd);
         }

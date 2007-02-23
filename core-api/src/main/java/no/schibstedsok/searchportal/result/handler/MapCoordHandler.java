@@ -1,16 +1,14 @@
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Map;
 import org.apache.log4j.Logger;
-
 import no.geodata.maputil.MapCoordCalc;
 import no.geodata.maputil.MapPoint;
-import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
  * Converts lat/long values into X/Y for map coordinate-system.
- * 
+ *
  * @author larsj
  *
  */
@@ -20,15 +18,15 @@ public class MapCoordHandler implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(MapCoordHandler.class);
 
-	public void handleResult(Context cxt, Map parameters) {
-		
+	public void handleResult(Context cxt, DataModel datamodel) {
+
 		for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
-        
+
         	try {
         		String tmp = null;
         		double latitude = Double.parseDouble(item.getField("lat").replace(',', '.'));
         		double longitude = Double.parseDouble(item.getField("long").replace(',', '.'));
-        		
+
             	MapCoordCalc coordCalculator = new MapCoordCalc();
             	MapPoint point = coordCalculator.DD2UTM(longitude, latitude, UTM_ZONE);
                 item.addField("xcoord", point.getX() + "");
@@ -38,9 +36,9 @@ public class MapCoordHandler implements ResultHandler {
         		e.printStackTrace();
         		LOG.error("Unable to parse latitude/longitude from Storm weather service " + e);
         	}
-        	
+
         }
-	
+
 	}
 
 }

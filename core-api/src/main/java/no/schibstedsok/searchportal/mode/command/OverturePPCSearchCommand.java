@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
@@ -12,11 +12,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -42,10 +42,10 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      * @param parameters
      */
     public OverturePPCSearchCommand(
-                             final Context cxt,
-                             final Map parameters) {
-        
-        super(cxt, parameters);
+             final Context cxt,
+             final DataModel datamodel) {
+
+        super(cxt, datamodel);
 
     }
     /**
@@ -54,14 +54,14 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      * @return
      */
     public SearchResult execute() {
-        
+
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
         final ReconstructedQuery rq = createQuery(getTransformedQuery());
-        
+
         top = rq.getEngine().evaluateQuery(TokenPredicate.EXACT_PPCTOPLIST, rq.getQuery());
-        
+
         try {
             final Document doc = getXmlResult();
             final OvertureSearchResult searchResult = new OvertureSearchResult(this, top);
@@ -107,7 +107,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
             url.append(URLEncoder.encode(getTransformedQuery().replace(' ', '+'), ppcConfig.getEncoding()));
             url.append("&maxCount=");
             url.append(getResultsToReturn());
-            
+
         }  catch (UnsupportedEncodingException e) {
             throw new InfrastructureException(e);
         }

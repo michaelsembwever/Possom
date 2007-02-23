@@ -1,13 +1,12 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
@@ -20,39 +19,42 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * @version $Id$
  */
 public class TvSearchSortingHandler implements ResultHandler {
-    
+
     /** Number of results per block of channels, days or categories. **/
     private int resultsPerBlock;
-    
+
     /** Number of blocks to display per page. **/
     private int blocksPerPage;
-     
+
     public int getResultsPerBlock() {
         return resultsPerBlock;
     }
-    
+
     public void setResultsPerBlock(int resultsPerBlock) {
         this.resultsPerBlock = resultsPerBlock;
     }
-    
+
     public int getBlocksPerPage() {
         return blocksPerPage;
     }
-    
+
     public void setBlocksPerPage(int blocksPerPage) {
         this.blocksPerPage = blocksPerPage;
     }
-    
-    public void handleResult(final Context cxt, final Map parameters) {
+
+    public void handleResult(final Context cxt, final DataModel datamodel) {
+
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         final String sortBy = parameters.containsKey("userSortBy") ? ((String)parameters.get("userSortBy")) : "channel";
-        
-        final TvSearchConfiguration searchConfiguration = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
-        
+
+        final TvSearchConfiguration searchConfiguration
+                = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+
         HashMap<String,ArrayList<SearchResultItem>> hm = new HashMap();
         SearchResult sr = cxt.getSearchResult();
         final int resultsPerBlock = getResultsPerBlock();
         String field = "channel";
-        
+
         if (sortBy.equals("day")) {
             field = "weekday";
         } else if (sortBy.equals("category")) {
@@ -63,36 +65,37 @@ public class TvSearchSortingHandler implements ResultHandler {
         if (parameters.get("nav_channels") != null && sortBy.equals("channel")) {
             return;
         }
-        
+
         if (parameters.get("nav_categories") != null && sortBy.equals("category")) {
             return;
         }
-        
-        if (parameters.get("nav_channels") != null && parameters.get("nav_days") != null && !sortBy.equals("category")) {
+
+        if (parameters.get("nav_channels") != null
+                && parameters.get("nav_days") != null && !sortBy.equals("category")) {
             return;
         }
-        
+
         if (parameters.get("nav_days") != null && sortBy.equals("day")) {
             return;
         }
-        
+
         /* Split search result */
         for (SearchResultItem sri : sr.getResults()) {
             String fieldValue = sri.getField(field);
             if (!hm.containsKey(fieldValue)) {
                 hm.put(fieldValue, new ArrayList<SearchResultItem>());
             }
-            
+
             List<SearchResultItem> results = hm.get(fieldValue);
-            
+
             if (results.size() < resultsPerBlock) {
                 results.add(sri);
             }
         }
-        
+
         sr.getResults().clear();
-        
-        
+
+
         if (sortBy.equals("channel")) {
             if (cxt.getQuery().isBlank()) {
                 for (String channel : searchConfiguration.getDefaultChannels()) {
@@ -110,7 +113,7 @@ public class TvSearchSortingHandler implements ResultHandler {
         } else if (sortBy.equals("day")) {
             Calendar cal = Calendar.getInstance();
             int startDay = (cal.get(Calendar.DAY_OF_WEEK) + 5) % 7;
-            
+
             for (int i = 0; i < 7; i++) {
                 String weekDay = Integer.toString((startDay + i) % 7);
                 if (hm.containsKey(weekDay)) {
@@ -121,16 +124,18 @@ public class TvSearchSortingHandler implements ResultHandler {
             joinBlocks(cxt, hm, "categories");
         }
     }
-    
+
     private final SearchResult joinBlocks(final Context cxt, final HashMap hm, final String modifiersId) {
-        final TvSearchConfiguration searchConfiguration = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+
+        final TvSearchConfiguration searchConfiguration
+                = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
         final List<Modifier> modifiers = ((FastSearchResult) cxt.getSearchResult()).getModifiers(modifiersId);
         final SearchResult sr = cxt.getSearchResult();
-        
+
         if (modifiers == null) {
             return sr;
         }
-        
+
         int i = 0;
         for (Modifier modifier : modifiers) {
             if (i == getBlocksPerPage()) {

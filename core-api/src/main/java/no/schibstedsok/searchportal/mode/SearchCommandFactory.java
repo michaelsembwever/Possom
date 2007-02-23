@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * SearchCommandFactory.java
  *
@@ -11,6 +11,7 @@ package no.schibstedsok.searchportal.mode;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 
@@ -32,7 +33,7 @@ public final class SearchCommandFactory {
      **/
     public static SearchCommand createSearchCommand(
             final SearchCommand.Context cxt, 
-            final Map<String,Object> parameters) {
+            final DataModel datamodel) {
 
 
         final SearchConfiguration config = cxt.getSearchConfiguration();
@@ -43,8 +44,8 @@ public final class SearchCommandFactory {
                     .replaceAll("Configuration", "Command")
                     .replaceAll("config", "command"));
             final Constructor<SearchCommand> commandConstr 
-                    = commandCls.getConstructor(SearchCommand.Context.class, Map.class);
-            return commandConstr.newInstance(cxt, parameters);
+                    = commandCls.getConstructor(SearchCommand.Context.class, DataModel.class);
+            return commandConstr.newInstance(cxt, datamodel);
             
             
         } catch (ClassNotFoundException ex) {

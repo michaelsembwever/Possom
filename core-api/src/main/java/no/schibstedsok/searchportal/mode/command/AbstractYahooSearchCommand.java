@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * AbstractYahooSearchCommand.java
  *
@@ -11,6 +11,7 @@ package no.schibstedsok.searchportal.mode.command;
 import java.io.IOException;
 import java.util.Map;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
@@ -48,22 +49,22 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
      */
     public AbstractYahooSearchCommand(
             final Context cxt,
-            final Map<String, Object> parameters) {
+            final DataModel datamodel) {
 
-        super(cxt, parameters);
+        super(cxt, datamodel);
 
         final AbstractYahooSearchConfiguration conf = (AbstractYahooSearchConfiguration)cxt.getSearchConfiguration();
-        
-        final SiteConfiguration siteConf 
+
+        final SiteConfiguration siteConf
                 = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
         final String host = siteConf.getProperty(conf.getHost());
         final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
-                
-        
+
+
         client = null != conf.getHostHeader() && conf.getHostHeader().length() >0
                 ? HTTPClient.instance(conf.getName(), host, port, conf.getHostHeader())
                 : HTTPClient.instance(conf.getName(), host, port);
-        
+
         partnerId = siteConf.getProperty(conf.getPartnerId());
     }
 

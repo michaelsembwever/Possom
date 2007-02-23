@@ -1,7 +1,7 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.query.QueryStringContext;
@@ -31,5 +31,5 @@ public interface ResultHandler {
         void addSource(Modifier modifier);
     }
 
-    void handleResult(Context cxt, Map<String,Object> parameters);
+    void handleResult(Context cxt, DataModel datamodel);
 }

@@ -21,7 +21,7 @@ import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
  * @version <tt>$Id$</tt>
  */
 @DataObject
-public interface ParametersDataObject{
+public interface ParametersDataObject extends MapDataObject{
 
     @AccessDisallow(VIEW_CONSTRUCTION)
     Map<String,StringDataObject> getValues();
@@ -31,4 +31,10 @@ public interface ParametersDataObject{
 
     @AccessAllow({})
     void setValue(final String key, final StringDataObject value);
+    
+    @AccessAllow({REQUEST_CONSTRUCTION, VIEW_CONSTRUCTION})
+    String getContextPath();
+    
+    @AccessAllow({})
+    void setContextPath(final String contextPath);
 }

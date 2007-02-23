@@ -1,12 +1,11 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -14,7 +13,6 @@ import org.apache.commons.lang.StringUtils;
  * User: ssthkjer
  * Date: 20.des.2005
  * Time: 14:37:50
- * To change this template use File | Settings | File Templates.
  */
 public class ImageHelper implements ResultHandler {
 
@@ -24,7 +22,7 @@ public class ImageHelper implements ResultHandler {
         fieldMap.put(field, as);
     }
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
 

@@ -1,11 +1,10 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 
-import java.util.Map;
-import java.util.Iterator;
 import java.text.ParseException;
 import java.text.DecimalFormat;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 
@@ -32,8 +31,8 @@ public class WeatherCelciusHandler implements ResultHandler  {
     public void setSourceField(final String sourceField) {
         this.sourceField = sourceField;
     }
-    
-    public void handleResult(final Context cxt, final Map parameters) {
+
+    public void handleResult(final Context cxt, final DataModel datamodel) {
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
             String celcius = item.getField(sourceField);
             String newVal = null;

@@ -1,4 +1,4 @@
-// Copyright (2005-2006) Schibsted Søk AS
+// Copyright (2005-2007) Schibsted Søk AS
 /*
  * CorrectingFastSearchCommand.java
  *
@@ -15,10 +15,10 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 import org.apache.log4j.Logger;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -45,8 +45,11 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public CorrectingFastSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public CorrectingFastSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     /** {@inheritDoc} */

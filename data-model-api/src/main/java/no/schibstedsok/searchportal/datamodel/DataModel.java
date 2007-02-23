@@ -46,10 +46,10 @@ public interface DataModel extends Serializable{
 
     // BrowserDataObject ------------------------------------------------------------
 
-    BrowserDataObject getBrowserDataObject();
+    BrowserDataObject getBrowser();
 
     @AccessAllow(DATA_MODEL_CONSTRUCTION)
-    void setBrowserDataObject(BrowserDataObject browser);
+    void setBrowser(BrowserDataObject browser);
 
     // UserDataObject ------------------------------------------------------------
 

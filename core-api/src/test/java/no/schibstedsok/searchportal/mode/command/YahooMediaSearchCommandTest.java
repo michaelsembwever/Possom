@@ -1,7 +1,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import java.util.Hashtable;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import static org.testng.AssertJUnit.*;
 
 
@@ -9,53 +9,45 @@ import static org.testng.AssertJUnit.*;
  *
  */
 public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
-    /**
-     * Creates a new instance of YahooMediaSearchCommandTest
-     *
-     * @param testName The name of the test.
-     */
-    public YahooMediaSearchCommandTest(final String testName) {
-        super(testName);
-    }
 
     /**
      * Test a single term.
      */
-    public void testSingleTerm() {
+    public void testSingleTerm()  throws Exception{
         executeTestOfQuery("test", "test", "");
     }
 
 
-    public void testTwoTerms() {
+    public void testTwoTerms()  throws Exception{
         executeTestOfQuery("test1 test2", "test1 AND test2", "");
     }
 
-    public void testThreeTerms() {
+    public void testThreeTerms()  throws Exception{
         executeTestOfQuery("test1 test2 test3", "test3 AND test1 AND test2", "");
     }
 
-    public void testTwoTermsPlus() {
+    public void testTwoTermsPlus()  throws Exception{
         executeTestOfQuery("+test1 +test2", "test1 AND test2", "");
     }
 
 
-    public void testNot() {
+    public void testNot()  throws Exception{
         executeTestOfQuery("test1 -test2", "test1 ANDNOT test2", "");
     }
 
-    public void testLeadingNot() {
+    public void testLeadingNot()  throws Exception{
         executeTestOfQuery("-test1 test2", "test2 ANDNOT test1", "");
     }
 
-    public void testOr() {
+    public void testOr()  throws Exception{
         executeTestOfQuery("(test1 test2)", "(test1 OR test2)", "");
     }
 
-    public void testLeadingNotAndOr() {
+    public void testLeadingNotAndOr()  throws Exception{
         executeTestOfQuery("-a (test1 test2)", "(test1 OR test2) ANDNOT a", "");
     }
 
-    public void testLotsOfNots() {
+    public void testLotsOfNots()  throws Exception{
         executeTestOfQuery("-a d -b -e c -f", "c AND d ANDNOT a ANDNOT b ANDNOT e ANDNOT f", "");
         executeTestOfQuery("-a d -b -e c g -f", "g AND c AND d ANDNOT a ANDNOT b ANDNOT e ANDNOT f", "");
         executeTestOfQuery("-a -b c", "c ANDNOT a ANDNOT b", "");
@@ -63,12 +55,13 @@ public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
     }
 
 
-    public void testSiteRestriction() {
+    public void testSiteRestriction() throws Exception{
+
         executeTestOfQuery("site:aftonbladet.se banan", "banan", "");
         executeTestOfQuery("banan site:aftonbladet.se", "banan", "");
-        
+
         final SearchCommand.Context cxt = createCommandContext("site:aftonbladet.se banan", "d", "yahoo-image-search");
-        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, new Hashtable<String,Object>());
+        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, getDataModel());
         cmd.getQueryRepresentation(cxt.getQuery());
         assertTrue(cmd.createRequestURL().contains("rurl=http://aftonbladet.se"));
     }
@@ -81,9 +74,13 @@ public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
      * @param wantedQuery   The expected query.
      * @param wantedFilter  The expected filter.
      */
-    private void executeTestOfQuery(final String query, final String wantedQuery, final String wantedFilter) {
+    private void executeTestOfQuery(
+            final String query,
+            final String wantedQuery,
+            final String wantedFilter)  throws SiteKeyedFactoryInstantiationException{
+
         final SearchCommand.Context cxt = createCommandContext(query, "d", "yahoo-image-search");
-        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, new Hashtable<String,Object>());
+        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, getDataModel());
         final String generatedQuery = cmd.getQueryRepresentation(cxt.getQuery());
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
         assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getAdditionalFilter());

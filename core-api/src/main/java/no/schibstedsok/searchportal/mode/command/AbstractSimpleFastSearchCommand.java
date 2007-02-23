@@ -1,4 +1,4 @@
-/* Copyright (2005-2006) Schibsted Søk AS
+/* Copyright (2005-2007) Schibsted Søk AS
  *
  * AbstractSimpleFastSearchCommand.java
  *
@@ -41,6 +41,7 @@ import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -104,9 +105,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     /** Creates a new instance of AbstractSimpleFastSearchCommand */
     public AbstractSimpleFastSearchCommand(
                     final Context cxt,
-                    final Map parameters) {
+            final DataModel datamodel) {
 
-        super(cxt, parameters);
+        super(cxt, datamodel);
 
         final FastSearchConfiguration conf = (FastSearchConfiguration) cxt.getSearchConfiguration();
         final SiteConfiguration siteConf
@@ -126,8 +127,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             final String modifiers[] = (String[]) navigatedValues.get(field);
 
 
-            for (int i = 0; i < modifiers.length; i++) {                
-                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")) {                   
+            for (int i = 0; i < modifiers.length; i++) {
+                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter")) {
                     if ( "adv".equals(getSearchConfiguration().getFiltertype()) )
                         filterStrings.add(" AND " + field + ":\"" + modifiers[i] + "\"");
                     else
@@ -706,7 +707,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (getSearchConfiguration().isCollapsing()) {
             if (null == collapseId || "".equals(collapseId)) {
                 params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, true));
-                
+
             } else {
                 params.setParameter(new SearchParameter(BaseParameter.COLLAPSING, false));
                 filter.append(" +collapseid:").append(collapseId);
@@ -762,7 +763,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (getSearchConfiguration().getResultView() != null && getSearchConfiguration().getResultView().length() >0) {
             params.setParameter(
                     new SearchParameter(BaseParameter.RESULT_VIEW, getSearchConfiguration().getResultView()));
-            
+
         }
 
         if (getSortBy() != null && getSortBy().length() >0) {
@@ -772,21 +773,21 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         if (getParameter("c").equals("yg")) {
             if (getParameter("type").equals("f")) {
                 params.setParameter(new SearchParameter(
-                        "qtf_geosearch:center", 
+                        "qtf_geosearch:center",
                         '(' + getParameter("cla") + ',' + getParameter("clo")));
-                
+
                 params.setParameter( new SearchParameter(
-                        "qtf_geosearch:filterbox", 
-                        "[(" + getParameter("la1") + "," + getParameter("lo1") + ");(" 
+                        "qtf_geosearch:filterbox",
+                        "[(" + getParameter("la1") + "," + getParameter("lo1") + ");("
                         + getParameter("la2") + ',' + getParameter("lo2") + ")]"));
-                
+
                 params.setParameter(new SearchParameter("sortdirection", "ascending"));
-                
+
             } else {
                 params.setParameter(new SearchParameter(
-                        "qtf_geosearch:center", 
+                        "qtf_geosearch:center",
                         '(' + getParameter("cla") + "," + getParameter("clo")));
-                
+
                 params.setParameter(new SearchParameter("qtf_geosearch:radius", getParameter("rad")));
                 params.setParameter(new SearchParameter("sortdirection", "ascending"));
             }

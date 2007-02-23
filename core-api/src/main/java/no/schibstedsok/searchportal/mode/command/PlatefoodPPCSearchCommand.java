@@ -10,19 +10,17 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Map;
-
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.PlatefoodPPCSearchConfiguration;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.PlatefoodSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,8 +51,11 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
      * @param configuration
      * @param parameters
      */
-    public PlatefoodPPCSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public PlatefoodPPCSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     /**

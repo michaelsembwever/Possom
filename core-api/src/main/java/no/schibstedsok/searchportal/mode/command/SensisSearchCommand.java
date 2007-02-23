@@ -8,7 +8,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -22,8 +22,11 @@ public class SensisSearchCommand extends FastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public SensisSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public SensisSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
 

@@ -1,9 +1,8 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 
@@ -14,7 +13,7 @@ import no.schibstedsok.searchportal.result.Modifier;
  */
 public final class ContentSourceCollector implements ResultHandler {
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         if (cxt.getSearchResult().getHitCount() >= 0) {
 

@@ -7,19 +7,22 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
- * A search command used for querrying FAST ESP 5.0 query servers.  
+ * A search command used for querrying FAST ESP 5.0 query servers.
  */
 public class ESPFastSearchCommand extends AbstractESPFastSearchCommand {
-    
+
     /** Creates a new instance of FastSearchCommand
      *
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public ESPFastSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public ESPFastSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 }

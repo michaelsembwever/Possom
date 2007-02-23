@@ -5,9 +5,8 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer;
-
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -22,8 +21,11 @@ public final class StockSearchCommand extends AbstractSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(StockSearchCommand.class);
 
-    public StockSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public StockSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     public SearchResult execute() {
@@ -36,7 +38,7 @@ public final class StockSearchCommand extends AbstractSearchCommand {
         if( SynonymQueryTransformer.isSynonym( q )){
 
             final SearchResultItem item = new BasicSearchResultItem();
-            
+
 
             final String tickerCode = SynonymQueryTransformer.isTicker(q)
                     ? q

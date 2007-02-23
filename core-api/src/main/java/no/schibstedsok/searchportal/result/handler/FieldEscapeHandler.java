@@ -1,20 +1,18 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.commons.lang.StringEscapeUtils;
 
 /**
- * 
+ *
  */
 public class FieldEscapeHandler implements ResultHandler {
 
     private String sourceField;
     private String targetField;
-    
+
     public String getSourceField() {
         return sourceField;
     }
@@ -26,12 +24,12 @@ public class FieldEscapeHandler implements ResultHandler {
     public String getTargetField() {
         return targetField;
     }
-    
+
     public void setTargetField(final String targetField) {
         this.targetField = targetField;
     }
-    
-    public void handleResult(final Context cxt, final Map parameters) {
+
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
             final String value = item.getField(sourceField);

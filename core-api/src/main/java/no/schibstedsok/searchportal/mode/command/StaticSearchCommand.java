@@ -7,7 +7,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -21,11 +21,14 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  */
 public class StaticSearchCommand extends AbstractSearchCommand {
 
-    private static final SearchResultItem dummyItem 
+    private static final SearchResultItem dummyItem
             = new BasicSearchResultItem();
-    
-    public StaticSearchCommand(final SearchCommand.Context cxt, final Map parameters) {
-        super(cxt, parameters);
+
+    public StaticSearchCommand(
+            final SearchCommand.Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     public SearchResult execute() {

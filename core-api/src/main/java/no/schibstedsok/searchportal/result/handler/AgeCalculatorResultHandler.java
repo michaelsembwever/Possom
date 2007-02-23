@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 import java.text.DateFormat;
@@ -7,10 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Map;
 import java.util.TimeZone;
 import java.util.Date;
-
 import no.schibstedsok.commons.ioc.ContextWrapper;
-
-
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
@@ -33,7 +31,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
     private static final Logger LOG = Logger.getLogger(AgeCalculatorResultHandler.class);
 
     /** @inherit **/
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final String fmt = dateFormat != null ? dateFormat : FAST_DATE_FMT;
         final String ageFormatKey = ageMessageFormat != null ? ageMessageFormat : "age";
@@ -64,6 +62,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     dateParts[1] = Long.valueOf(age / (60 * 60 * 1000) % 24);
                     dateParts[2] = Long.valueOf(age / (60 * 1000) % 60);
 
+                    final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
                     String ageString = ""; // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
                     final String  s = parameters.get("contentsource") instanceof String[]
                             ? ((String[])parameters.get("contentsource"))[0]
@@ -95,7 +94,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     }
                     if (LOG.isTraceEnabled()) {
                         LOG.trace("Resulting age string is " + ageString);
-                    }         
+                    }
 
                     if (stamp > 0) {
                         item.addField(getTargetField(), ageString);

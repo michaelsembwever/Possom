@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.mode.command;
 
@@ -9,9 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -29,12 +29,11 @@ import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
-
 import org.apache.log4j.Logger;
 
 
 /**
- * 
+ *
  */
 public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
@@ -45,34 +44,34 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private boolean searchForInfoPage = false;
     private String sortBy="kw"; // defualtsøket er på keyword
 
-    
+
     /** Creates a new catalogue search command.
      * TODO. Rewrite from scratch. This is insane.
      **/
-    public CatalogueSearchCommand(final Context cxt, final Map parameters) {
-    	super(cxt, parameters);
+    public CatalogueSearchCommand(final Context cxt, final DataModel datamodel) {
+    	super(cxt, datamodel);
 
-    
+
     	// hvis "where" parametern er sendt inn, så tar vi og leser inn query fra
     	// den.
     	if(getSingleParameter("where") != null){
 	        final ReconstructedQuery rq = createQuery(getSingleParameter("where"));
 
-	    	GeoVisitor geo = new GeoVisitor(); 
+	    	GeoVisitor geo = new GeoVisitor();
 	    	geo.visit(rq.getQuery().getRootClause());
-	        
+
 	    	queryTwo = geo.getQueryRepresentation();
 	    	LOG.info("Dette ble det: "+queryTwo);
     	}
-    	
+
     	if(getSingleParameter("userSortBy")!=null
     			&& getSingleParameter("userSortBy").length()>0){
     		sortBy=getSingleParameter("userSortBy");
     	}else{
     		sortBy="kw";
     	}
-    
-    
+
+
     }
 
     /** TODO comment me. **/
@@ -81,13 +80,13 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     	searchForName=false;
     	super.performQueryTransformation();
     	SearchResult result = super.execute();
-        
+
     	searchForName=true;
-        super.performQueryTransformation();        
+        super.performQueryTransformation();
         // søk etter firmanavn
         SearchResult nameQueryResult = super.execute();
-        
-    	// hvis det er angitt at det er sortert på navn, 
+
+    	// hvis det er angitt at det er sortert på navn,
         // viser vi treff på navn først. Hvis det er angitt att
         // det skal sorteres på keywords, viser vi keywords først.
         if(sortBy.equals("kw")){
@@ -96,18 +95,18 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         }else{
         	nameQueryResult.getResults().addAll(result.getResults());
         	nameQueryResult.setHitCount(result.getHitCount()+nameQueryResult.getHitCount());
-        	
+
         	result = nameQueryResult;
-        }       
-         
-        
+        }
+
+
         // konverter til denne.
         List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
-		
+
     	//TODO: get all keys to lookup and execute one call instead of iterating like this...
     	Iterator iter = result.getResults().listIterator();
-    	
-    	
+
+
     	while (iter.hasNext()) {
     		BasicSearchResultItem basicResultItem = (BasicSearchResultItem) iter.next();
 
@@ -117,43 +116,43 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     			String v = basicResultItem.getField(s);
     			resultItem.addField(s,v);
     		}
-    		
+
     		nyResultListe.add(resultItem);
     	}
-    	
-    	// fjern de gamle BasicResultItems, og erstatt dem med nye CatalogueResultItems. 
+
+    	// fjern de gamle BasicResultItems, og erstatt dem med nye CatalogueResultItems.
     	result.getResults().clear();
     	result.getResults().addAll(nyResultListe);
-    	
+
     	return result;
     }
-    
+
 
     @Override
     public String getTransformedQuery() {
     	String query = super.getTransformedQuery();
-    	
+
     	if(queryTwo!=null&&queryTwo.length()>0){
     		query += ") " + QL_AND +" (" + queryTwo+")";
     		query= "("+query;
     	}
-    		
+
     	return query;
     }
-    
+
     /**
      * Legg til  iypcfspkeywords forran alle ord.
      *
      */
     protected void visitImpl(final LeafClause clause) {
 
-    	
+
     	String transformed = getTransformedTerm(clause);
-    	
+
     	if(searchForName){
     		LOG.info("Add transformed to name query \""+transformed+"\"");
     		appendToQueryRepresentation("(");
-    		appendToQueryRepresentation("(iypcfphnavn:"+transformed+")"); 
+    		appendToQueryRepresentation("(iypcfphnavn:"+transformed+")");
     		appendToQueryRepresentation(" ANDNOT (");
     		appendToQueryRepresentation("(lemiypcfkeywords:"+transformed+") OR ");
     		appendToQueryRepresentation("(lemiypcfkeywordslow:"+transformed+")");
@@ -162,10 +161,10 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     	}else{
     		LOG.info("Add transformed to keyword query \""+transformed+"\"");
     		appendToQueryRepresentation("(lemiypcfkeywords:"+transformed+" ANY lemiypcfkeywordslow:"+transformed+")");
-    	}    	
+    	}
     }
-    
-    
+
+
     @Override
     protected String getSortBy() {
     	// hvis man søker etter firmanavn, sorterer vi etter "iyprpnavn"
@@ -175,10 +174,10 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     		sortBy="iyprpnavn";
     	}
     	return sortBy;
-    }    
+    }
 
 
-    
+
     /**
      * Query builder for creating a query syntax similar to sesam's own.
      */
@@ -186,7 +185,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         // AbstractReflectionVisitor overrides ----------------------------------------------
         private final StringBuilder sb = new StringBuilder();
-        
+
         /**
          * Returns the generated query.
          *
@@ -195,7 +194,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         String getQueryRepresentation() {
             return sb.toString();
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -212,7 +211,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             }
             clause.getSecondClause().accept(this);
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -249,8 +248,8 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             }
         }
 
-        
-        
+
+
         /**
          * {@inheritDoc}
          */

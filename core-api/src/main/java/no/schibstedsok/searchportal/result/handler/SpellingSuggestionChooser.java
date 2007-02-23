@@ -1,15 +1,15 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 import org.apache.log4j.Logger;
-
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 
 /**
@@ -24,7 +24,7 @@ import java.util.Map;
  * is much better than the second best</li>
  * </ul>
  *
- * A new query is then created using the chosen suggestions. 
+ * A new query is then created using the chosen suggestions.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
@@ -87,7 +87,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
     /**
      * Sets the maximum difference in score a suggestion can have from the highest
-     * the suggestion with the highest score without being discarded. 
+     * the suggestion with the highest score without being discarded.
      *
      * @param maxDistance New max distance.
      */
@@ -115,7 +115,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
     /**
      * Sets the number of terms a query needs to be considered as long.
-     * 
+     *
      * @param veryLongQuery The new number of terms.
      */
     public void setVeryLongQuery(final int veryLongQuery) {
@@ -134,7 +134,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
     /**
      * {@inheritDoc}
      */
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchResult result = cxt.getSearchResult();
         if (LOG.isDebugEnabled()) {

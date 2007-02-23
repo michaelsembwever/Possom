@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
 
@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
@@ -19,29 +20,29 @@ import org.nfunk.jep.type.Complex;
  * @version <tt>$Id$</tt>
  */
 public final class NumberOperationHandler implements ResultHandler {
-    
+
     private static final Logger LOG = Logger.getLogger(NumberOperationHandler.class);
 
     private Collection<String> fields = new ArrayList<String>();
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchResult result = cxt.getSearchResult();
-        
+
         final NumberFormat formatter = NumberFormat.getInstance(cxt.getSite().getLocale());
         formatter.setMinimumIntegerDigits(minDigits);
         formatter.setMaximumIntegerDigits(maxDigits);
         formatter.setMinimumFractionDigits(minFractionDigits);
         formatter.setMaximumFractionDigits(maxFractionDigits);
-        
+
         final JEP parser = new JEP();
 
         parser.addStandardConstants();
         parser.addStandardFunctions();
         parser.addComplex();
-        
+
         for(SearchResultItem item : result.getResults()){
-            
+
             for(String field : fields){
                 final String value = item.getField(field);
                 parser.addVariable(field, value != null && value.length()>0 ? Double.parseDouble(value) : 0D);

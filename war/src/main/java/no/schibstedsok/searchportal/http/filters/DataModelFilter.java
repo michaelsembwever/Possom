@@ -8,6 +8,9 @@
 package no.schibstedsok.searchportal.http.filters;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 import javax.servlet.Filter;
@@ -21,6 +24,8 @@ import javax.servlet.http.HttpSession;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelFactory;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
+import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.datamodel.site.SiteDataObject;
 import no.schibstedsok.searchportal.site.Site;
@@ -83,18 +88,14 @@ public final class DataModelFilter implements Filter {
                                                                 final Properties properties) {
                         return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
                     }
-});
+                });
 
             }catch(SiteKeyedFactoryInstantiationException skfie){
                 LOG.error(skfie.getMessage(), skfie);
                 throw new ServletException(skfie.getMessage(), skfie);
             }
 
-            // Update the request elements in the datamodel
-            final Map<String,String> params = (Map<String,String>)request.getParameterMap();
-            final ParametersDataObject parametersDO = factory.instantiate(
-                    ParametersDataObject.class,
-                    new DataObject.Property("map", params));
+            final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
 
             getDataModel(factory, httpRequest).setParameters(parametersDO);
         }
@@ -143,11 +144,38 @@ public final class DataModelFilter implements Filter {
         // TODO BrowserDataObject
 
 
+        final JunkYardDataObject junkYardDO = factory.instantiate(
+                JunkYardDataObject.class,
+                new DataObject.Property("values", new Hashtable<String,Object>()));
+
         datamodel.setSite(siteDO);
+        datamodel.setJunkYard(junkYardDO);
         
         return datamodel;
     }
 
+    /** Update the request elements in the datamodel. **/
+    private static ParametersDataObject updateDataModelForRequest(
+            final DataModelFactory factory, 
+            final HttpServletRequest request){
+     
+        // Note that we do not support String[] parameter values!
+        final Map<String,StringDataObject> values = new HashMap<String,StringDataObject>();
+        for(Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
+            final String key = e.nextElement();
+            values.put(key, factory.instantiate(
+                StringDataObject.class,
+                new DataObject.Property("string", request.getParameter(key))));
+        }
+        final ParametersDataObject parametersDO = factory.instantiate(
+                ParametersDataObject.class,
+                new DataObject.Property("values", values),
+                new DataObject.Property("contextPath", request.getContextPath()));
+
+        
+        return parametersDO;
+    }
+    
     // Inner classes -------------------------------------------------
 
 }

@@ -6,23 +6,27 @@
  */
 
 package no.schibstedsok.searchportal.mode.command;
-import java.util.Map;
+
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
  * @author ssthkjer
  */
 public class YellowGeoSearchCommand extends YellowSearchCommand {
-    
+
     private String additionalFilter;
-    
+
     /** Creates a new instance of YellowGeoSearchCommand */
-    public YellowGeoSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public YellowGeoSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
-    
+
     protected String getSortBy() {
         return getSearchConfiguration().getSortBy();
-    }    
-       
+    }
+
 }

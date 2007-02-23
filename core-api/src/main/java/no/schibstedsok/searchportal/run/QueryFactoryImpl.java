@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.run;
 
 
@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  * Use this class to create an instance of a RunningQuery
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @vesrion $Revision$, $Author$, $Date$
+ * @version $Id$
  */
 public final class QueryFactoryImpl extends QueryFactory {
 
@@ -22,7 +22,7 @@ public final class QueryFactoryImpl extends QueryFactory {
 
     /**
      * Create a new instance of running query. The implementation can
-     * be RunningWebQuery, RunningAdvWebQuery for example.
+     * be RunningWebQuery for example.
      * <p/>
      * <b>NewsSearch business rules:</b>
      * <p/>
@@ -41,17 +41,15 @@ public final class QueryFactoryImpl extends QueryFactory {
             final HttpServletResponse response) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug("ENTR: createQuery() Type=" + request.getParameter("t"));
+            LOG.debug("createQuery() Type=" + request.getParameter("t"));
         }
 
-        RunningQueryImpl query;
+        final RunningQueryImpl query;
 
         if ("adv_urls".equals(request.getParameter("t"))) {
             // Search for similar urls
             final String q = "urls:" + request.getParameter("q_urls");
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("createQuery: Query modified to " + q);
-            }
+            LOG.debug("Query modified to " + q);
             query = new RunningWebQuery(cxt, q, request, response);
 
         } else {
@@ -60,8 +58,7 @@ public final class QueryFactoryImpl extends QueryFactory {
             query = new RunningWebQuery(cxt, q, request, response);
 
             if ("m".equals(request.getParameter("c"))) {
-                if (request.getParameter("userSortBy") == null
-                        || "".equals(request.getParameter("q"))) {
+                if (request.getParameter("userSortBy") == null || "".equals(request.getParameter("q"))) {
 
                     query.addParameter("userSortBy", "datetime");
                 }
@@ -69,8 +66,8 @@ public final class QueryFactoryImpl extends QueryFactory {
                 if ("".equals(q) && request.getParameter("contentsource") == null && (request.getParameter("newscountry") == null || request.getParameter("newscountry").equals(""))) {
                     query.addParameter("newscountry", "Norge");
                 }
-            } 
-            else if ("t".equals(request.getParameter("c"))) {
+                
+            }else if ("t".equals(request.getParameter("c"))) {
                 final Cookie cookies[] = request.getCookies();
                 if (cookies != null) {
                     for (Cookie cookie : cookies) {

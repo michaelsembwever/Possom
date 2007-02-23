@@ -1,7 +1,7 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
@@ -10,7 +10,7 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  */
 public class PhoneNumberChooser implements ResultHandler {
 
-    public void handleResult(final Context cxt, final Map parameters) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
             final String phoneNumber = item.getField("yphovedtelefon");

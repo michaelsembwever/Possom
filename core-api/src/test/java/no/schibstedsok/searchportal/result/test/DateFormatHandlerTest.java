@@ -1,8 +1,9 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
@@ -18,7 +19,6 @@ import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
-
 import static no.schibstedsok.searchportal.result.handler.DateFormatHandler.Fields;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
@@ -35,18 +35,18 @@ public final class DateFormatHandlerTest extends SiteTestCase {
 
     private static final String SOURCE_FIELD = "source_field";
     private static final String FIELD_PREFIX = "prefix";
-    
+
     private final DateFormatHandler rh;
 
     public DateFormatHandlerTest(String testName) {
         super(testName);
-        
+
         rh = new DateFormatHandler();
         rh.setSourceField(SOURCE_FIELD);
-    }	
-    
-    private ResultHandler.Context getResultHandlerContext(){
-        
+    }
+
+    private ResultHandler.Context getResultHandlerContext() throws SiteKeyedFactoryInstantiationException{
+
         final MockupSearchCommand command = new MockupSearchCommand();
         final BasicSearchResult bsr = new BasicSearchResult(command);
         final ResultHandler.Context cxt = new ResultHandler.Context() {
@@ -78,14 +78,14 @@ public final class DateFormatHandlerTest extends SiteTestCase {
             public DocumentLoader newDocumentLoader(final SiteContext siteCxt,
                                                     final String resource,
                                                     final DocumentBuilder builder) {
-                
+
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
 
             public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
                                                         final String resource,
                                                         final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
         };
@@ -94,22 +94,22 @@ public final class DateFormatHandlerTest extends SiteTestCase {
     }
 
     private BasicSearchResultItem createItem(String time) {
-        
+
         final BasicSearchResultItem bsri = new BasicSearchResultItem();
         bsri.addField(SOURCE_FIELD, time);
         return bsri;
     }
-    
+
     @Test
-    public void testOneWithoutPrefix() {
-        
+    public void testOneWithoutPrefix() throws Exception{
+
         final ResultHandler.Context resultHandlerContext = getResultHandlerContext();
-        
+
         rh.handleResult(resultHandlerContext, null);
-        
+
         assertEquals(1, resultHandlerContext.getSearchResult().getResults().size());
         BasicSearchResultItem bsri = (BasicSearchResultItem) resultHandlerContext.getSearchResult().getResults().get(0);
-        
+
         assertEquals("2006", bsri.getField(Fields.YEAR.name()));
         assertEquals("04", bsri.getField(Fields.MONTH.name()));
         assertEquals("27", bsri.getField(Fields.DAY.name()));
@@ -119,13 +119,13 @@ public final class DateFormatHandlerTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneWithPrefix() {
-        
+    public void testOneWithPrefix() throws Exception{
+
         final ResultHandler.Context resultHandlerContext = getResultHandlerContext();
-        
+
         rh.setFieldPrefix(FIELD_PREFIX);
         rh.handleResult(resultHandlerContext, null);
-        
+
         assertEquals(1, resultHandlerContext.getSearchResult().getResults().size());
         BasicSearchResultItem bsri = (BasicSearchResultItem) resultHandlerContext.getSearchResult().getResults().get(0);
         assertEquals("2006", bsri.getField(FIELD_PREFIX + Fields.YEAR.name()));

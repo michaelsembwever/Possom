@@ -8,7 +8,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -16,36 +16,39 @@ import java.util.Map;
  * @version $Id$
  */
 public abstract class AbstractWebServiceSearchCommand extends AbstractSearchCommand{
-    
-    
+
+
     // Constants -----------------------------------------------------
-    
+
     // Attributes ----------------------------------------------------
-    
+
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     /**
      * Creates a new instance of AbstractWebServiceSearchCommand
      */
-    public AbstractWebServiceSearchCommand(final Context cxt, final Map parameters) {
-        super (cxt, parameters);
-        
+    public AbstractWebServiceSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
+
     }
-    
+
     // Public --------------------------------------------------------
-    
+
     // Z implementation ----------------------------------------------
-    
+
     // AbstractSearchCommand overrides ---------------------------------------------------
-    
+
     // Package protected ---------------------------------------------
-    
+
     // Protected -----------------------------------------------------
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
-    
+
 }

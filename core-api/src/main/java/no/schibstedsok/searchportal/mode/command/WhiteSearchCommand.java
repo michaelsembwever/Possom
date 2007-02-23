@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * WhiteSearchCommand.java
  *
@@ -8,8 +8,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.Map;
-
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
@@ -31,8 +30,11 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
      * @param cxt
      * @param parameters
      */
-    public WhiteSearchCommand(final Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public WhiteSearchCommand(
+            final Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
     }
 
     /**
@@ -66,21 +68,21 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
      * @param clause The clause to prefix.
      */
     protected void visitImpl(final LeafClause clause) {
-        
+
         if (null == clause.getField()) {
             if (!getTransformedTerm(clause).equals("")) {
-                appendToQueryRepresentation(PREFIX_PHONETIC 
+                appendToQueryRepresentation(PREFIX_PHONETIC
                         + getTransformedTerm(clause).replaceAll("\\.|-", QL_AND + PREFIX_PHONETIC));
             }
-            
+
         }else if(null == getFieldFilter(clause)){
-            
+
             if (!getTransformedTerm(clause).equals("")) {
                 // we also accept terms with fields that haven't been permitted for the searchConfiguration
-                appendToQueryRepresentation(PREFIX_PHONETIC 
-                        + clause.getField() + "\\:" 
+                appendToQueryRepresentation(PREFIX_PHONETIC
+                        + clause.getField() + "\\:"
                         + getTransformedTerm(clause).replaceAll("\\.|-", QL_AND + PREFIX_PHONETIC));
-                
+
             }
 
         }
@@ -94,19 +96,19 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
      * possible against the white index.
      */
     protected void visitXorClause(final Visitor visitor, final XorClause clause) {
-        
+
         // If we have a match on an international phone number, but it is not recognized as
         // a local phone number, force it to use the original number string.
         if (clause.getHint() == XorClause.Hint.PHONE_NUMBER_ON_LEFT
                 && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
-            
+
             clause.getSecondClause().accept(visitor);
-            
-        } else if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT 
+
+        } else if (clause.getHint() == XorClause.Hint.PHRASE_ON_LEFT
                 || clause.getHint() == XorClause.Hint.NUMBER_GROUP_ON_LEFT) {
-            
+
             clause.getSecondClause().accept(visitor);
-            
+
         } else {
             clause.getFirstClause().accept(visitor);
         }

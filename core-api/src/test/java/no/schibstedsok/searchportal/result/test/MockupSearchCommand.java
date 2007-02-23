@@ -1,17 +1,18 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import no.schibstedsok.searchportal.result.SearchResult;
-
 import java.util.HashMap;
 import java.util.Properties;
+import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -26,7 +27,7 @@ import no.schibstedsok.searchportal.view.config.SearchTabFactory;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class MockupSearchCommand extends SiteTestCase implements SearchCommand {
+public class MockupSearchCommand extends DataModelTestCase implements SearchCommand {
 
     private final RunningQuery.Context rqCxt = new RunningQuery.Context() {
 
@@ -41,15 +42,15 @@ public class MockupSearchCommand extends SiteTestCase implements SearchCommand {
                 .getTabByKey("d");
         }
         public PropertiesLoader newPropertiesLoader(
-                final SiteContext siteCxt, 
-                final String resource, 
+                final SiteContext siteCxt,
+                final String resource,
                 final Properties properties) {
 
             return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
         }
         public DocumentLoader newDocumentLoader(
-                final SiteContext siteCxt, 
-                final String resource, 
+                final SiteContext siteCxt,
+                final String resource,
                 final DocumentBuilder builder) {
 
             return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
@@ -61,12 +62,12 @@ public class MockupSearchCommand extends SiteTestCase implements SearchCommand {
 
     private RunningQuery query;
 
-    public MockupSearchCommand() {
-        query = new RunningQueryImpl(rqCxt, "", new HashMap());
+    public MockupSearchCommand() throws SiteKeyedFactoryInstantiationException {
+        query = new RunningQueryImpl(rqCxt, "", getDataModel());
     }
 
-    public MockupSearchCommand(final String queryString) {
-        query = new RunningQueryImpl(rqCxt, queryString, new HashMap());
+    public MockupSearchCommand(final String queryString) throws SiteKeyedFactoryInstantiationException {
+        query = new RunningQueryImpl(rqCxt, queryString, getDataModel());
     }
 
     public SearchConfiguration getSearchConfiguration() {

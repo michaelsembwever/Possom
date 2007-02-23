@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
 
@@ -7,7 +7,6 @@ import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
-
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.StormWeatherSearchConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
@@ -16,14 +15,13 @@ import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  * @author <a href="mailto:lars.johansson@conduct.no">Lars Johansson</a>
@@ -46,8 +44,11 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public StormWeatherSearchCommand(final SearchCommand.Context cxt, final Map parameters) {
-        super(cxt, parameters);
+    public StormWeatherSearchCommand(
+            final SearchCommand.Context cxt,
+            final DataModel datamodel) {
+
+        super(cxt, datamodel);
         LOG.debug("Creating WeatherSearchCommand");
 
     }
@@ -96,7 +97,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
                     final String lat = result.getField("lat");
                     final String lon = result.getField("long");
                     final String alt = result.getField("altitude");
-                    
+
                     //infopage or resultlisting?
                     if(getParameter("igeneric1") != null &! "".equals(getParameter("igeneric1"))){
 

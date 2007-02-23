@@ -1,7 +1,6 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
-import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
@@ -9,12 +8,12 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.handler.SpellingSuggestionChooser;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -29,14 +28,10 @@ import static org.testng.AssertJUnit.*;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class SpellingSuggestionChooserTest extends SiteTestCase {
+public final class SpellingSuggestionChooserTest extends DataModelTestCase {
 
-    public SpellingSuggestionChooserTest(final String testName) {
-        super(testName);
-    }
-    
     @Test
-    public void testNoSuggestions() {
+    public void testNoSuggestions()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         handleResult(chooser, result);
@@ -44,7 +39,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneTermOneSuggestion() {
+    public void testOneTermOneSuggestion()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -55,7 +50,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneTermOneSuggestionwithLimit() {
+    public void testOneTermOneSuggestionwithLimit()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(230);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -65,7 +60,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneTermTwoSuggestionsSameScore() {
+    public void testOneTermTwoSuggestionsSameScore()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -78,7 +73,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneTermNumberOfSuggestionsSameScoreOnLimit() {
+    public void testOneTermNumberOfSuggestionsSameScoreOnLimit()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -93,7 +88,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneTermNumberOfSuggestionsSameScoreOvertLimit() {
+    public void testOneTermNumberOfSuggestionsSameScoreOvertLimit()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -110,7 +105,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneTermNumberOfSuggestionsDiffScoreOvertLimit() {
+    public void testOneTermNumberOfSuggestionsDiffScoreOvertLimit()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 211);
@@ -136,7 +131,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneTermNumberOfSuggestionsSameScoreLimitToZero() {
+    public void testOneTermNumberOfSuggestionsSameScoreLimitToZero()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 0);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -152,7 +147,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testOneTermTwoSuggestionsDifferentScore() {
+    public void testOneTermTwoSuggestionsDifferentScore()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -167,7 +162,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testTwoTermsBothWrong() {
+    public void testTwoTermsBothWrong()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -183,7 +178,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testTwoTermsBothWrongManySuggestions() {
+    public void testTwoTermsBothWrongManySuggestions()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -201,7 +196,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testTwoTermsBothWrongManySuggestionsOneMuchBetter() {
+    public void testTwoTermsBothWrongManySuggestionsOneMuchBetter()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -219,7 +214,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testThreeTermsTwoWrong() {
+    public void testThreeTermsTwoWrong()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel bil"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -234,7 +229,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
     }
 
     @Test
-    public void testThreeTermsOneWrong() {
+    public void testThreeTermsOneWrong()  throws Exception{
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykkel bil"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
@@ -254,7 +249,7 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
         return listOfSuggestions.size();
     }
 
-    private void handleResult(final SpellingSuggestionChooser chooser, final SearchResult result) {
+    private void handleResult(final SpellingSuggestionChooser chooser, final SearchResult result) throws SiteKeyedFactoryInstantiationException {
         final ResultHandler.Context resultHandlerContext = new ResultHandler.Context() {
             public SearchResult getSearchResult() {
                 return result;
@@ -264,17 +259,17 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
                 return getTestingSite();
             }
             public PropertiesLoader newPropertiesLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final Properties properties) {
-                
+
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
             public DocumentLoader newDocumentLoader(
-                    final SiteContext siteCxt, 
-                    final String resource, 
+                    final SiteContext siteCxt,
+                    final String resource,
                     final DocumentBuilder builder) {
-                
+
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public String getQueryString() {
@@ -293,6 +288,6 @@ public class SpellingSuggestionChooserTest extends SiteTestCase {
             }
 
         };
-        chooser.handleResult(resultHandlerContext, new HashMap());
+        chooser.handleResult(resultHandlerContext, getDataModel());
     }
 }

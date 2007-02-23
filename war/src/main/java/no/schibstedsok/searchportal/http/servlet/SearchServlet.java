@@ -29,6 +29,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
+import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
@@ -41,7 +44,7 @@ import org.apache.log4j.Logger;
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@wever.org">Mck</a>
- * @version <tt>$Revision: 3829 $</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class SearchServlet extends HttpServlet {
 
@@ -87,8 +90,10 @@ public final class SearchServlet extends HttpServlet {
                 throws ServletException, IOException {
 
 
-        // TODO Break the method down. It is way too long for a controlling class.
-        final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+        final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
+        final ParametersDataObject parametersDO = datamodel.getParameters();
+        final Site site = datamodel.getSite().getSite();
+
         // BaseContext providing SiteContext and ResourceContext.
         //  We need it casted as a SiteContext for the ResourceContext code to be happy.
         final SiteContext genericCxt = new SiteContext(){
@@ -111,7 +116,7 @@ public final class SearchServlet extends HttpServlet {
                 }
             };
 
-        if (!isEmptyQuery(request, response,genericCxt)) {
+        if (!isEmptyQuery(parametersDO, response, genericCxt)) {
 
             LOG.trace("doGet()");
             LOG.debug("Character encoding ="  + request.getCharacterEncoding());
@@ -124,9 +129,9 @@ public final class SearchServlet extends HttpServlet {
             updateContentType(site, response, request);
 
             // determine the c parameter. default is 'd' unless there exists a page parameter when it becomes 'i'.
-            final String searchTabKey = null != request.getParameter("c") 
-                    ? request.getParameter("c") 
-                    : null == request.getParameter("page") ? "d" : "i";
+            final String searchTabKey = null != parametersDO.getValues().get("c")
+                    ? parametersDO.getValues().get("c").getString()
+                    : null == parametersDO.getValues().get("page") ? "d" : "i";
 
             final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
 
@@ -139,63 +144,19 @@ public final class SearchServlet extends HttpServlet {
                 // If the rss is hidden, require a partnerId.
                 // The security by obscurity has been somewhat improved by the
                 // addition of rssPartnerId as a md5-protected parameter (MD5ProtectedParametersFilter).
-                if (request.getParameter("output") != null && "rss".equals(request.getParameter("output"))
-                        && searchTab.getRssHidden() && request.getParameter("rssPartnerId") == null) {
+                boolean hiddenRssWithoutPartnerId = null != parametersDO.getValues().get("output")
+                    && "rss".equals(parametersDO.getValues().get("output").getString())
+                    && searchTab.isRssHidden()
+                    && null == parametersDO.getValues().get("rssPartnerId");
+
+                if (hiddenRssWithoutPartnerId) {
 
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
                 }else{
 
-                    final SearchMode mode = SearchModeFactory.valueOf(
-                            ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
-                            .getMode(searchTab.getMode());
+                    performSearch(request, response, genericCxt, searchTab, stopWatch);
 
-                    if (mode == null) {
-                        LOG.error(ERR_MISSING_MODE + searchTab.getMode());
-                        throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
-                    }
-
-                    final RunningQuery.Context rqCxt = ContextWrapper.wrap(
-                            RunningQuery.Context.class,
-                            new BaseContext() {
-                                public SearchMode getSearchMode() {
-                                    return mode;
-                                }
-                                public SearchTab getSearchTab() {
-                                    return searchTab;
-                                }
-                            },
-                            genericCxt
-                    );
-
-                    updateAttributes(request, rqCxt);
-
-                    try {
-                        final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
-
-                        query.run();
-
-                        stopWatch.stop();
-                        LOG.info("Search took " + stopWatch + " " + query.getQueryString());
-
-                        if(!"NOCOUNT".equals(request.getParameter("IGNORE"))){
-                            final String output = (String) request.getParameter("output");
-
-                            STATISTICS_LOG.info(
-                                "<search-servlet"
-                                    + (null != output ? " output=\"" + output + "\">" : ">")
-                                    + "<query>" + StringEscapeUtils.escapeXml(query.getQueryString()) + "</query>"
-                                    + "<time>" + stopWatch + "</time>"
-                                    + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
-                                + "</search-servlet>");
-                        }
-
-
-                        checkFinn(request, response);
-
-                    } catch (InterruptedException e) {
-                        LOG.error("Task timed out");
-                    }
                 }
             }
         }
@@ -205,22 +166,23 @@ public final class SearchServlet extends HttpServlet {
     // Private -------------------------------------------------------
 
     private static boolean isEmptyQuery(
-            final HttpServletRequest request,
+            final ParametersDataObject parametersDO,
             final HttpServletResponse response,
             final SiteContext ctx) throws IOException{
 
         String redirect = null;
-        final String qParam = request.getParameter("q");
-        final String cParm = request.getParameter("c");
+        final Map<String,StringDataObject> params = parametersDO.getValues();
+        final String qParam = null != params.get("q") ? params.get("q").getString() : "";
+        final String cParm = null != params.get("c") ? params.get("c").getString() : "";
 
         // check if this is a sitesearch
         final Properties props = SiteConfiguration.valueOf(
                         ContextWrapper.wrap(SiteConfiguration.Context.class, ctx)).getProperties();
-        final boolean isSitesearch = Boolean.valueOf(props.getProperty(SiteConfiguration.IS_SITESEARCH_KEY)).booleanValue();
+        final boolean isSitesearch = Boolean.valueOf(props.getProperty(SiteConfiguration.IS_SITESEARCH_KEY));
 
         if (qParam == null) {
-            redirect = null != request.getContextPath() && request.getContextPath().length() >0
-                    ? request.getContextPath()
+            redirect = null != parametersDO.getContextPath() && parametersDO.getContextPath().length() >0
+                    ? parametersDO.getContextPath()
                     : "/";
 
         }else if (null != cParm && ("d".equals(cParm) || "g".equals(cParm)) && !isSitesearch) {
@@ -260,7 +222,7 @@ public final class SearchServlet extends HttpServlet {
 
         /* Setting default encoding */
         response.setCharacterEncoding("UTF-8");
-        
+
         // TODO. Any better way to do this. Sitemesh?
         if (request.getParameter("output") != null && request.getParameter("output").equals("rss")) {
             if (request.getParameter("encoding") != null && request.getParameter("encoding").equals("iso-8859-1")){
@@ -277,7 +239,7 @@ public final class SearchServlet extends HttpServlet {
                     "<html><head><META name=\"decorator\" content=\"mobiledecorator\"/></head></html>");
             } catch (IOException ex) {
                 LOG.error(ex.getMessage(), ex);
-            }            
+            }
         } else if (request.getParameter("output") != null && request.getParameter("output").equals("savedecorator")) {
                 String showid = request.getParameter("showId");
                 String userAgent = request.getHeader("User-Agent");
@@ -303,12 +265,12 @@ public final class SearchServlet extends HttpServlet {
                    showid="";
                 response.setCharacterEncoding(charset);
                 response.setContentType("text/x-vcard; charset=" +charset);
-                response.setHeader("Content-Disposition","attachment;filename=vcard-" +showid + ".vcf");      
+                response.setHeader("Content-Disposition","attachment;filename=vcard-" +showid + ".vcf");
         } else if (request.getParameter("output") != null && request.getParameter("output").equals("opensearch")) {
                 String charset = "utf-8";
                 response.setCharacterEncoding(charset);
-                response.setContentType("text/xml; charset=utf-8");                
-        } else { 
+                response.setContentType("text/xml; charset=utf-8");
+        } else {
 
             response.setContentType("text/html; charset=utf-8");
         }
@@ -392,6 +354,65 @@ public final class SearchServlet extends HttpServlet {
             LOG.error("Caught Assertion: " + ae);
         }
         return result;
+    }
+
+    private void performSearch(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final SiteContext genericCxt,
+            final SearchTab searchTab,
+            final StopWatch stopWatch) throws IOException{
+
+        final SearchMode mode = SearchModeFactory.valueOf(
+                ContextWrapper.wrap(SearchModeFactory.Context.class, genericCxt))
+                .getMode(searchTab.getMode());
+
+        if (mode == null) {
+            LOG.error(ERR_MISSING_MODE + searchTab.getMode());
+            throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
+        }
+
+        final RunningQuery.Context rqCxt = ContextWrapper.wrap(
+                RunningQuery.Context.class,
+                new BaseContext() {
+                    public SearchMode getSearchMode() {
+                        return mode;
+                    }
+                    public SearchTab getSearchTab() {
+                        return searchTab;
+                    }
+                },
+                genericCxt
+        );
+
+        updateAttributes(request, rqCxt);
+
+        try {
+            final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
+
+            query.run();
+
+            stopWatch.stop();
+            LOG.info("Search took " + stopWatch + " " + query.getQueryString());
+
+            if(!"NOCOUNT".equals(request.getParameter("IGNORE"))){
+                final String output = (String) request.getParameter("output");
+
+                STATISTICS_LOG.info(
+                    "<search-servlet"
+                        + (null != output ? " output=\"" + output + "\">" : ">")
+                        + "<query>" + StringEscapeUtils.escapeXml(query.getQueryString()) + "</query>"
+                        + "<time>" + stopWatch + "</time>"
+                        + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
+                    + "</search-servlet>");
+            }
+
+
+            checkFinn(request, response);
+
+        } catch (InterruptedException e) {
+            LOG.error("Task timed out");
+        }
     }
 
     // Inner classes -------------------------------------------------

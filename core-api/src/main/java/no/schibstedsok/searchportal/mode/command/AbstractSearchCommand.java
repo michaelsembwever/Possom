@@ -37,10 +37,9 @@ import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.commons.lang.time.StopWatch;
-
-
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
@@ -85,7 +84,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
     private String transformedQuerySesamSyntax;
-    private final Map<String,Object> parameters;
+    private final DataModel datamodel;
     private volatile boolean completed = false;
     private volatile Thread thread = null;
 
@@ -96,13 +95,13 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param parameters The search parameters to use.
      */
     public AbstractSearchCommand(final SearchCommand.Context cxt,
-                                 final Map<String,Object> parameters) {
+                                 final DataModel datamodel) {
 
         LOG.trace("AbstractSearchCommand()");
         context = cxt;
 
-        assert null != parameters : "Not allowed to pass in null parameters";
-        this.parameters = parameters;
+        assert null != datamodel : "Not allowed to pass in null parameters";
+        this.datamodel = datamodel;
 
         // XXX should be null so we know neither applyQueryTransformers or performQueryTranformation has been called
         transformedQuery = context.getQuery().getQueryString();
@@ -343,6 +342,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         try{
 
+            final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
             //TODO: Hide this in QueryRule.execute(some parameters)
             boolean executeQuery = queryToUse.length() > 0;
             executeQuery |= null != parameters.get("contentsource");
@@ -411,7 +411,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     },// </editor-fold>
                     context
             );
-            resultHandler.handleResult(resultHandlerContext, parameters);
+            resultHandler.handleResult(resultHandlerContext, datamodel);
         }
 
 
@@ -428,7 +428,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected int getCurrentOffset(final int i) {
 
-
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         final Object v = parameters.get("offset");
 
         if (null != v && getSearchConfiguration().isPaging()) {
@@ -441,7 +441,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /** TODO comment me. **/
-    protected Map getParameters() {
+    protected Map<String,Object> getParameters() {
+        
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         return parameters;
     }
 
@@ -451,6 +453,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * the empty string is returned.
      */
     protected String getParameter(final String paramName) {
+        
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         if (parameters.containsKey(paramName)) {
             if(parameters.get(paramName) instanceof String[]){
                 final String[] val = (String[]) parameters.get(paramName);
@@ -505,6 +509,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** returns null when array is null **/
     protected final String getSingleParameter(final String paramName) {
+        
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         return parameters.get(paramName) instanceof String[]
                 ? ((String[]) parameters.get(paramName))[0]
                 : (String) parameters.get(paramName);
@@ -587,6 +593,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     protected final void statisticsInfo(final String msg){
 
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         final StringBuffer logger = (StringBuffer) parameters.get("no.schibstedsok.Statistics");
         if( null != logger ){
             logger.append(msg);
@@ -661,6 +668,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     transformedQuery = getQueryRepresentation(query);
                 }
 
+                final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
                 final String fp = transformer.getFilter(parameters);
                 filterBuilder.append(fp == null ? "" : fp);
                 filterBuilder.append(' ');

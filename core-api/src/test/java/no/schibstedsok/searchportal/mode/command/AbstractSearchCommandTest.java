@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * AbstractSearchCommandTest.java
  *
@@ -8,13 +8,12 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
@@ -27,6 +26,7 @@ import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 
@@ -35,7 +35,7 @@ import no.schibstedsok.searchportal.view.config.SearchTabFactory;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public abstract class AbstractSearchCommandTest extends SiteTestCase {
+public abstract class AbstractSearchCommandTest extends DataModelTestCase {
 
 
     // Constants -----------------------------------------------------
@@ -45,11 +45,6 @@ public abstract class AbstractSearchCommandTest extends SiteTestCase {
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
-
-    /** Creates a new instance of AbstractSearchCommandTest */
-    public AbstractSearchCommandTest(final String testName) {
-        super(testName);
-    }
 
     // Public --------------------------------------------------------
 
@@ -99,9 +94,9 @@ public abstract class AbstractSearchCommandTest extends SiteTestCase {
     protected final SearchCommand.Context createCommandContext(
             final String query,
             final RunningQuery.Context rqCxt,
-            final String conf) {
+            final String conf) throws SiteKeyedFactoryInstantiationException{
 
-        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query, new HashMap());
+        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query, getDataModel());
         final Query q = rq.getQuery();
         final TokenEvaluationEngine engine = rq.getTokenEvaluationEngine();
 
@@ -129,7 +124,7 @@ public abstract class AbstractSearchCommandTest extends SiteTestCase {
     protected final SearchCommand.Context createCommandContext(
             final String query,
             final String key,
-            final String conf) {
+            final String conf) throws SiteKeyedFactoryInstantiationException {
 
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
 
@@ -142,8 +137,8 @@ public abstract class AbstractSearchCommandTest extends SiteTestCase {
     
     public static final class RunningTestQuery extends RunningQueryImpl{
         
-        public RunningTestQuery(final Context cxt, final String query, final Map parameters) {
-            super(cxt, query, parameters);
+        public RunningTestQuery(final Context cxt, final String query, final DataModel datamodel) {
+            super(cxt, query, datamodel);
         }
         
         public TokenEvaluationEngine getTokenEvaluationEngine(){
