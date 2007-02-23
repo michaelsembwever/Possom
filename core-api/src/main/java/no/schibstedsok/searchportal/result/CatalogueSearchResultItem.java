@@ -62,11 +62,6 @@ public class CatalogueSearchResultItem extends BasicSearchResultItem {
     	if(phoneNumber != null && phoneNumber.length() > 0){
     		return phoneNumber;
     	}
-    	phoneNumber = getField("iypnrtelefonandre");
-    	
-    	if(phoneNumber != null && phoneNumber.length() > 0){
-    		return phoneNumber.replace(";", "");
-    	}
     	return null;
     }
     
@@ -84,7 +79,7 @@ public class CatalogueSearchResultItem extends BasicSearchResultItem {
     	if(description != null && description.length() > 0){
     		return description;
     	}
-    	return null;
+    	return "en lang fortelling på mer en 40 tegn blir nok choppet etter en stund.";
     }
     
     /**
@@ -103,6 +98,7 @@ public class CatalogueSearchResultItem extends BasicSearchResultItem {
     	}
     	return null;
     }
+    
     
     /**
      * Returns the address for for this result item.
@@ -164,22 +160,24 @@ public class CatalogueSearchResultItem extends BasicSearchResultItem {
     	return null;
     }
     
-    /**
-     * Returns a string with opening hours.
-     * @return the opening hours, or null if its not available.
-     */
-    public String getOpeningHours(){
-    	//TODO: check product.
-    	//åpningstider er lenke til infosiden dersom denne inneholder åpningstider (er kjøpt OG lagt inn)
-    	return null;
-    }
     
     /**
      * Checks if the result item should be rendered with a bold title.
      * @return true if the product has bold title.
      */
-    public boolean isBoldTitle(){
-    	//TODO: check rules for product;
-    	return isCommercial();
+    public boolean isTitleBold(){
+    	String productPackage = getField("iyppakke");
+    	if(productPackage != null && productPackage.length() > 0){
+    		try{
+    			//TODO: move bold indicator to index to avoid hardcoding of product and rules.
+    			int packageId = Integer.parseInt(productPackage);
+    			if(packageId == 3 || packageId == 116 || packageId == 120  ||packageId ==121 || packageId ==122 || packageId == 123 ){
+    				return true;
+    			}
+    		}catch(NumberFormatException e){
+    			return false;
+    		}
+    	}
+    	return false;
     }
 }
