@@ -3,7 +3,7 @@
   <wsdl:types>
     <s:schema elementFormDefault="qualified" targetNamespace="http://www.hitta.se/HittaService/">
       <s:import namespace="http://tempuri.org/Result.xsd" />
-      <s:import schemaLocation="http://hittacontent1.hitta.se/HittaWebService/HittaService.asmx?schema=ResultCombi" namespace="http://tempuri.org/Result.xsd" />
+      <!--s:import schemaLocation="http://hittacontent1.hitta.se/HittaWebService/HittaService.asmx?schema=ResultCombi" namespace="http://tempuri.org/Result.xsd" /-->
       <s:element name="GetStreet">
         <s:complexType>
           <s:sequence>
