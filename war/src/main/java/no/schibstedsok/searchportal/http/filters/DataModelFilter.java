@@ -71,6 +71,8 @@ public final class DataModelFilter implements Filter {
             final ServletResponse response,
             final FilterChain chain)
                 throws IOException, ServletException {
+        
+        DataModel datamodel = null;
 
         if(request instanceof HttpServletRequest){
             final HttpServletRequest httpRequest = (HttpServletRequest)request;
@@ -97,9 +99,13 @@ public final class DataModelFilter implements Filter {
 
             final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
 
-            getDataModel(factory, httpRequest).setParameters(parametersDO);
+            datamodel = getDataModel(factory, httpRequest);
+            datamodel.setParameters(parametersDO);
         }
         chain.doFilter(request, response);
+        if( null != datamodel ){
+            cleanDataModel(datamodel);
+        }
     }
 
 
@@ -174,6 +180,14 @@ public final class DataModelFilter implements Filter {
 
         
         return parametersDO;
+    }
+    
+    /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
+    private static void cleanDataModel(final DataModel datamodel){
+        
+        datamodel.getJunkYard().getValues().clear();;;
+        datamodel.setParameters(null);
+        datamodel.setQuery(null);
     }
     
     // Inner classes -------------------------------------------------
