@@ -4,39 +4,18 @@
     <description>HTML front to Schibsted Søk</description>
     <display-name>Schibsted Søk</display-name>
 
-    <!-- CLICKSTREAM -->
-    <!-- UNCOMMENT TO ACTIVATE
+    <!-- Filters -->
+    
     <filter>
-     	<filter-name>clickstream</filter-name>
-     	<filter-class>com.opensymphony.clickstream.ClickstreamFilter</filter-class>
+        <filter-name>SiteLocatorFilter</filter-name>
+        <filter-class>no.schibstedsok.searchportal.http.filters.SiteLocatorFilter</filter-class>
     </filter>
-
-    <filter-mapping>
-       <filter-name>clickstream</filter-name>
-       <url-pattern>*.jsp</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-       <filter-name>clickstream</filter-name>
-       <url-pattern>*.html</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-       <filter-name>clickstream</filter-name>
-       <url-pattern>/search/</url-pattern>
-    </filter-mapping>
-    -->
-    <!-- END CLICKSTREAM -->
-
-<!--
-
-    <listener>
-       <listener-class>com.opensymphony.clickstream.ClickstreamListener</listener-class>
-    </listener>
-
-    -->
-    <!-- END CLICKSTREAM -->
-    <!-- SITEMESH configuration -->
+    
+    <filter>
+        <filter-name>DataModelFilter</filter-name>
+        <filter-class>no.schibstedsok.searchportal.http.filters.DataModelFilter</filter-class>
+    </filter>
+    
     <filter>
         <filter-name>sitemesh</filter-name>
         <filter-class>com.opensymphony.module.sitemesh.filter.PageFilter</filter-class>
@@ -67,33 +46,12 @@
             <param-value>application</param-value>
         </init-param>
     </filter>
-
     
-
-<!--
-    <filter-mapping>
-        <filter-name>CacheFilter</filter-name>
-        <url-pattern>/search/*</url-pattern>
-    </filter-mapping>
--->
-
-    
-
-
-    <!-- SITMESH END -->
-  
-    <filter>
-        <filter-name>SiteLocatorFilter</filter-name>
-        <filter-class>no.schibstedsok.searchportal.http.filters.SiteLocatorFilter</filter-class>
-    </filter>
+    <!-- Filter Mappings -->
     <filter-mapping>
         <filter-name>SiteLocatorFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <filter>
-        <filter-name>DataModelFilter</filter-name>
-        <filter-class>no.schibstedsok.searchportal.http.filters.DataModelFilter</filter-class>
-    </filter>
     <filter-mapping>
         <filter-name>DataModelFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -106,6 +64,12 @@
         <filter-name>sitemesh</filter-name>
         <url-pattern>/search/*</url-pattern>
     </filter-mapping>
+    <!--filter-mapping>
+        <filter-name>CacheFilter</filter-name>
+        <url-pattern>/search/*</url-pattern>
+    </filter-mapping-->
+    
+    <!-- Servlets -->
     <servlet>
         <servlet-name>search servlet</servlet-name>
         <servlet-class>no.schibstedsok.searchportal.http.servlet.SearchServlet</servlet-class>
@@ -126,59 +90,62 @@
         <load-on-startup>3</load-on-startup>
     </servlet>
 
-    <servlet-mapping>
-        <servlet-name>search servlet</servlet-name>
-        <url-pattern>/search/*</url-pattern>
-    </servlet-mapping>
-
     <servlet>
         <servlet-name>MapServlet</servlet-name>
         <servlet-class>no.schibstedsok.searchportal.http.servlet.MapServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
-    <servlet-mapping>
-        <servlet-name>MapServlet</servlet-name>
-        <url-pattern>/map/*</url-pattern>
-    </servlet-mapping>
     
     <servlet>
         <servlet-name>Log</servlet-name>
         <servlet-class>no.schibstedsok.log4j.LoggingServlet</servlet-class>
     </servlet>
-    
-    <servlet-mapping>
-        <servlet-name>Log</servlet-name>
-        <url-pattern>/servlet/Log</url-pattern>
-    </servlet-mapping>
 
     <servlet>
         <servlet-name>RetrieverLog</servlet-name>
         <servlet-class>no.schibstedsok.searchportal.http.servlet.RetrieverLogServlet</servlet-class>
     </servlet>
-    
-    <servlet-mapping>
-        <servlet-name>RetrieverLog</servlet-name>
-        <url-pattern>/search/writeLog.do</url-pattern>
-    </servlet-mapping>
 
     <servlet>
         <servlet-name>SendMail</servlet-name>
         <servlet-class>no.schibstedsok.searchportal.http.servlet.SendMailServlet</servlet-class>
     </servlet>
 
+    <!-- Servlet Mappings -->
+    <servlet-mapping>
+        <servlet-name>search servlet</servlet-name>
+        <url-pattern>/search/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>MapServlet</servlet-name>
+        <url-pattern>/map/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>Log</servlet-name>
+        <url-pattern>/servlet/Log</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>RetrieverLog</servlet-name>
+        <url-pattern>/search/writeLog.do</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>SendMail</servlet-name>
         <url-pattern>/servlet/sendMail.do</url-pattern>
     </servlet-mapping>
+    
+    <!-- Misc -->
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
         </welcome-file-list>
 
     <session-config>
-        <session-timeout>15</session-timeout>
         <!-- 15 minutes -->
+        <session-timeout>15</session-timeout>
     </session-config>
 
     <error-page>
