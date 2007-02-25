@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import org.apache.log4j.Logger;
 
 /**
@@ -45,8 +47,9 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
     // Attributes ----------------------------------------------------
 
     private final Class<T> implementOf;
+    private final Object support;
     private final boolean immutable;
-    private final List<PropertyDescriptor> propertyDescriptors = new ArrayList<PropertyDescriptor>();
+    //private final Map<String,PropertyDescriptor> propertyDescriptors = new HashMap<String,PropertyDescriptor>();
     // properties: the only part of this class that be immutable and reused
     private final List<Property> properties = new ArrayList<Property>(); 
 
@@ -102,13 +105,32 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                 throws IntrospectionException {
 
         implementOf = cls;
-        for(Property p : properties){
-            this.properties.add(p);
-        }
-        for(PropertyDescriptor pd : Introspector.getBeanInfo(cls).getPropertyDescriptors()){
-            this.propertyDescriptors.add(pd);
-        }
+        
+        //for(PropertyDescriptor pd : Introspector.getBeanInfo(cls).getPropertyDescriptors()){
+        //    propertyDescriptors.put(pd.getName(), pd);
+        //}
+        
+        if( implementOf == StringDataObject.class ){
+            
+            String value = null;
+            for(Property p : properties){
 
+                if("string".equals(p.getName())){
+                    value = (String)p.getValue();
+                    break;
+                }
+            }
+            
+            support = new StringDataObjectSupport(value);
+            
+        }else{
+            support = null;
+        }
+        
+        for(Property p : properties){
+            addProperty(p);
+        }
+            
         this.immutable = isImmutable(cls);
     }
 
@@ -117,35 +139,42 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
     // Public --------------------------------------------------------
 
     public Object invoke(final Object obj, final Method method, final Object[] args) throws Throwable {
+        
+        if( null != support ){
+            return method.invoke(support, args);
+            
+        }else{
 
-        final boolean setter = method.getName().startsWith("set");
+            final boolean setter = method.getName().startsWith("set");
 
-        // find the property applicable
-        final String propertyName = method.getName().replaceFirst("is|get|set", "");
-        for(int i = 0; i < properties.size(); ++i){
-            final Property p = properties.get(i);
-            if( p.getName().equalsIgnoreCase(propertyName)){
-                if( setter ){
-                    properties.set(i, new Property(p.getName(), args[0]));
+            // find the property applicable
+            final String propertyName = method.getName().replaceFirst("is|get|set", "");
+            for(int i = 0; i < properties.size(); ++i){
+                final Property p = properties.get(i);
+                if( p.getName().equalsIgnoreCase(propertyName)){
+                    if( setter ){
+                        properties.set(i, new Property(p.getName(), args[0]));
+
+                    }
+                    // TODO if this bean is immutable then return a clone (defensive copy) this object
+                    return p.getValue();
                 }
-                // TODO if this bean is immutable then clone (defensive copy) this object
-                return p.getValue();
             }
+
+            // try pure self methods
+            try{
+                return method.invoke(this, args);
+
+            }catch(IllegalAccessException iae){
+                LOG.info(iae.getMessage(), iae);
+            }catch(IllegalArgumentException iae){
+                LOG.info(iae.getMessage(), iae);
+            }catch(InvocationTargetException ite){
+                LOG.info(ite.getMessage(), ite);
+            }
+
+            throw new IllegalArgumentException("Method to invoke doesn't map to bean property");
         }
-
-        // try pure self methods
-        try{
-            return method.invoke(this, args);
-
-        }catch(IllegalAccessException iae){
-            LOG.info(iae.getMessage(), iae);
-        }catch(IllegalArgumentException iae){
-            LOG.info(iae.getMessage(), iae);
-        }catch(InvocationTargetException ite){
-            LOG.info(ite.getMessage(), ite);
-        }
-
-        throw new IllegalArgumentException("Method to invoke doesn't map to bean property");
     }
 
     @Override
@@ -164,7 +193,11 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Private -------------------------------------------------------
 
+    private boolean addProperty(final Property property){
 
+        // clone it, so caller cannot alter value later
+        return this.properties.add(new Property(property.getName(), property.getValue()));
+    }
 
     /** return true if any of the propertyDescriptors have a setter method.
      * also needs to ensure property's type is immutable too ?!

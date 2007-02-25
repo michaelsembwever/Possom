@@ -36,7 +36,7 @@ public class StringDataObjectSupport implements StringDataObject{
     
     private final String string;
     
-    StringDataObjectSupport(final String string){
+    public StringDataObjectSupport(final String string){
         this.string = string;
     }
     
