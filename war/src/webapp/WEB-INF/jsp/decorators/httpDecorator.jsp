@@ -16,7 +16,7 @@
 
     <body onload="sesamInit('<c:out value="${c}"/>', '<c:out value="${vertikal}"/>', '<c:out value="${queryHTMLEscaped}"/>', <c:out value="${null != page}"/>);">
 
-
+httpdecorator
         <c:choose>
             <%-- old-school sitesearch [REMOVE ME-start] --%>
             <c:when test="${c == 'd' && (param.ss == 'di' || param.ss == 'pr' || param.ss == 'im' || param.ss == 'af' || param.ss == 'fv' || param.ss == 'aa' || param.ss == 'bt' || param.ss == 'sa')}">
@@ -76,7 +76,7 @@
         <c:otherwise>
             <%-- This is the real thing. The new templating system all should use. --%>
 
-            <search:include include="search-bar"/>
+            <search:include include="header"/>
 
             <table cellspacing="0" cellpadding="0" id="body_table">
                 <tr>
@@ -86,32 +86,32 @@
                         </c:when>
                         <c:otherwise>
                             <td class="cell_one" valign="top">
-                                <search:include include="navigator"/>
+                                <search:include include="left-col-one"/>
 
-                                <search:include include="sub-navigator"/>
+                                <search:include include="left-col-two"/>
 
-                                <search:include include="relevant-queries"/>
+                                <search:include include="left-col-three"/>
 
                                 <c:if test="${tab.showRss}">
-                                    <search:include include="rss-nav"/>
+                                    <search:include include="left-col-four"/>
                                 </c:if>
                             </td>
                             <td class="cell_three" valign="top" colspan="2">
                         </c:otherwise>
                     </c:choose>
 
-                    <search:include include="middle-bar"/>
+                    <search:include include="middle-col-one"/>
 
                     <search:include include="spellcheck"/>
-                    <search:include include="main-ads"/>
+                    <search:include include="middle-col-two"/>
 
-                    <search:include include="top3-ads-top"/>
+                    <search:include include="middle-col-three"/>
 
-                    <search:include include="results"/>
+                    <search:include include="middle-col-four"/>
 
                     </td>
                     <td class="cell_four">
-                        <search:include include="ads"/>
+                        <search:include include="right-col-one"/>
                     </td>
                 </tr>
                 <tr>
