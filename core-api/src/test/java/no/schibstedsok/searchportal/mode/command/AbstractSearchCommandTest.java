@@ -137,7 +137,11 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
     
     public static final class RunningTestQuery extends RunningQueryImpl{
         
-        public RunningTestQuery(final Context cxt, final String query, final DataModel datamodel) {
+        public RunningTestQuery(
+                final Context cxt, 
+                final String query, 
+                final DataModel datamodel) throws SiteKeyedFactoryInstantiationException {
+            
             super(cxt, query, datamodel);
         }
         

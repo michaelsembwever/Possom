@@ -61,9 +61,6 @@ public interface RunningQuery {
     Query getQuery();
     
     /** TODO comment me. **/
-    String getQueryString();
-    
-    /** TODO comment me. **/
     SearchMode getSearchMode();
     
     /** TODO comment me. **/

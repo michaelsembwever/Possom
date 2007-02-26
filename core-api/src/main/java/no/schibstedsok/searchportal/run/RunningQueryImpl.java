@@ -25,6 +25,9 @@ import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.DataModelFactory;
+import no.schibstedsok.searchportal.datamodel.generic.DataObject;
+import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRule;
 import no.schibstedsok.searchportal.query.analyser.AnalysisRuleFactory;
 import no.schibstedsok.searchportal.query.QueryStringContext;
@@ -45,6 +48,7 @@ import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.Enrichment;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
@@ -82,8 +86,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     // Attributes ----------------------------------------------------
 
     private final AnalysisRuleFactory rules;
-    private final String queryStr;
-    private final Query queryObj;
 
     /** Map of search command IDs to SearchResult */
     private final Map<String, Future<SearchResult>> results = new HashMap<String,Future<SearchResult>>();
@@ -95,7 +97,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      * implementation details allowing web subclasses to send correct error to client. **/
     protected boolean allCancelled = false;
     /** TODO comment me. **/
-    protected DataModel datamodel;
+    protected final DataModel datamodel;
     private final Locale locale;
     private final List<Modifier> sources = new Vector<Modifier>();
     /** TODO comment me. **/
@@ -116,7 +118,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      * @param queryStr
      * @param parameters
      */
-    public RunningQueryImpl(final Context cxt, final String query, final DataModel datamodel) {
+    public RunningQueryImpl(
+            final Context cxt, 
+            final String query, 
+            final DataModel datamodel) throws SiteKeyedFactoryInstantiationException {
 
         super(cxt);
         
@@ -124,7 +129,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         LOG.trace("RunningQuery(cxt," + query + "," + parameters + ")");
 
-        queryStr = trimDuplicateSpaces(query);
+        final String queryStr = trimDuplicateSpaces(query);
 
         locale = cxt.getSite().getLocale();
 
@@ -137,7 +142,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     context,
                     new QueryStringContext() {
                         public String getQueryString() {
-                            return RunningQueryImpl.this.getQueryString();
+                            return queryStr;
                         }
                     });
 
@@ -152,8 +157,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
         });
 
-        queryObj = parser.getQuery();
+        final DataModelFactory factory 
+                = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt));
 
+        final QueryDataObject queryDO = factory.instantiate(
+                QueryDataObject.class,
+                new DataObject.Property("string", queryStr),
+                new DataObject.Property("query", parser.getQuery()));
+        
+        datamodel.setQuery(queryDO);
+        
         rules = AnalysisRuleFactory.valueOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, context));
 
     }
@@ -161,7 +174,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     // Public --------------------------------------------------------
 
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public List<TokenMatch> getGeographicMatches() {
 
 
@@ -180,12 +193,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return matches;
     }
 
-    /**
-     * First find out if the user types in an advanced search etc by analyzing the queryStr.
-     * Then lookup correct tip using message resources.
-     *
-     * @return user tip
-     */
+    /** {@inherit}. **/
     public String getGlobalSearchTips () {
 
         LOG.trace("getGlobalSearchTips()");
@@ -193,14 +201,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public Integer getNumberOfHits(final String configName) {
 
         LOG.trace("getNumberOfHits(" + configName + ")");
         return hits.get(configName) != null ? hits.get(configName) : Integer.valueOf(0);
     }
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public Map<String,Integer> getHits(){
         return Collections.unmodifiableMap(hits);
     }
@@ -231,7 +239,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public void run() throws InterruptedException {
 
         LOG.trace("run()");
-        final StringBuilder analysisReport = new StringBuilder(" <analyse><query>" + queryStr + "</query>\n");
+        final StringBuilder analysisReport 
+                = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getString() + "</query>\n");
+        
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
         try {
@@ -265,7 +275,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                     }
 
                                     public Query getQuery() {
-                                        return queryObj;
+                                        return datamodel.getQuery().getQuery();
                                     }
 
                                     public TokenEvaluationEngine getTokenEvaluationEngine() {
@@ -276,7 +286,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                         final SearchTab.EnrichmentHint eHint = context.getSearchTab().getEnrichmentByCommand(configName);
 
-                        if (eHint != null && !queryObj.isBlank()) {
+                        if (eHint != null && !datamodel.getQuery().getQuery().isBlank()) {
 
                             final AnalysisRule rule = rules.getRule(eHint.getRule());
 
@@ -290,17 +300,18 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                                     final StringBuilder analysisRuleReport = new StringBuilder();
 
-                                    score = rule.evaluate(queryObj, ContextWrapper.wrap(
-                                            AnalysisRule.Context.class,
-                                            new BaseContext(){
-                                                public String getRuleName(){
-                                                    return eHint.getRule();
-                                                }
-                                                public Appendable getReportBuffer(){
-                                                    return analysisRuleReport;
-                                                }
-                                            },
-                                            searchCmdCxt));
+                                    score = rule.evaluate(datamodel.getQuery().getQuery(), 
+                                            ContextWrapper.wrap(
+                                                AnalysisRule.Context.class,
+                                                new BaseContext(){
+                                                    public String getRuleName(){
+                                                        return eHint.getRule();
+                                                    }
+                                                    public Appendable getReportBuffer(){
+                                                        return analysisRuleReport;
+                                                    }
+                                                },
+                                                searchCmdCxt));
 
                                     scoresByRule.put(eHint.getRule(), score);
                                     analysisReport.append(analysisRuleReport);
@@ -440,12 +451,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                     performEnrichmentHandling(results.values());
                 }
 
-                if( noHitsOutput.length() >0 && queryStr.length() >0 && !"NOCOUNT".equals(parameters.get("IGNORE"))){
+                if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0 && !"NOCOUNT".equals(parameters.get("IGNORE"))){
                     final String output = (String) parameters.get("output");
 
                     noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey()
                             + (null != output ? "\" output=\"" + output : "") + "\">"
-                            + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query>");
+                            + "<query>" + datamodel.getQuery().getHtmlEscaped() + "</query>");
                     noHitsOutput.append("</no-hits>");
                     PRODUCT_LOG.info(noHitsOutput.toString());
                 }
@@ -464,15 +475,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         datamodel.getJunkYard().getValues().put(key, obj);
     }
 
-    /** TODO comment me. **/
-    public String getQueryString() {
-
-        LOG.trace("getQueryString()");
-
-        return queryStr;
-    }
-
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public Locale getLocale() {
 
         LOG.trace("getLocale()");
@@ -480,7 +483,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return locale;
     }
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public SearchMode getSearchMode() {
 
         LOG.trace("getSearchMode()");
@@ -488,7 +491,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return context.getSearchMode();
     }
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public SearchTab getSearchTab(){
 
         LOG.trace("getSearchTab()");
@@ -496,7 +499,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return context.getSearchTab();
     }
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public List<Modifier> getSources() {
 
         LOG.trace("getSources()");
@@ -504,7 +507,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return sources;
     }
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public void addSource(final Modifier modifier) {
 
         LOG.trace("addSource()");
@@ -512,7 +515,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         sources.add(modifier);
     }
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public List<Enrichment> getEnrichments() {
 
         LOG.trace("getEnrichments()");
@@ -520,9 +523,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return enrichments;
     }
 
-    /** TODO comment me. **/
+    /** {@inherit}. **/
     public Query getQuery() {
-        return queryObj;
+        return datamodel.getQuery().getQuery();
     }
 
     // Package protected ---------------------------------------------
@@ -534,7 +537,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private List<TokenMatch> getTokenMatches(final TokenPredicate token) throws VeryFastListQueryException {
 
         final ReportingTokenEvaluator e = (ReportingTokenEvaluator) engine.getEvaluator(token);
-        return e.reportToken(token, queryStr);
+        return e.reportToken(token, datamodel.getQuery().getString());
     }
 
     private void performEnrichmentHandling(final Collection<Future<SearchResult>> results)
@@ -546,7 +549,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
                 + "\" size=\"" + enrichments.size() + "\">"
-                + "<query>" + StringEscapeUtils.escapeXml(queryStr) + "</query>");
+                + "<query>" + datamodel.getQuery().getHtmlEscaped() + "</query>");
 
         /* Write product log and find webtv and tv enrichments */
         for(Enrichment e : enrichments){
@@ -589,6 +592,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
     }
 
+    /** Used by the constructor. **/
     private void initParameters(final RunningQuery.Context rqCxt){
 
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();

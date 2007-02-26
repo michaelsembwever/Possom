@@ -34,6 +34,7 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.Linkpulse;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.TradeDoubler;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -389,11 +390,12 @@ public final class SearchServlet extends HttpServlet {
 
         try {
             final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
+            final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
 
             query.run();
 
             stopWatch.stop();
-            LOG.info("Search took " + stopWatch + " " + query.getQueryString());
+            LOG.info("Search took " + stopWatch + " " + datamodel.getQuery().getString());
 
             if(!"NOCOUNT".equals(request.getParameter("IGNORE"))){
                 final String output = (String) request.getParameter("output");
@@ -401,7 +403,7 @@ public final class SearchServlet extends HttpServlet {
                 STATISTICS_LOG.info(
                     "<search-servlet"
                         + (null != output ? " output=\"" + output + "\">" : ">")
-                        + "<query>" + StringEscapeUtils.escapeXml(query.getQueryString()) + "</query>"
+                        + "<query>" + datamodel.getQuery().getHtmlEscaped() + "</query>"
                         + "<time>" + stopWatch + "</time>"
                         + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
                     + "</search-servlet>");
@@ -412,6 +414,8 @@ public final class SearchServlet extends HttpServlet {
 
         } catch (InterruptedException e) {
             LOG.error("Task timed out");
+        } catch (SiteKeyedFactoryInstantiationException e) {
+            LOG.error(e.getMessage(), e);
         }
     }
 

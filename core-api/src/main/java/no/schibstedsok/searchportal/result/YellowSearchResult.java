@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.result;
 
@@ -34,15 +34,24 @@ public final class YellowSearchResult extends FastSearchResult {
     private final boolean local;
     private final FastSearchResult top3;
     private int addedTop3 = 0;
+    private final String query;
 
     private static final Logger LOG = Logger.getLogger(YellowSearchResult.class);
 
-    public YellowSearchResult(final SearchCommand command, final FastSearchResult localResult, final FastSearchResult pseudoLocalResult, final FastSearchResult top3, final boolean local) {
+    public YellowSearchResult(
+            final SearchCommand command, 
+            final FastSearchResult localResult, 
+            final FastSearchResult pseudoLocalResult, 
+            final FastSearchResult top3, 
+            final boolean local,
+            final String query) {
+        
         super(command);
         this.localResult = localResult;
         this.pseudoLocalResult = pseudoLocalResult;
         this.top3 = top3;
         this.local = local;
+        this.query = query;
 
         final List resultToAlter = getResults();
 
@@ -162,6 +171,7 @@ public final class YellowSearchResult extends FastSearchResult {
         return hits;
     }
 
+    /** Not a unit testable method because of the UrlResourceLoader calls. **/
     public Collection getSecondaryHits() {
 
         final ResultHandler.Context resultHandlerContext = new ResultHandler.Context() {
@@ -189,7 +199,7 @@ public final class YellowSearchResult extends FastSearchResult {
                 }
 
                 public String getQueryString() {
-                    return getSearchCommand().getRunningQuery().getQueryString();
+                    return query;
                 }
 
                 public Query getQuery() {

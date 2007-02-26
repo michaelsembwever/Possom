@@ -104,7 +104,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
     /** Creates a new instance of AbstractSimpleFastSearchCommand */
     public AbstractSimpleFastSearchCommand(
-                    final Context cxt,
+            final Context cxt,
             final DataModel datamodel) {
 
         super(cxt, datamodel);
@@ -561,17 +561,17 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
              }
         }
 
-        if (context.getRunningQuery().getQueryString().equals("42")) {
+        if ("42".equals(datamodel.getQuery().getString())) {
             final SpellingSuggestion egg = new SpellingSuggestion("42", "Meningen med livet", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
 
-        if (context.getRunningQuery().getQueryString().equalsIgnoreCase("kvasir")) {
+        if ("kvasir".equalsIgnoreCase(datamodel.getQuery().getString())) {
             final SpellingSuggestion egg = new SpellingSuggestion("kvasir", "sesam", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
 
-        if (context.getRunningQuery().getQueryString().equalsIgnoreCase("meningen med livet")) {
+        if ("meningen med livet".equalsIgnoreCase(datamodel.getQuery().getString())) {
             final SpellingSuggestion egg = new SpellingSuggestion("meningen med livet", "42", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
@@ -990,7 +990,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
                             String[] suggAndWeight = forOneWord[j].split("@");
 
-                            if (! context.getRunningQuery().getQueryString().equalsIgnoreCase(suggAndWeight[0])) {
+                            if (! datamodel.getQuery().getString().equalsIgnoreCase(suggAndWeight[0])) {
 
                                 RelevantQuery rq = new RelevantQuery(suggAndWeight[0], Integer.valueOf(suggAndWeight[1]));
                                 searchResult.addRelevantQuery(rq);

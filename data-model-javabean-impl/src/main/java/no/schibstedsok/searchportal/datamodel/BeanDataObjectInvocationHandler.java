@@ -110,7 +110,7 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         //    propertyDescriptors.put(pd.getName(), pd);
         //}
         
-        if( implementOf == StringDataObject.class ){
+        if( StringDataObject.class.isAssignableFrom(implementOf) ){
             
             String value = null;
             for(Property p : properties){
@@ -121,7 +121,7 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                 }
             }
             
-            support = new StringDataObjectSupport(value);
+            support = null != value ? new StringDataObjectSupport(value) : null;
             
         }else{
             support = null;
@@ -140,41 +140,51 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     public Object invoke(final Object obj, final Method method, final Object[] args) throws Throwable {
         
+        // If there's a support class and instance, use it first.
         if( null != support ){
-            return method.invoke(support, args);
-            
-        }else{
-
-            final boolean setter = method.getName().startsWith("set");
-
-            // find the property applicable
-            final String propertyName = method.getName().replaceFirst("is|get|set", "");
-            for(int i = 0; i < properties.size(); ++i){
-                final Property p = properties.get(i);
-                if( p.getName().equalsIgnoreCase(propertyName)){
-                    if( setter ){
-                        properties.set(i, new Property(p.getName(), args[0]));
-
-                    }
-                    // TODO if this bean is immutable then return a clone (defensive copy) this object
-                    return p.getValue();
-                }
-            }
-
-            // try pure self methods
             try{
-                return method.invoke(this, args);
+                final Method m = method.getDeclaringClass() == support.getClass() 
+                        ? method
+                        : support.getClass().getMethod(method.getName(), method.getParameterTypes());
 
-            }catch(IllegalAccessException iae){
-                LOG.info(iae.getMessage(), iae);
-            }catch(IllegalArgumentException iae){
-                LOG.info(iae.getMessage(), iae);
-            }catch(InvocationTargetException ite){
-                LOG.info(ite.getMessage(), ite);
+                return m.invoke(support, args);
+                
+            }catch(NoSuchMethodException nsme){
+                LOG.debug(nsme.getMessage());
             }
-
-            throw new IllegalArgumentException("Method to invoke doesn't map to bean property");
         }
+        
+        // Try finding something out of our own map of bean properties.
+        final boolean setter = method.getName().startsWith("set");
+
+        // find the property applicable
+        final String propertyName = method.getName().replaceFirst("is|get|set", "");
+        for(int i = 0; i < properties.size(); ++i){
+            final Property p = properties.get(i);
+            if( p.getName().equalsIgnoreCase(propertyName)){
+                if( setter ){
+                    properties.set(i, new Property(p.getName(), args[0]));
+
+                }
+                // TODO if this bean is immutable then return a clone (defensive copy) this object
+                return p.getValue();
+            }
+        }
+
+        // try invoking one of our own methods. (Works for example on methods declared by the Object class).
+        try{
+            return method.invoke(this, args);
+
+        }catch(IllegalAccessException iae){
+            LOG.info(iae.getMessage(), iae);
+        }catch(IllegalArgumentException iae){
+            LOG.info(iae.getMessage(), iae);
+        }catch(InvocationTargetException ite){
+            LOG.info(ite.getMessage(), ite);
+        }
+
+        throw new IllegalArgumentException("Method to invoke doesn't map to bean property");
+
     }
 
     @Override

@@ -97,7 +97,13 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             isLocal = true;
             final FastSearchResult localResult = (FastSearchResult) super.execute();
 
-            final YellowSearchResult result = new YellowSearchResult(this, localResult, nationalHits, top3, isLocalSearch() && !viewAll);
+            final YellowSearchResult result = new YellowSearchResult(
+                    this, 
+                    localResult, 
+                    nationalHits, 
+                    top3, 
+                    isLocalSearch() && !viewAll,
+                    datamodel.getQuery().getString());
 
             final String yprank = companyRank ? "company" : "default";
             result.addField("yprank", yprank);
@@ -114,7 +120,13 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             final FastSearchResult nationalHits = (FastSearchResult) super.execute();
             ypkeywordsgeo = false;
 
-            final YellowSearchResult result = new YellowSearchResult(this, null, nationalHits, top3, false);
+            final YellowSearchResult result = new YellowSearchResult(
+                    this, 
+                    null, 
+                    nationalHits, 
+                    top3, 
+                    false,
+                    datamodel.getQuery().getString());
 
             final String yprank = companyRank ? "company" : "default";
             result.addField("yprank", yprank);
@@ -142,7 +154,13 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
             final String yprank = companyRank ? "company" : "default";
 
-            final YellowSearchResult result = new YellowSearchResult(this, localResult, nationalHits, top3, false);
+            final YellowSearchResult result = new YellowSearchResult(
+                    this, 
+                    localResult, 
+                    nationalHits, 
+                    top3, 
+                    false,
+                    datamodel.getQuery().getString());
             result.addField("yprank", yprank);
             return result;
         }

@@ -67,7 +67,7 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
         // evaluation has been run on the corrected query.
         if (isCorrectionEnabled() && correct && originalResult.getHitCount() == 0 && !suggestions.isEmpty()) {
             // Correct spelling suggestions and parse the resulting query string.
-            final String oldQuery = context.getRunningQuery().getQueryString();
+            final String oldQuery = datamodel.getQuery().getString();
             final String newQuery = correctQuery(suggestions, oldQuery);
 
             // Create a new identical context apart from the corrected query

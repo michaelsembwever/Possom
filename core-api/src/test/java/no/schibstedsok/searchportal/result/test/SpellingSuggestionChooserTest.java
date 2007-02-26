@@ -13,6 +13,7 @@ import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
@@ -249,7 +250,12 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         return listOfSuggestions.size();
     }
 
-    private void handleResult(final SpellingSuggestionChooser chooser, final SearchResult result) throws SiteKeyedFactoryInstantiationException {
+    private void handleResult(
+            final SpellingSuggestionChooser chooser, 
+            final SearchResult result) throws SiteKeyedFactoryInstantiationException {
+        
+        final DataModel datamodel = getDataModel();
+        
         final ResultHandler.Context resultHandlerContext = new ResultHandler.Context() {
             public SearchResult getSearchResult() {
                 return result;
@@ -273,7 +279,7 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
             public String getQueryString() {
-                return result.getSearchCommand().getRunningQuery().getQueryString();
+                return datamodel.getQuery().getString();
             }
 
             public Query getQuery() {
@@ -288,6 +294,6 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
             }
 
         };
-        chooser.handleResult(resultHandlerContext, getDataModel());
+        chooser.handleResult(resultHandlerContext, datamodel);
     }
 }

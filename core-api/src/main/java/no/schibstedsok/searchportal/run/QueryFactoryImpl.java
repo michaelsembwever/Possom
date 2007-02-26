@@ -5,6 +5,7 @@ package no.schibstedsok.searchportal.run;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.util.QueryStringHelper;
 import org.apache.log4j.Logger;
 
@@ -38,7 +39,7 @@ public final class QueryFactoryImpl extends QueryFactory {
     public RunningQuery createQuery(
             final RunningQuery.Context cxt,
             final HttpServletRequest request,
-            final HttpServletResponse response) {
+            final HttpServletResponse response) throws SiteKeyedFactoryInstantiationException {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug("createQuery() Type=" + request.getParameter("t"));

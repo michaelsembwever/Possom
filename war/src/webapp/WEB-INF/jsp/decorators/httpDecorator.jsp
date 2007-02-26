@@ -16,7 +16,7 @@
 
     <body onload="sesamInit('<c:out value="${c}"/>', '<c:out value="${vertikal}"/>', '<c:out value="${queryHTMLEscaped}"/>', <c:out value="${null != page}"/>);">
 
-httpdecorator
+
         <c:choose>
             <%-- old-school sitesearch [REMOVE ME-start] --%>
             <c:when test="${c == 'd' && (param.ss == 'di' || param.ss == 'pr' || param.ss == 'im' || param.ss == 'af' || param.ss == 'fv' || param.ss == 'aa' || param.ss == 'bt' || param.ss == 'sa')}">

@@ -10,6 +10,7 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -53,7 +54,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
     public RunningWebQuery(final Context cxt,
                            final String query,
                            final HttpServletRequest request,
-                           final HttpServletResponse response) {
+                           final HttpServletResponse response) throws SiteKeyedFactoryInstantiationException {
 
         super(cxt, query, (DataModel)request.getSession().getAttribute(DataModel.KEY));
 
@@ -158,7 +159,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
                 }
             }
             // ...and...
-            request.setAttribute("queryHTMLEscaped", StringEscapeUtils.escapeHtml(getQueryString()));
+            request.setAttribute("queryHTMLEscaped", datamodel.getQuery().getHtmlEscaped());
             request.setAttribute("enrichments", getEnrichments());
             request.setAttribute("sources", getSources());
             request.setAttribute("hits",getHits());

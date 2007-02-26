@@ -84,8 +84,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
     private String transformedQuerySesamSyntax;
-    private final DataModel datamodel;
-    private volatile boolean completed = false;
+    protected final DataModel datamodel;
+    protected volatile boolean completed = false;
     private volatile Thread thread = null;
 
     // Constructors --------------------------------------------------
@@ -144,7 +144,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** TODO comment me. **/
     public String toString() {
-        return getSearchConfiguration().getName() + ' ' + context.getRunningQuery().getQueryString();
+        return getSearchConfiguration().getName() + ' ' + datamodel.getQuery().getString();
     }
 
     /** TODO comment me. **/
@@ -394,7 +394,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
                     ResultHandler.Context.class,
-                    new BaseContext(){// <editor-fold defaultstate="collapsed" desc=" ResultHandler.Context ">
+                    new BaseContext(){
                         public SearchResult getSearchResult() {
                             return result;
                         }
@@ -403,12 +403,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         }
                         /** @deprecated implementations should be using the QueryContext instead! */
                         public String getQueryString() {
-                            return context.getRunningQuery().getQueryString();
+                            return datamodel.getQuery().getString();
                         }
                         public void addSource(final Modifier modifier) {
                             context.getRunningQuery().addSource(modifier);
                         }
-                    },// </editor-fold>
+                    },
                     context
             );
             resultHandler.handleResult(resultHandlerContext, datamodel);
