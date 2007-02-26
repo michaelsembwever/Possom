@@ -20,6 +20,8 @@ import org.apache.log4j.Logger;
 public final class JunkYardDataObjectBeanInfo extends MapDataObjectBeanInfo{
 
     // Constants -----------------------------------------------------
+    
+    private static final Class BEAN_CLASS = JunkYardDataObject.class;
 
     private static final Logger LOG = Logger.getLogger(JunkYardDataObjectBeanInfo.class);
 
@@ -39,7 +41,7 @@ public final class JunkYardDataObjectBeanInfo extends MapDataObjectBeanInfo{
     @Override
     public PropertyDescriptor[] getPropertyDescriptors(){
 
-        return MapDataObjectBeanInfo.addSingleMappedPropertyDescriptor("value", JunkYardDataObject.class);
+        return MapDataObjectBeanInfo.addSingleMappedPropertyDescriptor("value", BEAN_CLASS);
     }
 
     // Package protected ---------------------------------------------

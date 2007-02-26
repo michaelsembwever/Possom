@@ -17,6 +17,6 @@ import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
  * @version <tt>$Id$</tt>
  */
 @DataObject
-public interface JunkYardDataObject extends MapDataObject<String,Object>{
+public interface JunkYardDataObject extends MapDataObject<Object>{
 
 }

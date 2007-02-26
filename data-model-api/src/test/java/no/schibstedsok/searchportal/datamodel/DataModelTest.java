@@ -69,11 +69,26 @@ public final class DataModelTest {
         
         collectProperties(cls, propertyMethods);
         
-        // now scan the declared methods
+        final Collection<String> gettersSatisfied = new ArrayList<String>();
+        final Collection<String> settersSatisfied = new ArrayList<String>();
+        
+        // now scan the methods
         for(Method method : cls.getMethods()){
-            LOG.info(" method -->   " + method.getName());
-            assert propertyMethods.contains(method) 
-                    : method.toString() + ASSERT_METHOD_NOT_GETTER_OR_SETTER + propertyMethods;
+            
+            final boolean setter = method.getName().startsWith("set");
+            final String propertyName = method.getName().replaceFirst("is|get|set", "");
+            final Collection<String> propertiesSatisfied = setter ? settersSatisfied : gettersSatisfied;
+            
+            if( !propertiesSatisfied.contains(propertyName) ){
+                LOG.info(" method -->   " + method.getName());
+
+                assert propertyMethods.contains(method) 
+                        : method.toString() + ASSERT_METHOD_NOT_GETTER_OR_SETTER + propertyMethods;
+                
+                propertiesSatisfied.add(propertyName);
+            }else{
+                LOG.info(" method -->   " + method.getName() + " previously satisfied");
+            }
         }
         
         LOG.info(cls.getSimpleName() + " passed API test");

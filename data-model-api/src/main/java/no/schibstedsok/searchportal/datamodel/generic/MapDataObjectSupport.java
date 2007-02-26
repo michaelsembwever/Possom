@@ -33,9 +33,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @version <tt>$Id$</tt>
  */
 @DataObject
-public class MapDataObjectSupport<K,V> implements MapDataObject<K,V>{
+public class MapDataObjectSupport<V> implements MapDataObject<V>{
 
-    private final Map<K,V> map = new HashMap<K,V>(){
+    private final Map<String,V> map = new HashMap<String,V>(){
 
         private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -44,7 +44,7 @@ public class MapDataObjectSupport<K,V> implements MapDataObject<K,V>{
 
             try{
                 lock.readLock().lock();
-                return map.get(key);
+                return super.get(key);
 
             }finally{
                 lock.readLock().unlock();
@@ -52,11 +52,11 @@ public class MapDataObjectSupport<K,V> implements MapDataObject<K,V>{
         }
 
         @Override
-        public V put(final K key, final V value){
+        public V put(final String key, final V value){
 
             try{
                 lock.writeLock().lock();
-                return map.put(key, value);
+                return super.put(key, value);
 
             }finally{
                 lock.writeLock().unlock();
@@ -64,23 +64,27 @@ public class MapDataObjectSupport<K,V> implements MapDataObject<K,V>{
         }
     };
 
-    MapDataObjectSupport(final Map<K,V> map){
-
+    public MapDataObjectSupport(final Map<String,V> map){
+        
+        if( null != map ){
+            this.map.putAll(map);
+        }
     }
 
-    public V getValue(final K key){
+    public V getValue(final String key){
 
         return map.get(key);
     }
 
-    public void setValue(final K key, final V value){
+    public void setValue(final String key, final V value){
 
         map.put(key, value);
     }
 
-    public Map<K, V> getValues() {
+    public Map<String, V> getValues() {
 
-        return Collections.unmodifiableMap(map);
+        //return Collections.unmodifiableMap(map);
+        return map;
     }
 
 }

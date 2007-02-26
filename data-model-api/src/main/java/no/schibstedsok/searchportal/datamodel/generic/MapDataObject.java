@@ -18,16 +18,16 @@ import java.util.Map;
  * @version <tt>$Id$</tt>
  */
 @DataObject
-public interface MapDataObject<K,V> extends Serializable {
+public interface MapDataObject<V> extends Serializable {
 
     /**
      * Access to whole map is through a Collections.unmodifiable(map) copy.
      **/
-    Map<K,V> getValues();
+    Map<String,V> getValues();
 
-    V getValue(final K key);
+    V getValue(final String key);
 
-    void setValue(final K key, final V value);
+    void setValue(final String key, final V value);
 
 
 }
