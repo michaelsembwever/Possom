@@ -92,7 +92,7 @@ public final class VelocityResultHandler implements ResultHandler {
                 LOG.debug(DEBUG_TEMPLATE_FOUND + template.getName());
 
                 final VelocityContext context = VelocityEngineFactory.newContextInstance(engine);
-                populateVelocityContext(context, cxt, parameters);
+                populateVelocityContext(context, cxt, datamodel);
 
                 try {
 
@@ -134,9 +134,11 @@ public final class VelocityResultHandler implements ResultHandler {
 
     protected void populateVelocityContext(final VelocityContext context,
                                            final Context cxt,
-                                           final Map<String,Object> parameters) {
+                                           final DataModel datamodel) {
 
         LOG.trace("populateVelocityContext()");
+        
+        final Map<String,Object> parameters = datamodel.getJunkYard().getValues();        
 
         String queryString = cxt.getQuery().getQueryString();
 
@@ -167,8 +169,9 @@ public final class VelocityResultHandler implements ResultHandler {
         // populate context with request and response // TODO remove, since all attributes are copied in
         context.put("request", parameters.get("request"));
         context.put("response", parameters.get("response"));
-
+        
         // search-portal attributes
+        context.put("datamodel", datamodel); // <-- the devil's through the backdoor now
         context.put("result", cxt.getSearchResult());
         context.put("query", queryStringURLEncoded);
         context.put("queryHTMLEscaped", queryString);
@@ -178,6 +181,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("globalSearchTips", ((RunningQuery) parameters.get("query")).getGlobalSearchTips());
         context.put("runningQuery", (RunningQuery) parameters.get("query"));
         context.put("command", cxt.getSearchResult().getSearchCommand());
+        context.put("commandName", cxt.getSearchResult().getSearchCommand().getSearchConfiguration().getName());
 
         // TODO remove. deprecated since the template can access the configuration property directly now.
         final Properties props = (Properties)parameters.get("configuration");

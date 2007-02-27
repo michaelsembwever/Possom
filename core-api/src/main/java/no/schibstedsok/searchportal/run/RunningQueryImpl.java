@@ -240,7 +240,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         LOG.trace("run()");
         final StringBuilder analysisReport 
-                = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getString() + "</query>\n");
+                = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getHtmlEscaped() + "</query>\n");
         
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 

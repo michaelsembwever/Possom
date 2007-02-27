@@ -20,6 +20,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.http.filters.SiteLocatorFilter;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.site.Site;
@@ -109,6 +110,7 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
             for(Map.Entry<String,Object> entry : map.entrySet()){
                 context.put(entry.getKey(), entry.getValue());
             }
+            context.put("datamodel", cxt.getSession().getAttribute(DataModel.KEY));
             context.put("base", ((HttpServletRequest)cxt.getRequest()).getContextPath());
             context.put("contextPath", ((HttpServletRequest)cxt.getRequest()).getContextPath());
             context.put("text", text);
@@ -134,7 +136,7 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
                 }
             }
 
-            // populate sitemesh attributes
+            // populate sitemesh attributes -- will be removed
             final Page siteMeshPage = (Page) cxt.findAttribute(RequestConstants.PAGE);
                 if(siteMeshPage != null){
                 context.put("page", siteMeshPage);
