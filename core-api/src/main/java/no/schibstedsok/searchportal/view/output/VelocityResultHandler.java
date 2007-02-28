@@ -146,7 +146,6 @@ public final class VelocityResultHandler implements ResultHandler {
 
         try {
             queryStringURLEncoded = URLEncoder.encode(queryString, "UTF-8");
-            queryString = StringEscapeUtils.escapeHtml(queryString);
         } catch (UnsupportedEncodingException e) {
             LOG.error(e);
         }
@@ -174,7 +173,6 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("datamodel", datamodel); // <-- the devil's through the backdoor now
         context.put("result", cxt.getSearchResult());
         context.put("query", queryStringURLEncoded);
-        context.put("queryHTMLEscaped", queryString);
         context.put("currentTab", cxt.getSearchTab()); // FIXME duplicate of "tab" [generic. and genericno. are done]
 
         // following are deprecated as the view domain should not be accessing them
