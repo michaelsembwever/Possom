@@ -173,7 +173,6 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("datamodel", datamodel); // <-- the devil's through the backdoor now
         context.put("result", cxt.getSearchResult());
         context.put("query", queryStringURLEncoded);
-        context.put("currentTab", cxt.getSearchTab()); // FIXME duplicate of "tab" [generic. and genericno. are done]
 
         // following are deprecated as the view domain should not be accessing them
         context.put("globalSearchTips", ((RunningQuery) parameters.get("query")).getGlobalSearchTips());
