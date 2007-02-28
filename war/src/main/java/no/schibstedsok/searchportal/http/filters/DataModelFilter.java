@@ -1,4 +1,5 @@
-/*
+/* Copyright (2006-2007) Schibsted Søk AS
+ * 
  * DataModelFilter.java
  *
  * Created on 26 January 2007, 22:29
@@ -8,11 +9,18 @@
 package no.schibstedsok.searchportal.http.filters;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -26,6 +34,7 @@ import no.schibstedsok.searchportal.datamodel.DataModelFactory;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
+import no.schibstedsok.searchportal.datamodel.request.BrowserDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.datamodel.site.SiteDataObject;
 import no.schibstedsok.searchportal.site.Site;
@@ -71,7 +80,7 @@ public final class DataModelFilter implements Filter {
             final ServletResponse response,
             final FilterChain chain)
                 throws IOException, ServletException {
-        
+
         DataModel datamodel = null;
 
         if(request instanceof HttpServletRequest){
@@ -84,7 +93,7 @@ public final class DataModelFilter implements Filter {
                     public Site getSite() {
                         return site;
                     }
-                
+
                     public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
                                                                 final String resource,
                                                                 final Properties properties) {
@@ -129,7 +138,7 @@ public final class DataModelFilter implements Filter {
             datamodel = createDataModel(factory, request);
             session.setAttribute(DataModel.KEY, datamodel);
         }
-        
+
         // DataModel's ControlLevel will be DATA_MODEL_CONSTRUCTION or VIEW_CONSTRUCTION (from the past request)
         //  Increment it onwards to REQUEST_CONSTRUCTION.
         return factory.incrementControlLevel(datamodel);
@@ -147,49 +156,109 @@ public final class DataModelFilter implements Filter {
                 new DataObject.Property("site", site),
                 new DataObject.Property("siteConfiguration", siteConf));
 
-        // TODO BrowserDataObject
-
+        final StringDataObject userAgentDO = factory.instantiate(
+                StringDataObject.class, 
+                new DataObject.Property("string", request.getHeader("User-Agent")));
+        
+        final List<Locale> locales = new ArrayList<Locale>();
+        for(Enumeration<Locale> en = request.getLocales(); en.hasMoreElements();){
+            locales.add(en.nextElement());
+        }
+        
+        final BrowserDataObject browserDO = factory.instantiate(
+                BrowserDataObject.class,
+                new DataObject.Property("userAgent", userAgentDO),
+                new DataObject.Property("locale", request.getLocale()),
+                new DataObject.Property("supportedLocales", locales));
 
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
                 new DataObject.Property("values", new Hashtable<String,Object>()));
 
         datamodel.setSite(siteDO);
+        datamodel.setBrowser(browserDO);
         datamodel.setJunkYard(junkYardDO);
-        
+
         return datamodel;
     }
 
     /** Update the request elements in the datamodel. **/
     private static ParametersDataObject updateDataModelForRequest(
-            final DataModelFactory factory, 
+            final DataModelFactory factory,
             final HttpServletRequest request){
-     
+
         // Note that we do not support String[] parameter values!
         final Map<String,StringDataObject> values = new HashMap<String,StringDataObject>();
         for(Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
             final String key = e.nextElement();
             values.put(key, factory.instantiate(
                 StringDataObject.class,
-                new DataObject.Property("string", request.getParameter(key))));
+                new DataObject.Property("string", getParameterSafely(request, key))));
         }
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
                 new DataObject.Property("values", values),
                 new DataObject.Property("contextPath", request.getContextPath()));
 
-        
+
         return parametersDO;
     }
-    
+
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
     private static void cleanDataModel(final DataModel datamodel){
-        
+
         datamodel.getJunkYard().getValues().clear();;;
         datamodel.setParameters(null);
         datamodel.setQuery(null);
     }
-    
+
+    /** A safer way to get parameters for the query string.
+     * Handles ISO-8859-1 and UTF-8 URL encodings.
+     *
+     * @param request The servlet request we are processing
+     * @param parameter The parameter to retrieve
+     * @return The correct decoded parameter
+     *
+     * @author <a href="mailto:anders.johan.jamtli@sesam.no">Anders Johan Jamtli</a>
+     */
+    private static String getParameterSafely(final HttpServletRequest request, final String parameter){
+
+        final StringTokenizer st = new StringTokenizer(request.getQueryString(), "&");
+        String value = request.getParameter(parameter);
+        String queryStringValue = null;
+
+        final String parameterEquals = parameter + '=';
+        while(st.hasMoreTokens()) {
+            final String tmp = st.nextToken();
+            if (tmp.startsWith(parameterEquals)) {
+                queryStringValue = tmp.substring(parameterEquals.length());
+                break;
+            }
+        }
+
+        if (null != value) {
+
+            try {
+                final String encodedReqValue = URLEncoder.encode(value, "UTF-8")
+                        .replaceAll("[+]", "%20")
+                        .replaceAll("[*]", "%2A");
+
+                queryStringValue = queryStringValue
+                        .replaceAll("[+]", "%20")
+                        .replaceAll("[*]", "%2A");
+
+                if (!queryStringValue.equalsIgnoreCase(encodedReqValue)){
+                    value = URLDecoder.decode(queryStringValue, "ISO-8859-1");
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                LOG.trace(e);
+            }
+        }
+
+        return value;
+    }
+
     // Inner classes -------------------------------------------------
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.http.servlet;
 
@@ -14,7 +14,6 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.util.QueryStringHelper;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.run.QueryFactory;
@@ -37,7 +36,6 @@ import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.TradeDoubler;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 
 /** The Central Controller to incoming queries.
@@ -281,16 +279,21 @@ public final class SearchServlet extends HttpServlet {
             final HttpServletRequest request,
             final RunningQuery.Context rqCxt){
 
-
-        if (request.getParameter("offset") == null || "".equals(request.getParameter("offset"))) {
-            request.setAttribute("offset", "0");
+            
+        final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
+        final ParametersDataObject parametersDO = datamodel.getParameters();
+                
+        if (null == parametersDO.getValue("offset") || 0 == parametersDO.getValue("offset").getString().length() ) {
+            request.setAttribute("offset", "0"); // TODO remove, access through datamodel instead.
         }
 
-        if (request.getParameter("q") != null) {
-            request.setAttribute("q", QueryStringHelper.safeGetParameter(request, "q"));
+        if (null != parametersDO.getValue("q")) {
+            // TODO remove, access through datamodel instead.
+            request.setAttribute("q", parametersDO.getValue("q").getString());
         }
 
-        request.setAttribute("contextPath", request.getContextPath());
+         // TODO remove next three, access through datamodel instead.
+        request.setAttribute("contextPath", parametersDO.getContextPath());
         request.setAttribute("tradedoubler", new TradeDoubler(request));
         request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
 
@@ -300,7 +303,7 @@ public final class SearchServlet extends HttpServlet {
         request.setAttribute("linkpulse", new Linkpulse(rqCxt.getSite(), props));
     }
 
-    /* TODO please move this to a more skin-dependant appropriate location.
+    /* TODO Move into a RunningQueryHandler
      *
      *  redirects to yellowinfopage if request is from finn.no -> req.param("finn") = "finn"
      *  finn sends orgnumber as queryparam, if only 1 hit, then redirect.
@@ -387,8 +390,9 @@ public final class SearchServlet extends HttpServlet {
         );
 
         updateAttributes(request, rqCxt);
-
-        try {
+            
+        try {            
+            
             final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
             final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
 
