@@ -1,24 +1,6 @@
 // Copyright (2006) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
@@ -38,6 +20,7 @@ import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.MathExpressionSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.MobileSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
+import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.NewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.PicSearchConfiguration;
@@ -96,18 +79,33 @@ import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.searchportal.view.output.XmlOutputResultHandler;
-
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
  * @version <tt>$Id$</tt>
@@ -379,7 +377,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         VEHICLE_COMMAND(VehicleSearchConfiguration.class),
         CATALOGUE_COMMAND(CatalogueSearchConfiguration.class),
         CATALOGUE_ADS_COMMAND(CatalogueAdsSearchConfiguration.class),
-        HITTAMAP_COMMAND(HittaMapSearchConfiguration.class);
+        HITTAMAP_COMMAND(HittaMapSearchConfiguration.class),
+        NEWS_AGGREGATOR_COMMAND(NewsAggregatorSearchConfiguration.class);
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
@@ -763,6 +762,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if(sc instanceof CatalogueAdsSearchConfiguration){
                 	final CatalogueAdsSearchConfiguration casc = (CatalogueAdsSearchConfiguration) sc;
                     fillBeanProperty(casc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
+                }
+                if(sc instanceof NewsAggregatorSearchConfiguration) {
+                    final NewsAggregatorSearchConfiguration nasc = (NewsAggregatorSearchConfiguration) sc;
+                    fillBeanProperty(nasc, inherit, "xmlSource", ParseType.String, commandE, "");
+                    fillBeanProperty(nasc, inherit, "updateIntervalMinutes", ParseType.Int, commandE, "2");
                 }
 
 
