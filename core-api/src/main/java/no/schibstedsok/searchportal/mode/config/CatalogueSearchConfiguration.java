@@ -20,4 +20,25 @@ public class CatalogueSearchConfiguration extends FastSearchConfiguration {
         super(asc);
     }
 
+    
+    private String queryParameterWhere;
+    private String searchBy;
+    
+	public String getQueryParameterWhere() {
+		return queryParameterWhere;
+	}
+
+	public void setQueryParameterWhere(String queryParameterWhere) {
+		this.queryParameterWhere = queryParameterWhere;
+	}
+
+	public String getSearchBy() {
+		return searchBy;
+	}
+
+	public void setSearchBy(String searchBy) {
+		this.searchBy = searchBy;
+	}
+    
+    
 }
