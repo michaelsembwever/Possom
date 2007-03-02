@@ -66,7 +66,8 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 		// fra den
 		if (getSingleParameter("where") != null) {
 			final ReconstructedQuery rq = createQuery(getSingleParameter("where"));
-
+			
+			
 			GeoVisitor geo = new GeoVisitor();
 			geo.visit(rq.getQuery().getRootClause());
 
@@ -168,6 +169,8 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 			return sb.toString();
 		}
 
+		
+		
 		/**
 		 * {@inheritDoc}
 		 */
@@ -226,6 +229,10 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 		 */
 		protected void visitImpl(final AndNotClause clause) {
 			sb.append(QL_ANDNOT);
+			clause.getFirstClause().accept(this);
+		}
+		
+		protected void visitImpl(final XorClause clause){
 			clause.getFirstClause().accept(this);
 		}
 	}
