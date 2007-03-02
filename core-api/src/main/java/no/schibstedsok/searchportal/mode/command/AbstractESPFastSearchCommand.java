@@ -146,10 +146,24 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                     filterBuilder.append("+collapseid:").append(collapseId);
                 }
             }
+            
+            //check sortby
+            String sortBy =cfg.getSortBy();
+            if (getParameters().containsKey("userSortBy")) {
 
+                final String userSortBy = getParameter("userSortBy");
+                LOG.debug("execute: SortBy " + userSortBy);
+
+                if ("standard".equals(userSortBy)) {
+                    sortBy ="freshnessprofile";
+                } else if ("datetime".equals(userSortBy)) {
+                    sortBy = "publishedtime";
+                }
+            }
+            
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, getCurrentOffset(0)));
             query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));
-            query.setParameter(new SearchParameter(BaseParameter.SORT_BY, cfg.getSortBy()));
+            query.setParameter(new SearchParameter(BaseParameter.SORT_BY, sortBy));
             query.setParameter(new SearchParameter(BaseParameter.FILTER, filterBuilder.toString()));
 
             if (! (this instanceof NavigatableESPFastCommand)) {
