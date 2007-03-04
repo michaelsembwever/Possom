@@ -228,8 +228,11 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 		 * {@inheritDoc}
 		 */
 		protected void visitImpl(final AndNotClause clause) {
-			sb.append(QL_ANDNOT);
-			clause.getFirstClause().accept(this);
+			// the first term can not be ANDNOT term.
+			if(sb.toString().trim().length()>0){
+				sb.append(QL_ANDNOT);
+				clause.getFirstClause().accept(this);
+			}
 		}
 		
 		protected void visitImpl(final XorClause clause){

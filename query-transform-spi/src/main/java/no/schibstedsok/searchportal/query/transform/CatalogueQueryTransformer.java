@@ -30,34 +30,44 @@ public final class CatalogueQueryTransformer extends AbstractQueryTransformer {
 
 	/** TODO comment me. * */
 	protected void visitImpl(final LeafClause clause) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("(");
-		sb.append("(iypcfphnavn:" + getTransformedTerms().get(clause)  + ") ANY ");
-		sb.append("(lemiypcfkeywords:" + getTransformedTerms().get(clause)  + ") ANY");
-		sb.append("(lemiypcfkeywordslow:" + getTransformedTerms().get(clause)  + ")");
-		sb.append(")");
-		getContext().getTransformedTerms().put(clause, sb.toString());
+		if (!getTransformedTerms().get(clause).equals("*")) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("(");
+			sb.append("iypcfphnavn:" + getTransformedTerms().get(clause)
+					+ " ANY ");
+			sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause)
+					+ " ANY ");
+			sb.append("lemiypcfkeywordslow:"
+					+ getTransformedTerms().get(clause));
+			sb.append(")");
+			getContext().getTransformedTerms().put(clause, sb.toString());
+		}
 	}
-
 
 	/**
 	 * Legg til iypcfnavn forran alle ord.
 	 * 
 	 */
 	protected void visitImpl(final PhraseClause clause) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("(");
-		sb.append("(iypcfnavn:" + getTransformedTerms().get(clause)  + ") ANY ");
-		sb.append("(lemiypcfkeywords:" + getTransformedTerms().get(clause)  + ") ANY");
-		sb.append("(lemiypcfkeywordslow:" + getTransformedTerms().get(clause)  + ")");
-		sb.append(")");
-		getContext().getTransformedTerms().put(clause, sb.toString());
+
+		if (!getTransformedTerms().get(clause).equals("*")) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("(");
+			sb.append("iypcfnavn:" + getTransformedTerms().get(clause)
+					+ " ANY ");
+			sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause)
+					+ " ANY ");
+			sb.append("lemiypcfkeywordslow:"
+					+ getTransformedTerms().get(clause));
+			sb.append(")");
+			getContext().getTransformedTerms().put(clause, sb.toString());
+		}
 	}
-	
-    private Map<Clause,String> getTransformedTerms() {
-        return getContext().getTransformedTerms();
-    }
-    
+
+	private Map<Clause, String> getTransformedTerms() {
+		return getContext().getTransformedTerms();
+	}
+
 	protected void visitImpl(final AndClause clause) {
 		clause.getFirstClause().accept(this);
 		clause.getSecondClause().accept(this);
@@ -95,5 +105,5 @@ public final class CatalogueQueryTransformer extends AbstractQueryTransformer {
 	 */
 	protected void visitImpl(final AndNotClause clause) {
 		clause.getFirstClause().accept(this);
-	} 
+	}
 }
