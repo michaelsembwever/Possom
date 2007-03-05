@@ -108,7 +108,7 @@ public class CatalogueSearchResultItem extends BasicSearchResultItem {
        
     	String address = getField("iypadresse");
     	String zipCode = getField("iyppostnr");
-    	String city = getField("iypstedsnavn");
+    	String city = getField("iyppoststed");
     	
     	StringBuffer compositAddress = new StringBuffer();
     	if(address != null && address.length() > 0){
