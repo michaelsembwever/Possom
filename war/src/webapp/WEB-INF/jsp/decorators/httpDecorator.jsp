@@ -14,7 +14,7 @@
         <search:velocity template="/fragments/head"/>
     </head>
 
-    <body onload="sesamInit('<c:out value="${c}"/>', '<c:out value="${vertikal}"/>', '<c:out value="${queryHTMLEscaped}"/>', <c:out value="${null != page}"/>);">
+    <body onload="sesamInit('<c:out value="${tab.key}"/>', '<c:out value="${vertikal}"/>', '<c:out value="${datamodel.query.xmlEscaped}"/>', <c:out value="${null != page}"/>);">
 
 
         <c:choose>

@@ -240,7 +240,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         LOG.trace("run()");
         final StringBuilder analysisReport 
-                = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getHtmlEscaped() + "</query>\n");
+                = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getXmlEscaped() + "</query>\n");
         
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
@@ -456,7 +456,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                     noHitsOutput.insert(0, "<no-hits mode=\"" + context.getSearchTab().getKey()
                             + (null != output ? "\" output=\"" + output : "") + "\">"
-                            + "<query>" + datamodel.getQuery().getHtmlEscaped() + "</query>");
+                            + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");
                     noHitsOutput.append("</no-hits>");
                     PRODUCT_LOG.info(noHitsOutput.toString());
                 }
@@ -549,7 +549,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
                 + "\" size=\"" + enrichments.size() + "\">"
-                + "<query>" + datamodel.getQuery().getHtmlEscaped() + "</query>");
+                + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");
 
         /* Write product log and find webtv and tv enrichments */
         for(Enrichment e : enrichments){

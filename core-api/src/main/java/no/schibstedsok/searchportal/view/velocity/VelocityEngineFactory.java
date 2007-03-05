@@ -35,7 +35,11 @@ import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.generic.DateTool;
 import org.apache.velocity.tools.generic.MathTool;
 
-/**
+/** Custom Factory around Velocity Engines and Templates.
+ * Each instance maps to an VelocityEngine instance.
+ * All template operations (getting and merging) are done through this class 
+ *   rather than directly against Velocity's API.
+ * 
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
@@ -69,9 +73,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     private static final String DIRECTIVES =
             "no.schibstedsok.searchportal.view.velocity.UrlEncodeDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.UrlEncodeRequestParameterDirective,"
             + "no.schibstedsok.searchportal.view.velocity.HtmlEscapeDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.HtmlEscapeRequestParameterDirective,"
             + "no.schibstedsok.searchportal.view.velocity.CapitalizeWordsDirective,"
             + "no.schibstedsok.searchportal.view.velocity.ChopStringDirective,"
             + "no.schibstedsok.searchportal.view.velocity.PublishDirective,"

@@ -29,7 +29,7 @@ import org.xml.sax.InputSource;
  * @version $Id: FileResourceLoader.java 3361 2006-08-03 13:44:54Z mickw $
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public final class FileResourceLoader extends AbstractResourceLoader {
+public class FileResourceLoader extends AbstractResourceLoader {
 
     private static final Logger LOG = Logger.getLogger(FileResourceLoader.class);
 
@@ -69,7 +69,7 @@ public final class FileResourceLoader extends AbstractResourceLoader {
 
     /** {@inheritDoc}
      */
-    private FileResourceLoader(final SiteContext cxt) {
+    protected FileResourceLoader(final SiteContext cxt) {
         super(cxt);
     }
 
@@ -91,7 +91,7 @@ public final class FileResourceLoader extends AbstractResourceLoader {
         return false;
     }
     
-    private String getProjectName(final String siteName){
+    protected final String getProjectName(final String siteName){
         
         LOG.debug("getProjectName(" + siteName + ')');
         // Very hacky.

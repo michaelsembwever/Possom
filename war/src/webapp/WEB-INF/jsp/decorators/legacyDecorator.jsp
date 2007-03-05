@@ -1,8 +1,15 @@
+<%-- Copyright (2006-2007) Schibsted Søk AS
+  --
+  -- XXX Will be removed along with VelocityResultHandler.
+  --
+  -- @version $Id$
+--%>
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8" %>
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="java.util.List"%>
 <%@ page import="java.util.Map"%>
 <%@ page import="com.opensymphony.module.sitemesh.Page"%>
+<%@ page import="no.schibstedsok.searchportal.datamodel.DataModel"%>
 <%@ page import="no.schibstedsok.searchportal.view.config.SearchTab"%>
 <%@ page import="com.opensymphony.module.sitemesh.RequestConstants"%>
 <%@ page import="no.schibstedsok.searchportal.view.i18n.TextMessages"%>
@@ -14,17 +21,20 @@
 <%@ taglib uri="http://www.opensymphony.com/sitemesh/page" prefix="page" %>
 <%@ taglib uri="/WEB-INF/SearchPortal.tld" prefix="search" %>
 <%
+final DataModel datamodel = (DataModel)session.getAttribute(DataModel.KEY);
 final TextMessages text = (TextMessages) request.getAttribute("text");
-final Site site = (Site)request.getAttribute(Site.NAME_KEY);
+final Site site = datamodel.getSite().getSite();
 final SearchTab tab = (SearchTab)request.getAttribute("tab");
 String currentC = "d";    //default collection
 currentC = (String) request.getAttribute("c");
-String q = (String) request.getAttribute("q");
-q = (String) request.getAttribute("queryHTMLEscaped");
-final boolean publish = null != request.getParameter("page");
-final String ss = request.getParameter("ss");
-final String ssr = request.getParameter("ssr");
-final String vertikal = request.getParameter("vertikal") == null ? "" : request.getParameter("vertikal");
+String q = datamodel.getQuery().getXmlEscaped();
+final boolean publish = null != datamodel.getParameters().getValue("page");
+final String ss = null == datamodel.getParameters().getValue("ss")
+        ? "" : datamodel.getParameters().getValue("ss").getUtf8UrlEncoded();
+final String ssr = null == datamodel.getParameters().getValue("ssr")
+        ? "" : datamodel.getParameters().getValue("ssr").getUtf8UrlEncoded();
+final String vertikal = null == datamodel.getParameters().getValue("vertikal") 
+        ? "" : datamodel.getParameters().getValue("vertikal").getUtf8UrlEncoded();
 String commandname = "defaultSearch";
 
 final Page siteMeshPage = (Page) request.getAttribute(RequestConstants.PAGE);
@@ -42,61 +52,7 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
 
 <body onload="sesamInit('<%= currentC %>', '<%= vertikal %>', '<%= q.trim() %>', <%= publish %>);">
 
-    <%-- old-school sitesearch --%>
-    <% if (currentC.equals("d") && (
-             "di".equals(ss) ||
-             "pr".equals(ss) ||
-             "im".equals(ss) ||
-             "af".equals(ss) ||
-             "fv".equals(ss) ||
-             "aa".equals(ss) ||
-             "bt".equals(ss) ||
-             "sa".equals(ss))) { %>
-        <div id="frame">
-            <div id="header">
-                <search:velocity template="legacy/skin/headers/${param.ss}"/>
-                <decorator:getProperty property="page.search-bar"/>
-            </div>
-            <div id="content_ss">
-                <div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
-                <div id ="content_top">
-                    <dl>
-                        <dt>
-                            <span class="sitename">
-                                <% if ("ds".equals(ssr)) { %> Dinside:
-                                <% } else if ("di".equals(ssr)) { %> Digi:
-                                <% } else if ("pr".equals(ssr)) { %> Propaganda:
-                                <% } else if ("it".equals(ssr)) { %> Itavisen:
-                                <% } else if ("im".equals(ssr)) { %> iMarkedet:
-                                <% } else if ("nrk".equals(ssr)) { %> NRK:
-                                <% } else if ("af".equals(ssr)) { %> Aftenposten:
-                                <% } else if ("fv".equals(ssr)) { %> F&#230;drelandsvennen:
-                                <% } else if ("aa".equals(ssr)) { %> Adresseavisen:
-                                <% } else if ("bt".equals(ssr)) { %> bt.no:
-                                <% } else if ("sa".equals(ssr)) { %> Stavanger Aftenblad:
-                                <% } else if ("d".equals(ssr)) { %> Nettet:
-                                <% } %>
-                            </span>
-                            <decorator:getProperty property="page.greybar_sitesearch"/>
-                        </dt>
-                        <dd><decorator:getProperty property="page.greybar_ad"/></dd>
-                    </dl>
-                </div>
-                <div class="greybar_line"><img src="../images/pix.gif" width="1" height="1" alt="" /></div>
-                <%--sesam search in sitesearch modus--%>
-                <div id="content_left_ss">
-                    <decorator:getProperty property="page.fast-results"/>
-                </div>
-                <div id="content_right_ss">
-                    <decorator:getProperty property="page.ads"/>
-                </div>
-            </div>
-            <div id="footer_ss">
-                <decorator:getProperty property="page.offsetPager"/>
-            </div>
-        </div>        
-    <% } else { %>
-        <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("pp") || currentC.equals("sw") || currentC.equals("b") )) {%>
+    <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("pp") || currentC.equals("sw") || currentC.equals("b") )) {%>
             <decorator:getProperty property="page.newsearch-bar"/>
 	<% }else if(q.trim().equals("") && currentC.equals("d") && publish) {%>
 	    <decorator:getProperty property="page.omsesam-bar"/>
@@ -222,9 +178,8 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
     </tr>
      
 </table>
-    <decorator:getProperty property="page.verbosePager"/>
-    <decorator:getProperty property="page.footer"/>
-<%}%>
+<decorator:getProperty property="page.verbosePager"/>
+<decorator:getProperty property="page.footer"/>
 
 <decorator:getProperty property="page.map-script"/>
 

@@ -45,7 +45,7 @@ public class StringDataObjectSupport implements StringDataObject{
         return string;
     }
 
-    public String getUtf8UrlEscaped(){
+    public String getUtf8UrlEncoded(){
         
         try {
             return java.net.URLEncoder.encode(getString(), "UTF-8");
@@ -55,7 +55,7 @@ public class StringDataObjectSupport implements StringDataObject{
         }
     }
     
-    public String getIso88591UrlEscaped(){
+    public String getIso88591UrlEncoded(){
         
         try {
             return java.net.URLEncoder.encode(getString(), "ISO-8859-1");
@@ -65,7 +65,7 @@ public class StringDataObjectSupport implements StringDataObject{
         }
     }
     
-    public String getHtmlEscaped(){
+    public String getXmlEscaped(){
         
         return StringEscapeUtils.escapeHtml(getString());
     }

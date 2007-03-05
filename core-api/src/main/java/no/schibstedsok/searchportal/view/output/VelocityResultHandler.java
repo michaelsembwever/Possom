@@ -170,7 +170,7 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("response", parameters.get("response"));
         
         // search-portal attributes
-        context.put("datamodel", datamodel); // <-- the devil's through the backdoor now
+        context.put("datamodel", datamodel); // <-- the devil's through the backdoor now. ! this is a partial datamodel
         context.put("result", cxt.getSearchResult());
         context.put("query", queryStringURLEncoded);
 
@@ -192,8 +192,6 @@ public final class VelocityResultHandler implements ResultHandler {
         context.put("channelCategories", Channel.Category.values());
 
         final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
-
-        final int navBarSize = 10;
 
         if (config.isPaging()) {
             final PagingDisplayHelper pager = new PagingDisplayHelper(

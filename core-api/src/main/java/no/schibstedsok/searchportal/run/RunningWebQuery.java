@@ -159,7 +159,6 @@ public final class RunningWebQuery extends RunningQueryImpl {
                 }
             }
             // ...and...
-            request.setAttribute("queryHTMLEscaped", datamodel.getQuery().getHtmlEscaped());
             request.setAttribute("enrichments", getEnrichments());
             request.setAttribute("sources", getSources());
             request.setAttribute("hits",getHits());

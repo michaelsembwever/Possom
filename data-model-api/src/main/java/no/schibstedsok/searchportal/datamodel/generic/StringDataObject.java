@@ -19,7 +19,7 @@ import no.schibstedsok.searchportal.datamodel.*;
 @DataObject
 public interface StringDataObject extends Serializable{
     String getString();
-    String getUtf8UrlEscaped();
-    String getIso88591UrlEscaped();
-    String getHtmlEscaped();
+    String getUtf8UrlEncoded();
+    String getIso88591UrlEncoded();
+    String getXmlEscaped();
 }

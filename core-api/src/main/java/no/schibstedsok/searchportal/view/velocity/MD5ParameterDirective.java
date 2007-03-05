@@ -68,7 +68,9 @@ public final class MD5ParameterDirective extends Directive {
         }
 
         final MD5Generator digestGenerator = new MD5Generator("S3SAM rockz");
-        final String input = node.jjtGetChild(0).value(context).toString();
+        final String input = null != node.jjtGetChild(0).value(context)
+                ? node.jjtGetChild(0).value(context).toString()
+                : "";
 
         writer.write(digestGenerator.generateMD5(input));
 

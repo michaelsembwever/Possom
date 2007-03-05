@@ -3,16 +3,13 @@ package no.schibstedsok.searchportal.view.velocity;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-
 import java.io.InputStream;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
-
 import org.apache.velocity.runtime.resource.Resource;
 import org.apache.velocity.runtime.resource.loader.ResourceLoader;
 import org.apache.velocity.exception.ResourceNotFoundException;
-
 import org.apache.commons.collections.ExtendedProperties;
 
 /** XXX This source file needs to be published to the internet as it is open-source code.
@@ -35,6 +32,12 @@ import org.apache.commons.collections.ExtendedProperties;
  * @version $Id: URLResourceLoader.java,v 1.3 2004/03/19 17:13:40 dlr Exp $
  */
 public final class URLVelocityTemplateLoader extends ResourceLoader {
+    
+    public interface Context{
+        boolean doesUrlExist(final String url, final String hostHeader);
+        String getURL(final String resource);
+        String getHostHeader(final String resource);
+    }
 
     // Constants -----------------------------------------------------
     
@@ -55,6 +58,12 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     
     // Static --------------------------------------------------------
     
+    private static Context context = new DefaultContext();
+    
+    // Allows the tests to switch the Velocity ResourceLoader over to a file based one.
+    static void setContext(final Context context){
+        URLVelocityTemplateLoader.context = context;
+    }
     
     // Constructors --------------------------------------------------
     
@@ -145,7 +154,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             final String url, final Site currentSite)
             throws IOException, ResourceNotFoundException {
 
-        if (UrlResourceLoader.doesUrlExist(UrlResourceLoader.getURL(url),UrlResourceLoader.getHostHeader(url))) {
+        if (context.doesUrlExist(context.getURL(url),context.getHostHeader(url))) {
             return getURLConnection(url);
         } else {
             final Site parent = currentSite.getParent();
@@ -178,11 +187,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
         // TODO make this loopback to call a context's ResourceLoader method from the site-spi.
         LOG.trace(DEBUG_EXISTS + url);
-        final URL u = new URL(UrlResourceLoader.getURL(url));
+        final URL u = new URL(context.getURL(url));
         
         LOG.trace(DEBUG_FULL_URL_IS + u);
         final URLConnection conn = u.openConnection();
-        final String hostHeader = UrlResourceLoader.getHostHeader(url);
+        final String hostHeader = context.getHostHeader(url);
         
         LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
         conn.addRequestProperty("host", hostHeader);
@@ -193,5 +202,19 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     
     // Inner classes -------------------------------------------------
     
+    private static final class DefaultContext implements Context{
+        
+        public boolean doesUrlExist(final String url, final String hostHeader) {
+            return UrlResourceLoader.doesUrlExist(url, hostHeader);
+        }
+
+        public String getURL(final String resource) {
+            return UrlResourceLoader.getURL(resource);
+        }
+
+        public String getHostHeader(final String resource) {
+            return UrlResourceLoader.getHostHeader(resource);
+        }
+}
 }
 

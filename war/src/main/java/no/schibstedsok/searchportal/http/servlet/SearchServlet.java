@@ -407,7 +407,7 @@ public final class SearchServlet extends HttpServlet {
                 STATISTICS_LOG.info(
                     "<search-servlet"
                         + (null != output ? " output=\"" + output + "\">" : ">")
-                        + "<query>" + datamodel.getQuery().getHtmlEscaped() + "</query>"
+                        + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>"
                         + "<time>" + stopWatch + "</time>"
                         + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
                     + "</search-servlet>");

@@ -85,7 +85,10 @@ public final class DataModelFilter implements Filter {
 
         if(request instanceof HttpServletRequest){
             final HttpServletRequest httpRequest = (HttpServletRequest)request;
-            final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+        
+            LOG.info("Incoming! " + httpRequest.getQueryString());
+        
+            final Site site = (Site) httpRequest.getAttribute(Site.NAME_KEY);
 
             final DataModelFactory factory;
             try{
