@@ -310,14 +310,13 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         final String a = getParameter(navigator.getField());
 
         if (a != null) {
-
-            if (!(navigator.getName().equals("ywfylkesnavigator") && a.equals("Oslo"))) {
-                if (!(navigator.getName().equals("ywkommunenavigator") && a.equals("Oslo"))) {
+            if (!( ( navigator.getName().equals("ywfylkesnavigator") || navigator.getName().equals("iypnavfylke")) && a.equals("Oslo"))) {
+                if (!( ( navigator.getName().equals("ywkommunenavigator") || navigator.getName().equals("iypnavkommune") ) && a.equals("Oslo"))) {
+                    System.out.println("-- ADD: " + navigator.toString());
                     links.add(navigator);
                 }
             }
         }
-
         if (navigator.getChildNavigator() != null) {
             final String n = getParameter("nav_" + navigatorKey);
 
