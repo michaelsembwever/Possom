@@ -123,7 +123,9 @@ public final class VelocityTemplateTest extends SiteTestCase{
         VelocityLoader(){
             super(new SiteContext(){
                 public Site getSite() {
-                    return getTestingSite();
+                    //return getTestingSite(); <-- doesn't work because of java bug #6266772 
+                    // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6266772
+                    return VelocityTemplateTest.this.getTestingSite();                    
                 }            
             });
         }
