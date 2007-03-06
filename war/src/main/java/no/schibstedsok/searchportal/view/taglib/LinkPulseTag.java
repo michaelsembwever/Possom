@@ -12,6 +12,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.site.Site;
@@ -60,8 +61,9 @@ public final class LinkPulseTag extends SimpleTagSupport {
                 f.invoke(out);
             }
             
-            final Site site = (Site) cxt.findAttribute(Site.NAME_KEY);
-            final Properties props = SiteConfiguration.valueOf(site).getProperties();
+            final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
+            final Site site = datamodel.getSite().getSite();
+            final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
             final Linkpulse linkpulse = new Linkpulse(site, props);
             
             out.print(linkpulse.getUrl(url, param, script, index));

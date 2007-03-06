@@ -1,7 +1,7 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.http.servlet;
 
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
-
+import java.io.IOException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,12 +12,9 @@ import javax.mail.Message;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.AddressException;
-import java.io.IOException;
 import java.util.Properties;
-import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.log4j.Logger;
-
 /**
  * Sends a mail from the YIP-page contactform to the companyaddressmail
  *
@@ -29,9 +26,12 @@ public final class SendMailServlet extends HttpServlet {
 
     private static final Logger LOG = Logger.getLogger(SendMailServlet.class);
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    protected void doGet(
+            final HttpServletRequest req, 
+            final HttpServletResponse res) throws ServletException, IOException {
 
-        final Properties props = SiteConfiguration.valueOf((Site)req.getAttribute(Site.NAME_KEY)).getProperties();
+        final DataModel datamodel = (DataModel) req.getSession().getAttribute(DataModel.KEY);
+        final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
         
         final String emailFrom = req.getParameter("emailFrom");
         final String emailTo = req.getParameter("emailTo");
@@ -66,7 +66,7 @@ public final class SendMailServlet extends HttpServlet {
             Transport.send(msg);
             
         } catch (MessagingException e) {
-            LOG.error("",e);
+            LOG.error(e.getMessage(), e);
         }
         
         final String redir = req.getContextPath() + req.getParameter("rdir");

@@ -1,6 +1,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
@@ -75,9 +76,11 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
             final String wantedQuery,
             final String wantedFilter) throws SiteKeyedFactoryInstantiationException {
 
-        final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
-        final AbstractAdvancedFastSearchCommand cmd = new AdvancedFastSearchCommand(cxt, getDataModel());
-        final String generatedQuery = cmd.getQueryRepresentation(cxt.getQuery());
+        final DataModel datamodel = getDataModel();
+        
+        final SearchCommand.Context cxt = createCommandContext(query, "d", datamodel, "defaultSearch");
+        final AbstractAdvancedFastSearchCommand cmd = new AdvancedFastSearchCommand(cxt, datamodel);
+        final String generatedQuery = cmd.getQueryRepresentation(datamodel.getQuery().getQuery());
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
         assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getAdditionalFilter());
     }

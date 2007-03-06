@@ -33,6 +33,7 @@ import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.net.URL;
@@ -42,6 +43,7 @@ import java.util.Properties;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 
 /**
@@ -103,15 +105,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         super(cxt, datamodel);
 
         cfg = (ESPFastSearchConfiguration) getSearchConfiguration();
-        final SiteConfiguration siteConf
-                = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
         queryServer = siteConf.getProperty(cfg.getQueryServer());
         searchView = initialiseSearchView();
     }
 
     // Public --------------------------------------------------------
 
-    /** {@insheritDoc} */
+    /** {@inheritDoc} */
     public SearchResult execute() {
 
         try {

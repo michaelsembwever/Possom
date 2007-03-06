@@ -55,8 +55,7 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
 
         final AbstractYahooSearchConfiguration conf = (AbstractYahooSearchConfiguration)cxt.getSearchConfiguration();
 
-        final SiteConfiguration siteConf
-                = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
         final String host = siteConf.getProperty(conf.getHost());
         final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
 

@@ -29,7 +29,7 @@ public final class NumberOperationHandler implements ResultHandler {
 
         final SearchResult result = cxt.getSearchResult();
 
-        final NumberFormat formatter = NumberFormat.getInstance(cxt.getSite().getLocale());
+        final NumberFormat formatter = NumberFormat.getInstance(datamodel.getSite().getSite().getLocale());
         formatter.setMinimumIntegerDigits(minDigits);
         formatter.setMaximumIntegerDigits(maxDigits);
         formatter.setMinimumFractionDigits(minFractionDigits);

@@ -72,7 +72,7 @@ public final class DataModelFilter implements Filter {
 
     // Public --------------------------------------------------------
 
-    public void init(FilterConfig config) throws ServletException {
+    public void init(final FilterConfig config) throws ServletException {
     }
 
     public void doFilter(
@@ -80,8 +80,6 @@ public final class DataModelFilter implements Filter {
             final ServletResponse response,
             final FilterChain chain)
                 throws IOException, ServletException {
-
-        DataModel datamodel = null;
 
         if(request instanceof HttpServletRequest){
             final HttpServletRequest httpRequest = (HttpServletRequest)request;
@@ -109,14 +107,18 @@ public final class DataModelFilter implements Filter {
                 throw new ServletException(skfie.getMessage(), skfie);
             }
 
-            final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
+            // datamodel is NOT request-safe. all the user's requests must execute in sequence!
+            synchronized( httpRequest.getSession() ){
+                
+                final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
 
-            datamodel = getDataModel(factory, httpRequest);
-            datamodel.setParameters(parametersDO);
-        }
-        chain.doFilter(request, response);
-        if( null != datamodel ){
-            cleanDataModel(datamodel);
+                final DataModel datamodel = getDataModel(factory, httpRequest);
+                datamodel.setParameters(parametersDO);
+                    
+                chain.doFilter(request, response);
+
+                cleanDataModel(datamodel);
+            }
         }
     }
 
@@ -210,7 +212,7 @@ public final class DataModelFilter implements Filter {
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
     private static void cleanDataModel(final DataModel datamodel){
 
-        datamodel.getJunkYard().getValues().clear();;;
+        datamodel.getJunkYard().getValues().clear();
         datamodel.setParameters(null);
         datamodel.setQuery(null);
     }

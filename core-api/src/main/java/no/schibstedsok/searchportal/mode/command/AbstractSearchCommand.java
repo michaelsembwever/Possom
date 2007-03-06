@@ -98,23 +98,26 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                                  final DataModel datamodel) {
 
         LOG.trace("AbstractSearchCommand()");
-        context = cxt;
+        
 
-        assert null != datamodel : "Not allowed to pass in null parameters";
+        assert null != datamodel : "Not allowed to pass in null datamodel";
+        assert null != datamodel.getQuery() : "Not allowed to pass in null datamodel.query";
+        
+        this.context = cxt;
         this.datamodel = datamodel;
 
         // XXX should be null so we know neither applyQueryTransformers or performQueryTranformation has been called
-        transformedQuery = context.getQuery().getQueryString();
-        final Clause root = context.getQuery().getRootClause();
+        transformedQuery = datamodel.getQuery().getString();
+        final Clause root = datamodel.getQuery().getQuery().getRootClause();
 
         // initialise transformed terms
         final Visitor mapInitialisor = new MapInitialisor(transformedTerms);
         mapInitialisor.visit(root);
-        untransformedQuery =  getQueryRepresentation(context.getQuery());
+        untransformedQuery =  getQueryRepresentation(datamodel.getQuery().getQuery());
 
         // create additional filters
         final FilterVisitor  additionalFilterVisitor = new FilterVisitor();
-        additionalFilterVisitor.visit(context.getQuery().getRootClause());
+        additionalFilterVisitor.visit(root);
         additionalFilter = additionalFilterVisitor.getFilter();
     }
 
@@ -176,7 +179,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     public SearchResult call() {
 
-        MDC.put(Site.NAME_KEY, context.getSite().getName());
+        MDC.put(Site.NAME_KEY, datamodel.getSite().getSite().getName());
         thread = Thread.currentThread();
 
         final String t = thread.getName();
@@ -307,7 +310,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         // so what query string is it then
         final String queryToUse = useParameterAsQuery
                 ? getSingleParameter(getSearchConfiguration().getQueryParameter())
-                : context.getQuery().getQueryString();
+                : datamodel.getQuery().getString();
 
         if (useParameterAsQuery) {
 
@@ -325,7 +328,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }  else  {
 
             applyQueryTransformers(
-                    context.getQuery(),
+                    datamodel.getQuery().getQuery(),
                     context.getTokenEvaluationEngine(),
                     getSearchConfiguration().getQueryTransformers());
 
@@ -390,7 +393,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         result.addField(FIELD_TRANSFORMED_QUERY,
                 getTransformedQuerySesamSyntax().length() > 0
                 ? getTransformedQuerySesamSyntax()
-                : context.getQuery().getQueryString());
+                : datamodel.getQuery().getString());
 
         // process listed result handlers
         for (ResultHandler resultHandler : getSearchConfiguration().getResultHandlers()) {
@@ -525,9 +528,12 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
                 TokenEvaluationEngine.Context.class,
                     context,
-                    new QueryStringContext() {
+                    new BaseContext() {
                         public String getQueryString() {
                             return queryString;
+                        }
+                        public Site getSite(){
+                            return datamodel.getSite().getSite();
                         }
                     }
         );
@@ -624,6 +630,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             final StringBuilder filterBuilder = new StringBuilder(filter);
 
             final BaseContext baseQtCxt = new BaseContext(){
+                public Site getSite(){
+                    return datamodel.getSite().getSite();
+                }
                 public String getTransformedQuery() {
                     return transformedQuery;
                 }
@@ -689,7 +698,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
 
         final SesamSyntaxQueryBuilder builder = newSesamSyntaxQueryBuilder();
-        builder.visit(context.getQuery().getRootClause());
+        builder.visit(datamodel.getQuery().getQuery().getRootClause());
         transformedQuerySesamSyntax = builder.getQueryRepresentation();
     }
 

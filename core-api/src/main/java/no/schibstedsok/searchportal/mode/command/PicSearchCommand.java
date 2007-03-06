@@ -49,8 +49,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
         super(cxt, datamodel);
 
-        final SiteConfiguration siteConfig
-                = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+        final SiteConfiguration siteConfig = datamodel.getSite().getSiteConfiguration();
         final PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
 
         final String host = siteConfig.getProperty(psConfig.getQueryServerHost());

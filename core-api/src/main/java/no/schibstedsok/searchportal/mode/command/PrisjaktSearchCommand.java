@@ -68,16 +68,17 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
         /*Butiker*/
         final boolean isChain = engine.evaluateQuery(TokenPredicate.CHAIN,
-                context.getQuery());
+                datamodel.getQuery().getQuery());
         /*Kategorier*/
-        final boolean isService = engine.evaluateQuery(TokenPredicate.SHOP_CATEGORY, context.getQuery());
+        final boolean isService = engine.evaluateQuery(TokenPredicate.SHOP_CATEGORY, datamodel.getQuery().getQuery());
 
 
         /*Produkter*/
-        final boolean isElectronics = engine.evaluateQuery(
-                TokenPredicate.PRODUCT_ELECTRONIC, context.getQuery());
-        final boolean isHousehold = engine.evaluateQuery(TokenPredicate.PRODUCT_HOUSEHOLD, context.getQuery());
-        final boolean isMusic = engine.evaluateQuery(TokenPredicate.PRODUCT_MUSIC, context.getQuery());
+        final boolean isElectronics 
+                = engine.evaluateQuery(TokenPredicate.PRODUCT_ELECTRONIC, datamodel.getQuery().getQuery());
+        final boolean isHousehold 
+                = engine.evaluateQuery(TokenPredicate.PRODUCT_HOUSEHOLD, datamodel.getQuery().getQuery());
+        final boolean isMusic = engine.evaluateQuery(TokenPredicate.PRODUCT_MUSIC, datamodel.getQuery().getQuery());
 
         final SearchResult result = new BasicSearchResult(this);
 

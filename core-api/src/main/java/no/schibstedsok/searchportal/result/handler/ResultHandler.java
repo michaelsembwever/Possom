@@ -20,12 +20,10 @@ public interface ResultHandler {
      * Slightly unusual in that the context never becomes a member field but is only used inside the
      * handleResult method.
      */
-    public interface Context extends SiteContext, QueryContext, QueryStringContext, ResourceContext {
+    public interface Context extends ResourceContext {
+        
         SearchResult getSearchResult();
         SearchTab getSearchTab();
-
-        /** @deprecated implementations should be using the QueryContext instead! */
-        String getQueryString();
 
         /** Result handling action **/
         void addSource(Modifier modifier);

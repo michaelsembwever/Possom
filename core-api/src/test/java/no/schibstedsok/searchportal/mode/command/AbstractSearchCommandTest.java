@@ -57,18 +57,23 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
     // Protected -----------------------------------------------------
 
     protected final RunningQuery.Context createRunningQueryContext(final String key){
+        
+        final SiteContext siteCxt = new SiteContext(){
+            public Site getSite() {
+                return getTestingSite();
+            }
+        };
 
         return new RunningQuery.Context() {
-            private final SearchMode mode = new SearchMode();
 
             public SearchMode getSearchMode() {
                 return SearchModeFactory.valueOf(
-                        ContextWrapper.wrap(SearchModeFactory.Context.class, this))
+                        ContextWrapper.wrap(SearchModeFactory.Context.class, this, siteCxt))
                         .getMode(getSearchTab().getMode());
             }
             public SearchTab getSearchTab(){
                 return SearchTabFactory.valueOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                    ContextWrapper.wrap(SearchTabFactory.Context.class, this, siteCxt))
                     .getTabByKey(key);
             }
             public PropertiesLoader newPropertiesLoader(
@@ -85,19 +90,28 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
                 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-            public Site getSite() {
-                return getTestingSite();
-            }
         };
     }
 
     protected final SearchCommand.Context createCommandContext(
             final String query,
             final RunningQuery.Context rqCxt,
+            final DataModel datamodel,
             final String conf) throws SiteKeyedFactoryInstantiationException{
 
-        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query, getDataModel());
-        final Query q = rq.getQuery();
+        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query, datamodel);
+
+        final TokenEvaluationEngine engine = rq.getTokenEvaluationEngine();
+
+        return createCommandContext(rq, rqCxt, conf);
+
+    }
+    
+    protected final SearchCommand.Context createCommandContext(
+            final RunningTestQuery rq,
+            final RunningQuery.Context rqCxt,
+            final String conf) throws SiteKeyedFactoryInstantiationException{
+
         final TokenEvaluationEngine engine = rq.getTokenEvaluationEngine();
 
         return ContextWrapper.wrap(
@@ -110,25 +124,23 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
                     public RunningQuery getRunningQuery() {
                         return rq;
                     }
-                    public Query getQuery(){
-                        return q;
-                    }
+
                     public TokenEvaluationEngine getTokenEvaluationEngine(){
                         return engine;
                     }
                 },
                 rqCxt);
-
     }
 
     protected final SearchCommand.Context createCommandContext(
             final String query,
             final String key,
+            final DataModel datamodel,
             final String conf) throws SiteKeyedFactoryInstantiationException {
 
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
 
-        return createCommandContext(query, rqCxt, conf);
+        return createCommandContext(query, rqCxt, datamodel, conf);
     }
 
     // Private -------------------------------------------------------

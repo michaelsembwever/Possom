@@ -199,9 +199,9 @@ public class NewsSearchCommand extends FastSearchCommand {
 
     private boolean containsJustThePrefix() {
 
-        final LeafClause firstLeaf = context.getQuery().getFirstLeafClause();
+        final LeafClause firstLeaf = datamodel.getQuery().getQuery().getFirstLeafClause();
 
-        return context.getQuery().getRootClause() == firstLeaf
+        return datamodel.getQuery().getQuery().getRootClause() == firstLeaf
           && (firstLeaf.getKnownPredicates().contains(TokenPredicate.NEWS_MAGIC)
               || firstLeaf.getPossiblePredicates().contains(TokenPredicate.NEWS_MAGIC));
     }

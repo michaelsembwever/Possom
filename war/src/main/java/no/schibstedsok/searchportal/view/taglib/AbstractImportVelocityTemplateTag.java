@@ -83,8 +83,10 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
                 f.invoke(out);
             }
             
-            final Site site = null != cxt.findAttribute(Site.NAME_KEY)
-                    ? (Site)cxt.findAttribute(Site.NAME_KEY)
+            final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
+            
+            final Site site = null != datamodel && null != datamodel.getSite()
+                    ? datamodel.getSite().getSite()
                     // we haven't gone through the SiteLocatorFilter so get site manually
                     : SiteLocatorFilter.getSite(cxt.getRequest());
             
@@ -110,11 +112,12 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
             for(Map.Entry<String,Object> entry : map.entrySet()){
                 context.put(entry.getKey(), entry.getValue());
             }
-            context.put("datamodel", cxt.getSession().getAttribute(DataModel.KEY));
-            context.put("base", ((HttpServletRequest)cxt.getRequest()).getContextPath());
-            context.put("contextPath", ((HttpServletRequest)cxt.getRequest()).getContextPath());
+            context.put("datamodel", datamodel);
+            context.put("base", datamodel.getParameters().getContextPath());
+            context.put("contextPath", datamodel.getParameters().getContextPath()); // TODO no need for both
             context.put("text", text);
-            context.put("configuration", SiteConfiguration.valueOf(site).getProperties());
+            // TODO use datamodel nstead
+            context.put("configuration", datamodel.getSite().getSiteConfiguration().getProperties());
             context.put("channelCategories", Channel.Category.values());
 
             // push all parameters into velocity context attributes

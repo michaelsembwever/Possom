@@ -87,8 +87,8 @@ public final class DailyWordCommand extends AbstractSearchCommand {
 
         result.setHitCount(0);
 
-        if (WORDS.containsKey(context.getQuery().getQueryString().toLowerCase())) {
-            final DailyWord word = WORDS.get(context.getQuery().getQueryString().toLowerCase());
+        if (WORDS.containsKey(datamodel.getQuery().getString().toLowerCase())) {
+            final DailyWord word = WORDS.get(datamodel.getQuery().getString().toLowerCase());
             if (word.isActive(new Date())) {
                 final SearchResultItem item = new BasicSearchResultItem();
                 item.addField(FIELD_WORD, word.getWord());

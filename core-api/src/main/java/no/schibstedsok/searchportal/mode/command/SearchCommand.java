@@ -18,17 +18,18 @@ import no.schibstedsok.searchportal.run.RunningQueryContext;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.site.SiteContext;
 
-/**
+/** Behavour requirements for any implementation Search Command.
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public interface SearchCommand extends Callable<SearchResult> {
 
     /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it
      * creates.
      */
-    public interface Context extends BaseContext, QueryContext, ResourceContext, RunningQueryContext,
-            SearchConfigurationContext, SiteContext, TokenEvaluationEngineContext {
+    public interface Context extends BaseContext, ResourceContext, RunningQueryContext,
+            SearchConfigurationContext, TokenEvaluationEngineContext {
     }
 
     /**

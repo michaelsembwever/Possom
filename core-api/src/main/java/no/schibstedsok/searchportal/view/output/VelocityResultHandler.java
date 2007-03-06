@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.util.Channel;
 
 /** Handles the populating the velocity contexts.
@@ -80,9 +81,15 @@ public final class VelocityResultHandler implements ResultHandler {
 
             LOG.debug(DEBUG_TEMPLATE_SEARCH + searchConfiguration + templateName);
 
-            final Site site = cxt.getSite();
-            final VelocityEngine engine = VelocityEngineFactory.valueOf(
-                    ContextWrapper.wrap(VelocityEngineFactory.Context.class, cxt)).getEngine();
+            final Site site = datamodel.getSite().getSite();
+            final VelocityEngine engine = VelocityEngineFactory.valueOf(ContextWrapper.wrap(
+                    VelocityEngineFactory.Context.class, 
+                    cxt,
+                    new SiteContext(){
+                        public Site getSite() {
+                            return site;
+                        }
+                    })).getEngine();
 
             try{
 
@@ -140,7 +147,7 @@ public final class VelocityResultHandler implements ResultHandler {
         
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();        
 
-        String queryString = cxt.getQuery().getQueryString();
+        String queryString = datamodel.getQuery().getString();
 
         String queryStringURLEncoded = null;
 
@@ -187,7 +194,14 @@ public final class VelocityResultHandler implements ResultHandler {
 
         /* TODO: check where this went */
         /* context.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class,cxt))); */
-        context.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, cxt)));
+        context.put("channels", Channels.valueOf(ContextWrapper.wrap(
+                Channels.Context.class, 
+                cxt,
+                new SiteContext(){
+                    public Site getSite() {
+                        return datamodel.getSite().getSite();
+                    }
+                })));
 
         context.put("channelCategories", Channel.Category.values());
 

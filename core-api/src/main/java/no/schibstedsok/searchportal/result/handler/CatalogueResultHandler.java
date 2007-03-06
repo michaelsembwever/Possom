@@ -41,9 +41,7 @@ public final class CatalogueResultHandler implements ResultHandler {
 	public void handleResult(final Context cxt, final DataModel datamodel) {
 		LOG.info("Starter Catalogue ResultHandler.");
 
-		final SiteConfiguration siteConf = SiteConfiguration
-				.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class,
-						cxt));
+		final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
 
 		String url = (String) siteConf.getProperties().get(
 				"alfa_remote_service_url");

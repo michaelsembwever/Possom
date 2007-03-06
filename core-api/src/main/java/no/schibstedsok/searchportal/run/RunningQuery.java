@@ -27,7 +27,7 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
  */
 public interface RunningQuery {
     
-    public interface Context extends BaseContext, ResourceContext, SiteContext {
+    public interface Context extends BaseContext, ResourceContext {
         /** TODO comment me. **/
         SearchMode getSearchMode();
         /** TODO comment me. **/

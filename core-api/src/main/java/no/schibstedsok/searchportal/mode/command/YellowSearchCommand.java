@@ -189,7 +189,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
-        exactCompany = engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, context.getQuery());
+        exactCompany = engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, datamodel.getQuery().getQuery());
 
         companyRank = exactCompany && !isTop3 && !getParameter("yprank").equals("standard") || getParameter("yprank").equals("company");
 
@@ -244,7 +244,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 
-        if (engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, context.getQuery())) {
+        if (engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, datamodel.getQuery().getQuery())) {
             return "yellowname";
         }
 

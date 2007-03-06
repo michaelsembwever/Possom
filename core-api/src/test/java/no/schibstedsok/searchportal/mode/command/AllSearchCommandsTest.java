@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  *
  * Created on March 4, 2006, 2:32 PM
@@ -87,16 +87,17 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
         
         updateAttributes(datamodel.getJunkYard().getValues(), rqCxt);
-        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, getDataModel());
+        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query, datamodel);
         datamodel.getJunkYard().getValues().put("query", rq);
 
         final Collection<Callable<SearchResult>> commands = new ArrayList<Callable<SearchResult>>();
 
         for(SearchConfiguration conf : rqCxt.getSearchMode().getSearchConfigurations()){
+            
 
             LOG.info(DEBUG_EXECUTE_COMMAND + conf.getName());
 
-            final SearchCommand.Context cxt = createCommandContext(query, rqCxt, conf.getName());
+            final SearchCommand.Context cxt = createCommandContext(rq, rqCxt, conf.getName());
 
             final SearchCommand cmd = SearchCommandFactory.createSearchCommand(cxt, datamodel);
 

@@ -8,6 +8,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
@@ -15,6 +16,7 @@ import static org.testng.AssertJUnit.*;
 /**
  *
  * @author magnuse
+ * @version $Id$
  */
 public final class WebSearchCommandTest extends AbstractSearchCommandTest {
 
@@ -116,12 +118,14 @@ public final class WebSearchCommandTest extends AbstractSearchCommandTest {
             final String query,
             final String wantedQuery,
             final String wantedFilter) throws SiteKeyedFactoryInstantiationException{
+        
+        final DataModel datamodel = getDataModel();
 
-        final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
+        final SearchCommand.Context cxt = createCommandContext(query, "d", datamodel, "defaultSearch");
 
-        final WebSearchCommand cmd = new WebSearchCommand(cxt, getDataModel());
+        final WebSearchCommand cmd = new WebSearchCommand(cxt, datamodel);
 
-        final String generatedQuery = cmd.getQueryRepresentation(cxt.getQuery());
+        final String generatedQuery = cmd.getQueryRepresentation(datamodel.getQuery().getQuery());
 
         assertEquals(wantedQuery, generatedQuery.trim());
         assertEquals(wantedFilter, cmd.getAdditionalFilter());

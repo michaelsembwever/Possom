@@ -48,6 +48,8 @@ import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.Enrichment;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.Channels;
@@ -125,16 +127,24 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         super(cxt);
         
+        assert null == datamodel.getQuery();
+        
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
         LOG.trace("RunningQuery(cxt," + query + "," + parameters + ")");
 
         final String queryStr = trimDuplicateSpaces(query);
 
-        locale = cxt.getSite().getLocale();
+        locale = datamodel.getSite().getSite().getLocale();
 
         this.datamodel = datamodel;
         initParameters(cxt);
+        
+        final SiteContext siteCxt = new SiteContext(){
+            public Site getSite() {
+                return datamodel.getSite().getSite();
+            }   
+        };
 
         final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
                 ContextWrapper.wrap(
@@ -144,7 +154,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                         public String getQueryString() {
                             return queryStr;
                         }
-                    });
+                    },
+                    siteCxt);
 
         // This will among other things perform the initial fast search
         // for textual analysis.
@@ -158,7 +169,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         });
 
         final DataModelFactory factory 
-                = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt));
+                = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt, siteCxt));
 
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
@@ -167,7 +178,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         
         datamodel.setQuery(queryDO);
         
-        rules = AnalysisRuleFactory.valueOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, context));
+        rules = AnalysisRuleFactory.valueOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, context, siteCxt));
 
     }
 
@@ -547,6 +558,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         final StringBuilder log = new StringBuilder();
 
+        LOG.debug(context.getSearchTab());
+        LOG.debug(enrichments);
+        LOG.debug(datamodel.getQuery());
         log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
                 + "\" size=\"" + enrichments.size() + "\">"
                 + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");
@@ -603,15 +617,20 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             parameters.put("offset", "0");
         }
 
-        final Properties props = SiteConfiguration.valueOf(
-                        ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
+        final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
+        
+        final SiteContext siteCxt = new SiteContext(){
+            public Site getSite() {
+                return datamodel.getSite().getSite();
+            }
+        };
 
         parameters.put("configuration", props);
-        parameters.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, rqCxt)));
-        parameters.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, rqCxt)));
+        parameters.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, rqCxt, siteCxt)));
+        parameters.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, rqCxt, siteCxt)));
 
-        parameters.put("tab", rqCxt.getSearchTab());
-        parameters.put("c", rqCxt.getSearchTab().getKey());
+        parameters.put("tab", rqCxt.getSearchTab()); // TODO remove
+        parameters.put("c", rqCxt.getSearchTab().getKey()); // TODO remove
     }
 
     // Inner classes -------------------------------------------------

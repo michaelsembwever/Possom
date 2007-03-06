@@ -115,7 +115,7 @@ public final class SearchServlet extends HttpServlet {
                 }
             };
 
-        if (!isEmptyQuery(parametersDO, response, genericCxt)) {
+        if (!isEmptyQuery(datamodel, response, genericCxt)) {
 
             LOG.trace("doGet()");
             LOG.debug("Character encoding ="  + request.getCharacterEncoding());
@@ -165,18 +165,18 @@ public final class SearchServlet extends HttpServlet {
     // Private -------------------------------------------------------
 
     private static boolean isEmptyQuery(
-            final ParametersDataObject parametersDO,
+            final DataModel datamodel,
             final HttpServletResponse response,
             final SiteContext ctx) throws IOException{
 
         String redirect = null;
+        final ParametersDataObject parametersDO = datamodel.getParameters();
         final Map<String,StringDataObject> params = parametersDO.getValues();
         final String qParam = null != params.get("q") ? params.get("q").getString() : "";
         final String cParm = null != params.get("c") ? params.get("c").getString() : "";
 
         // check if this is a sitesearch
-        final Properties props = SiteConfiguration.valueOf(
-                        ContextWrapper.wrap(SiteConfiguration.Context.class, ctx)).getProperties();
+        final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
         final boolean isSitesearch = Boolean.valueOf(props.getProperty(SiteConfiguration.IS_SITESEARCH_KEY));
 
         if (qParam == null) {
@@ -297,10 +297,9 @@ public final class SearchServlet extends HttpServlet {
         request.setAttribute("tradedoubler", new TradeDoubler(request));
         request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
 
-        final Properties props = SiteConfiguration.valueOf(
-                        ContextWrapper.wrap(SiteConfiguration.Context.class, rqCxt)).getProperties();
+        final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
 
-        request.setAttribute("linkpulse", new Linkpulse(rqCxt.getSite(), props));
+        request.setAttribute("linkpulse", new Linkpulse(datamodel.getSite().getSite(), props));
     }
 
     /* TODO Move into a RunningQueryHandler

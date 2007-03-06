@@ -11,10 +11,12 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
 
 
-/**
+/** Calculate Age.
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
@@ -63,17 +65,27 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                     dateParts[2] = Long.valueOf(age / (60 * 1000) % 60);
 
                     final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
-                    String ageString = ""; // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
+                    String ageString = ""; 
+                    // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
                     final String  s = parameters.get("contentsource") instanceof String[]
                             ? ((String[])parameters.get("contentsource"))[0]
                             : (String)parameters.get("contentsource");
 
-                    final TextMessages txtMsgs = TextMessages.valueOf(
-                            ContextWrapper.wrap(TextMessages.Context.class, cxt));
+                    final TextMessages txtMsgs = TextMessages.valueOf(ContextWrapper.wrap(
+                            TextMessages.Context.class, 
+                            cxt,
+                            new SiteContext(){
+                                public Site getSite() {
+                                    return datamodel.getSite().getSite();
+                                }
+                            }));
 
                     //older than 3 days or source is Mediearkivet, show short date format.
                     if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || asDate.booleanValue()){
-                        final DateFormat shortFmt = DateFormat.getDateInstance(DateFormat.SHORT, cxt.getSite().getLocale());
+                        final DateFormat shortFmt = DateFormat.getDateInstance(
+                                DateFormat.SHORT, 
+                                datamodel.getSite().getSite().getLocale());
+                        
                         ageString = shortFmt.format(new Date(stamp));
                     //more than 1 day, show days
                     }else if (dateParts[0].longValue() > 0) {
@@ -90,11 +102,10 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                         dateParts[1] = Long.valueOf(0);
                         ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
                     } else{
-                        ageString = docTime.substring(8, 10) + "." + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
+                        ageString = docTime.substring(8, 10) + "." 
+                                + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
                     }
-                    if (LOG.isTraceEnabled()) {
-                        LOG.trace("Resulting age string is " + ageString);
-                    }
+                    LOG.trace("Resulting age string is " + ageString);
 
                     if (stamp > 0) {
                         item.addField(getTargetField(), ageString);

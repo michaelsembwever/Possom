@@ -110,8 +110,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         super(cxt, datamodel);
 
         final FastSearchConfiguration conf = (FastSearchConfiguration) cxt.getSearchConfiguration();
-        final SiteConfiguration siteConf
-                = SiteConfiguration.valueOf(ContextWrapper.wrap(SiteConfiguration.Context.class, cxt));
+        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
         queryServerUrl = siteConf.getProperty(conf.getQueryServerUrl());
     }
 

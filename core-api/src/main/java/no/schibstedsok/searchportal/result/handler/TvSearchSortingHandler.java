@@ -97,7 +97,7 @@ public class TvSearchSortingHandler implements ResultHandler {
 
 
         if (sortBy.equals("channel")) {
-            if (cxt.getQuery().isBlank()) {
+            if (datamodel.getQuery().getQuery().isBlank()) {
                 for (String channel : searchConfiguration.getDefaultChannels()) {
                     if (hm.containsKey(channel)) {
                         sr.getResults().addAll(hm.get(channel));

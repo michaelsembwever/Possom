@@ -77,7 +77,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
 
         super(cxt, datamodel);
 
-        blankQuery = cxt.getQuery().isBlank();
+        blankQuery = datamodel.getQuery().getQuery().isBlank();
         this.config = (TvWaitSearchConfiguration) cxt.getSearchConfiguration();
 
         final String defaultUserSortBy = blankQuery ? "CHANNEL" : "DAY";

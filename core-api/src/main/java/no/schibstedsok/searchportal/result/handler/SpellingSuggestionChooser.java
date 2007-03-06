@@ -141,13 +141,15 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             LOG.debug("Number of corrected terms are " + numberOfCorrectedTerms(result.getSpellingSuggestions()));
         }
 
-        final int numberOfTermsInQuery = cxt.getQuery().getTermCount();
+        final int numberOfTermsInQuery = datamodel.getQuery().getQuery().getTermCount();
 
         if (numberOfTermsInQuery >= veryLongQuery && numberOfCorrectedTerms(result.getSpellingSuggestions()) > 1) {
             result.getSpellingSuggestions().clear();
         }
 
-        for (final Iterator<List<SpellingSuggestion>> terms = result.getSpellingSuggestions().values().iterator(); terms.hasNext();) {
+        for (final Iterator<List<SpellingSuggestion>> terms = result.getSpellingSuggestions().values().iterator()
+                ; terms.hasNext();) {
+            
             final List<SpellingSuggestion> suggestionList = terms.next();
 
             Collections.sort(suggestionList);
@@ -160,7 +162,9 @@ public final class SpellingSuggestionChooser implements ResultHandler {
                 if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 1) {
                     limitNumberOfSuggestions(suggestionList, maxSuggestionsForLongQueries);
                 } else
-                if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 2 && numberOfTermsInQuery < veryLongQuery) {
+                if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 2 
+                        && numberOfTermsInQuery < veryLongQuery) {
+                    
                     if (suggestionList.size() > 1) {
                         removeAllIfOneIsNotMuchBetter(suggestionList);
                     }
@@ -174,7 +178,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
         final int numberOfCorrections = numberOfCorrectedTerms(result.getSpellingSuggestions());
 
-        final String newQuery = cxt.getQuery().getQueryString().toLowerCase(cxt.getSite().getLocale());
+        final String newQuery = datamodel.getQuery().getString().toLowerCase(datamodel.getSite().getSite().getLocale());
 
         if (numberOfCorrections == 1) {
 
@@ -183,7 +187,8 @@ public final class SpellingSuggestionChooser implements ResultHandler {
                     String query = newQuery;
                     String displayQuery = newQuery;
                     query = query.replaceAll(suggestion.getOriginal(), suggestion.getSuggestion());
-                    displayQuery = displayQuery.replaceAll(suggestion.getOriginal(), "<b>" + suggestion.getSuggestion() + "</b>");
+                    displayQuery = displayQuery
+                            .replaceAll(suggestion.getOriginal(), "<b>" + suggestion.getSuggestion() + "</b>");
                     result.addQuerySuggestion(new QuerySuggestion(query, displayQuery));
                 }
             }
@@ -194,7 +199,9 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             for (List<SpellingSuggestion> spellingSuggestions : result.getSpellingSuggestions().values()) {
                 for (SpellingSuggestion spellingSuggestion : spellingSuggestions) {
                     query = query.replaceAll(spellingSuggestion.getOriginal(), spellingSuggestion.getSuggestion());
-                    displayQuery = displayQuery.replaceAll(spellingSuggestion.getOriginal(), "<b>" + spellingSuggestion.getSuggestion() + "</b>");
+                    displayQuery = displayQuery.replaceAll(
+                            spellingSuggestion.getOriginal(), 
+                            "<b>" + spellingSuggestion.getSuggestion() + "</b>");
                 }
             }
             result.addQuerySuggestion(new QuerySuggestion(query, displayQuery));

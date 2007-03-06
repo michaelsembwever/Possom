@@ -1,4 +1,4 @@
-/* Copyright (2005-2006) Schibsted Søk AS
+/* Copyright (2005-2007) Schibsted Søk AS
  * QueryStringContext.java
  *
  */
@@ -7,8 +7,9 @@ package no.schibstedsok.searchportal.query;
 
 import no.schibstedsok.commons.ioc.BaseContext;
 
-/**
- * @version $Id: QueryStringContext.java 2153 2006-02-02 13:04:13Z mickw $
+/** Used when the Query object is part of the Context and access to the datamodel is not available.
+ * 
+ * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface QueryContext extends BaseContext {

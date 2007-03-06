@@ -39,9 +39,9 @@ public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand
 		final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
 		/* Butiker */
 		final boolean isGEOGLOBAL = engine.evaluateQuery(
-				TokenPredicate.GEOGLOBAL, context.getQuery());
-		final boolean isGEOLOCAL = engine.evaluateQuery(
-				TokenPredicate.GEOLOCAL, context.getQuery());
+				TokenPredicate.GEOGLOBAL, datamodel.getQuery().getQuery());
+//		final boolean isGEOLOCAL = engine.evaluateQuery(
+//				TokenPredicate.GEOLOCAL, datamodel.getQuery().getQuery());
 
 		final SearchResult result = new BasicSearchResult(this);
 		if (isGEOGLOBAL) {
