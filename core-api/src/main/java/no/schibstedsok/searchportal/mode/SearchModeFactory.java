@@ -7,6 +7,7 @@ import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.AddressSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlocketSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
@@ -346,6 +347,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private enum CommandTypes {
         COMMAND(AbstractSearchConfiguration.class),
         ESP_FAST_COMMAND(ESPFastSearchConfiguration.class),
+        ADDRESS_COMMAND(AddressSearchConfiguration.class),
         ADVANCED_FAST_COMMAND(AdvancedFastSearchConfiguration.class),
         NAVIGATABLE_ESP_FAST_COMMAND(NavigatableESPFastConfiguration.class),
         BLENDING_NEWS_COMMAND(BlendingNewsSearchConfiguration.class),
