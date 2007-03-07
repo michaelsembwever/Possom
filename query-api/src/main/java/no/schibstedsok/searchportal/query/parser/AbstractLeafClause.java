@@ -1,4 +1,4 @@
-/* Copyright (2005-2006) Schibsted Søk AS
+/* Copyright (2005-2007) Schibsted Søk AS
  * AbstractLeafClause.java
  *
  * Created on 7 January 2006, 16:06

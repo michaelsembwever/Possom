@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2207) Schibsted Søk AS
+ * Copyright (2005-2007-2207) Schibsted Søk AS
  * 
  */
 package no.schibstedsok.searchportal.util;

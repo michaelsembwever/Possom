@@ -1,3 +1,4 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.finder;
 
 import no.schibstedsok.searchportal.query.AndNotClause;

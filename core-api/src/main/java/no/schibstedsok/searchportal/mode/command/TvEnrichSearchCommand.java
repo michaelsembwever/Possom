@@ -1,3 +1,4 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;

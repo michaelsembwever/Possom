@@ -1,3 +1,4 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.fast.searchengine.test;
 
 import no.fast.ds.search.*;

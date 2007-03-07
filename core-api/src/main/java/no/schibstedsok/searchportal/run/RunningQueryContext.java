@@ -1,4 +1,4 @@
-/* Copyright (2005-2006) Schibsted Søk AS
+/* Copyright (2005-2007) Schibsted Søk AS
  * RunningQueryContext.java
  *
  * Created on 23 February 2006, 14:55

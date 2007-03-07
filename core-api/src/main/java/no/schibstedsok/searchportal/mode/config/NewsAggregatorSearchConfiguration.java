@@ -1,3 +1,4 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.config;
 
 import org.apache.log4j.Logger;

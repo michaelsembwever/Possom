@@ -1,3 +1,5 @@
+// Copyright (2007) Schibsted Søk AS
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.finder;
 
 import java.util.ArrayList;

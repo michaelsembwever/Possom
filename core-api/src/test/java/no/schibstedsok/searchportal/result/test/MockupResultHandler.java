@@ -1,3 +1,4 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
 import no.schibstedsok.searchportal.result.handler.ResultHandler;

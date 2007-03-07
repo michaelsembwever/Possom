@@ -1,4 +1,4 @@
-/* Copyright (2006) Schibsted Søk AS
+/* Copyright (2006-2007) Schibsted Søk AS
  * SyndicationGenerator.java
  *
  * Created on June 7, 2006, 2:39 PM

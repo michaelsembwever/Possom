@@ -1,3 +1,4 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.security;
 
 import org.apache.commons.codec.binary.Hex;
