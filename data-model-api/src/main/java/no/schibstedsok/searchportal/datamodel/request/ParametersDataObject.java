@@ -1,5 +1,5 @@
-// Copyright (2007) Schibsted Søk AS
-/*
+/* Copyright (2007) Schibsted Søk AS
+ *
  * ParametersMapDataObject.java
  *
  * Created on 23 January 2007, 13:51
@@ -16,7 +16,8 @@ import no.schibstedsok.searchportal.datamodel.access.AccessDisallow;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
 
-/**
+/** The ParameterDataObject class is a container for all request based information.
+ *  This mainly includes parameters, but also headers and attributes.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
