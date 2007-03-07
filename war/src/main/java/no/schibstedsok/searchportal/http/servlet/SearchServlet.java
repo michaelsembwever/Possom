@@ -279,21 +279,15 @@ public final class SearchServlet extends HttpServlet {
             final HttpServletRequest request,
             final RunningQuery.Context rqCxt){
 
-            
+
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
-                
+
         if (null == parametersDO.getValue("offset") || 0 == parametersDO.getValue("offset").getString().length() ) {
             request.setAttribute("offset", "0"); // TODO remove, access through datamodel instead.
         }
 
-        if (null != parametersDO.getValue("q")) {
-            // TODO remove, access through datamodel instead.
-            request.setAttribute("q", parametersDO.getValue("q").getString());
-        }
-
          // TODO remove next three, access through datamodel instead.
-        request.setAttribute("contextPath", parametersDO.getContextPath());
         request.setAttribute("tradedoubler", new TradeDoubler(request));
         request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
 
@@ -389,9 +383,9 @@ public final class SearchServlet extends HttpServlet {
         );
 
         updateAttributes(request, rqCxt);
-            
-        try {            
-            
+
+        try {
+
             final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
             final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
 

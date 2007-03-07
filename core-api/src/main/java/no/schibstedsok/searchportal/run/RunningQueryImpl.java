@@ -558,9 +558,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         final StringBuilder log = new StringBuilder();
 
-        LOG.debug(context.getSearchTab());
-        LOG.debug(enrichments);
-        LOG.debug(datamodel.getQuery());
         log.append("<enrichments mode=\"" + context.getSearchTab().getKey()
                 + "\" size=\"" + enrichments.size() + "\">"
                 + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>");

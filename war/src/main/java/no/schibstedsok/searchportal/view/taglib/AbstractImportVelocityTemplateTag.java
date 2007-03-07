@@ -35,7 +35,7 @@ import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.ResourceNotFoundException;
 
 
-/** Base class to help with importing velocity templates. 
+/** Base class to help with importing velocity templates.
  *
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -43,23 +43,23 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport {
 
-    
+
     // Constants -----------------------------------------------------
-    
+
     private static final Logger LOG = Logger.getLogger(AbstractImportVelocityTemplateTag.class);
     private static final String ERR_MERGE_FAILURE = "Template merging failed";
-    
-    
+
+
     // Attributes ----------------------------------------------------
-    
+
 
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
-    
+
     // Public --------------------------------------------------------
 
-    
+
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
@@ -82,21 +82,21 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
             if (f != null){
                 f.invoke(out);
             }
-            
+
             final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
-            
+
             final Site site = null != datamodel && null != datamodel.getSite()
                     ? datamodel.getSite().getSite()
                     // we haven't gone through the SiteLocatorFilter so get site manually
                     : SiteLocatorFilter.getSite(cxt.getRequest());
-            
+
             assert null != site : "doTag() got null Site";
-            
+
             final TextMessages text = null != cxt.findAttribute("text")
                     ? (TextMessages)cxt.findAttribute("text")
                     // we haven't gone through the SearchServlet so create TextMessages
                     : TextMessages.valueOf(site);
-            
+
             assert null != text : "doTag() got null TextMessages";
 
             final VelocityEngine engine = VelocityEngineFactory.valueOf(site).getEngine();
@@ -113,15 +113,15 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
                 context.put(entry.getKey(), entry.getValue());
             }
             context.put("datamodel", datamodel);
-            context.put("base", datamodel.getParameters().getContextPath());
-            context.put("contextPath", datamodel.getParameters().getContextPath()); // TODO no need for both
             context.put("text", text);
-            // TODO use datamodel nstead
+            // it's quite long to write $datamodel.site.siteConfiguration.properties so put this in for convenience
             context.put("configuration", datamodel.getSite().getSiteConfiguration().getProperties());
             context.put("channelCategories", Channel.Category.values());
 
             // push all parameters into velocity context attributes
-            for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames(); e.hasMoreElements();) {
+            for (Enumeration<String> e = (Enumeration<String>)cxt.getRequest().getAttributeNames()
+                    ; e.hasMoreElements();) {
+
                 final String attrName = e.nextElement();
                 /* do not overwrite parameters already in the velocity context */
                 if (!context.containsKey(attrName)) {
@@ -164,15 +164,15 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
             // often normal usage to 'explore' for templates
             LOG.debug(ex.getMessage());
             cxt.setAttribute(missing, Boolean.TRUE);
-            
+
         } catch (Exception ex) {
             LOG.error(ERR_MERGE_FAILURE, ex);
             throw new JspException(ex);
         }
 
     }
-    
+
     // Private -------------------------------------------------------
-    
+
     // Inner classes -------------------------------------------------
 }

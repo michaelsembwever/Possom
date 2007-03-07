@@ -1,5 +1,5 @@
 /* Copyright (2006-2007) Schibsted Søk AS
- * 
+ *
  * DataModelFilter.java
  *
  * Created on 26 January 2007, 22:29
@@ -83,9 +83,9 @@ public final class DataModelFilter implements Filter {
 
         if(request instanceof HttpServletRequest){
             final HttpServletRequest httpRequest = (HttpServletRequest)request;
-        
+
             LOG.info("Incoming! " + httpRequest.getQueryString());
-        
+
             final Site site = (Site) httpRequest.getAttribute(Site.NAME_KEY);
 
             final DataModelFactory factory;
@@ -109,19 +109,22 @@ public final class DataModelFilter implements Filter {
 
             // datamodel is NOT request-safe. all the user's requests must execute in sequence!
             synchronized( httpRequest.getSession() ){
-                
-                final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
 
                 final DataModel datamodel = getDataModel(factory, httpRequest);
-                datamodel.setParameters(parametersDO);
-                    
-                chain.doFilter(request, response);
+                try{
 
-                cleanDataModel(datamodel);
+                    final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
+
+                    datamodel.setParameters(parametersDO);
+
+                    chain.doFilter(request, response);
+
+                }finally{
+                    cleanDataModel(datamodel);
+                }
             }
         }
     }
-
 
 
     public void destroy() {
@@ -162,14 +165,14 @@ public final class DataModelFilter implements Filter {
                 new DataObject.Property("siteConfiguration", siteConf));
 
         final StringDataObject userAgentDO = factory.instantiate(
-                StringDataObject.class, 
+                StringDataObject.class,
                 new DataObject.Property("string", request.getHeader("User-Agent")));
-        
+
         final List<Locale> locales = new ArrayList<Locale>();
         for(Enumeration<Locale> en = request.getLocales(); en.hasMoreElements();){
             locales.add(en.nextElement());
         }
-        
+
         final BrowserDataObject browserDO = factory.instantiate(
                 BrowserDataObject.class,
                 new DataObject.Property("userAgent", userAgentDO),

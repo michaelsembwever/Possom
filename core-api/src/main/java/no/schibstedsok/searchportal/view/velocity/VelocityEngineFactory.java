@@ -37,9 +37,9 @@ import org.apache.velocity.tools.generic.MathTool;
 
 /** Custom Factory around Velocity Engines and Templates.
  * Each instance maps to an VelocityEngine instance.
- * All template operations (getting and merging) are done through this class 
+ * All template operations (getting and merging) are done through this class
  *   rather than directly against Velocity's API.
- * 
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
@@ -50,15 +50,15 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
      */
     public interface Context extends SiteContext, ResourceContext {
     }
-    
+
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(VelocityEngineFactory.class);
-    
+
     private static final String INFO_TEMPLATE_NOT_FOUND = "Could not find template ";
     private static final String ERR_IN_TEMPLATE = "Error parsing template ";
     private static final String ERR_GETTING_TEMPLATE = "Error getting template ";
-    
+
     private static final String VELOCITY_LOGGER = "org.apache.velocity";
 
     private static final Map<Site,VelocityEngineFactory> INSTANCES = new HashMap<Site,VelocityEngineFactory>();
@@ -80,7 +80,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.AccountingDirective,"
             + "no.schibstedsok.searchportal.view.velocity.RolesDirective,"
             + "no.schibstedsok.searchportal.view.velocity.ShareHoldersDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.RolesMobilePeopleExportDirective,"            
+            + "no.schibstedsok.searchportal.view.velocity.RolesMobilePeopleExportDirective,"
             + "no.schibstedsok.searchportal.view.velocity.XmlEscapeDirective,"
             + "no.schibstedsok.searchportal.view.velocity.WikiDirective,"
             + "no.schibstedsok.searchportal.view.velocity.UpperCaseDirective,"
@@ -93,15 +93,15 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.ChannelCategoryListDirective,"
             + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective";
 
-    
+
     // Attributes ----------------------------------------------------
-    
+
     private final VelocityEngine engine;
-    
+
     private final Context context;
-    
+
     // Static --------------------------------------------------------
-    
+
 
     public static Template getTemplate(
         final VelocityEngine engine,
@@ -109,11 +109,11 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         final String templateName) throws ResourceNotFoundException{
 
         final String templateUrl = site.getTemplateDir() + "/" + templateName + ".vm";
-        
+
         try {
             return engine.getTemplate(templateUrl);
 
-            
+
         } catch (ParseErrorException ex) {
             LOG.error(ERR_IN_TEMPLATE + templateUrl, ex);
             throw new InfrastructureException(ex);
@@ -127,14 +127,11 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             throw new InfrastructureException(ex);
         }
     }
-        
+
     public static VelocityContext newContextInstance(final VelocityEngine engine){
-        
+
         final VelocityContext context = new VelocityContext();
-        final Site site = (Site) engine.getProperty(Site.NAME_KEY);
-        
-        // site
-        context.put(Site.NAME_KEY, site);
+
         // coord helper
         context.put("coordHelper", new CoordHelper());
         // decoder
@@ -143,11 +140,11 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("math", new MathTool());
         // date tool
         context.put("date", new DateTool());
-        
+
         return context;
     }
-        
-        
+
+
     /** Main method to retrieve the correct VelocityEngine to further obtain
      * AnalysisRule.
      * @param cxt the contextual needs the VelocityEngine must use to operate.
@@ -206,7 +203,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
 
     // Constructors --------------------------------------------------
-    
+
     /** Creates a new instance of VelocityEngineFactory */
     private VelocityEngineFactory(final Context cxt) {
 
@@ -216,11 +213,11 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             final Site site = cxt.getSite();
 
             engine = new VelocityEngine(){
-                /** We override this method to dampen the 
+                /** We override this method to dampen the
                  * <ERROR velocity: ResourceManager : unable to find resource ...>
                  * error messages in sesam.error
                  **/
-                public Template getTemplate(final String name) 
+                public Template getTemplate(final String name)
                         throws ResourceNotFoundException, ParseErrorException, Exception {
 
                     final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
@@ -264,7 +261,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             INSTANCES_LOCK.writeLock().unlock();
         }
     }
-    
+
     // Public --------------------------------------------------------
 
     public VelocityEngine getEngine() {
@@ -286,7 +283,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
-    
+
+
     // Inner classes -------------------------------------------------
 }
