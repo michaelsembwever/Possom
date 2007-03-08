@@ -12,6 +12,7 @@ import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlocketSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.CatalogueAdsSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.CatalogueBannersSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.DailyWordConfiguration;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
@@ -380,6 +381,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         CATALOGUE_COMMAND(CatalogueSearchConfiguration.class),
         CATALOGUE_ADS_COMMAND(CatalogueAdsSearchConfiguration.class),
         HITTAMAP_COMMAND(HittaMapSearchConfiguration.class),
+        CATALOGUE_BANNERS_COMMAND(CatalogueBannersSearchConfiguration.class),
         NEWS_AGGREGATOR_COMMAND(NewsAggregatorSearchConfiguration.class);
 
         private final Class<? extends SearchConfiguration> clazz;
@@ -766,6 +768,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 	final CatalogueAdsSearchConfiguration casc = (CatalogueAdsSearchConfiguration) sc;
                     fillBeanProperty(casc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
                 }
+                
+                if(sc instanceof CatalogueBannersSearchConfiguration){
+                	final CatalogueBannersSearchConfiguration cbsc = (CatalogueBannersSearchConfiguration) sc;
+                    fillBeanProperty(cbsc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
+                }
+
                 if(sc instanceof NewsAggregatorSearchConfiguration) {
                     final NewsAggregatorSearchConfiguration nasc = (NewsAggregatorSearchConfiguration) sc;
                     fillBeanProperty(nasc, inherit, "xmlSource", ParseType.String, commandE, "");
