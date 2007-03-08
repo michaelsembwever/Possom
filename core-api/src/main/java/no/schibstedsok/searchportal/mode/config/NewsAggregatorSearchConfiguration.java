@@ -2,13 +2,12 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import org.apache.log4j.Logger;
-import no.schibstedsok.searchportal.result.SearchResult;
 
 public class NewsAggregatorSearchConfiguration extends AbstractSearchConfiguration {
-    private long MINUTE_IN_MILLIS = 1000 * 60;
     private final static Logger log = Logger.getLogger(NewsAggregatorSearchConfiguration.class);
 
     private String xmlSource;
+    private String xmlMainFile;
     private int updateIntervalMinutes;
 
     public NewsAggregatorSearchConfiguration() {
@@ -40,4 +39,11 @@ public class NewsAggregatorSearchConfiguration extends AbstractSearchConfigurati
         this.updateIntervalMinutes = updateIntervalMinutes;
     }
 
+    public void setXmlMainFile(String xmlMainFile) {
+        this.xmlMainFile = xmlMainFile;
+    }
+
+    public String getXmlMainFile() {
+        return xmlMainFile;
+    }
 }

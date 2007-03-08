@@ -778,6 +778,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final NewsAggregatorSearchConfiguration nasc = (NewsAggregatorSearchConfiguration) sc;
                     fillBeanProperty(nasc, inherit, "xmlSource", ParseType.String, commandE, "");
                     fillBeanProperty(nasc, inherit, "updateIntervalMinutes", ParseType.Int, commandE, "2");
+                    fillBeanProperty(nasc, inherit, "xmlMainFile", ParseType.String, commandE, "fp_main_main.xml");
                 }
 
 
