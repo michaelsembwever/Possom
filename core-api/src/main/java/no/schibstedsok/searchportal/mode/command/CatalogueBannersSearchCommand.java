@@ -28,39 +28,6 @@ import org.apache.log4j.Logger;
  */
 public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
 
-	@Override
-	protected void visitImpl(AndClause clause) {
-		clause.getFirstClause().accept(this);
-		clause.getSecondClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(AndNotClause clause) {
-		clause.getFirstClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(DefaultOperatorClause clause) {
-		clause.getFirstClause().accept(this);
-		clause.getSecondClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(NotClause clause) {
-		clause.getFirstClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(OperationClause clause) {
-		clause.getFirstClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(OrClause clause) {
-		clause.getFirstClause().accept(this);
-		clause.getSecondClause().accept(this);
-	}
-
 	/** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueBannersSearchCommand.class);
 
@@ -118,4 +85,38 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
     	String term = getTransformedTerm(clause);
     	appendToQueryRepresentation(term);
     }
+    
+	@Override
+	protected void visitImpl(AndClause clause) {
+		clause.getFirstClause().accept(this);
+		clause.getSecondClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(AndNotClause clause) {
+		clause.getFirstClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(DefaultOperatorClause clause) {
+		clause.getFirstClause().accept(this);
+		clause.getSecondClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(NotClause clause) {
+		clause.getFirstClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(OperationClause clause) {
+		clause.getFirstClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(OrClause clause) {
+		clause.getFirstClause().accept(this);
+		clause.getSecondClause().accept(this);
+	}
+
 }
