@@ -50,7 +50,7 @@ final Linkpulse linkpulse = new Linkpulse(site, SiteConfiguration.valueOf(site).
     <search:velocity template="/fragments/head"/>
 </head>
 
-<body onload="sesamInit('<%= currentC %>', '<%= vertikal %>', '<%= q.trim() %>', <%= publish %>);">
+<body onload="SesamInit.onLoad('<%= currentC %>', '<%= vertikal %>', '<%= q.trim() %>', <%= publish %>);">
 
     <%if (q.trim().equals("") && ((currentC.equals("m") && vertikal.equals("m")) || currentC.equals("y") || currentC.equals("yg") || currentC.equals("w") || currentC.equals("p") || currentC.equals("pp") || currentC.equals("sw") || currentC.equals("b") )) {%>
             <decorator:getProperty property="page.newsearch-bar"/>
