@@ -125,10 +125,14 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 	@Override
 	public String getTransformedQuery() {
 		String query = super.getTransformedQuery();
-
-		if (queryTwo != null && queryTwo.length() > 0 && !query.equals("*")) {
+		
+		if(query.equals("*") && (queryTwo==null || queryTwo.length()==0)){
+			return "";
+			
+		}else if (queryTwo != null && queryTwo.length() > 0 && !query.equals("*")) {
 			query += ") " + QL_AND + " (" + queryTwo + ")";
 			query = "(" + query;
+			
 		} else if (query.equals("*")) {
 			query = queryTwo;
 		}
