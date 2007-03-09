@@ -9,7 +9,13 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.query.AndClause;
+import no.schibstedsok.searchportal.query.AndNotClause;
+import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.query.NotClause;
+import no.schibstedsok.searchportal.query.OperationClause;
+import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
@@ -21,6 +27,39 @@ import org.apache.log4j.Logger;
  * @version $Revision:$
  */
 public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
+
+	@Override
+	protected void visitImpl(AndClause clause) {
+		clause.getFirstClause().accept(this);
+		clause.getSecondClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(AndNotClause clause) {
+		clause.getFirstClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(DefaultOperatorClause clause) {
+		clause.getFirstClause().accept(this);
+		clause.getSecondClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(NotClause clause) {
+		clause.getFirstClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(OperationClause clause) {
+		clause.getFirstClause().accept(this);
+	}
+
+	@Override
+	protected void visitImpl(OrClause clause) {
+		clause.getFirstClause().accept(this);
+		clause.getSecondClause().accept(this);
+	}
 
 	/** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueBannersSearchCommand.class);
@@ -47,7 +86,7 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
 	        final Query query = rq.getQuery();
 
 	    	queryTwo = query.getQueryString();
-	    	queryTwo.replaceAll(" ", "");
+	    	queryTwo = queryTwo.replaceAll(" ", "");
     	}else{
     		queryTwo = "ingensteds";
     	}
