@@ -114,20 +114,23 @@
                         <search:include include="right-col-one"/>
                     </td>
                 </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td colspan="2">
-                        <search:include include="offsetPager"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td>
-                        <search:include include="top3-ads-bottom"/>
-                    </td>
-                    <td>&nbsp;</td>
-                </tr>
-
+                <c:if test="${tab.layout.properties['offset-pager-hide'] != 'true'}">
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td colspan="2">
+                            <search:include include="offsetPager"/>
+                        </td>
+                    </tr>
+                </c:if>
+                <c:if test="${tab.layout.properties['top3-ads-bottom-hide'] != 'true'}">
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>
+                            <search:include include="top3-ads-bottom"/>
+                        </td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </c:if>
             </table>
             <search:include include="verbosePager"/>
             <search:include include="footer"/>
