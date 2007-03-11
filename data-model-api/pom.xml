@@ -78,6 +78,11 @@
             <artifactId>commons-ioc</artifactId>
         </dependency-->
         <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-user-api</artifactId>
+            <type>jar</type>
+        </dependency> 
+        <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
         </dependency>

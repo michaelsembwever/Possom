@@ -37,6 +37,7 @@ import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
 import no.schibstedsok.searchportal.datamodel.request.BrowserDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.datamodel.site.SiteDataObject;
+import no.schibstedsok.searchportal.datamodel.user.UserDataObject;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
@@ -123,6 +124,9 @@ public final class DataModelFilter implements Filter {
                     cleanDataModel(datamodel);
                 }
             }
+            
+        }else{
+            chain.doFilter(request, response);
         }
     }
 
@@ -178,6 +182,10 @@ public final class DataModelFilter implements Filter {
                 new DataObject.Property("userAgent", userAgentDO),
                 new DataObject.Property("locale", request.getLocale()),
                 new DataObject.Property("supportedLocales", locales));
+        
+        final UserDataObject userDO = factory.instantiate(
+                UserDataObject.class,
+                new DataObject.Property("user", null));
 
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
@@ -185,6 +193,7 @@ public final class DataModelFilter implements Filter {
 
         datamodel.setSite(siteDO);
         datamodel.setBrowser(browserDO);
+        datamodel.setUser(userDO);
         datamodel.setJunkYard(junkYardDO);
 
         return datamodel;

@@ -121,7 +121,7 @@ public final class CatalogueResultHandler implements ResultHandler {
 				cat.addProducts(internalResult);
 
 			} catch (Exception e) {
-				System.out.print(e);
+				System.out.print(e); // What the Fuck?! you are joking i hope.
 				e.printStackTrace();
 			}
 		}

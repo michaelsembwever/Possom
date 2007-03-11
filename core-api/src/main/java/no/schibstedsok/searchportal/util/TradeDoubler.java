@@ -3,13 +3,10 @@ package no.schibstedsok.searchportal.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
+import java.util.UUID;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.codec.binary.Hex;
-import org.doomdark.uuid.UUID;
-import org.doomdark.uuid.UUIDGenerator;
 
 
 
@@ -45,9 +42,7 @@ public final class TradeDoubler {
     }
     
     public String getUUID() {
-        final UUIDGenerator uuidgen = UUIDGenerator.getInstance();
-        final UUID uuid = uuidgen.generateRandomBasedUUID();
-        return uuid.toString();
+        return UUID.randomUUID().toString();
     }
     
     public static String getEvent() {

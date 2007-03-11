@@ -48,6 +48,16 @@
     </filter>
     
     <!-- Filter Mappings -->
+    <filter>
+        <filter-name>UserFilter</filter-name>
+        <filter-class>no.schibstedsok.searchportal.http.filters.UserFilter</filter-class>
+    </filter>
+    <!--filter-mapping>
+        <filter-name>CacheFilter</filter-name>
+        <url-pattern>/search/*</url-pattern>
+    </filter-mapping-->
+    
+    <!-- Servlets -->
     <filter-mapping>
         <filter-name>SiteLocatorFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -57,6 +67,10 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
+        <filter-name>UserFilter</filter-name>
+        <url-pattern>/search/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
         <filter-name>md5ProtectParameters</filter-name>
         <url-pattern>/search/*</url-pattern>
     </filter-mapping>
@@ -64,12 +78,6 @@
         <filter-name>sitemesh</filter-name>
         <url-pattern>/search/*</url-pattern>
     </filter-mapping>
-    <!--filter-mapping>
-        <filter-name>CacheFilter</filter-name>
-        <url-pattern>/search/*</url-pattern>
-    </filter-mapping-->
-    
-    <!-- Servlets -->
     <servlet>
         <servlet-name>search servlet</servlet-name>
         <servlet-class>no.schibstedsok.searchportal.http.servlet.SearchServlet</servlet-class>
