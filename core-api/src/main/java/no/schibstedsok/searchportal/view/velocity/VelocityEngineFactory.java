@@ -91,7 +91,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.DateFormattingDirective,"
             + "no.schibstedsok.searchportal.view.velocity.BoldWordDirective,"
             + "no.schibstedsok.searchportal.view.velocity.ChannelCategoryListDirective,"
-            + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective";
+            + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective,"
+            + "no.schibstedsok.searchportal.view.velocity.SlashTrimStringDirective";
 
 
     // Attributes ----------------------------------------------------
