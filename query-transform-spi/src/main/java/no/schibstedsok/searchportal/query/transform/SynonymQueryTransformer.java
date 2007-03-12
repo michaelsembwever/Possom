@@ -28,6 +28,7 @@ import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import org.apache.log4j.Logger;
 /** XXX This will get largely rewritten when alternation rotation comes into play.
+ * https://jira.sesam.no/jira/browse/SEARCH-863
  *
  * @author maek
  */

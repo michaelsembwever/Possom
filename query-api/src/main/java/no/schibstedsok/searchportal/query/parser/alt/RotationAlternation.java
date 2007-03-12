@@ -29,32 +29,32 @@ import org.apache.log4j.Logger;
 /** <b><a href="https://jira.sesam.no/jira/browse/SEARCH-439">SEARCH-439 - Rotation Alternation</a></b>
  *
  * <p>Rotates like-joined DoubleOperatorClauses (forests).
- * Tree rotation on the Query clause heirarchy is expensive, 
+ * Tree rotation on the Query clause heirarchy is expensive,
  * and as clauses are immutable and are reused through a weak-referenced cache map,
  * performing and remembering the rotations directly after tree construction
  * is a performance benefit over repeated on-the-fly rotations.<br/>
- * The memory increase, taking into account the weak-reference maps is (N-1)^2 +2N -2, 
- *  where N is the number leaf clauses in the forest. 
+ * The memory increase, taking into account the weak-reference maps is (N-1)^2 +2N -2,
+ *  where N is the number leaf clauses in the forest.
  * From this it can also be shown that the asymptotic complexity is just shy of O(n^2).<br/>
  * XorClauses with Hint.ROTATION_ALTERNATION are used to store these alternations within the query tree.</p>
  * <p>
- * Typical usecases of these Rotation-variant XorClauses are visitors that are 
- *  interested in possible combinations, or joins, between leaf clauses, 
+ * Typical usecases of these Rotation-variant XorClauses are visitors that are
+ *  interested in possible combinations, or joins, between leaf clauses,
  *   for example the query evaluation and analysis, and the synonym query transformer.</p>
- * 
+ *
  * <p>Here's an example of the sequencial rotations on a query clause heirarchy of eight leaf clauses,
- *  all eight leaf clauses are joined by DefaultOperatorClause, 
+ *  all eight leaf clauses are joined by DefaultOperatorClause,
  *   so there is only one forest to perform rotations on.<br/>
  * The numbers one through to eight represent the eight terms in the query string and hence the eight leaf clauses.
  *  In every rotation these leaf clauses refer to the same reused immutable instances.<br/>
  * The letters A through to G represent the DoubleOperatorClauses.
  *  In every rotation these are always different instances as their layout of grandchildren differ.<br/>
  * The number of rotations in any forest is always one less than the number of DoubleOperatorClauses in the forest.<br/>
- * The leaf clauses from left to right always remain in order 
+ * The leaf clauses from left to right always remain in order
  *  so visitors can be assured that the query string at large remains the same.</p>
- * 
+ *
  * <img src="doc-files/RotationAlternation-1.png"/>
- * 
+ *
  * <p>To perform each rotation, the iterate, top, bottom, and orphan clause must be all determined.
  *  This is indicated in the diagram on the forest before the rotation occurs.
  * <ul>
@@ -73,26 +73,59 @@ import org.apache.log4j.Logger;
  * <li>Pre-Rotation, or 'RIGHT-LEANING-LOWER BRANCH ROTATION', is responsible for rotating the double operator clauses
  *  from the bottom's parent up til and including the top clause.</li>
  * <li> Post-Rotation, or 'LEFT-LEANING-UPPER-BRANCH ROTATION', is the rotation from the orphan's parent
- *  (the double operator clause), which is to become the top's (in it's new position) new parent, up til and including 
+ *  (the double operator clause), which is to become the top's (in it's new position) new parent, up til and including
  *  the bottom clause.</li>
  * <li> Centre-of-Rotation, or 'ORIGINAL TREE ROOT ROTATION', is the reconstruction of the forest above the bottom's
  *  new position up til and including the root clause of the forest. This section remains in appearance the same as the
  *  previous rotation but must be reconstructed due to differences in how the grandchildren are laid out.
  * </ul>
  * </p>
+ *<br/><br/>
+ * <p>
+ * <b>Example usecases of the resulting rotations within the query</b><br/>
+ * The questions begs when is this rotation actually used and to what benefit?<br/>
+ * <ul>
+ * <li> Query {@link no.schibstedsok.searchportal.query.analyser Analysis} relies on all possible term combinations to
+ *          exist with their corresponding tokenPredicates
+ *          (which must be exact on the boundaries). The analysis does one complete sweep of the query tree, including
+ *          the rotations, looking for tokenPredicates inaccordance with the rules to create the scores for each rule.
+ * </li>
+ * <li> The {@link no.schibstedsok.searchportal.query.finder.ParentFinder ParentFinder} class, a utility visitor
+ *              implementation, contains the method getParents(root, clause).<br/>
+ *          While this visitor does not explicitly use the XorClause.ROTATION_ALTERNATION, it simply visits down all
+ *              branches of the query returning clauses it comes across that a child matching the clause argument.<br/>
+ *          Through this utility it is possible to find variations of combinations that a term in the query
+ *              can be applicable to.
+ * <li> {@link no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer SynonymQueryTransformer}.
+ *          Has not yet been fully rewritten to utilise the rotations.
+ *          <a href="https://jira.sesam.no/jira/browse/SEARCH-863"
+ *                  >SEARCH-863 - Rewrite SynonymQueryTransformer to use RotationAlternation</a><br/>
+ *          But it does already use the ParentFinder visitor utility to check if a given clause is inside a given
+ *          tokenPredicate.
+ * </li>
+ * <li> {@link no.schibstedsok.searchportal.query.finder.WhoWhereSplitter WhoWhereSplitter} is a utility vistor that 
+ *              splits the query into 'where' and 'who' components.<br/>
+ *          It relies heavily upon tokenPredicates linked to fast-lists from the query matching servers.<br/>
+ *          Since the where component is often defined by either a fullname or companyname predicate which is generally
+ *              multi-worded, so the class uses the ParentFinder to check if a given clause is inside one of these given
+ *              tokenPredicates. The use of the ParentFinder is extended within the private method parentsOf(clause).
+ * </li>
+ * </ul>
+ * </p>
+ * <br/><br/>
  *
  * <b>References:</b><br/>
  * <a href="http://www.cs.queensu.ca/home/jstewart/applets/bst/bst-rotation.html">Binary Tree Rotation</a><br/>
  * <a href="http://www.nist.gov/dads/HTML/rotation.html">Institute of Standards and Technology - Rotation</a><br/>
  * <a href="http://en.wikipedia.org/wiki/Expressed_sequence_tag">Sequence tagging</a><br/>
- * 
- * 
+ *
+ *
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
- * 
+ *
  */
 public final class RotationAlternation {
-    
+
     /*
      * Variable notation:
      *  oXX -> original XX clause
@@ -101,7 +134,7 @@ public final class RotationAlternation {
      */
 
     /** Context to work within. **/
-    public interface Context extends BaseContext, QueryParser.Context { 
+    public interface Context extends BaseContext, QueryParser.Context {
         ParentFinder getParentFinder();
     }
 
@@ -146,7 +179,7 @@ public final class RotationAlternation {
 
     /** Returns a alternated clause where all child forests contain XorClauses.
      * These XorClauses hold all possible rotations for the corresponding forest.
-     * Each XorClause always puts the left-leaning rotation as the left child, 
+     * Each XorClause always puts the left-leaning rotation as the left child,
      *  and the right-leaning rotation (or the next XorClause) as the right child.
      **/
     public Clause createRotations(final Clause originalRoot) {
