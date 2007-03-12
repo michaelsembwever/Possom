@@ -7,19 +7,16 @@
 
 package no.schibstedsok.searchportal.view.velocity;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Writer;
-import java.net.URL;
-import java.net.URLConnection;
+import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.view.ImportPublish;
 import org.apache.log4j.Logger;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.directive.Directive;
-import org.apache.velocity.runtime.parser.Token;
 import org.apache.velocity.runtime.parser.node.Node;
 
 /**
@@ -30,20 +27,16 @@ import org.apache.velocity.runtime.parser.node.Node;
  * #publish('pages/front.html')
  * </code>
  *
- * The default charset is utf-8.
  *
  * @author mick
- * @version $If$
+ * @version $Id$
  */
 public final class PublishDirective extends Directive {
 
     private static final Logger LOG = Logger.getLogger(PublishDirective.class);
     private static final String ERR_NETWORK_DOWN = "Network down? ";
-    private static final String DEBUG_LOADING_1 = "Publishing ";
-    private static final String DEBUG_LOADING_2 = " with host-header ";
 
     private static final String NAME = "publish";
-    private static final String DEFAULT_CHARSET = "utf-8";
 
    /**
      * {@inheritDoc}
@@ -65,32 +58,18 @@ public final class PublishDirective extends Directive {
     public boolean render(final InternalContextAdapter context, final Writer writer, final Node node)
             throws IOException, ResourceNotFoundException, ParseErrorException, MethodInvocationException {
 
-        if (node.jjtGetNumChildren() < 2) {
+        if (node.jjtGetNumChildren() < 1) {
             rsvc.error("#" + getName() + " - missing argument");
             return false;
         }
 
-        final String charset = DEFAULT_CHARSET;
+        // The argument gets url encoded on the way in. Make sure to decode the / characters.
+        final String url = node.jjtGetChild(0).value(context).toString().replaceAll("%2F", "/");
 
-        final String url = node.jjtGetChild(0).value(context).toString() + ".html";
-        final String header = node.jjtGetChild(1).value(context).toString();
-        final URLConnection urlConn = new URL(url).openConnection();
-        urlConn.addRequestProperty("host", header);
+        final DataModel datamodel = (DataModel) context.get("datamodel");
 
         try{
-            LOG.debug(DEBUG_LOADING_1 + url + DEBUG_LOADING_2 + header);
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-            for (String line = reader.readLine(); line != null; line=reader.readLine()) {
-                writer.write(line);
-                writer.write('\n');
-            }
-
-            final Token lastToken = node.getLastToken();
-
-            if (lastToken.image.endsWith("\n")) {
-                writer.write('\n');
-            }
-
+            ImportPublish.importPage(url, datamodel, writer);
             return true;
 
         }catch(IOException se){

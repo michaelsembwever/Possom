@@ -1,18 +1,21 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.http;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import org.apache.log4j.Logger;
 
 /** Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
@@ -91,18 +94,56 @@ public final class HTTPClient {
         }
     }
     
+    public BufferedInputStream getBufferedStream(final String id, final String path) throws IOException {
+            
+        return new BufferedInputStream(getStream(id, path));
+    }
+    
     public BufferedReader getBufferedReader(final String id, final String path) throws IOException {
+          
+        return new BufferedReader(new InputStreamReader(getStream(id, path)));
+    }
+    
+    public long getLastModified(final String id, final String path) throws IOException {
+
+        return getUrlConnection(id, path).getLastModified();
+    }
+    
+    public boolean exists(final String id, final String path) throws IOException {
+
+        boolean success = false;
+        final URLConnection conn = getUrlConnection(id, path);
+
+        if(conn instanceof HttpURLConnection){
+            final HttpURLConnection con = (HttpURLConnection)conn;
+            con.setInstanceFollowRedirects(false);
+            con.setRequestMethod("HEAD");
+            con.addRequestProperty("host", hostHeader);
+            con.setConnectTimeout(1000);
+            con.setReadTimeout(1000);
+            success = HttpURLConnection.HTTP_OK == con.getResponseCode();      
+        }else{
+            final File file = new File(path);
+            success = file.exists();
+        }
+        return success;
+    }
+    
+    private InputStream getStream(final String id, final String path) throws IOException {
+
+        return getUrlConnection(id, path).getInputStream();
+    }
+    
+    private URLConnection getUrlConnection(final String id, final String path) throws IOException {
             
-            
-        final URL url = getURL(path);
-        final URLConnection urlConn = url.openConnection();
+        final URLConnection urlConn = getURL(path).openConnection();
 
         if( !hostHeader.equals(host) ){
             LOG.debug(DEBUG_USING_HOSTHEADER + hostHeader);
             urlConn.addRequestProperty("host", hostHeader);
         }
 
-        return new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+        return urlConn;
     }
     
     

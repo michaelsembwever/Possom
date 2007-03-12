@@ -46,7 +46,7 @@ import org.apache.velocity.tools.generic.MathTool;
 public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     /**
-     * The context the AnalysisRules must work against. *
+     * The context the AnalysisRules must work against.
      */
     public interface Context extends SiteContext, ResourceContext {
     }

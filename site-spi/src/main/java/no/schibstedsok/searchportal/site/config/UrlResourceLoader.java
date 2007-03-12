@@ -13,9 +13,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
@@ -181,10 +181,11 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     protected final InputStream getInputStreamFor(String resource) {
 
         try {
-            final URLConnection urlConn = new URL(getUrlFor(resource)).openConnection();
-
-            urlConn.addRequestProperty("host", getHostHeaderFor(resource));
-            return urlConn.getInputStream();
+            final URL u = new URL(getUrlFor(resource));
+            final HTTPClient client 
+                    = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), getHostHeaderFor(resource));
+            
+            return client.getBufferedStream(u.getHost(), u.getPath());
 
         }catch (IOException ex) {
             throw new ResourceLoadException(ex.getMessage(), ex);

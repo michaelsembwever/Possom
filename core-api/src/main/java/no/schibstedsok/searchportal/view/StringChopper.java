@@ -6,7 +6,7 @@
  *
  */
 
-package no.schibstedsok.searchportal.result;
+package no.schibstedsok.searchportal.view;
 
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 
 /** My favourite dish of ChopSuey.
+ * 
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */

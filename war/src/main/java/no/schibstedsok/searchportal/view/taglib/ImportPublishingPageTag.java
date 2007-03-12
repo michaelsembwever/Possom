@@ -7,19 +7,14 @@
 
 package no.schibstedsok.searchportal.view.taglib;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Properties;
+import java.io.IOException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.JspFragment;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
-import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.view.ImportPublish;
 import org.apache.log4j.Logger;
 
 /**
@@ -54,18 +49,9 @@ public final class ImportPublishingPageTag extends SimpleTagSupport {
             }
 
             final DataModel datamodel = (DataModel) cxt.findAttribute(DataModel.KEY);
-            final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
-
-            final URL url = new URL(props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL) + page + ".html");
-            final URLConnection urlConn = url.openConnection();
-
-            urlConn.addRequestProperty("host", props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST));
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-
-            for(String line = reader.readLine();line!=null;line=reader.readLine()){
-                out.println(line);
-            }
-        }catch(Exception e){
+            ImportPublish.importPage(page, datamodel, out);
+            
+        }catch(IOException e){
             LOG.error("Failed to import pub" + page + ".html");
         }
 

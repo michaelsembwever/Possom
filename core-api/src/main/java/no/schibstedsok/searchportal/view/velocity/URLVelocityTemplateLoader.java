@@ -3,8 +3,8 @@ package no.schibstedsok.searchportal.view.velocity;
 
 import java.io.IOException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.io.InputStream;
+import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import org.apache.log4j.Logger;
@@ -87,22 +87,17 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
      * @throws ResourceNotFoundException if template not found
      *         in the file template path.
      */
-    public synchronized InputStream getResourceStream( final String url )
-        throws ResourceNotFoundException{
+    public synchronized InputStream getResourceStream(final String url) throws ResourceNotFoundException{
 
         LOG.trace("start getResourceStream( " + url + " )");
         try{
 
-            final URLConnection conn = getResourceURLConnection(url);
-            return conn.getInputStream();
+            return getStream(findUrl(url));
 
         }catch( IOException e ){
             LOG.debug( ERR_RESOURCE_NOT_FOUND + url);
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
-
-
-
     }
 
     /** {@inheritDoc}
@@ -118,15 +113,25 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
      */
     public long getLastModified(Resource resource){
 
-        final String url = resource.getName();
-        LOG.trace("start getLastModified( "+url+" )");
         try{
 
-            final URLConnection conn = getResourceURLConnection(url);
-            return conn.getLastModified();
+            final String url = findUrl(resource.getName());
+            final URL u = new URL(url);
+
+            if( LOG.isTraceEnabled() ){
+                LOG.trace(DEBUG_FULL_URL_IS + u);
+                LOG.trace(DEBUG_HOST_HEADER_IS + context.getHostHeader(url));
+            }
+
+            final HTTPClient client 
+                    = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), context.getHostHeader(url));
+
+            return client.getLastModified(u.getHost(), u.getPath());
 
         }catch( ResourceNotFoundException e ){
-            LOG.error( ERR_RESOURCE_NOT_FOUND + url );
+            LOG.error( ERR_RESOURCE_NOT_FOUND + resource.getName() );
+        }catch( IOException e ){
+            LOG.error( ERR_RESOURCE_NOT_FOUND + resource.getName() );
         }
         return 0;
 
@@ -139,24 +144,23 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     // Private -------------------------------------------------------
     
-    private URLConnection getResourceURLConnection( final String url )
-        throws ResourceNotFoundException{
+    private String findUrl(final String url) throws ResourceNotFoundException{
 
         try{
             LOG.trace(DEBUG_LOOKING_FOR + url );
-            return doGetResourceURLConnection(url, site);
+            return findUrlImpl(url, site);
+            
         }catch( IOException e ){
             LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
             throw new ResourceNotFoundException( ERR_RESOURCE_NOT_FOUND + url );
         }
     }
 
-    private URLConnection doGetResourceURLConnection(
-            final String url, final Site currentSite)
+    private String findUrlImpl(final String url, final Site currentSite)
             throws IOException, ResourceNotFoundException {
 
         if (context.doesUrlExist(context.getURL(url),context.getHostHeader(url))) {
-            return getURLConnection(url);
+            return url;
         } else {
             final Site parent = currentSite.getParent();
 
@@ -169,13 +173,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             }
 
             // Recursively look for the resource in ancestor sites.
-            return doGetResourceURLConnection(
-                    getFallbackURL(url, currentSite, parent), parent);
+            return findUrlImpl(getFallbackURL(url, currentSite, parent), parent);
         }
     }
 
-    private String getFallbackURL(
-            final String url, final Site currSite, final Site ancestorSite) {
+    private String getFallbackURL(final String url, final Site currSite, final Site ancestorSite) {
 
         final String oldUrl = currSite.getName() + currSite.getConfigContext();
         final String newUrl = ancestorSite.getName() + ancestorSite.getConfigContext();
@@ -184,20 +186,20 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     }
 
 
-    private URLConnection getURLConnection(final String url) throws IOException{
+    private InputStream getStream(final String url) throws IOException{
 
-        // TODO make this loopback to call a context's ResourceLoader method from the site-spi.
         LOG.trace(DEBUG_EXISTS + url);
         final URL u = new URL(context.getURL(url));
         
-        LOG.trace(DEBUG_FULL_URL_IS + u);
-        final URLConnection conn = u.openConnection();
-        final String hostHeader = context.getHostHeader(url);
+        if( LOG.isTraceEnabled() ){
+            LOG.trace(DEBUG_FULL_URL_IS + u);
+            LOG.trace(DEBUG_HOST_HEADER_IS + context.getHostHeader(url));
+        }
         
-        LOG.trace(DEBUG_HOST_HEADER_IS + hostHeader);
-        conn.addRequestProperty("host", hostHeader);
+        final HTTPClient client 
+                = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), context.getHostHeader(url));
         
-        return conn;
+        return client.getBufferedStream(u.getHost(), u.getPath());
     }
     
     
@@ -216,6 +218,6 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         public String getHostHeader(final String resource) {
             return UrlResourceLoader.getHostHeader(resource);
         }
-}
+    }
 }
 

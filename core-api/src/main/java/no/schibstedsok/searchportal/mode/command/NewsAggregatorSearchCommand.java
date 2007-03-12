@@ -3,7 +3,6 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
-import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -15,18 +14,17 @@ import org.jdom.JDOMException;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.HashMap;
 import java.net.URL;
-import java.net.URLConnection;
+import no.schibstedsok.searchportal.http.HTTPClient;
 
 
 public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
 
-    private final static Logger log = Logger.getLogger(NewsAggregatorSearchCommand.class);
+    private final static Logger LOG = Logger.getLogger(NewsAggregatorSearchCommand.class);
 
     /**
      * @param cxt        The context to execute in.
@@ -37,12 +35,12 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
     }
 
     public SearchResult execute() {
-        log.debug("News aggregator search executed with: " + getParameters());
-        log.debug("News aggregator search executed with: " + datamodel.getParameters());
+        LOG.debug("News aggregator search executed with: " + getParameters());
+        LOG.debug("News aggregator search executed with: " + datamodel.getParameters());
 
         NewsAggregatorSearchConfiguration config = (NewsAggregatorSearchConfiguration) getSearchConfiguration();
-        log.debug("Loading xml file at: " + config.getXmlSource());
-        log.debug("Update interval: " + config.getUpdateIntervalMinutes());
+        LOG.debug("Loading xml file at: " + config.getXmlSource());
+        LOG.debug("Update interval: " + config.getUpdateIntervalMinutes());
 
         StringDataObject geoNav = datamodel.getParameters().getValue("geonav");
         if (geoNav == null) {
@@ -58,16 +56,18 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
     }
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
         try {
-            NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
+            final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
 
-            URL url = new URL(config.getXmlSource() + xmlFile);
-            URLConnection urlConnection = url.openConnection();
-            urlConnection.setConnectTimeout(1000);
-            return newsAggregatorXmlParser.parse(urlConnection.getInputStream(), this);
+            final URL url = new URL(config.getXmlSource() + xmlFile);
+            
+            final HTTPClient client = HTTPClient.instance(url.getHost(), url.getHost(), url.getPort());
+            
+            return newsAggregatorXmlParser.parse(client.getBufferedStream(url.getHost(), url.getPath()), this);
+            
         } catch (JDOMException e) {
-            log.error("Could not parse xml: " + config.getXmlSource(), e);
+            LOG.error("Could not parse xml: " + config.getXmlSource(), e);
         } catch (IOException e) {
-            log.error("Could not parse xml: " + config.getXmlSource(), e);
+            LOG.error("Could not parse xml: " + config.getXmlSource(), e);
         }
         return new BasicSearchResult(null);
     }

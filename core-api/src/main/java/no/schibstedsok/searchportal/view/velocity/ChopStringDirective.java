@@ -4,7 +4,7 @@ package no.schibstedsok.searchportal.view.velocity;
 import java.io.IOException;
 
 import java.io.Writer;
-import no.schibstedsok.searchportal.result.StringChopper;
+import no.schibstedsok.searchportal.view.StringChopper;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -13,7 +13,6 @@ import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.directive.Directive;
-import org.apache.velocity.runtime.parser.Token;
 import org.apache.velocity.runtime.parser.node.Node;
 
 /**
