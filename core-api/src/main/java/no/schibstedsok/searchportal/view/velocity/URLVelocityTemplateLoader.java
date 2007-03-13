@@ -123,8 +123,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
                 LOG.trace(DEBUG_HOST_HEADER_IS + context.getHostHeader(url));
             }
 
-            final HTTPClient client 
-                    = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), context.getHostHeader(url));
+            final HTTPClient client = HTTPClient.instance(
+                    u.getHost(), 
+                    u.getProtocol() + "://" + u.getHost(), 
+                    u.getPort(), 
+                    context.getHostHeader(url));
 
             return client.getLastModified(u.getHost(), u.getPath());
 
@@ -196,8 +199,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             LOG.trace(DEBUG_HOST_HEADER_IS + context.getHostHeader(url));
         }
         
-        final HTTPClient client 
-                = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), context.getHostHeader(url));
+        final HTTPClient client = HTTPClient.instance(
+                u.getHost(), 
+                u.getProtocol() + "://" +u.getHost(), 
+                u.getPort(), 
+                context.getHostHeader(url));
         
         return client.getBufferedStream(u.getHost(), u.getPath());
     }

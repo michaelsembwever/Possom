@@ -23,6 +23,9 @@ import org.apache.log4j.Logger;
  *  which was its original benefit.
  * The current implementation just using URL and URLConnection directly synchronously.
  * 
+ * Supports protocols http, https, ftp, and file.
+ * If no protocol is specified in the host it defaults to http.
+ * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @author <a href="mailto:mick@sesam.no">Mck</a>
  * @version <tt>$Id$</tt>
@@ -60,8 +63,10 @@ public final class HTTPClient {
             throw new MalformedURLException("Null port");
         }
         
+        final boolean hasProtocol = host.matches("^(http|https|ftp|file)://");
+        
         final URL url = new URL(
-                (host.startsWith("http://") ? "" : "http://")
+                (hasProtocol ? "" : "http://")
                 + host + ':' + port 
                 + path);
         
