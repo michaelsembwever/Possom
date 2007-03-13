@@ -156,7 +156,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 LOG.debug("execute: SortBy " + userSortBy);
 
                 if ("standard".equals(userSortBy)) {
-                    sortBy ="freshnessprofile";
+                    sortBy ="contentprofile";
                 } else if ("datetime".equals(userSortBy)) {
                     sortBy = "publishedtime";
                 }
