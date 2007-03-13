@@ -63,7 +63,9 @@ public final class HTTPClient {
             throw new MalformedURLException("Null port");
         }
         
-        final boolean hasProtocol = host.matches("^(http|https|ftp|file)://");
+        final boolean hasProtocol = host.startsWith("http://") || host.startsWith("https://") 
+                || host.startsWith("ftp://") || host.startsWith("file://");
+                //host.matches("^(http|https|ftp|file)://");
         
         final URL url = new URL(
                 (hasProtocol ? "" : "http://")
