@@ -65,7 +65,7 @@ public final class HTTPClient {
                 + host + ':' + port 
                 + path);
         
-        LOG.debug(DEBUG_USING_URL + url);
+        LOG.trace(DEBUG_USING_URL + url);
         
         return url;
     }
@@ -139,7 +139,7 @@ public final class HTTPClient {
         final URLConnection urlConn = getURL(path).openConnection();
 
         if( !hostHeader.equals(host) ){
-            LOG.debug(DEBUG_USING_HOSTHEADER + hostHeader);
+            LOG.trace(DEBUG_USING_HOSTHEADER + hostHeader);
             urlConn.addRequestProperty("host", hostHeader);
         }
 
