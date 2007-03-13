@@ -13,7 +13,7 @@
     <decorator name="savedecorator" page="saveDecorator.jsp"/>
     <decorator name="opensearch" page="opensearchDecorator.jsp"/>
     <decorator name="vcarddecorator" page="vcardDecorator.jsp"/>
-    
+    <decorator name="xml" page="xmlDecorator.jsp"/>
     <decorator name="maindecorator" page="webDecorator.jsp">
 	    <pattern>*</pattern>
     </decorator>
