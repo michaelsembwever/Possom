@@ -64,12 +64,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     private static final Map<Site,VelocityEngineFactory> INSTANCES = new HashMap<Site,VelocityEngineFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
-    private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.SimpleLog4JLogSystem";
-    private static final String LOG_NAME = "runtime.log.logsystem.log4j.category";
-
-    // TODO change when velocity 1.5 is out
-    //private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.Log4JLogChute";
-    //private static final String LOG_NAME = "runtime.log.logsystem.log4j.logger";
+    private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.Log4JLogChute";
+    private static final String LOG_NAME = "runtime.log.logsystem.log4j.logger";
 
     private static final String DIRECTIVES =
             "no.schibstedsok.searchportal.view.velocity.UrlEncodeDirective,"
