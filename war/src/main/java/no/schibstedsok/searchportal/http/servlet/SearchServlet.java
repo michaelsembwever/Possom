@@ -239,39 +239,39 @@ public final class SearchServlet extends HttpServlet {
             } catch (IOException ex) {
                 LOG.error(ex.getMessage(), ex);
             }
-        } else if (request.getParameter("output") != null && request.getParameter("output").equals("savedecorator")) {
-                String showid = request.getParameter("showId");
-                String userAgent = request.getHeader("User-Agent");
-                String fileName = ".vcs";
-                String charset = "utf-8";
-                if(userAgent.indexOf("Windows") != -1){
-                	charset = "iso-8859-1";
-                }else if(userAgent.indexOf("Mac OS X") != -1)
-                   fileName=".ics";
-                if(showid == null)
-                   showid="";
-                response.setContentType("text/calendar; charset=" +charset);
-                response.setHeader("Content-Disposition","attachment;filename=sesam-tvsok-" +showid +fileName	);
-
-        } else if (request.getParameter("output") != null && request.getParameter("output").equals("vcarddecorator")) {
-                String showid = request.getParameter("showId");
-                String userAgent = request.getHeader("User-Agent");
-                String fileName = ".vcf";
-                String charset = "utf-8";
-                if(userAgent.indexOf("Windows") != -1)
-                    charset = "iso-8859-1";
-                if(showid == null)
-                   showid="";
-                response.setCharacterEncoding(charset);
-                response.setContentType("text/x-vcard; charset=" +charset);
-                response.setHeader("Content-Disposition","attachment;filename=vcard-" +showid + ".vcf");
-        } else if (request.getParameter("output") != null && request.getParameter("output").equals("opensearch")) {
-                String charset = "utf-8";
-                response.setCharacterEncoding(charset);
-                response.setContentType("text/xml; charset=utf-8");
+        } else if (request.getParameter ("output") != null && request.getParameter ("output").equals ("savedecorator")) {
+            String showid = request.getParameter ("showId");
+            String userAgent = request.getHeader ("User-Agent");
+            String fileName = ".vcs";
+            String charset = "utf-8";
+            if(userAgent.indexOf ("Windows") != -1){
+                charset = "iso-8859-1";
+            }else if(userAgent.indexOf ("Mac OS X") != -1)
+                fileName=".ics";
+            if(showid == null)
+                showid="";
+            response.setContentType ("text/calendar; charset=" +charset);
+            response.setHeader ("Content-Disposition","attachment;filename=sesam-tvsok-" +showid +fileName	);
+            
+        } else if (request.getParameter ("output") != null && request.getParameter ("output").equals ("vcarddecorator")) {
+            String showid = request.getParameter ("showId");
+            String userAgent = request.getHeader ("User-Agent");
+            String fileName = ".vcf";
+            String charset = "utf-8";
+            if(userAgent.indexOf ("Windows") != -1)
+                charset = "iso-8859-1";
+            if(showid == null)
+                showid="";
+            response.setCharacterEncoding (charset);
+            response.setContentType ("text/x-vcard; charset=" +charset);
+            response.setHeader ("Content-Disposition","attachment;filename=vcard-" +showid + ".vcf");
+        } else if (request.getParameter ("output") != null
+                && (request.getParameter ("output").equals ("opensearch") || request.getParameter ("output").equals ("xml"))) {
+            String charset = "utf-8";
+            response.setCharacterEncoding (charset);
+            response.setContentType ("text/xml; charset=utf-8");
         } else {
-
-            response.setContentType("text/html; charset=utf-8");
+            response.setContentType ("text/html; charset=utf-8");
         }
     }
 
