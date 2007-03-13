@@ -16,10 +16,11 @@ import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.BufferedInputStream;
 import java.util.List;
 import java.util.HashMap;
 import java.net.URL;
-import no.schibstedsok.searchportal.http.HTTPClient;
+import java.net.URLConnection;
 
 
 public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
@@ -35,41 +36,62 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
     }
 
     public SearchResult execute() {
-        LOG.debug("News aggregator search executed with: " + getParameters());
-        LOG.debug("News aggregator search executed with: " + datamodel.getParameters());
-
-        NewsAggregatorSearchConfiguration config = (NewsAggregatorSearchConfiguration) getSearchConfiguration();
-        LOG.debug("Loading xml file at: " + config.getXmlSource());
-        LOG.debug("Update interval: " + config.getUpdateIntervalMinutes());
-
-        StringDataObject geoNav = datamodel.getParameters().getValue("geonav");
-        if (geoNav == null) {
-            return getFrontPageResult(config);
-        } else {
-            return getPageResult(config, geoNav.getString());
-        }
-    }
-
-
-    private SearchResult getFrontPageResult(NewsAggregatorSearchConfiguration config) {
-        return getPageResult(config, config.getXmlMainFile());
-    }
-    private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
         try {
-            final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
+            LOG.debug("News aggregator search executed with: " + getParameters());
+            LOG.debug("News aggregator search executed with: " + datamodel.getParameters());
 
-            final URL url = new URL(config.getXmlSource() + xmlFile);
-            
-            final HTTPClient client = HTTPClient.instance(url.getHost(), url.getHost(), url.getPort());
-            
-            return newsAggregatorXmlParser.parse(client.getBufferedStream(url.getHost(), url.getPath()), this);
-            
+            NewsAggregatorSearchConfiguration config = (NewsAggregatorSearchConfiguration) getSearchConfiguration();
+            LOG.debug("Loading xml file at: " + config.getXmlSource());
+            LOG.debug("Update interval: " + config.getUpdateIntervalMinutes());
+
+            StringDataObject geoNav = datamodel.getParameters().getValue("geonav");
+            StringDataObject clusterId = datamodel.getParameters().getValue("clusterId");
+
+            String xmlFile = geoNav == null ? config.getXmlMainFile() : geoNav.getString();
+
+            if (clusterId == null) {
+                return getPageResult(config, xmlFile);
+            } else {
+                return getClusterResult(config, clusterId, xmlFile);
+            }
         } catch (JDOMException e) {
-            LOG.error("Could not parse xml: " + config.getXmlSource(), e);
+            // todo: Handle error in a defined way
+            BasicSearchResult errorResult = new BasicSearchResult(this);
+            BasicSearchResultItem resultItem = new BasicSearchResultItem();
+            resultItem.addField("error", "Cold not parse clusters");
+            errorResult.addResult(resultItem);
+            return errorResult;
         } catch (IOException e) {
-            LOG.error("Could not parse xml: " + config.getXmlSource(), e);
+            // todo: Handle error in a defined way
+            BasicSearchResult errorResult = new BasicSearchResult(this);
+            BasicSearchResultItem resultItem = new BasicSearchResultItem();
+            resultItem.addField("error", "Cold not find clusters");
+            errorResult.addResult(resultItem);
+            return errorResult;
         }
-        return new BasicSearchResult(null);
+    }
+
+    private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId, String xmlFile) throws IOException, JDOMException {
+        NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
+        return newsAggregatorXmlParser.parseCluster(getInputStream(config, xmlFile), clusterId.getString(), this);
+    }
+
+    private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) throws JDOMException, IOException {
+        NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
+        return newsAggregatorXmlParser.parseFullPage(getInputStream(config, xmlFile), this);
+    }
+
+    private InputStream getInputStream(NewsAggregatorSearchConfiguration config, String xmlFile) throws IOException {
+        final URL url = new URL(config.getXmlSource() + xmlFile);
+// ---------
+//        Can not use HTTPClient in this case since it ignores protocol of the url.
+//  --------
+//        final HTTPClient client = HTTPClient.instance(url.getHost(), url.getHost(), url.getPort());
+//        return client.getBufferedStream(url.getHost(), url.getPath());
+        final URLConnection urlConnection = url.openConnection();
+        urlConnection.setConnectTimeout(1000);
+        urlConnection.setReadTimeout(1000);
+        return new BufferedInputStream(urlConnection.getInputStream());
     }
 
     @SuppressWarnings({"unchecked"})
@@ -86,18 +108,46 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
         private static final String ATTRIBUTE_NAME = "name";
         private static final String ATTRIBUTE_XML = "xml";
 
-        public SearchResult parse(InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
+        private Document getDocument(InputStream inputStream) throws JDOMException, IOException {
+            final SAXBuilder saxBuilder = new SAXBuilder();
+            saxBuilder.setValidation(false);
+            saxBuilder.setIgnoringElementContentWhitespace(true);
+
+            return saxBuilder.build(inputStream);
+        }
+
+        public SearchResult parseCluster(InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
             try {
                 final NewsAggregatorSearchResult searchResult = new NewsAggregatorSearchResult(searchCommand);
+                final Document doc = getDocument(inputStream);
+                final Element root = doc.getRootElement();
+                List<Element> clusters = root.getChildren(ELEMENT_CLUSTER);
+                for (Element cluster : clusters) {
+                    if (cluster.getAttributeValue(ATTRIBUTE_CLUSTERID).equals(clusterId)) {
+                        handleCluster(cluster, searchCommand, true, searchResult);
+                        handleRelated(cluster.getChild(ELEMENT_RELATED), searchResult);
+                    }
+                }
+                handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
+                return searchResult;
+            } finally {
+                if (inputStream != null) {
+                    try {
+                        inputStream.close();
+                    } catch(Exception e) {
+                        // Ignoring
+                    }
+                }
+            }
+        }
 
-                final SAXBuilder saxBuilder = new SAXBuilder();
-                saxBuilder.setValidation(false);
-                saxBuilder.setIgnoringElementContentWhitespace(true);
-
-                final Document doc = saxBuilder.build(inputStream);
+        public SearchResult parseFullPage(InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
+            try {
+                final NewsAggregatorSearchResult searchResult = new NewsAggregatorSearchResult(searchCommand);
+                final Document doc = getDocument(inputStream);
                 final Element root = doc.getRootElement();
 
-                handleClusters(root.getChildren(ELEMENT_CLUSTER), searchResult, searchCommand);
+                handleClusters(root.getChildren(ELEMENT_CLUSTER), searchResult, searchCommand, false);
                 handleRelated(root.getChild(ELEMENT_RELATED), searchResult);
                 handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
                 return searchResult;
@@ -131,47 +181,61 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
                 final SearchResultItem searchResultItem = new BasicSearchResultItem();
                 searchResultItem.addField(ATTRIBUTE_NAME, categoryElement.getTextTrim());
                 searchResult.addRelatedResultItem(categoryType, searchResultItem);
-            }            
-        }
-
-        private void handleClusters(List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand) {
-            for (Element cluster : clusters) {
-                final SearchResultItem searchResultItem = new BasicSearchResultItem();
-                searchResultItem.addField("size", cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT));
-                searchResultItem.addField("clusterId", cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
-
-                final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
-
-                final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
-                final List<Element> entryList = entryCollectionElement.getChildren();
-                final BasicSearchResult nestedSearchResult = new BasicSearchResult(searchCommand);
-                for (int i = 0; i < entryList.size(); i++) {
-                    Element nestedEntry =  entryList.get(i);
-                    if (i == 0) {
-                        // First element is main result
-                        handleEntry(nestedEntry, searchResultItem);
-                        
-                    } else {
-                        SearchResultItem nestedResultItem = new BasicSearchResultItem();
-                        handleEntry(nestedEntry, nestedResultItem);
-                        addResult(nestedResultItem, collapseMap, nestedSearchResult, searchCommand);
-                    }
-                }
-                searchResultItem.addNestedSearchResult("entries", nestedSearchResult);
-                searchResult.addResult(searchResultItem);
             }
         }
 
-        private void addResult(SearchResultItem nestedResultItem, HashMap<String, SearchResultItem> collapseMap, SearchResult nestedSearchResult, SearchCommand searchCommand) {
+        private void handleClusters(List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand, boolean collapseDuplicates) {
+            for (Element cluster : clusters) {
+                handleCluster(cluster, searchCommand, collapseDuplicates, searchResult);
+            }
+        }
+
+        private void handleCluster(Element cluster, SearchCommand searchCommand, boolean collapseDuplicates, SearchResult searchResult) {
+            final SearchResultItem searchResultItem = new BasicSearchResultItem();
+            searchResultItem.addField("size", cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT));
+            searchResultItem.addField("clusterId", cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
+
+            final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
+            final List<Element> entryList = entryCollectionElement.getChildren();
+            final BasicSearchResult nestedSearchResult = new BasicSearchResult(searchCommand);
+
+            HashMap<String, SearchResultItem> collapseMap = null;
+            if (collapseDuplicates) {
+                collapseMap = new HashMap<String, SearchResultItem>();
+            }
+            for (int i = 0; i < entryList.size(); i++) {
+                Element nestedEntry =  entryList.get(i);
+                if (i == 0) {
+                    // First element is main result
+                    handleEntry(nestedEntry, searchResultItem);
+                } else {
+                    SearchResultItem nestedResultItem = new BasicSearchResultItem();
+                    handleEntry(nestedEntry, nestedResultItem);
+                    addResult(nestedResultItem, collapseMap, nestedSearchResult, searchCommand);
+                }
+            }
+            searchResultItem.addNestedSearchResult("entries", nestedSearchResult);
+            searchResult.addResult(searchResultItem);
+        }
+
+        private void addResult(SearchResultItem nestedResultItem,
+                               HashMap<String, SearchResultItem> collapseMap,
+                               SearchResult nestedSearchResult,
+                               SearchCommand searchCommand) {
             // Check if entry is duplicate and should be a subresult
+            SearchResultItem collapseParent = null;
             String collapseId = nestedResultItem.getField(ELEMENT_COLLAPSEID);
-            SearchResultItem collapseParent = collapseMap.get(collapseId);
+            if (collapseMap != null) {
+                collapseParent = collapseMap.get(collapseId);
+            }
             if (collapseParent == null) {
-                // No duplicate in results
+                // No duplicate in results or should not be collapsed
                 nestedSearchResult.addResult(nestedResultItem);
-                collapseMap.put(collapseId, nestedResultItem);
+                if (collapseMap != null) {
+                    collapseMap.put(collapseId, nestedResultItem);
+                }
             } else {
-                // duplicat item, adding as a subresult to first item.
+                // duplicate item, adding as a subresult to first item.
                 SearchResult collapsedResults = collapseParent.getNestedSearchResult("collapsedResults");
                 if (collapsedResults == null) {
                     collapsedResults = new BasicSearchResult(searchCommand);
