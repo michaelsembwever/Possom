@@ -76,6 +76,7 @@
         <c:otherwise>
             <%-- This is the real thing. The new templating system all should use. --%>
 
+            <search:include include="topBar"/>
             <search:include include="header"/>
 
             <table cellspacing="0" cellpadding="0" id="body_table">
