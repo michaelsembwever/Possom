@@ -9,6 +9,9 @@ import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.NewsAggregatorSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.FastSearchResult;
+import no.schibstedsok.searchportal.result.Modifier;
+import no.schibstedsok.searchportal.result.Navigator;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -24,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
+public class NewsAggregatorSearchCommand extends AbstractESPFastSearchCommand {
 
     private final static Logger LOG = Logger.getLogger(NewsAggregatorSearchCommand.class);
 
@@ -37,49 +40,58 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
     }
 
     public SearchResult execute() {
-        try {
-            LOG.debug("News aggregator search executed with: " + getParameters());
-            LOG.debug("News aggregator search executed with: " + datamodel.getParameters());
+        LOG.debug("News aggregator search executed with: " + getParameters());
+        LOG.debug("News aggregator search executed with: " + datamodel.getParameters());
 
-            NewsAggregatorSearchConfiguration config = (NewsAggregatorSearchConfiguration) getSearchConfiguration();
-            LOG.debug("Loading xml file at: " + config.getXmlSource());
-            LOG.debug("Update interval: " + config.getUpdateIntervalMinutes());
+        NewsAggregatorSearchConfiguration config = (NewsAggregatorSearchConfiguration) getSearchConfiguration();
+        LOG.debug("Loading xml file at: " + config.getXmlSource());
+        LOG.debug("Update interval: " + config.getUpdateIntervalMinutes());
 
-            StringDataObject geoNav = datamodel.getParameters().getValue("geonav");
-            StringDataObject clusterId = datamodel.getParameters().getValue("clusterId");
+        StringDataObject geoNav = datamodel.getParameters().getValue("geonav");
+        StringDataObject clusterId = datamodel.getParameters().getValue("clusterId");
 
-            String xmlFile = geoNav == null ? config.getXmlMainFile() : geoNav.getString();
+        String xmlFile = geoNav == null ? config.getXmlMainFile() : geoNav.getString();
 
-            if (clusterId == null) {
-                return getPageResult(config, xmlFile);
-            } else {
-                return getClusterResult(config, clusterId, xmlFile);
-            }
-        } catch (JDOMException e) {
-            // todo: Handle error in a defined way
-            BasicSearchResult errorResult = new BasicSearchResult(this);
-            BasicSearchResultItem resultItem = new BasicSearchResultItem();
-            resultItem.addField("error", "Cold not parse clusters");
-            errorResult.addResult(resultItem);
-            return errorResult;
-        } catch (IOException e) {
-            // todo: Handle error in a defined way
-            BasicSearchResult errorResult = new BasicSearchResult(this);
-            BasicSearchResultItem resultItem = new BasicSearchResultItem();
-            resultItem.addField("error", "Cold not find clusters");
-            errorResult.addResult(resultItem);
-            return errorResult;
+        if (clusterId == null) {
+            return getPageResult(config, xmlFile);
+        } else {
+            return getClusterResult(config, clusterId, xmlFile);
         }
     }
 
-    private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId, String xmlFile) throws IOException, JDOMException {
-        NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
-        return newsAggregatorXmlParser.parseCluster(config, getInputStream(config, xmlFile), clusterId.getString(), this);
+    private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId, String xmlFile) {
+        try {
+            final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
+            final InputStream inputStream = getInputStream(config, xmlFile);
+            return newsAggregatorXmlParser.parseCluster(config, inputStream, clusterId.getString(), this);
+        } catch (IOException e) {
+            LOG.debug("Falling back to search instead of xml parse", e);
+        } catch (JDOMException e) {
+            LOG.debug("Falling back to search instead of xml parse", e);
+        }
+        return search(config, clusterId.getString());
     }
 
-    private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) throws JDOMException, IOException {
-        NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
-        return newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
+    private SearchResult search(NewsAggregatorSearchConfiguration config, String clusterId) {
+        LOG.debug("------ Running search to get clusters ---------");
+        LOG.debug("clusterId=" + clusterId);
+        LOG.debug("result-fields=" + config.getResultFields());
+        LOG.debug("query-server=" + config.getQueryServer());
+        LOG.debug("-----------------------------------------------");
+        return null;  //To change body of created methods use File | Settings | File Templates.
+    }
+
+
+    private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
+        final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
+        try {
+            return newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
+        } catch (JDOMException e) {
+            LOG.debug("Falling back to search instead of xml parse", e);
+        } catch (IOException e) {
+            LOG.debug("Falling back to search instead of xml parse", e);
+        }
+        return search(config, null);
     }
 
     private InputStream getInputStream(NewsAggregatorSearchConfiguration config, String xmlFile) throws IOException {
@@ -119,7 +131,7 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
 
         public SearchResult parseCluster(NewsAggregatorSearchConfiguration config, InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
             try {
-                final NewsAggregatorSearchResult searchResult = new NewsAggregatorSearchResult(searchCommand);
+                final FastSearchResult searchResult = new FastSearchResult(searchCommand);
                 final Document doc = getDocument(inputStream);
                 final Element root = doc.getRootElement();
                 List<Element> clusters = root.getChildren(ELEMENT_CLUSTER);
@@ -145,7 +157,8 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
 
         public SearchResult parseFullPage(NewsAggregatorSearchConfiguration config, InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
             try {
-                final NewsAggregatorSearchResult searchResult = new NewsAggregatorSearchResult(searchCommand);
+
+                final FastSearchResult searchResult = new FastSearchResult(searchCommand);
                 final Document doc = getDocument(inputStream);
                 final Element root = doc.getRootElement();
 
@@ -164,32 +177,29 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
             }
         }
 
-        private void handleGeoNav(Element geonavElement, NewsAggregatorSearchResult searchResult) {
+        private void handleGeoNav(Element geonavElement, FastSearchResult searchResult) {
             final List<Element> geoNavElements = geonavElement.getChildren();
             for (Element geoNavElement : geoNavElements) {
                 String navigationType = geoNavElement.getAttributeValue(ATTRIBUTE_TYPE);
-                NewsAggregatorSearchResult.Navigation navigation = new NewsAggregatorSearchResult.Navigation(
-                        navigationType,
-                        geoNavElement.getAttributeValue(ATTRIBUTE_NAME),
-                        geoNavElement.getAttributeValue(ATTRIBUTE_XML));
-                searchResult.addNavigation(navigationType, navigation);
+                Navigator nav = new Navigator(geoNavElement.getAttributeValue(ATTRIBUTE_XML), null, geoNavElement.getAttributeValue(ATTRIBUTE_NAME), null);
+                Modifier modifier = new Modifier(geoNavElement.getAttributeValue(ATTRIBUTE_NAME), -1, nav);
+                searchResult.addModifier(navigationType, modifier);
             }
         }
 
-        private void handleRelated(NewsAggregatorSearchConfiguration config, Element relatedElement, NewsAggregatorSearchResult searchResult) {
+        private void handleRelated(NewsAggregatorSearchConfiguration config, Element relatedElement, FastSearchResult searchResult) {
             final List<Element> categoryElements = relatedElement.getChildren(ELEMENT_CATEGORY);
             for (Element categoryElement : categoryElements) {
                 final String categoryType = categoryElement.getAttributeValue(ATTRIBUTE_TYPE);
 
-                final SearchResult relatedResult = searchResult.getRelatedResult(categoryType);
+                final List<Modifier> relatedList = searchResult.getModifiers(categoryType);
                 int categoryCount = 0;
-                if (relatedResult != null) {
-                    categoryCount = relatedResult.getResults().size();
+                if (relatedList != null) {
+                    categoryCount = relatedList.size();
                 }
                 if (categoryCount < config.getRelatedMaxCount()) {
-                    final SearchResultItem searchResultItem = new BasicSearchResultItem();
-                    searchResultItem.addField(ATTRIBUTE_NAME, categoryElement.getTextTrim());
-                    searchResult.addRelatedResultItem(categoryType, searchResultItem);
+                    final Modifier modifier = new Modifier(categoryElement.getTextTrim(), -1, null);
+                    searchResult.addModifier(categoryType, modifier);
                 }
             }
         }

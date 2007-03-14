@@ -3,10 +3,7 @@ package no.schibstedsok.searchportal.mode.config;
 
 import org.apache.log4j.Logger;
 
-import java.util.Set;
-import java.util.Collections;
-
-public class NewsAggregatorSearchConfiguration extends AbstractSearchConfiguration {
+public class NewsAggregatorSearchConfiguration extends ESPFastSearchConfiguration {
     private final static Logger log = Logger.getLogger(NewsAggregatorSearchConfiguration.class);
 
     private String xmlSource;
