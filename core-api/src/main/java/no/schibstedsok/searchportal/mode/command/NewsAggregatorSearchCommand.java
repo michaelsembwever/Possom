@@ -5,22 +5,23 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.NewsAggregatorSearchResult;
+import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
-import org.jdom.JDOMException;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
+
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.BufferedInputStream;
-import java.util.List;
-import java.util.HashMap;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
@@ -28,8 +29,8 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
     private final static Logger LOG = Logger.getLogger(NewsAggregatorSearchCommand.class);
 
     /**
-     * @param cxt        The context to execute in.
-     * @param dataModel  The dataModel to use.
+     * @param cxt       The context to execute in.
+     * @param dataModel The dataModel to use.
      */
     public NewsAggregatorSearchCommand(Context cxt, DataModel dataModel) {
         super(cxt, dataModel);
@@ -73,12 +74,12 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
 
     private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId, String xmlFile) throws IOException, JDOMException {
         NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
-        return newsAggregatorXmlParser.parseCluster(getInputStream(config, xmlFile), clusterId.getString(), this);
+        return newsAggregatorXmlParser.parseCluster(config, getInputStream(config, xmlFile), clusterId.getString(), this);
     }
 
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) throws JDOMException, IOException {
         NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
-        return newsAggregatorXmlParser.parseFullPage(getInputStream(config, xmlFile), this);
+        return newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
     }
 
     private InputStream getInputStream(NewsAggregatorSearchConfiguration config, String xmlFile) throws IOException {
@@ -116,7 +117,7 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
             return saxBuilder.build(inputStream);
         }
 
-        public SearchResult parseCluster(InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
+        public SearchResult parseCluster(NewsAggregatorSearchConfiguration config, InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
             try {
                 final NewsAggregatorSearchResult searchResult = new NewsAggregatorSearchResult(searchCommand);
                 final Document doc = getDocument(inputStream);
@@ -124,8 +125,9 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
                 List<Element> clusters = root.getChildren(ELEMENT_CLUSTER);
                 for (Element cluster : clusters) {
                     if (cluster.getAttributeValue(ATTRIBUTE_CLUSTERID).equals(clusterId)) {
-                        handleCluster(cluster, searchCommand, true, searchResult);
-                        handleRelated(cluster.getChild(ELEMENT_RELATED), searchResult);
+                        handleFlatCluster(cluster, searchCommand, searchResult);
+                        handleRelated(config, cluster.getChild(ELEMENT_RELATED), searchResult);
+                        break;
                     }
                 }
                 handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
@@ -134,28 +136,28 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
                 if (inputStream != null) {
                     try {
                         inputStream.close();
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         // Ignoring
                     }
                 }
             }
         }
 
-        public SearchResult parseFullPage(InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
+        public SearchResult parseFullPage(NewsAggregatorSearchConfiguration config, InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
             try {
                 final NewsAggregatorSearchResult searchResult = new NewsAggregatorSearchResult(searchCommand);
                 final Document doc = getDocument(inputStream);
                 final Element root = doc.getRootElement();
 
-                handleClusters(root.getChildren(ELEMENT_CLUSTER), searchResult, searchCommand, false);
-                handleRelated(root.getChild(ELEMENT_RELATED), searchResult);
+                handleClusters(root.getChildren(ELEMENT_CLUSTER), searchResult, searchCommand);
+                handleRelated(config, root.getChild(ELEMENT_RELATED), searchResult);
                 handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
                 return searchResult;
             } finally {
                 if (inputStream != null) {
                     try {
                         inputStream.close();
-                    } catch(Exception e) {
+                    } catch (Exception e) {
                         // Ignoring
                     }
                 }
@@ -174,44 +176,60 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
             }
         }
 
-        private void handleRelated(Element relatedElement, NewsAggregatorSearchResult searchResult) {
+        private void handleRelated(NewsAggregatorSearchConfiguration config, Element relatedElement, NewsAggregatorSearchResult searchResult) {
             final List<Element> categoryElements = relatedElement.getChildren(ELEMENT_CATEGORY);
             for (Element categoryElement : categoryElements) {
                 final String categoryType = categoryElement.getAttributeValue(ATTRIBUTE_TYPE);
-                final SearchResultItem searchResultItem = new BasicSearchResultItem();
-                searchResultItem.addField(ATTRIBUTE_NAME, categoryElement.getTextTrim());
-                searchResult.addRelatedResultItem(categoryType, searchResultItem);
+
+                final SearchResult relatedResult = searchResult.getRelatedResult(categoryType);
+                int categoryCount = 0;
+                if (relatedResult != null) {
+                    categoryCount = relatedResult.getResults().size();
+                }
+                if (categoryCount < config.getRelatedMaxCount()) {
+                    final SearchResultItem searchResultItem = new BasicSearchResultItem();
+                    searchResultItem.addField(ATTRIBUTE_NAME, categoryElement.getTextTrim());
+                    searchResult.addRelatedResultItem(categoryType, searchResultItem);
+                }
             }
         }
 
-        private void handleClusters(List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand, boolean collapseDuplicates) {
+        private void handleClusters(List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand) {
             for (Element cluster : clusters) {
-                handleCluster(cluster, searchCommand, collapseDuplicates, searchResult);
+                handleCluster(cluster, searchCommand, searchResult);
             }
         }
 
-        private void handleCluster(Element cluster, SearchCommand searchCommand, boolean collapseDuplicates, SearchResult searchResult) {
+        private void handleFlatCluster(Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
+            final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
+            final List<Element> entryList = entryCollectionElement.getChildren();
+
+            final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
+            for (Element entry : entryList) {
+                final SearchResultItem searchResultItem = new BasicSearchResultItem();
+                handleEntry(entry, searchResultItem);
+                addResult(searchResultItem, searchResult, searchCommand, collapseMap);
+            }
+        }
+
+        private void handleCluster(Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
             final SearchResultItem searchResultItem = new BasicSearchResultItem();
-            searchResultItem.addField("size", cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT));
+            searchResultItem.addField("size", Integer.toString(Integer.parseInt(cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT)) - 1));
             searchResultItem.addField("clusterId", cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
 
             final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
             final List<Element> entryList = entryCollectionElement.getChildren();
             final BasicSearchResult nestedSearchResult = new BasicSearchResult(searchCommand);
 
-            HashMap<String, SearchResultItem> collapseMap = null;
-            if (collapseDuplicates) {
-                collapseMap = new HashMap<String, SearchResultItem>();
-            }
             for (int i = 0; i < entryList.size(); i++) {
-                Element nestedEntry =  entryList.get(i);
+                Element nestedEntry = entryList.get(i);
                 if (i == 0) {
                     // First element is main result
                     handleEntry(nestedEntry, searchResultItem);
                 } else {
                     SearchResultItem nestedResultItem = new BasicSearchResultItem();
                     handleEntry(nestedEntry, nestedResultItem);
-                    addResult(nestedResultItem, collapseMap, nestedSearchResult, searchCommand);
+                    addResult(nestedResultItem, nestedSearchResult, searchCommand);
                 }
             }
             searchResultItem.addNestedSearchResult("entries", nestedSearchResult);
@@ -219,9 +237,16 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
         }
 
         private void addResult(SearchResultItem nestedResultItem,
-                               HashMap<String, SearchResultItem> collapseMap,
                                SearchResult nestedSearchResult,
                                SearchCommand searchCommand) {
+            addResult(nestedResultItem, nestedSearchResult, searchCommand, null);
+        }
+
+
+        private void addResult(SearchResultItem nestedResultItem,
+                               SearchResult nestedSearchResult,
+                               SearchCommand searchCommand,
+                               HashMap<String, SearchResultItem> collapseMap) {
             // Check if entry is duplicate and should be a subresult
             SearchResultItem collapseParent = null;
             String collapseId = nestedResultItem.getField(ELEMENT_COLLAPSEID);
@@ -236,10 +261,10 @@ public class NewsAggregatorSearchCommand extends AbstractSearchCommand {
                 }
             } else {
                 // duplicate item, adding as a subresult to first item.
-                SearchResult collapsedResults = collapseParent.getNestedSearchResult("collapsedResults");
+                SearchResult collapsedResults = collapseParent.getNestedSearchResult("entries");
                 if (collapsedResults == null) {
                     collapsedResults = new BasicSearchResult(searchCommand);
-                    collapseParent.addNestedSearchResult("collapsedResults", collapsedResults);
+                    collapseParent.addNestedSearchResult("entries", collapsedResults);
                 }
                 collapsedResults.addResult(nestedResultItem);
             }

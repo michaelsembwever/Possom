@@ -3,11 +3,15 @@ package no.schibstedsok.searchportal.mode.config;
 
 import org.apache.log4j.Logger;
 
+import java.util.Set;
+import java.util.Collections;
+
 public class NewsAggregatorSearchConfiguration extends AbstractSearchConfiguration {
     private final static Logger log = Logger.getLogger(NewsAggregatorSearchConfiguration.class);
 
     private String xmlSource;
     private String xmlMainFile;
+    private int relatedMaxCount = 30;
     private int updateIntervalMinutes;
 
     public NewsAggregatorSearchConfiguration() {
@@ -21,6 +25,14 @@ public class NewsAggregatorSearchConfiguration extends AbstractSearchConfigurati
             nasc.setXmlSource(nasc.getXmlSource());
             nasc.setUpdateIntervalMinutes(nasc.getUpdateIntervalMinutes());
         }
+    }
+
+    public int getRelatedMaxCount() {
+        return relatedMaxCount;
+    }
+
+    public void setRelatedMaxCount(int relatedMaxCount) {
+        this.relatedMaxCount = relatedMaxCount;
     }
 
     public String getXmlSource() {
