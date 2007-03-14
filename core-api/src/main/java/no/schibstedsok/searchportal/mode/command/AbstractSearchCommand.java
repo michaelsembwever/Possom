@@ -5,6 +5,7 @@ package no.schibstedsok.searchportal.mode.command;
 import java.util.LinkedHashMap;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -803,8 +804,17 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 // site fields do not accept quotes
                 term = term.replaceAll("\"","");
             }
-            final String fieldAs = fieldFilters.get(field);
-            filterBuilder.append(" +" + (fieldAs.length() >0 ?  fieldAs + ':' + term : term));
+            final String fieldAs = fieldFilters.get(field);      
+            
+            if (getSearchConfiguration() instanceof FastSearchConfiguration) {
+                final FastSearchConfiguration fsc = (FastSearchConfiguration) getSearchConfiguration();
+                if ( "adv".equals(fsc.getFiltertype()) )
+                    filterBuilder.append(" AND " + (fieldAs.length() >0 ?  fieldAs + ':' + term : term));
+                else
+                    filterBuilder.append(" +" + (fieldAs.length() >0 ?  fieldAs + ':' + term : term));
+            } else {
+                filterBuilder.append(" +" + (fieldAs.length() >0 ?  fieldAs + ':' + term : term));
+            }
         }
 
 
