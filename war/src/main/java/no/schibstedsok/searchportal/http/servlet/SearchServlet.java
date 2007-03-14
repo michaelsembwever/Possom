@@ -174,6 +174,7 @@ public final class SearchServlet extends HttpServlet {
         final Map<String,StringDataObject> params = parametersDO.getValues();
         final String qParam = null != params.get("q") ? params.get("q").getString() : "";
         final String cParm = null != params.get("c") ? params.get("c").getString() : "";
+        final String wParam = null != params.get("where") ? params.get("where").getString() : "";
 
         // check if this is a sitesearch
         final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
@@ -187,8 +188,14 @@ public final class SearchServlet extends HttpServlet {
         }else if (null != cParm && ("d".equals(cParm) || "g".equals(cParm) || "cat".equals(cParm) || "catip".equals(cParm)) && !isSitesearch) {
             // Extra check for the Norwegian web search. Search with an empty query string
             // should return the first page.
-            if (qParam.trim().length() == 0) {
-                redirect = "/";
+            if ("cat".equals(cParm) || "catip".equals(cParm)) {
+                if (wParam.trim().length() == 0 && qParam.trim().length() == 0) {
+                    redirect = "/";
+                }                
+            } else {
+                if (qParam.trim().length() == 0) {
+                    redirect = "/";
+                }
             }
         }
 
@@ -196,8 +203,7 @@ public final class SearchServlet extends HttpServlet {
             LOG.info("doGet(): Empty Query String redirect=" + redirect);
             response.sendRedirect(redirect);
         }
-        return null != redirect;
-    }
+        return null != redirect;    }
 
     private static void performFactoryReloads(
             final String reload,
