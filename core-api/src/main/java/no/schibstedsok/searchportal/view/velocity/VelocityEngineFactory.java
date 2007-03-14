@@ -245,7 +245,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 engine.setProperty(
                         "velocimacro.library",
                         site.getTemplateDir() + "/VM_global_library.vm,"
-                        + site.getTemplateDir() + "/VM_site_library.vm");
+                        + site.getTemplateDir() + "/VM_site_library.vm,"
+                        + site.getTemplateDir() + "/VM_map_library.vm");
                 engine.init();
 
             } catch (Exception e) {
