@@ -6,8 +6,8 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.AddressSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.AdvancedFastSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlocketSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
@@ -82,7 +82,6 @@ import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
-import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
 import no.schibstedsok.searchportal.view.output.XmlOutputResultHandler;
@@ -1012,6 +1011,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         ac.setTargetField(rh.getAttribute("target"));
                         ac.setSourceField(rh.getAttribute("source"));
                         fillBeanProperty(ac, null, "asDate", ParseType.Boolean, rh, "false");
+                        fillBeanProperty(ac, null, "recursiveField", ParseType.String, rh, null);
                         break;
                     case FIELD_CHOOSER:
                         final FieldChooser fc = (FieldChooser) handler;
