@@ -6,12 +6,11 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.NewsAggregatorSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
+import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -26,10 +25,15 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
 
-
-public class NewsAggregatorSearchCommand extends AbstractESPFastSearchCommand {
+/**
+ * Search command that will try to get pregenerated clusters from xml files. If the xml file is not available it will
+ * fall back to a search.
+ */
+public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
 
     private final static Logger LOG = Logger.getLogger(NewsAggregatorSearchCommand.class);
+    private static final String PARAM_GEONAV = "geonav";
+    private static final String PARAM_CLUSTER_ID = "clusterId";
 
     /**
      * @param cxt       The context to execute in.
@@ -47,8 +51,8 @@ public class NewsAggregatorSearchCommand extends AbstractESPFastSearchCommand {
         LOG.debug("Loading xml file at: " + config.getXmlSource());
         LOG.debug("Update interval: " + config.getUpdateIntervalMinutes());
 
-        StringDataObject geoNav = datamodel.getParameters().getValue("geonav");
-        StringDataObject clusterId = datamodel.getParameters().getValue("clusterId");
+        StringDataObject geoNav = datamodel.getParameters().getValue(PARAM_GEONAV);
+        StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
 
         String xmlFile = geoNav == null ? config.getXmlMainFile() : geoNav.getString();
 
@@ -78,9 +82,9 @@ public class NewsAggregatorSearchCommand extends AbstractESPFastSearchCommand {
         LOG.debug("result-fields=" + config.getResultFields());
         LOG.debug("query-server=" + config.getQueryServer());
         LOG.debug("-----------------------------------------------");
-        return null;  //To change body of created methods use File | Settings | File Templates.
+        SearchResult searchResult = super.execute();
+        return searchResult;
     }
-
 
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
         final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
@@ -225,7 +229,7 @@ public class NewsAggregatorSearchCommand extends AbstractESPFastSearchCommand {
         private void handleCluster(Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
             final SearchResultItem searchResultItem = new BasicSearchResultItem();
             searchResultItem.addField("size", Integer.toString(Integer.parseInt(cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT)) - 1));
-            searchResultItem.addField("clusterId", cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
+            searchResultItem.addField(PARAM_CLUSTER_ID, cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
 
             final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
             final List<Element> entryList = entryCollectionElement.getChildren();
