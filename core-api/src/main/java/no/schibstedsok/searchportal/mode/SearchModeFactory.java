@@ -762,6 +762,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 	final CatalogueSearchConfiguration csc = (CatalogueSearchConfiguration) sc;
                     fillBeanProperty(csc, inherit, "queryParameterWhere", ParseType.String , commandE, "");
                     fillBeanProperty(csc, inherit, "searchBy", ParseType.String , commandE, "");
+                    fillBeanProperty(csc, inherit, "split", ParseType.Boolean , commandE, "false");
                 }
                 if(sc instanceof CatalogueAdsSearchConfiguration){
                 	final CatalogueAdsSearchConfiguration casc = (CatalogueAdsSearchConfiguration) sc;

@@ -89,6 +89,8 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 		// for a given geographic place.
 		whichQueryToRun = QueryType.GEO;
 		r = super.execute();
+                
+                LOG.info("Found "+r.getHitCount()+" sponsed links");
 
 		// if there was less than 5 sponsor links from a
 		// specific geographic place, we could add sponsor
@@ -159,16 +161,21 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 					searchResults[i]=item;
 					LOG.info("Fant sponsortreff for plass " + (i+1) + ", " + item.getField("iypspkeywords"+(i+1)));
 				}
-			}
+			} // end for
+                        
 
 			// erstatt resultatet fra første query som returneres ut herifra,
 			// med det prossesserte resultatet 
 			r.getResults().clear();
+                        LOG.info("Cleared original result.");
 			for(SearchResultItem item:searchResults){
 				if(item!=null){
 					r.addResult(item);
+                                        LOG.info("Added item "+item.getField("iypcompanyid"));
 				}
 			}
+                        
+                        r.setHitCount(r.getResults().size());
 			
 			// plass 5, er de som betalt mest, og skal da først i lista.
 			// plass 1 er de som betalt minst og skal da sist i lista.
