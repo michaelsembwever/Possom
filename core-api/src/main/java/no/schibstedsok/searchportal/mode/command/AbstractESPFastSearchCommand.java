@@ -20,6 +20,7 @@ import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -28,23 +29,20 @@ import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
+import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.query.Visitor;
-import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 
 /**
  *
@@ -73,6 +71,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     private static final Logger LOG = Logger.getLogger(AbstractESPFastSearchCommand.class);
     private static final String ERR_CALL_SET_VIEW = "setView() must be called prior to calling this method";
+
 
     private enum ReservedWord {
         AND("and"),
@@ -308,7 +307,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     private boolean isEmptyLeaf(final Clause clause) {
         if (clause instanceof LeafClause) {
             final LeafClause leaf = (LeafClause) clause;
-            return null != leaf.getField() && null != getFieldFilter(leaf);
+            // Changed logic to include: no field and no term. - Geir H. Pettersen - T-Rank
+            String transformedTerm = getTransformedTerm(clause);
+            transformedTerm = transformedTerm.length() == 0 ? null : transformedTerm;
+            return leaf.getField() == null && transformedTerm == null || null != leaf.getField() && null != getFieldFilter(leaf);
         }
 
         return false;
