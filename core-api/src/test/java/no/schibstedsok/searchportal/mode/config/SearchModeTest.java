@@ -11,6 +11,7 @@ import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import java.util.HashMap;
 import java.util.Properties;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -52,13 +53,21 @@ public final class SearchModeTest extends DataModelTestCase {
 
         mode.addSearchConfiguration(webCrawl);
 
+        final DataModel datamodel = getDataModel();
+
         final RunningQuery.Context rqCxt = new RunningQuery.Context() {
             public SearchMode getSearchMode() {
                 return mode;
             }
             public SearchTab getSearchTab(){
                 return SearchTabFactory.valueOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                    ContextWrapper.wrap(SearchTabFactory.Context.class, 
+                    this,
+                    new SiteContext(){
+                        public Site getSite(){
+                            return datamodel.getSite().getSite();
+                        }
+                    }))
                     .getTabByKey("d");
             }
             public PropertiesLoader newPropertiesLoader(
@@ -75,12 +84,12 @@ public final class SearchModeTest extends DataModelTestCase {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-            public Site getSite() {
-                return getTestingSite();
+            public DataModel getDataModel(){
+                return datamodel;
             }
         };
 
-        final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no", getDataModel());
+        final RunningQuery query = new RunningQueryImpl(rqCxt, "aetat.no");
 
         query.run();
 
@@ -105,13 +114,21 @@ public final class SearchModeTest extends DataModelTestCase {
         searchConfiguration.setEncoding("UTF-8");
         mode.addSearchConfiguration(searchConfiguration);
 
+        final DataModel datamodel = getDataModel();
+
         final RunningQuery.Context rqCxt = new RunningQuery.Context(){
             public SearchMode getSearchMode() {
                 return mode;
             }
             public SearchTab getSearchTab(){
                 return SearchTabFactory.valueOf(
-                    ContextWrapper.wrap(SearchTabFactory.Context.class, this))
+                    ContextWrapper.wrap(SearchTabFactory.Context.class, 
+                    this,
+                    new SiteContext(){
+                        public Site getSite(){
+                            return datamodel.getSite().getSite();
+                        }
+                    }))
                     .getTabByKey("d");
             }
             public PropertiesLoader newPropertiesLoader(
@@ -128,12 +145,12 @@ public final class SearchModeTest extends DataModelTestCase {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-            public Site getSite() {
-                return getTestingSite();
+            public DataModel getDataModel(){
+                return datamodel;
             }
         };
 
-        final RunningQuery runningQuery = new RunningQueryImpl(rqCxt, query, getDataModel());
+        final RunningQuery runningQuery = new RunningQueryImpl(rqCxt, query);
 
         runningQuery.run();
 

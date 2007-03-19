@@ -121,14 +121,14 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
      * @param parameters
      */
     public RunningQueryImpl(
-            final Context cxt, 
-            final String query, 
-            final DataModel datamodel) throws SiteKeyedFactoryInstantiationException {
+            final Context cxt,
+            final String query) throws SiteKeyedFactoryInstantiationException {
 
         super(cxt);
-        
+        this.datamodel = cxt.getDataModel();
+
         assert null == datamodel.getQuery();
-        
+
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
         LOG.trace("RunningQuery(cxt," + query + "," + parameters + ")");
@@ -137,13 +137,12 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         locale = datamodel.getSite().getSite().getLocale();
 
-        this.datamodel = datamodel;
         initParameters(cxt);
-        
+
         final SiteContext siteCxt = new SiteContext(){
             public Site getSite() {
                 return datamodel.getSite().getSite();
-            }   
+            }
         };
 
         final TokenEvaluationEngine.Context tokenEvalFactoryCxt =
@@ -168,16 +167,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
         });
 
-        final DataModelFactory factory 
+        final DataModelFactory factory
                 = DataModelFactory.valueOf(ContextWrapper.wrap(DataModelFactory.Context.class, cxt, siteCxt));
 
         final QueryDataObject queryDO = factory.instantiate(
                 QueryDataObject.class,
                 new DataObject.Property("string", queryStr),
                 new DataObject.Property("query", parser.getQuery()));
-        
+
         datamodel.setQuery(queryDO);
-        
+
         rules = AnalysisRuleFactory.valueOf(ContextWrapper.wrap(AnalysisRuleFactory.Context.class, context, siteCxt));
 
     }
@@ -250,9 +249,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public void run() throws InterruptedException {
 
         LOG.trace("run()");
-        final StringBuilder analysisReport 
+        final StringBuilder analysisReport
                 = new StringBuilder(" <analyse><query>" + datamodel.getQuery().getXmlEscaped() + "</query>\n");
-        
+
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
         try {
@@ -311,7 +310,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                                     final StringBuilder analysisRuleReport = new StringBuilder();
 
-                                    score = rule.evaluate(datamodel.getQuery().getQuery(), 
+                                    score = rule.evaluate(datamodel.getQuery().getQuery(),
                                             ContextWrapper.wrap(
                                                 AnalysisRule.Context.class,
                                                 new BaseContext(){
@@ -338,16 +337,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 scores.put(config.getName(), score);
 
                                 if (config.isAlwaysRun() || score >= eHint.getThreshold()) {
-                                    commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, datamodel));
+                                    commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt));
                                 }
 
                             } else if (config.isAlwaysRun()) {
-                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, datamodel));
+                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt));
                             }
 
                         } else {
 
-                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt, datamodel));
+                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt));
                         }
                     }
                 }catch(RuntimeException re){
@@ -607,7 +606,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private void initParameters(final RunningQuery.Context rqCxt){
 
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
-        
+
         parameters.put("query", this);
         parameters.put("locale", locale);
         if( null == parameters.get("offset") ){
@@ -615,7 +614,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         }
 
         final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
-        
+
         final SiteContext siteCxt = new SiteContext(){
             public Site getSite() {
                 return datamodel.getSite().getSite();

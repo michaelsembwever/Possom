@@ -8,7 +8,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 
@@ -24,11 +23,9 @@ public class WebSearchCommand extends FastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public WebSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public WebSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
 

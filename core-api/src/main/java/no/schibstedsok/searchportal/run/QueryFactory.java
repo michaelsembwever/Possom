@@ -44,7 +44,8 @@ public abstract class QueryFactory {
      * @param response
      * @return instance of RunningQuery
      */
-    public abstract RunningQuery createQuery(RunningQuery.Context cxt,
+    public abstract RunningQuery createQuery(
+                             RunningQuery.Context cxt,
                              HttpServletRequest request,
                              HttpServletResponse response) throws SiteKeyedFactoryInstantiationException;
 

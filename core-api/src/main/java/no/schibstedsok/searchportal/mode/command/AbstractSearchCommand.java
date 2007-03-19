@@ -66,15 +66,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private static final String ERROR_RUNTIME = "RuntimeException occurred";
     private static final String TRACE_NOT_TOKEN_PREDICATE = "Not a TokenPredicate ";
 
-    static{
-
-        // when the root logger is set to DEBUG do not limit connection times
-        if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
-            System.setProperty("sun.net.client.defaultConnectTimeout", "1000");
-            System.setProperty("sun.net.client.defaultReadTimeout", "1000");
-        }
-    }
-
    // Attributes ----------------------------------------------------
 
     /** The context to work against. **/
@@ -95,17 +86,16 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param cxt The context to execute in.
      * @param parameters The search parameters to use.
      */
-    public AbstractSearchCommand(final SearchCommand.Context cxt,
-                                 final DataModel datamodel) {
+    public AbstractSearchCommand(final SearchCommand.Context cxt) {
 
         LOG.trace("AbstractSearchCommand()");
-        
 
-        assert null != datamodel : "Not allowed to pass in null datamodel";
-        assert null != datamodel.getQuery() : "Not allowed to pass in null datamodel.query";
-        
+
+        assert null != cxt.getDataModel() : "Not allowed to pass in null datamodel";
+        assert null != cxt.getDataModel().getQuery() : "Not allowed to pass in null datamodel.query";
+
         this.context = cxt;
-        this.datamodel = datamodel;
+        this.datamodel = cxt.getDataModel();
 
         // XXX should be null so we know neither applyQueryTransformers or performQueryTranformation has been called
         transformedQuery = datamodel.getQuery().getString();
@@ -356,7 +346,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("cat");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("na");            
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("na");
 
             executeQuery |= null != filter && filter.length() > 0;
             LOG.info("executeQuery==" + executeQuery
@@ -449,7 +439,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** TODO comment me. **/
     protected Map<String,Object> getParameters() {
-        
+
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         return parameters;
     }
@@ -460,7 +450,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * the empty string is returned.
      */
     protected String getParameter(final String paramName) {
-        
+
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         if (parameters.containsKey(paramName)) {
             if(parameters.get(paramName) instanceof String[]){
@@ -493,7 +483,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final String getTransformedTerm(final Clause clause) {
         return escapeTerm(transformedTerms.get(clause));
     }
-    
+
     /** TODO comment me. **/
     protected final Map<Clause,String> getTransformedTerms() {
         return transformedTerms;
@@ -516,7 +506,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** returns null when array is null **/
     protected final String getSingleParameter(final String paramName) {
-        
+
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         return parameters.get(paramName) instanceof String[]
                 ? ((String[]) parameters.get(paramName))[0]
@@ -804,8 +794,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 // site fields do not accept quotes
                 term = term.replaceAll("\"","");
             }
-            final String fieldAs = fieldFilters.get(field);      
-            
+            final String fieldAs = fieldFilters.get(field);
+
             if (getSearchConfiguration() instanceof FastSearchConfiguration) {
                 final FastSearchConfiguration fsc = (FastSearchConfiguration) getSearchConfiguration();
                 if ( "adv".equals(fsc.getFiltertype()) )

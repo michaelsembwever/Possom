@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 /**
  * QueryFactoryImpl is part of no.schibstedsok.searchportal.query.
  * Use this class to create an instance of a RunningQuery.
- * 
+ *
  * TODO Replace the code in createQuery with a RunningQueryTransformer sub-module that is
  *  configured per mode and permits manipulation of the datamodel before the RunningQuery is constructed.
  *

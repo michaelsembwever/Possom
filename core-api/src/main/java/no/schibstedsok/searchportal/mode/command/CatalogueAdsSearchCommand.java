@@ -34,20 +34,19 @@ import org.apache.log4j.Logger;
  * @author daniele@conduct.no
  */
 public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
-    
+
     /** Logger for this class. */
-    private static final Logger LOG = Logger
-            .getLogger(CatalogueAdsSearchCommand.class);
-    
+    private static final Logger LOG = Logger.getLogger(CatalogueAdsSearchCommand.class);
+
     /** String that hold the original untransformed query supplied by the user. */
     private String originalQuery;
-    
+
     /**
      * String that hold the geographic part of the query, supplied in the
      *  where field in the frontend.
      */
     private String queryGeoString = null;
-    
+
     /**
      * Two different queries are executed by this command each time the command is
      * executed.
@@ -56,45 +55,44 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         GEO,            // include user supplied geographic in query
         INGENSTEDS      // use "ingensteds" as geographic in query.
     }
-    
+
     /** The query type to run. */
     private QueryType whichQueryToRun;
-    
+
     /** Constant for no defined geographic location. */
     private final static String DOMESTIC_SEARCH = "ingensteds";
-    
+
     /**
      * Creates a new instance of CatalogueAdsSearchCommand.
      *
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public CatalogueAdsSearchCommand(final Context cxt,
-            final DataModel datamodel) {
-        
-        super(cxt, datamodel);
-        
+    public CatalogueAdsSearchCommand(final Context cxt) {
+
+        super(cxt);
+
         final CatalogueAdsSearchConfiguration conf = (CatalogueAdsSearchConfiguration) cxt
                 .getSearchConfiguration();
-        
+
         final String whereParameter = conf.getQueryParameterWhere();
-        
+
         /**
          *  Use the geographic parameters in "where" if supplied by user.
          *  If user hasent supplied any geographic, use "ingensteds" instead.
          */
         if (getSingleParameter(whereParameter) != null
                 && getSingleParameter(whereParameter).length() > 0) {
-            
+
             final ReconstructedQuery queryGeo
                     = createQuery(getSingleParameter(whereParameter));
-            
+
             queryGeoString = queryGeo.getQuery().getQueryString();
         } else {
             queryGeoString = DOMESTIC_SEARCH;
         }
     }
-    
+
     /**
      * Execute search command.
      *
@@ -127,44 +125,44 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     public SearchResult execute() {
-        
+
         /**
          * search result from first query, this will be reused and returned
          * out from this method, with processed search result if needed.
          */
         SearchResult firstQueryResult = null;
-        
+
         SearchResult secondQueryResult = null;
-        
+
         whichQueryToRun = QueryType.GEO;
         firstQueryResult = super.execute();
-        
+
         LOG.info("Found "+firstQueryResult.getHitCount()+" sponsed links");
-        
+
         if (firstQueryResult.getHitCount() < 5 && !queryGeoString.equals(DOMESTIC_SEARCH)) {
-            
+
             // Build the search result to return from this method
             // during processing in this array.
             final SearchResultItem[] searchResults = new SearchResultItem[5];
-            
+
             for (SearchResultItem item : firstQueryResult.getResults()) {
-                
+
                 Pattern p = Pattern.compile("^" + originalQuery
                         + queryGeoString+".*|.*;" + originalQuery + queryGeoString+".*");
-                
+
                 int i = 0;
                 boolean found = false;
                 for(; i < 5 ; i++){
                     if(item.getField("iypspkeywords"+(i+1))!=null){
                         Matcher m = p.matcher(item.getField("iypspkeywords"+(i+1)).trim().toLowerCase());
                         found = m.matches();
-                        
+
                         if(found){
                             break;
                         }
                     }
                 }
-                
+
                 if(found){
                     searchResults[i] = item;
                     LOG.info("Fant sponsortreff for plass " + (i+1) + ", " + item.getField("iypspkeywords"+(i+1)));
@@ -172,36 +170,36 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
                     LOG.error("Fant IKKE sponsortreff, det er ikke mulig, " + item);
                 }
             }
-            
-            
-            
+
+
+
             // run second query, which fetch all sponsorlinks
             // for a given set of keywords, without geographic.
             whichQueryToRun = QueryType.INGENSTEDS;
             performQueryTransformation();
             secondQueryResult = super.execute();
             for (SearchResultItem item : secondQueryResult.getResults()) {
-                
+
                 Pattern p = Pattern.compile("^" + originalQuery
                         + DOMESTIC_SEARCH+".*|.*;" + originalQuery + DOMESTIC_SEARCH+".*");
-                
+
                 int i = 0;
                 boolean found = false;
                 for(; i < 5 ; i++){
                     if(item.getField("iypspkeywords"+(i+1))!=null){
                         Matcher m = p.matcher(item.getField("iypspkeywords"+(i+1)).trim().toLowerCase());
                         found = m.matches();
-                        
+
                         if(found) break;
                     }
                 }
-                
+
                 if(found && searchResults[i]==null){
                     searchResults[i]=item;
                     LOG.info("Fant sponsortreff for plass " + (i+1) + ", " + item.getField("iypspkeywords"+(i+1)));
                 }
             } // end for
-            
+
             firstQueryResult.getResults().clear();
             LOG.info("Cleared original result.");
             for(SearchResultItem item:searchResults){
@@ -210,15 +208,15 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
                     LOG.info("Added item "+item.getField("iypcompanyid"));
                 }
             }
-            
+
             firstQueryResult.setHitCount(firstQueryResult.getResults().size());
             java.util.Collections.reverse(firstQueryResult.getResults());
-            
+
         }
-        
+
         return firstQueryResult;
     }
-    
+
     /**
      *  Create query for search command.
      *  Based on whichQueryToRun, creates query with user supplied geographic
@@ -228,10 +226,10 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     public String getTransformedQuery() {
-        
+
         originalQuery = super.getTransformedQuery().replaceAll(" ", "").toLowerCase();
         String query = null;
-        
+
         if (whichQueryToRun == QueryType.GEO) {
             query = super.getTransformedQuery().replaceAll(" ", "")
             + queryGeoString.replaceAll(" ", "");
@@ -242,13 +240,13 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         return "iypspkeywords5:" + query + " OR iypspkeywords4:" + query + " OR iypspkeywords3:" + query
                 + " OR iypspkeywords2:" + query + " OR iypspkeywords1:" + query;
     }
-    
+
     /**
      *  Overriden methods below, because we dont want to output any FQL
      *  syntax in our query, we just want them to return the terms
      *  in one line with spaces between.
      */
-    
+
     /**
      *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
      */
@@ -257,7 +255,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
-    
+
     /**
      *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
      */
@@ -265,7 +263,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
     protected void visitImpl(AndNotClause clause) {
         clause.getFirstClause().accept(this);
     }
-    
+
     /**
      *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
      */
@@ -274,7 +272,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
-    
+
     /**
      *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
      */
@@ -282,7 +280,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
     protected void visitImpl(NotClause clause) {
         clause.getFirstClause().accept(this);
     }
-    
+
     /**
      *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
      */
@@ -290,7 +288,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
     protected void visitImpl(OperationClause clause) {
         clause.getFirstClause().accept(this);
     }
-    
+
     /**
      *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
      */
@@ -299,5 +297,5 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
-    
+
 }

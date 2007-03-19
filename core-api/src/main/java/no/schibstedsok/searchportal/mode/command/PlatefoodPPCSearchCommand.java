@@ -51,11 +51,9 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
      * @param configuration
      * @param parameters
      */
-    public PlatefoodPPCSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public PlatefoodPPCSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     /**

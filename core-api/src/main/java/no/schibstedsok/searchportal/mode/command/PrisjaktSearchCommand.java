@@ -55,11 +55,9 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
      * @param cxt The context to execute in.
      * @param parameters The search parameters.
      */
-    public PrisjaktSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public PrisjaktSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     /** {@inheritDoc} */
@@ -75,9 +73,9 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
 
 
         /*Produkter*/
-        final boolean isElectronics 
+        final boolean isElectronics
                 = engine.evaluateQuery(TokenPredicate.PRODUCT_ELECTRONIC, datamodel.getQuery().getQuery());
-        final boolean isHousehold 
+        final boolean isHousehold
                 = engine.evaluateQuery(TokenPredicate.PRODUCT_HOUSEHOLD, datamodel.getQuery().getQuery());
         final boolean isMusic = engine.evaluateQuery(TokenPredicate.PRODUCT_MUSIC, datamodel.getQuery().getQuery());
 

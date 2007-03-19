@@ -8,7 +8,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.UrlClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -34,11 +33,9 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public BlogSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public BlogSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     // Public --------------------------------------------------------

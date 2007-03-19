@@ -4,7 +4,6 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
@@ -25,20 +24,17 @@ public final class YellowGeoSearchTest extends AbstractSearchCommandTest {
     }
 
     private String getParsedQueryAsString(final String query) throws SiteKeyedFactoryInstantiationException {
-        
-        final DataModel datamodel = getDataModel();
-        
-        final SearchCommand.Context cxt = createCommandContext(query, "y", datamodel, "yellowPages");
-        final YellowSearchCommand command = createSearchCommand(cxt, datamodel);
-        return command.getQueryRepresentation(datamodel.getQuery().getQuery());
+
+        final SearchCommand.Context cxt = createCommandContext(query, "y", "yellowPages");
+        final YellowSearchCommand command = createSearchCommand(cxt);
+        return command.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
 
     }
 
     private YellowSearchCommand createSearchCommand(
-            final SearchCommand.Context cxt,
-            final DataModel datamodel) throws SiteKeyedFactoryInstantiationException {
-        
-        return new YellowSearchCommand(cxt, datamodel);
+            final SearchCommand.Context cxt) throws SiteKeyedFactoryInstantiationException {
+
+        return new YellowSearchCommand(cxt);
     }
 
 }

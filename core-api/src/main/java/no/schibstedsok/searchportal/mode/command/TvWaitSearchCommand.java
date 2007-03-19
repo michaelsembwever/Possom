@@ -72,11 +72,9 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     // Constructors --------------------------------------------------
 
     /** Creates a new instance of TvWaitSearchCommand */
-    public TvWaitSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public TvWaitSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
         blankQuery = datamodel.getQuery().getQuery().isBlank();
         this.config = (TvWaitSearchConfiguration) cxt.getSearchConfiguration();

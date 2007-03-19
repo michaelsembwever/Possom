@@ -12,6 +12,7 @@ import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import no.schibstedsok.searchportal.result.SearchResult;
 import java.util.HashMap;
 import java.util.Properties;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
@@ -32,6 +33,7 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
     private final RunningQuery.Context rqCxt = new RunningQuery.Context() {
 
         private final SearchMode mode = new SearchMode();
+        private final DataModel datamodel = getDataModel();
 
         public SearchMode getSearchMode() {
             return mode;
@@ -55,19 +57,19 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
 
             return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
         }
-        public Site getSite() {
-            return getTestingSite();
-        }
+        public DataModel getDataModel(){
+                return datamodel;
+            }
     };
 
     private RunningQuery query;
 
     public MockupSearchCommand() throws SiteKeyedFactoryInstantiationException {
-        query = new RunningQueryImpl(rqCxt, "", getDataModel());
+        query = new RunningQueryImpl(rqCxt, "");
     }
 
     public MockupSearchCommand(final String queryString) throws SiteKeyedFactoryInstantiationException {
-        query = new RunningQueryImpl(rqCxt, queryString, getDataModel());
+        query = new RunningQueryImpl(rqCxt, queryString);
     }
 
     public SearchConfiguration getSearchConfiguration() {

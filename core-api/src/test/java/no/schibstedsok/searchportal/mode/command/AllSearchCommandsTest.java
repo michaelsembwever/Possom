@@ -82,13 +82,12 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
             final String query, 
             final String key) throws SiteKeyedFactoryInstantiationException{
 
-        final DataModel datamodel = getDataModel();
         // proxy it back to the RunningQuery context.
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
         
-        updateAttributes(datamodel.getJunkYard().getValues(), rqCxt);
-        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query, datamodel);
-        datamodel.getJunkYard().getValues().put("query", rq);
+        updateAttributes(rqCxt.getDataModel().getJunkYard().getValues(), rqCxt);
+        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
+        rqCxt.getDataModel().getJunkYard().getValues().put("query", rq);
 
         final Collection<Callable<SearchResult>> commands = new ArrayList<Callable<SearchResult>>();
 
@@ -99,7 +98,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
             final SearchCommand.Context cxt = createCommandContext(rq, rqCxt, conf.getName());
 
-            final SearchCommand cmd = SearchCommandFactory.createSearchCommand(cxt, datamodel);
+            final SearchCommand cmd = SearchCommandFactory.createSearchCommand(cxt);
 
             commands.add(cmd);
         }

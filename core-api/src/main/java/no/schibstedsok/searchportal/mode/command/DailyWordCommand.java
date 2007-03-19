@@ -73,11 +73,9 @@ public final class DailyWordCommand extends AbstractSearchCommand {
     // Constructors --------------------------------------------------
 
     /** Creates a new instance of P4SearchCommand */
-    public DailyWordCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public DailyWordCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     // Public --------------------------------------------------------

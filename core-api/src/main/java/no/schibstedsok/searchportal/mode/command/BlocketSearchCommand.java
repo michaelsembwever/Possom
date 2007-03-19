@@ -28,11 +28,9 @@ public final class BlocketSearchCommand extends AbstractWebServiceSearchCommand 
 
     private static final String ERR_FAILED_ENCODE_BLOCKET = "Failed to encode Blocket search query";
 
-    public BlocketSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public BlocketSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     @Override

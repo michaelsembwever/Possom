@@ -36,6 +36,7 @@ import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.TradeDoubler;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /** The Central Controller to incoming queries.
@@ -64,6 +65,15 @@ public final class SearchServlet extends HttpServlet {
     //
 
     // Static --------------------------------------------------------
+    
+    static{
+
+        // when the root logger is set to DEBUG do not limit connection times
+        if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
+            System.setProperty("sun.net.client.defaultConnectTimeout", "1000");
+            System.setProperty("sun.net.client.defaultReadTimeout", "1000");
+        }
+    }
 
     // Constructors --------------------------------------------------
 
@@ -374,10 +384,15 @@ public final class SearchServlet extends HttpServlet {
             LOG.error(ERR_MISSING_MODE + searchTab.getMode());
             throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
         }
+        
+        final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
 
         final RunningQuery.Context rqCxt = ContextWrapper.wrap(
                 RunningQuery.Context.class,
                 new BaseContext() {
+                    public DataModel getDataModel(){
+                        return datamodel;
+                    }
                     public SearchMode getSearchMode() {
                         return mode;
                     }
@@ -393,7 +408,6 @@ public final class SearchServlet extends HttpServlet {
         try {
 
             final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
-            final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
 
             query.run();
 

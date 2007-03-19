@@ -47,15 +47,13 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
      * @param cxt The context to execute in.
      * @param parameters Search command parameters.
      */
-    public AbstractYahooSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public AbstractYahooSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
         final AbstractYahooSearchConfiguration conf = (AbstractYahooSearchConfiguration)cxt.getSearchConfiguration();
 
-        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
+        final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
         final String host = siteConf.getProperty(conf.getHost());
         final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
 

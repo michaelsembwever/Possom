@@ -5,7 +5,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResult;
 
 /**
@@ -13,14 +12,14 @@ import no.schibstedsok.searchportal.result.SearchResult;
  * @version <tt>$Revision$</tt>
  */
 public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
-    
-    public AddressSearchCommand(final Context cxt, final DataModel datamodel) {
-        super(cxt, datamodel);
+
+    public AddressSearchCommand(final Context cxt) {
+        super(cxt);
     }
-    
+
     public final SearchResult execute() {
         SearchResult sr = super.execute();
-        
+
         return sr;
     }
 }

@@ -45,11 +45,9 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public CorrectingFastSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public CorrectingFastSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     /** {@inheritDoc} */

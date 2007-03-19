@@ -1,7 +1,6 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.TvEnrichSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.FastSearchResult;
@@ -15,11 +14,9 @@ public class TvEnrichSearchCommand extends StaticSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(TvEnrichSearchCommand.class);
 
-    public TvEnrichSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public TvEnrichSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     public SearchResult execute() {

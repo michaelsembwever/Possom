@@ -8,7 +8,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
@@ -30,11 +29,9 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
      * @param cxt
      * @param parameters
      */
-    public WhiteSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public WhiteSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     /**

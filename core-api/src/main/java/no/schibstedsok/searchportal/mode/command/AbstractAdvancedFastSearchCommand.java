@@ -28,11 +28,9 @@ public abstract class AbstractAdvancedFastSearchCommand extends AbstractSimpleFa
      * @param cxt        The context.
      * @param parameters The command parameters.
      */
-    public AbstractAdvancedFastSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public AbstractAdvancedFastSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     // AbstractReflectionVisitor overrides ----------------------------------------------

@@ -1,7 +1,6 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
@@ -39,8 +38,8 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
      * @param cxt       The context to execute in.
      * @param dataModel The dataModel to use.
      */
-    public NewsAggregatorSearchCommand(Context cxt, DataModel dataModel) {
-        super(cxt, dataModel);
+    public NewsAggregatorSearchCommand(final Context cxt) {
+        super(cxt);
     }
 
     public SearchResult execute() {

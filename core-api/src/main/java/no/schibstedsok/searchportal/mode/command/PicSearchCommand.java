@@ -2,7 +2,6 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
@@ -20,7 +19,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -43,11 +41,9 @@ public final class PicSearchCommand extends AbstractSearchCommand {
      * @param cxt Context to run in.
      * @param parameters Command parameters.
      */
-    public PicSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public PicSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
         final SiteConfiguration siteConfig = datamodel.getSite().getSiteConfiguration();
         final PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();

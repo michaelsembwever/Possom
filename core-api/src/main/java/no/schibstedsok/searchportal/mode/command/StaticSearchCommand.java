@@ -8,7 +8,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -25,11 +24,9 @@ public class StaticSearchCommand extends AbstractSearchCommand {
     private static final SearchResultItem dummyItem
             = new BasicSearchResultItem();
 
-    public StaticSearchCommand(
-            final SearchCommand.Context cxt,
-            final DataModel datamodel) {
+    public StaticSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     public SearchResult execute() {

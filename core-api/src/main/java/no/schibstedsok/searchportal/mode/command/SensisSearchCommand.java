@@ -8,7 +8,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -22,11 +21,9 @@ public class SensisSearchCommand extends FastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public SensisSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public SensisSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
 

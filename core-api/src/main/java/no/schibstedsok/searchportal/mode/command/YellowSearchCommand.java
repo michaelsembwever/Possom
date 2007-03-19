@@ -47,11 +47,9 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
     /** Creates a new yellow search command.
      * TODO. Rewrite from scratch. This is insane.
      **/
-    public YellowSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public YellowSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     /** TODO comment me. **/
@@ -98,10 +96,10 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             final FastSearchResult localResult = (FastSearchResult) super.execute();
 
             final YellowSearchResult result = new YellowSearchResult(
-                    this, 
-                    localResult, 
-                    nationalHits, 
-                    top3, 
+                    this,
+                    localResult,
+                    nationalHits,
+                    top3,
                     isLocalSearch() && !viewAll,
                     datamodel.getQuery().getString());
 
@@ -121,10 +119,10 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             ypkeywordsgeo = false;
 
             final YellowSearchResult result = new YellowSearchResult(
-                    this, 
-                    null, 
-                    nationalHits, 
-                    top3, 
+                    this,
+                    null,
+                    nationalHits,
+                    top3,
                     false,
                     datamodel.getQuery().getString());
 
@@ -155,10 +153,10 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
             final String yprank = companyRank ? "company" : "default";
 
             final YellowSearchResult result = new YellowSearchResult(
-                    this, 
-                    localResult, 
-                    nationalHits, 
-                    top3, 
+                    this,
+                    localResult,
+                    nationalHits,
+                    top3,
                     false,
                     datamodel.getQuery().getString());
             result.addField("yprank", yprank);

@@ -24,11 +24,9 @@ public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand
 
     private static final String ERR_FAILED_ENCODE_HITTAMAP = "Failed to encode Map search query";
 
-    public HittaMapSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public HittaMapSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     @Override

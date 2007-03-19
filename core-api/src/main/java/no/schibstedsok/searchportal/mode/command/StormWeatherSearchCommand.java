@@ -44,11 +44,9 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      *                      command.
      * @param parameters    Command parameters.
      */
-    public StormWeatherSearchCommand(
-            final SearchCommand.Context cxt,
-            final DataModel datamodel) {
+    public StormWeatherSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
         LOG.debug("Creating WeatherSearchCommand");
 
     }

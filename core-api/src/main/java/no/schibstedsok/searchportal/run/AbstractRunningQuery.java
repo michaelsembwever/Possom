@@ -36,7 +36,7 @@ public abstract class AbstractRunningQuery implements RunningQuery {
 
         LOG.trace("trimDuplicateSpaces(" + query + ")");
 
-        return query == null 
+        return query == null
                 ? null
                 : query.replaceAll("\\s+", " ").trim();
     }

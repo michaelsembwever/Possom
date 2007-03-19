@@ -56,16 +56,21 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
 
     // Protected -----------------------------------------------------
 
-    protected final RunningQuery.Context createRunningQueryContext(final String key){
+    protected final RunningQuery.Context createRunningQueryContext(final String key) 
+            throws SiteKeyedFactoryInstantiationException{
+        
+        final DataModel datamodel = getDataModel();
         
         final SiteContext siteCxt = new SiteContext(){
             public Site getSite() {
-                return getTestingSite();
+                return datamodel.getSite().getSite();
             }
         };
 
         return new RunningQuery.Context() {
-
+            public DataModel getDataModel(){
+                return datamodel;
+            }
             public SearchMode getSearchMode() {
                 return SearchModeFactory.valueOf(
                         ContextWrapper.wrap(SearchModeFactory.Context.class, this, siteCxt))
@@ -96,10 +101,9 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
     protected final SearchCommand.Context createCommandContext(
             final String query,
             final RunningQuery.Context rqCxt,
-            final DataModel datamodel,
             final String conf) throws SiteKeyedFactoryInstantiationException{
 
-        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query, datamodel);
+        final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
 
         final TokenEvaluationEngine engine = rq.getTokenEvaluationEngine();
 
@@ -135,12 +139,11 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
     protected final SearchCommand.Context createCommandContext(
             final String query,
             final String key,
-            final DataModel datamodel,
             final String conf) throws SiteKeyedFactoryInstantiationException {
 
         final RunningQuery.Context rqCxt = createRunningQueryContext(key);
 
-        return createCommandContext(query, rqCxt, datamodel, conf);
+        return createCommandContext(query, rqCxt, conf);
     }
 
     // Private -------------------------------------------------------
@@ -151,10 +154,9 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
         
         public RunningTestQuery(
                 final Context cxt, 
-                final String query, 
-                final DataModel datamodel) throws SiteKeyedFactoryInstantiationException {
+                final String query) throws SiteKeyedFactoryInstantiationException {
             
-            super(cxt, query, datamodel);
+            super(cxt, query);
         }
         
         public TokenEvaluationEngine getTokenEvaluationEngine(){

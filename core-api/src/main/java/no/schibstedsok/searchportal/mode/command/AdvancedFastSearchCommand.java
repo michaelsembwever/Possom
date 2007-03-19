@@ -18,11 +18,9 @@ public class AdvancedFastSearchCommand extends AbstractAdvancedFastSearchCommand
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public AdvancedFastSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public AdvancedFastSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     // TODO comment me.

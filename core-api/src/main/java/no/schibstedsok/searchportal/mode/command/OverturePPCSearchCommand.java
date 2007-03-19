@@ -41,11 +41,9 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      * @param configuration
      * @param parameters
      */
-    public OverturePPCSearchCommand(
-             final Context cxt,
-             final DataModel datamodel) {
+    public OverturePPCSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
     }
     /**

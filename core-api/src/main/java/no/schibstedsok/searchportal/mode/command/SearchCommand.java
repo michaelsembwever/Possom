@@ -6,6 +6,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.util.concurrent.Callable;
 import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.searchportal.datamodel.DataModelContext;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchConfigurationContext;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
@@ -28,7 +29,7 @@ public interface SearchCommand extends Callable<SearchResult> {
     /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it
      * creates.
      */
-    public interface Context extends BaseContext, ResourceContext, RunningQueryContext,
+    public interface Context extends BaseContext, ResourceContext, RunningQueryContext, DataModelContext,
             SearchConfigurationContext, TokenEvaluationEngineContext {
     }
 

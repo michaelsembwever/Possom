@@ -66,11 +66,9 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
     /**
      * Creates a new instance of HittaSearchCommand.
      */
-    public HittaSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public HittaSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
     }
 

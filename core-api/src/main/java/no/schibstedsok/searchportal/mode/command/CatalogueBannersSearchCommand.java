@@ -7,7 +7,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.mode.config.CatalogueBannersSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -46,11 +45,9 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public CatalogueBannersSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public CatalogueBannersSearchCommand(final Context cxt) {
         
-        super(cxt, datamodel);
+        super(cxt);
                 
         final CatalogueBannersSearchConfiguration conf = (CatalogueBannersSearchConfiguration) cxt
                 .getSearchConfiguration();
@@ -81,7 +78,7 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
     public String getTransformedQuery() {
         return "iypcfbannerkw:"+super.getTransformedQuery()+queryGeoString;
     }
-    
+
     /**
      * Executes the query and returns the results based on the parameters in modes.xml.
      *
@@ -99,7 +96,7 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
         String term = getTransformedTerm(clause);
         appendToQueryRepresentation(term);
     }
-    
+
     
     /**
      *  Overriden methods below, because we dont want to output any FQL

@@ -66,11 +66,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String PHRASEWORDS = "PHRASEWORDS(";
 
     /** TODO comment me. **/
-    public YahooIdpSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public YahooIdpSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     /** TODO comment me. **/

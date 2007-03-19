@@ -459,7 +459,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         // Nothing navigated
 
         FastSearchCommand command = (FastSearchCommand) SearchCommandFactory
-                .createSearchCommand(createTestSearchCommandContext("bil") , datamodel);
+                .createSearchCommand(createTestSearchCommandContext("bil") );
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         command.call();
@@ -478,7 +478,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywfylke", navigatedValue);
 
         command = (FastSearchCommand) SearchCommandFactory
-                .createSearchCommand(createTestSearchCommandContext("bil") , datamodel);
+                .createSearchCommand(createTestSearchCommandContext("bil"));
         command.call();
 
         List links = command.getNavigatorBackLinks("geographic");
@@ -499,7 +499,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywkommune", navigatedValue2);
 
         command = (FastSearchCommand) SearchCommandFactory
-                .createSearchCommand(createTestSearchCommandContext("bil") , datamodel);
+                .createSearchCommand(createTestSearchCommandContext("bil"));
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -522,7 +522,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywbydel", navigatedValue3);
 
         command = (FastSearchCommand) SearchCommandFactory
-                .createSearchCommand(createTestSearchCommandContext("bil") , datamodel);
+                .createSearchCommand(createTestSearchCommandContext("bil"));
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -534,6 +534,8 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 
     private SearchCommand.Context createTestSearchCommandContext(final String query) throws Exception{
 
+        final DataModel datamodel = getDataModel();
+        
         final RunningQuery.Context rqCxt = new RunningQuery.Context() {
 
             private final SearchMode mode = new SearchMode();
@@ -560,12 +562,12 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
-            public Site getSite() {
-                return getTestingSite();
+            public DataModel getDataModel(){
+                return datamodel;
             }
         };
 
-        final RunningQuery rq = new RunningQueryImpl(rqCxt, query, getDataModel());
+        final RunningQuery rq = new RunningQueryImpl(rqCxt, query);
 
         final SearchCommand.Context searchCmdCxt = ContextWrapper.wrap(
                 SearchCommand.Context.class,

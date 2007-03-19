@@ -8,7 +8,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  * A search command used for querrying FAST ESP 5.0 query servers.
@@ -20,10 +19,8 @@ public class ESPFastSearchCommand extends AbstractESPFastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public ESPFastSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public ESPFastSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 }

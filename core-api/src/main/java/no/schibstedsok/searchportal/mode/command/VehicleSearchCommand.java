@@ -41,11 +41,9 @@ public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand 
 
     private final static String BLOCKET_ALL_ADS_TYPE = "";
 
-    public VehicleSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public VehicleSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     @Override

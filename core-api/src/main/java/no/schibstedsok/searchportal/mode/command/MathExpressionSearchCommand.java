@@ -29,11 +29,9 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
      * @param cxt         The context to work within.
      * @param parameters    Command parameters.
      */
-    public MathExpressionSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public MathExpressionSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
 

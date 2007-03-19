@@ -76,12 +76,10 @@ public class AdvancedFastSearchCommandTest extends AbstractSearchCommandTest {
             final String query,
             final String wantedQuery,
             final String wantedFilter) throws SiteKeyedFactoryInstantiationException {
-
-        final DataModel datamodel = getDataModel();
         
-        final SearchCommand.Context cxt = createCommandContext(query, "d", datamodel, "defaultSearch");
-        final AbstractAdvancedFastSearchCommand cmd = new AdvancedFastSearchCommand(cxt, datamodel);
-        final String generatedQuery = cmd.getQueryRepresentation(datamodel.getQuery().getQuery());
+        final SearchCommand.Context cxt = createCommandContext(query, "d", "defaultSearch");
+        final AbstractAdvancedFastSearchCommand cmd = new AdvancedFastSearchCommand(cxt);
+        final String generatedQuery = cmd.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
         assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getAdditionalFilter());
     }

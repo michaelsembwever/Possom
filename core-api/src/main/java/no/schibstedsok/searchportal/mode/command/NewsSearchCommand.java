@@ -31,11 +31,9 @@ public class NewsSearchCommand extends FastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public NewsSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public NewsSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     private StringBuilder filterBuilder = null;

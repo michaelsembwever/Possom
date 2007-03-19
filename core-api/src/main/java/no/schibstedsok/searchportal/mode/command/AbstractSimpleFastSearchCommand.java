@@ -103,14 +103,12 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     // Constructors --------------------------------------------------
 
     /** Creates a new instance of AbstractSimpleFastSearchCommand */
-    public AbstractSimpleFastSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public AbstractSimpleFastSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
         final FastSearchConfiguration conf = (FastSearchConfiguration) cxt.getSearchConfiguration();
-        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
+        final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
         queryServerUrl = siteConf.getProperty(conf.getQueryServerUrl());
     }
 

@@ -24,16 +24,14 @@ import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
  * @version $Id: SearchCommandFactory.java 3359 2006-08-03 08:13:22Z mickw $
  */
 public final class SearchCommandFactory {
-    
+
     private static final String ERR_NO_COMMAND = "Cannot find suitable command for ";
 
     private SearchCommandFactory() {  }
 
     /** Create the appropriate command.
      **/
-    public static SearchCommand createSearchCommand(
-            final SearchCommand.Context cxt, 
-            final DataModel datamodel) {
+    public static SearchCommand createSearchCommand(final SearchCommand.Context cxt) {
 
 
         final SearchConfiguration config = cxt.getSearchConfiguration();
@@ -43,36 +41,38 @@ public final class SearchCommandFactory {
                     Class.forName(config.getClass().getName()
                     .replaceAll("Configuration", "Command")
                     .replaceAll("config", "command"));
-            final Constructor<SearchCommand> commandConstr 
-                    = commandCls.getConstructor(SearchCommand.Context.class, DataModel.class);
-            return commandConstr.newInstance(cxt, datamodel);
-            
-            
+
+            final Constructor<SearchCommand> commandConstr
+                    = commandCls.getConstructor(SearchCommand.Context.class);
+
+            return commandConstr.newInstance(cxt);
+
+
         } catch (ClassNotFoundException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-            
+
         } catch (SecurityException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-            
+
         } catch (NoSuchMethodException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-            
+
         } catch (IllegalArgumentException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-            
+
         } catch (InvocationTargetException ex) {
             throw ex.getCause() instanceof RuntimeException
                     ? (RuntimeException)ex.getCause()
                     : new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-            
+
         } catch (InstantiationException ex) {
             throw ex.getCause() instanceof RuntimeException
                     ? (RuntimeException)ex.getCause()
                     : new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-            
+
         } catch (IllegalAccessException ex) {
             throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
         }
-        
+
       }
 }

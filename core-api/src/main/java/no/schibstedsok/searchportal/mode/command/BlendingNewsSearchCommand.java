@@ -44,11 +44,9 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public BlendingNewsSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public BlendingNewsSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
         cfg = (BlendingNewsSearchConfiguration) cxt.getSearchConfiguration();
     }

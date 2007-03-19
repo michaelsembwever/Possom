@@ -8,7 +8,6 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
@@ -67,19 +66,16 @@ public final class WhiteSearchCommandTest extends AbstractSearchCommandTest {
 
     private String getParsedQueryAsString(final String query) throws SiteKeyedFactoryInstantiationException {
 
-        final DataModel datamodel = getDataModel();
-        
-        final SearchCommand.Context cxt = createCommandContext(query, "w", datamodel, "whitePages");
-        final WhiteSearchCommand command = createSearchCommand(cxt, datamodel);
-        return command.getQueryRepresentation(datamodel.getQuery().getQuery());
+        final SearchCommand.Context cxt = createCommandContext(query, "w", "whitePages");
+        final WhiteSearchCommand command = createSearchCommand(cxt);
+        return command.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
 
     }
 
     private WhiteSearchCommand createSearchCommand(
-            final SearchCommand.Context cxt,
-            final DataModel datamodel) throws SiteKeyedFactoryInstantiationException {
+            final SearchCommand.Context cxt) throws SiteKeyedFactoryInstantiationException {
 
-        return new WhiteSearchCommand(cxt, datamodel);
+        return new WhiteSearchCommand(cxt);
     }
 
 }

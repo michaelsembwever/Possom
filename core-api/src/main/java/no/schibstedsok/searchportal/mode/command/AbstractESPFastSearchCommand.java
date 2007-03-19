@@ -97,14 +97,12 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      * @param cxt The context to work in.
      * @param parameters The command parameters to use.
      */
-    public AbstractESPFastSearchCommand(
-                    final Context cxt,
-            final DataModel datamodel) {
+    public AbstractESPFastSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
         cfg = (ESPFastSearchConfiguration) getSearchConfiguration();
-        final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
+        final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
         queryServer = siteConf.getProperty(cfg.getQueryServer());
         searchView = initialiseSearchView();
     }
@@ -146,7 +144,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                     filterBuilder.append("+collapseid:").append(collapseId);
                 }
             }
-            
+
             //check sortby
             String sortBy =cfg.getSortBy();
             if (getParameters().containsKey("userSortBy")) {
@@ -160,7 +158,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                     sortBy = "publishedtime";
                 }
             }
-            
+
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, getCurrentOffset(0)));
             query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));
             query.setParameter(new SearchParameter(BaseParameter.SORT_BY, sortBy));

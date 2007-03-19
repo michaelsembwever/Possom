@@ -4,7 +4,6 @@
  */
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.log4j.Logger;
 
 /**
@@ -20,11 +19,9 @@ public class FastSearchCommand extends AbstractSimpleFastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public FastSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public FastSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
 }

@@ -9,7 +9,6 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -30,11 +29,9 @@ public abstract class AbstractWebServiceSearchCommand extends AbstractSearchComm
     /**
      * Creates a new instance of AbstractWebServiceSearchCommand
      */
-    public AbstractWebServiceSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public AbstractWebServiceSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
 
     }
 

@@ -8,7 +8,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -19,11 +18,9 @@ public class YellowGeoSearchCommand extends YellowSearchCommand {
     private String additionalFilter;
 
     /** Creates a new instance of YellowGeoSearchCommand */
-    public YellowGeoSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public YellowGeoSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     protected String getSortBy() {

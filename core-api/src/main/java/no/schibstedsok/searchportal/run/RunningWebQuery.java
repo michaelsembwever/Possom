@@ -23,7 +23,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
 
     private static final Logger LOG = Logger.getLogger(RunningWebQuery.class);
     private static final String ERR_SEND_ERROR = "!!! Unable to sendError !!!";
-    
+
     private final HttpServletRequest request;
     private final HttpServletResponse response;
 
@@ -56,13 +56,13 @@ public final class RunningWebQuery extends RunningQueryImpl {
                            final HttpServletRequest request,
                            final HttpServletResponse response) throws SiteKeyedFactoryInstantiationException {
 
-        super(cxt, query, (DataModel)request.getSession().getAttribute(DataModel.KEY));
+        super(cxt, query);
 
         if (LOG.isTraceEnabled()) {
             LOG.trace("RunningWebQuery(mode, " + query + ", request, response)");
         }
 
-        // Add all request parameters 
+        // Add all request parameters
         /* SEE "Add all request attributes" below */
         for (String parameterName : (Set<String>)request.getParameterMap().keySet()) {
 
@@ -73,7 +73,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
                 LOG.trace("Added " + parameterName + ", values: " + StringUtils.join(parameterValues, ", "));
             }
         }
-        
+
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         // Hack to keep vg site search working. Dependent on old query
         // parameters. Remove when vg has been reimplented a proper site search.
@@ -85,7 +85,7 @@ public final class RunningWebQuery extends RunningQueryImpl {
             parameters.put("newssource", parameters.get("ywpopnavn"));
             parameters.remove("ywpopnavn");
         }
-        
+
         // Add all request attributes (servlet may have added some things already)...
         for (Enumeration<String> e = (Enumeration<String>)request.getAttributeNames(); e.hasMoreElements();) {
 
@@ -93,8 +93,8 @@ public final class RunningWebQuery extends RunningQueryImpl {
             /*
                 // HACK backwards-compatibility since we never designed for unique names across parameters & attributes
                 //  any attribute that overlaps a parameter's name won't be added!!
-                
-             * this has now been changed. request parameters are first put into the parameters map and 
+
+             * this has now been changed. request parameters are first put into the parameters map and
              * are overwritten with request attributes. this is a basic attempt to prevent parameter injection.
              */
             addParameter(attrName, request.getAttribute(attrName));
@@ -128,24 +128,24 @@ public final class RunningWebQuery extends RunningQueryImpl {
         addParameter("request", request);
         addParameter("response", response);
 
-        
+
     }
-    
+
     public void run() throws InterruptedException{
-        
+
         super.run();
-        
+
         if( allCancelled ){
-            
+
             try {
-                
+
                 response.sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
             } catch (IOException ex) {
                 LOG.error(ERR_SEND_ERROR, ex);
             }
-            
+
         }else{
-            
+
             // push all parameters into request attributes, they are needed by jsp and taglib
             for( Map.Entry<String,Object> entry : datamodel.getJunkYard().getValues().entrySet() ){
                 // don't put back in String array that only contains one element

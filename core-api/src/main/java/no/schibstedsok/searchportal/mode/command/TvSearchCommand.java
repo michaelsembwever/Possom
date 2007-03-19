@@ -4,7 +4,6 @@
  */
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -26,11 +25,9 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
      * @param cxt Search command context.
      * @param parameters Search command parameters.
      */
-    public TvSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public TvSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
         LOG.debug("Creating TvSearchCommand");
 
 //            defaultChannelFilter = new StringBuilder(super.getAdditionalFilter());

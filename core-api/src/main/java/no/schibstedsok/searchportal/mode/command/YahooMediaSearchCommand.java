@@ -87,11 +87,9 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
      * @param cxt Context to execute in.
      * @param parameters Command parameters to use.
      */
-    public YahooMediaSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public YahooMediaSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     /** {@inheritDoc} */

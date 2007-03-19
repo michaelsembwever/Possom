@@ -57,11 +57,9 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
     private final MobileSearchConfiguration cfg;
 
-    public MobileSearchCommand(
-            final SearchCommand.Context cxt,
-            final DataModel datamodel) {
+    public MobileSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
         cfg = (MobileSearchConfiguration) cxt.getSearchConfiguration();
     }
 

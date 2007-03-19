@@ -6,7 +6,6 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
@@ -22,11 +21,9 @@ public final class StockSearchCommand extends AbstractSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(StockSearchCommand.class);
 
-    public StockSearchCommand(
-            final Context cxt,
-            final DataModel datamodel) {
+    public StockSearchCommand(final Context cxt) {
 
-        super(cxt, datamodel);
+        super(cxt);
     }
 
     public SearchResult execute() {

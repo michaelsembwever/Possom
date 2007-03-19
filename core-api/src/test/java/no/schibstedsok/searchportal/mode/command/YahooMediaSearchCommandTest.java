@@ -2,7 +2,6 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import static org.testng.AssertJUnit.*;
 
@@ -62,12 +61,10 @@ public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
         executeTestOfQuery("site:aftonbladet.se banan", "banan", "");
         executeTestOfQuery("banan site:aftonbladet.se", "banan", "");
 
-        final DataModel datamodel = getDataModel();
-        
-        final SearchCommand.Context cxt 
-                = createCommandContext("site:aftonbladet.se banan", "d", datamodel, "yahoo-image-search");
-        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, datamodel);
-        cmd.getQueryRepresentation(datamodel.getQuery().getQuery());
+        final SearchCommand.Context cxt
+                = createCommandContext("site:aftonbladet.se banan", "d", "yahoo-image-search");
+        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt);
+        cmd.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
         assertTrue(cmd.createRequestURL().contains("rurl=http://aftonbladet.se"));
     }
 
@@ -83,12 +80,10 @@ public class YahooMediaSearchCommandTest extends AbstractSearchCommandTest {
             final String query,
             final String wantedQuery,
             final String wantedFilter)  throws SiteKeyedFactoryInstantiationException{
-        
-        final DataModel datamodel = getDataModel();
 
-        final SearchCommand.Context cxt = createCommandContext(query, "d", datamodel, "yahoo-image-search");
-        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt, datamodel);
-        final String generatedQuery = cmd.getQueryRepresentation(datamodel.getQuery().getQuery());
+        final SearchCommand.Context cxt = createCommandContext(query, "d", "yahoo-image-search");
+        final AbstractYahooSearchCommand cmd = new YahooMediaSearchCommand(cxt);
+        final String generatedQuery = cmd.getQueryRepresentation(cxt.getDataModel().getQuery().getQuery());
         assertEquals("Generated query does not match wanted query", wantedQuery, generatedQuery.trim());
         assertEquals("Generated filter does not match wanter filter", wantedFilter, cmd.getAdditionalFilter());
     }
