@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 2.6//EN" "http://tuckey.org/res/dtds/urlrewrite2.6.dtd">
+<!--
+    Document   : urlrewrite.xml
+    Created on : 19 March 2007, 14:43
+    Author     : mick
+    Version    : $Id$
+    Description:
+        Purpose of the document follows.
+-->
+<urlrewrite>
+    <!-- This is just a dummy placeholder. -->
+    <!-- We are going to make urlrewrite's configurations vhost dependent through the skin-architecture. -->
+</urlrewrite>
