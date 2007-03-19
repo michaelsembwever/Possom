@@ -55,7 +55,7 @@
     
     <filter>
         <filter-name>UrlRewriteFilter</filter-name>
-        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+        <filter-class>no.schibstedsok.searchportal.http.filters.UrlRewriteFilter</filter-class>
     </filter>
     
     <!-- Filter Mappings -->
@@ -64,14 +64,12 @@
         <url-pattern>/search/*</url-pattern>
     </filter-mapping-->
     <filter-mapping>
-        <filter-name>UrlRewriteFilter</filter-name>
+        <filter-name>SiteLocatorFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
     <filter-mapping>
-        <filter-name>SiteLocatorFilter</filter-name>
+        <filter-name>UrlRewriteFilter</filter-name>
         <url-pattern>/*</url-pattern>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     <filter-mapping>
         <filter-name>DataModelFilter</filter-name>

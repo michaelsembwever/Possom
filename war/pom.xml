@@ -179,7 +179,7 @@
         <groupId>urlrewrite</groupId>
         <artifactId>urlrewrite</artifactId>
         <type>jar</type>
-        <version>2.6.0</version>
+        <version>3.0-schibstedsok</version>
       </dependency> 
       
     </dependencies> 
