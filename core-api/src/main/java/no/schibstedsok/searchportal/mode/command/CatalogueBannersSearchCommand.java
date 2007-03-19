@@ -1,6 +1,5 @@
 // Copyright (2006-2007) Schibsted Søk AS
 /*
- * WebSearchCommand.java
  *
  * Created on March 7, 2006, 1:01 PM
  *
@@ -9,6 +8,8 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
+import no.schibstedsok.searchportal.mode.config.CatalogueBannersSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
@@ -21,20 +22,26 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
 
 /**
+ * Responsible for executing a search against catalogue index to
+ * retreive banners for the catalogue search result page.
  *
- * A search command for the web search.
+ * The banners are links to images.
+ *
  * @author Stian Hegglund
  * @version $Revision:$
  */
 public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
-
-	/** Logger for this class. */
+    
+    /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueBannersSearchCommand.class);
-
-
-    private String queryTwo=null;
-
-    /** Creates a new instance of WebSearchCommand.
+    
+    /** The user supplied geographic location. */
+    private String queryGeoString=null;
+    
+    /** Constant for no defined geographic location. */
+    private static final String DOMESTIC_SEARCH = "ingensteds";
+    
+    /** Creates a new instance of CatalogueBannersSearchCommand.
      *
      * @param cxt Search command context.
      * @param parameters Search command parameters.
@@ -42,81 +49,112 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
     public CatalogueBannersSearchCommand(
             final Context cxt,
             final DataModel datamodel) {
-
+        
         super(cxt, datamodel);
-
-    	// hvis "where" parametern er sendt inn, så tar vi og leser inn query fra
-    	// den.
-    	if(getSingleParameter("where") != null && getSingleParameter("where").length()>0){
-	        final ReconstructedQuery rq = createQuery(getSingleParameter("where"));
-
-	        final Query query = rq.getQuery();
-
-	    	queryTwo = query.getQueryString();
-	    	queryTwo = queryTwo.replaceAll(" ", "");
-    	}else{
-    		queryTwo = "ingensteds";
-    	}
-
-    	LOG.info("Search configuration name "+getSearchConfiguration().getName());
+                
+        final CatalogueBannersSearchConfiguration conf = (CatalogueBannersSearchConfiguration) cxt
+                .getSearchConfiguration();
+        
+        final String whereParameter = conf.getQueryParameterWhere();
+        
+        /**
+         *  Use the geographic parameters in "where" if supplied by user.
+         *  If user hasent supplied any geographic, use "ingensteds" instead.
+         */
+        if(getSingleParameter(whereParameter) != null && getSingleParameter(whereParameter).length()>0){
+            final ReconstructedQuery rq = createQuery(getSingleParameter(whereParameter));
+            
+            final Query query = rq.getQuery();
+            
+            queryGeoString = query.getQueryString();
+            queryGeoString = queryGeoString.replaceAll(" ", "");
+        }else{
+            queryGeoString = DOMESTIC_SEARCH;
+        }
     }
-
+    
+    /**
+     * Creates the query to execute.
+     * @see no.schibstedsok.searchportal.mode.command.AbstractSearchCommand#getTransformedQuery
+     */
     @Override
     public String getTransformedQuery() {
-    	// TODO Auto-generated method stub
-    	return "iypcfbannerkw:"+super.getTransformedQuery()+queryTwo;
+        return "iypcfbannerkw:"+super.getTransformedQuery()+queryGeoString;
     }
     
+    /**
+     * Executes the query and returns the results based on the parameters in modes.xml.
+     *
+     * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#execute
+     */
     @Override
     public SearchResult execute() {
-    	SearchResult r = null;
-
-    	// TODO Auto-generated method stub
-    	r = super.execute();
-    	return r;
-    }
-
-    /**
-     * Legg til  iypcfspkeywords forran alle ord.
-     *
-     */
-    protected void visitImpl(final LeafClause clause) {
-
-    	String term = getTransformedTerm(clause);
-    	appendToQueryRepresentation(term);
+        return super.execute();
     }
     
-	@Override
-	protected void visitImpl(AndClause clause) {
-		clause.getFirstClause().accept(this);
-		clause.getSecondClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(AndNotClause clause) {
-		clause.getFirstClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(DefaultOperatorClause clause) {
-		clause.getFirstClause().accept(this);
-		clause.getSecondClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(NotClause clause) {
-		clause.getFirstClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(OperationClause clause) {
-		clause.getFirstClause().accept(this);
-	}
-
-	@Override
-	protected void visitImpl(OrClause clause) {
-		clause.getFirstClause().accept(this);
-		clause.getSecondClause().accept(this);
-	}
-
+    /**
+     * Add term to the query.
+     */
+    protected void visitImpl(final LeafClause clause) {
+        String term = getTransformedTerm(clause);
+        appendToQueryRepresentation(term);
+    }
+    
+    
+    /**
+     *  Overriden methods below, because we dont want to output any FQL
+     *  syntax in our query, we just want them to return the terms
+     *  in one line with spaces between.
+     */
+    
+    /**
+     *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
+     */
+    @Override
+    protected void visitImpl(AndClause clause) {
+        clause.getFirstClause().accept(this);
+        clause.getSecondClause().accept(this);
+    }
+    
+    /**
+     *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
+     */
+    @Override
+    protected void visitImpl(AndNotClause clause) {
+        clause.getFirstClause().accept(this);
+    }
+    
+    /**
+     *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
+     */
+    @Override
+    protected void visitImpl(DefaultOperatorClause clause) {
+        clause.getFirstClause().accept(this);
+        clause.getSecondClause().accept(this);
+    }
+    
+    /**
+     *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
+     */
+    @Override
+    protected void visitImpl(NotClause clause) {
+        clause.getFirstClause().accept(this);
+    }
+    
+    /**
+     *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
+     */
+    @Override
+    protected void visitImpl(OperationClause clause) {
+        clause.getFirstClause().accept(this);
+    }
+    
+    /**
+     *  @see no.schibstedsok.searchportal.mode.command.AbstractAdvancedFastSearchCommand
+     */
+    @Override
+    protected void visitImpl(OrClause clause) {
+        clause.getFirstClause().accept(this);
+        clause.getSecondClause().accept(this);
+    }
 }

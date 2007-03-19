@@ -3,15 +3,15 @@ package no.schibstedsok.searchportal.query.transform;
 
 
 /**
- * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision: 3359 $</tt>
+ * Add iypcompanyid to the front of the original query, which is a companyid.
+ *
+ * @author <a href="mailto:daniele@conduct.no">Daniel Engfeldt</a>
+ * @version $Revision:$
  */
 public final class CatalogueInfopageQueryTransformer extends AbstractQueryTransformer {
     
     public String getTransformedQuery() {
-
         final String originalQuery = getContext().getTransformedQuery();
-
         return "iypcompanyid:" + originalQuery;
     }
 }

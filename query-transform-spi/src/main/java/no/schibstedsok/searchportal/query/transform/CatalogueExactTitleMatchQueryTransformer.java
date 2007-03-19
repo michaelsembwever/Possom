@@ -19,11 +19,11 @@ import no.schibstedsok.searchportal.query.parser.WordClauseImpl;
 import org.apache.log4j.Logger;
 
 /**
- * Transforms the query into <br/> titles:^"query"$ <br/> Ensures that only an
+ * Transforms the query into <br/> iypnavnvisningnorm:^"query"$ <br/> Ensures that only an
  * exact match within the titles field is returned.
  * 
- * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
- * @version <tt>$Revision: 3359 $</tt>
+ * @author <a href="mailto:daniele@conduct.no">Daniel Engfeldt</a>
+ * @version <tt>$Revision:$</tt>
  */
 public final class CatalogueExactTitleMatchQueryTransformer extends
 		AbstractQueryTransformer {

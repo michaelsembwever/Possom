@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  * Resulthandler to fetch sales from the catalogue sales system. This class is
  * called after a search command with <catalogue/> resulthandler tag is defined.
  * It calls a ejb3 stateless session bean in the sales system which load all
- * productinformation to be presented in the infopage for katalog.
+ * product information to be presented in the infopage for katalog.
  *
  * @author <a href="mailto:daniele@conduct.no">Daniel Engfeldt</a>
  * @version <tt>$Revision: 3436 $</tt>
@@ -51,12 +51,6 @@ public final class CatalogueResultHandler implements ResultHandler {
 		SearchResult searchResult = cxt.getSearchResult();
 
                 
-                /**
-                 *  Denne resulthandlern skal hente ut informasjon om 
-                 *  solgte produkter for infosiden, infosiden viser kun et
-                 *  firma, derfor tar vi bare å henter første objektet i 
-                 *  listen og henter kjøpte produkter for denne.
-                 */
 		if (searchResult.getResults().iterator().hasNext()) {
 
 			CatalogueSearchResultItem cat = (CatalogueSearchResultItem) searchResult
