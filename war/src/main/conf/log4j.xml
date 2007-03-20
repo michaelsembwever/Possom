@@ -11,7 +11,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
 
     <appender name="LOG_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.log"/>
-        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
         <param name="Append" value="true"/>
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
