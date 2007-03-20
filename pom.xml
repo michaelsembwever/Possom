@@ -33,10 +33,10 @@
                 <module>httpclient-api</module>
                 <module>site-spi</module>
                 <module>query-api</module>
-                <module>query-transform-spi</module>
-                <module>core-api</module>
                 <module>data-model-api</module>
                 <module>data-model-javabean-impl</module>
+                <module>query-transform-spi</module>
+                <module>core-api</module>
                 <module>war</module>
             </modules>
         </profile>
@@ -52,6 +52,8 @@
                 <module>httpclient-api</module>
                 <module>site-spi</module>
                 <module>query-api</module>
+                <module>data-model-api</module>
+                <module>data-model-javabean-impl</module>
                 <module>query-transform-spi</module>
                 <module>core-api</module>
             </modules>
