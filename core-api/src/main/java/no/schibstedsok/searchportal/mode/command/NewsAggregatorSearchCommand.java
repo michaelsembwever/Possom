@@ -1,6 +1,12 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
+import com.fastsearch.esp.search.query.BaseParameter;
+import com.fastsearch.esp.search.query.IQuery;
+import com.fastsearch.esp.search.result.EmptyValueException;
+import com.fastsearch.esp.search.result.IDocumentSummary;
+import com.fastsearch.esp.search.result.IQueryResult;
+import com.fastsearch.esp.search.result.IllegalType;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
@@ -75,6 +81,25 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         return search(config, clusterId.getString());
     }
 
+    /**
+     * Modifies several queryParameters depending on situation.
+     *
+     * @param query the FAST IQuery to modify
+     */
+    protected void modifyQuery(IQuery query) {
+        StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
+        if (clusterId == null) {
+            final int resultsPerCluster = 4;
+            final int resultCount = getSearchConfiguration().getResultsToReturn() * resultsPerCluster;
+
+            query.setParameter("collapseon", "batv" + "cluster");
+            query.setParameter("collapsenum", resultsPerCluster);
+            query.setParameter(BaseParameter.HITS, resultCount);
+        } else {
+//            query.setParameter(new SearchParameter());
+        }
+    }
+
     private SearchResult search(NewsAggregatorSearchConfiguration config, String clusterId) {
         LOG.debug("------ Running search to get clusters ---------");
         LOG.debug("clusterId=" + clusterId);
@@ -82,7 +107,54 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         LOG.debug("query-server=" + config.getQueryServer());
         LOG.debug("-----------------------------------------------");
         SearchResult searchResult = super.execute();
+
         return searchResult;
+    }
+
+    protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
+        StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
+        if (clusterId == null) {
+            try {
+                final FastSearchResult searchResult = new FastSearchResult(this);
+                //        final int cnt = getCurrentOffset(0);
+                //        final int maxIndex = Math.min(cnt + getSearchConfiguration().getResultsToReturn(), result.getDocCount());
+                final int maxClusterCount = getSearchConfiguration().getResultsToReturn();
+                int collectedClusters = 0;
+                int collectedHits = 0;
+                int currentClusterId = 0;
+                int lastClusterId = 0;
+
+                for (int i = 0; i < result.getDocCount(); i++) {
+                    try {
+                        final IDocumentSummary document = result.getDocument(i + 1);
+                        currentClusterId = document.getSummaryField("cluster").getIntValue();
+                        addResult(searchResult, document, lastClusterId);
+                        if (currentClusterId != lastClusterId) {
+                            collectedClusters++;
+
+                        }
+
+                    } catch (NullPointerException e) { // The doc count is not 100% accurate.
+                        LOG.debug("Error finding document " + e);
+                        break;
+                    }
+                }
+                searchResult.setHitCount(collectedHits);
+                return searchResult;
+            } catch (IllegalType e) {
+                LOG.error("Could not convert result", e);
+            } catch (EmptyValueException e) {
+                LOG.error("Could not convert result", e);
+            }
+            // Falling back to super implementation, because this one does not work.
+            return super.createSearchResult(result);
+        } else {
+            return super.createSearchResult(result);
+        }
+    }
+
+    private int addResult(FastSearchResult searchResult, IDocumentSummary document, int lastClusterId) {
+        return 0;
     }
 
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
