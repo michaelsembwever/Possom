@@ -20,7 +20,6 @@ import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -45,7 +44,6 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- *
  * Base class for commands querying a FAST EPS Server.
  */
 public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand {
@@ -59,7 +57,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     // Static --------------------------------------------------------
 
-    private static final Map<String,ISearchView> SEARCH_VIEWS = new HashMap<String,ISearchView>();
+    private static final Map<String, ISearchView> SEARCH_VIEWS = new HashMap<String, ISearchView>();
 
     private final static String FACTORY_PROPERTY = "com.fastsearch.esp.search.SearchFactory";
     private final static String HTTP_FACTORY = "com.fastsearch.esp.search.http.HttpSearchFactory";
@@ -94,7 +92,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     /**
      * Creates new instance of search command.
      *
-     * @param cxt The context to work in.
+     * @param cxt        The context to work in.
      * @param parameters The command parameters to use.
      */
     public AbstractESPFastSearchCommand(final Context cxt) {
@@ -109,7 +107,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     // Public --------------------------------------------------------
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public SearchResult execute() {
 
         try {
@@ -146,14 +146,14 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             }
 
             //check sortby
-            String sortBy =cfg.getSortBy();
+            String sortBy = cfg.getSortBy();
             if (getParameters().containsKey("userSortBy")) {
 
                 final String userSortBy = getParameter("userSortBy");
                 LOG.debug("execute: SortBy " + userSortBy);
 
                 if ("standard".equals(userSortBy)) {
-                    sortBy ="contentprofile";
+                    sortBy = "contentprofile";
                 } else if ("datetime".equals(userSortBy)) {
                     sortBy = "publishedtime";
                 }
@@ -164,48 +164,21 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             query.setParameter(new SearchParameter(BaseParameter.SORT_BY, sortBy));
             query.setParameter(new SearchParameter(BaseParameter.FILTER, filterBuilder.toString()));
 
-            if (! (this instanceof NavigatableESPFastCommand)) {
+            if (!(this instanceof NavigatableESPFastCommand)) {
                 query.setParameter(new SearchParameter(BaseParameter.NAVIGATION, 0));
             }
 
-            if (! "".equals(cfg.getQtPipeline())) {
+            if (!"".equals(cfg.getQtPipeline())) {
                 query.setParameter(new SearchParameter(BaseParameter.QT_PIPELINE, cfg.getQtPipeline()));
             }
 
+            modifyQuery(query);
 
             LOG.info(query);
 
             result = searchView.search(query);
 
-            final FastSearchResult searchResult = new FastSearchResult(this);
-
-            final int cnt = getCurrentOffset(0);
-            final int maxIndex = getMaxDocIndex(result, cnt, cfg);
-
-            searchResult.setHitCount(result.getDocCount());
-
-            for (int i = cnt; i < maxIndex; i++) {
-                try {
-                    final IDocumentSummary document = result.getDocument(i + 1);
-                    searchResult.addResult(createResultItem(document));
-
-                } catch (NullPointerException e) { // THe doc count is not 100% accurate.
-                    LOG.debug("Error finding document " + e);
-                    return searchResult;
-                }
-            }
-
-            if (cfg.isCollapsingEnabled() && cfg.isExpansionEnabled()) {
-                if (collapseId != null && !collapseId.equals("")) {
-                    if (searchResult.getResults().size() > 0) {
-                        final SearchResultItem itm = searchResult.getResults().get(0);
-                        final URL url = new URL(itm.getField("url"));
-                        searchResult.addField("collapsedDomain", url.getHost());
-                    }
-                }
-            }
-
-            return searchResult;
+            return createSearchResult(result);
 
         } catch (SearchEngineException ex) {
             LOG.error(ex.getMessage() + ' ' + ex.getCause());
@@ -216,7 +189,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
     }
 
-
     // Z implementation ----------------------------------------------
 
     // Y overrides ---------------------------------------------------
@@ -225,10 +197,66 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
     // Protected -----------------------------------------------------
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected String escapeFieldedLeaf(final LeafClause clause) {
 
         return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + clause.getTerm() + '"';
+    }
+
+    /**
+     * Concrete SearchCommand should override if it wants to set custom SearchParameters or do other
+     * modifications to the query before it is run.
+     *
+     * @param query the FAST query to modify
+     */
+    protected void modifyQuery(IQuery query) {
+        // Doing nothing
+    }
+
+
+    /**
+     * Concrete SearchCommand should override if it wants to make custom SearchResult
+     * from the FAST QueryResult.
+     * <p/>
+     * <b>Note:</b> To be sure that we do not break code for subclasses that depends on that this is in fact a
+     * FastSearchResult and not a SearchResult, I made the signature of this return a FastSearchResult.
+     * This, at least, applies to NavigatableESPFastCommand. Geir H. Pettersen - T-Rank.
+     *
+     * @param result the FAST IQueryResult to make a SearchResult from.
+     * @return a searchResult constructed from the supplied IQueryResult.
+     * @throws IOException if something bad happens... Like, an invalid url. (Actually just to not break old code.)
+     */
+    protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
+        final FastSearchResult searchResult = new FastSearchResult(this);
+        final int cnt = getCurrentOffset(0);
+        final int maxIndex = getMaxDocIndex(result, cnt, cfg);
+
+        searchResult.setHitCount(result.getDocCount());
+
+        for (int i = cnt; i < maxIndex; i++) {
+            try {
+                final IDocumentSummary document = result.getDocument(i + 1);
+                searchResult.addResult(createResultItem(document));
+
+            } catch (NullPointerException e) { // THe doc count is not 100% accurate.
+                LOG.debug("Error finding document " + e);
+                return searchResult;
+            }
+        }
+
+        if (cfg.isCollapsingEnabled() && cfg.isExpansionEnabled()) {
+            final String collapseId = getParameter(COLLAPSE_PARAMETER);
+            if (collapseId != null && !collapseId.equals("")) {
+                if (searchResult.getResults().size() > 0) {
+                    final SearchResultItem itm = searchResult.getResults().get(0);
+                    final URL url = new URL(itm.getField("url"));
+                    searchResult.addField("collapsedDomain", url.getHost());
+                }
+            }
+        }
+        return searchResult;
     }
 
     /**
@@ -246,7 +274,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     }
 
     // Generate query in FQL.
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected void visitImpl(final AndClause clause) {
         // The leaf clauses might not produce any output. For example terms
         // having a site: field. In these cases we should not output the
@@ -258,13 +288,15 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         clause.getFirstClause().accept(this);
 
-        if (! hasEmptyLeaf)
+        if (!hasEmptyLeaf)
             appendToQueryRepresentation(" and ");
 
         clause.getSecondClause().accept(this);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     protected void visitImpl(final OrClause clause) {
         appendToQueryRepresentation(" (");
         clause.getFirstClause().accept(this);
@@ -272,7 +304,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         clause.getSecondClause().accept(this);
         appendToQueryRepresentation(") ");
     }
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     protected void visitImpl(final DefaultOperatorClause clause) {
         boolean hasEmptyLeaf = false;
 
@@ -281,12 +316,15 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         clause.getFirstClause().accept(this);
 
-        if (! hasEmptyLeaf)
+        if (!hasEmptyLeaf)
             appendToQueryRepresentation(" and ");
 
         clause.getSecondClause().accept(this);
     }
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     protected void visitImpl(final NotClause clause) {
         appendToQueryRepresentation(" not ");
         appendToQueryRepresentation("(");
@@ -294,7 +332,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         appendToQueryRepresentation(")");
 
     }
-    /** {@inheritDoc} */
+
+    /**
+     * {@inheritDoc}
+     */
     protected void visitImpl(final AndNotClause clause) {
         appendToQueryRepresentation("andnot ");
         appendToQueryRepresentation("(");
@@ -313,12 +354,12 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         return false;
     }
+
     /**
-     *
      * @param clause The clause to examine.
      */
     protected void visitXorClause(final Visitor visitor, final XorClause clause) {
-        switch(clause.getHint()){
+        switch (clause.getHint()) {
             case PHRASE_ON_LEFT:
                 // Web searches should use phrases over separate words.
                 clause.getFirstClause().accept(visitor);
@@ -359,7 +400,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         //    to the synchronisation overhead.
         ISearchView searchView = SEARCH_VIEWS.get(searchViewKey);
 
-        if( null == searchView ){
+        if (null == searchView) {
             final Properties props = new Properties();
 
             props.setProperty(FACTORY_PROPERTY, HTTP_FACTORY);
@@ -391,8 +432,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     private int getMaxDocIndex(
             final IQueryResult iQueryResult,
             final int cnt,
-            final ESPFastSearchConfiguration fastSearchConfiguration)
-    {
+            final ESPFastSearchConfiguration fastSearchConfiguration) {
         return Math.min(cnt + fastSearchConfiguration.getResultsToReturn(), iQueryResult.getDocCount());
     }
 
@@ -400,7 +440,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         final SearchResultItem item = new BasicSearchResultItem();
 
-        for (final Map.Entry<String,String> entry : cfg.getResultFields().entrySet()) {
+        for (final Map.Entry<String, String> entry : cfg.getResultFields().entrySet()) {
 
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
@@ -413,7 +453,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             if (currCollapseId == null || currCollapseId.equals("")) {
 
-                if (! document.getSummaryField("fcocount").isEmpty() && Integer.parseInt(document.getSummaryField("fcocount").getStringValue()) > 1) {
+                if (!document.getSummaryField("fcocount").isEmpty() && Integer.parseInt(document.getSummaryField("fcocount").getStringValue()) > 1) {
                     item.addField("moreHits", "true");
                     item.addField("collapseParameter", COLLAPSE_PARAMETER);
                     item.addField("collapseId", document.getSummaryField("collapseid").getStringValue());
@@ -422,7 +462,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         }
         return item;
     }
-
 
     // Inner classes -------------------------------------------------
 }
