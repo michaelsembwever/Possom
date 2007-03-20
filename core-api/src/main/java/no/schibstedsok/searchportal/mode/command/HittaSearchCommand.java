@@ -20,6 +20,7 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
 import no.schibstedsok.searchportal.query.Clause;
+import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
@@ -94,13 +95,14 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 final HittaServiceSoap service = locator.getHittaServiceSoap();
                 ((Stub)service).setTimeout(1000);
                 final WhoWhereSplitter splitter = new WhoWhereSplitter(
-                        ContextWrapper.wrap(WhoWhereSplitter.Context.class,
-                        context,
-                        new BaseContext(){
+                        new WhoWhereSplitter.Context(){
                             public Map<Clause,String> getTransformedTerms(){
                                 return HittaSearchCommand.this.getTransformedTerms();
+                            }                
+                            public Query getQuery() {
+                                return context.getDataModel().getQuery().getQuery();
                             }
-                }));
+                    });
 
                 final WhoWhereSplit splitQuery = splitter.getWhoWhereSplit();
 
