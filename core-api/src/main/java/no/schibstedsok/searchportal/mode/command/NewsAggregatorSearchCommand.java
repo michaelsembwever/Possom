@@ -41,7 +41,6 @@ import java.util.Map;
 public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
 
     private static final Logger LOG = Logger.getLogger(NewsAggregatorSearchCommand.class);
-    private static final String PARAM_GEONAV = "geonav";
     private static final String PARAM_CLUSTER_ID = "clusterId";
 
     /**
@@ -62,7 +61,7 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         if (clusterId == null) {
             return getPageResult(config, xmlFile);
         } else {
-            return getClusterResult(config, clusterId);
+            return getClusterResult(config, clusterId, xmlFile);
         }
     }
 
@@ -98,7 +97,16 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         return newString;
     }
 
-    private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId) {
+    private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId, String xmlFile) {
+        try {
+            final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
+            final InputStream inputStream = getInputStream(config, xmlFile);
+            return newsAggregatorXmlParser.parseCluster(config, inputStream, clusterId.getString(), this);
+        } catch (IOException e) {
+            LOG.debug("Falling back to search instead of xml parse", e);
+        } catch (JDOMException e) {
+            LOG.debug("Falling back to search instead of xml parse", e);
+        }
         return search(config, clusterId.getString());
     }
 
@@ -177,7 +185,7 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
                 }
             } catch (NullPointerException e) {
                 // The doc count is not 100% accurate.
-                LOG.debug("Error finding document " + e);
+                LOG.debug("Error finding document ", e);
                 break;
             }
         }
@@ -425,7 +433,6 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
 
         private int handleCluster(NewsAggregatorSearchConfiguration config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
             final SearchResultItem searchResultItem = new BasicSearchResultItem();
-            int hitCount = 0;
             searchResultItem.addField("size", Integer.toString(Integer.parseInt(cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT)) - 1));
             searchResultItem.addField(PARAM_CLUSTER_ID, cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
 
@@ -443,7 +450,6 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
                     handleEntry(nestedEntry, nestedResultItem);
                     addResult(config, nestedResultItem, nestedSearchResult, searchCommand);
                 }
-
             }
             searchResultItem.addNestedSearchResult("entries", nestedSearchResult);
             searchResult.addResult(searchResultItem);
