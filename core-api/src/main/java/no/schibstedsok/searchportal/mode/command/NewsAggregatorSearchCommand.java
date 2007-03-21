@@ -8,6 +8,7 @@ import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.result.IllegalType;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
@@ -17,6 +18,7 @@ import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -38,7 +40,7 @@ import java.util.Map;
  */
 public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
 
-    private final static Logger LOG = Logger.getLogger(NewsAggregatorSearchCommand.class);
+    private static final Logger LOG = Logger.getLogger(NewsAggregatorSearchCommand.class);
     private static final String PARAM_GEONAV = "geonav";
     private static final String PARAM_CLUSTER_ID = "clusterId";
 
@@ -51,34 +53,52 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
     }
 
     public SearchResult execute() {
-        LOG.debug("News aggregator search executed with: " + getParameters());
-        LOG.debug("News aggregator search executed with: " + datamodel.getParameters());
-
         NewsAggregatorSearchConfiguration config = getSearchConfiguration();
-        LOG.debug("Loading xml file at: " + config.getXmlSource());
 
-        StringDataObject geoNav = datamodel.getParameters().getValue(PARAM_GEONAV);
+
         StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
-
-        String xmlFile = geoNav == null ? config.getXmlMainFile() : geoNav.getString();
-
+        String xmlFile = getXmlFileName(datamodel, config);
+        LOG.debug("Loading xml file at: " + config.getXmlSource() + xmlFile);
         if (clusterId == null) {
             return getPageResult(config, xmlFile);
         } else {
-            return getClusterResult(config, clusterId, xmlFile);
+            return getClusterResult(config, clusterId);
         }
     }
 
-    private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId, String xmlFile) {
-        try {
-            final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
-            final InputStream inputStream = getInputStream(config, xmlFile);
-            return newsAggregatorXmlParser.parseCluster(config, inputStream, clusterId.getString(), this);
-        } catch (IOException e) {
-            LOG.debug("Falling back to search instead of xml parse", e);
-        } catch (JDOMException e) {
-            LOG.debug("Falling back to search instead of xml parse", e);
+    private String getXmlFileName(DataModel dataModel, NewsAggregatorSearchConfiguration config) {
+        String geographic = "main";
+        String category = "main";
+        String[] geographicFields = config.getGeographicFieldArray();
+        for (String geographicField : geographicFields) {
+            StringDataObject geo = dataModel.getParameters().getValue(geographicField);
+            if (geo != null) {
+                geographic = formatToConvention(geo.getString());
+                break;
+            }
         }
+
+        for (String categoryField : config.getCategoryFieldArray()) {
+            StringDataObject cat = dataModel.getParameters().getValue(categoryField);
+            if (cat != null) {
+                category = formatToConvention(cat.getString());
+                break;
+            }
+        }
+        StringBuilder sb = new StringBuilder("fp_");
+        sb.append(category).append('_').append(geographic).append(".xml");
+        return sb.toString();
+    }
+
+    private String formatToConvention(String replaceString) {
+        String newString = StringUtils.replaceChars(replaceString.toLowerCase(), "æ", "ae");
+        newString = StringUtils.replaceChars(newString, 'ø', 'o');
+        newString = StringUtils.replaceChars(newString, 'å', 'a');
+        newString = StringUtils.replaceChars(newString, ' ', '_');
+        return newString;
+    }
+
+    private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId) {
         return search(config, clusterId.getString());
     }
 
@@ -110,7 +130,6 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         LOG.debug("query-server=" + config.getQueryServer());
         LOG.debug("-----------------------------------------------");
         SearchResult searchResult = super.execute();
-
         return searchResult;
     }
 
@@ -221,13 +240,43 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
         final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
         try {
-            return newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
+            FastSearchResult searchResult = newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
+            addCategoryNavigators(config, searchResult);
+            return searchResult;
         } catch (JDOMException e) {
             LOG.debug("Falling back to search instead of xml parse", e);
         } catch (IOException e) {
             LOG.debug("Falling back to search instead of xml parse", e);
         }
         return search(config, null);
+    }
+
+    private void addCategoryNavigators(NewsAggregatorSearchConfiguration config, FastSearchResult searchResult) {
+        final String[] categoryFields = config.getCategoryFieldArray();
+        LOG.debug("Adding category navigators: categoryFields=" + categoryFields);
+        if (categoryFields.length > 0) {
+            List<NewsAggregatorSearchConfiguration.Category> categoryList = config.getCategories();
+            LOG.debug("categoryList=" + categoryList);
+            for (int i = categoryFields.length - 1; i >= 0; i--) {
+                String categoryField = categoryFields[i];
+                NewsAggregatorSearchConfiguration.Category selectedCategory = null;
+                StringDataObject selectedFieldData = datamodel.getParameters().getValue(categoryField);
+                LOG.debug("selectedFieldData=" + selectedFieldData);
+                for (NewsAggregatorSearchConfiguration.Category category : categoryList) {
+                    searchResult.addModifier(categoryField, new Modifier(category.getDisplayName(), -1, null));
+                    LOG.debug("Adding modifier name=" + categoryField + ", " + category.getDisplayName());
+                    if (selectedFieldData != null && selectedFieldData.getString().equals(category.getDisplayName())) {
+                        selectedCategory = category;
+                        LOG.debug("selectedCategory=" + selectedCategory);
+                    }
+                }
+                if (selectedCategory != null && selectedCategory.getSubCategories() != null) {
+                    categoryList = selectedCategory.getSubCategories();
+                } else {
+                    break;
+                }
+            }
+        }
     }
 
     private InputStream getInputStream(NewsAggregatorSearchConfiguration config, String xmlFile) throws IOException {
@@ -256,7 +305,6 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         return searchResultItem;
     }
 
-
     @SuppressWarnings({"unchecked"})
     public static class NewsAggregatorXmlParser {
         private static final String ELEMENT_CLUSTER = "cluster";
@@ -279,7 +327,7 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
             return saxBuilder.build(inputStream);
         }
 
-        public SearchResult parseCluster(NewsAggregatorSearchConfiguration config, InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
+        public FastSearchResult parseCluster(NewsAggregatorSearchConfiguration config, InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
             try {
                 final FastSearchResult searchResult = new FastSearchResult(searchCommand);
                 final Document doc = getDocument(inputStream);
@@ -305,7 +353,7 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
             }
         }
 
-        public SearchResult parseFullPage(NewsAggregatorSearchConfiguration config, InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
+        public FastSearchResult parseFullPage(NewsAggregatorSearchConfiguration config, InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
             try {
 
                 final FastSearchResult searchResult = new FastSearchResult(searchCommand);
@@ -446,8 +494,6 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
                 collapsedResults.addResult(nestedResultItem);
             }
         }
-
-
     }
 
 }

@@ -794,6 +794,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(nasc, inherit, "xmlMainFile", ParseType.String, commandE, "fp_main_main.xml");
                     fillBeanProperty(nasc, inherit, "resultsPerCluster", ParseType.Int, commandE, "");
                     fillBeanProperty(nasc, inherit, "clusterMaxFetch", ParseType.Int, commandE, "10");
+                    fillBeanProperty(nasc, inherit, "categoryFields", ParseType.String, commandE, "");
+                    fillBeanProperty(nasc, inherit, "geographicFields", ParseType.String, commandE, "");
+                    nasc.parseCategories(commandE);
                 }
 
                 // query transformers
