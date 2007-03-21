@@ -8,8 +8,11 @@ public class NewsAggregatorSearchConfiguration extends NavigatableESPFastConfigu
 
     private String xmlSource;
     private String xmlMainFile;
+    private String clusterField;
+    private String nestedResultsField;
     private int relatedMaxCount = 30;
-    private int updateIntervalMinutes;
+    private int resultsPerCluster;
+    private int clusterMaxFetch;
 
     public NewsAggregatorSearchConfiguration() {
         super(null);
@@ -20,7 +23,12 @@ public class NewsAggregatorSearchConfiguration extends NavigatableESPFastConfigu
         if (sc instanceof NewsAggregatorSearchConfiguration) {
             final NewsAggregatorSearchConfiguration nasc = (NewsAggregatorSearchConfiguration) sc;
             nasc.setXmlSource(nasc.getXmlSource());
-            nasc.setUpdateIntervalMinutes(nasc.getUpdateIntervalMinutes());
+            nasc.setXmlMainFile(nasc.getXmlMainFile());
+            nasc.setClusterField(nasc.getClusterField());
+            nasc.setNestedResultsField(nasc.getNestedResultsField());
+            nasc.setRelatedMaxCount(nasc.getRelatedMaxCount());
+            nasc.setResultsPerCluster(nasc.getResultsPerCluster());
+            nasc.setClusterMaxFetch(nasc.getClusterMaxFetch());
         }
     }
 
@@ -40,19 +48,44 @@ public class NewsAggregatorSearchConfiguration extends NavigatableESPFastConfigu
         this.xmlSource = xmlSource;
     }
 
-    public int getUpdateIntervalMinutes() {
-        return updateIntervalMinutes;
-    }
-
-    public void setUpdateIntervalMinutes(int updateIntervalMinutes) {
-        this.updateIntervalMinutes = updateIntervalMinutes;
-    }
-
     public void setXmlMainFile(String xmlMainFile) {
         this.xmlMainFile = xmlMainFile;
     }
 
     public String getXmlMainFile() {
         return xmlMainFile;
+    }
+
+    public String getClusterField() {
+        return clusterField;
+    }
+
+    public void setClusterField(String clusterField) {
+        this.clusterField = clusterField;
+    }
+
+    public String getNestedResultsField() {
+        return nestedResultsField;
+    }
+
+    public void setNestedResultsField(String nestedResultsField) {
+        this.nestedResultsField = nestedResultsField;
+    }
+
+    public void setResultsPerCluster(int resultsPerCluster) {
+        this.resultsPerCluster = resultsPerCluster;
+    }
+
+    public int getResultsPerCluster() {
+        return resultsPerCluster;
+    }
+
+
+    public int getClusterMaxFetch() {
+        return clusterMaxFetch;
+    }
+
+    public void setClusterMaxFetch(int clusterMaxFetch) {
+        this.clusterMaxFetch = clusterMaxFetch;
     }
 }
