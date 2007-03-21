@@ -134,12 +134,21 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 
         SearchResult secondQueryResult = null;
 
+        // if the query type is domestic, then we dont need to run more than 
+        // the domestic search and return the results the way they were returned
+        // by Fast.
+        if(queryGeoString.equals(DOMESTIC_SEARCH)){
+            whichQueryToRun = QueryType.INGENSTEDS;
+            firstQueryResult = super.execute();   
+            return firstQueryResult;
+        }
+        
         whichQueryToRun = QueryType.GEO;
         firstQueryResult = super.execute();
 
         LOG.info("Found "+firstQueryResult.getHitCount()+" sponsed links");
 
-        if (firstQueryResult.getHitCount() < 5 && !queryGeoString.equals(DOMESTIC_SEARCH)) {
+        if (firstQueryResult.getHitCount() < 5) {
 
             // Build the search result to return from this method
             // during processing in this array.
@@ -229,16 +238,23 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 
         originalQuery = super.getTransformedQuery().replaceAll(" ", "").toLowerCase();
         String query = null;
+        String completeQuery = null;
 
         if (whichQueryToRun == QueryType.GEO) {
             query = super.getTransformedQuery().replaceAll(" ", "")
             + queryGeoString.replaceAll(" ", "");
+            
+            
         } else {
             query = super.getTransformedQuery().replaceAll(" ", "")
             + DOMESTIC_SEARCH;
+            
         }
-        return "iypspkeywords5:" + query + " OR iypspkeywords4:" + query + " OR iypspkeywords3:" + query
-                + " OR iypspkeywords2:" + query + " OR iypspkeywords1:" + query;
+        
+        completeQuery = "iypcfspkeywords5:" + query + " OR iypcfspkeywords4:" + query + " OR iypcfspkeywords3:" + query
+            + " OR iypcfspkeywords2:" + query + " OR iypcfspkeywords1:" + query;            
+        
+        return completeQuery;
     }
 
     /**

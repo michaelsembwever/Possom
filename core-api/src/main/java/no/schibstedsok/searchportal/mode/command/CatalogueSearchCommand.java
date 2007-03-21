@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
@@ -31,6 +33,7 @@ import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
 
 import org.apache.log4j.Logger;
+import org.omg.CORBA.MARSHAL;
 
 /**
  * The CatalogueSearchCommand is responsible for the query to search for
@@ -171,6 +174,9 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      *  Put the result into two different attributes, catalogueWhat and
      *  catalogueWhere to be used in the frontend.
      *
+     *  If the split results in empty Who and Where from split, use the 
+     *  original untransformed query.
+     *
      *  Populate the knownGeo and knownGeoString which is used by the visitXxx
      *  methods to known which terms to ignore when constructing the
      *  query for this searchcommand.
@@ -194,8 +200,17 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
             final WhoWhereSplit splitQuery = splitter.getWhoWhereSplit();
 
-            getParameters().put(PARAMETER_NAME_WHAT, splitQuery.getWho());
-            getParameters().put(PARAMETER_NAME_WHERE, splitQuery.getWhere());
+            if((splitQuery.getWho()==null || splitQuery.getWho().length()==0)
+               && (splitQuery.getWhere()==null || splitQuery.getWhere().length()==0)){
+                getParameters().put(PARAMETER_NAME_WHAT, getParameters().get("q"));
+                getParameters().put(PARAMETER_NAME_WHERE, "");
+               
+            
+            }else{
+                getParameters().put(PARAMETER_NAME_WHAT, splitQuery.getWho());
+                getParameters().put(PARAMETER_NAME_WHERE, splitQuery.getWhere());
+                
+            }
 
 
             String[] where = splitQuery.getWhere().split(" ");
@@ -222,7 +237,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         SearchResult result = super.execute();
 
         List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
-
+        
         Iterator iter = result.getResults().listIterator();
         while (iter.hasNext()) {
             BasicSearchResultItem basicResultItem = (BasicSearchResultItem) iter
@@ -260,7 +275,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         boolean hasQueryString= (query!=null && query.length()>0);
         boolean hasGeoQueryString = (queryGeoString != null && queryGeoString.length() > 0);
-
+        
         // two possible paths, with both what and where in query,
         // or just where. If nothing in either, something is wrong.
         if (hasQueryString && hasGeoQueryString){
@@ -275,7 +290,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             query = queryGeoString;
 
         } else if (hasQueryString && !hasGeoQueryString) {
-
+            
             // just what,
             // dosent need to do anything with the query, should just leave
             // the query as it is after transformation.
@@ -311,11 +326,31 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         return sortBy;
     }
 
+    
+    /**
+     * Create query syntax for a phrase term.
+     * @param term the term to make query syntax for.
+     * @return created phrase query fragment for one term.
+     */
+    private String createPhraseQuerySyntax(final String term) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("(");
+        sb.append("iypcfnavn:" + term + " ANY ");
+        sb.append("lemiypcfkeywords:" + term + " ANY ");
+        sb.append("lemiypcfkeywordslow:" + term);
+        sb.append(")");
+        return sb.toString();
+    }    
+    
     /**
      * Create the query syntax for a search term.
      *
      * If the query is defined to split known geographic locations from
      * the keywords, ignore the term.
+     *
+     * Check if there is any special characters in the query, if there
+     * is, wrap term in " " characters and use none-phonetic composite field
+     * in index for part of query.
      *
      * If the term is '*', also ignore it.
      * @param clause the clause to process.
@@ -323,19 +358,33 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     @Override
     protected void visitImpl(final LeafClause clause) {
         boolean useTerm = true;
-
+        boolean hasNotWordCharacters = false;
+        
         if(split && knownGeo.contains(clause.getTerm())){
             useTerm=false;
         }
 
+        
+        Pattern p = Pattern.compile(".*\\.|.*\\-");        
+        Matcher m = p.matcher(getTransformedTerms().get(clause));
+
+        hasNotWordCharacters = m.matches();
+        
         if(useTerm){
-            if (!getTransformedTerms().get(clause).equals("*")) {
+            
+            if(hasNotWordCharacters){
+            
+                appendToQueryRepresentation(
+                        createPhraseQuerySyntax("\""+getTransformedTerms().get(clause) + "\""));
+            
+            }else if(!getTransformedTerms().get(clause).equals("*")) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("(");
-                sb.append("iypcfphnavn:" + getTransformedTerms().get(clause)
-                + " ANY ");
+                
+                sb.append("iypcfphnavn:"+getTransformedTerms().get(clause) + " ANY ");
+                
                 sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause)
-                + " ANY ");
+                        + " ANY ");
                 sb.append("lemiypcfkeywordslow:"
                         + getTransformedTerms().get(clause));
                 sb.append(")");
@@ -363,16 +412,8 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         if(useTerm){
             if (!getTransformedTerms().get(clause).equals("*")) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("(");
-                sb.append("iypcfnavn:" + getTransformedTerms().get(clause)
-                + " ANY ");
-                sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause)
-                + " ANY ");
-                sb.append("lemiypcfkeywordslow:"
-                        + getTransformedTerms().get(clause));
-                sb.append(")");
-                appendToQueryRepresentation(sb.toString());
+                appendToQueryRepresentation(
+                        createPhraseQuerySyntax(getTransformedTerms().get(clause)));
             }
         }
     }
@@ -440,7 +481,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      *
      */
     private final class GeoVisitor extends AbstractReflectionVisitor {
-
+        
         /** the composite field in the index to search in. */
         private static final String GEO_COMPOSITE_FIELD_NAME = "iypcfgeo:";
 
@@ -455,7 +496,6 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         String getQueryRepresentation() {
             return sb.toString();
         }
-
 
         protected void visitImpl(final LeafClause clause) {
             if (clause.getTerm() != null && clause.getTerm().length() > 0) {
