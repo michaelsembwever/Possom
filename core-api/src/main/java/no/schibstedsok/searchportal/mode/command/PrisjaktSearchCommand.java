@@ -66,7 +66,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
 
         final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
         /*Butiker*/
-        final boolean isChain = engine.evaluateQuery(TokenPredicate.CHAIN,
+        final boolean isChain = engine.evaluateQuery(TokenPredicate.COMPANY_CHAIN,
                 datamodel.getQuery().getQuery());
         /*Kategorier*/
         final boolean isService = engine.evaluateQuery(TokenPredicate.CLASSIFIED_CATEGORY, datamodel.getQuery().getQuery());

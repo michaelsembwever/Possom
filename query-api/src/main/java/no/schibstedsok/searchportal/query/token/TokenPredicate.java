@@ -27,8 +27,8 @@ public enum TokenPredicate implements Predicate {
     BLOCKET (Type.FAST), // FIXME!! What is blocket? we do not put specific names into this list
     CATEGORY (Type.FAST),
     CELEBRITY (Type.FAST),
-    CHAIN (Type.FAST),
     CLASSIFIED_CATEGORY (Type.FAST),
+    COMPANY_CHAIN (Type.FAST),
     COMPANYENRICHMENT (Type.FAST),
     EXACT_COMPANYENRICHMENT (Type.FAST),
     COMPANYRANK (Type.FAST),
@@ -125,10 +125,11 @@ public enum TokenPredicate implements Predicate {
     ONLYSKIINFO (Type.REGEX),
     EMPTYQUERY (Type.REGEX),
 
-    // JepTokenPredicate
+    /** JepTokenPredicate. **/
     MATHPREDICATE (Type.JEP);
 
-    // The types of TokenPredicates that exist
+    /** The types of TokenPredicates that exist. 
+     */
     public enum Type { GENERIC, FAST, REGEX, JEP }
 
     /**
@@ -185,29 +186,37 @@ public enum TokenPredicate implements Predicate {
         }
     }
 
+    /**
+     * 
+     * @return 
+     */
     public Type getType(){
         return type;
     }
 
     /** Utility method to use all TokenPredicates in existence.
+     * @return 
      */
     public static Collection<TokenPredicate> getTokenPredicates() {
         return Collections.unmodifiableCollection(Arrays.asList(values()));
     }
 
     /** Utility method to use all FastTokenPredicates in existence.
+     * @return 
      */
     public static Set<TokenPredicate> getFastTokenPredicates() {
         return Collections.unmodifiableSet(Static.FAST_TOKENS);
     }
 
     /** Utility method to use all MagicTokenPredicates in existence.
+     * @return 
      */
     public static Set<TokenPredicate> getMagicTokenPredicates() {
         return Collections.unmodifiableSet(Static.MAGIC_TOKENS);
     }
 
     /** Utility method to use all TriggerTokenPredicates in existence.
+     * @return 
      */
     public static Set<TokenPredicate> getTriggerTokenPredicates() {
         return Collections.unmodifiableSet(Static.TRIGGER_TOKENS);
@@ -222,7 +231,6 @@ public enum TokenPredicate implements Predicate {
      * @param evalFactory
      *            The TTokenEvaluationEngineused to get a TokenEvaluator for
      *            this fastListName, AND to get the current term in the query being tokenised.
-     * @throws InfrastructureException thrown when an VeryFastListQueryException is caught internally.
      * @return true if, according to the TokenEvaluator provided by the
      *         TokTokenEvaluationEngineastListName evaluates to true.
      */
