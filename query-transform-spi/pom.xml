@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-      <parent>
-          <groupId>schibstedsok</groupId>
-          <artifactId>search-portal</artifactId>
-          <version>2.10-SNAPSHOT</version>
-      </parent>
+    <parent>
+        <groupId>schibstedsok</groupId>
+        <artifactId>search-portal</artifactId>
+        <version>2.10-SNAPSHOT</version>
+    </parent>
     <artifactId>search-portal-query-transform-spi</artifactId>
     <packaging>jar</packaging>
     <name>Sesam Search Engine Query Transform SPI</name>
@@ -16,24 +17,25 @@
     <scm>
         <connection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/query-transform-spi</connection>
         <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk/query-transform-spi</url>
-        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/query-transform-spi</developerConnection>
+        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/query-transform-spi
+        </developerConnection>
     </scm>
-    
+
     <build>
         <plugins>
             <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-jar-plugin</artifactId>
-               <executions>
-                 <execution>
-                   <goals>
-                     <goal>test-jar</goal>
-                   </goals>
-                 </execution>
-               </executions>
-             </plugin>
-         </plugins>
-    </build>     
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
@@ -44,6 +46,11 @@
         <dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>search-portal-query-api</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-data-model-api</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>
@@ -60,6 +67,13 @@
             <scope>test</scope>
             <classifier>jdk15</classifier>
         </dependency>
+
+        <dependency>
+            <groupId>schibstedsok.newsadmin</groupId>
+            <artifactId>ha-services</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>schibstedsok</groupId>
