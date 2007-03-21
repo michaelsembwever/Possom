@@ -90,9 +90,9 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
     }
 
     private String formatToConvention(String replaceString) {
-        String newString = StringUtils.replaceChars(replaceString.toLowerCase(), "æ", "ae");
-        newString = StringUtils.replaceChars(newString, 'ø', 'o');
-        newString = StringUtils.replaceChars(newString, 'å', 'a');
+        String newString = StringUtils.replaceChars(replaceString.toLowerCase(), "\u00E6", "ae");
+        newString = StringUtils.replaceChars(newString, '\u00F8', 'o');
+        newString = StringUtils.replaceChars(newString, '\u00E5', 'a');
         newString = StringUtils.replaceChars(newString, ' ', '_');
         return newString;
     }
