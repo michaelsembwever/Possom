@@ -1,6 +1,6 @@
 // Copyright (2006-2007) Schibsted Søk AS
 /*
- * ViewFactory.java
+ * UrlRewriterContainerFactory.java
  *
  * Created on 19. april 2006, 20:48
  */
@@ -37,6 +37,7 @@ import org.w3c.dom.Document;
 /**
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
+ * @version $Id$
  */
 public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory*/ implements SiteKeyedFactory{
 
@@ -52,6 +53,9 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
     
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
+    /**
+     * 
+     */
     public static final String URLREWRITE_XMLFILE = "urlrewrite.xml";
 
     private static final Logger LOG = Logger.getLogger(UrlRewriterContainerFactory.class);
@@ -66,7 +70,10 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
 
     // Static --------------------------------------------------------
 
-    /** Return the factory in use for the skin defined within the context. **/
+    /** Return the factory in use for the skin defined within the context. *
+     * @param cxt 
+     * @return 
+     */
     public static UrlRewriterContainerFactory valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
@@ -133,6 +140,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
     // Public --------------------------------------------------------
 
     /** 
+     * @return 
      */
     public UrlRewriterContainer getUrlRewriterContainer(){
 
