@@ -301,7 +301,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                             final AnalysisRule rule = rules.getRule(eHint.getRule());
 
                             if (context.getSearchMode().isAnalysis()
-                                    && "0".equals(parameters.get("offset"))
+                                    && "0".equals(parameters.get("offset")
+                                    && (null == parameters.get("collapse") || "".equals(parameters.get("collapse"))
                                     && eHint.getWeight() > 0) {
 
                                 int score = 0;
