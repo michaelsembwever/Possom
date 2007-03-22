@@ -136,7 +136,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             final IQuery query = new Query(transformedQuery);
 
             if (cfg.isCollapsingEnabled()) {
-                if (collapseId == null || "".equals(collapseId)) {
+                if (collapseId == null || "".equals(collapseId) || !cfg.isExpansionEnabled()) {
                     if (cfg.isCollapsingRemoves()) {
                         query.setParameter(new SearchParameter("collapseon", "batvcollapseid"));
                     }
