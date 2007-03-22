@@ -6,6 +6,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
  * @author <a href="mailto:anders@sesam.no">Anders Johan Jamtli</a>
@@ -20,6 +21,15 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
     public final SearchResult execute() {
         SearchResult sr = super.execute();
 
+        if (getSearchConfiguration().isCollapsing()) {
+            String prevCollapseId = "";
+            for (SearchResultItem item : sr.getResults()) {
+                if (item.getField("collapseid").equals(prevCollapseId)) {
+                    sr.getResults().remove(item);
+                }
+            }
+        }
+        
         return sr;
     }
 }
