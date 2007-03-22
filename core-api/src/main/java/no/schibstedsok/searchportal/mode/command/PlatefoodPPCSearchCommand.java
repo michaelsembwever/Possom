@@ -136,7 +136,6 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
             throw new InfrastructureException(e);
         }
 
-        LOG.debug("Platefood-url: " + url.toString());
         return url.toString();
     }
 

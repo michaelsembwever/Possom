@@ -109,6 +109,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         }  catch (UnsupportedEncodingException e) {
             throw new InfrastructureException(e);
         }
+
         return url.toString();
     }
 
