@@ -50,6 +50,7 @@ import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecuto
 import no.schibstedsok.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
+import no.schibstedsok.searchportal.result.handler.AddLastWeekModifierResultHandler;
 import no.schibstedsok.searchportal.result.handler.AgeCalculatorResultHandler;
 import no.schibstedsok.searchportal.result.handler.CatalogueResultHandler;
 import no.schibstedsok.searchportal.result.handler.CategorySplitter;
@@ -997,7 +998,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         VELOCITY_OUTPUT(VelocityResultHandler.class),
         FIELD_ESCAPE(FieldEscapeHandler.class),
         XML_OUTPUT(XmlOutputResultHandler.class),
-        CATALOGUE(CatalogueResultHandler.class);
+        CATALOGUE(CatalogueResultHandler.class),
+        ADD_LAST_WEEK_MODIFIER(AddLastWeekModifierResultHandler.class);
 
 
         private final Class<? extends ResultHandler> clazz;
@@ -1154,6 +1156,19 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                         final FieldEscapeHandler feh = (FieldEscapeHandler) handler;
                         feh.setSourceField(rh.getAttribute("source-field"));
                         feh.setTargetField(rh.getAttribute("target-field"));
+                        break;
+                    case ADD_LAST_WEEK_MODIFIER:
+                        final AddLastWeekModifierResultHandler alwm = (AddLastWeekModifierResultHandler) handler;
+                        alwm.setDayModifierKey(rh.getAttribute("day-modifier-key"));
+                        alwm.setTargetNavigatorField(rh.getAttribute("target-navigator-field"));
+                        String optionalAttribute = rh.getAttribute("day-format");
+                        if (optionalAttribute != null && optionalAttribute.length() > 0) {
+                            alwm.setDayFormat(optionalAttribute);
+                        }
+                        optionalAttribute = rh.getAttribute("time-zone");
+                        if (optionalAttribute != null && optionalAttribute.length() > 0) {
+                            alwm.setTimeZone(optionalAttribute);
+                        }
                         break;
                     case COMBINE_NAVIGATORS:
                         final CombineNavigatorsHandler cnh = (CombineNavigatorsHandler) handler;
