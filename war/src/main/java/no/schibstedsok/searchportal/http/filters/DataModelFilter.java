@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -29,6 +30,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelFactory;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
@@ -44,6 +46,7 @@ import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
+
 import org.apache.log4j.Logger;
 
 /** Ensures that a session is created, and that a new DataModel, with Site and Browser dataObjects,
@@ -124,7 +127,7 @@ public final class DataModelFilter implements Filter {
                     cleanDataModel(datamodel);
                 }
             }
-            
+
         }else{
             chain.doFilter(request, response);
         }
@@ -172,6 +175,14 @@ public final class DataModelFilter implements Filter {
                 StringDataObject.class,
                 new DataObject.Property("string", request.getHeader("User-Agent")));
 
+        final StringDataObject remoteAddrDO = factory.instantiate(
+                StringDataObject.class,
+                new DataObject.Property("string", request.getAttribute("REMOTE_ADDR")));
+
+        final StringDataObject forwardedForDO = factory.instantiate(
+                StringDataObject.class,
+                new DataObject.Property("string", request.getHeader("x-forwarded-for")));
+
         final List<Locale> locales = new ArrayList<Locale>();
         for(Enumeration<Locale> en = request.getLocales(); en.hasMoreElements();){
             locales.add(en.nextElement());
@@ -180,9 +191,11 @@ public final class DataModelFilter implements Filter {
         final BrowserDataObject browserDO = factory.instantiate(
                 BrowserDataObject.class,
                 new DataObject.Property("userAgent", userAgentDO),
+                new DataObject.Property("remoteAddr", remoteAddrDO),
+                new DataObject.Property("forwardedFor", forwardedForDO),
                 new DataObject.Property("locale", request.getLocale()),
                 new DataObject.Property("supportedLocales", locales));
-        
+
         final UserDataObject userDO = factory.instantiate(
                 UserDataObject.class,
                 new DataObject.Property("user", null));
