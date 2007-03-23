@@ -5,30 +5,33 @@
 
 package no.schibstedsok.searchportal.query.transform;
 
+import org.w3c.dom.Element;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.TimeZone;
-import org.w3c.dom.Element;
 
 /**
- *
  * @author maek
  */
 public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
 
     private static final String FAST_DATE_FMT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private static final String AGE_PARAMETER = "age";
-    
+
     private String ageField; // In seconds
+    private String ageSymbol;
 
     @Override
     public String getFilter(final Map parameters) {
-        final String ageSymbol = parameters.get(AGE_PARAMETER) instanceof String[]
-                ? ((String[])parameters.get(AGE_PARAMETER))[0]
-                : (String)parameters.get(AGE_PARAMETER);
-        
+        if (ageSymbol == null) {
+            ageSymbol = parameters.get(AGE_PARAMETER) instanceof String[]
+                    ? ((String[]) parameters.get(AGE_PARAMETER))[0]
+                    : (String) parameters.get(AGE_PARAMETER);
+        }
+
         if (ageSymbol != null && !ageSymbol.equals("")) {
             final Calendar cal = Calendar.getInstance();
 
@@ -51,10 +54,15 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
         this.ageField = ageField;
     }
 
+    public void setAgeSymbol(final String ageSymbol) {
+        this.ageSymbol = ageSymbol;
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
-        final AgefilterQueryTransformer retValue = (AgefilterQueryTransformer)super.clone();
+        final AgefilterQueryTransformer retValue = (AgefilterQueryTransformer) super.clone();
         retValue.ageField = ageField;
+        retValue.ageSymbol = ageSymbol;
         return retValue;
     }
 
@@ -67,16 +75,22 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
             return 60 * 60;
         } else if (ageSymbol.equals("d")) {
             return 60 * 60 * 24;
+        } else if (ageSymbol.equals("h")) {
+            return 60 * 60;
         } else {
             throw new IllegalArgumentException("Unknown age symbol: " + ageSymbol);
         }
     }
-    
+
     @Override
-    public QueryTransformer readQueryTransformer(final Element qt){
-        
+    public QueryTransformer readQueryTransformer(final Element qt) {
+
         super.readQueryTransformer(qt);
         setAgeField(qt.getAttribute("field"));
+        String optionalAttribute = qt.getAttribute("age-symbol");
+        if (optionalAttribute != null && optionalAttribute.length() > 0) {
+            setAgeSymbol(optionalAttribute);
+        }
         return this;
     }
 }
