@@ -36,48 +36,14 @@ public final class QueryParserImpl extends AbstractQueryParser{
     public QueryParserImpl(final Context cxt, final int lexicalState){
         this(new StringReader(cxt.getQueryString()));
         context = cxt;
+        //checks Query String is ok
+        String qs = cxt.getQueryString();
+        qs = balance(qs, '(', ')');
+        qs = even(qs, '\"');
+        qs = numberNeedsTrailingSpace(qs);
         token_source.SwitchTo(lexicalState);
     }
 
-    private String balance(String query, final char leftChar, final char rightChar){
-        int left = 0, right = 0;
-        final char[] chars = query.toCharArray();
-        for( int i = 0; i < chars.length; ++i ){ 
-            if( chars[i] == leftChar ){ ++left; }
-            if( chars[i] == rightChar ){ ++right; }
-        }
-        if( left != right ){
-            // uneven amount of (). Ignore all of them then.
-            query = query.replaceAll("\\" + leftChar, "").replaceAll("\\" + rightChar, "");
-            ReInit(new StringReader(query));
-        }
-        return query;
-    }
-
-    private String even(String query, final char c){
-        int count = 0;
-        final char[] chars = query.toCharArray();
-        for( int i = 0; i < chars.length; ++i ){ 
-            if( chars[i] == c ){ ++count; }
-        }
-        if( count % 2 >0 ){
-            // uneven amount of (). Ignore all of them then.    
-            query = query.replaceAll("\\" + c, "");
-            ReInit(new StringReader(query));
-        }
-        return query;
-    }
-
-    private String numberNeedsTrailingSpace(String query){
-        
-        // HACK because phone numbers and organisation numbers need to finish
-        // with a space. SEARCH-672
-        if( query.length() > 0 && Character.isDigit( query.charAt(query.length()-1) ) ){
-            query = query + ' ';
-            ReInit(new StringReader(query));
-        }
-        return query;
-    }
 }
 
 PARSER_END(QueryParserImpl)

@@ -88,8 +88,6 @@ public final class DataModelFilter implements Filter {
         if(request instanceof HttpServletRequest){
             final HttpServletRequest httpRequest = (HttpServletRequest)request;
 
-            LOG.info("Incoming! " + httpRequest.getQueryString());
-
             final Site site = (Site) httpRequest.getAttribute(Site.NAME_KEY);
 
             final DataModelFactory factory;
@@ -266,7 +264,7 @@ public final class DataModelFilter implements Filter {
             }
         }
 
-        if (null != value) {
+        if (null != value && null != queryStringValue) {
 
             try {
                 final String encodedReqValue = URLEncoder.encode(value, "UTF-8")

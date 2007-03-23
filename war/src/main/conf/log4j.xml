@@ -31,6 +31,17 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         </layout>
     </appender>
     
+    <appender name="ACCESS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="File" value="@log.directory@/@log.file@.access"/>
+        <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
+        <param name="Append" value="true"/>
+        <param name="Threshold" value="ALL"/>
+        <param name="encoding" value="UTF-8"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} %X{site} %X{UNIQUE_ID} %m%n"/>
+        </layout>
+    </appender>
+    
     <appender name="DUMP_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.dump"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -107,6 +118,11 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
             <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] (%X{UNIQUE_ID}) %-5p %c{1}\: %m%n"/>
         </layout>
     </appender>
+    
+    <logger name="no.schibstedsok.Access" additivity="false">
+        <level value="ALL"/>
+        <appender-ref ref="ACCESS_APPEND"/>
+    </logger>
     
     <logger name="no.schibstedsok.Dump" additivity="false">
         <level value="ALL"/>

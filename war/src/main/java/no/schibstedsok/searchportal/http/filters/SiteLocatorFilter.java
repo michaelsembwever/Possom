@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
 import javax.servlet.Filter;
@@ -45,6 +46,7 @@ public final class SiteLocatorFilter implements Filter {
     // Constants -----------------------------------------------------
 
     private static final Logger LOG = Logger.getLogger(SiteLocatorFilter.class);
+    private static final Logger ACCESS_LOG = Logger.getLogger("no.schibstedsok.Access");
 
     private static final String ERR_NOT_FOUND = "Failed to find resource ";
     private static final String ERR_UNCAUGHT_RUNTIME_EXCEPTION
@@ -98,7 +100,7 @@ public final class SiteLocatorFilter implements Filter {
 
     // Public --------------------------------------------------------
 
-    /** Will redirect to correct (search-front-config) url for resources (css,images, javascript).
+    /** Will redirect to correct (search-config) url for resources (css,images, javascript).
      *
      * @param request The servlet request we are processing
      * @param result The servlet response we are creating
@@ -115,14 +117,15 @@ public final class SiteLocatorFilter implements Filter {
                 throws IOException, ServletException {
 
         LOG.trace("doFilter(..)");
-        final HttpServletRequest req = (HttpServletRequest) request;
 
         try  {
 
             doBeforeProcessing(request, response);
+            logAccess(request);
 
             if (request instanceof HttpServletRequest) {
 
+                final HttpServletRequest req = (HttpServletRequest)request;
                 final HttpServletResponse res = (HttpServletResponse) response;
                 final String uri = req.getRequestURI();
                 final String resource = uri;
@@ -168,11 +171,11 @@ public final class SiteLocatorFilter implements Filter {
                     }
 
                 } else  {
-                    // request will be processed by search-front-html
+                    // request will be processed by search-portal
+                    LOG.info("Incoming search! " + req.getQueryString());
                     chain.doFilter(request, response);
                 }
             }  else  {
-                // request will be processed by search-front-html
                 chain.doFilter(request, response);
             }
 
@@ -182,9 +185,9 @@ public final class SiteLocatorFilter implements Filter {
         }  catch (Exception e) {
             // Don't let anything through without logging it.
             //  Otherwise it ends in a different logfile.
-            LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION + req.getQueryString());
+            LOG.error(ERR_UNCAUGHT_RUNTIME_EXCEPTION);
             for (Throwable t = e; t != null; t = t.getCause()) {
-                LOG.error("", t);
+                LOG.error(t.getMessage(), t);
             }
             throw new ServletException(e);
         }
@@ -245,16 +248,14 @@ public final class SiteLocatorFilter implements Filter {
 
     /** The method to obtain the correct Site from the request.
      * It only returns a site with a locale supported by that site.
-     **/
+     ** @param servletRequest 
+     */
     public static Site getSite(final ServletRequest servletRequest) {
         // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
         // httpd.conf needs:
         //      1) "JkEnvVar SERVER_NAME" inside the virtual host directive.
         //      2) "UseCanonicalName Off" to assign ServerName from client's request.
-        final String vhost = null != servletRequest.getAttribute("SERVER_NAME")
-            ? (String) servletRequest.getAttribute("SERVER_NAME")
-            // falls back to this when not behind Apache. (Development machine).
-            : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
+        final String vhost = getServerName(servletRequest);
 
 
         LOG.trace(DEBUG_REQUESTED_VHOST + vhost);
@@ -288,19 +289,16 @@ public final class SiteLocatorFilter implements Filter {
         switch(prefLocale.length){
 
             case 3:
-                LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]
-                        + '_' + prefLocale[1] + '_' + prefLocale[2]);
+                LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1] + '_' + prefLocale[2]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1], prefLocale[2]));
 
             case 2:
-                LOG.trace(result+INFO_USING_DEFAULT_LOCALE
-                        + prefLocale[0] + '_' + prefLocale[1]);
+                LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0] + '_' + prefLocale[1]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0], prefLocale[1]));
 
             case 1:
             default:
-                LOG.trace(result+INFO_USING_DEFAULT_LOCALE
-                        + prefLocale[0]);
+                LOG.trace(result+INFO_USING_DEFAULT_LOCALE + prefLocale[0]);
                 return Site.valueOf(SITE_CONTEXT, vhost, new Locale(prefLocale[0]));
 
         }
@@ -376,5 +374,36 @@ public final class SiteLocatorFilter implements Filter {
             }
         }
         return datamodel;
+    }
+    
+    private static void logAccess(final ServletRequest request){
+       
+        if(request instanceof HttpServletRequest){  
+            HttpServletRequest req = (HttpServletRequest)request;
+            ACCESS_LOG.info(req.getRequestURI() + (null != req.getQueryString() ? '?' + req.getQueryString() : ""));
+            
+        }else{
+            final StringBuilder sb = new StringBuilder();
+            for( Enumeration<String> en = request.getParameterNames(); en.hasMoreElements(); ){
+                final String param = en.nextElement();
+                sb.append(param + '=' + request.getParameter(param));
+                if(en.hasMoreElements()){
+                    sb.append('&');
+                }
+            }
+            ACCESS_LOG.info(sb.toString());
+        }
+    }
+    
+    private static String getServerName(final ServletRequest servletRequest){
+        
+        // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
+        // httpd.conf needs:
+        //      1) "JkEnvVar SERVER_NAME" inside the virtual host directive.
+        //      2) "UseCanonicalName Off" to assign ServerName from client's request.
+        return null != servletRequest.getAttribute("SERVER_NAME")
+            ? (String) servletRequest.getAttribute("SERVER_NAME")
+            // falls back to this when not behind Apache. (Development machine).
+            : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
     }
 }
