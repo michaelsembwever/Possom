@@ -179,6 +179,11 @@ public final class DataModelFilter implements Filter {
                 StringDataObject.class,
                 new DataObject.Property("string", request.getAttribute("REMOTE_ADDR")));
 
+        LOG.info("x-forward-1: " + request.getHeader("x-forwarded-for"));
+        LOG.info("x-forward-2: " + request.getAttribute("x-forwarded-for"));
+        LOG.info("x-forward-3: " + request.getHeader("HTTP_X_FORWARDED_FOR"));
+        LOG.info("x-forward-4: " + request.getAttribute("HTTP_X_FORWARDED_FOR"));
+
         final StringDataObject forwardedForDO = factory.instantiate(
                 StringDataObject.class,
                 new DataObject.Property("string", request.getHeader("x-forwarded-for")));
