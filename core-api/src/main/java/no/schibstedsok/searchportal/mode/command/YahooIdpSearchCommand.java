@@ -1,11 +1,6 @@
-// Copyright (2006-2007) Schibsted Søk AS
 /*
- * StaticSearchCommand.java
- *
- * Created on May 18, 2006, 10:47 AM
- *
+ * Copyright (2006-2007) Schibsted Søk AS
  */
-
 package no.schibstedsok.searchportal.mode.command;
 
 import java.io.IOException;
@@ -16,6 +11,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -27,15 +23,14 @@ import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import javax.servlet.http.HttpServletRequest;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
-/*
+/**
  * Search against Yahoo! Index Data Protocol 2.0.
  *
  * @author mick
@@ -52,7 +47,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             + "Region={5}&RegionMix={6}&SpellState={7}&Language={8}&LanguageMix={9}&"
             + "QueryEncoding={10}&Fields={11}&Unique={12}&Filter={13}&"
             + "Query={14}&"
-            + "affilData={15}";
+            + "{15}";
 
     private static final String DATE_PATTERN = "yyyy/MM/dd";
 
@@ -65,9 +60,12 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String ANYWORDS = "ANYWORDS(";
     private static final String PHRASEWORDS = "PHRASEWORDS(";
 
-    /** TODO comment me. **/
+    /**
+     * Create new overture command.
+     *
+     * @param cxt The context to execute in.
+     */
     public YahooIdpSearchCommand(final Context cxt) {
-
         super(cxt);
     }
 
@@ -117,7 +115,6 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
     /** TODO comment me. **/
     protected String createRequestURL() {
-
         final YahooIdpSearchConfiguration conf = (YahooIdpSearchConfiguration) context.getSearchConfiguration();
 
         final String dateRange = "-" + new SimpleDateFormat(DATE_PATTERN).format(new Date());
@@ -125,17 +122,13 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + ")";
 
         final StringBuilder fields = new StringBuilder();
-        for(final String field : context.getSearchConfiguration().getResultFields().keySet()) {
+
+        for (final String field : context.getSearchConfiguration().getResultFields().keySet()) {
             fields.append(field);
             fields.append(',');
         }
-        fields.setLength(fields.length()-1);
 
-        final StringBuilder affilData = new StringBuilder();
-
-        appendAffilData(affilData, "ip", getParameter("REMOTE_ADDR"));
-        appendAffilData(affilData, "xfip", getParameter("x-forward-for"));
-        appendAffilData(affilData, "ua", getParameter("user-agent"));
+        fields.setLength(fields.length() - 1);
 
         try {
             return MessageFormat.format(
@@ -155,7 +148,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     conf.getUnique(),
                     conf.getFilter(),
                     URLEncoder.encode(wrappedTransformedQuery, "UTF-8"),
-                    URLEncoder.encode(affilData.toString(), "UTF-8")
+                    getAffilDataParameter()
                     );
         } catch (UnsupportedEncodingException ex) {
             throw new InfrastructureException(ERR_FAILED_CREATING_URL, ex);
@@ -164,17 +157,14 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
     /** Assured that associated SearchConfiguration is always of this type. **/
     public YahooIdpSearchConfiguration getSearchConfiguration() {
-
         return (YahooIdpSearchConfiguration)super.getSearchConfiguration();
     }
 
-    /**
-     **/
+    /** TODO comment me. **/
     protected BasicSearchResultItem createItem(final Element result) {
-
         final BasicSearchResultItem item = new BasicSearchResultItem();
 
-        for(final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
+        for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){
 
             final Element fieldE = (Element) result.getElementsByTagName(entry.getKey().toUpperCase()).item(0);
             if(fieldE.getChildNodes().getLength() >0){
@@ -191,6 +181,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             appendToQueryRepresentation(PHRASEWORDS + getTransformedTerm(clause) + ')');
         }
     }
+
     /** TODO comment me. **/
     protected void visitImpl(final AndClause clause) {
         appendToQueryRepresentation(ALLWORDS);
@@ -199,6 +190,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         clause.getSecondClause().accept(this);
         appendToQueryRepresentation(")");
     }
+
     /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         appendToQueryRepresentation(ANYWORDS);
@@ -207,12 +199,14 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         clause.getSecondClause().accept(this);
         appendToQueryRepresentation(")");
     }
+
     /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
         appendToQueryRepresentation(" ");
         clause.getSecondClause().accept(this);
     }
+
     /** TODO comment me. **/
     protected void visitImpl(final NotClause clause) {
         final String childsTerm = getTransformedTerm(clause.getFirstClause());
@@ -221,6 +215,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
+
     /** TODO comment me. **/
     protected void visitImpl(final AndNotClause clause) {
         final String childsTerm = getTransformedTerm(clause.getFirstClause());
@@ -229,13 +224,5 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             clause.getFirstClause().accept(this);
         }
     }
-    private void appendAffilData(final StringBuilder affilData, final String paramName, final String paramValue) {
-        if (! paramValue.equals("")) {
-            if (affilData.length() > 0) {
-                affilData.append("&");
-            }
 
-            affilData.append(paramName).append('=').append(paramValue);
-        }
-    }
 }
