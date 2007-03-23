@@ -1,25 +1,26 @@
-// Copyright (2006-2007) Schibsted Søk AS
+/*
+ * Copyright (2005-2007) Schibsted Søk AS
+ */
 package no.schibstedsok.searchportal.mode.command;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.OvertureSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.InfrastructureException;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Map;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
- *
  * This command gets the overture ads to display. It also does some analysis of
  * the query to decide if it is a query that yields a high click frequency for
  * the ads. This is done by evaluating the predicate "exact_ppctoplist".
@@ -37,22 +38,18 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
     /**
      * Create new overture command.
      *
-     * @param query
-     * @param configuration
-     * @param parameters
+     * @param cxt the context
      */
     public OverturePPCSearchCommand(final Context cxt) {
-
         super(cxt);
-
     }
+
     /**
      * Execute the command.
      *
-     * @return
+     * @return the search result
      */
     public SearchResult execute() {
-
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
@@ -62,6 +59,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
         try {
             final Document doc = getXmlResult();
+            LOG.debug(doc.toString());
             final OvertureSearchResult searchResult = new OvertureSearchResult(this, top);
 
             if (doc != null) {
@@ -88,9 +86,10 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
-    /** TODO comment me. **/
+    /**
+     * @return Returns the request url used for the ppc ads.
+     */
     protected String createRequestURL() {
-
         final OverturePPCSearchConfiguration ppcConfig
                 = (OverturePPCSearchConfiguration) context.getSearchConfiguration();
 
@@ -98,14 +97,16 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
         try {
             url.append("&Partner=" + getPartnerId());
-            if( null != ppcConfig.getType() && ppcConfig.getType().length() > 0){
+
+            if (null != ppcConfig.getType() && ppcConfig.getType().length() > 0) {
                 url.append("&type=" + ppcConfig.getType());
             }
+
             url.append("&Keywords=");
             url.append(URLEncoder.encode(getTransformedQuery().replace(' ', '+'), ppcConfig.getEncoding()));
             url.append("&maxCount=");
             url.append(getResultsToReturn());
-
+            url.append("&" + getAffilDataParameter());
         }  catch (UnsupportedEncodingException e) {
             throw new InfrastructureException(e);
         }
@@ -116,7 +117,6 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     /** TODO comment me. **/
     protected int getResultsToReturn(){
-
         final int resultsToShow = context.getRunningQuery().getSearchTab().getAdLimit();
         final int resultsOnTop = context.getRunningQuery().getSearchTab().getAdOnTop();
 
@@ -127,10 +127,8 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         }
     }
 
-    /**
-     **/
+    /** TODO comment me. **/
     protected BasicSearchResultItem createItem(final Element ppcListing) {
-
         final BasicSearchResultItem item = new BasicSearchResultItem();
         final NodeList click = ppcListing.getElementsByTagName("ClickUrl");
 
@@ -147,10 +145,6 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
 
     /** TODO comment me. **/
     protected String getPartnerId(){
-
-        final OverturePPCSearchConfiguration conf
-                = (OverturePPCSearchConfiguration)context.getSearchConfiguration();
-
         // FIXME. When the site searches have their own context
         // remove this and use the property partnerId of OverturePPCConfiguration
         // instead.
@@ -158,6 +152,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                 ? SITE_SEARCH_OVERTURE_PARTNER_ID
                 : super.getPartnerId();
     }
+
 }
 
 
