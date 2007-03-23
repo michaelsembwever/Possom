@@ -22,7 +22,11 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
  */
 @DataObject
 public interface BrowserDataObject extends Serializable {
+
     StringDataObject getUserAgent();
+    StringDataObject getRemoteAddr();
+    StringDataObject getForwardedFor();
     Locale getLocale();
     List<Locale> getSupportedLocales();
+
 }
