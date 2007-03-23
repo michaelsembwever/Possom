@@ -1,20 +1,16 @@
-// Copyright (2006-2007) Schibsted Søk AS
 /*
- * AbstractYahooSearchCommand.java
- *
- * Created on June 12, 2006, 10:51 AM
- *
+ * Copyright (2006-2007) Schibsted Søk AS
  */
-
 package no.schibstedsok.searchportal.mode.command;
 
 import java.io.IOException;
-import java.util.Map;
-import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import no.schibstedsok.searchportal.http.HTTPClient;
+import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
+
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -45,10 +41,8 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
      * Create new overture command.
      *
      * @param cxt The context to execute in.
-     * @param parameters Search command parameters.
      */
     public AbstractYahooSearchCommand(final Context cxt) {
-
         super(cxt);
 
         final AbstractYahooSearchConfiguration conf = (AbstractYahooSearchConfiguration)cxt.getSearchConfiguration();
@@ -56,7 +50,6 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
         final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
         final String host = siteConf.getProperty(conf.getHost());
         final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
-
 
         client = null != conf.getHostHeader() && conf.getHostHeader().length() >0
                 ? HTTPClient.instance(conf.getName(), host, port, conf.getHostHeader())
@@ -78,7 +71,6 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
     protected abstract String createRequestURL();
 
     protected int getResultsToReturn(){
-
         return context.getSearchConfiguration().getResultsToReturn();
     }
 
@@ -87,13 +79,38 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
     }
 
     protected final Document getXmlResult() throws IOException, SAXException {
-
         final String url = createRequestURL();
         LOG.info("Using " + url);
         return client.getXmlDocument(context.getSearchConfiguration().getName(), url);
     }
 
+    /**
+     * @return Returns the affilData element for Yahoo/Overture, not including the prefix "&".
+     */
+    protected final String getAffilDataParameter() {
+        final String remoteAddr = datamodel.getBrowser().getRemoteAddr().getString();
+        final String forwardedFor = datamodel.getBrowser().getForwardedFor().getString();
+        final String userAgent = datamodel.getBrowser().getUserAgent().getString();
+
+        final StringBuilder affilDataValue = new StringBuilder();
+        affilDataValue.append("ip=" + (remoteAddr != null ? remoteAddr : ""));
+        affilDataValue.append("&ua=" + userAgent);
+
+        if (forwardedFor != null && forwardedFor.length() > 0) {
+            affilDataValue.append("&xfip=" + forwardedFor);
+        }
+
+        try {
+            return "affilData=" + URLEncoder.encode(affilDataValue.toString(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            // Should not happen...
+            LOG.error(e);
+            return null;
+        }
+    }
+
     // Private -------------------------------------------------------
 
     // Inner classes -------------------------------------------------
+
 }
