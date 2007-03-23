@@ -30,11 +30,9 @@ public class AddLastWeekModifierResultHandler implements ResultHandler {
     private String targetNavigatorField;
 
     public void handleResult(Context cxt, DataModel datamodel) {
-        LOG.debug("call handleResult");
         try {
             final SearchResult searchResult = cxt.getSearchResult();
             if (searchResult instanceof FastSearchResult) {
-                LOG.debug("FastResult ok");
                 int weekCount = 0;
                 final FastSearchResult fastResult = (FastSearchResult) searchResult;
                 final List<Modifier> dayModifiers = fastResult.getModifiers(dayModifierKey);
