@@ -11,6 +11,15 @@ package no.schibstedsok.searchportal.mode.command;
 import com.fastsearch.esp.search.result.IModifier;
 import com.fastsearch.esp.search.result.INavigator;
 import com.fastsearch.esp.search.result.IQueryResult;
+import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
+import no.schibstedsok.searchportal.result.FastSearchResult;
+import no.schibstedsok.searchportal.result.Modifier;
+import no.schibstedsok.searchportal.result.Navigator;
+import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.util.Channels;
+import no.schibstedsok.searchportal.util.ModifierDateComparator;
+import org.apache.commons.lang.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,14 +27,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
-import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.result.SearchResult;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * This class provies an advanced fast search command with navigation
@@ -36,9 +37,8 @@ import org.apache.commons.lang.StringUtils;
 public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 
     // Attributes ----------------------------------------------------
-    private final Map<String,Navigator> navigatedTo = new HashMap<String,Navigator>();
-    private final Map<String,String[]> navigatedValues = new HashMap<String,String[]>();
-
+    private final Map<String, Navigator> navigatedTo = new HashMap<String, Navigator>();
+    private final Map<String, String[]> navigatedValues = new HashMap<String, String[]>();
 
 
     public NavigatableESPFastCommand(final Context cxt) {
@@ -47,17 +47,14 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     }
 
     public Collection createNavigationFilterStrings() {
-        final Collection filterStrings = new ArrayList();
+        final Collection<String> filterStrings = new ArrayList<String>();
 
-        for (final Iterator iterator = navigatedValues.keySet().iterator(); iterator.hasNext();) {
-            final String field = (String) iterator.next();
+        for (String field : navigatedValues.keySet()) {
+            final String modifiers[] = navigatedValues.get(field);
 
-            final String modifiers[] = (String[]) navigatedValues.get(field);
-
-
-            for (int i = 0; i < modifiers.length; i++) {
-                if (!field.equals("contentsource") || !modifiers[i].equals("Norske nyheter"))
-                    filterStrings.add("+" + field + ":\"" + modifiers[i] + "\"");
+            for (String modifier : modifiers) {
+                if (!field.equals("contentsource") || !modifier.equals("Norske nyheter"))
+                    filterStrings.add("+" + field + ":\"" + modifier + "\"");
             }
         }
 
@@ -69,8 +66,8 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
             for (String navigatorKey : getNavigators().keySet()) {
 
                 addNavigatedTo(navigatorKey, getParameters().containsKey("nav_" + navigatorKey)
-                ? getParameter("nav_" + navigatorKey)
-                : null);
+                        ? getParameter("nav_" + navigatorKey)
+                        : null);
             }
         }
 
@@ -85,9 +82,9 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 
     public Map getOtherNavigators(final String navigatorKey) {
 
-        final Map<String,String> otherNavigators = new HashMap<String,String>();
+        final Map<String, String> otherNavigators = new HashMap<String, String>();
 
-        for (String parameterName : (Set<String>)getParameters().keySet()) {
+        for (String parameterName : getParameters().keySet()) {
 
             if (parameterName.startsWith("nav_") && !parameterName.substring(parameterName.indexOf('_') + 1).equals(navigatorKey)) {
                 final String paramValue = getParameter(parameterName);
@@ -96,9 +93,10 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         }
         return otherNavigators;
     }
+
     public void addNavigatedTo(final String navigatorKey, final String navigatorName) {
 
-        final Navigator navigator = (Navigator) getNavigators().get(navigatorKey);
+        final Navigator navigator = getNavigators().get(navigatorKey);
 
         if (navigatorName == null) {
             navigatedTo.put(navigatorKey, navigator);
@@ -108,15 +106,15 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     }
 
     public Navigator getNavigatedTo(final String navigatorKey) {
-        return (Navigator) navigatedTo.get(navigatorKey);
+        return navigatedTo.get(navigatorKey);
     }
 
 
     public Navigator getParentNavigator(final String navigatorKey) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
-            final String navName =  getParameter("nav_" + navigatorKey);
+            final String navName = getParameter("nav_" + navigatorKey);
 
-            return findParentNavigator((Navigator) getNavigators().get(navigatorKey), navName);
+            return findParentNavigator(getNavigators().get(navigatorKey), navName);
 
         } else {
             return null;
@@ -126,7 +124,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     public Navigator getParentNavigator(final String navigatorKey, final String name) {
         if (getParameters().containsKey("nav_" + navigatorKey)) {
 
-            return findParentNavigator((Navigator) getNavigators().get(navigatorKey), name);
+            return findParentNavigator(getNavigators().get(navigatorKey), name);
 
         } else {
             return null;
@@ -137,13 +135,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         if (navigator.getChildNavigator() == null) {
             return null;
         } else if (navigator.getChildNavigator().getName().equals(navigatorName)) {
-
-            if (true) {
-                return navigator;
-            } else {
-                return findParentNavigator(navigator.getChildNavigator(), navigatorName);
-
-            }
+            return navigator;
         } else {
             return findParentNavigator(navigator.getChildNavigator(), navigatorName);
         }
@@ -154,7 +146,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     }
 
     public String getNavigatedValue(final String fieldName) {
-        final String[] singleValue = (String[]) navigatedValues.get(fieldName);
+        final String[] singleValue = navigatedValues.get(fieldName);
 
         if (singleValue != null) {
             return (singleValue[0]);
@@ -174,7 +166,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     public String getNavigatorTitle(final String navigatorKey) {
         final Navigator nav = getNavigatedTo(navigatorKey);
 
-        Navigator parent = findParentNavigator((Navigator) getNavigators().get(navigatorKey), nav.getName());
+        Navigator parent = findParentNavigator(getNavigators().get(navigatorKey), nav.getName());
 
         String value = getNavigatedValue(nav.getField());
 
@@ -184,7 +176,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 
             if (value == null) {
 
-                parent = findParentNavigator((Navigator) getNavigators().get(navigatorKey), parent.getName());
+                parent = findParentNavigator(getNavigators().get(navigatorKey), parent.getName());
 
 
                 if (parent != null) {
@@ -214,14 +206,16 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         }
     }
 
-    /** Assured associated search configuration will always be of this type. **/
+    /**
+     * Assured associated search configuration will always be of this type. *
+     */
     public NavigatableESPFastConfiguration getSearchConfiguration() {
         return (NavigatableESPFastConfiguration) super.getSearchConfiguration();
     }
 
     public List getNavigatorBackLinks(final String navigatorKey) {
 
-        final List backLinks = addNavigatorBackLinks(getSearchConfiguration().getNavigator(navigatorKey), new ArrayList(), navigatorKey);
+        final List backLinks = addNavigatorBackLinks(getSearchConfiguration().getNavigator(navigatorKey), new ArrayList<Navigator>(), navigatorKey);
 
         if (backLinks.size() > 0) {
             backLinks.remove(backLinks.size() - 1);
@@ -230,7 +224,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         return backLinks;
     }
 
-    public List addNavigatorBackLinks(final Navigator navigator, final List links, final String navigatorKey) {
+    public List<Navigator> addNavigatorBackLinks(final Navigator navigator, final List<Navigator> links, final String navigatorKey) {
 
         final String a = getParameter(navigator.getField());
 
@@ -259,35 +253,6 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         return getSearchConfiguration().getNavigators();
     }
 
-    private String getNavigatorsString() {
-
-        if (getNavigators() != null) {
-
-            Collection allFlattened = new ArrayList();
-
-
-            for (Navigator navigator : getNavigators().values()) {
-
-                allFlattened.addAll(flattenNavigators(new ArrayList(), navigator));
-            }
-
-            return StringUtils.join(allFlattened.iterator(), ',');
-        } else {
-            return "";
-        }
-    }
-
-    private Collection flattenNavigators(Collection soFar, Navigator nav) {
-
-        soFar.add(nav);
-
-        if (nav.getChildNavigator() != null) {
-            flattenNavigators(soFar, nav.getChildNavigator());
-        }
-
-        return soFar;
-    }
-
     private void collectModifiers(IQueryResult result, FastSearchResult searchResult) {
 
         for (String navigatorKey : navigatedTo.keySet()) {
@@ -298,7 +263,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
 
     private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
 
-        final Navigator nav = (Navigator) navigatedTo.get(navigatorKey);
+        final Navigator nav = navigatedTo.get(navigatorKey);
 
         INavigator navigator = result.getNavigator(nav.getName());
 
@@ -314,8 +279,34 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
                 }
             }
 
+
             if (searchResult.getModifiers(navigatorKey) != null) {
-                Collections.sort(searchResult.getModifiers(navigatorKey));
+                switch (nav.getSort()) {
+                    case CHANNEL:
+                        final Channels channels = (Channels) getParameters().get("channels");
+                        Collections.sort(searchResult.getModifiers(navigatorKey), channels.getComparator());
+                        break;
+                    case DAY_MONTH_YEAR:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.DAY_MONTH_YEAR);
+                        break;
+                    case DAY_MONTH_YEAR_DESCENDING:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.DAY_MONTH_YEAR_DESCENDING);
+                        break;
+                    case YEAR:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR);
+                        break;
+                    case MONTH_YEAR:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.MONTH_YEAR);
+                        break;
+                    case NONE:
+                        // Use the soting the index returns
+                        break;
+                    case COUNT:
+                        /* Fall through */
+                    default:
+                        Collections.sort(searchResult.getModifiers(navigatorKey));
+                        break;
+                }
             }
 
         } else if (nav.getChildNavigator() != null) {
@@ -329,7 +320,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         if (getParameters().containsKey(nav.getField())) {
 
             navigatedValues.put(nav.getField(), getParameters().get(nav.getField()) instanceof String[]
-                    ? (String[])getParameters().get(nav.getField())
+                    ? (String[]) getParameters().get(nav.getField())
                     : new String[]{getParameter(nav.getField())});
         }
 
