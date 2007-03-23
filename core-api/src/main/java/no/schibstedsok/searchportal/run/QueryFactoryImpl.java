@@ -96,8 +96,8 @@ public final class QueryFactoryImpl extends QueryFactory {
                     query.addParameter("newscountry", "Norge");
                 }
 
-            }else if ("t".equals(cParam)) {
-                final Cookie cookies[] = request.getCookies();
+            } else if ("t".equals(cParam) || "wt".equals(cParam)) {
+                final Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     for (Cookie cookie : cookies) {
                         if ("myChannels".equals(cookie.getName())){
