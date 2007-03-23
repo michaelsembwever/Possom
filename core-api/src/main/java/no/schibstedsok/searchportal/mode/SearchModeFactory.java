@@ -898,7 +898,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     final String name = navE.getAttribute("name");
                     final String sortAttr = navE.getAttribute("sort") != null && navE.getAttribute("sort").length() > 0
                             ? navE.getAttribute("sort").toUpperCase() : "COUNT";
-                    LOG.info(INFO_PARSING_NAVIGATOR + id + " [" + name + "]");
+                    LOG.info(INFO_PARSING_NAVIGATOR + id + " [" + name + "]" + ", sort=" + sortAttr);
                     final Navigator.Sort sort = Navigator.Sort.valueOf(sortAttr);
 
                     final Navigator nav = new Navigator(

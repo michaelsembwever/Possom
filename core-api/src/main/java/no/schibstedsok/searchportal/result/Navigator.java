@@ -9,14 +9,16 @@ import java.io.Serializable;
  */
 public final class Navigator implements Serializable {
 
-    /** The serialVersionUID */
+    /**
+     * The serialVersionUID
+     */
     private static final long serialVersionUID = -3135641813818854457L;
     private String name;
     private String field;
     private Navigator childNavigator;
     private String displayName;
     private Sort sort;
-    
+
     public enum Sort {
         COUNT(),
         CHANNEL(),
@@ -24,9 +26,12 @@ public final class Navigator implements Serializable {
         MONTH_YEAR(),
         DAY_MONTH_YEAR(),
         DAY_MONTH_YEAR_DESCENDING,
+        NONE
     }
-    
-    /** TODO comment me. **/
+
+    /**
+     * TODO comment me. *
+     */
     public Navigator(final String name, final String field, final String displayName, final Sort sort) {
         this.name = name;
         this.field = field;
@@ -34,51 +39,71 @@ public final class Navigator implements Serializable {
         this.sort = sort;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public Navigator() {
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public Navigator getChildNavigator() {
         return childNavigator;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public void setChildNavigator(final Navigator childNavigator) {
         this.childNavigator = childNavigator;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public String getName() {
         return name;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public void setName(final String name) {
         this.name = name;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public String toString() {
         return name;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public String getField() {
         return field;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public void setField(final String field) {
         this.field = field;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public String getDisplayName() {
         return displayName;
     }
 
-    /** TODO comment me. **/
+    /**
+     * TODO comment me. *
+     */
     public void setDisplayName(final String displayName) {
         this.displayName = displayName;
     }
@@ -91,7 +116,7 @@ public final class Navigator implements Serializable {
     public final Sort getSort() {
         return this.sort;
     }
-    
+
     /**
      * Holds value of property id.
      */
@@ -99,6 +124,7 @@ public final class Navigator implements Serializable {
 
     /**
      * Getter for property id.
+     *
      * @return Value of property id.
      */
     public String getId() {
@@ -107,6 +133,7 @@ public final class Navigator implements Serializable {
 
     /**
      * Setter for property id.
+     *
      * @param id New value of property id.
      */
     public void setId(final String id) {
