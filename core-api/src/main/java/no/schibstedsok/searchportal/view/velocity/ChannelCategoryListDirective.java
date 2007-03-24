@@ -68,6 +68,7 @@ public class ChannelCategoryListDirective extends Directive {
         
         Collections.sort(categories);
         
+        context.put("numberOfMyChannels", myChannels.length);
         context.put("cclist", categories);
         return true;
     }

@@ -210,13 +210,14 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     private void init() {
 
         loader.abut();
-        LOG.info("Parsing " + VIEWS_XMLFILE + " started");
+        LOG.info("Parsing " + VIEWS_XMLFILE + " started. " + "Site: " + context.getSite());
         final Document doc = loader.getDocument();
         final Element root = doc.getDocumentElement();
         if( null != root ){
             final TextMessages msgs = TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, context));
 
             final NodeList tabList = root.getElementsByTagName("tab");
+
             for(int i = 0 ; i < tabList.getLength(); ++i){
                 final Element tabE = (Element) tabList.item(i);
                 final String id = tabE.getAttribute("id");

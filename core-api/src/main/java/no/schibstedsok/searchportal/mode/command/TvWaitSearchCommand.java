@@ -10,16 +10,22 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Map;
-import no.schibstedsok.searchportal.datamodel.DataModel;
+import java.util.List;
+import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.TvWaitSearchConfiguration;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.util.Channel;
+import no.schibstedsok.searchportal.util.Channels;
 import org.apache.log4j.Logger;
 
 /**
@@ -66,6 +72,9 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     /** Use all channels */
     private boolean useAllChannels = false;
 
+    /** Cache for channel categories */
+    private final List<Channel.Category> categories = new ArrayList<Channel.Category>();
+    
     // Static --------------------------------------------------------
 
 
@@ -161,17 +170,6 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         }
 
 
-        /* If navigator root command and blankQuery, set default navigator */
-        if (executeQuery && blankQuery && !getParameters().containsKey("nav_channelcategories")) {
-            if (config.getUseMyChannels() && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
-                final String myChannels = getParameter("myChannels");
-                if (myChannels.split(",").length > 50) {
-                    executeQuery = addChannelCategoryNavigator();
-                }
-            } else {
-                executeQuery = addChannelCategoryNavigator();
-            }
-        }
 
         if (executeQuery && config.getUseMyChannels() && getParameters().containsKey("setMyChannels")) {
             executeQuery = false;
@@ -209,7 +207,23 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         final int day = getParameters().containsKey("day") ? Integer.parseInt((String) getParameters().get("day")) : 0;
         final StringBuilder filter = new StringBuilder();
 
-        Calendar cal = Calendar.getInstance();
+        /* If navigator root command and blankQuery, set default navigator */
+        if (executeQuery && blankQuery && !getParameters().containsKey("nav_channelcategories")) {
+            if (useAllChannels) {
+                filter.append(addChannelCategoryNavigator(false));
+            } else {
+                if (config.getUseMyChannels() && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
+                    final String myChannels = getParameter("myChannels");
+                    if (myChannels.split(",").length > 50) {
+                        filter.append(addChannelCategoryNavigator(true));
+                    }
+                } else {
+                    filter.append(addChannelCategoryNavigator(false));
+                }
+            }
+        }
+
+        final Calendar cal = Calendar.getInstance();
 
          /* Adjust time to selected day */
         final int adjustment = index < 0 ? 0 : index;
@@ -279,10 +293,11 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 filter.append(") ");
             }
 
+            
         }
 
         if (config.getUseMyChannels() && !useAllChannels && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
-            StringBuilder sb = new StringBuilder();
+            final StringBuilder sb = new StringBuilder();
             sb.append("+(");
             for (String str : getParameter("myChannels").split(",")) {
                 sb.append(" sgeneric5nav:'");
@@ -310,20 +325,87 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     }
 
 
-    // Private -------------------------------------------------------
-
-
-    private final boolean addChannelCategoryNavigator() {
+    /**
+     * Add search category navigator parameter.
+     * 
+     * If using my channels the category navigator will be set to the highest 
+     * category that contains selected channels. Otherwise the highest ranked category will be used.
+     * 
+     * @param useMyChannels use selected channels or not
+     * @return filter for highest ranked category
+     */
+    private final String addChannelCategoryNavigator(final boolean useMyChannels) {
 
         final Navigator navigator = getNavigators().get("channelcategories");
         if (navigator == null) {
-            return false;
+            return "";
+        }
+        
+        if (categories.isEmpty()) {
+            if (useMyChannels && getParameter("myChannels") != null && getParameter("myChannels").length() > 0) {
+                final Site site = (Site) context.getDataModel().getSite().getSite();
+                final Channels.Context siteContext = ContextWrapper.wrap(
+                    Channels.Context.class,
+                    new SiteContext() {
+                        public Site getSite() {
+                            return site;
+                        }
+                });
+
+                Channels channels = Channels.valueOf(siteContext);
+                for (String id : getParameter("myChannels").split(",")) {
+                    final Channel channel = channels.getChannel(id);
+                    if (channel != null && !categories.contains(channel.getCategory())) {
+                        categories.add(channel.getCategory());
+                    }
+                }
+
+                Collections.sort(categories);
+            } else {
+                for(Channel.Category category : Channel.Category.values()) {
+                    categories.add(category);
+                }
+                Collections.sort(categories);
+            }
         }
 
-        getParameters().put("nav_channelcategories", navigator.getName());
-        getParameters().put(navigator.getField(), "Norske");
-
-        return true;
+        StringBuilder sb = new StringBuilder();
+        sb.append(" +").append(navigator.getField()).append(":'");
+        
+        /* TODO: This is not a good solution. We need to store the posible categories in a database together 
+         * with the list of channels. */
+        switch(categories.get(0)) {
+        case NORWEGIAN:
+            sb.append("Norske");
+            break;
+        case NORDIC:
+            sb.append("Nordiske");
+            break;
+        case INTERNATIONAL:
+            sb.append("Internasjonale");
+            break;
+        case NEWS:
+            sb.append("Nyheter");
+            break;
+        case MOVIE:
+            sb.append("Film");
+            break;
+        case SPORT:
+            sb.append("Sport");
+            break;
+        case MUSIC:
+            sb.append("Musikk");
+            break;
+        case NATURE:
+            sb.append("Natur/reise");
+            break;
+        case CHILDREN:
+            sb.append("Barn");
+            break;
+        }
+        sb.append("' ");
+        
+        return sb.toString();
     }
 
     // Inner classes -------------------------------------------------

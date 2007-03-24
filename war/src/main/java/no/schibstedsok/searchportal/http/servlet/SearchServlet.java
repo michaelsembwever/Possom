@@ -147,7 +147,7 @@ public final class SearchServlet extends HttpServlet {
             final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
 
             if (searchTab == null) {
-                LOG.error(ERR_MISSING_TAB + searchTabKey);
+                LOG.error(ERR_MISSING_TAB + searchTabKey + " for site: " + site);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
             }else{
