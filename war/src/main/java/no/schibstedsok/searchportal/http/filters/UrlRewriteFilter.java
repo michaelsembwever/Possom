@@ -7,7 +7,6 @@
 
 package no.schibstedsok.searchportal.http.filters;
 
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;

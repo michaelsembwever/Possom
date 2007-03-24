@@ -12,6 +12,16 @@
     </filter>
     
     <filter>
+        <filter-name>UrlSkinRewriteFilter</filter-name>
+        <filter-class>no.schibstedsok.searchportal.http.filters.UrlRewriteFilter</filter-class>
+    </filter>
+    
+    <filter>
+        <filter-name>UrlRewriteFilter</filter-name>
+        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+    </filter>
+    
+    <filter>
         <filter-name>DataModelFilter</filter-name>
         <filter-class>no.schibstedsok.searchportal.http.filters.DataModelFilter</filter-class>
     </filter>
@@ -53,11 +63,6 @@
         <filter-class>no.schibstedsok.searchportal.http.filters.UserFilter</filter-class>
     </filter>
     
-    <filter>
-        <filter-name>UrlRewriteFilter</filter-name>
-        <filter-class>no.schibstedsok.searchportal.http.filters.UrlRewriteFilter</filter-class>
-    </filter>
-    
     <!-- Filter Mappings -->
     <!--filter-mapping>
         <filter-name>CacheFilter</filter-name>
@@ -67,7 +72,11 @@
         <filter-name>SiteLocatorFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <filter-mapping>
+    <filter-mapping> <!-- Processes the urlrewrite.xml from each skin -->
+        <filter-name>UrlSkinRewriteFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping> <!-- Processes the global WEB-INF/urlrewrite.xml -->
         <filter-name>UrlRewriteFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>

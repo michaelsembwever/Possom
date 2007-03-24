@@ -9,6 +9,18 @@
         Purpose of the document follows.
 -->
 <urlrewrite>
-    <!-- This is just a dummy placeholder. -->
-    <!-- We are going to make urlrewrite's configurations vhost dependent through the skin-architecture. -->
+    <!-- Global rewrites applicable to every skin (sitesearch and country!) -->
+
+    <!-- Everything non-specified falls back to the default search (unspecified c parameter) -->
+    <rule><from>^/index.jsp$</from><to>/</to></rule> <!-- tomcat puts in the name of the welcome page -->
+    <rule><from>^/robots.txt$</from><to>/robots.txt</to></rule> <!-- let robots.txt through as-is -->
+    <rule><from>^/favicon.ico$</from><to>/favicon.ico</to></rule> <!-- let favicon.ico through as-is -->
+    <rule><from>^/search/(.*)$</from><to>/search/$1</to></rule> <!-- let /search/ through as-is -->
+    <rule><from>^/map/(.*)$</from><to>/map/$1</to></rule> <!-- let /map/ through as-is -->
+    <rule><from>^/servlet/(.*)$</from><to>/servlet/$1</to></rule> <!-- let /servlet/ through as-is -->
+    <rule><from>^/dtds/(.*)$</from><to>/dtds/$1</to></rule> <!-- let /dtds/ through as-is -->
+    <rule><from>^/export/(.*)$</from><to>/export/$1</to></rule> <!-- let /export/ through as-is -->
+    <rule><from>^/static/(.*)$</from><to>/static/$1</to></rule> <!-- let /static/ through as-is -->
+    <rule><from>^/tradedoubler/(.*)$</from><to>/tradedoubler/$1</to></rule> <!-- let /tradedoubler/ through as-is -->
+    <rule><from>^/(.+)$</from><to>/search/?q=$1</to></rule>
 </urlrewrite>
