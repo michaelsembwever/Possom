@@ -186,12 +186,11 @@
             <version>4.0.5</version>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>no.schibstedsok.alfa</groupId>
             <artifactId>alfa-remote</artifactId>
             <type>ejb-client</type>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>schibstedsok</groupId>

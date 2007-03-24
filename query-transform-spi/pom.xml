@@ -71,7 +71,6 @@
         <dependency>
             <groupId>schibstedsok.newsadmin</groupId>
             <artifactId>ha-services</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <!-- Testing -->
