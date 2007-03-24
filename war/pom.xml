@@ -168,11 +168,11 @@
         <version>4.0.5</version>
       </dependency>       
       
-      <!--dependency>
+      <dependency>
         <groupId>no.schibstedsok.alfa</groupId>
         <artifactId>alfa-remote</artifactId>
         <type>ejb-client</type>
-      </dependency-->    
+      </dependency>    
       
       <dependency>
         <groupId>urlrewrite</groupId>
