@@ -8,7 +8,7 @@
       </parent>
     <artifactId>search-portal</artifactId>
     <packaging>pom</packaging>
-    <name>Sesam Search Engine</name>
+    <name>SESAT</name>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
         Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
@@ -33,10 +33,19 @@
                 <module>httpclient-api</module>
                 <module>site-spi</module>
                 <module>query-api</module>
+                <module>query-transform-config-spi</module>
+                <module>result-handler-config-spi</module>
+                <module>search-command-config-spi</module>
+                <module>result-spi</module>
                 <module>data-model-api</module>
                 <module>data-model-javabean-impl</module>
-                <module>query-transform-spi</module>
+                <module>query-transform-control-spi</module>
+                <module>result-handler-control-spi</module>
+                <module>search-command-control-spi</module>
+                <module>run-transform-spi</module>
+                <module>run-handler-spi</module>
                 <module>core-api</module>
+                <module>search-servlet-handler-spi</module>
                 <module>war</module>
             </modules>
         </profile>
@@ -52,10 +61,19 @@
                 <module>httpclient-api</module>
                 <module>site-spi</module>
                 <module>query-api</module>
+                <module>query-transform-config-spi</module>
+                <module>result-handler-config-spi</module>
+                <module>search-command-config-spi</module>
+                <module>result-spi</module>
                 <module>data-model-api</module>
                 <module>data-model-javabean-impl</module>
-                <module>query-transform-spi</module>
+                <module>query-transform-control-spi</module>
+                <module>result-handler-control-spi</module>
+                <module>search-command-control-spi</module>
+                <module>run-transform-spi</module>
+                <module>run-handler-spi</module>
                 <module>core-api</module>
+                <module>search-servlet-handler-spi</module>
             </modules>
         </profile>
         <profile>

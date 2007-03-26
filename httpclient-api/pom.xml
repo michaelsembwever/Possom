@@ -8,7 +8,7 @@
       </parent>
     <artifactId>search-portal-httpclient-api</artifactId>
     <packaging>jar</packaging>
-    <name>Sesam Search Engine HttpClient API</name>
+    <name>SESAT HttpClient API</name>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
         Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
