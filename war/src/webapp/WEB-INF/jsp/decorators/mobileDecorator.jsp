@@ -25,7 +25,6 @@
         context.put("text", text);
         context.put("tab", query.getSearchTab());
         context.put("runningQuery", query);
-        context.put("query", query.getQueryString());
         context.put("enrichments", query.getEnrichments());
 
         {
