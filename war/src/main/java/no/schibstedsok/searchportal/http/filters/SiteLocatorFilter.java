@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
+import java.text.MessageFormat;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -87,7 +88,7 @@ public final class SiteLocatorFilter implements Filter {
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
-
+    private static final String LOCALE_DETAILS = "Locale details: Language: {0}, Country: {1} and Variant: {2}";
 
     // Static --------------------------------------------------------
 
@@ -103,7 +104,6 @@ public final class SiteLocatorFilter implements Filter {
     /** Will redirect to correct (search-config) url for resources (css,images, javascript).
      *
      * @param request The servlet request we are processing
-     * @param result The servlet response we are creating
      * @param chain The filter chain we are processing
      *
      * @exception IOException if an input/output error occurs
@@ -278,11 +278,16 @@ public final class SiteLocatorFilter implements Filter {
         final SiteConfiguration siteConf = SiteConfiguration.valueOf(siteConfCxt);
         servletRequest.setAttribute(SiteConfiguration.NAME_KEY, siteConf);
 
+        if (LOG.isTraceEnabled()) {
+            LOG.trace(MessageFormat.format(
+                    LOCALE_DETAILS, locale.getLanguage(), locale.getCountry(), locale.getVariant()));
+        }
+
         // Check if the browser's locale is supported by this skin. Use it if so.
         if( siteConf.isSiteLocaleSupported(locale) ){
             return result;
         }
-
+        
         // Use the skin's default locale.
         final String[] prefLocale = siteConf.getProperty(SiteConfiguration.SITE_LOCALE_DEFAULT).split("_");
 
