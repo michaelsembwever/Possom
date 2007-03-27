@@ -55,9 +55,19 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
  */
 public final class WhoWhereSplitter extends AbstractReflectionVisitor{
     
+    /**
+     * Context this class requires to work within.
+     */
     public interface Context extends QueryContext{
-        /** Get the terms with their current transformed representations. **/
+        /** Get the terms with their current transformed representations. *
+         * @return 
+         */
         Map<Clause,String> getTransformedTerms();
+        /**
+         * 
+         * @return 
+         */
+        List<Application> getApplications();
     }
     
     // Constants -----------------------------------------------------
@@ -82,13 +92,19 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
     
     // Constructors --------------------------------------------------
     
-    /** Creates a new instance of WhoWhereSplitter */
+    /** Creates a new instance of WhoWhereSplitter 
+     * @param context 
+     */
     public WhoWhereSplitter(final Context context) {
         this.context = context;
     }
     
     // Public --------------------------------------------------------
     
+    /**
+     * 
+     * @return 
+     */
     public WhoWhereSplit getWhoWhereSplit(){
 
         if(where == null){
@@ -111,6 +127,10 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
     
     // Protected -----------------------------------------------------
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final LeafClause clause) {
 
         final List<OperationClause> parents  = parentsOf(clause);
@@ -121,14 +141,20 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         boolean onlyGeo = geo && clause.getField() == null;
 
         // check if any possible parents of this clause match the fullname predicate.
-        final boolean insideFullname = insideOf(parents, TokenPredicate.FULLNAME);
+        final boolean insideFullname = context.getApplications().contains(Application.WHITE)
+                && insideOf(parents, TokenPredicate.FULLNAME);
 
-        boolean isNameOrNumber = clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
-        isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
+        boolean isNameOrNumber = context.getApplications().contains(Application.WHITE)
+                && clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
+        
+        isNameOrNumber |= context.getApplications().contains(Application.WHITE)
+                && clause.getKnownPredicates().contains(TokenPredicate.LASTNAME);
+        
         isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.PHONENUMBER);
 
         // check if any possible parents of this clause match the company predicate.
-        final boolean insideCompany = insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
+        final boolean insideCompany = context.getApplications().contains(Application.YELLOW)
+                && insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
 
         if(hasCompany || hasFullname){
 
@@ -156,12 +182,20 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         }
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final OperationClause clause) {
         if(validQuery){
             clause.getFirstClause().accept(this);
         }
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final DoubleOperatorClause clause) {
 
         if(validQuery){
@@ -172,12 +206,24 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         }
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final NotClause clause) {
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final AndNotClause clause) {
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final XorClause clause) {
 
         switch(clause.getHint()){
@@ -231,10 +277,13 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
 
             final Set<TokenPredicate> predicates = clause.getKnownPredicates();
 
-            final boolean insideFullname = insideOf(parentsOf(clause), TokenPredicate.FULLNAME);
+            final boolean insideFullname = context.getApplications().contains(Application.WHITE) 
+                    && insideOf(parentsOf(clause), TokenPredicate.FULLNAME);
 
             if(!insideFullname){
-                final boolean company = predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+                final boolean company = context.getApplications().contains(Application.YELLOW)
+                        && predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+                
                 multipleCompany = hasCompany && company;
                 hasCompany |= company;
             }
@@ -258,17 +307,23 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         protected void visitImpl(final DefaultOperatorClause clause) {
 
             final List<OperationClause> parents = parentsOf(clause);
-            final boolean insideFullname = insideOf(parents, TokenPredicate.FULLNAME);
-            final boolean insideCompany = insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
+            
+            final boolean insideFullname = context.getApplications().contains(Application.WHITE)
+                    && insideOf(parents, TokenPredicate.FULLNAME);
+            
+            final boolean insideCompany = context.getApplications().contains(Application.YELLOW)
+                    && insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
 
             if(!insideFullname && !insideCompany){
                 final Set<TokenPredicate> predicates = clause.getKnownPredicates();
 
-                boolean fullname = predicates.contains(TokenPredicate.FULLNAME);
+                boolean fullname = context.getApplications().contains(Application.WHITE)
+                        && predicates.contains(TokenPredicate.FULLNAME);
+                
                 multipleFullname = fullname && hasFullname;
                 hasFullname |= fullname;
 
-                hasCompany |= !fullname
+                hasCompany |= !fullname && context.getApplications().contains(Application.YELLOW)
                     && predicates.contains(TokenPredicate.COMPANYENRICHMENT);
 
                 if(!fullname || !(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
@@ -290,6 +345,9 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         }
     }
     
+    /**
+     * 
+     */
     public static final class WhoWhereSplit{
         private final String who;
         private final String where;
@@ -297,12 +355,35 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
             this.who = who;
             this.where = where;
         }
+        /**
+         * 
+         * @return 
+         */
         public String getWho(){
             return who;
         }
+        /**
+         * 
+         * @return 
+         */
         public String getWhere(){
             return where;
         }
     }
 
+    /**
+     * 
+     */
+    public enum Application{
+        /**
+         * Apply WhoWhereSplitter to white logic.
+         *  eg fullname, firstname, and lastname lists.
+         */
+        WHITE, 
+        /**
+         * Apply WhoWhereSplitter to yellow logic.
+         *  eg companyenrich list.
+         */
+        YELLOW;
+    }
 }

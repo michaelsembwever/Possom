@@ -12,7 +12,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -26,6 +25,7 @@ import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
+import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.Application;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
@@ -33,7 +33,6 @@ import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
 
 import org.apache.log4j.Logger;
-import org.omg.CORBA.MARSHAL;
 
 /**
  * The CatalogueSearchCommand is responsible for the query to search for
@@ -90,7 +89,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private List<String> knownGeo;
 
     /**
-     *  Logg strings for this class.
+     *  Log strings for this class.
      */
     private static final String DEBUG_CONF_NFO    = "CatalogueSearchCommand Conf details->";
     private static final String DEBUG_SEARCHING_1 = "Catalogue Searching for who->";
@@ -113,7 +112,6 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     /**
      * Creates a new catalogue search command.
      * @param cxt current context for this search command.
-     * @param datamodel current datamodel for this search command.
      */
     public CatalogueSearchCommand(final Context cxt) {
 
@@ -184,19 +182,18 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private void splitGeographicFromQuery() {
 
         if(split){
-            final WhoWhereSplitter splitter = new WhoWhereSplitter(
-                    ContextWrapper.wrap(WhoWhereSplitter.Context.class,
-                    context,
-                    new BaseContext(){
-
+            final WhoWhereSplitter splitter = new WhoWhereSplitter(new WhoWhereSplitter.Context(){
+                private final List<Application> applications = Arrays.asList(Application.YELLOW);
                 public Map<Clause,String> getTransformedTerms(){
                     return CatalogueSearchCommand.this.getTransformedTerms();
                 }
-
                 public Query getQuery() {
                     return datamodel.getQuery().getQuery();
                 }
-            }));
+                public List<Application> getApplications() {
+                    return applications;
+                }
+            });
 
             final WhoWhereSplit splitQuery = splitter.getWhoWhereSplit();
 

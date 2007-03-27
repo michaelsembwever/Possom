@@ -15,13 +15,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.xml.rpc.ServiceException;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
+import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.Application;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
@@ -96,11 +94,17 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
                 ((Stub)service).setTimeout(1000);
                 final WhoWhereSplitter splitter = new WhoWhereSplitter(
                         new WhoWhereSplitter.Context(){
+                            private final List<Application> applications 
+                                    = Arrays.asList(Application.WHITE, Application.YELLOW);
+                            
                             public Map<Clause,String> getTransformedTerms(){
                                 return HittaSearchCommand.this.getTransformedTerms();
                             }                
                             public Query getQuery() {
                                 return context.getDataModel().getQuery().getQuery();
+                            }
+                            public List<Application> getApplications(){
+                                return applications;
                             }
                     });
 
