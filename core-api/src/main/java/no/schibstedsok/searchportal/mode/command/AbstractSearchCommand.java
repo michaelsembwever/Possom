@@ -494,8 +494,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** TODO comment me. **/
     protected synchronized String getQueryRepresentation(final Query query) {
-
-        return super.getQueryRepresentation(query) + " OR (" untransformedQuery + ')';
+        
+        final Clause root = query.getRootClause();
+        sb.setLength(0);
+        visit(root);
+        return sb.toString().trim();
     }
 
     /** TODO comment me. **/
