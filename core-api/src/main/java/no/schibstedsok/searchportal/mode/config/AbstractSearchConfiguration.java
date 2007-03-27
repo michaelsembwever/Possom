@@ -4,7 +4,7 @@ package no.schibstedsok.searchportal.mode.config;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import no.schibstedsok.searchportal.query.transform.QueryTransformer;
+import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.util.SearchConstants;
 
@@ -25,7 +25,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     private static final String ERR_FAILED_QUERYTRANSFORMERS_COPY = "Failed to defensively clone QueryTransformers";
 
     private String name;
-    private final List<QueryTransformer> queryTransformers = new ArrayList<QueryTransformer>();
+    private final List<QueryTransformerConfig> queryTransformers = new ArrayList<QueryTransformerConfig>();
     private final List<ResultHandler> resultHandlers = new ArrayList<ResultHandler>();
     private int pageSize = SearchConstants.DEFAULT_DOCUMENTS_TO_RETURN;
     private final Map<String,String> resultFields = new HashMap<String,String>();
@@ -76,23 +76,13 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
      *
      * @return queryTransfomer
      */
-    public final List<QueryTransformer> getQueryTransformers() {
+    public final List<QueryTransformerConfig> getQueryTransformers() {
 
-        final List<QueryTransformer> copy = new ArrayList<QueryTransformer>();
-        if(queryTransformers != null){
-            try {
-                for(QueryTransformer qt : queryTransformers){
-                    copy.add((QueryTransformer)qt.clone());
-                }
-            } catch (CloneNotSupportedException ex) {
-                LOG.error(ERR_FAILED_QUERYTRANSFORMERS_COPY, ex);
-            }
-        }
-        return Collections.unmodifiableList(copy);
+        return Collections.unmodifiableList(queryTransformers);
     }
 
     /** {@inheritDoc} **/
-    public final void addQueryTransformer(final QueryTransformer queryTransformer) {
+    public final void addQueryTransformer(final QueryTransformerConfig queryTransformer) {
         if(queryTransformer != null){
             queryTransformers.add(queryTransformer);
         }

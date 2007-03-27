@@ -17,7 +17,13 @@ public final class MobileTvQueryTransformer extends AbstractQueryTransformer {
 
     private static final Logger LOG = Logger.getLogger(MobileTvQueryTransformer.class);
 
+/**
+     *
+     * @param config
+     */
+    public MobileTvQueryTransformer(final QueryTransformerConfig config){}
 
+    
     /**
      * Set docdatetime > current date.
      * @return docdatetime:>[FORMATTED DATE]

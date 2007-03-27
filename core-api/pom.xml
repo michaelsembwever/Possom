@@ -8,7 +8,7 @@
     </parent>
     <artifactId>search-portal-core-api</artifactId>
     <packaging>jar</packaging>
-    <name>SESAT Core API</name>
+    <name>SESAT Run API</name>
     <description>
         This is the project for Schibsted Søk's search-portal application. Aka Sesam.
         Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
@@ -80,7 +80,12 @@
         </dependency>
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-query-transform-spi</artifactId>
+            <artifactId>search-portal-query-transform-config-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-query-transform-control-spi</artifactId>
             <version>${version}</version>
         </dependency>
         <dependency>

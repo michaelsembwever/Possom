@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * SimpleSiteSearchQueryTransformer.java
  *
@@ -9,12 +9,8 @@
 package no.schibstedsok.searchportal.query.transform;
 
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
-import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
-import org.w3c.dom.Element;
 
 /**
  * SimpleSiteSearchQueryTransformer.
@@ -32,46 +28,33 @@ import org.w3c.dom.Element;
  * @version <tt>$Id: SimpleSiteSearchQueryTransformer.java 4265 2007-01-04 13:54:03Z ssmiweve $</tt>
  * @deprecated Old style sitesearch. Use skins instead.
  */
-public final class SimpleSiteSearchQueryTransformer extends AbstractQueryTransformer implements QueryTransformer {
+public final class SimpleSiteSearchQueryTransformer extends AbstractQueryTransformer{
 
-    private static final Map<String,String> DEFAULT_SITES;
+    private final SimpleSiteSearchQueryTransformerConfig config;
 
-    static{
-        final Map<String,String> defaultSites = new HashMap<String,String>();
-
-        defaultSites.put("ds", "+site:dinside.no");
-        defaultSites.put("it", "+site:itavisen.no");
-        defaultSites.put("di", "+site:digi.no");
-        defaultSites.put("pr", "+site:propaganda-as.no");
-        defaultSites.put("im", "+site:imarkedet.no");
-        defaultSites.put("nrk", "+site:nrk.no");
-        defaultSites.put("af", "+site:(aftenposten.no forbruker.no)");
-        defaultSites.put("fv", "+site:(fedrelandsvennen.no fvn.no)");
-        defaultSites.put("aa", "+site:adressa.no");
-        defaultSites.put("sa", "+site:aftenbladet.no");
-        defaultSites.put("bt", "+site:bt.no");
-
-        DEFAULT_SITES = Collections.unmodifiableMap(defaultSites);
+    /**
+     *
+     * @param config
+     */
+    public SimpleSiteSearchQueryTransformer(final QueryTransformerConfig config){
+        this.config = (SimpleSiteSearchQueryTransformerConfig) config;
     }
-
-    private Map<String,String> sites;
-    private String parameter;
 
     @Override
     public String getFilter(final Map parameters) {
 
-        final String paramValue = parameters.get(parameter) instanceof String[]
-                ? ((String[])parameters.get(parameter))[0]
-                : (String)parameters.get(parameter);
+        final String paramValue = parameters.get(config.getParameter()) instanceof String[]
+                ? ((String[])parameters.get(config.getParameter()))[0]
+                : (String)parameters.get(config.getParameter());
 
         if (paramValue != null && paramValue.length() > 0) {
             if (!(paramValue.equals("") || paramValue.equals("d"))) {
 
-                final Map<String,String> s = sites != null && sites.size()>0
-                        ? new HashMap(DEFAULT_SITES)
-                        : DEFAULT_SITES;
-                if( s != DEFAULT_SITES ){
-                    s.putAll(sites);
+                final Map<String,String> s = config.getSites() != null && config.getSites().size()>0
+                        ? new HashMap(config.getDefaultSites())
+                        : config.getDefaultSites();
+                if( s != config.getDefaultSites() ){
+                    s.putAll(config.getSites());
                 }
 
                 if (s.containsKey(paramValue)) {
@@ -92,7 +75,7 @@ public final class SimpleSiteSearchQueryTransformer extends AbstractQueryTransfo
             final String privateSite = parameters.get("sitesearch") instanceof String[]
                 ? ((String[])parameters.get("sitesearch"))[0]
                 : parameters.get("sitesearch") instanceof String ? (String)parameters.get("sitesearch") : null;
-            
+
             if (privateSite != null && privateSite.length() > 0) {
                 final String collection = parameters.get("c") instanceof String[]
                     ? ((String[])parameters.get("c"))[0]
@@ -106,24 +89,5 @@ public final class SimpleSiteSearchQueryTransformer extends AbstractQueryTransfo
         }
         return null;
     }
-    
-    public void setParameter(final String pn){
-        parameter = pn;
-    }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        final SimpleSiteSearchQueryTransformer retValue = (SimpleSiteSearchQueryTransformer)super.clone();
-        retValue.parameter = parameter;
-        retValue.sites = sites;
-        return retValue;
-    }
-    
-    @Override
-    public QueryTransformer readQueryTransformer(final Element qt){
-        
-        super.readQueryTransformer(qt);
-        AbstractDocumentFactory.fillBeanProperty(this, null, "parameter", ParseType.String, qt, "");
-        return this;
-    }
 }

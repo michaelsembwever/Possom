@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * SynonymQueryTransformer.java
  *
@@ -83,8 +83,15 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
 
     private StringBuilder builder = new StringBuilder();
 
+    /**
+     *
+     * @param config
+     */
+    public SynonymQueryTransformer(final QueryTransformerConfig config){
+    }
+
     /** TODO comment me. **/
-    void addPredicateName(final String name) {
+    public void addPredicateName(final String name) {
         predicateNames.add(name);
     }
 
@@ -236,20 +243,6 @@ public final class SynonymQueryTransformer extends AbstractQueryTransformer {
         return SYNONYMS.containsKey(s)
                 ? SYNONYMS.get(s)
                 : REVERSE_SYNONYMS.get(s);
-    }
-
-    /** TODO comment me. **/
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        final SynonymQueryTransformer retValue = (SynonymQueryTransformer)super.clone();
-
-        retValue.predicateNames = predicateNames;
-        retValue.customPredicates = customPredicates;
-        retValue.matchingPredicates = new HashSet<TokenPredicate>();
-        retValue.builder = new StringBuilder();
-        retValue.leafs = new ArrayList<LeafClause>();
-
-        return retValue;
     }
 
     /** TODO comment me. **/

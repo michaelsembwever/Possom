@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.query.transform;
 
@@ -10,10 +10,7 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
-import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
-import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
 
 /**
  * A transformer to apply a regular expression to each term.
@@ -34,15 +31,17 @@ public final class RegexpQueryTransformer extends AbstractQueryTransformer {
 
     private static final String DEBUG_APPLIED_REGEXP = "Applied regexp to term ";
 
-    private volatile Pattern regExPattern;
+    private Pattern regExPattern;
+
+    private final RegexpQueryTransformerConfig config;
+
     /**
-     * Holds value of property regexp.
+     *
+     * @param config
      */
-    private String regexp;
-    /**
-     * Holds value of property replacement.
-     */
-    private String replacement = "";
+    public RegexpQueryTransformer(final QueryTransformerConfig config){
+        this.config = (RegexpQueryTransformerConfig) config;
+    }
 
     /**
      *
@@ -53,12 +52,12 @@ public final class RegexpQueryTransformer extends AbstractQueryTransformer {
         final String term = (String) getTransformedTerms().get(clause);
         if(null != term && term.length()>0){
             if(regExPattern == null){
-                regExPattern = Pattern.compile(regexp);
+                regExPattern = Pattern.compile(config.getRegexp());
             }
             final Matcher m = regExPattern.matcher(term);
             if(m.find()){
                 LOG.debug(DEBUG_APPLIED_REGEXP + term);
-                getTransformedTerms().put(clause, m.replaceAll(replacement));
+                getTransformedTerms().put(clause, m.replaceAll(config.getReplacement()));
             }
         }
     }
@@ -80,43 +79,8 @@ public final class RegexpQueryTransformer extends AbstractQueryTransformer {
         clause.getFirstClause().accept(this);
     }
 
-
-
     private Map<Clause,String> getTransformedTerms() {
         return getContext().getTransformedTerms();
     }
 
-    /** TODO comment me. **/
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        final RegexpQueryTransformer retValue = (RegexpQueryTransformer)super.clone();
-        retValue.regexp = regexp;
-        retValue.replacement = replacement;
-        return retValue;
-    }
-
-    @Override
-    public QueryTransformer readQueryTransformer(final Element qt){
-        
-        super.readQueryTransformer(qt);
-        AbstractDocumentFactory.fillBeanProperty(this, null, "regexp", ParseType.String, qt, "");
-        AbstractDocumentFactory.fillBeanProperty(this, null, "replacement", ParseType.String, qt, "");
-        return this;
-    }
-    
-    /**
-     * Setter for property regexp.
-     * @param regexp New value of property regexp.
-     */
-    public void setRegexp(final String regexp) {
-        this.regexp = regexp;
-    }
-
-    /**
-     * Setter for property replacement.
-     * @param replacement New value of property replacement.
-     */
-    public void setReplacement(final String replacement) {
-        this.replacement = replacement;
-    }
 }

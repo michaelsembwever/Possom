@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.transform;
 
 
@@ -10,6 +10,14 @@ package no.schibstedsok.searchportal.query.transform;
  * @vesrion $Revision: 3359 $, $Author: mickw $, $Date: 2006-08-03 10:13:22 +0200 (Thu, 03 Aug 2006) $
  */
 public final class NewsQueryTransformer extends AbstractQueryTransformer implements QueryTransformer {
+
+
+    /**
+     *
+     * @param config
+     */
+    public NewsQueryTransformer(final QueryTransformerConfig config){
+    }
 
 
     /**

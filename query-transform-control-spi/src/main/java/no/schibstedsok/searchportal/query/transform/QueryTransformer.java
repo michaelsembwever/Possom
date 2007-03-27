@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.transform;
 
 
@@ -23,45 +23,55 @@ import java.util.Map;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision: 3829 $</tt>
  */
-public interface QueryTransformer extends Visitor, Cloneable {
+public interface QueryTransformer extends Visitor{
 
+    /**
+     *
+     */
     public interface Context extends QueryContext, ResourceContext, SiteContext, DataModelContext {
 
         /**
+         * @return
          * @deprecated use getTransformedTerms() instead
          */
         String getTransformedQuery();
 
         /**
          * Get the terms with their current transformed representations.
+         * @return
          */
         Map<Clause, String> getTransformedTerms();
 
         /**
          * For evaluation acitions on individual (or the whole query) terms.
+         * @return
          */
         TokenEvaluationEngine getTokenEvaluationEngine();
 
         /**
          * QueryTransformers must follow the same XorClause hints as the search command. *
+         * @param visitor
+         * @param clause
          */
         void visitXorClause(Visitor visitor, XorClause clause);
 
         /**
          * QueryTransformers needs information about supported field filters. *
+         * @param clause
+         * @return
          */
         String getFieldFilter(LeafClause clause);
     }
 
     /**
      * TODO comment me. *
+     * @param cxt
      */
     void setContext(final Context cxt);
 
     /**
      * Add keywords to query to get better searchresults
      *
-     * @param originalQuery
      * @return
      * @deprecated use the visitor pattern instead via visit(Object)
      */
@@ -75,6 +85,7 @@ public interface QueryTransformer extends Visitor, Cloneable {
      * <p/>
      * +docdatetime:>2005-10-28
      *
+     * @param parameters
      * @return filterstring
      */
     String getFilter(Map parameters);
@@ -91,10 +102,4 @@ public interface QueryTransformer extends Visitor, Cloneable {
      */
     String getFilter();
 
-    /**
-     * Force public implementation of Clonable. *
-     */
-    Object clone() throws CloneNotSupportedException;
-
-    QueryTransformer readQueryTransformer(final Element element);
 }

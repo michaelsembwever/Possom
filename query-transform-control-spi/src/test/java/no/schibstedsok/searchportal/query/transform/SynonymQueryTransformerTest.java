@@ -37,15 +37,24 @@ import static org.testng.AssertJUnit.*;
  */
 public final class SynonymQueryTransformerTest extends AbstractTransformerTestCase {
 
-    private static final Logger LOG =
-            Logger.getLogger(SynonymQueryTransformerTest.class);
+    private static final Logger LOG = Logger.getLogger(SynonymQueryTransformerTest.class);
+    
+    private final SynonymQueryTransformerConfig config = new SynonymQueryTransformerConfig();
 
+    /**
+     * 
+     * @param testName 
+     */
     public SynonymQueryTransformerTest(final String testName) {
         super(testName);
         Logger.getLogger(SynonymQueryTransformer.class).setLevel(org.apache.log4j.Level.TRACE);
         LOG.setLevel(org.apache.log4j.Level.TRACE);
     }
 
+    /**
+     * 
+     * @throws no.schibstedsok.searchportal.query.parser.ParseException 
+     */
     @Test
     public void testOneWordExact() throws ParseException {
 
@@ -55,7 +64,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
 
         final Query query = parseQuery(tef);
 
-        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
                 TokenPredicate.EXACT_STOCKMARKETTICKERS.name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
@@ -69,6 +78,10 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         }
     }
 
+    /**
+     * 
+     * @throws no.schibstedsok.searchportal.query.parser.ParseException 
+     */
     @Test
     public void testOneWord() throws ParseException {
 
@@ -77,7 +90,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
                 TokenPredicate.STOCKMARKETTICKERS.name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
@@ -91,6 +104,10 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         }
     }
 
+    /**
+     * 
+     * @throws no.schibstedsok.searchportal.query.parser.ParseException 
+     */
     @Test
     public void testTwoWords() throws ParseException {
 
@@ -99,7 +116,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
                 TokenPredicate.STOCKMARKETTICKERS.name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
@@ -113,6 +130,10 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         }
     }
 
+    /**
+     * 
+     * @throws no.schibstedsok.searchportal.query.parser.ParseException 
+     */
     @Test
     public void testTwoWordsExact() throws ParseException {
 
@@ -122,7 +143,7 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(), query,
+        final Map<Clause,String> trans = applyTransformer(new SynonymQueryTransformer(config), query,
                 TokenPredicate.EXACT_STOCKMARKETTICKERS.name(), tefCxt, tef);
 
         final QueryBuilder builder = new QueryBuilder(query, trans);
@@ -167,16 +188,28 @@ public final class SynonymQueryTransformerTest extends AbstractTransformerTestCa
     }
 
 
+    /**
+     * 
+     */
     public static final class QueryBuilder extends AbstractReflectionVisitor {
         private final Query query;
         private final Map map;
         private final StringBuilder sb = new StringBuilder();
 
+        /**
+         * 
+         * @param q 
+         * @param m 
+         */
         public QueryBuilder(final Query q, final Map m) {
             query = q;
             map = m;
         }
 
+        /**
+         * 
+         * @return 
+         */
         public synchronized String getQueryString() {
             sb.setLength(0);
             visit(query.getRootClause());

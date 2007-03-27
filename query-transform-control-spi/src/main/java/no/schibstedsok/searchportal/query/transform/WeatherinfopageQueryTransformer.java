@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.transform;
 
 
@@ -7,7 +7,14 @@ package no.schibstedsok.searchportal.query.transform;
  * @version <tt>$Revision: 1 $</tt>
  */
 public final class WeatherinfopageQueryTransformer extends AbstractQueryTransformer {
-    
+
+    /**
+     *
+     * @param config
+     */
+    public WeatherinfopageQueryTransformer(final QueryTransformerConfig config){
+    }
+
     public String getTransformedQuery() {
 
         final String originalQuery = getContext().getTransformedQuery();

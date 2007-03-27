@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.transform;
 
 
@@ -9,7 +9,13 @@ package no.schibstedsok.searchportal.query.transform;
  * @version $Revision:$
  */
 public final class CatalogueInfopageQueryTransformer extends AbstractQueryTransformer {
-    
+
+    /**
+     *
+     * @param config
+     */
+    public CatalogueInfopageQueryTransformer(final QueryTransformerConfig config){}
+
     public String getTransformedQuery() {
         final String originalQuery = getContext().getTransformedQuery();
         return "iypcompanyid:" + originalQuery;

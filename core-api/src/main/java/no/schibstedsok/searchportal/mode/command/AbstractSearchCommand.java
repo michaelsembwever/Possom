@@ -18,7 +18,6 @@ import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
@@ -41,7 +40,8 @@ import org.apache.commons.lang.time.StopWatch;
 import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import org.apache.log4j.Level;
+import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
+import no.schibstedsok.searchportal.query.transform.QueryTransformerFactory;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -68,17 +68,30 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
    // Attributes ----------------------------------------------------
 
+   // Attributes ----------------------------------------------------
+
     /** The context to work against. **/
     protected final Context context;
+    /**
+     * 
+     */
     protected final String untransformedQuery;
     private String filter = "";
     private final String additionalFilter;
     private final Map<Clause,String> transformedTerms = new LinkedHashMap<Clause,String>();
     private String transformedQuery;
     private String transformedQuerySesamSyntax;
+    /**
+     * 
+     */
     protected final DataModel datamodel;
+    /**
+     * 
+     */
     protected volatile boolean completed = false;
     private volatile Thread thread = null;
+
+    // Constructors --------------------------------------------------
 
     // Constructors --------------------------------------------------
 
@@ -114,6 +127,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
    // Public --------------------------------------------------------
 
+   // Public --------------------------------------------------------
+
     /** TODO comment me. **/
     public abstract SearchResult execute();
 
@@ -145,6 +160,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     public String getFilter() {
         return filter;
     }
+
+
+   // SearchCommand overrides ---------------------------------------------------
 
 
    // SearchCommand overrides ---------------------------------------------------
@@ -223,6 +241,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // AbstractReflectionVisitor overrides ----------------------------------------------
 
+    // AbstractReflectionVisitor overrides ----------------------------------------------
+
     private final StringBuilder sb = new StringBuilder();
 
     /** TODO comment me. **/
@@ -268,6 +288,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getFirstClause().accept(this);
         }
     }
+    /**
+     * 
+     * @param visitor 
+     * @param clause 
+     */
     protected void visitXorClause(final Visitor visitor, final XorClause clause){
         // [TODO] we need to determine which branch in the query-tree we want to use.
         //  Both branches to a XorClause should never be used.
@@ -278,6 +303,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final void visitImpl(final XorClause clause) {
         visitXorClause(this, clause);
     }
+
+   // Protected -----------------------------------------------------
 
    // Protected -----------------------------------------------------
 
@@ -468,10 +495,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /** TODO comment me. **/
     protected synchronized String getQueryRepresentation(final Query query) {
 
-        final Clause root = query.getRootClause();
-        sb.setLength(0);
-        visit(root);
-        return sb.toString().trim();
+        return super.getQueryRepresentation(query) + " OR (" untransformedQuery + ')';
     }
 
     /** TODO comment me. **/
@@ -513,6 +537,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 : (String) parameters.get(paramName);
     }
 
+    /**
+     * 
+     * @param queryString 
+     * @return 
+     */
     protected final ReconstructedQuery createQuery(final String queryString) {
 
 
@@ -591,6 +620,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return field;
     }
 
+    /**
+     * 
+     * @param msg 
+     */
     protected final void statisticsInfo(final String msg){
 
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
@@ -600,9 +633,15 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
+    /**
+     * 
+     * @return 
+     */
     protected SesamSyntaxQueryBuilder newSesamSyntaxQueryBuilder(){
         return new SesamSyntaxQueryBuilder();
     }
+
+    // Private -------------------------------------------------------
 
     // Private -------------------------------------------------------
 
@@ -613,7 +652,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     private void applyQueryTransformers(
             final Query query,
             final TokenEvaluationEngine engine,
-            final List<QueryTransformer> transformers) {
+            final List<QueryTransformerConfig> transformers) {
 
         if (transformers != null && transformers.size() > 0) {
             boolean touchedTransformedQuery = false;
@@ -641,7 +680,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 }
             };
 
-            for (QueryTransformer transformer : transformers) {
+            for (QueryTransformerConfig transformerConfig : transformers) {
+                
+                final QueryTransformer transformer = QueryTransformerFactory.getController(transformerConfig);
 
                 final boolean ttq = touchedTransformedQuery;
 
@@ -692,6 +733,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         builder.visit(datamodel.getQuery().getQuery().getRootClause());
         transformedQuerySesamSyntax = builder.getQueryRepresentation();
     }
+
+
+   // Inner classes -------------------------------------------------
 
 
    // Inner classes -------------------------------------------------
@@ -918,12 +962,21 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             this.query = query;
             this.engine = engine;
         }
+        /**
+         * 
+         * @return 
+         */
         public Query getQuery(){
             return query;
         }
+        /**
+         * 
+         * @return 
+         */
         public TokenEvaluationEngine getEngine(){
             return engine;
         }
     }
+
 
 }

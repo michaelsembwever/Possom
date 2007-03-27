@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.transform;
 
 
@@ -21,16 +21,21 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
     private static final String INFO_OLD_IMPLEMENTATION_STILL = " has not been adapted to Visitor pattern";
 
     private Context context;
-    
+
     /** Only to be used by XStream and tests **/
     protected AbstractQueryTransformer(){
     }
 
+    /** {@inherit} **/
     //@Override // TODO uncomment for java 6
     public void setContext(final Context cxt) {
         context = cxt;
     }
 
+    /**
+     *
+     * @return
+     */
     protected Context getContext() {
         return context;
     }
@@ -40,6 +45,7 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
         return "";
     }
 
+    /** {@inherit} **/
     //@Override // TODO uncomment for java 6
     public String getFilter(final java.util.Map parameters) {
         return "";
@@ -51,27 +57,21 @@ public abstract class AbstractQueryTransformer extends AbstractReflectionVisitor
         return getContext().getTransformedQuery();
     }
 
+    /**
+     *
+     * @param clause
+     */
     protected void visitImpl(final Object clause) {
         LOG.info( getClass().getSimpleName() + INFO_OLD_IMPLEMENTATION_STILL);
     }
 
-    /** Callback through getContext().visitXorClause(this, clause). **/
+    /**
+     *
+     * @param clause
+     */
     protected final void visitImpl(final XorClause clause) {
-        
+
         getContext().visitXorClause(this, clause);
     }
 
-    //@Override // TODO uncomment for java 6
-    public Object clone() throws CloneNotSupportedException {
-        final AbstractQueryTransformer retValue = (AbstractQueryTransformer)super.clone();
-        retValue.context = context;
-        return retValue;
-    }
-
-    //@Override // TODO uncomment for java 6
-    public QueryTransformer readQueryTransformer(final Element element){
-        
-        // Override me to add custom deserialisation
-        return this;
-    }
 }

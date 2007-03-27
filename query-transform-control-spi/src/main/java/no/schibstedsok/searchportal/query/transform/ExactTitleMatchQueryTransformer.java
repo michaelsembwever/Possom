@@ -23,6 +23,12 @@ public final class ExactTitleMatchQueryTransformer extends AbstractQueryTransfor
     private transient boolean writtenStart = false;
     private transient Boolean visitingLast = null;
 
+    /**
+     *
+     * @param config
+     */
+    public ExactTitleMatchQueryTransformer(final QueryTransformerConfig config){}
+
 
     /**
      *

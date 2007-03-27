@@ -47,7 +47,6 @@ import no.schibstedsok.searchportal.mode.config.YellowSearchConfiguration;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
-import no.schibstedsok.searchportal.query.transform.QueryTransformer;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
 import no.schibstedsok.searchportal.result.handler.AddLastWeekModifierResultHandler;
@@ -107,6 +106,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -421,7 +421,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchConfiguration inherit = findParent(parentName, mode);
 
             if (!"".equals(parentName) && inherit == null) {
-                throw new IllegalArgumentException(MessageFormat.format(ERR_PARENT_COMMAND_NOT_FOUND, parentName, id, mode.getId()));
+                throw new IllegalArgumentException(
+                        MessageFormat.format(ERR_PARENT_COMMAND_NOT_FOUND, parentName, id, mode.getId()));
             }
 
             LOG.info(INFO_PARSING_CONFIGURATION + commandE.getLocalName() + " " + id);
@@ -932,7 +933,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             return null != findClass(xmlName);
         }
 
-        static QueryTransformer parseQueryTransformer(final Element qt) {
+        static QueryTransformerConfig parseQueryTransformer(final Element qt) {
 
             final String xmlName = qt.getTagName();
             LOG.info(INFO_PARSING_QUERY_TRANSFORMER + xmlName);
@@ -947,16 +948,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             }
         }
 
-        private static Class<? extends QueryTransformer> findClass(final String xmlName) {
+        private static Class<? extends QueryTransformerConfig> findClass(final String xmlName) {
 
             Class clazz = null;
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
             try {
-                clazz = (Class<? extends QueryTransformer>) Class.forName(
+                clazz = (Class<? extends QueryTransformerConfig>) Class.forName(
                         "no.schibstedsok.searchportal.query.transform."
                                 + className
-                                + "QueryTransformer");
+                                + "QueryTransformerConfig");
 
             } catch (ClassNotFoundException cnfe) {
                 LOG.error(cnfe.getMessage(), cnfe);

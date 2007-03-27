@@ -73,6 +73,11 @@
             <artifactId>search-portal-query-api</artifactId>
             <version>${version}</version>
         </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-query-transform-config-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
         <!--dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>commons-ioc</artifactId>

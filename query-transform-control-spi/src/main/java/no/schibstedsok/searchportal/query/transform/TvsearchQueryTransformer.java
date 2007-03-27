@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.transform;
 
 import java.text.SimpleDateFormat;
@@ -19,7 +19,15 @@ public final class TvsearchQueryTransformer extends AbstractQueryTransformer {
 
     private static final Logger LOG = Logger.getLogger(TvsearchQueryTransformer.class);
 
-    private boolean withEndtime;
+    private final TvsearchQueryTransformerConfig config;
+
+    /**
+     *
+     * @param config
+     */
+    public TvsearchQueryTransformer(final QueryTransformerConfig config){
+        this.config = (TvsearchQueryTransformerConfig) config;
+    }
 
     /**
      * Set time window
@@ -68,7 +76,7 @@ public final class TvsearchQueryTransformer extends AbstractQueryTransformer {
             }
         }
 
-        if (getWithEndtime() && parameters.get("nav_days") == null) {
+        if (config.getWithEndtime() && parameters.get("nav_days") == null) {
             if (sortByChannel || sortByCategory) {
                 filter.append(" +starttime:<");
                 cal.setTimeInMillis(cal.getTimeInMillis() + 1000 * 60 * 60 * 24);
@@ -90,30 +98,4 @@ public final class TvsearchQueryTransformer extends AbstractQueryTransformer {
         return filter.toString();
     }
 
-    /** TODO comment me. **/
-    public boolean getWithEndtime() {
-        return withEndtime;
-    }
-
-    /** TODO comment me. **/
-    public void setWithEndtime(final boolean withEndtime) {
-        this.withEndtime = withEndtime;
-    }
-    
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-
-        final TvsearchQueryTransformer retValue = (TvsearchQueryTransformer)super.clone();
-        retValue.withEndtime = withEndtime;
-
-        return retValue;
-    }
-    
-    @Override
-    public QueryTransformer readQueryTransformer(final Element qt){
-        
-        super.readQueryTransformer(qt);
-        AbstractDocumentFactory.fillBeanProperty(this, null, "withEndtime", ParseType.Boolean, qt, "");
-        return this;
-    }
 }

@@ -17,15 +17,29 @@ import java.util.Properties;
  * <b>Note:</b> This queryTransformer ignores all earlier transforms on the query. It uses the raw querystring
  * to transform the query. All transforms to the resulting query should be done after this.
  */
-public class NewsCaseQueryTransformer extends AbstractQueryTransformer {
+public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
     private final static Logger LOG = Logger.getLogger(NewsCaseQueryTransformer.class);
-    private static final String QUERY_TYPE = "query-type";
-    private String queryType;
+
     private NewsQueryTransformerDataAccess dataAccess = new NewsQueryTransformerDataAccess();
 
+    private final NewsCaseQueryTransformerConfig config;
+
+    /**
+     *
+     * @param config
+     */
+    public NewsCaseQueryTransformer(final QueryTransformerConfig config){
+        this.config = (NewsCaseQueryTransformerConfig) config;
+    }
+
+
+    /**
+     *
+     * @param clause
+     */
     public void visitImpl(final Clause clause) {
         dataAccess.setProperties(getContext().getDataModel().getSite().getSiteConfiguration().getProperties());
-        String transformedQuery = dataAccess.getQuery(getContext().getQuery().getQueryString(), queryType);
+        String transformedQuery = dataAccess.getQuery(getContext().getQuery().getQueryString(), config.getQueryType());
         if (transformedQuery == null) {
             transformedQuery = '"' + getContext().getQuery().getQueryString().trim() + '"';
         }
@@ -39,28 +53,25 @@ public class NewsCaseQueryTransformer extends AbstractQueryTransformer {
 
     }
 
-    @Override
-    public QueryTransformer readQueryTransformer(final Element element) {
-        queryType = element.getAttribute(QUERY_TYPE);
-        return this;
-    }
-
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        final NewsCaseQueryTransformer ncqt = (NewsCaseQueryTransformer) super.clone();
-        ncqt.queryType = queryType;
-        ncqt.dataAccess = dataAccess;
-        return ncqt;
-    }
-
+    /**
+     *
+     */
     public static class NewsQueryTransformerDataAccess {
         private Properties properties;
         private static final String NEWSADMIN_JNDINAME = "newsadmin.jndiname";
 
+        /**
+         *
+         * @param properties
+         */
         public void setProperties(Properties properties) {
             this.properties = properties;
         }
 
+        /**
+         *
+         * @return
+         */
         public NewsCaseFacadeInterface lookupDataService() {
             InitialContext ic = null;
             try {
@@ -81,6 +92,12 @@ public class NewsCaseQueryTransformer extends AbstractQueryTransformer {
             return null;
         }
 
+        /**
+         *
+         * @param newsCaseName
+         * @param queryType
+         * @return
+         */
         public String getQuery(String newsCaseName, String queryType) {
             try {
                 LOG.debug("Looking up query for: " + newsCaseName);

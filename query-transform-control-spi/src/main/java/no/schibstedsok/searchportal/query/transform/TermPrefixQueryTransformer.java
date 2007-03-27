@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.query.transform;
 
@@ -28,8 +28,15 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
 
     private static final Logger LOG = Logger.getLogger(TermPrefixQueryTransformer.class);
 
-    private String numberPrefix;
-    private String prefix;
+    private final TermPrefixQueryTransformerConfig config;
+
+    /**
+     *
+     * @param config
+     */
+    public TermPrefixQueryTransformer(final QueryTransformerConfig config){
+        this.config = (TermPrefixQueryTransformerConfig)config;
+    }
 
     /**
      * This is th default fallback. Adds the prefix in the <code>prefix</code>
@@ -39,7 +46,7 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
      */
      public void visitImpl(final LeafClause clause) {
         if (clause.getField() == null || getContext().getFieldFilter(clause) == null) {
-            addPrefix(clause, getPrefix());
+            addPrefix(clause, config.getPrefix());
         }
     }
 
@@ -49,7 +56,7 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
      * @param clause The clause to prefix.
      */
     public void visitImpl(final IntegerClause clause) {
-        addPrefix(clause, getNumberPrefix());
+        addPrefix(clause, config.getNumberPrefix());
     }
 
     /**
@@ -101,42 +108,7 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
      * @param clause  The clause to prefix.
      */
     public void visitImpl(final PhoneNumberClause clause) {
-        addPrefix(clause, getNumberPrefix());
-    }
-
-    /**
-     * Get the prefix to be used for words.
-     *
-     * @return the prefix.
-     */
-    public String getPrefix() {
-        return prefix;
-    }
-
-    /**
-     * Get the prefix to be used for integers.
-     *
-     * @return the numberPrefix.
-     */
-    public String getNumberPrefix() {
-        return numberPrefix;
-    }
-
-    /**
-     * Set the prefix to used for numbers.
-     *
-     * @param numberPrefix The prefix.
-     */
-    public void setNumberPrefix(final String numberPrefix) {
-        this.numberPrefix = numberPrefix;
-    }
-
-    /**
-     * Set the prefix to be used for words.
-     * @param prefix The prefix to set.
-     */
-    public void setPrefix(final String prefix) {
-        this.prefix = prefix;
+        addPrefix(clause, config.getNumberPrefix());
     }
 
     private void addPrefix(final Clause clause, final String prefix) {
@@ -155,20 +127,4 @@ public final class TermPrefixQueryTransformer extends AbstractQueryTransformer {
         return getContext().getTransformedTerms();
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        final TermPrefixQueryTransformer retValue = (TermPrefixQueryTransformer)super.clone();
-        retValue.numberPrefix = numberPrefix;
-        retValue.prefix = prefix;
-        return retValue;
-    }
-    
-    @Override
-    public QueryTransformer readQueryTransformer(final Element qt){
-        
-        super.readQueryTransformer(qt);
-        AbstractDocumentFactory.fillBeanProperty(this, null, "prefix", ParseType.String, qt, "");
-        AbstractDocumentFactory.fillBeanProperty(this, null, "numberPrefix", ParseType.String, qt, "");
-        return this;
-    }
 }

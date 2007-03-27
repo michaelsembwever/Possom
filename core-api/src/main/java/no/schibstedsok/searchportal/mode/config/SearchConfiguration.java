@@ -4,7 +4,7 @@
  */
 package no.schibstedsok.searchportal.mode.config;
 
-import no.schibstedsok.searchportal.query.transform.QueryTransformer;
+import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 
 import java.util.List;
@@ -22,14 +22,14 @@ public interface SearchConfiguration {
      *
      * @return The list of query.
      */
-    List<QueryTransformer> getQueryTransformers();
+    List<QueryTransformerConfig> getQueryTransformers();
 
     /**
      * Adds a {@link no.schibstedsok.searchportal.query.QueryTransformer} to the list of transformeres.
      *
      * @param transformer The query transformer to add.
      */
-    void addQueryTransformer(QueryTransformer transformer);
+    void addQueryTransformer(QueryTransformerConfig transformer);
 
     /**
      * Returns a list of {@link no.schibstedsok.searchportal.result.ResultHandler} that should act on the search

@@ -1,4 +1,4 @@
-// Copyright (2006) Schibsted Søk AS
+// Copyright (2006-2007) Schibsted Søk AS
 /*
  * TermPrefixTransformerTest.java
  *
@@ -45,11 +45,14 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
     private static final String QUERY_INTEGER = "524287";
     private static final String QUERY_ORG_NR = "880990152";
 
-    private static final Logger LOG =
-            Logger.getLogger(TermPrefixTransformerTest.class);
+    private static final Logger LOG = Logger.getLogger(TermPrefixTransformerTest.class);
+
+    private final TermPrefixQueryTransformerConfig config = new TermPrefixQueryTransformerConfig();
 
     public TermPrefixTransformerTest(final String testName) {
         super(testName);
+        config.setPrefix(PREFIX_WORD);
+        config.setNumberPrefix(PREFIX_INTEGER);
     }
 
     @Test
@@ -60,7 +63,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map trans = applyTransformer(new TermPrefixQueryTransformer(), query, tefCxt, tef);
+        final Map trans = applyTransformer(new TermPrefixQueryTransformer(config), query, tefCxt, tef);
         final QueryBuilder builder = new QueryBuilder(query, trans);
 
         assertEquals(PREFIX_WORD + ":" + QUERY_WORD + " " +
@@ -76,7 +79,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map trans = applyTransformer(new TermPrefixQueryTransformer(), query, tefCxt, tef);
+        final Map trans = applyTransformer(new TermPrefixQueryTransformer(config), query, tefCxt, tef);
         final QueryBuilder builder = new QueryBuilder(query, trans);
 
         assertEquals(PREFIX_WORD + ":" + QUERY_WORD + " " +
@@ -92,7 +95,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map trans = applyTransformer(new TermPrefixQueryTransformer(), query, tefCxt, tef);
+        final Map trans = applyTransformer(new TermPrefixQueryTransformer(config), query, tefCxt, tef);
         final QueryBuilder builder = new QueryBuilder(query, trans);
 
         assertEquals(PREFIX_INTEGER + ":" + QUERY_PHONE_NUMBER,
@@ -107,13 +110,13 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map trans = applyTransformer(new TermPrefixQueryTransformer(), query, tefCxt, tef);
+        final Map trans = applyTransformer(new TermPrefixQueryTransformer(config), query, tefCxt, tef);
         final QueryBuilder builder = new QueryBuilder(query, trans);
 
         assertEquals(PREFIX_INTEGER + ":" + QUERY_PHONE_NUMBER,
                 builder.getQueryString());
     }
-    
+
     @Test
     public void testOrgNr() throws ParseException {
 
@@ -122,7 +125,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map trans = applyTransformer(new TermPrefixQueryTransformer(), query, tefCxt, tef);
+        final Map trans = applyTransformer(new TermPrefixQueryTransformer(config), query, tefCxt, tef);
         final QueryBuilder builder = new QueryBuilder(query, trans);
 
         assertEquals(PREFIX_INTEGER + ":" + QUERY_ORG_NR,
@@ -137,7 +140,7 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
         final TokenEvaluationEngine tef = new TokenEvaluationEngineImpl(tefCxt);
 
         final Query query = parseQuery(tef);
-        final Map trans = applyTransformer(new TermPrefixQueryTransformer(), query, tefCxt, tef);
+        final Map trans = applyTransformer(new TermPrefixQueryTransformer(config), query, tefCxt, tef);
         final QueryBuilder builder = new QueryBuilder(query, trans);
 
         assertEquals(PREFIX_INTEGER + ":" + QUERY_INTEGER,
@@ -150,8 +153,6 @@ public class TermPrefixTransformerTest extends AbstractTransformerTestCase {
             final TokenEvaluationEngineImpl.Context tefCxt,
             final TokenEvaluationEngine tef) {
 
-        t.setPrefix(PREFIX_WORD);
-        t.setNumberPrefix(PREFIX_INTEGER);
         return super.applyTransformer(t, query, tefCxt, tef);
     }
 
