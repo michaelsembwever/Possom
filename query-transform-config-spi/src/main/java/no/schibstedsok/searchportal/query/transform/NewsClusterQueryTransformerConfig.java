@@ -1,9 +1,8 @@
 package no.schibstedsok.searchportal.query.transform;
 
+import no.schibstedsok.searchportal.query.transform.AbstractQueryTransformerConfig.Controller;
 import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
-
-import no.schibstedsok.searchportal.query.transform.AbstractQueryTransformerConfig.Controller;
 
 
 /**
@@ -12,7 +11,7 @@ import no.schibstedsok.searchportal.query.transform.AbstractQueryTransformerConf
  * <b>Note:</b> This queryTransformer ignores all earlier transforms on the query. It uses the raw querystring
  * to transform the query. All transforms to the resulting query should be done after this.
  */
-@Controller("NewsClusterQueryTransformerConfig")
+@Controller("NewsClusterQueryTransformer")
 public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransformerConfig {
 
 
@@ -29,26 +28,25 @@ public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransf
     private int maxAgeInDays = 7;
 
     /**
-     *
      * @return
      */
-    public String[] getParamFields(){
+    public String[] getParamFields() {
         return paramFields;
     }
 
-    public String getTimestampField(){
+    public String getTimestampField() {
         return timestampField;
     }
 
-    public String getClusterField(){
+    public String getClusterField() {
         return clusterField;
     }
 
-    public String getClusterIdField(){
+    public String getClusterIdField() {
         return clusterIdField;
     }
 
-    public int getMaxAgeInDays(){
+    public int getMaxAgeInDays() {
         return maxAgeInDays;
     }
 
