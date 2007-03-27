@@ -6,6 +6,8 @@
 package no.schibstedsok.searchportal.query.transform;
 
 
+import org.apache.log4j.Logger;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,6 +19,7 @@ import java.util.TimeZone;
  * @version $Id$
  */
 public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
+    private static final Logger LOG = Logger.getLogger(AgefilterQueryTransformer.class);
 
     private static final String FAST_DATE_FMT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     private static final String AGE_PARAMETER = "age";
@@ -24,10 +27,9 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
     private final AgefilterQueryTransformerConfig config;
 
     /**
-     *
      * @param config
      */
-    public AgefilterQueryTransformer(final QueryTransformerConfig config){
+    public AgefilterQueryTransformer(final QueryTransformerConfig config) {
         this.config = (AgefilterQueryTransformerConfig) config;
     }
 
@@ -41,7 +43,7 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
                     : (String) parameters.get(AGE_PARAMETER);
         }
 
-        if (config.getAgeSymbol() != null && !config.getAgeSymbol().equals("")) {
+        if (ageSymbol != null && !ageSymbol.equals("")) {
             final Calendar cal = Calendar.getInstance();
 
             cal.add(Calendar.SECOND, -getAgeInSeconds(ageSymbol));
@@ -60,7 +62,6 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
     }
 
     /**
-     *
      * @param ageSymbol
      * @return
      */
@@ -69,8 +70,6 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
             return 60 * 60 * 24 * 7;
         } else if (ageSymbol.equals("m")) {
             return 60 * 60 * 24 * 30;
-        } else if (ageSymbol.equals("h")) {
-            return 60 * 60;
         } else if (ageSymbol.equals("d")) {
             return 60 * 60 * 24;
         } else if (ageSymbol.equals("h")) {
