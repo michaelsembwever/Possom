@@ -55,7 +55,7 @@ public final class AgefilterQueryTransformer extends AbstractQueryTransformer {
                 df.setTimeZone(TimeZone.getTimeZone("UTC"));
             }
 
-            return "+" + ageSymbol + ":>" + df.format(cal.getTime());
+            return "+" + config.getAgeField() + ":>" + df.format(cal.getTime());
         } else {
             return "";
         }
