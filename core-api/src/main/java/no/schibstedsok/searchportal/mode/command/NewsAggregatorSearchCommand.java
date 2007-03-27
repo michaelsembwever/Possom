@@ -53,8 +53,6 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
 
     public SearchResult execute() {
         NewsAggregatorSearchConfiguration config = getSearchConfiguration();
-
-
         StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
         String xmlFile = getXmlFileName(datamodel, config);
         LOG.debug("Loading xml file at: " + config.getXmlSource() + xmlFile);
