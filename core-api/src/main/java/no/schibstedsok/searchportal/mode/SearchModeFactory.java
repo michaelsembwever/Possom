@@ -14,6 +14,7 @@ import no.schibstedsok.searchportal.mode.config.BlogSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.CatalogueAdsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.CatalogueBannersSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.ClusteringESPFastConfiguration;
 import no.schibstedsok.searchportal.mode.config.DailyWordConfiguration;
 import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
@@ -47,7 +48,9 @@ import no.schibstedsok.searchportal.mode.config.YellowSearchConfiguration;
 import no.schibstedsok.searchportal.mode.executor.ParallelSearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
+import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.Navigator;
+import no.schibstedsok.searchportal.result.handler.AddCategoryNavigationResultHandler;
 import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
 import no.schibstedsok.searchportal.result.handler.AddLastWeekModifierResultHandler;
 import no.schibstedsok.searchportal.result.handler.AgeCalculatorResultHandler;
@@ -106,7 +109,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -394,6 +396,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         CATALOGUE_ADS_COMMAND(CatalogueAdsSearchConfiguration.class),
         HITTAMAP_COMMAND(HittaMapSearchConfiguration.class),
         CATALOGUE_BANNERS_COMMAND(CatalogueBannersSearchConfiguration.class),
+        CLUSTERING_ESP_FAST_COMMAND(ClusteringESPFastConfiguration.class),
         NEWS_AGGREGATOR_COMMAND(NewsAggregatorSearchConfiguration.class);
 
         private final Class<? extends SearchConfiguration> clazz;
@@ -775,8 +778,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 if (sc instanceof CatalogueSearchConfiguration) {
                     final CatalogueSearchConfiguration csc = (CatalogueSearchConfiguration) sc;
                     fillBeanProperty(csc, inherit, "queryParameterWhere", ParseType.String, commandE, "");
-                    fillBeanProperty(csc, inherit, "searchBy", ParseType.String, commandE, ""); 
-                    fillBeanProperty(csc, inherit, "slideshowUrl", ParseType.String, commandE, "");                     
+                    fillBeanProperty(csc, inherit, "searchBy", ParseType.String, commandE, "");
+                    fillBeanProperty(csc, inherit, "slideshowUrl", ParseType.String, commandE, "");
                     fillBeanProperty(csc, inherit, "split", ParseType.Boolean, commandE, "false");
                 }
                 if (sc instanceof CatalogueAdsSearchConfiguration) {
@@ -789,17 +792,21 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(cbsc, inherit, "queryParameterWhere", ParseType.String, commandE, "");
                 }
 
+                if (sc instanceof ClusteringESPFastConfiguration) {
+                    final ClusteringESPFastConfiguration cefc = (ClusteringESPFastConfiguration) sc;
+                    fillBeanProperty(cefc, inherit, "clusterIdParameter", ParseType.String, commandE, "clusterId");
+                    fillBeanProperty(cefc, inherit, "resultsPerCluster", ParseType.Int, commandE, "");
+                    fillBeanProperty(cefc, inherit, "clusterField", ParseType.String, commandE, "cluster");
+                    fillBeanProperty(cefc, inherit, "clusterMaxFetch", ParseType.Int, commandE, "10");
+                    fillBeanProperty(cefc, inherit, "nestedResultsField", ParseType.String, commandE, "entries");
+                }
+
                 if (sc instanceof NewsAggregatorSearchConfiguration) {
                     final NewsAggregatorSearchConfiguration nasc = (NewsAggregatorSearchConfiguration) sc;
                     fillBeanProperty(nasc, inherit, "xmlSource", ParseType.String, commandE, "");
-                    fillBeanProperty(nasc, inherit, "clusterField", ParseType.String, commandE, "cluster");
-                    fillBeanProperty(nasc, inherit, "nestedResultsField", ParseType.String, commandE, "entries");
                     fillBeanProperty(nasc, inherit, "xmlMainFile", ParseType.String, commandE, "fp_main_main.xml");
-                    fillBeanProperty(nasc, inherit, "resultsPerCluster", ParseType.Int, commandE, "");
-                    fillBeanProperty(nasc, inherit, "clusterMaxFetch", ParseType.Int, commandE, "10");
-                    fillBeanProperty(nasc, inherit, "categoryFields", ParseType.String, commandE, "");
                     fillBeanProperty(nasc, inherit, "geographicFields", ParseType.String, commandE, "");
-                    nasc.parseCategories(commandE);
+                    fillBeanProperty(nasc, inherit, "categoryFields", ParseType.String, commandE, "");
                 }
 
                 // query transformers
@@ -1001,7 +1008,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         FIELD_ESCAPE(FieldEscapeHandler.class),
         XML_OUTPUT(XmlOutputResultHandler.class),
         CATALOGUE(CatalogueResultHandler.class),
-        ADD_LAST_WEEK_MODIFIER(AddLastWeekModifierResultHandler.class);
+        ADD_LAST_WEEK_MODIFIER(AddLastWeekModifierResultHandler.class),
+        ADD_CATEGORY_NAVIGATION(AddCategoryNavigationResultHandler.class);
 
 
         private final Class<? extends ResultHandler> clazz;
@@ -1187,6 +1195,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                                 cnh.addMapping(nav.getAttribute("name"), mod.getAttribute("name"));
                             }
+                        }
+                        break;
+                    case ADD_CATEGORY_NAVIGATION:
+                        final AddCategoryNavigationResultHandler acnrh = (AddCategoryNavigationResultHandler) handler;
+                        acnrh.setCategoryFields(rh.getAttribute("category-fields"));
+                        final String categoryXml = rh.getAttribute("categories-xml");
+                        if (categoryXml != null && categoryXml.length() > 0) {
+                            acnrh.setCategoriesXml(categoryXml);
                         }
                         break;
                     default:

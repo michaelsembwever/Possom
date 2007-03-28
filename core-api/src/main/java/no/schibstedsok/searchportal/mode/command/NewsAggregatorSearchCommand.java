@@ -1,13 +1,6 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import com.fastsearch.esp.search.query.BaseParameter;
-import com.fastsearch.esp.search.query.IQuery;
-import com.fastsearch.esp.search.result.EmptyValueException;
-import com.fastsearch.esp.search.result.IDocumentSummary;
-import com.fastsearch.esp.search.result.IDocumentSummaryField;
-import com.fastsearch.esp.search.result.IQueryResult;
-import com.fastsearch.esp.search.result.IllegalType;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
@@ -32,13 +25,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Search command that will try to get pregenerated clusters from xml files. If the xml file is not available it will
  * fall back to a search.
  */
-public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
+public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
 
     private static final Logger LOG = Logger.getLogger(NewsAggregatorSearchCommand.class);
     private static final String PARAM_CLUSTER_ID = "clusterId";
@@ -108,134 +100,13 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         return search(config, clusterId.getString());
     }
 
-    /**
-     * Modifies several queryParameters depending on situation.
-     *
-     * @param query the FAST IQuery to modify
-     */
-    protected void modifyQuery(IQuery query) {
-        final NewsAggregatorSearchConfiguration config = getSearchConfiguration();
-        final StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
-        if (clusterId == null) {
-            LOG.debug("--- Modifying query. ---");
-            final int resultsPerCluster = config.getResultsPerCluster();
-            final int resultCount = config.getResultsToReturn() * resultsPerCluster;
-
-            query.setParameter("collapseon", "batv" + config.getClusterField());
-            query.setParameter("collapsenum", resultsPerCluster);
-            query.setParameter(BaseParameter.HITS, resultCount);
-        } else {
-            query.setParameter(BaseParameter.HITS, config.getClusterMaxFetch());
-        }
-    }
-
     private SearchResult search(NewsAggregatorSearchConfiguration config, String clusterId) {
         LOG.debug("------ Running search to get clusters ---------");
         LOG.debug("clusterId=" + clusterId);
         LOG.debug("result-fields=" + config.getResultFields());
         LOG.debug("query-server=" + config.getQueryServer());
         LOG.debug("-----------------------------------------------");
-        SearchResult searchResult = super.execute();
-        return searchResult;
-    }
-
-    protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
-        try {
-            StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
-            final NewsAggregatorSearchConfiguration config = getSearchConfiguration();
-            if (clusterId == null) {
-                return createClusteredSearchResult(config, result);
-            } else {
-                return createSingleClusterResults(config, result, clusterId);
-            }
-        } catch (IllegalType e) {
-            LOG.error("Could not convert result", e);
-        } catch (EmptyValueException e) {
-            LOG.error("Could not convert result", e);
-        } catch (RuntimeException e) {
-            LOG.error("Could not convert result", e);
-        }
-        // Falling back to super implementation, because this one does not work.
-        return super.createSearchResult(result);
-    }
-
-    private FastSearchResult createSingleClusterResults(NewsAggregatorSearchConfiguration config, IQueryResult result, StringDataObject clusterId) throws IllegalType, EmptyValueException {
-        final String nestedResultsField = config.getNestedResultsField();
-        final FastSearchResult searchResult = new FastSearchResult(this);
-        final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
-        searchResult.setHitCount(result.getDocCount());
-        for (int i = 0; i < result.getDocCount(); i++) {
-            try {
-                final IDocumentSummary document = result.getDocument(i + 1);
-                final String collapseId = document.getSummaryField("collapseId").getStringValue();
-                SearchResultItem parentResult = collapseMap.get(collapseId);
-                if (parentResult == null) {
-                    parentResult = addResult(config, searchResult, document);
-                    searchResult.addResult(parentResult);
-                    collapseMap.put(collapseId, parentResult);
-                } else {
-                    SearchResult nestedResult = parentResult.getNestedSearchResult(nestedResultsField);
-                    if (nestedResult == null) {
-                        nestedResult = new BasicSearchResult(this);
-                        parentResult.addNestedSearchResult(nestedResultsField, nestedResult);
-                    }
-                    addResult(config, nestedResult, document);
-                }
-            } catch (NullPointerException e) {
-                // The doc count is not 100% accurate.
-                LOG.debug("Error finding document ", e);
-                break;
-            }
-        }
-        return searchResult;
-    }
-
-    private FastSearchResult createClusteredSearchResult(NewsAggregatorSearchConfiguration config, IQueryResult result) throws IllegalType, EmptyValueException {
-        final String clusterField = config.getClusterField();
-        final String nestedResultsField = config.getNestedResultsField();
-        final FastSearchResult searchResult = new FastSearchResult(this);
-        final int maxClusterCount = config.getResultsToReturn();
-
-        int currentClusterId;
-        int collectedClusters = 0;
-        int collectedHits = 0;
-        int lastClusterId = 0;
-        SearchResultItem clusterEntry = null;
-
-        LOG.debug("HitCount is: " + result.getDocCount());
-
-        for (int i = 0; i < result.getDocCount(); i++) {
-            SearchResult subResult = null;
-            try {
-                final IDocumentSummary document = result.getDocument(i + 1);
-                currentClusterId = document.getSummaryField(clusterField).getIntValue();
-                if (currentClusterId != lastClusterId) {
-                    collectedClusters++;
-                    LOG.debug("Adding new cluster: " + currentClusterId + ", count is: " + collectedClusters);
-                    if (collectedClusters < maxClusterCount) {
-                        clusterEntry = addResult(config, searchResult, document);
-                        clusterEntry.addField(PARAM_CLUSTER_ID, Integer.toString(currentClusterId));
-                        lastClusterId = currentClusterId;
-                    } else {
-                        break;
-                    }
-                } else {
-                    LOG.debug("Adding subResult for: " + currentClusterId);
-                    if (subResult == null) {
-                        subResult = new BasicSearchResult(this);
-                        clusterEntry.addNestedSearchResult(nestedResultsField, subResult);
-                    }
-                    addResult(config, subResult, document);
-                }
-                collectedHits++;
-            } catch (NullPointerException e) {
-                // The doc count is not 100% accurate.
-                LOG.debug("Error finding document " + e);
-                break;
-            }
-        }
-        searchResult.setHitCount(collectedHits);
-        return searchResult;
+        return super.execute();
     }
 
     public NewsAggregatorSearchConfiguration getSearchConfiguration() {
@@ -246,9 +117,7 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
         final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
         try {
-            FastSearchResult searchResult = newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
-            addCategoryNavigators(config, searchResult);
-            return searchResult;
+            return newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
         } catch (JDOMException e) {
             LOG.debug("Falling back to search instead of xml parse", e);
         } catch (IOException e) {
@@ -257,38 +126,10 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         return search(config, null);
     }
 
-    private void addCategoryNavigators(NewsAggregatorSearchConfiguration config, FastSearchResult searchResult) {
-        final String[] categoryFields = config.getCategoryFieldArray();
-        LOG.debug("Adding category navigators: categoryFields=" + categoryFields);
-        if (categoryFields.length > 0) {
-            List<NewsAggregatorSearchConfiguration.Category> categoryList = config.getCategories();
-            LOG.debug("categoryList=" + categoryList);
-            for (int i = categoryFields.length - 1; i >= 0; i--) {
-                String categoryField = categoryFields[i];
-                NewsAggregatorSearchConfiguration.Category selectedCategory = null;
-                StringDataObject selectedFieldData = datamodel.getParameters().getValue(categoryField);
-                LOG.debug("selectedFieldData=" + selectedFieldData);
-                for (NewsAggregatorSearchConfiguration.Category category : categoryList) {
-                    searchResult.addModifier(categoryField, new Modifier(category.getDisplayName(), -1, null));
-                    LOG.debug("Adding modifier name=" + categoryField + ", " + category.getDisplayName());
-                    if (selectedFieldData != null && selectedFieldData.getString().equals(category.getDisplayName())) {
-                        selectedCategory = category;
-                        LOG.debug("selectedCategory=" + selectedCategory);
-                    }
-                }
-                if (selectedCategory != null && selectedCategory.getSubCategories() != null) {
-                    categoryList = selectedCategory.getSubCategories();
-                } else {
-                    break;
-                }
-            }
-        }
-    }
-
     private InputStream getInputStream(NewsAggregatorSearchConfiguration config, String xmlFile) throws IOException {
         final URL url = new URL(config.getXmlSource() + xmlFile);
 // ---------
-//        Can not use HTTPClient in this case since it ignores protocol of the url.
+//        Can not use HTTPClient in this case since it ignores protocol of the url. (need file:// and https://)
 //  --------
 //        final HTTPClient client = HTTPClient.instance(url.getHost(), url.getHost(), url.getPort());
 //        return client.getBufferedStream(url.getHost(), url.getPath());
@@ -296,19 +137,6 @@ public class NewsAggregatorSearchCommand extends NavigatableESPFastCommand {
         urlConnection.setConnectTimeout(1000);
         urlConnection.setReadTimeout(1000);
         return new BufferedInputStream(urlConnection.getInputStream());
-    }
-
-    private static SearchResultItem addResult(NewsAggregatorSearchConfiguration config, SearchResult searchResult, IDocumentSummary document) {
-        SearchResultItem searchResultItem = new BasicSearchResultItem();
-
-        for (final Map.Entry<String, String> entry : config.getResultFields().entrySet()) {
-            final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
-            if (summary != null && !summary.isEmpty()) {
-                searchResultItem.addField(entry.getValue(), summary.getStringValue().trim());
-            }
-        }
-        searchResult.addResult(searchResultItem);
-        return searchResultItem;
     }
 
     @SuppressWarnings({"unchecked"})
