@@ -202,7 +202,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      */
     protected String escapeFieldedLeaf(final LeafClause clause) {
 
-        return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + clause.getTerm() + '"';
+        return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + getTransformedTerm(clause) + '"';
     }
 
     /**

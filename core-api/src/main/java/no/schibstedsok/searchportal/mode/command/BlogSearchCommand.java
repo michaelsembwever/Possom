@@ -57,10 +57,13 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
 
     protected void visitImpl(final LeafClause clause) {
-        if (clause.getField() == null
-                && !getTransformedTerm(clause).trim().equals("")) {
+        
+        if (clause.getField() == null && !getTransformedTerm(clause).trim().equals("")) {
+            
             appendTermRepresentation(getTransformedTerm(clause));
-        } else if (getFieldFilter(clause) == null) {
+            
+        } else if(null != clause.getField() && null == getFieldFilter(clause)) {
+            
             appendTermRepresentation(escapeFieldedLeaf(clause));
         }
     }
