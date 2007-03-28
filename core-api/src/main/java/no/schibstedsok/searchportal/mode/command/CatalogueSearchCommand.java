@@ -361,12 +361,11 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             useTerm=false;
         }
 
-        
-        Pattern p = Pattern.compile(".*\\.|.*\\-");        
+        Pattern p = Pattern.compile("\\.|\\-");        
         Matcher m = p.matcher(getTransformedTerms().get(clause));
 
-        hasNotWordCharacters = m.matches();
-        
+        hasNotWordCharacters = m.find();
+
         if(useTerm){
             
             if(hasNotWordCharacters){

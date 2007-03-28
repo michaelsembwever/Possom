@@ -70,16 +70,12 @@ public class CatalogueSearchResultItem extends BasicSearchResultItem {
      * @return  a description of the result item.
      */
     public String getCompanyDescription(){
-    	if(!isCommercial()){
+    	String description = getField("iyplogotekst");
+    	if(!isCommercial() || (description != null && description.length() > 0)){
     		return null;
     	}
     	
-    	String description = getField("iyplogotekst");
-    	
-    	if(description != null && description.length() > 0){
-    		return description;
-    	}
-    	return "en lang fortelling på mer en 40 tegn blir nok choppet etter en stund.";
+        return description;
     }
     
     /**

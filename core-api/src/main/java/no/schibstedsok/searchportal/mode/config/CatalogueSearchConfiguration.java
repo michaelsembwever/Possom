@@ -17,6 +17,9 @@ public class CatalogueSearchConfiguration extends FastSearchConfiguration {
     /** The name of the parameter which holds the geographic user supplied location.*/
     private String queryParameterWhere;
     
+    /** the base url to access the slideshow images in the info page. */
+    private String slideshowUrl;
+    
     /**
      *  ????
      */
@@ -80,5 +83,19 @@ public class CatalogueSearchConfiguration extends FastSearchConfiguration {
      */
     public Boolean getSplit(){
         return this.split;
+    }
+
+    /**
+     *  getter for base url for slideshow images.
+     */
+    public String getSlideshowUrl() {
+        return slideshowUrl;
+    }
+
+    /**
+     *  setter for base url for slideshow images.
+     */    
+    public void setSlideshowUrl(String slideshowUrl) {
+        this.slideshowUrl = slideshowUrl;
     }
 }
