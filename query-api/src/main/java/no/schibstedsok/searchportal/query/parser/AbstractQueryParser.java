@@ -90,14 +90,7 @@ public abstract class AbstractQueryParser implements QueryParser {
                     //final Clause root = parse();
                     final Clause root = alterations( parse(), parentFinder );
 
-                    query = new AbstractQuery(context.getQueryString()){
-                        public Clause getRootClause(){
-                            return root;
-                        }
-                        public ParentFinder getParentFinder(){
-                            return parentFinder;
-                        }
-                    };
+                    query = createQuery(context.getQueryString(), root, parentFinder);
                 }
 
             }catch(ParseException pe){
@@ -259,5 +252,17 @@ public abstract class AbstractQueryParser implements QueryParser {
         return rotator.createRotations(original);
     }
 
+
+    private static Query createQuery(final String string, final Clause root, final ParentFinder parentFinder){
+
+        return new AbstractQuery(string){
+            public Clause getRootClause(){
+                return root;
+            }
+            public ParentFinder getParentFinder(){
+                return parentFinder;
+            }
+        };
+    }
 }
 
