@@ -10,6 +10,6 @@ import no.schibstedsok.searchportal.query.transform.AbstractQueryTransformerConf
  * @author <a href="mailto:daniele@conduct.no">Daniel Engfeldt</a>
  * @version $Revision:$
  */
-@Controller("CatalogueInfopageQueryTransformerConfig")
+@Controller("CatalogueInfopageQueryTransformer")
 public final class CatalogueInfopageQueryTransformerConfig extends AbstractQueryTransformerConfig {
 }
