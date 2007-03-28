@@ -311,6 +311,7 @@ public final class SearchTab {
     
     /**
      * Getter for property showRss
+     * @return 
      * @deprecated Not JavaBean compatable. Use isShowRss() instead.
      */
     public boolean getShowRss() {
@@ -319,6 +320,7 @@ public final class SearchTab {
     
     /**
      * Getter for property showRss
+     * @return 
      */
     public boolean isShowRss() {
         return rssResultName != "" && !isRssHidden();
@@ -326,6 +328,7 @@ public final class SearchTab {
 
     /**
      * Getter for property absoluteOrdering
+     * @return 
      * @deprecated Not JavaBean compatable. Use isAbsoluteOrdering() instead.
      */
     public boolean getAbsoluteOrdering() {
@@ -334,6 +337,7 @@ public final class SearchTab {
     
     /**
      * Getter for property absoluteOrdering
+     * @return 
      */
     public boolean isAbsoluteOrdering() {
         return absoluteOrdering;
@@ -347,6 +351,11 @@ public final class SearchTab {
         return Collections.unmodifiableCollection(enrichments);
     }
 
+    /**
+     * 
+     * @param command 
+     * @return 
+     */
     public EnrichmentHint getEnrichmentByCommand(final String command){
 
         for(EnrichmentHint e : enrichments){
@@ -377,6 +386,8 @@ public final class SearchTab {
      * Returns the navigator hint matching name. Returns null if no navigator
      * hint matches.
      * The name parameter passed in is to be the shorter string if a prefix or suffix match is to be found.
+     * @param name 
+     * @return 
      */
     public NavigatorHint getNavigationHint(final String name) {
         for (NavigatorHint hint : navigators) {
@@ -411,6 +422,10 @@ public final class SearchTab {
         return this.enrichmentOnTopScore;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public List<SearchTab> getAncestry(){
         // XXX cache result
         final List<SearchTab> ancestry = new ArrayList<SearchTab>();
@@ -442,6 +457,13 @@ public final class SearchTab {
     /** Immutable POJO holding Enrichment properties from a given tab. **/
     public static final class EnrichmentHint  {
 
+        /**
+         * 
+         * @param rule 
+         * @param threshold 
+         * @param weight 
+         * @param command 
+         */
         public EnrichmentHint(
                 final String rule,
                 final int threshold,
@@ -555,9 +577,21 @@ public final class SearchTab {
             this.tabFactory = tabFactory;
         }
 
+        /**
+         * 
+         */
         public enum MatchType {
+            /**
+             * 
+             */
             PREFIX,
+            /**
+             * 
+             */
             EQUAL,
+            /**
+             * 
+             */
             SUFFIX;
         }
 
@@ -675,45 +709,91 @@ public final class SearchTab {
     public static final class Layout{
         
         private String origin;
+        private String main;
+        private String front;
         private Map<String,String> includes;
         private Map<String,String> properties;
         
         private Layout(){}
         
+        /**
+         * 
+         * @param inherit 
+         */
         public Layout(final Layout inherit){
             if( null != inherit ){
                 // origin cannot be inherited!
+                main = inherit.main;
+                front = inherit.front;
                 includes = inherit.includes;
                 properties = inherit.properties;
             }
         }
         
+        /**
+         * 
+         * @return 
+         */
         public Map<String,String> getIncludes(){
             
             return includes;
         }
         
+        /**
+         * 
+         * @param key 
+         * @return 
+         */
         public String getInclude(final String key){
             
             return includes.get(key);
         }
         
+        /**
+         * 
+         * @return 
+         */
         public Map<String,String> getProperties(){
             return properties;
         }
         
+        /**
+         * 
+         * @param key 
+         * @return 
+         */
         public String getProperty(final String key){
             return properties.get(key);
         }
         
-        /** @deprecated **/
+        /** 
+         * @return 
+         @deprecated **/
         public String getOrigin(){
             return origin;
         }
         
+        /**
+         * 
+         * @return 
+         */
+        public String getMain(){
+            return main;
+        }
+        
+        /**
+         * 
+         * @return 
+         */
+        public String getFront(){
+            return front;
+        }
+        
         /** Will return null when the element argument is null. 
          * Otherwise returns the Layout object deserialised from the contents of the Element.
-         **/
+         ** @param element 
+         * @return 
+         */
         public Layout readLayout(final Element element){
             
             if( null != origin ){
@@ -722,6 +802,12 @@ public final class SearchTab {
             if( null != element ){
 
                 origin = element.getAttribute("origin");
+                if(0 < element.getAttribute("main").length()){
+                    main = element.getAttribute("main");
+                }
+                if(0 < element.getAttribute("front").length()){
+                    front = element.getAttribute("front");
+                }
                 includes = readMap(includes, element.getElementsByTagName("include"), "key", "template");
                 properties = readMap(properties, element.getElementsByTagName("property"), "key", "value");
             }

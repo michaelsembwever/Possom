@@ -93,7 +93,7 @@ public class FileResourceLoader extends AbstractResourceLoader {
     
     protected final String getProjectName(final String siteName){
         
-        LOG.debug("getProjectName(" + siteName + ')');
+        LOG.info("getProjectName(" + siteName + ')');
         // Very hacky.
         String projectName = siteName.replaceAll("localhost", "sesam");
         if( projectName.indexOf(':') > 0 ){
@@ -102,7 +102,10 @@ public class FileResourceLoader extends AbstractResourceLoader {
         if( projectName.endsWith("sesam") && !"generic.sesam".equals(projectName) ){
             projectName = projectName + ".no";
         }
-        LOG.debug("result: " + projectName);
+        if( "catalogue".equals(projectName)){
+            projectName = "katalog.sesam.no";
+        }
+        LOG.info("result: " + projectName);
         return projectName;
     }
 

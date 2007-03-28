@@ -14,7 +14,20 @@
 
         <%-- Option: use the tab's layout and datamodel --%>
         <c:when test="${tab.layout != null}">
-            <%@ include file="httpDecorator.jsp" %>
+            <c:choose>
+                <%-- Use any tab layout's custom front page if the query object does not exist --%>
+                <c:when test="${DataModel.query.query.blank && !empty tab.layout.front}">
+                    <search:velocity template="/pages/${tab.layout.front}"/>
+                </c:when>
+                <%-- Use any tab layout's custom main page --%>
+                <c:when test="${!empty tab.layout.main}">
+                    <search:velocity template="/pages/${tab.layout.main}"/>
+                </c:when>
+                <%-- Otherwise use the default templating layout --%>
+                <c:otherwise>
+                    <%@ include file="httpDecorator.jsp" %>
+                </c:otherwise>
+            </c:choose>
         </c:when>
         <%-- Last Option: fallback to the original mainDecorator.jsp --%>
         <c:otherwise>
