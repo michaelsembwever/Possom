@@ -133,7 +133,7 @@ public final class RolesDirective extends Directive {
                         text = name;
                     else {
                         String nameEncode = "";
-                        String orgUrl = "";
+                        String orgUrl = "/search/";
                         String lpUrl = "";
                         // create link to infopage
                         if (page.equals("y")) {

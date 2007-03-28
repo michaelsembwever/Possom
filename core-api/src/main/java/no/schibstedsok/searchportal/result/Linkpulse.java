@@ -65,13 +65,18 @@ public final class Linkpulse {
                 }
             }
             //adds to-url, if to-url links to external site we must drop site name prefix         
+            // remove last slash to avoid doubble slashes orgUrl should alwais start with slash
+            String siteName = site.getName();
+            if(siteName.endsWith("/")){
+                siteName = siteName.substring(0,siteName.length() -1);
+            }
             toUrl.append( indexpage.equalsIgnoreCase("ext")
                     ?  '/' + orgUrl
-                    :  "/http://" + site.getName() + "search/" + orgUrl);
+                    :  "/http://" + siteName + orgUrl);
         } else{
             
            toUrl.append( Boolean.valueOf(indexpage)
-                   ? "search/" + orgUrl
+                   ? "" + orgUrl
                    : orgUrl);
         }
 

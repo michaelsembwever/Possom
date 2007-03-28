@@ -153,9 +153,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 LOG.debug("execute: SortBy " + userSortBy);
 
                 if ("standard".equals(userSortBy)) {
-                    sortBy ="-frontpagename-contentprofile-publishedtime";
+                    sortBy ="-frontpagename -contentprofile -docdatetime";
                 } else if ("datetime".equals(userSortBy)) {
-                    sortBy = "-frontpagename -publishedtime";
+                    sortBy = "-frontpagename -docdatetime";
                 }
             }
 
@@ -202,7 +202,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      */
     protected String escapeFieldedLeaf(final LeafClause clause) {
 
-        return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + clause.getTerm() + '"';
+        return '"' + (null != clause.getField() ? clause.getField() + ':' : "") + getTransformedTerm(clause) + '"';
     }
 
     /**
