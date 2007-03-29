@@ -25,7 +25,8 @@ import no.schibstedsok.searchportal.result.Linkpulse;
  * Time: 15:34:43
  * To change this template use File | Settings | File Templates.
  */
-public final class RolesDirective extends Directive {
+public final class
+        RolesDirective extends Directive {
     private static final Logger LOG = Logger.getLogger(RolesDirective.class);
 
 
@@ -133,7 +134,7 @@ public final class RolesDirective extends Directive {
                         text = name;
                     else {
                         String nameEncode = "";
-                        String orgUrl = "/search/";
+                        String orgUrl = "";
                         String lpUrl = "";
                         // create link to infopage
                         if (page.equals("y")) {
@@ -143,10 +144,10 @@ public final class RolesDirective extends Directive {
                             else
                                 nameEncode = URLEncoder.encode(name, "utf-8");
 
-                            orgUrl = "?c=wip&amp;q=" + nameEncode + "&amp;personId=" + recordid + "&amp;personId_x=" + md5.generateMD5(recordid);
+                            orgUrl = "/search/?c=wip&amp;q=" + nameEncode + "&amp;personId=" + recordid + "&amp;personId_x=" + md5.generateMD5(recordid);
                         } else {
                             nameEncode = URLEncoder.encode(name, "utf-8");
-                            orgUrl = "?c=yip&amp;q=" + nameEncode + "&amp;companyId=" + recordid + "&amp;companyId_x=" + md5.generateMD5(recordid);
+                            orgUrl = "/search/?c=yip&amp;q=" + nameEncode + "&amp;companyId=" + recordid + "&amp;companyId_x=" + md5.generateMD5(recordid);
                         }
                         lpUrl = linkpulse.getUrl(orgUrl, "category:results;subcategory:roles", "sgo", "");
                         text = "<a href=\"" + lpUrl + "\">" + name + "</a>";
