@@ -12,6 +12,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
+import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
+import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -116,10 +120,10 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     public CatalogueSearchCommand(final Context cxt) {
 
         super(cxt);
-
+        
         final CatalogueSearchConfiguration conf = (CatalogueSearchConfiguration) cxt
                 .getSearchConfiguration();
-
+        
         LOG.debug(DEBUG_CONF_NFO + conf.getSearchBy() + ' '
                 + conf.getQueryParameterWhere() + ' '
                 + conf.getSplit());
@@ -373,7 +377,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 appendToQueryRepresentation(
                         createPhraseQuerySyntax("\""+getTransformedTerms().get(clause) + "\""));
             
-            }else if(!getTransformedTerms().get(clause).equals("*")) {
+            }else if(!getTransformedTerms().get(clause).equals("")) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("(");
                 
@@ -407,7 +411,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         }
 
         if(useTerm){
-            if (!getTransformedTerms().get(clause).equals("*")) {
+            if (!getTransformedTerms().get(clause).equals("")) {
                 appendToQueryRepresentation(
                         createPhraseQuerySyntax(getTransformedTerms().get(clause)));
             }

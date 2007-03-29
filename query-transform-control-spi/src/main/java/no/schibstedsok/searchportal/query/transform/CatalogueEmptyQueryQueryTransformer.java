@@ -2,6 +2,7 @@
 package no.schibstedsok.searchportal.query.transform;
 
 
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import no.schibstedsok.searchportal.query.LeafClause;
 
 
@@ -24,13 +25,10 @@ public final class CatalogueEmptyQueryQueryTransformer extends AbstractQueryTran
      */
     public CatalogueEmptyQueryQueryTransformer(final QueryTransformerConfig config){}
 
-	/** TODO comment me. *
-  * @param clause
-  */
-	protected void visitImpl(final LeafClause clause) {
-		if (getContext().getQuery().isBlank()) {
-			getContext().getTransformedTerms().put(clause, BLANK);
-		}
-	}
+    /** TODO comment me. *
+     * @param clause
+     */
+    protected void visitImpl(final LeafClause clause) {
+    }
 
 }

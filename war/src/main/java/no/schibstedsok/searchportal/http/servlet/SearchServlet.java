@@ -197,10 +197,10 @@ public final class SearchServlet extends HttpServlet {
                     ? parametersDO.getContextPath()
                     : "/";
 
-        }else if (null != cParm && ("d".equals(cParm) || "g".equals(cParm) || "y".equals(cParm) || "yip".equals(cParm)) && !isSitesearch) {
+        }else if (null != cParm && ("d".equals(cParm) || "g".equals(cParm) || "cat".equals(cParm) || "catip".equals(cParm)) && !isSitesearch) {
             // Extra check for the Norwegian web search. Search with an empty query string
             // should return the first page.
-            if ("y".equals(cParm) || "yip".equals(cParm)) {
+            if ("cat".equals(cParm) || "catip".equals(cParm)) {
                 if (wParam.trim().length() == 0 && qParam.trim().length() == 0) {
                     redirect = "/";
                 }                
