@@ -84,7 +84,7 @@ public abstract class AbstractQueryParser implements QueryParser {
             }
             final ParentFinder parentFinder = new ParentFinder();
             try{
-                if( queryStr != null && queryStr.trim().length()>0 ){
+                if( null != queryStr && 0 < queryStr.trim().length() && !"*".equals(queryStr) ){
 
                     // Uncomment the following line, and comment the line after than, to disable RotationAlternation.
                     //final Clause root = parse();
