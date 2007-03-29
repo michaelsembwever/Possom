@@ -90,7 +90,7 @@ public abstract class AbstractQueryParser implements QueryParser {
                     //final Clause root = parse();
                     final Clause root = alterations( parse(), parentFinder );
 
-                    query = createQuery(context.getQueryString(), root, parentFinder);
+                    query = createQuery(context.getQueryString(), false, root, parentFinder);
                 }
 
             }catch(ParseException pe){
@@ -107,19 +107,13 @@ public abstract class AbstractQueryParser implements QueryParser {
             }
 
             if( query == null ){
+                
                 final Clause empty = context.createWordClause("",null);
-                // common post-exception handling
-                query = new AbstractQuery(context.getQueryString()){
-                    public Clause getRootClause(){
-                        return empty;
-                    }
-                    public boolean isBlank(){
-                        return true;
-                    }
-                    public ParentFinder getParentFinder(){
-                        return parentFinder;
-                    }
-                };
+                final String qStr = context.getQueryString();
+                // common post-exception handling. 
+                // * is a special query to search for everything 
+                //  and should be treated as a non-blank query despite having crashed the parser.
+                query = createQuery(qStr, !"*".equals(qStr), empty, parentFinder);
             }
 
         }
@@ -253,7 +247,11 @@ public abstract class AbstractQueryParser implements QueryParser {
     }
 
 
-    private static Query createQuery(final String string, final Clause root, final ParentFinder parentFinder){
+    private static Query createQuery(
+            final String string, 
+            final boolean blank,
+            final Clause root, 
+            final ParentFinder parentFinder){
 
         return new AbstractQuery(string){
             public Clause getRootClause(){
@@ -261,6 +259,9 @@ public abstract class AbstractQueryParser implements QueryParser {
             }
             public ParentFinder getParentFinder(){
                 return parentFinder;
+            }
+            public boolean isBlank(){
+                return blank;
             }
         };
     }
