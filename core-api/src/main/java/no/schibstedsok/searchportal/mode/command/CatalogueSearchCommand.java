@@ -269,7 +269,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     @Override
     public String getTransformedQuery() {
         String query = super.getTransformedQuery();
-
+        
         boolean hasQueryString= (query!=null && query.length()>0);
         boolean hasGeoQueryString = (queryGeoString != null && queryGeoString.length() > 0);
         
