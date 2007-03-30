@@ -25,6 +25,7 @@ import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
+import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
@@ -153,7 +154,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 LOG.debug("execute: SortBy " + userSortBy);
 
                 if ("standard".equals(userSortBy)) {
-                    sortBy ="-frontpagename -contentprofile -docdatetime";
+                    sortBy = "-frontpagename -contentprofile -docdatetime";
                 } else if ("datetime".equals(userSortBy)) {
                     sortBy = "-frontpagename -docdatetime";
                 }
@@ -350,8 +351,10 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             String transformedTerm = getTransformedTerm(clause);
             transformedTerm = transformedTerm.length() == 0 ? null : transformedTerm;
             return leaf.getField() == null && transformedTerm == null || null != leaf.getField() && null != getFieldFilter(leaf);
+        } else if (clause instanceof DoubleOperatorClause) {
+            DoubleOperatorClause doc = (DoubleOperatorClause) clause;
+            return isEmptyLeaf(doc.getFirstClause()) && isEmptyLeaf(doc.getSecondClause());
         }
-
         return false;
     }
 
