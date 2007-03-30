@@ -154,18 +154,20 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 .getSearchConfiguration();
 
         ReconstructedQuery queryGeo = null;
-        if (getSingleParameter(conf.getQueryParameterWhere()) != null) {
-            String tmp = getSingleParameter(conf.getQueryParameterWhere());
-            if(getKnownGeoString()!=null) tmp = tmp + " " + getKnownGeoString();
+        String tmp ="";
+        if (getSingleParameter(conf.getQueryParameterWhere()) != null) 
+            tmp = getSingleParameter(conf.getQueryParameterWhere());
 
-            queryGeo = createQuery(tmp);
+        if(getKnownGeoString()!=null) tmp = tmp + " " + getKnownGeoString();
 
-            GeoVisitor geoVisitor = new GeoVisitor();
-            geoVisitor.visit(queryGeo.getQuery().getRootClause());
+        queryGeo = createQuery(tmp);
 
-            queryGeoString = geoVisitor.getQueryRepresentation();
-            LOG.info(DEBUG_SEARCHING_3 + queryGeoString);
-        }
+        GeoVisitor geoVisitor = new GeoVisitor();
+        geoVisitor.visit(queryGeo.getQuery().getRootClause());
+
+        queryGeoString = geoVisitor.getQueryRepresentation();
+        LOG.info(DEBUG_SEARCHING_3 + queryGeoString);
+        
     }
 
 
