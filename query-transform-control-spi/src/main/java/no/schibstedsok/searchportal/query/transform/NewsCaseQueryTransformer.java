@@ -2,9 +2,9 @@
 package no.schibstedsok.searchportal.query.transform;
 
 import no.schibstedsok.newsadmin.service.NewsCaseFacadeInterface;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import no.schibstedsok.searchportal.query.Clause;
 import org.apache.log4j.Logger;
-import org.w3c.dom.Element;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -25,16 +25,14 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
     private final NewsCaseQueryTransformerConfig config;
 
     /**
-     *
      * @param config
      */
-    public NewsCaseQueryTransformer(final QueryTransformerConfig config){
+    public NewsCaseQueryTransformer(final QueryTransformerConfig config) {
         this.config = (NewsCaseQueryTransformerConfig) config;
     }
 
 
     /**
-     *
      * @param clause
      */
     public void visitImpl(final Clause clause) {
@@ -48,6 +46,8 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
         }
         LOG.debug("New query is: '" + transformedQuery + "'");
         if (transformedQuery.length() > 0) {
+            // TODO: Use junkyard instead.
+            getContext().getDataModel().getParameters().setValue(config.getQueryType(), new StringDataObjectSupport(transformedQuery));
             getContext().getTransformedTerms().put(getContext().getQuery().getFirstLeafClause(), transformedQuery);
         }
 
@@ -61,7 +61,6 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
         private static final String NEWSADMIN_JNDINAME = "newsadmin.jndiname";
 
         /**
-         *
          * @param properties
          */
         public void setProperties(Properties properties) {
@@ -69,7 +68,6 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
         }
 
         /**
-         *
          * @return
          */
         public NewsCaseFacadeInterface lookupDataService() {
@@ -93,7 +91,6 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
         }
 
         /**
-         *
          * @param newsCaseName
          * @param queryType
          * @return
