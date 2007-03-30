@@ -102,9 +102,9 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
 
     public static Template getTemplate(
-        final VelocityEngine engine,
-        final Site site,
-        final String templateName) throws ResourceNotFoundException{
+            final VelocityEngine engine,
+            final Site site,
+            final String templateName) throws ResourceNotFoundException{
 
         final String templateUrl = site.getTemplateDir() + "/" + templateName + ".vm";
 
@@ -209,6 +209,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             INSTANCES_LOCK.writeLock().lock();
             context = cxt;
             final Site site = cxt.getSite();
+            final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
 
             engine = new VelocityEngine(){
                 /** We override this method to dampen the
@@ -218,26 +219,26 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 public Template getTemplate(final String name)
                         throws ResourceNotFoundException, ParseErrorException, Exception {
 
-                    final Level level = Logger.getLogger(VELOCITY_LOGGER).getLevel();
-                    Logger.getLogger(VELOCITY_LOGGER).setLevel(Level.FATAL);
+                    final Level level = logger.getLevel();
+                    logger.setLevel(Level.FATAL);
 
                     final Template retValue = super.getTemplate(name);
 
-                    Logger.getLogger(VELOCITY_LOGGER).setLevel(level);
+                    logger.setLevel(level);
                     return retValue;
                 }
 
             };
 
             try  {
-                final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
+                
 
                 engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
                 engine.setProperty(LOG_NAME, logger.getName());
                 engine.setProperty(Velocity.RESOURCE_LOADER, "url");
                 engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
                 engine.setProperty("url.resource.loader.cache", "true");
-                engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minute update cycle.
+                engine.setProperty("url.resource.loader.modificationCheckInterval", "0"); // cache forever
                 engine.setProperty(Site.NAME_KEY, site);
 
                 engine.setProperty("input.encoding", "UTF-8");

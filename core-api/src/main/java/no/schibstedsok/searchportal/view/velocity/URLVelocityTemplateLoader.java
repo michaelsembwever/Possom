@@ -87,12 +87,13 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
      * @throws ResourceNotFoundException if template not found
      *         in the file template path.
      */
-    public synchronized InputStream getResourceStream(final String url) throws ResourceNotFoundException{
+    public /*synchronized*/ InputStream getResourceStream(final String url) throws ResourceNotFoundException{
 
         LOG.trace("start getResourceStream( " + url + " )");
         try{
-
-            return getStream(findUrl(url));
+            synchronized( url.intern() ){
+                return getStream(findUrl(url, site));
+            }
 
         }catch( IOException e ){
             LOG.debug( ERR_RESOURCE_NOT_FOUND + url);
@@ -115,7 +116,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
         try{
 
-            final String url = findUrl(resource.getName());
+            final String url = findUrl(resource.getName(), site);
             final URL u = new URL(url);
 
             if( LOG.isTraceEnabled() ){
@@ -147,11 +148,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
 
     // Private -------------------------------------------------------
     
-    private String findUrl(final String url) throws ResourceNotFoundException{
+    private static String findUrl(final String url, final Site currentSite) throws ResourceNotFoundException{
 
         try{
             LOG.trace(DEBUG_LOOKING_FOR + url );
-            return findUrlImpl(url, site);
+            return findUrlImpl(url, currentSite);
             
         }catch( IOException e ){
             LOG.error( ERR_RESOURCE_NOT_FOUND + url, e );
@@ -159,7 +160,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         }
     }
 
-    private String findUrlImpl(final String url, final Site currentSite)
+    private static String findUrlImpl(final String url, final Site currentSite)
             throws IOException, ResourceNotFoundException {
 
         if (context.doesUrlExist(context.getURL(url),context.getHostHeader(url))) {
@@ -180,7 +181,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         }
     }
 
-    private String getFallbackURL(final String url, final Site currSite, final Site ancestorSite) {
+    private static String getFallbackURL(final String url, final Site currSite, final Site ancestorSite) {
 
         final String oldUrl = currSite.getName() + currSite.getConfigContext();
         final String newUrl = ancestorSite.getName() + ancestorSite.getConfigContext();
@@ -189,7 +190,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
     }
 
 
-    private InputStream getStream(final String url) throws IOException{
+    private static InputStream getStream(final String url) throws IOException{
 
         LOG.trace(DEBUG_EXISTS + url);
         final URL u = new URL(context.getURL(url));
