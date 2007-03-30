@@ -84,20 +84,13 @@ public abstract class AbstractQueryParser implements QueryParser {
             }
             final ParentFinder parentFinder = new ParentFinder();
             try{
-                if( queryStr != null && queryStr.trim().length()>0 ){
+                if( null != queryStr && 0 < queryStr.trim().length() && !"*".equals(queryStr) ){
 
                     // Uncomment the following line, and comment the line after than, to disable RotationAlternation.
                     //final Clause root = parse();
                     final Clause root = alterations( parse(), parentFinder );
 
-                    query = new AbstractQuery(context.getQueryString()){
-                        public Clause getRootClause(){
-                            return root;
-                        }
-                        public ParentFinder getParentFinder(){
-                            return parentFinder;
-                        }
-                    };
+                    query = createQuery(context.getQueryString(), false, root, parentFinder);
                 }
 
             }catch(ParseException pe){
@@ -114,19 +107,13 @@ public abstract class AbstractQueryParser implements QueryParser {
             }
 
             if( query == null ){
+                
                 final Clause empty = context.createWordClause("",null);
-                // common post-exception handling
-                query = new AbstractQuery(context.getQueryString()){
-                    public Clause getRootClause(){
-                        return empty;
-                    }
-                    public boolean isBlank(){
-                        return true;
-                    }
-                    public ParentFinder getParentFinder(){
-                        return parentFinder;
-                    }
-                };
+                final String qStr = context.getQueryString();
+                // common post-exception handling. 
+                // * is a special query to search for everything 
+                //  and should be treated as a non-blank query despite having crashed the parser.
+                query = createQuery(qStr, !"*".equals(qStr), empty, parentFinder);
             }
 
         }
@@ -259,5 +246,24 @@ public abstract class AbstractQueryParser implements QueryParser {
         return rotator.createRotations(original);
     }
 
+
+    private static Query createQuery(
+            final String string, 
+            final boolean blank,
+            final Clause root, 
+            final ParentFinder parentFinder){
+
+        return new AbstractQuery(string){
+            public Clause getRootClause(){
+                return root;
+            }
+            public ParentFinder getParentFinder(){
+                return parentFinder;
+            }
+            public boolean isBlank(){
+                return blank;
+            }
+        };
+    }
 }
 

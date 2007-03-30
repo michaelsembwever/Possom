@@ -34,7 +34,8 @@ import org.apache.log4j.Logger;
 import org.tuckey.web.filters.urlrewrite.UrlRewriterContainer;
 import org.w3c.dom.Document;
 
-/**
+/** Provides a SiteKeyedFactory around urlrewrite.xml configurations instead of tuckey's default 
+ * of only loading WEB-INF/urlrewrite.xml
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -54,9 +55,11 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     /**
-     * 
+     * The name of the skin's configuration file.
      */
     public static final String URLREWRITE_XMLFILE = "urlrewrite.xml";
+    
+    private static final String EMPTY_RULES = "<urlrewrite></urlrewrite>";
 
     private static final Logger LOG = Logger.getLogger(UrlRewriterContainerFactory.class);
     private static final String ERR_DOC_BUILDER_CREATION 
@@ -149,8 +152,6 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
         return urlRewriterContainer;
     }
 
-    
-
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
@@ -167,11 +168,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
         // finished
         LOG.info("Parsing " + URLREWRITE_XMLFILE + " finished");
         
-        return new UrlRewriterContainer(){
-            protected InputStream getInputStream(){
-                return new ByteArrayInputStream(output.getBytes());
-            }
-        };
+        return new URC(0 < output.length() ? output : EMPTY_RULES);
     }
     
     private static StringWriter transformDocumentToString(final Document xml){
@@ -184,6 +181,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
             transformer.setOutputProperty(OutputKeys.INDENT,  "no" );
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
             transformer.transform( new DOMSource(xml), res );
+            
         }catch(TransformerException te){
             LOG.error(te.getMessage(), te);
         }
@@ -191,5 +189,19 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
     }
 
     // Inner classes -------------------------------------------------
+    
+    private static class URC extends UrlRewriterContainer{
+        
+        private final String rules;
+        
+        URC(final String rules){
+            super();
+            this.rules = rules;
+        }
+        
+        protected InputStream getInputStream(){
+            return new ByteArrayInputStream(rules.getBytes());
+        }
+    }
 
 }
