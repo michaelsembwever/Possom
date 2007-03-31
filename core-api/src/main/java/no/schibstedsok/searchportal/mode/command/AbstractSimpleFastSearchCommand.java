@@ -402,7 +402,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             } catch (SocketTimeoutException ste) {
     
-                LOG.error(getSearchConfiguration().getName() + ste.getMessage());
+                LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
                 return new FastSearchResult(this);
 
             } catch (IOException ioe) {
