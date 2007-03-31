@@ -12,12 +12,14 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 import java.util.Map;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.PlatefoodPPCSearchConfiguration;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.PlatefoodSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -97,6 +99,12 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
             }
 
             return searchResult;
+            
+        } catch (SocketTimeoutException ste) {
+
+            LOG.error(getSearchConfiguration().getName() + ste.getMessage());
+            return new BasicSearchResult(this);
+
         } catch (IOException e) {
             throw new InfrastructureException(e);
         } catch (SAXException e) {

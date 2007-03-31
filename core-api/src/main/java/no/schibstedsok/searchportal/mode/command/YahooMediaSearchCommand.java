@@ -17,7 +17,9 @@ import java.text.MessageFormat;
 import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -32,6 +34,8 @@ import org.xml.sax.SAXException;
  * @version $Id$
  */
 public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
+    
+    private static final Logger LOG = Logger.getLogger(YahooMediaSearchCommand.class);
 
     private static final String COMMAND_URL_PATTERN =
             "/std_xmls_a00?type=any&query={0}&offset={1}&custid1={2}&hits={3}&ocr={4}&catalog={5}&encoding=utf-8";
@@ -161,8 +165,14 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
             return searchResult;
 
+        } catch (SocketTimeoutException ste) {
+
+            LOG.error(getSearchConfiguration().getName() + ste.getMessage());
+            return new BasicSearchResult(this);
+
         } catch (final IOException e) {
             throw new InfrastructureException(e);
+            
         } catch (final SAXException e) {
             throw new InfrastructureException(e);
         }
