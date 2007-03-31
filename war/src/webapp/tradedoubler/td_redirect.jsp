@@ -1,9 +1,9 @@
 <%@page import="no.schibstedsok.searchportal.util.TradeDoubler,no.schibstedsok.searchportal.util.QueryStringHelper,java.net.URLEncoder" %>
 <%@ page import="no.schibstedsok.searchportal.datamodel.DataModel" %>
 <%
-    //	session.setAttribute("TDUID", request.getParameter("tduid"));
     final DataModel datamodel = (DataModel) session.getAttribute(DataModel.KEY);
 
+    //	session.setAttribute("TDUID", request.getParameter("tduid"));
     Cookie cookie = new Cookie("TRADEDOUBLER", request.getParameter("tduid"));
 
     int duration = 60 * 60 * 24 * 365;
