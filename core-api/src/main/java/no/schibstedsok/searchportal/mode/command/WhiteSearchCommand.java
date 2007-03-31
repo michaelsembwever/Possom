@@ -26,8 +26,7 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
 
     /**
      *
-     * @param cxt
-     * @param parameters
+     * @param cxt The context to execute in.
      */
     public WhiteSearchCommand(final Context cxt) {
 

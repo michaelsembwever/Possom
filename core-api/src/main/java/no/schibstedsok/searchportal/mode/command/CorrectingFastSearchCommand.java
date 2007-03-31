@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 
 /**
  *
@@ -43,7 +42,6 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
     /** Creates a new instance of CorrectionFastSearchCommand.
      *
      * @param cxt Search command context.
-     * @param parameters Search command parameters.
      */
     public CorrectingFastSearchCommand(final Context cxt) {
 
@@ -122,7 +120,7 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
     private CorrectingFastSearchCommand createCommand(final SearchCommand.Context cmdCxt) throws Exception {
         final Class<? extends CorrectingFastSearchCommand> clazz = getClass();
         final Constructor<? extends CorrectingFastSearchCommand> con
-                = clazz.getConstructor(Context.class, Map.class);
+                = clazz.getConstructor(Context.class);
         return con.newInstance(cmdCxt, getParameters());
     }
 
