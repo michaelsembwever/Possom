@@ -103,6 +103,10 @@ public final class SearchServlet extends HttpServlet {
         final ParametersDataObject parametersDO = datamodel.getParameters();
         final Site site = datamodel.getSite().getSite();
 
+        // Anything that hasn't gone through the DataModelFilter isn't valid.
+        assert null != parametersDO;
+        assert null != site;
+
         // BaseContext providing SiteContext and ResourceContext.
         //  We need it casted as a SiteContext for the ResourceContext code to be happy.
         final SiteContext genericCxt = new SiteContext(){
