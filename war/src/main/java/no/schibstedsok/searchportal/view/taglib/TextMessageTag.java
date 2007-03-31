@@ -49,7 +49,6 @@ public final class TextMessageTag extends SimpleTagSupport {
             if (f != null){  
                 f.invoke(out);
             }
-            final Site site = (Site)cxt.findAttribute(Site.NAME_KEY);
             final TextMessages text = (TextMessages)cxt.findAttribute("text");
             
             out.print(text.getMessage(key, args));

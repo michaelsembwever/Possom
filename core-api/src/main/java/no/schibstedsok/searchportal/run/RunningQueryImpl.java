@@ -51,11 +51,8 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -623,7 +620,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         };
 
         parameters.put("configuration", props);
-        parameters.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, rqCxt, siteCxt)));
         parameters.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, rqCxt, siteCxt)));
 
         parameters.put("tab", rqCxt.getSearchTab()); // TODO remove
