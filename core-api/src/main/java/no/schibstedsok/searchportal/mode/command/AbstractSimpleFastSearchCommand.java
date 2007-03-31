@@ -49,6 +49,7 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -399,17 +400,19 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
                 result = engine.search(fastQuery);
 
+            } catch (SocketTimeoutException ste) {
+    
+                LOG.error(getSearchConfiguration().getName() + ERR_FAST_FAILURE + " --> " + ste.getMessage());
+                return new FastSearchResult(this);
+
             } catch (IOException ioe) {
 
                 LOG.error(getSearchConfiguration().getName() + ERR_FAST_FAILURE, ioe);
                 return new FastSearchResult(this);
 
-            } catch (SearchEngineException fastException) {
+            } catch (SearchEngineException fe) {
 
-                LOG.error(
-                        getSearchConfiguration().getName()
-                                + ERR_FAST_FAILURE + '[' + fastException.getErrorCode() + ']',
-                        fastException);
+                LOG.error( getSearchConfiguration().getName() + ERR_FAST_FAILURE + '[' + fe.getErrorCode() + ']', fe);
                 return new FastSearchResult(this);
 
             }
