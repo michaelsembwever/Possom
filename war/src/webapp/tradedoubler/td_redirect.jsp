@@ -1,4 +1,4 @@
-<%@page import="no.schibstedsok.searchportal.util.TradeDoubler,no.schibstedsok.searchportal.util.QueryStringHelper,java.net.URLEncoder" %>
+<%@ page import="no.schibstedsok.searchportal.util.TradeDoubler,java.net.URLEncoder" %>
 <%@ page import="no.schibstedsok.searchportal.datamodel.DataModel" %>
 <%
     final DataModel datamodel = (DataModel) session.getAttribute(DataModel.KEY);
