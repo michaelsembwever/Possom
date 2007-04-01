@@ -118,10 +118,11 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
     }
 
     private CorrectingFastSearchCommand createCommand(final SearchCommand.Context cmdCxt) throws Exception {
+        
         final Class<? extends CorrectingFastSearchCommand> clazz = getClass();
-        final Constructor<? extends CorrectingFastSearchCommand> con
-                = clazz.getConstructor(Context.class);
-        return con.newInstance(cmdCxt, getParameters());
+        final Constructor<? extends CorrectingFastSearchCommand> con = clazz.getConstructor(Context.class);
+        
+        return con.newInstance(cmdCxt);
     }
 
     private String correctQuery(
