@@ -84,11 +84,19 @@ public final class SiteLocatorFilter implements Filter {
 
     // Attributes ----------------------------------------------------
 
+    // Attributes ----------------------------------------------------
+
+    // Attributes ----------------------------------------------------
+
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
     private static final String LOCALE_DETAILS = "Locale details: Language: {0}, Country: {1} and Variant: {2}";
+
+    // Static --------------------------------------------------------
+
+    // Static --------------------------------------------------------
 
     // Static --------------------------------------------------------
 
@@ -98,6 +106,10 @@ public final class SiteLocatorFilter implements Filter {
     /** Default constructor. **/
     public SiteLocatorFilter() {
     }
+
+    // Public --------------------------------------------------------
+
+    // Public --------------------------------------------------------
 
     // Public --------------------------------------------------------
 
@@ -171,12 +183,10 @@ public final class SiteLocatorFilter implements Filter {
                     }
 
                 } else  {
-                    // request will be processed by search-portal
-                    LOG.info("Incoming search! " + req.getQueryString());
-                    chain.doFilter(request, response);
+                    doChainFilter(chain, request, response);
                 }
             }  else  {
-                chain.doFilter(request, response);
+                doChainFilter(chain, request, response);
             }
 
 
@@ -311,9 +321,31 @@ public final class SiteLocatorFilter implements Filter {
 
     // Package protected ---------------------------------------------
 
+    // Package protected ---------------------------------------------
+
+    // Package protected ---------------------------------------------
+
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
+    
+    private static void doChainFilter(
+            final FilterChain chain,
+            final ServletRequest request,
+            final ServletResponse response) throws IOException, ServletException{
+        
+        final Object lock = request instanceof HttpServletRequest 
+                ? ((HttpServletRequest)request).getSession() 
+                : request;
+        
+        // datamodel is NOT request-safe. all the user's requests must execute in sequence!
+        synchronized( lock ){   
+            
+            // request will be processed by search-portal
+            LOG.info("Incoming! Duck!");
+            chain.doFilter(request, response);
+        }
+    }
 
     private String recursivelyFindResource(final String resource, final Site site) {
 

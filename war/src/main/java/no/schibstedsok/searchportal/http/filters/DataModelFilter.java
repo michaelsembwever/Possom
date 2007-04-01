@@ -109,22 +109,19 @@ public final class DataModelFilter implements Filter {
                 throw new ServletException(skfie.getMessage(), skfie);
             }
 
-            // datamodel is NOT request-safe. all the user's requests must execute in sequence!
-            synchronized( httpRequest.getSession() ){
+            final DataModel datamodel = getDataModel(factory, httpRequest);
+            try{
 
-                final DataModel datamodel = getDataModel(factory, httpRequest);
-                try{
+                final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
 
-                    final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
+                datamodel.setParameters(parametersDO);
 
-                    datamodel.setParameters(parametersDO);
+                chain.doFilter(request, response);
 
-                    chain.doFilter(request, response);
-
-                }finally{
-                    cleanDataModel(datamodel);
-                }
+            }finally{
+                cleanDataModel(datamodel);
             }
+
 
         }else{
             chain.doFilter(request, response);
