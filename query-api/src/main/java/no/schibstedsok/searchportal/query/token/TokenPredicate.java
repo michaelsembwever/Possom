@@ -44,6 +44,7 @@ public enum TokenPredicate implements Predicate {
     FOOD (Type.FAST),
     EXACT_FIRST (Type.FAST),
     FULLNAME (Type.FAST),
+    EXACT_FULLNAME (Type.FAST),
     LASTNAME (Type.FAST),
     EXACT_LAST (Type.FAST),
     MATERIAL (Type.FAST),

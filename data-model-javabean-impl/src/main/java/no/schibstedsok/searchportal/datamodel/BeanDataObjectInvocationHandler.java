@@ -51,14 +51,23 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Attributes ----------------------------------------------------
 
+    // Attributes ----------------------------------------------------
+
     private final Class<T> implementOf;
     private final Object support;
     private final boolean immutable;
-    
+
     // properties: the only part of this class that be immutable and reused
-    private final List<Property> properties = new ArrayList<Property>(); 
+
+    // properties: the only part of this class that be immutable and reused
+    private final List<Property> properties = new ArrayList<Property>();
 
     private final BeanContextChild contextChild = new BeanContextChildSupport();
+
+    private final Map<Method, InvocationTarget> invocationTargetCache = new HashMap<Method, InvocationTarget>();
+    private final Map<Method, Method> supportMethodCache = new HashMap<Method, Method>();
+
+    //private final ReentrantReadWriteLock invocationTargetCacheLock = new ReentrantReadWriteLock();
 
     // Static --------------------------------------------------------
 
@@ -103,6 +112,9 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Constructors --------------------------------------------------
 
+
+    // Constructors --------------------------------------------------
+
     /** Creates a new instance of ProxyBeanDataObject */
     protected BeanDataObjectInvocationHandler(
             final Class<T> cls,
@@ -110,11 +122,11 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                 throws IntrospectionException {
 
         implementOf = cls;
-        
+
         final List<Property> propertiesLeftToAdd = new ArrayList(Arrays.asList(properties));
-        
+
         if( StringDataObject.class.isAssignableFrom(implementOf) ){
-            
+
             String value = null;
             boolean found = false;
             for(Property p : properties){
@@ -126,11 +138,11 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                     break;
                 }
             }
-            
+
             support = found ? new StringDataObjectSupport(value) : null;
-            
+
         }else if( MapDataObject.class.isAssignableFrom(implementOf)){
-            
+
             Map<?,?> map = null;
             boolean found = false;
             for(Property p : properties){
@@ -142,93 +154,69 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                     break;
                 }
             }
-            
+
             support = found ? new MapDataObjectSupport(map) : null;
-            
+
         }else{
             support = null;
         }
-        
+
         for(Property p : propertiesLeftToAdd){
             addProperty(p);
         }
-            
+
         this.immutable = isImmutable(cls);
     }
 
-
-
     // Public --------------------------------------------------------
 
+    /** {@inherit} **/
     public Object invoke(final Object obj, final Method method, final Object[] args) throws Throwable {
-        
+
         final boolean setter = method.getName().startsWith("set");
         final String propertyName = method.getName().replaceFirst("is|get|set", "");
-        
-        // If there's a support instance, use it first.
-        if( null != support ){
+        final InvocationTarget invocationTarget = invocationTargetCache.get(method);
 
-            Method m = null;
-            final PropertyDescriptor[] propDescriptors 
-                    = Introspector.getBeanInfo(support.getClass().getInterfaces()[0]).getPropertyDescriptors();
-            for( PropertyDescriptor pd : propDescriptors ){
-                if( propertyName.equalsIgnoreCase(pd.getName()) ){
-                    if(pd instanceof MappedPropertyDescriptor ){
-                        final MappedPropertyDescriptor mpd = (MappedPropertyDescriptor)pd;
-                        m = setter ? mpd.getMappedWriteMethod() : mpd.getMappedReadMethod();
-                    }else{
-                        m = setter ? pd.getWriteMethod() : pd.getReadMethod();
-                    } 
-                    break;
-                }
-            }
-            if( null != m ){
-                try{
+        if(InvocationTarget.SUPPORT == invocationTarget || null == invocationTarget){
+
+            final Method invokeSupportMethod = null != supportMethodCache.get(method)
+                    ? supportMethodCache.get(method)
+                    : findSupport(propertyName, setter);
+
+            if(null != invokeSupportMethod){
+                if(null == invocationTarget){
                     
-//                    if( !support.getClass().isAssignableFrom(m.getDeclaringClass()) ){
-//                        // try to find method again since m is an override and won't be found as is in support
-//                        m = support.getClass().getMethod(m.getName(), m.getParameterTypes());
-//                    }
-                    
-                    return m.invoke(support, args);
-
-                }catch(IllegalAccessException iae){
-                    LOG.info(iae.getMessage(), iae);
-                }catch(IllegalArgumentException iae){
-                    LOG.trace(iae.getMessage());
-//                }catch(NoSuchMethodException nsme){
-//                    LOG.trace(nsme.getMessage());
-                }catch(InvocationTargetException ite){
-                    LOG.info(ite.getMessage(), ite);
+                    invocationTargetCache.put(method, InvocationTarget.SUPPORT);
+                    supportMethodCache.put(method, invokeSupportMethod);
                 }
-            }
-        }
-        
-        
-        // Try finding something out of our own map of bean properties.
-        for(int i = 0; i < properties.size(); ++i){
-            final Property p = properties.get(i);
-            if( p.getName().equalsIgnoreCase(propertyName)){
-                if( setter ){
-                    properties.set(i, new Property(p.getName(), args[0]));
-
-                }
-                // TODO if this bean is immutable then return a clone (defensive copy) this object
-                return p.getValue();
+                return invokeSupport(invokeSupportMethod, support, args);
             }
         }
 
-        // try invoking one of our own methods. (Works for example on methods declared by the Object class).
-        try{
-            return method.invoke(this, args);
+        if(InvocationTarget.PROPERTY == invocationTarget || null == invocationTarget){
 
-        }catch(IllegalAccessException iae){
-            LOG.info(iae.getMessage(), iae);
-        }catch(IllegalArgumentException iae){
-            LOG.info(iae.getMessage(), iae);
-        }catch(InvocationTargetException ite){
-            LOG.info(ite.getMessage(), ite);
+            final Property invokePropertyResult = invokeProperty(propertyName, setter, args);
+
+            if(null != invokePropertyResult){
+                if(null == invocationTarget){
+                    invocationTargetCache.put(method, InvocationTarget.PROPERTY);
+                }
+                return invokePropertyResult.getValue();
+            }
         }
+
+        if(InvocationTarget.SELF == invocationTarget || null == invocationTarget){
+
+            final Object invokeSelfResult = invokeSelf(method, args);
+
+            if(null != invokeSelfResult){
+                if(null == invocationTarget){
+                    invocationTargetCache.put(method, InvocationTarget.SELF);
+                }
+                return invokeSelfResult;
+            }
+        }
+
 
         throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property");
 
@@ -242,13 +230,106 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Package protected ---------------------------------------------
 
+    // Package protected ---------------------------------------------
+
     BeanContextChild getBeanContextChild(){
         return contextChild;
     }
 
     // Protected -----------------------------------------------------
 
+    // Protected -----------------------------------------------------
+
     // Private -------------------------------------------------------
+
+    private Method findSupport(final String propertyName, final boolean setter) throws IntrospectionException{
+
+        // If there's a support instance, use it first.
+
+        Method m = null;
+        if( null != support ){
+
+            final PropertyDescriptor[] propDescriptors
+                    = Introspector.getBeanInfo(support.getClass().getInterfaces()[0]).getPropertyDescriptors();
+
+            for( PropertyDescriptor pd : propDescriptors ){
+
+                if( propertyName.equalsIgnoreCase(pd.getName()) ){
+                    if(pd instanceof MappedPropertyDescriptor ){
+
+                        final MappedPropertyDescriptor mpd = (MappedPropertyDescriptor)pd;
+                        m = setter ? mpd.getMappedWriteMethod() : mpd.getMappedReadMethod();
+
+                    }else{
+                        m = setter ? pd.getWriteMethod() : pd.getReadMethod();
+                    }
+                    break;
+                }
+            }
+        }
+        return m;
+    }
+
+    private Object invokeSupport(final Method m, final Object support, final Object[] args){
+
+        Object result = null;
+        try{
+
+//                    if( !support.getClass().isAssignableFrom(m.getDeclaringClass()) ){
+//                        // try to find method again since m is an override and won't be found as is in support
+//                        m = support.getClass().getMethod(m.getName(), m.getParameterTypes());
+//                    }
+
+            result = m.invoke(support, args);
+
+        }catch(IllegalAccessException iae){
+            LOG.info(iae.getMessage(), iae);
+        }catch(IllegalArgumentException iae){
+            LOG.trace(iae.getMessage());
+//                }catch(NoSuchMethodException nsme){
+//                    LOG.trace(nsme.getMessage());
+        }catch(InvocationTargetException ite){
+            LOG.info(ite.getMessage(), ite);
+        }
+        return result;
+    }
+
+    private Property invokeProperty(final String propertyName, final boolean setter, final Object[] args){
+
+        // Try finding something out of our own map of bean properties.
+
+        Property result = null;
+        for(int i = 0; i < properties.size(); ++i){
+            final Property p = properties.get(i);
+            if( p.getName().equalsIgnoreCase(propertyName)){
+                if( setter ){
+                    properties.set(i, new Property(p.getName(), args[0]));
+
+                }
+                // TODO if this bean is immutable then return a clone (defensive copy) this object
+                result = p;
+            }
+        }
+        return result;
+    }
+
+    private Object invokeSelf(final Method method, final Object[] args){
+
+        // try invoking one of our own methods. (Works for example on methods declared by the Object class).
+
+        Object result = null;
+        try{
+            result = method.invoke(this, args);
+
+        }catch(IllegalAccessException iae){
+            LOG.info(iae.getMessage(), iae);
+        }catch(IllegalArgumentException iae){
+            LOG.info(iae.getMessage(), iae);
+        }catch(InvocationTargetException ite){
+            LOG.info(ite.getMessage(), ite);
+        }
+        return result;
+    }
 
     private boolean addProperty(final Property property){
 
@@ -275,6 +356,12 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Inner classes -------------------------------------------------
 
+    // Inner classes -------------------------------------------------
 
+    private enum InvocationTarget{
+        PROPERTY,
+        SELF,
+        SUPPORT;
+    }
 
 }

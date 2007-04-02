@@ -63,7 +63,7 @@ public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.Ur
                 result.loadConf();
             }
         }
-        return null != result ? result : super.getUrlRewriterContainer(request);
+        return result;
     }
 
     // Package protected ---------------------------------------------

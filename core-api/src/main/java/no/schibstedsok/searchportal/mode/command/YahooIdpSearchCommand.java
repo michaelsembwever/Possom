@@ -5,6 +5,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -106,8 +107,16 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                 }
             }
             return searchResult;
+            
+            
+        } catch (SocketTimeoutException ste) {
+
+            LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
+            return new BasicSearchResult(this);
+
         } catch (IOException e) {
             throw new InfrastructureException(e);
+            
         } catch (SAXException e) {
             throw new InfrastructureException(e);
         }

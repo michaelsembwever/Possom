@@ -9,6 +9,7 @@ package no.schibstedsok.searchportal.view.velocity;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.net.SocketTimeoutException;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.view.ImportPublish;
 import org.apache.log4j.Logger;
@@ -71,11 +72,14 @@ public final class PublishDirective extends Directive {
         try{
             ImportPublish.importPage(url, datamodel, writer);
             return true;
-
+            
+        } catch (SocketTimeoutException ste) {
+            LOG.error(ERR_NETWORK_DOWN + url + " --> " + ste.getMessage());
+            
         }catch(IOException se){
             LOG.error(ERR_NETWORK_DOWN + url, se);
-            return false;
         }
 
+        return false;
     }
 }

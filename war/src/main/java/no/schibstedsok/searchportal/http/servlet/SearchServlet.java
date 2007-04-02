@@ -36,6 +36,7 @@ import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.TradeDoubler;
+import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -61,6 +62,9 @@ public final class SearchServlet extends HttpServlet {
 
 
     // Attributes ----------------------------------------------------
+
+
+    // Attributes ----------------------------------------------------
     //  Important that a Servlet does not have instance fields for synchronisation reasons.
     //
 
@@ -71,9 +75,11 @@ public final class SearchServlet extends HttpServlet {
         // when the root logger is set to DEBUG do not limit connection times
         if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
             System.setProperty("sun.net.client.defaultConnectTimeout", "1000");
-            System.setProperty("sun.net.client.defaultReadTimeout", "1000");
+            System.setProperty("sun.net.client.defaultReadTimeout", "3000");
         }
     }
+
+    // Constructors --------------------------------------------------
 
     // Constructors --------------------------------------------------
 
@@ -85,6 +91,8 @@ public final class SearchServlet extends HttpServlet {
     public void destroy() {
         super.destroy();
     }
+
+    // Package protected ---------------------------------------------
 
     // Package protected ---------------------------------------------
 
@@ -103,76 +111,83 @@ public final class SearchServlet extends HttpServlet {
         final ParametersDataObject parametersDO = datamodel.getParameters();
         final Site site = datamodel.getSite().getSite();
 
-        // BaseContext providing SiteContext and ResourceContext.
-        //  We need it casted as a SiteContext for the ResourceContext code to be happy.
-        final SiteContext genericCxt = new SiteContext(){
-                public PropertiesLoader newPropertiesLoader(
-                        final SiteContext siteCxt,
-                        final String resource,
-                        final Properties properties) {
+        // Anything that hasn't gone through the DataModelFilter isn't valid.
+        //  redirects end up bouncing back in from the UrlRewriteFilter without ever reaching the client.
+        if(null != parametersDO && null != site){
 
-                    return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
-                }
-                public DocumentLoader newDocumentLoader(
-                        final SiteContext siteCxt,
-                        final String resource,
-                        final DocumentBuilder builder) {
+            // BaseContext providing SiteContext and ResourceContext.
+            //  We need it casted as a SiteContext for the ResourceContext code to be happy.
+            final SiteContext genericCxt = new SiteContext(){
+                    public PropertiesLoader newPropertiesLoader(
+                            final SiteContext siteCxt,
+                            final String resource,
+                            final Properties properties) {
 
-                    return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
-                }
-                public Site getSite() {
-                    return site;
-                }
-            };
+                        return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+                    }
+                    public DocumentLoader newDocumentLoader(
+                            final SiteContext siteCxt,
+                            final String resource,
+                            final DocumentBuilder builder) {
 
-        if (!isEmptyQuery(datamodel, response, genericCxt)) {
+                        return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+                    }
+                    public Site getSite() {
+                        return site;
+                    }
+                };
 
-            LOG.trace("doGet()");
-            LOG.debug("Character encoding ="  + request.getCharacterEncoding());
+            if (!isEmptyQuery(datamodel, response, genericCxt)) {
 
-            final StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
+                LOG.trace("doGet()");
+                LOG.debug("Character encoding ="  + request.getCharacterEncoding());
 
-            performFactoryReloads(request.getParameter("reload"), genericCxt);
+                final StopWatch stopWatch = new StopWatch();
+                stopWatch.start();
 
-            updateContentType(site, response, request);
+                performFactoryReloads(request.getParameter("reload"), genericCxt);
 
-            // determine the c parameter. default is 'd' unless there exists a page parameter when it becomes 'i'.
-            final StringDataObject c = parametersDO.getValue("c");
-            final StringDataObject page = parametersDO.getValue("page");
-            final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
-                    ? c.getString()
-                    : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : "d";
+                updateContentType(site, response, request);
 
-            final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
+                // determine the c parameter. default is 'd' unless there exists a page parameter when it becomes 'i'.
+                final StringDataObject c = parametersDO.getValue("c");
+                final StringDataObject page = parametersDO.getValue("page");
+                final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
+                        ? c.getString()
+                        : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : "d";
 
-            if (searchTab == null) {
-                LOG.error(ERR_MISSING_TAB + searchTabKey + " for site: " + site);
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
+                final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
 
-            }else{
-
-                // If the rss is hidden, require a partnerId.
-                // The security by obscurity has been somewhat improved by the
-                // addition of rssPartnerId as a md5-protected parameter (MD5ProtectedParametersFilter).
-                boolean hiddenRssWithoutPartnerId = null != parametersDO.getValues().get("output")
-                    && "rss".equals(parametersDO.getValues().get("output").getString())
-                    && searchTab.isRssHidden()
-                    && null == parametersDO.getValues().get("rssPartnerId");
-
-                if (hiddenRssWithoutPartnerId) {
-
+                if (searchTab == null) {
+                    LOG.error(ERR_MISSING_TAB + searchTabKey + " for site: " + site);
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
 
                 }else{
 
-                    performSearch(request, response, genericCxt, searchTab, stopWatch);
+                    // If the rss is hidden, require a partnerId.
+                    // The security by obscurity has been somewhat improved by the
+                    // addition of rssPartnerId as a md5-protected parameter (MD5ProtectedParametersFilter).
+                    final StringDataObject output = parametersDO.getValue("output");
+                    boolean hiddenRssWithoutPartnerId = null != output
+                        && "rss".equals(output.getString())
+                        && searchTab.isRssHidden()
+                        && null == parametersDO.getValues().get("rssPartnerId");
 
+                    if (hiddenRssWithoutPartnerId) {
+
+                        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+
+                    }else{
+
+                        performSearch(request, response, genericCxt, searchTab, stopWatch);
+
+                    }
                 }
             }
         }
-
     }
+
+    // Private -------------------------------------------------------
 
     // Private -------------------------------------------------------
 
@@ -306,12 +321,26 @@ public final class SearchServlet extends HttpServlet {
 
          // TODO remove next three, access through datamodel instead.
         request.setAttribute("tradedoubler", new TradeDoubler(request));
+        request.setAttribute("text",TextMessages.valueOf(ContextWrapper.wrap(
+                TextMessages.Context.class, 
+                rqCxt,new SiteContext(){
+                public Site getSite() {
+                    return datamodel.getSite().getSite();
+                }
+        })));
         request.setAttribute("no.schibstedsok.Statistics", new StringBuffer());
 
         final Properties props = datamodel.getSite().getSiteConfiguration().getProperties();
 
         request.setAttribute("linkpulse", new Linkpulse(datamodel.getSite().getSite(), props));
     }
+
+    /* TODO Move into a RunningQueryHandler
+     *
+     *  redirects to yellowinfopage if request is from finn.no -> req.param("finn") = "finn"
+     *  finn sends orgnumber as queryparam, if only 1 hit, then redirect.
+     * @return true if a response.sendRedirect(..) was performed.
+     */
 
     /* TODO Move into a RunningQueryHandler
      *
@@ -387,6 +416,7 @@ public final class SearchServlet extends HttpServlet {
         }
         
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
+        final StringDataObject output = datamodel.getParameters().getValue("output");
 
         final RunningQuery.Context rqCxt = ContextWrapper.wrap(
                 RunningQuery.Context.class,
@@ -406,34 +436,36 @@ public final class SearchServlet extends HttpServlet {
 
         updateAttributes(request);
 
-        try {
+        if(null == output || !"opensearch".equalsIgnoreCase(output.getString())){
+            
+            try {
 
-            final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
+                final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
 
-            query.run();
+                query.run();
 
-            stopWatch.stop();
-            LOG.info("Search took " + stopWatch + " " + datamodel.getQuery().getString());
+                stopWatch.stop();
+                LOG.info("Search took " + stopWatch + " " + datamodel.getQuery().getString());
 
-            if(!"NOCOUNT".equals(request.getParameter("IGNORE"))){
-                final String output = (String) request.getParameter("output");
+                if(!"NOCOUNT".equals(request.getParameter("IGNORE"))){
 
-                STATISTICS_LOG.info(
-                    "<search-servlet"
-                        + (null != output ? " output=\"" + output + "\">" : ">")
-                        + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>"
-                        + "<time>" + stopWatch + "</time>"
-                        + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
-                    + "</search-servlet>");
+                    STATISTICS_LOG.info(
+                        "<search-servlet"
+                            + (null != output ? " output=\"" + output.getXmlEscaped() + "\">" : ">")
+                            + "<query>" + datamodel.getQuery().getXmlEscaped() + "</query>"
+                            + "<time>" + stopWatch + "</time>"
+                            + ((StringBuffer)request.getAttribute("no.schibstedsok.Statistics")).toString()
+                        + "</search-servlet>");
+                }
+
+
+                checkFinn(request, response);
+
+            } catch (InterruptedException e) {
+                LOG.error("Task timed out");
+            } catch (SiteKeyedFactoryInstantiationException e) {
+                LOG.error(e.getMessage(), e);
             }
-
-
-            checkFinn(request, response);
-
-        } catch (InterruptedException e) {
-            LOG.error("Task timed out");
-        } catch (SiteKeyedFactoryInstantiationException e) {
-            LOG.error(e.getMessage(), e);
         }
     }
 

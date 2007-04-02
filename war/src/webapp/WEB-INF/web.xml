@@ -83,24 +83,28 @@
     <filter-mapping>
         <filter-name>DataModelFilter</filter-name>
         <url-pattern>/*</url-pattern>
+        <dispatcher>INCLUDE</dispatcher> 
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     <filter-mapping>
         <filter-name>UserFilter</filter-name>
         <url-pattern>/search/*</url-pattern>
+        <dispatcher>INCLUDE</dispatcher> 
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     <filter-mapping>
         <filter-name>md5ProtectParameters</filter-name>
         <url-pattern>/search/*</url-pattern>
+        <dispatcher>INCLUDE</dispatcher> 
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     <filter-mapping>
         <filter-name>sitemesh</filter-name>
         <url-pattern>/search/*</url-pattern>
+        <dispatcher>INCLUDE</dispatcher> 
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher> 
     </filter-mapping>

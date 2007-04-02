@@ -51,11 +51,8 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -80,9 +77,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.searchportal.analyzer.Analysis");
     private static final Logger PRODUCT_LOG = Logger.getLogger("no.schibstedsok.Product");
 
-    private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_RUN_QUERY = "Failure to run query";
-    private static final String ERR_EXECUTION_ERROR = "Failure on a search command: ";
+    private static final String ERR_EXECUTION_ERROR = "Failure in a search command.";
+    private static final String ERR_COMMAND_TIMEOUT = "Timeout on search command ";
     private static final String INFO_COMMAND_COUNT = "Commands to invoke ";
 
     // Attributes ----------------------------------------------------
@@ -378,8 +375,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             for (Future<SearchResult> task : results.values()) {
                 try{
                     task.get(TIMEOUT, TimeUnit.MILLISECONDS);
+                    
                 }catch(TimeoutException te){
-                    LOG.error(ERR_EXECUTION_ERROR, te);
+                    LOG.error(ERR_COMMAND_TIMEOUT + task);
                 }
             }
 
@@ -623,7 +621,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         };
 
         parameters.put("configuration", props);
-        parameters.put("text", TextMessages.valueOf(ContextWrapper.wrap(TextMessages.Context.class, rqCxt, siteCxt)));
         parameters.put("channels", Channels.valueOf(ContextWrapper.wrap(Channels.Context.class, rqCxt, siteCxt)));
 
         parameters.put("tab", rqCxt.getSearchTab()); // TODO remove

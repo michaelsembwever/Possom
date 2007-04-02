@@ -69,8 +69,8 @@ public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand 
             // Blocket cars
             String nads = "0";
             if (carsMap.get(query.toLowerCase()) != null) {
-                port.search(query, BLOCKET_CAR_CATEGORY, BLOCKET_PRIVATE_ADS_TYPE, lholder, sholder);
                 ((Stub) port).setTimeout(1000);
+                port.search(query, BLOCKET_CAR_CATEGORY, BLOCKET_PRIVATE_ADS_TYPE, lholder, sholder);
                 nads = Long.toString(lholder.value);
                 if ((nads != null) && (!nads.equals("0"))) {
                     result.addField("searchquery", query);
@@ -108,8 +108,8 @@ public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand 
             if (blocketContainsAccessories) {
                 LongHolder numberOfAccessories = new LongHolder();
                 StringHolder accUrl = new StringHolder();
-                port.search(query, BLOCKET_CAR_ACCESSORIES_CATEGORY, BLOCKET_ALL_ADS_TYPE, numberOfAccessories, accUrl);
                 ((Stub) port).setTimeout(1000);
+                port.search(query, BLOCKET_CAR_ACCESSORIES_CATEGORY, BLOCKET_ALL_ADS_TYPE, numberOfAccessories, accUrl);
                 accNads = Long.toString(numberOfAccessories.value);
                 if ((accNads != null) && (!accNads.equalsIgnoreCase("0"))) {
                     result.addField("searchquery", query);
@@ -145,34 +145,4 @@ public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand 
 
         return result;
     }
-
-    public enum VehicleType {
-        CAR(4), MC(6), MOPED(7);
-
-        private final int blocketCategory;
-
-        VehicleType(int blocketCategory) {
-            this.blocketCategory = blocketCategory;
-        }
-
-        public int blocketCategory() {
-            return blocketCategory;
-        }
-
-    };
-
-    public class VehicleProperties {
-        VehicleProperties() {
-        }
-
-        private VehicleType type = null;
-
-        private String brand = "";
-
-        private String model = "";
-    }
-    /**
-     * getBrandFromModel(model) getBrand(str) getModel(str) getType(str)
-     */
-
 }

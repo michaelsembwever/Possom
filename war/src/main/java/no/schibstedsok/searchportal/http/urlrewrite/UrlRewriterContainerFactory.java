@@ -168,7 +168,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
         // finished
         LOG.info("Parsing " + URLREWRITE_XMLFILE + " finished");
         
-        return new URC(0 < output.length() ? output : EMPTY_RULES);
+        return new URC(0 < output.trim().length() ? output : EMPTY_RULES);
     }
     
     private static StringWriter transformDocumentToString(final Document xml){
@@ -179,7 +179,7 @@ public final class UrlRewriterContainerFactory /*extends AbstractDocumentFactory
             final Transformer transformer = TransformerFactory.newInstance().newTransformer();
             transformer.setOutputProperty(OutputKeys.METHOD, "xml");          
             transformer.setOutputProperty(OutputKeys.INDENT,  "no" );
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.transform( new DOMSource(xml), res );
             
         }catch(TransformerException te){
