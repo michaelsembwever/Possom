@@ -77,9 +77,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private static final Logger ANALYSIS_LOG = Logger.getLogger("no.schibstedsok.searchportal.analyzer.Analysis");
     private static final Logger PRODUCT_LOG = Logger.getLogger("no.schibstedsok.Product");
 
-    private static final String ERR_PARSING = "Unable to create RunningQuery's query due to ParseException";
     private static final String ERR_RUN_QUERY = "Failure to run query";
-    private static final String ERR_EXECUTION_ERROR = "Failure on a search command: ";
+    private static final String ERR_EXECUTION_ERROR = "Failure in a search command.";
+    private static final String ERR_COMMAND_TIMEOUT = "Timeout on search command ";
     private static final String INFO_COMMAND_COUNT = "Commands to invoke ";
 
     // Attributes ----------------------------------------------------
@@ -375,8 +375,9 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             for (Future<SearchResult> task : results.values()) {
                 try{
                     task.get(TIMEOUT, TimeUnit.MILLISECONDS);
+                    
                 }catch(TimeoutException te){
-                    LOG.error(ERR_EXECUTION_ERROR, te);
+                    LOG.error(ERR_COMMAND_TIMEOUT + task);
                 }
             }
 
