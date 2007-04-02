@@ -309,7 +309,9 @@ public final class SearchServlet extends HttpServlet {
         }
     }
 
-    private static void updateAttributes(final HttpServletRequest request){
+    private static void updateAttributes(
+            final HttpServletRequest request,
+            final RunningQuery.Context rqCxt){
 
 
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
@@ -434,7 +436,7 @@ public final class SearchServlet extends HttpServlet {
                 genericCxt
         );
 
-        updateAttributes(request);
+        updateAttributes(request, rqCxt);
 
         if(null == output || !"opensearch".equalsIgnoreCase(output.getString())){
             
