@@ -40,7 +40,7 @@
         if (lang == null || lang.length() == 0) {
             lang = "en";
         }
-        String q = URLEncoder.encode(datamodel.getQuery().getUtf8UrlEncoded());
+        String q = datamodel.getQuery().getUtf8UrlEncoded();
         String c = request.getParameter("c");
         String s = request.getParameter("s");
         if (s == null || s.length() == 0) {
