@@ -40,7 +40,15 @@
         if (lang == null || lang.length() == 0) {
             lang = "en";
         }
-        String q = datamodel.getQuery().getUtf8UrlEncoded();
+
+        String q = request.getParameter("q");
+
+        if (q != null) {
+            q = java.net.URLEncoder.encode(q, "UTF-8");
+        } else {
+            q = "";
+        }
+
         String c = request.getParameter("c");
         String s = request.getParameter("s");
         if (s == null || s.length() == 0) {
