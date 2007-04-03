@@ -13,8 +13,6 @@
 
     <!-- tomcat puts in the name of the welcome page -->
     <rule><from>^/index.jsp$</from><to>/</to></rule> 
-    <!-- /psearch/ is an old way of correcting iso urls into utf8. /search/ handles it now automatically. -->
-    <rule><from>^/psearch/(.*)$</from><to>/search/$1</to></rule> 
 
     <!-- Everything non-specified falls back to the default search (unspecified c parameter) -->
     <!-- TODO more work is needed to exclude 
