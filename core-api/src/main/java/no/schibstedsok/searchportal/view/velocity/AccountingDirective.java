@@ -134,7 +134,7 @@ public final class AccountingDirective extends Directive {
         }
         html += "</table>";
         html += "<div class=\"lindorff\">* Regnskapet viser kun hovedtall, og er levert av Lindorff Decision.</div>";
-        html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"" + lpUrl + "\" target=\"_blank\"><img src=\"../images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
+        html += "<div style=\"clear:both; padding-top:4px;\"><a href=\"" + lpUrl + "\" target=\"_blank\"><img src=\"/images/lindorff_logo.gif\" alt=\"Linforff logo\" /></a></div>";
 
         writer.write(html);
         final Token lastToken = node.getLastToken();
