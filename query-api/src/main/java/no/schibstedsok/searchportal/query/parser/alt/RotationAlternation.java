@@ -21,6 +21,7 @@ import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.XorClause.Hint;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.finder.ForestFinder;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
@@ -124,7 +125,7 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  *
  */
-public final class RotationAlternation {
+public final class RotationAlternation extends AbstractAlternation{
 
     /*
      * Variable notation:
@@ -133,10 +134,6 @@ public final class RotationAlternation {
      *  nXX -> newly rotated XX clause
      */
 
-    /** Context to work within. **/
-    public interface Context extends BaseContext, QueryParser.Context {
-        ParentFinder getParentFinder();
-    }
 
     // Constants -----------------------------------------------------
     private static final Logger LOG = Logger.getLogger(RotationAlternation.class);
@@ -149,7 +146,6 @@ public final class RotationAlternation {
 
     // Attributes ----------------------------------------------------
 
-    private final Context context;
 
     /** mappings from the newly rotated clause to the same original clause **/
     private final Map<DoubleOperatorClause,DoubleOperatorClause> originalFromNew
@@ -170,9 +166,10 @@ public final class RotationAlternation {
 
     /**
      * Creates a new instance of RotationAlternation.
+     * @param cxt 
      */
     public RotationAlternation(final Context cxt) {
-        context = cxt;
+        super(cxt);
     }
 
     // Public --------------------------------------------------------
@@ -181,8 +178,9 @@ public final class RotationAlternation {
      * These XorClauses hold all possible rotations for the corresponding forest.
      * Each XorClause always puts the left-leaning rotation as the left child,
      *  and the right-leaning rotation (or the next XorClause) as the right child.
-     **/
-    public Clause createRotations(final Clause originalRoot) {
+     ** @param originalRoot 
+     */
+    public Clause alternate(final Clause originalRoot) {
 
         // find forests (subtrees) of AndClauses and OrClauses.
         // TODO handle forests hidden behind SingleOperatorClauses (NOT and ANDNO)
@@ -232,6 +230,30 @@ public final class RotationAlternation {
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
+    
+    /** {@inherit} **/
+    @Override
+    protected <T extends DoubleOperatorClause> T createOperatorClause(
+            final Clause left,
+            final Clause right,
+            final T replacementFor) {
+
+        LOG.debug("createOperatorClause(" + left + ", " + right + ", " + replacementFor + ")");
+        
+        final T clause = super.createOperatorClause(left, right, replacementFor);
+        
+        // update our mappings between rotations
+        originalFromNew.put(clause, replacementFor);
+        newFromOriginal.put(replacementFor, clause);
+        beforeRotationFromNew.put(clause, beforeRotationFromOriginal.get(replacementFor));
+
+        return clause;
+    }    
+
+    /** {@inherit} **/
+    protected Hint getAlternationHint() {
+        return Hint.ROTATION_ALTERNATION;
+    }
 
     // Private -------------------------------------------------------
 
@@ -361,135 +383,6 @@ public final class RotationAlternation {
         }
         return (T) nOrphan;
     }
-
-    /** will return null instead of a leafClause **/
-    private <T extends DoubleOperatorClause> T leftOpChild(final T clause){
-
-        final Clause c = leftChild(clause);
-        return clause.getClass().isAssignableFrom(c.getClass()) ? (T) c : null;
-    }
-
-    /** return the left child, left or operation. **/
-    private Clause leftChild(final DoubleOperatorClause clause) {
-
-        final Clause c = clause.getFirstClause();
-        LOG.trace("leftChild -->" + c);
-        return c;
-    }
-
-    /** will return null instead of a leafClause **/
-    private <T extends DoubleOperatorClause> T rightOpChild(final T clause){
-
-        final Clause c = rightChild(clause);
-        return clause.getClass().isAssignableFrom(c.getClass()) ? (T) c : null;
-    }
-
-    /** will return right child, leaf or operation. **/
-    private Clause rightChild(final DoubleOperatorClause clause) {
-
-        final Clause c = clause.getSecondClause();
-        LOG.trace("rightChild -->" + c);
-        return c;
-    }
-
-    /** return the parent operation clause of the given child.
-     * And the child must be a descendant of the root. **/
-    private <T extends OperationClause> T parent(final T root, final Clause child) {
-
-        return (T) context.getParentFinder().getParent(root, child);
-    }
-
-    /** return all parents operation clauses of the given child. **/
-    private <T extends OperationClause> List<T> parents(final T root, final Clause child) {
-
-        return (List<T>) context.getParentFinder().getParents(root, child);
-    }
-
-    /** Build new DoubleOperatorClauses from newChild all the way back up to the root.
-     * XXX Only handles single splits, or one layer of variations, denoted by the childsParentBeforeRotation argument.
-     *      This could be solved by using an array, specifying ancestry line, for the argument instead.
-     **/
-    private DoubleOperatorClause replaceDescendant(
-            final DoubleOperatorClause root,
-            final DoubleOperatorClause newChild,
-            final DoubleOperatorClause childBeforeRotation,
-            final DoubleOperatorClause childsParentBeforeRotation){
-
-        DoubleOperatorClause nC = newChild;
-        DoubleOperatorClause rC = childBeforeRotation;
-        DoubleOperatorClause rCParent = childsParentBeforeRotation;
-
-        do{
-            nC = replaceOperatorClause(root, nC, rC, rCParent);
-            for(DoubleOperatorClause parent : parents(root, rC)){
-                if(rCParent == parent){
-                    rC = parent;
-                    rCParent = root == rCParent ? rCParent : parent(root, rCParent);
-                    break;
-                }
-            }
-        }while(root != rC);
-
-        return nC;
-    }
-
-    private <T extends DoubleOperatorClause> T replaceOperatorClause(
-            final DoubleOperatorClause root,
-            final Clause newChild,
-            final T childBeforeRotation,
-            final DoubleOperatorClause childsParentBeforeRotation) {
-
-        return createOperatorClause(
-                    leftChild(childsParentBeforeRotation) == childBeforeRotation
-                        ? newChild
-                        : leftChild(childsParentBeforeRotation),
-                    rightChild(childsParentBeforeRotation) == childBeforeRotation
-                        ? newChild
-                        : rightChild(childsParentBeforeRotation),
-                    (T)childsParentBeforeRotation); // XXX last argument needs to be from orginal branch
-    }
-
-    /** Create a new operator clause, of type opCls, with the left and right children.
-     * We must also specify for whom it is to be a replacement for.
-     * The replacementFor must be from the original branch.
-     **/
-    private <T extends DoubleOperatorClause> T createOperatorClause(
-            final Clause left,
-            final Clause right,
-            final T replacementFor) {
-
-        LOG.debug("createOperatorClause(" + left + ", " + right + ", " + replacementFor + ")");
-        T clause = null;
-
-        if (AndClause.class.isAssignableFrom(replacementFor.getClass())) {
-            clause = (T) context.createAndClause(left, right);
-
-        } else if (XorClause.class.isAssignableFrom(replacementFor.getClass())) {
-            clause = (T) context.createXorClause(left, right, ((XorClause)replacementFor).getHint());
-
-        } else if (OrClause.class.isAssignableFrom(replacementFor.getClass())) {
-            clause = (T) context.createOrClause(left, right);
-
-        } else if (DefaultOperatorClause.class.isAssignableFrom(replacementFor.getClass())) {
-            clause = (T) context.createDefaultOperatorClause(left, right);
-
-        }
-        // update our mappings between rotations
-        originalFromNew.put(clause, replacementFor);
-        newFromOriginal.put(replacementFor, clause);
-        beforeRotationFromNew.put(clause, beforeRotationFromOriginal.get(replacementFor));
-
-        return clause;
-    }
-
-    private XorClause createXorClause(final LinkedList<? extends DoubleOperatorClause> rotations){
-
-        return context.createXorClause(
-                rotations.removeLast(),
-                rotations.size() == 1 ? rotations.removeLast() : createXorClause(rotations),
-                XorClause.Hint.ROTATION_ALTERNATION);
-    }
-
 
     private Map<DoubleOperatorClause, DoubleOperatorClause> getBeforeRotationFromNew() {
         return beforeRotationFromNew;

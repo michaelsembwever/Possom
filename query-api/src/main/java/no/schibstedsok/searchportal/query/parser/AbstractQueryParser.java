@@ -10,7 +10,9 @@ package no.schibstedsok.searchportal.query.parser;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Stack;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
@@ -18,6 +20,7 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
+import no.schibstedsok.searchportal.query.parser.alt.Alternation;
 import no.schibstedsok.searchportal.query.parser.alt.RotationAlternation;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -88,7 +91,7 @@ public abstract class AbstractQueryParser implements QueryParser {
 
                     // Uncomment the following line, and comment the line after than, to disable RotationAlternation.
                     //final Clause root = parse();
-                    final Clause root = alterations( parse(), parentFinder );
+                    final Clause root = alternate( parse(), parentFinder );
 
                     query = createQuery(context.getQueryString(), false, root, parentFinder);
                 }
@@ -231,19 +234,34 @@ public abstract class AbstractQueryParser implements QueryParser {
     
     // Private -------------------------------------------------------
     
-    private Clause alterations(final Clause original, final ParentFinder parentFinder){
+    private Clause alternate(final Clause original, final ParentFinder parentFinder){
+        
+        Clause result = original;
+        for(Alternation alternation : getAlternations(parentFinder)){
+            result = alternation.alternate(result);
+        }
+        return result;
+    }
+    
+    private List<Alternation> getAlternations(final ParentFinder parentFinder){
 
-        // rotation alterations
-        final RotationAlternation rotator = new RotationAlternation(
-                ContextWrapper.wrap(RotationAlternation.Context.class,
+        // the list we'll return
+        final List<Alternation> alternations = new ArrayList<Alternation>();
+        
+        // the context each alternation will work with
+        final Alternation.Context cxt = ContextWrapper.wrap(
+                Alternation.Context.class,
                 new BaseContext(){
-                        public ParentFinder getParentFinder(){
-                            return parentFinder;
-                        }
+                    public ParentFinder getParentFinder(){
+                        return parentFinder;
+                    }   
                 },
-                context));
+                context);
+                
+        // create and add each alternation
+        alternations.add(new RotationAlternation(cxt));
 
-        return rotator.createRotations(original);
+        return alternations;
     }
 
 
