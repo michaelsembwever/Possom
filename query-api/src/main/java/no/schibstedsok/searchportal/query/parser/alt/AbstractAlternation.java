@@ -210,7 +210,7 @@ public abstract class AbstractAlternation implements Alternation{
      * @param alternatives 
      * @return 
      */
-    protected XorClause createXorClause(final LinkedList<? extends DoubleOperatorClause> alternatives){
+    protected XorClause createXorClause(final LinkedList<? extends Clause> alternatives){
 
         return context.createXorClause(
                 alternatives.removeLast(),

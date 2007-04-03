@@ -294,10 +294,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param clause 
      */
     protected void visitXorClause(final Visitor visitor, final XorClause clause){
-        // [TODO] we need to determine which branch in the query-tree we want to use.
+        
+        // determine which branch in the query-tree we want to use.
         //  Both branches to a XorClause should never be used.
-        clause.getFirstClause().accept(visitor);
-        // clause.getSecondClause().accept(this);
+        switch(clause.getHint()){        
+        default:
+            clause.getFirstClause().accept(visitor);
+            break;
+        }
     }
     /** TODO comment me. **/
     protected final void visitImpl(final XorClause clause) {

@@ -332,16 +332,20 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
         // If we have a match on an international phone number, but it is not recognized as
         // a local phone number, force it to use the original number string.
-        if (clause.getHint() == XorClause.Hint.PHONE_NUMBER_ON_LEFT
-                && !clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
-
+        switch(clause.getHint()){
+        case FULLNAME_ON_LEFT:
+        case PHRASE_ON_LEFT:
             clause.getSecondClause().accept(visitor);
-
-        } else if(XorClause.Hint.PHRASE_ON_LEFT == clause.getHint()){
-            clause.getSecondClause().accept(visitor);
-
-        } else {
+            break;
+            
+        case PHONE_NUMBER_ON_LEFT:
+            if (!clause.getFirstClause().getKnownPredicates().contains(TokenPredicate.PHONENUMBER)) {
+                clause.getSecondClause().accept(visitor);
+                break;
+            }
+        default:
             super.visitXorClause(visitor, clause);
-        }
+            break;
+        }        
     }
 }

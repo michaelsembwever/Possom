@@ -11,18 +11,21 @@ package no.schibstedsok.searchportal.query;
 
 
 /** A special clause to distinguish between QueryParser's guesses to the specific LeafClause type.
+ * By default the name of the hint indicates to what is on the left side, or the first child.
+ * 
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 public interface XorClause extends OrClause {
-    
+
     /** The Hint give the neccesary programmatic hint to how the two branches differ. **/
     Hint getHint();
 
-    enum Hint{ 
+    enum Hint{
+        FULLNAME_ON_LEFT,
+        NUMBER_GROUP_ON_LEFT,
         PHRASE_ON_LEFT,
         PHONE_NUMBER_ON_LEFT,
-        NUMBER_GROUP_ON_LEFT,
         ROTATION_ALTERNATION
     }
 

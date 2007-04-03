@@ -21,6 +21,7 @@ import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.QueryStringContext;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.parser.alt.Alternation;
+import no.schibstedsok.searchportal.query.parser.alt.FullnameAlternation;
 import no.schibstedsok.searchportal.query.parser.alt.RotationAlternation;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
@@ -260,6 +261,7 @@ public abstract class AbstractQueryParser implements QueryParser {
                 
         // create and add each alternation
         alternations.add(new RotationAlternation(cxt));
+        alternations.add(new FullnameAlternation(cxt));
 
         return alternations;
     }

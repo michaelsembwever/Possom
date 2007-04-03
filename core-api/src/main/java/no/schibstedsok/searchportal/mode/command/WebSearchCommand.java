@@ -36,14 +36,15 @@ public class WebSearchCommand extends FastSearchCommand {
      */
     protected void visitXorClause(final Visitor visitor, final XorClause clause) {
         switch(clause.getHint()){
-            case PHRASE_ON_LEFT:
-                // Web searches should use phrases over separate words.
-                clause.getFirstClause().accept(visitor);
-                break;
-            default:
-                // All other high level clauses are ignored.
-                clause.getSecondClause().accept(visitor);
-                break;
+        case PHRASE_ON_LEFT:
+        case FULLNAME_ON_LEFT:
+            // Web searches should use phrases over separate words.
+            clause.getFirstClause().accept(visitor);
+            break;
+        default:
+            // All other high level clauses are ignored.
+            clause.getSecondClause().accept(visitor);
+            break;
         }
     }
 

@@ -363,6 +363,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      */
     protected void visitXorClause(final Visitor visitor, final XorClause clause) {
         switch (clause.getHint()) {
+            case FULLNAME_ON_LEFT:
             case PHRASE_ON_LEFT:
                 // Web searches should use phrases over separate words.
                 clause.getFirstClause().accept(visitor);
