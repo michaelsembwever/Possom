@@ -9,9 +9,11 @@
 package no.schibstedsok.searchportal.view;
 
 import java.util.LinkedList;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
+import org.apache.commons.lang.StringEscapeUtils;
 
 /** My favourite dish of ChopSuey.
  * 
@@ -25,13 +27,14 @@ public final class StringChopper {
     private static final Logger LOG = Logger.getLogger(StringChopper.class);
     
     private static final String DEBUG_CHOPSUEY = "Chopped it up to ";
-    
+    private static final String MALFORMED_HTML_ESCAPING = "Malformed HTML. Escaping the entire thing: ";
+
     private static final Pattern openTag = Pattern.compile("<[^<]+>");
     private static final Pattern closeTag = Pattern.compile("</[^<]+>");
     private static final Pattern singleTag = Pattern.compile("<[^<]+/>");
     private static final Pattern la = Pattern.compile("<");
     private static final Pattern ra = Pattern.compile(">");
-    
+
     // Attributes ----------------------------------------------------
     
     // Static --------------------------------------------------------
@@ -89,8 +92,13 @@ public final class StringChopper {
 
         final Matcher matcher = openTag.matcher(choppedString);
         while( matcher.find() ){
-            if( closeTag.matcher(matcher.group()).find() ){
-                tags.removeFirst();
+            if( closeTag.matcher(matcher.group()).find()) {
+                try {
+                    tags.removeFirst();
+                } catch (NoSuchElementException ex) {
+                    LOG.warn(MALFORMED_HTML_ESCAPING + s);
+                    return StringEscapeUtils.escapeHtml(s); 
+                }
             }else if( !singleTag.matcher(matcher.group()).find() ){
                 tags.addFirst(matcher.group());
             }
