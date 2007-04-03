@@ -133,7 +133,8 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
      */
     protected void visitImpl(final LeafClause clause) {
 
-        final List<OperationClause> parents  = parentsOf(clause);
+        final List<OperationClause> parents  
+                = context.getQuery().getParentFinder().getAncestors(context.getQuery().getRootClause(), clause);
 
         boolean geo = clause.getKnownPredicates().contains(TokenPredicate.GEOLOCAL)
                 || clause.getKnownPredicates().contains(TokenPredicate.GEOGLOBAL);
@@ -142,7 +143,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
 
         // check if any possible parents of this clause match the fullname predicate.
         final boolean insideFullname = context.getApplications().contains(Application.WHITE)
-                && insideOf(parents, TokenPredicate.FULLNAME);
+                && ParentFinder.insideOf(parents, TokenPredicate.FULLNAME);
 
         boolean isNameOrNumber = context.getApplications().contains(Application.WHITE)
                 && clause.getKnownPredicates().contains(TokenPredicate.FIRSTNAME);
@@ -154,7 +155,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
 
         // check if any possible parents of this clause match the company predicate.
         final boolean insideCompany = context.getApplications().contains(Application.YELLOW)
-                && insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
+                && ParentFinder.insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
 
         if(hasCompany || hasFullname){
 
@@ -245,30 +246,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
     }
 
     // Private -------------------------------------------------------
-    
-    private List<OperationClause> parentsOf(Clause clause){
-
-        final Query query = context.getQuery();
-
-        final List<OperationClause> parents = new ArrayList<OperationClause>();
-
-        for(OperationClause oc : query.getParentFinder().getParents(query.getRootClause(), clause)){
-            parents.add(oc);
-            parents.addAll(parentsOf(oc));
-        }
-        return parents;
-    }
-
-    private boolean insideOf(final List<OperationClause> parents, final TokenPredicate token){
-
-        boolean inside = false;
-        for(OperationClause oc : parents){
-            inside |= oc.getKnownPredicates().contains(token);
-        }
-        return inside;
-    }
-    
-        
+  
     // Inner classes -------------------------------------------------
         
     private final class FullnameOrCompanyFinder extends AbstractReflectionVisitor{
@@ -278,7 +256,9 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
             final Set<TokenPredicate> predicates = clause.getKnownPredicates();
 
             final boolean insideFullname = context.getApplications().contains(Application.WHITE) 
-                    && insideOf(parentsOf(clause), TokenPredicate.FULLNAME);
+                    && ParentFinder.insideOf(context.getQuery().getParentFinder().getAncestors(
+                        context.getQuery().getRootClause(), clause),
+                        TokenPredicate.FULLNAME);
 
             if(!insideFullname){
                 final boolean company = context.getApplications().contains(Application.YELLOW)
@@ -306,13 +286,14 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
 
         protected void visitImpl(final DefaultOperatorClause clause) {
 
-            final List<OperationClause> parents = parentsOf(clause);
+            final List<OperationClause> parents 
+                    = context.getQuery().getParentFinder().getAncestors(context.getQuery().getRootClause(), clause);
             
             final boolean insideFullname = context.getApplications().contains(Application.WHITE)
-                    && insideOf(parents, TokenPredicate.FULLNAME);
+                    && ParentFinder.insideOf(parents, TokenPredicate.FULLNAME);
             
             final boolean insideCompany = context.getApplications().contains(Application.YELLOW)
-                    && insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
+                    && ParentFinder.insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
 
             if(!insideFullname && !insideCompany){
                 final Set<TokenPredicate> predicates = clause.getKnownPredicates();

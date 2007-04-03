@@ -827,11 +827,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getFirstClause().accept(this);
         }
 
-        private void visitImpl(final NotClause clause){
+        protected void visitImpl(final NotClause clause){
             // ignore fields inside NOTs for now
         }
 
-        private void visitImpl(final AndNotClause clause){
+        protected void visitImpl(final AndNotClause clause){
             // ignore fields inside NOTs for now
         }
 

@@ -24,14 +24,19 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
+import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.finder.Counter;
+import no.schibstedsok.searchportal.query.finder.ParentFinder;
+import no.schibstedsok.searchportal.query.finder.PredicateFinder;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.Application;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
+import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -79,12 +84,18 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /** User supplied value for sorting type of search result. */
     private String userSortBy = "kw"; // default er sorting på keywords
+    
+    /** The number of terms (words) in the largest COMPANY_KEYWORD_RESERVED match in the query.
+     * Any leaf clauses within this match are boundary matched in the lemiypcfkeywords filter,
+     *  all other leaf clauses matches within COMPANY_KEYWORD_RESERVED will be treated as normal leaves. 
+     **/
+    private int keywordReservedTermSize = 0;
 
     /**
      * Indicate if q-parameter should be split on recogniced geographic
      * location, set in modes.xml.
      */
-    private boolean split = false;    // default value is false.
+    private final boolean split;
 
     /**
      *  If split on known geo, put resulting found geographic locations in
@@ -360,37 +371,62 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     protected void visitImpl(final LeafClause clause) {
-        boolean useTerm = true;
-        boolean hasNotWordCharacters = false;
         
-        if(split && knownGeo.contains(clause.getTerm())){
-            useTerm=false;
-        }
+        final boolean useTerm = !split && knownGeo.contains(clause.getTerm());        
 
-        Pattern p = Pattern.compile("\\.|\\-");        
-        Matcher m = p.matcher(getTransformedTerms().get(clause));
+        final Pattern p = Pattern.compile("\\.|\\-");        
+        final Matcher m = p.matcher(getTransformedTerms().get(clause));
 
-        hasNotWordCharacters = m.find();
+        final boolean hasNotWordCharacters = m.find();
 
         if(useTerm){
             
             if(hasNotWordCharacters){
             
-                appendToQueryRepresentation(
-                        createPhraseQuerySyntax("\""+getTransformedTerms().get(clause) + "\""));
+                appendToQueryRepresentation(createPhraseQuerySyntax("\""+getTransformedTerms().get(clause) + "\""));
             
             }else if(!getTransformedTerms().get(clause).equals("")) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("(");
                 
-                sb.append("iypcfphnavn:"+getTransformedTerms().get(clause) + " ANY ");
+                final Query query = context.getDataModel().getQuery().getQuery();
                 
-                sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause)
-                        + " ANY ");
-                sb.append("lemiypcfkeywordslow:"
-                        + getTransformedTerms().get(clause));
-                sb.append(")");
-                appendToQueryRepresentation(sb.toString());
+                final List<OperationClause> ancestors 
+                        = query.getParentFinder().getAncestors(query.getRootClause(), clause);
+                                
+                if( 0 == keywordReservedTermSize ){
+                    
+                    final Clause longestCkr = new PredicateFinder().findFirstClause(
+                            query.getRootClause(), 
+                            TokenPredicate.COMPANY_KEYWORD_RESERVED,
+                            context.getTokenEvaluationEngine());
+
+                    keywordReservedTermSize = null != longestCkr
+                            ? new Counter().getTermCount(longestCkr)
+                            : -1;
+                }
+                
+                final Clause ckr = ancestors.get(0);
+                
+                final boolean insideCKR = 
+                        0 < keywordReservedTermSize
+                        && new Counter().getTermCount(ckr) == keywordReservedTermSize
+                        && ParentFinder.insideOf(ancestors, TokenPredicate.COMPANY_KEYWORD_RESERVED);
+                                
+                if(insideCKR){
+                    
+                    // SEARCH-1796
+                    // XXX this will write out the filter multiple times but hopefully fast won't object
+                    appendToQueryRepresentation("lemiypcfkeywords:^\"" + ckr.getTerm() + "\"$");
+                    
+                }else{
+                    
+                    final StringBuilder sb = new StringBuilder();
+                    //sb.append("(");
+                    sb.append("iypcfphnavn:" + getTransformedTerms().get(clause) + " ANY ");
+                    //sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause) + " ANY ");
+                    //sb.append("lemiypcfkeywordslow:" + getTransformedTerms().get(clause));
+                    //sb.append(")");
+                    appendToQueryRepresentation(sb.toString());
+                }
             }
         }
     }
@@ -423,10 +459,10 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /**
      * {@inheritDoc}
-     * @param clause the clause to process.
      */
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
+        
 
         clause.getFirstClause().accept(this);
 

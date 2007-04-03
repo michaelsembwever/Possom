@@ -1,5 +1,4 @@
 // Copyright (2007) Schibsted Søk AS
-// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.finder;
 
 import java.util.ArrayList;
@@ -12,10 +11,14 @@ import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
+import no.schibstedsok.searchportal.query.token.TokenPredicate;
 
 
-// Inner classes -------------------------------------------------
-
+/** Visitor used to find a clause's parents.
+ * Clauses' do not keep references to their parents as they are immutable and can thus be reused within different trees.
+ * 
+ * @author mick
+ */
 public final class ParentFinder extends AbstractReflectionVisitor {
 
     private boolean searching = false;
@@ -30,11 +33,55 @@ public final class ParentFinder extends AbstractReflectionVisitor {
     private static final String ERR_CHILD_NOT_IN_HEIRARCHY = "The child is not part of this clause family!";
 
 
+    /**
+     * 
+     * @param parents 
+     * @param token 
+     * @return 
+     */
+    public static boolean insideOf(final List<OperationClause> parents, final TokenPredicate token){
+
+        boolean inside = false;
+        for(OperationClause oc : parents){
+            inside |= oc.getKnownPredicates().contains(token);
+        }
+        return inside;
+    }    
+    
+    /** Returns all parents, grandparents, great-grandparents, etc.
+     * 
+     * @param root 
+     * @param clause 
+     * @return 
+     */
+    public synchronized List<OperationClause> getAncestors(final Clause root, final Clause clause){
+
+        final List<OperationClause> parents = new ArrayList<OperationClause>();
+
+        for(OperationClause oc : getParents(root, clause)){
+            parents.addAll(getAncestors(root, oc));
+            parents.add(oc);
+        }
+        return parents;
+    }    
+
+    /** Returns all direct parents.
+     * 
+     * @param root 
+     * @param child 
+     * @return 
+     */
     public synchronized List<OperationClause> getParents(final Clause root, final Clause child) {
         findParentsImpl(root, child);
         return Collections.unmodifiableList(new ArrayList<OperationClause>( parents ));
     }
 
+    /** Finds the first found direct parent.
+     * 
+     * @param root 
+     * @param child 
+     * @return 
+     */
     public synchronized OperationClause getParent(final Clause root, final Clause child) {
 
         singleMode = true;
@@ -84,12 +131,20 @@ public final class ParentFinder extends AbstractReflectionVisitor {
         this.child = null;
     }    
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final OperationClause clause) {
         if (!singleMode || parents.size() == 0) {
             clause.getFirstClause().accept(this);
         }
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final DoubleOperatorClause clause) {
         if (!singleMode || parents.size() == 0) {
             if (clause.getFirstClause() == child || clause.getSecondClause() == child) {
@@ -101,6 +156,10 @@ public final class ParentFinder extends AbstractReflectionVisitor {
         }
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final LeafClause clause) {
         // leaves can't be parents :-)
     }

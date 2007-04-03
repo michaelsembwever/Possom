@@ -28,9 +28,9 @@ import org.apache.log4j.Logger;
  * TODO Handle predicates under NOT and ANDNOT clauses. Currently they are ignored.
  * 
  * @author <a hrefPredicateFinderto:mick@wever.org">Michael Semb Wever</a>
- * @version $Id: Scorer.java 3518 2006-09-07 12:13:10Z mickw $
+ * @version $Id$
  */
-public abstract class PredicateFinder extends AbstractReflectionVisitor {
+public final class PredicateFinder extends AbstractReflectionVisitor {
 
     private static final Logger LOG = Logger.getLogger(PredicateFinder.class);
     
@@ -39,11 +39,13 @@ public abstract class PredicateFinder extends AbstractReflectionVisitor {
     private boolean singleMode = false;
 
     private final Set<Clause> clauses = new HashSet<Clause>();
-    private Clause clause;
+    private Clause firstClause;
 
 
     /** find the first clause containing the predicate.
-     **/
+     ** @param root 
+     * @return 
+     */
     public synchronized Clause findFirstClause(
             final Clause root, 
             final Predicate predicate, 
@@ -52,10 +54,13 @@ public abstract class PredicateFinder extends AbstractReflectionVisitor {
         singleMode = true;
         findImpl(root, predicate, engine);  
         singleMode = false;
-        return clause;
+        return firstClause;
     }
     
     /** find all the clauses containing the predicate.
+     * returns largest multi-terms clauses and before leaf clauses.
+     * @param root 
+     * @return 
      **/
     public synchronized Set<Clause> findClauses(
             final Clause root, 
@@ -73,41 +78,51 @@ public abstract class PredicateFinder extends AbstractReflectionVisitor {
         
         this.predicate = predicate;
         this.engine = engine;
-        clause = null;
+        firstClause = null;
         clauses.clear();
         
         visit(root);
     }
 
-    /** TODO comment me. **/
+    /** TODO comment me. *
+     * @param clause 
+     */
     protected void visitImpl(final DoubleOperatorClause clause) {
         
-        if(null == clause){
-            clause.getFirstClause().accept(this);
+        if(null == firstClause){
             evaluate(clause);
+            clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
     }
     
-    /** TODO comment me. **/
+    /** TODO comment me. *
+     * @param clause 
+     */
     protected void visitImpl(final XorClause clause) {
         
-        if(null == clause){
+        if(null == firstClause){
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
     }
 
-    /** TODO comment me. **/
+    /** TODO comment me. *
+     * @param clause 
+     */
     protected void visitImpl(final NotClause clause) {}
 
-    /** TODO comment me. **/
+    /** TODO comment me. *
+     * @param clause 
+     */
     protected void visitImpl(final AndNotClause clause) {}
 
-    /** TODO comment me. **/
+    /** TODO comment me. *
+     * @param clause 
+     */
     protected void visitImpl(final Clause clause) {
         
-        if(null == clause){ 
+        if(null == firstClause){ 
             evaluate(clause);
         }
     }
@@ -122,22 +137,17 @@ public abstract class PredicateFinder extends AbstractReflectionVisitor {
         final Set<TokenPredicate> knownPredicates = clause.getKnownPredicates();
         final Set<TokenPredicate> possiblePredicates = clause.getPossiblePredicates();
 
-        // update the engine with the predicate sets that can be used to improve evaluation performance.
-//        engine.setClausesKnownPredicates(knownPredicates);
-//        engine.setClausesPossiblePredicates(possiblePredicates);
-        
-
         // if this is a possiblePredicate or a all|any|none|not predicate
         //  find out if it is now applicable...
-        boolean applicable = clause.getKnownPredicates().contains(predicate);
+        boolean applicable = knownPredicates.contains(predicate);
         applicable |=
-                clause.getPossiblePredicates().contains(predicate) || !(predicate instanceof TokenPredicate)
+                possiblePredicates.contains(predicate) || !(predicate instanceof TokenPredicate)
                 && predicate.evaluate(engine);
 
         if (applicable) {
 
             if(singleMode){
-                this.clause = clause;
+                firstClause = clause;
             }else{
                 clauses.add(clause);
             }
