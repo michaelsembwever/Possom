@@ -420,11 +420,11 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 }else{
                     
                     final StringBuilder sb = new StringBuilder();
-                    //sb.append("(");
+                    sb.append("(");
                     sb.append("iypcfphnavn:" + getTransformedTerms().get(clause) + " ANY ");
-                    //sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause) + " ANY ");
-                    //sb.append("lemiypcfkeywordslow:" + getTransformedTerms().get(clause));
-                    //sb.append(")");
+                    sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause) + " ANY ");
+                    sb.append("lemiypcfkeywordslow:" + getTransformedTerms().get(clause));
+                    sb.append(")");
                     appendToQueryRepresentation(sb.toString());
                 }
             }
