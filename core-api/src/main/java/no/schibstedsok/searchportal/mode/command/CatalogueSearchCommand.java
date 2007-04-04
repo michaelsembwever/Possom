@@ -357,22 +357,23 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     }    
     
     /**
-     * Create the query syntax for a search term.
+     * Create the query syntax for one(1) search term.
      *
      * If the query is defined to split known geographic locations from
-     * the keywords, ignore the term.
+     * the terms and it is recognices as a known geographic location, 
+     * ignore the term.
      *
      * Check if there is any special characters in the query, if there
      * is, wrap term in " " characters and use none-phonetic composite field
      * in index for part of query.
      *
-     * If the term is '*', also ignore it.
+     * If the term is '', also ignore it.
      * @param clause the clause to process.
      */
     @Override
     protected void visitImpl(final LeafClause clause) {
         
-        final boolean useTerm = !split && knownGeo.contains(clause.getTerm());        
+        final boolean useTerm = !(split && knownGeo.contains(clause.getTerm()));
 
         final Pattern p = Pattern.compile("\\.|\\-");        
         final Matcher m = p.matcher(getTransformedTerms().get(clause));
@@ -404,13 +405,20 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                             : -1;
                 }
                 
-                final Clause ckr = ancestors.get(0);
-                
-                final boolean insideCKR = 
+
+                // Got an index out of bounds exception on ancestors.get(0) below.          
+                // just to get the code to run as excepted again.
+                boolean insideCKR = false;
+                final Clause ckr = ancestors.size()>0? ancestors.get(0) : null;
+
+                if(ckr!=null){
+                     insideCKR = 
                         0 < keywordReservedTermSize
                         && new Counter().getTermCount(ckr) == keywordReservedTermSize
                         && ParentFinder.insideOf(ancestors, TokenPredicate.COMPANY_KEYWORD_RESERVED);
-                                
+                }
+                
+                
                 if(insideCKR){
                     
                     // SEARCH-1796
