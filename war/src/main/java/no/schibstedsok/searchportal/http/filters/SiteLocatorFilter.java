@@ -25,8 +25,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
@@ -377,9 +375,7 @@ public final class SiteLocatorFilter implements Filter {
 
         LOG.trace("doBeforeProcessing()");
 
-        final DataModel dataModel = getDataModel(request);
-
-        final Site site = null != dataModel ? dataModel.getSite().getSite() : getSite(request);
+        final Site site = getSite(request);
 
         request.setAttribute(Site.NAME_KEY, site);
         request.setAttribute("startTime", START_TIME);
@@ -396,19 +392,6 @@ public final class SiteLocatorFilter implements Filter {
         // the rest of the filter chain is invoked.
         //
 
-    }
-
-    private static DataModel getDataModel(final ServletRequest request){
-
-        DataModel datamodel = null;
-        if(request instanceof HttpServletRequest){
-            final HttpServletRequest httpRequest = (HttpServletRequest)request;
-            final HttpSession session = httpRequest.getSession(false);
-            if(null != session){
-                datamodel = (DataModel) session.getAttribute(DataModel.KEY);
-            }
-        }
-        return datamodel;
     }
 
     private static void logAccess(final ServletRequest request){

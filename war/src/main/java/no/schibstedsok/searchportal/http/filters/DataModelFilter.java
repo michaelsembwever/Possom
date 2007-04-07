@@ -115,6 +115,7 @@ public final class DataModelFilter implements Filter {
                 final ParametersDataObject parametersDO = updateDataModelForRequest(factory, httpRequest);
 
                 datamodel.setParameters(parametersDO);
+                datamodel.setSite(getSiteDO(request, factory));
 
                 chain.doFilter(request, response);
 
@@ -156,15 +157,9 @@ public final class DataModelFilter implements Filter {
 
     private static DataModel createDataModel(final DataModelFactory factory, final HttpServletRequest request){
 
-        final Site site = (Site) request.getAttribute(Site.NAME_KEY);
-        final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
-
         final DataModel datamodel = factory.instantiate();
 
-        final SiteDataObject siteDO = factory.instantiate(
-                SiteDataObject.class,
-                new DataObject.Property("site", site),
-                new DataObject.Property("siteConfiguration", siteConf));
+        final SiteDataObject siteDO = getSiteDO(request, factory);
 
         final StringDataObject userAgentDO = factory.instantiate(
                 StringDataObject.class,
@@ -205,6 +200,16 @@ public final class DataModelFilter implements Filter {
         datamodel.setJunkYard(junkYardDO);
 
         return datamodel;
+    }
+
+    private static SiteDataObject getSiteDO(final ServletRequest request, final DataModelFactory factory) {
+        final Site site = (Site) request.getAttribute(Site.NAME_KEY);
+        final SiteConfiguration siteConf = (SiteConfiguration) request.getAttribute(SiteConfiguration.NAME_KEY);
+
+        return factory.instantiate(
+                SiteDataObject.class,
+                new DataObject.Property("site", site),
+                new DataObject.Property("siteConfiguration", siteConf));
     }
 
     /** Update the request elements in the datamodel. **/
