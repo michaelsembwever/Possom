@@ -52,6 +52,8 @@ public final class SiteLocatorFilter implements Filter {
     private static final String ERR_NOT_FOUND = "Failed to find resource ";
     private static final String ERR_UNCAUGHT_RUNTIME_EXCEPTION
             = "Following runtime exception was let loose in tomcat against ";
+    private static final String LOCALE_DETAILS = "Locale details: Language: {0}, Country: {1} and Variant: {2}";
+    private static final String WARN_INVALID_SESSION = "Session belongs to {0} but browser requested {1}. Invalidating session. ";
 
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
     private static final String DEBUG_REQUESTED_VHOST = "Virtual host is ";
@@ -92,7 +94,6 @@ public final class SiteLocatorFilter implements Filter {
     // this value is null, this filter instance is not currently
     // configured.
     private FilterConfig filterConfig = null;
-    private static final String LOCALE_DETAILS = "Locale details: Language: {0}, Country: {1} and Variant: {2}";
 
     // Static --------------------------------------------------------
 
@@ -379,7 +380,28 @@ public final class SiteLocatorFilter implements Filter {
 
         final DataModel dataModel = getDataModel(request);
 
-        final Site site = null != dataModel ? dataModel.getSite().getSite() : getSite(request);
+        final Site siteFromRequest = getSite(request);
+
+        // It appears that some browsers (Mozilla/4?) do not always honor the "exact match of host"-rule when sending
+        // cookies (as they should when the domain of the set-cookie response header is left out). So the x.y.z
+        // host might receive the session cookie for y.z. This means that the datamodel stored in the session will not 
+        // represent the current site but a previously visited one. SEARCH-1711.
+        boolean invalidSession = null != dataModel && !dataModel.getSite().getSite().equals(siteFromRequest);
+
+        if (invalidSession) {
+            LOG.warn(MessageFormat.format(WARN_INVALID_SESSION,
+                    dataModel.getSite().getSite().getName(),
+                    siteFromRequest.getName(),
+                    dataModel.getBrowser().getUserAgent()));
+
+            if (request instanceof HttpServletRequest) {
+                // This works OK for now, but won't do when we start to store settings in the session. Should we instead
+                // keep several datamodels per session? Or several sites per datamodel?
+                ((HttpServletRequest)request).getSession().invalidate();
+            }
+        }
+
+        final Site site = null != dataModel && !invalidSession ? dataModel.getSite().getSite() : getSite(request);
 
         request.setAttribute(Site.NAME_KEY, site);
         request.setAttribute("startTime", START_TIME);
