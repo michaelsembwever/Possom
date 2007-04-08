@@ -105,7 +105,7 @@ public final class TestVisitor extends SiteTestCase {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR 123",
                 "firstname:magnus AND eklund AND oslo OR \"magnus eklund\" OR magnus eklund OR 123",
-                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR \"magnus eklund\" (magnus eklund)) OR 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR (\"magnus eklund\" (magnus eklund) OR 123))");
+                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR \"magnus eklund\" (\"magnus eklund\" OR \"eklund magnus\") (magnus eklund)) OR 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) OR (\"magnus eklund\" (magnus eklund) OR 123))");
     }
 
     /** TODO comment me. **/
@@ -114,7 +114,7 @@ public final class TestVisitor extends SiteTestCase {
         basicQueryParserWithTestVisitorImpl(
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" 123",
                 "firstname:magnus AND eklund AND oslo \"magnus eklund\" OR magnus eklund 123",
-                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) \"magnus eklund\" (magnus eklund)) 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) (\"magnus eklund\" (magnus eklund) 123))");
+                "((((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) \"magnus eklund\" (\"magnus eklund\" OR \"eklund magnus\") (magnus eklund)) 123) (((firstname:magnus AND eklund) AND oslo) (firstname:magnus AND (eklund AND oslo)) (\"magnus eklund\" (magnus eklund) 123))");
     }
 
     /** TODO comment me. **/
@@ -132,7 +132,7 @@ public final class TestVisitor extends SiteTestCase {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
                 "Hansen Inderøy Marte Elden gausen oldervoll nordlys",
-                "((((((Hansen Inderøy) Marte) Elden) gausen) oldervoll) nordlys) (((((Hansen (Inderøy Marte)) Elden) gausen) oldervoll) nordlys) ((((Hansen (Inderøy (Marte Elden))) gausen) oldervoll) nordlys) (((Hansen (Inderøy (Marte (Elden gausen)))) oldervoll) nordlys) ((Hansen (Inderøy (Marte (Elden (gausen oldervoll))))) nordlys) (Hansen (Inderøy (Marte (Elden (gausen (oldervoll nordlys))))))");
+                "((((((Hansen Inderøy) Marte) Elden) gausen) oldervoll) nordlys) (((((Hansen (Inderøy Marte)) Elden) gausen) oldervoll) nordlys) ((((Hansen (Inderøy (\"Marte Elden\" OR \"Elden Marte\") (Marte Elden))) gausen) oldervoll) nordlys) (((Hansen (Inderøy (Marte (Elden gausen)))) oldervoll) nordlys) ((Hansen (Inderøy (Marte (Elden (gausen oldervoll))))) nordlys) (Hansen (Inderøy (Marte (Elden (gausen (oldervoll nordlys))))))");
     }
 
     /** TODO comment me. **/
@@ -141,7 +141,7 @@ public final class TestVisitor extends SiteTestCase {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll nordlys",
-                "((((((Hansen Inderøy) Marte) Elden) NOT gausen) oldervoll) nordlys) (((((Hansen (Inderøy Marte)) Elden) NOT gausen) oldervoll) nordlys) ((((Hansen (Inderøy (Marte Elden))) NOT gausen) oldervoll) nordlys) (((Hansen (Inderøy (Marte (Elden NOT gausen)))) oldervoll) nordlys) ((Hansen (Inderøy (Marte (Elden (NOT gausen oldervoll))))) nordlys) (Hansen (Inderøy (Marte (Elden (NOT gausen (oldervoll nordlys))))))");
+                "((((((Hansen Inderøy) Marte) Elden) NOT gausen) oldervoll) nordlys) (((((Hansen (Inderøy Marte)) Elden) NOT gausen) oldervoll) nordlys) ((((Hansen (Inderøy (\"Marte Elden\" OR \"Elden Marte\") (Marte Elden))) NOT gausen) oldervoll) nordlys) (((Hansen (Inderøy (Marte (Elden NOT gausen)))) oldervoll) nordlys) ((Hansen (Inderøy (Marte (Elden (NOT gausen oldervoll))))) nordlys) (Hansen (Inderøy (Marte (Elden (NOT gausen (oldervoll nordlys))))))");
     }
 
     /** TODO comment me. **/
@@ -159,7 +159,7 @@ public final class TestVisitor extends SiteTestCase {
         basicQueryParserWithTestVisitorImpl(
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
                 "Hansen Inderøy Marte Elden NOT gausen oldervoll AND nordlys",
-                "(((((Hansen Inderøy) Marte) Elden) NOT gausen) (oldervoll AND nordlys)) ((((Hansen (Inderøy Marte)) Elden) NOT gausen) (oldervoll AND nordlys)) (((Hansen (Inderøy (Marte Elden))) NOT gausen) (oldervoll AND nordlys)) ((Hansen (Inderøy (Marte (Elden NOT gausen)))) (oldervoll AND nordlys)) (Hansen (Inderøy (Marte (Elden (NOT gausen (oldervoll AND nordlys))))))");
+                "(((((Hansen Inderøy) Marte) Elden) NOT gausen) (oldervoll AND nordlys)) ((((Hansen (Inderøy Marte)) Elden) NOT gausen) (oldervoll AND nordlys)) (((Hansen (Inderøy (\"Marte Elden\" OR \"Elden Marte\") (Marte Elden))) NOT gausen) (oldervoll AND nordlys)) ((Hansen (Inderøy (Marte (Elden NOT gausen)))) (oldervoll AND nordlys)) (Hansen (Inderøy (Marte (Elden (NOT gausen (oldervoll AND nordlys))))))");
     }
 
     /** TODO comment me. **/
