@@ -71,11 +71,12 @@ public class CatalogueSearchResultItem extends BasicSearchResultItem {
      */
     public String getCompanyDescription(){
     	String description = getField("iyplogotekst");
-    	if(!isCommercial() || (description != null && description.length() > 0)){
-    		return null;
+        
+    	if(isCommercial() && (description != null && description.length() > 0)){
+    		return description;
     	}
-    	
-        return description;
+
+        return null;
     }
     
     /**
