@@ -151,7 +151,7 @@ public class CatalogueSearchResultItem extends BasicSearchResultItem {
     	//TODO: check product.
     	String homePageURL = getField("iypurl");
     	if(homePageURL != null && homePageURL.length() > 0){
-    		return homePageURL;
+    		return "http://"+homePageURL;
     	}
     	return null;
     }
