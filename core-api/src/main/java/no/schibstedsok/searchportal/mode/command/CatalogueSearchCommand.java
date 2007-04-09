@@ -384,7 +384,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             
             if(hasNotWordCharacters){
             
-                appendToQueryRepresentation(createPhraseQuerySyntax("\""+getTransformedTerms().get(clause) + "\""));
+                appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
             
             }else if(!getTransformedTerms().get(clause).equals("")) {
                 
@@ -393,7 +393,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 final List<OperationClause> ancestors 
                         = query.getParentFinder().getAncestors(query.getRootClause(), clause);
                                 
-                if( 0 == keywordReservedTermSize ){
+                if(0 == keywordReservedTermSize){
                     
                     final Clause longestCkr = new PredicateFinder().findFirstClause(
                             query.getRootClause(), 
@@ -411,7 +411,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 boolean insideCKR = false;
                 final Clause ckr = ancestors.size()>0? ancestors.get(0) : null;
 
-                if(ckr!=null){
+                if(null != ckr){
                      insideCKR = 
                         0 < keywordReservedTermSize
                         && new Counter().getTermCount(ckr) == keywordReservedTermSize
@@ -422,18 +422,20 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 if(insideCKR){
                     
                     // SEARCH-1796
-                    // XXX this will write out the filter multiple times but hopefully fast won't object
-                    appendToQueryRepresentation("lemiypcfkeywords:^\"" + ckr.getTerm() + "\"$");
+                    // XXX this will write out the same filter multiple times but hopefully fast won't object
+                    appendToQueryRepresentation(
+                            "lemiypcfkeywords:^\"" 
+                            + ckr.getTerm().replaceAll("\\(|\\)", "")
+                            + "\"$");
                     
                 }else{
                     
-                    final StringBuilder sb = new StringBuilder();
-                    sb.append("(");
-                    sb.append("iypcfphnavn:" + getTransformedTerms().get(clause) + " ANY ");
-                    sb.append("lemiypcfkeywords:" + getTransformedTerms().get(clause) + " ANY ");
-                    sb.append("lemiypcfkeywordslow:" + getTransformedTerms().get(clause));
-                    sb.append(")");
-                    appendToQueryRepresentation(sb.toString());
+                    appendToQueryRepresentation(
+                            '('
+                            + "iypcfphnavn:" + getTransformedTerms().get(clause) + " ANY "
+                            + "lemiypcfkeywords:" + getTransformedTerms().get(clause) + " ANY "
+                            + "lemiypcfkeywordslow:" + getTransformedTerms().get(clause)
+                            + ')');
                 }
             }
         }
