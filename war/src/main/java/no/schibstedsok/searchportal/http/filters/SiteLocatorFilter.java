@@ -25,11 +25,14 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -54,6 +57,7 @@ public final class SiteLocatorFilter implements Filter {
     private static final String INFO_USING_DEFAULT_LOCALE = " is falling back to the default locale ";
     private static final String DEBUG_REQUESTED_VHOST = "Virtual host is ";
     private static final String DEBUG_REDIRECTING_TO = " redirect to ";
+    private static final String WARN_FAULTY_BROWSER = "Site in datamodel does not match requested site. User agent is ";
 
     private static final String HTTP = "http://";
     private static final String PUBLISH_DIR = "/img/";
@@ -377,6 +381,12 @@ public final class SiteLocatorFilter implements Filter {
 
         final Site site = getSite(request);
 
+        final DataModel dataModel = getDataModel(request);
+
+        if (null != dataModel && !dataModel.getSite().getSite().equals(site)) {
+            LOG.warn(WARN_FAULTY_BROWSER + dataModel.getBrowser().getUserAgent().getString());
+        }
+
         request.setAttribute(Site.NAME_KEY, site);
         request.setAttribute("startTime", START_TIME);
         MDC.put(Site.NAME_KEY, site.getName());
@@ -392,6 +402,19 @@ public final class SiteLocatorFilter implements Filter {
         // the rest of the filter chain is invoked.
         //
 
+    }
+
+     private static DataModel getDataModel(final ServletRequest request){
+
+        DataModel datamodel = null;
+        if(request instanceof HttpServletRequest){
+            final HttpServletRequest httpRequest = (HttpServletRequest)request;
+            final HttpSession session = httpRequest.getSession(false);
+            if(null != session){
+                datamodel = (DataModel) session.getAttribute(DataModel.KEY);
+            }
+        }
+        return datamodel;
     }
 
     private static void logAccess(final ServletRequest request){
