@@ -45,7 +45,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     private static final String COMMAND_URL_PATTERN =
             "/search?Client={0}&Database={1}&DateRange={2}&"
             + "FirstResult={3}&Numresults={4}&"
-            + "Region={5}&RegionMix={6}&SpellState={7}&Language={8}&LanguageMix={9}&"
+            + "Region={5}&RegionMix={6}{7}&Language={8}&LanguageMix={9}&"
             + "QueryEncoding={10}&Fields={11}&Unique={12}&Filter={13}&"
             + "Query={14}&"
             + "{15}";
@@ -70,44 +70,48 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         super(cxt);
     }
 
-    /** TODO comment me. **/
+    /** {@inherit} **/
     public SearchResult execute() {
+        
         try {
-            final Document doc = getXmlResult();
+            
             final SearchResult searchResult = new BasicSearchResult(this);
+                
+            if(getTransformedQuery().trim().length() > 0){
 
+                final Document doc = getXmlResult();
 
-            if (doc != null) {
-                final Element searchResponseE = doc.getDocumentElement();
-                final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
-                final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
-                searchResult.setHitCount(Integer.parseInt(totalHitsE.getFirstChild().getNodeValue()));
+                if (doc != null) {
+                    final Element searchResponseE = doc.getDocumentElement();
+                    final Element headerE = (Element) searchResponseE.getElementsByTagName(HEADER_ELEMENT).item(0);
+                    final Element totalHitsE = (Element) headerE.getElementsByTagName(TOTALHITS_ELEMENT).item(0);
+                    searchResult.setHitCount(Integer.parseInt(totalHitsE.getFirstChild().getNodeValue()));
 
-                LOG.info("hitcount " + searchResult.getHitCount());
+                    LOG.info("hitcount " + searchResult.getHitCount());
 
-                // build results
-                final NodeList list = searchResponseE.getElementsByTagName(RESULT_ELEMENT);
-                for (int i = 0; i < list.getLength(); ++i) {
-                    final Element listing = (Element) list.item(i);
-                    final BasicSearchResultItem item = createItem(listing);
-                    // HACK to certain hide domains
-                    final String hideDomain = getSearchConfiguration().getHideDomain();
-                    final String host = new URL(item.getField("clickurl")).getHost().replaceAll("/$","");
-                    if(hideDomain.length() == 0 || !host.endsWith(hideDomain)){
-                        searchResult.addResult(item);
+                    // build results
+                    final NodeList list = searchResponseE.getElementsByTagName(RESULT_ELEMENT);
+                    for (int i = 0; i < list.getLength(); ++i) {
+                        final Element listing = (Element) list.item(i);
+                        final BasicSearchResultItem item = createItem(listing);
+                        // HACK to certain hide domains
+                        final String hideDomain = getSearchConfiguration().getHideDomain();
+                        final String host = new URL(item.getField("clickurl")).getHost().replaceAll("/$","");
+                        if(hideDomain.length() == 0 || !host.endsWith(hideDomain)){
+                            searchResult.addResult(item);
+                        }
                     }
-                }
-                // build navigators
-                final NodeList wordCountList = searchResponseE.getElementsByTagName(WORDCOUNTS_ELEMENT);
-                for (int i = 0; i < wordCountList.getLength(); ++i) {
-                    final Element listing = (Element) wordCountList.item(i);
-                    // TODO make modifiers fast independant!
-//                  final Modifier modifier = new Modifier()
-//                  getRunningQuery().addSource(modifier);
+                    // build navigators
+                    final NodeList wordCountList = searchResponseE.getElementsByTagName(WORDCOUNTS_ELEMENT);
+                    for (int i = 0; i < wordCountList.getLength(); ++i) {
+                        final Element listing = (Element) wordCountList.item(i);
+                        // TODO make modifiers fast independant!
+    //                  final Modifier modifier = new Modifier()
+    //                  getRunningQuery().addSource(modifier);
+                    }
                 }
             }
             return searchResult;
-            
             
         } catch (SocketTimeoutException ste) {
 
@@ -126,9 +130,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     protected String createRequestURL() {
         final YahooIdpSearchConfiguration conf = (YahooIdpSearchConfiguration) context.getSearchConfiguration();
 
-        final String dateRange = "-" + new SimpleDateFormat(DATE_PATTERN).format(new Date());
+        final String dateRange = '-' + new SimpleDateFormat(DATE_PATTERN).format(new Date());
 
-        final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + ")";
+        final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + ')';
 
         final StringBuilder fields = new StringBuilder();
 
@@ -149,7 +153,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                     conf.getResultsToReturn(),
                     conf.getRegion(),
                     conf.getRegionMix(),
-                    conf.getSpellState(),
+                    "enabled".equals(conf.getSpellState()) ? "&SpellState=enabled" : "",
                     conf.getLanguage(),
                     conf.getLanguageMix(),
                     conf.getEncoding(),
