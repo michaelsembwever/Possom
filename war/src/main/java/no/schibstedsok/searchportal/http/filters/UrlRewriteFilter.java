@@ -17,7 +17,8 @@ import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import org.tuckey.web.filters.urlrewrite.UrlRewriterContainer;
 
-/**
+/** Override of tuckey's UrlRewriteFilter that supplies an inputstream to the skins's urlrewrite.xml
+ *   instead of the default /WEB-INF/urlrewrite.xml
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
@@ -36,6 +37,8 @@ public final class UrlRewriteFilter extends org.tuckey.web.filters.urlrewrite.Ur
     
     // Public --------------------------------------------------------
     
+    /** {@inherit} **/
+    @Override
     public UrlRewriterContainer getUrlRewriterContainer(final ServletRequest request){
         
         UrlRewriterContainer result = null;
