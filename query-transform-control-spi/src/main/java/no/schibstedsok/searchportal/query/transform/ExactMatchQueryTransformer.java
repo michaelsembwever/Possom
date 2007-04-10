@@ -16,18 +16,22 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version <tt>$Revision: 3359 $</tt>
  */
-public final class ExactTitleMatchQueryTransformer extends AbstractQueryTransformer {
+public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
 
-    private static final Logger LOG = Logger.getLogger(ExactTitleMatchQueryTransformer.class);
+    private static final Logger LOG = Logger.getLogger(ExactMatchQueryTransformer.class);
 
     private transient boolean writtenStart = false;
     private transient Boolean visitingLast = null;
+    private ExactMatchQueryTransformerConfig config;
 
     /**
      *
      * @param config
      */
-    public ExactTitleMatchQueryTransformer(final QueryTransformerConfig config){}
+    public ExactMatchQueryTransformer(final QueryTransformerConfig config){
+                
+        this.config = (ExactMatchQueryTransformerConfig) config;
+    }
 
 
     /**
@@ -37,7 +41,15 @@ public final class ExactTitleMatchQueryTransformer extends AbstractQueryTransfor
     public void visitImpl(final LeafClause clause) {
 
         if(!writtenStart){
-            getTransformedTerms().put(clause, "titles:^\"" + getTransformedTerms().get(clause).replaceAll("^\"", ""));
+            
+            final String filter = null != config.getField()
+                    ? config.getField() + ':'
+                    : "";
+            
+            getTransformedTerms().put(
+                    clause, 
+                    filter + "^\"" + getTransformedTerms().get(clause).replaceAll("^\"", ""));
+            
             writtenStart = true;
             // also, if we got here without giving visitingLast a value then this is the only LeafClause in the query
             visitingLast = null == visitingLast;
