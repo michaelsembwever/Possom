@@ -66,7 +66,7 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
             queryGeoString = query.getQueryString();
             queryGeoString = queryGeoString.replaceAll(" ", "");
         }else{
-            queryGeoString = DOMESTIC_SEARCH;
+            queryGeoString = "";
         }
     }
     
