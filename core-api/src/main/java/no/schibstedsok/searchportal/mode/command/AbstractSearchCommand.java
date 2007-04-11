@@ -513,7 +513,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /** TODO comment me. **/
     protected final String getTransformedTerm(final Clause clause) {
-        return escapeTerm(transformedTerms.get(clause));
+        final String transformedTerm = transformedTerms.get(clause);
+        return escapeTerm(transformedTerm != null ? transformedTerm : clause.getTerm());
     }
 
     /** TODO comment me. **/
