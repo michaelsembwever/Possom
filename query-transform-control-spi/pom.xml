@@ -4,7 +4,7 @@
     <parent>
         <groupId>schibstedsok</groupId>
         <artifactId>search-portal</artifactId>
-        <version>2.11-SNAPSHOT</version>
+        <version>2.11</version>
     </parent>
     <artifactId>search-portal-query-transform-control-spi</artifactId>
     <packaging>jar</packaging>
@@ -14,9 +14,9 @@
         Read https://dev.schibstedsok.no/confluence/display/TECHDEV/Setting+up+Sesam for developing help.
     </description>
     <scm>
-        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/query-transform-control-spi</connection>
-        <url>https://dev.schibstedsok.no/svn/search-portal/sesam.no/trunk/query-transform-control-spi</url>
-        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-portal/trunk/query-transform-control-spi</developerConnection>
+        <connection>scm:svn:https://dev.schibstedsok.no/svn/search-main/tags/search-main-2.11</connection>
+        <url>https://dev.schibstedsok.no/svn/search-main/tags/search-main-2.11</url>
+        <developerConnection>scm:svn:https://dev.schibstedsok.no/svn/search-main/tags/search-main-2.11</developerConnection>
     </scm>
 
     <build>
