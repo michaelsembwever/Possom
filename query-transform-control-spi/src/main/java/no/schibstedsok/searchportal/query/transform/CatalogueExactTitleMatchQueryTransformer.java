@@ -24,7 +24,8 @@ public final class CatalogueExactTitleMatchQueryTransformer extends AbstractQuer
 
 	@Override
 	public String getTransformedQuery() {
-		return "iypnavnvisningnorm:^\""+super.getTransformedQuery()+"\"$";
+            return "iypnavnvisningnorm:^\""+super.getTransformedQuery()+"\"$ OR "+
+                   "iypnavnvisning:^\""+super.getTransformedQuery()+"\"$";
 	}
 
 }
