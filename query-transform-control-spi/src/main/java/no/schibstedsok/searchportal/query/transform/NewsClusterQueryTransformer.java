@@ -1,7 +1,6 @@
 package no.schibstedsok.searchportal.query.transform;
 
-import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
-import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
+import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
 import no.schibstedsok.searchportal.query.Clause;
 import org.apache.log4j.Logger;
 
@@ -25,15 +24,13 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
     private final NewsClusterQueryTransformerConfig config;
 
     /**
-     *
      * @param config
      */
-    public NewsClusterQueryTransformer(final QueryTransformerConfig config){
+    public NewsClusterQueryTransformer(final QueryTransformerConfig config) {
         this.config = (NewsClusterQueryTransformerConfig) config;
     }
 
     /**
-     *
      * @param clause
      */
     public void visitImpl(final Clause clause) {
@@ -57,7 +54,8 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
             sb.append("and(");
         }
         sb.append("filter(");
-        sb.append(getQueryFilter(getContext().getDataModel().getParameters()));
+        // Using Junkyard, since the parameters seems to be incomplete...
+        sb.append(getQueryFilter(getContext().getDataModel().getJunkYard()));
         sb.append(')');
         if (!emptyQuery) {
             sb.append(',');
@@ -68,24 +66,23 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
     }
 
     /**
-     *
      * @param parameters
      * @return
      */
-    public String getQueryFilter(final ParametersDataObject parameters) {
+    public String getQueryFilter(final JunkYardDataObject parameters) {
         StringBuilder filter = new StringBuilder();
         for (String paramField : config.getParamFields()) {
-            StringDataObject paramValue = parameters.getValue(paramField);
+            String paramValue = (String) parameters.getValue(paramField);
             LOG.debug("Adding param from datamodel: " + paramField + "=" + paramValue);
             if (paramValue != null) {
                 filter.append(paramField).append(':');
-                filter.append('\"').append(paramValue.getString()).append('\"');
+                filter.append('\"').append(paramValue).append('\"');
                 filter.append(" and ");
             }
         }
-        StringDataObject clusterId = parameters.getValue(config.getClusterIdField());
+        String clusterId = (String) parameters.getValue(config.getClusterIdField());
         if (clusterId != null) {
-            filter.append(config.getClusterField()).append(":").append('\"').append(clusterId.getString()).append("\" ");
+            filter.append(config.getClusterField()).append(":").append('\"').append(clusterId).append("\" ");
         } else {
             filter.append(config.getClusterField()).append(":range(1,max) ");
         }

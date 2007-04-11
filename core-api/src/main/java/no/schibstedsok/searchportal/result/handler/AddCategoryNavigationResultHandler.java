@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class AddCategoryNavigationResultHandler implements ResultHandler {
@@ -46,19 +45,14 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
 
     private void addCategoryNavigators(DataModel datamodel, FastSearchResult searchResult, List<Category> categoryList) {
         final String[] categoryFields = getCategoryFieldArray();
-        LOG.debug("Adding category navigators: categoryFields=" + Arrays.toString(categoryFields));
         if (categoryFields.length > 0) {
-            LOG.debug("categoryList=" + categoryList);
             for (String categoryField : categoryFields) {
                 Category selectedCategory = null;
                 StringDataObject selectedFieldData = datamodel.getParameters().getValue(categoryField);
-                LOG.debug("selectedFieldData=" + selectedFieldData);
                 for (Category category : categoryList) {
                     searchResult.addModifier(categoryField, new Modifier(category.getDisplayName(), -1, null));
-                    LOG.debug("Adding modifier name=" + categoryField + ", " + category.getDisplayName());
                     if (selectedFieldData != null && selectedFieldData.getString().equals(category.getDisplayName())) {
                         selectedCategory = category;
-                        LOG.debug("selectedCategory=" + selectedCategory);
                     }
                 }
                 if (selectedCategory != null && selectedCategory.getSubCategories() != null) {
@@ -106,7 +100,6 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
 
     private List<Category> parseCategories(List<Element> categoryElements) {
         if (categoryElements != null && categoryElements.size() > 0) {
-            LOG.debug("Parsing categoryList size = " + categoryElements.size());
             final List<Category> categoryList = new ArrayList<Category>();
             for (Element categoryElement : categoryElements) {
                 categoryList.add(parseCategory(categoryElement));
@@ -118,7 +111,6 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
     }
 
     private Category parseCategory(Element categoryElement) {
-        LOG.debug("Parsing category:" + categoryElement);
         String id = categoryElement.getAttributeValue(CMD_ATTR_ID);
         String displayName = categoryElement.getAttributeValue(CMD_ATTR_DISPLAY_NAME);
         //noinspection unchecked

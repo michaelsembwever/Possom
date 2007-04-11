@@ -2,21 +2,22 @@
 package no.schibstedsok.searchportal.run;
 
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.apache.log4j.Logger;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * QueryFactoryImpl is part of no.schibstedsok.searchportal.query.
  * Use this class to create an instance of a RunningQuery.
- *
+ * <p/>
  * TODO Replace the code in createQuery with a RunningQueryTransformer sub-module that is
- *  configured per mode and permits manipulation of the datamodel before the RunningQuery is constructed.
+ * configured per mode and permits manipulation of the datamodel before the RunningQuery is constructed.
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
  * @version $Id$
@@ -95,12 +96,21 @@ public final class QueryFactoryImpl extends QueryFactory {
                 if ("".equals(qParam) && null == contentsourceParam && "".equals(newscountryParam)) {
                     query.addParameter("newscountry", "Norge");
                 }
-
+            } else if ("nm".equals(cParam)) {
+                final Cookie[] cookies = request.getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("myNews".equals(cookie.getName().trim())) {
+                            LOG.debug("Adding cookie: " + cookie.getName() + "=" + cookie.getValue());
+                            query.addParameter("myNews", cookie.getValue());
+                        }
+                    }
+                }
             } else if ("t".equals(cParam) || "wt".equals(cParam)) {
                 final Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     for (Cookie cookie : cookies) {
-                        if ("myChannels".equals(cookie.getName())){
+                        if ("myChannels".equals(cookie.getName())) {
                             query.addParameter("myChannels", cookie.getValue());
                         }
                     }
