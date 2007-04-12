@@ -127,6 +127,9 @@
 				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</td>
 			    </tr>
 			    <tr>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("map","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Karts&#248;k</td>
+			    </tr>
+			    <tr>
 				<td><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" alt="" align="left" /></a><div class="navbutend" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'>&nbsp;&nbsp;Lukk</div></td>
 			    </tr>
 			</table>
@@ -198,6 +201,13 @@
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/ver.png" alt="" align="left" /></td>
 		    <td class="menupad"><a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a></td>
+                </tr>
+		<tr>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
+                </tr>
+                <tr>
+                    <td class="imgpad"><img src="images/menu/icons/kart.gif" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a></td>
                 </tr>
 		<tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
