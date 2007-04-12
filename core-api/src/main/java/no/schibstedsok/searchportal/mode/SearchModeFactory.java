@@ -87,7 +87,6 @@ import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.view.output.TextOutputResultHandler;
 import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
-import no.schibstedsok.searchportal.view.output.XmlOutputResultHandler;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -1005,7 +1004,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         TEXT_OUTPUT(TextOutputResultHandler.class),
         VELOCITY_OUTPUT(VelocityResultHandler.class),
         FIELD_ESCAPE(FieldEscapeHandler.class),
-        XML_OUTPUT(XmlOutputResultHandler.class),
         CATALOGUE(CatalogueResultHandler.class),
         ADD_LAST_WEEK_MODIFIER(AddLastWeekModifierResultHandler.class),
         ADD_CATEGORY_NAVIGATION(AddCategoryNavigationResultHandler.class);
