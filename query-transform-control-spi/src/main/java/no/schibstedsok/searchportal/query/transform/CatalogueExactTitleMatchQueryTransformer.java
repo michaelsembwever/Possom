@@ -24,7 +24,13 @@ public final class CatalogueExactTitleMatchQueryTransformer extends AbstractQuer
 
 	@Override
 	public String getTransformedQuery() {
-		return "iypnavnvisningnorm:^\""+super.getTransformedQuery()+"\"$";
+            
+            // get the search query as entered by the user, remove " characters
+            // and use it to match against compnay name fields in the index.
+            String query = super.getTransformedQuery().replace("\"", "");
+            
+            return "iypnavnvisningnorm:^\""+query+"\"$ OR "+
+                   "iypnavnvisning:^\""+query+"\"$";
 	}
 
 }

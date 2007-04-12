@@ -123,6 +123,11 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     private static final String PARAMETER_NAME_WHAT = "catalogueWhat";
     private static final String PARAMETER_NAME_WHERE = "catalogueWhere";
+    
+    /**
+     *  Represents a blank value in the query.
+     */
+    private static final String BLANK=""; 
 
     /**
      * Creates a new catalogue search command.
@@ -386,7 +391,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             
                 appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
             
-            }else if(!getTransformedTerms().get(clause).equals("")) {
+            }else if(!getTransformedTerms().get(clause).equals(BLANK)) {
                 
                 final Query query = context.getDataModel().getQuery().getQuery();
                 
@@ -459,7 +464,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         }
 
         if(useTerm){
-            if (!getTransformedTerms().get(clause).equals("")) {
+            if (!getTransformedTerms().get(clause).equals(BLANK)) {
                 appendToQueryRepresentation(
                         createPhraseQuerySyntax(getTransformedTerms().get(clause)));
             }
