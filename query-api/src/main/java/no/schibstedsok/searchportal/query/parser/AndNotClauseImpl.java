@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.query.parser;
 
@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,20 +23,23 @@ import no.schibstedsok.searchportal.site.Site;
  * The AndNotClauseImpl represents a joining not clause between two terms in the query.
  * For example: "term1 ANDNOT term2".
  * <b>Objects of this class are immutable</b>
- * 
+ *
  * @author <a hrefAndNotClauseImplk@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
 public final class AndNotClauseImpl extends AbstractOperationClause implements AndNotClause {
 
+    private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
+    private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    
     /**
      * Values are WeakReference object to AndNotClauseImpl.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      * An overlap of creation is non-critical.
      */
-    private static final Map<Site,Map<String,WeakReference<AndNotClauseImpl>>> WEAK_CACHE 
-            = new HashMap<Site,Map<String,WeakReference<AndNotClauseImpl>>>();
-    
+    private static final Map<Site,Map<String,WeakReference<AndNotClauseImpl>>> WEAK_CACHE
+            = new ConcurrentHashMap<Site,Map<String,WeakReference<AndNotClauseImpl>>>();
+
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
 
@@ -57,8 +60,8 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      * them.
      * The methods also allow a chunk of creation logic for the AndNotClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
-     * 
+     *
+     *
      * @param first the left child clause of the operation clause we are about to create (or find).
      * @param second the right child clause of the operation clause we are about to create (or find).
      * @param engine the factory handing out evaluators against TokenPredicates.
@@ -85,7 +88,11 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
             // the weakCache to use.
             Map<String,WeakReference<AndNotClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
             if( weakCache == null ){
-                weakCache = new HashMap<String,WeakReference<AndNotClauseImpl>>();
+                
+                weakCache = new ConcurrentHashMap<String,WeakReference<AndNotClauseImpl>>(
+                        WEAK_CACHE_INITIAL_CAPACITY,
+                        WEAK_CACHE_LOAD_FACTOR);
+                
                 WEAK_CACHE.put(engine.getSite(),weakCache);
             }
 
@@ -97,7 +104,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
                     null,
                     engine,
                     PREDICATES_APPLICABLE, weakCache);
-        
+
         }finally{
             engine.setState(null);
         }
@@ -105,7 +112,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
 
     /**
      * Create the AndNotClauseImpl with the given term, left and right child clauses, and known and possible predicate sets.
-     * 
+     *
      * @param term the term for this AndClause.
      * @param knownPredicates set of known predicates.
      * @param possiblePredicates set of possible predicates.
@@ -114,7 +121,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
      */
     protected AndNotClauseImpl(
             final String term,
-            final Clause first,  
+            final Clause first,
             final Clause second,
             final Set<TokenPredicate> knownPredicates,
             final Set<TokenPredicate> possiblePredicates) {

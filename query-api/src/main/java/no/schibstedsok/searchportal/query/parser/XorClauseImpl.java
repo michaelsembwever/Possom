@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.query.parser;
 
@@ -7,39 +7,40 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.LeafClause;
-import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.EvaluationState;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.site.Site;
-import org.apache.commons.collections.Predicate;
 
 /**
  * The XorClauseImpl represents a joining clause between two terms in the query.
  * For example: "term1 OR term2".
  * <b>Objects of this class are immutable</b>
- * 
+ *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id: OrClauseImpl.java 2344 2006-02-20 20:07:12Z mickw $
  */
 public final class XorClauseImpl extends OrClauseImpl implements XorClause {
 
+    private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
+    private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
-    private static final Map<Site,Map<String,WeakReference<XorClauseImpl>>> WEAK_CACHE 
-            = new HashMap<Site,Map<String,WeakReference<XorClauseImpl>>>();
-    
+    private static final Map<Site,Map<String,WeakReference<XorClauseImpl>>> WEAK_CACHE
+            = new ConcurrentHashMap<Site,Map<String,WeakReference<XorClauseImpl>>>();
+
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
-    
+
     private final Hint hint;
 
     static {
@@ -53,10 +54,11 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
      * them.
      * The methods also allow a chunk of creation logic for the XorClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
-     * 
+     *
+     *
      * @param first the left child clause of the operation clause we are about to create (or find).
      * @param second the right child clause of the operation clause we are about to create (or find).
+     * @param hint
      * @param engine the factory handing out evaluators against TokenPredicates.
      * Also holds state information about the current term/clause we are finding predicates against.
      * @return returns a XorClauseImpl matching the term, left and right child clauses.
@@ -70,7 +72,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
 
         // construct the proper "schibstedsøk" formatted term for this operation.
         //  XXX eventually it would be nice not to have to expose the internal string representation of this object.
-        final String term = 
+        final String term =
                 (first instanceof LeafClause && ((LeafClause) first).getField() != null
                     ?  ((LeafClause) first).getField() + ":"
                     : "")
@@ -87,11 +89,15 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
             // the weakCache to use.
             Map<String,WeakReference<XorClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
             if( weakCache == null ){
-                weakCache = new HashMap<String,WeakReference<XorClauseImpl>>();
+                
+                weakCache = new ConcurrentHashMap<String,WeakReference<XorClauseImpl>>(
+                        WEAK_CACHE_INITIAL_CAPACITY,
+                        WEAK_CACHE_LOAD_FACTOR);
+                
                 WEAK_CACHE.put(engine.getSite(),weakCache);
             }
 
-            // we can't use the helper method because of the extra Hint argument to the XorClauseImpl constructor        
+            // we can't use the helper method because of the extra Hint argument to the XorClauseImpl constructor
 
             // check weak reference cache of immutable wordClauses here.
             // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
@@ -106,11 +112,11 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
 
                 // create it...
                 clause = new XorClauseImpl(
-                    term, 
-                    first, 
-                    second, 
+                    term,
+                    first,
+                    second,
                     hint,
-                    engine.getState().getKnownPredicates(), 
+                    engine.getState().getKnownPredicates(),
                     engine.getState().getPossiblePredicates()
                 );
 
@@ -119,8 +125,8 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
                 }
             }
 
-            return clause; 
-        
+            return clause;
+
         }finally{
             engine.setState(null);
         }
@@ -132,7 +138,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
 
     /**
      * Create the XorClauseImpl with the given term, left and right child clauses, and known and possible predicate sets.
-     * 
+     *
      * @param term the term for this OrClauseImpl.
      * @param knownPredicates set of known predicates.
      * @param possiblePredicates set of possible predicates.
@@ -141,7 +147,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
      */
     protected XorClauseImpl(
             final String term,
-            final Clause first,  
+            final Clause first,
             final Clause second,
             final Hint hint,
             final Set<TokenPredicate> knownPredicates,
