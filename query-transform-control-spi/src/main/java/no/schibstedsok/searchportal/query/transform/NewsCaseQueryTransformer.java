@@ -2,7 +2,6 @@
 package no.schibstedsok.searchportal.query.transform;
 
 import no.schibstedsok.newsadmin.service.NewsCaseFacadeInterface;
-import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import no.schibstedsok.searchportal.query.Clause;
 import org.apache.log4j.Logger;
 
@@ -13,9 +12,6 @@ import java.util.Properties;
 /**
  * Checks if the query should be transformed from a ejb lookup on the queryString. Transformation will replace
  * the whole query.
- * <p/>
- * <b>Note:</b> This queryTransformer ignores all earlier transforms on the query. It uses the raw querystring
- * to transform the query. All transforms to the resulting query should be done after this.
  */
 public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
     private final static Logger LOG = Logger.getLogger(NewsCaseQueryTransformer.class);
@@ -37,7 +33,9 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
      */
     public void visitImpl(final Clause clause) {
         dataAccess.setProperties(getContext().getDataModel().getSite().getSiteConfiguration().getProperties());
-        String transformedQuery = dataAccess.getQuery(getContext().getQuery().getQueryString(), config.getQueryType());
+        String queryString = getTransformedQueryString();
+        LOG.debug("Original query is: '" + queryString + "'");
+        String transformedQuery = dataAccess.getQuery(queryString, config.getQueryType());
         if (transformedQuery == null) {
             transformedQuery = '"' + getContext().getQuery().getQueryString().trim() + '"';
         }
@@ -46,11 +44,18 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
         }
         LOG.debug("New query is: '" + transformedQuery + "'");
         if (transformedQuery.length() > 0) {
-            // TODO: Use junkyard instead.
-            getContext().getDataModel().getParameters().setValue(config.getQueryType(), new StringDataObjectSupport(transformedQuery));
+            getContext().getDataModel().getJunkYard().setValue(config.getQueryType(), transformedQuery);
             getContext().getTransformedTerms().put(getContext().getQuery().getFirstLeafClause(), transformedQuery);
         }
 
+    }
+
+    private String getTransformedQueryString() {
+        StringBuilder sb = new StringBuilder();
+        for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
+            sb.append(getContext().getTransformedTerms().get(keyClause)).append(' ');
+        }
+        return sb.toString();
     }
 
     /**

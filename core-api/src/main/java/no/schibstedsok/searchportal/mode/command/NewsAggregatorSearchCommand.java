@@ -91,7 +91,10 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         try {
             final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
             final InputStream inputStream = getInputStream(config, xmlFile);
-            return newsAggregatorXmlParser.parseCluster(config, inputStream, clusterId.getString(), this);
+            SearchResult searchResult = newsAggregatorXmlParser.parseCluster(config, inputStream, clusterId.getString(), this);
+            if (searchResult != null && searchResult.getHitCount() > 0) {
+                return searchResult;
+            }
         } catch (IOException e) {
             LOG.debug("Falling back to search instead of xml parse", e);
         } catch (JDOMException e) {
@@ -117,7 +120,10 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
         final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
         try {
-            return newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
+            SearchResult searchResult = newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
+            if (searchResult != null && searchResult.getHitCount() > 0) {
+                return searchResult;
+            }
         } catch (JDOMException e) {
             LOG.debug("Falling back to search instead of xml parse", e);
         } catch (IOException e) {

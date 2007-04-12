@@ -5,31 +5,31 @@ import org.w3c.dom.Element;
 
 @Controller("NewsMyNewsQueryTransformer")
 public class NewsMyNewsQueryTransformerConfig extends AbstractQueryTransformerConfig {
-    private String cookieParameter;
-    private String transformExpsession;
-    private static final String COOKIE_PARAMETER = "cookie-parameter";
-    private static final String TRANSFORM_EXPRESSION = "transform-expression";
+    private String filterField;
+    private String type;
+    private static final String TYPE = "type";
+    private static final String FILTER_FIELD = "filter-field";
 
-    public String getCookieParameter() {
-        return cookieParameter;
+    public String getFilterField() {
+        return filterField;
     }
 
-    public void setCookieParameter(String cookieParameter) {
-        this.cookieParameter = cookieParameter;
+    public void setFilterField(String filterField) {
+        this.filterField = filterField;
     }
 
-    public String getTransformExpsession() {
-        return transformExpsession;
+    public String getType() {
+        return type;
     }
 
-    public void setTransformExpsession(String transformExpsession) {
-        this.transformExpsession = transformExpsession;
+    public void setType(String type) {
+        this.type = type;
     }
 
     @Override
     public NewsMyNewsQueryTransformerConfig readQueryTransformer(final Element element) {
-        cookieParameter = element.getAttribute(COOKIE_PARAMETER);
-        transformExpsession = element.getAttribute(TRANSFORM_EXPRESSION);
+        filterField = element.getAttribute(FILTER_FIELD);
+        type = element.getAttribute(TYPE);
         return this;
     }
 

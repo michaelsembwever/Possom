@@ -55,9 +55,12 @@ public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransf
         paramFields = StringUtils.split(element.getAttribute(PARAM_FIELDS), ",");
         clusterField = element.getAttribute(CLUSTER_FIELD);
         timestampField = element.getAttribute(TIMESTAMP_FIELD);
-        clusterIdField = element.getAttribute(CLUSTER_ID_FIELD);
+        final String clusterIdField = element.getAttribute(CLUSTER_ID_FIELD);
+        if (clusterIdField != null && clusterIdField.length() > 0) {
+            this.clusterIdField = clusterIdField;
+        }
         final String maxAge = element.getAttribute(MAX_AGE_IN_DAYS);
-        if (maxAge != null) {
+        if (maxAge != null && maxAge.length() > 0) {
             maxAgeInDays = Integer.parseInt(maxAge);
         }
         return this;

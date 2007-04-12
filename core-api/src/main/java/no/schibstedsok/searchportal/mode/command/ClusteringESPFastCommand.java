@@ -63,7 +63,7 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
             if (clusterId == null) {
                 return createClusteredSearchResult(config, result);
             } else {
-                return createSingleClusterResults(config, result, clusterId);
+                return createSingleClusterResults(config, result);
             }
         } catch (IllegalType e) {
             LOG.error("Could not convert result", e);
@@ -77,7 +77,7 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
     }
 
 
-    private FastSearchResult createSingleClusterResults(ClusteringESPFastConfiguration config, IQueryResult result, StringDataObject clusterId) throws IllegalType, EmptyValueException {
+    private FastSearchResult createSingleClusterResults(ClusteringESPFastConfiguration config, IQueryResult result) throws IllegalType, EmptyValueException {
         final String nestedResultsField = config.getNestedResultsField();
         final FastSearchResult searchResult = new FastSearchResult(this);
         final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
@@ -85,7 +85,7 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
         for (int i = 0; i < result.getDocCount(); i++) {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);
-                final String collapseId = document.getSummaryField("collapseId").getStringValue();
+                final String collapseId = document.getSummaryField("collapseid").getStringValue();
                 SearchResultItem parentResult = collapseMap.get(collapseId);
                 if (parentResult == null) {
                     parentResult = addResult(config, searchResult, document);
@@ -119,15 +119,15 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
         int collectedClusters = 0;
         int collectedHits = 0;
         SearchResultItem clusterEntry = null;
+        SearchResult subResult = null;
 
         LOG.debug("HitCount=" + result.getDocCount() + ", clusterField=" + clusterField + ", nestedResultsField=" + nestedResultsField);
 
         for (int i = 0; i < result.getDocCount(); i++) {
-            SearchResult subResult = null;
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);
                 currentClusterId = document.getSummaryField(clusterField);
-                if (currentClusterId.isEmpty() || lastClusterId == null || lastClusterId.isEmpty() || (currentClusterId.getIntValue() != lastClusterId.getIntValue())) {
+                if (currentClusterId.isEmpty() || lastClusterId == null || lastClusterId.isEmpty() || (!currentClusterId.getStringValue().equals(lastClusterId.getStringValue()))) {
                     collectedClusters++;
                     LOG.debug("Adding new cluster: " + currentClusterId + ", count is: " + collectedClusters);
                     if (collectedClusters < maxClusterCount) {
@@ -139,10 +139,15 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
                     } else {
                         break;
                     }
+                    subResult = null;
                 } else {
                     LOG.debug("Adding subResult for: " + currentClusterId.getStringValue());
                     if (subResult == null) {
                         subResult = new BasicSearchResult(this);
+                        IDocumentSummaryField clusterHitCount = document.getSummaryField("fcocount");
+                        if (!clusterHitCount.isEmpty()) {
+                            subResult.setHitCount(Integer.parseInt(clusterHitCount.getStringValue()));
+                        }
                         clusterEntry.addNestedSearchResult(nestedResultsField, subResult);
                     }
                     addResult(config, subResult, document);
