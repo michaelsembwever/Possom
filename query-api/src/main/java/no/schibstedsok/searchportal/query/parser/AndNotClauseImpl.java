@@ -31,6 +31,7 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
 
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
     
     /**
      * Values are WeakReference object to AndNotClauseImpl.
@@ -91,7 +92,8 @@ public final class AndNotClauseImpl extends AbstractOperationClause implements A
                 
                 weakCache = new ConcurrentHashMap<String,WeakReference<AndNotClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
-                        WEAK_CACHE_LOAD_FACTOR);
+                        WEAK_CACHE_LOAD_FACTOR,
+                        WEAK_CACHE_CONCURRENCY_LEVEL);
                 
                 WEAK_CACHE.put(engine.getSite(),weakCache);
             }

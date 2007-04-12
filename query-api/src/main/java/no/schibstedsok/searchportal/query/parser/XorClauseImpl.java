@@ -31,6 +31,7 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
 
     private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
     private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
     
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
@@ -92,7 +93,8 @@ public final class XorClauseImpl extends OrClauseImpl implements XorClause {
                 
                 weakCache = new ConcurrentHashMap<String,WeakReference<XorClauseImpl>>(
                         WEAK_CACHE_INITIAL_CAPACITY,
-                        WEAK_CACHE_LOAD_FACTOR);
+                        WEAK_CACHE_LOAD_FACTOR,
+                        WEAK_CACHE_CONCURRENCY_LEVEL);
                 
                 WEAK_CACHE.put(engine.getSite(),weakCache);
             }
