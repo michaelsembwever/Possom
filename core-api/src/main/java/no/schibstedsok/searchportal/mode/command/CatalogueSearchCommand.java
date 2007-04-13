@@ -434,9 +434,9 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                     if( ((OperationClause)longestCkr).getFirstClause() == clause ){
                         
                         appendToQueryRepresentation(
-                                "lemiypcfkeywords:^\"" 
+                                "lemiypcfkeywords:\"^" 
                                 + ckr.getTerm().replaceAll("\\(|\\)", "")
-                                +   "\"$");
+                                +   "$\"");
                     }
                     
                 }else{
