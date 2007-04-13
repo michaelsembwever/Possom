@@ -45,7 +45,7 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
     static {
         final Collection<TokenPredicate> predicates = new ArrayList();
 
-        // Add all TokenPredicates. Unfortunately we have now way of globally knowing
+        // Add all TokenPredicates. Unfortunately we have no way of globally knowing
         //  which TokenPredicates can be multi-term (multi-word) matches.
         predicates.addAll(TokenPredicate.getTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);

@@ -90,6 +90,11 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      *  all other leaf clauses matches within COMPANY_KEYWORD_RESERVED will be treated as normal leaves. 
      **/
     private int keywordReservedTermSize = 0;
+    /**
+     * The largest existing clause matching COMPANY_KEYWORD_RESERVED in the query.
+     * null if keywordReservedTermSize <= 0
+     **/
+    private transient Clause longestCkr;
 
     /**
      * Indicate if q-parameter should be split on recogniced geographic
@@ -402,7 +407,7 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                                 
                 if(0 == keywordReservedTermSize){
                     
-                    final Clause longestCkr = new PredicateFinder().findFirstClause(
+                    longestCkr = new PredicateFinder().findFirstClause(
                             query.getRootClause(), 
                             TokenPredicate.COMPANY_KEYWORD_RESERVED,
                             context.getTokenEvaluationEngine());
@@ -412,9 +417,6 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                             : -1;
                 }
                 
-
-                // Got an index out of bounds exception on ancestors.get(0) below.          
-                // just to get the code to run as excepted again.
                 boolean insideCKR = false;
                 final Clause ckr = ancestors.size()>0? ancestors.get(0) : null;
 
@@ -429,11 +431,13 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 if(insideCKR){
                     
                     // SEARCH-1796
-                    // XXX this will write out the same filter multiple times but hopefully fast won't object
-                    appendToQueryRepresentation(
-                            "lemiypcfkeywords:^\"" 
-                            + ckr.getTerm().replaceAll("\\(|\\)", "")
-                            + "\"$");
+                    if( ((OperationClause)longestCkr).getFirstClause() == clause ){
+                        
+                        appendToQueryRepresentation(
+                                "lemiypcfkeywords:^\"" 
+                                + ckr.getTerm().replaceAll("\\(|\\)", "")
+                                +   "\"$");
+                    }
                     
                 }else{
                     
@@ -482,37 +486,43 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         
 
         clause.getFirstClause().accept(this);
+        final int queryRepresentationLength = getQueryRepresentationLength();
 
-        final boolean hasKnownGeo = isKnownGeo(clause.getFirstClause()) || isKnownGeo(clause.getSecondClause());
+        //final boolean hasKnownGeo = isKnownGeo(clause.getFirstClause()) || isKnownGeo(clause.getSecondClause());
 
-        if (!(hasKnownGeo || clause.getSecondClause() instanceof NotClause)) {
-            appendToQueryRepresentation(QL_AND);
-        }
+//        if (!(hasKnownGeo || clause.getSecondClause() instanceof NotClause)) {
+//            appendToQueryRepresentation(QL_AND);
+//        }
 
         clause.getSecondClause().accept(this);
-    }
-
-
-    /**
-     * Returns true if the clause is a leaf clause and if it will not produce
-     * any output in the query representation.
-     *
-     * If split is not done for the query, this method returns false for all
-     * clauses.
-     *
-     * @param clause The clause to examine.
-     * @return true if leaf is known geographic location and should be filtered.
-     */
-    private boolean isKnownGeo(final Clause clause) {
-        if(knownGeo==null) return false;
-
-        if (clause instanceof LeafClause) {
-            final LeafClause leafClause = (LeafClause) clause;
-            return knownGeo.contains(getTransformedTerm(clause));
-        } else {
-            return false;
+        
+        if(getQueryRepresentationLength() > queryRepresentationLength){
+            // we know the query representation got longer which means we need to insert the operator
+            insertToQueryRepresentation(queryRepresentationLength, QL_AND);
         }
     }
+
+//
+//    /**
+//     * Returns true if the clause is a leaf clause and if it will not produce
+//     * any output in the query representation.
+//     *
+//     * If split is not done for the query, this method returns false for all
+//     * clauses.
+//     *
+//     * @param clause The clause to examine.
+//     * @return true if leaf is known geographic location and should be filtered.
+//     */
+//    private boolean isKnownGeo(final Clause clause) {
+//        if(knownGeo==null) return false;
+//
+//        if (clause instanceof LeafClause) {
+//            final LeafClause leafClause = (LeafClause) clause;
+//            return knownGeo.contains(getTransformedTerm(clause));
+//        } else {
+//            return false;
+//        }
+//    }
 
     /**
      * Get the String representation of knownGeo-list.

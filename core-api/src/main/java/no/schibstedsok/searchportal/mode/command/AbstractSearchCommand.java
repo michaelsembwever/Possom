@@ -497,6 +497,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return "";
     }
 
+    // <-- Query Representation state methods (useful while the inbuilt visitor is in operation)
+    //  -    TODO enscapsulated this state in a separate inner class.
+    
     /** TODO comment me. **/
     protected synchronized String getQueryRepresentation(final Query query) {
         
@@ -510,6 +513,18 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final void appendToQueryRepresentation(final CharSequence addition) {
         sb.append(addition);
     }
+    
+    /** TODO comment me. **/
+    protected final void insertToQueryRepresentation(final int offset, final CharSequence addition) {
+        sb.insert(offset, addition);
+    }
+    
+    /** TODO comment me. **/
+    protected final int getQueryRepresentationLength() {
+        return sb.length();
+    }
+    
+    // Query Representation state methods -->
 
     /** TODO comment me. **/
     protected final String getTransformedTerm(final Clause clause) {
