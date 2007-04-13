@@ -176,12 +176,14 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         if(getKnownGeoString()!=null) tmp = tmp + " " + getKnownGeoString();
 
-        queryGeo = createQuery(tmp);
+        if(tmp!=null && tmp.length()>0){
+            queryGeo = createQuery(tmp);
 
-        GeoVisitor geoVisitor = new GeoVisitor();
-        geoVisitor.visit(queryGeo.getQuery().getRootClause());
-
-        queryGeoString = geoVisitor.getQueryRepresentation();
+            GeoVisitor geoVisitor = new GeoVisitor();
+            geoVisitor.visit(queryGeo.getQuery().getRootClause());
+            queryGeoString = geoVisitor.getQueryRepresentation();
+        }
+        
         LOG.info(DEBUG_SEARCHING_3 + queryGeoString);
         
     }
@@ -317,9 +319,9 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         } else{
 
             // none of what and where, this should not be possible.
-            throw new IllegalStateException("Emty query strings, should not be possible. [Primary="+query+", Geo="+queryGeoString+"]");
+            // throw new IllegalStateException("Emty query strings, should not be possible. [Primary="+query+", Geo="+queryGeoString+"]");
         }
-
+        
         return query;
     }
 
