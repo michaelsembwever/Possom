@@ -1,5 +1,72 @@
 <%@ page import="no.schibstedsok.searchportal.util.TradeDoubler,java.net.URLEncoder" %>
 <%@ page import="no.schibstedsok.searchportal.datamodel.DataModel" %>
+<%@ page import="java.net.URL" %>
+<%@ page import="java.io.IOException" %>
+<%@ page import="java.io.UnsupportedEncodingException" %>
+<%@ page import="java.net.URLDecoder" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="java.util.Enumeration" %>
+<%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Hashtable" %>
+<%@ page import="java.util.List" %>
+<%@ page import="java.util.Locale" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="java.util.Properties" %>
+<%@ page import="java.util.StringTokenizer" %>
+<%!
+
+    // TODO This is cutnpaste from a private method in DataModelFilter.
+    // That function needs to be public and put in a requst helper class or similar.
+    // AndersJ  ?
+
+     /** A safer way to get parameters for the query string.
+     * Handles ISO-8859-1 and UTF-8 URL encodings.
+     *
+     * @param request The servlet request we are processing
+     * @param parameter The parameter to retrieve
+     * @return The correct decoded parameter
+     *
+     * @author <a href="mailto:anders.johan.jamtli@sesam.no">Anders Johan Jamtli</a>
+     */
+  static String getParameterSafely(final HttpServletRequest request, final String parameter){
+
+        final StringTokenizer st = new StringTokenizer(request.getQueryString(), "&");
+        String value = request.getParameter(parameter);
+        String queryStringValue = null;
+
+        final String parameterEquals = parameter + '=';
+        while(st.hasMoreTokens()) {
+            final String tmp = st.nextToken();
+            if (tmp.startsWith(parameterEquals)) {
+                queryStringValue = tmp.substring(parameterEquals.length());
+                break;
+            }
+        }
+
+        if (null != value && null != queryStringValue) {
+
+            try {
+                final String encodedReqValue = URLEncoder.encode(value, "UTF-8")
+                        .replaceAll("[+]", "%20")
+                        .replaceAll("[*]", "%2A");
+
+                queryStringValue = queryStringValue
+                        .replaceAll("[+]", "%20")
+                        .replaceAll("[*]", "%2A");
+
+                if (!queryStringValue.equalsIgnoreCase(encodedReqValue)){
+                    value = URLDecoder.decode(queryStringValue, "ISO-8859-1");
+                }
+
+            } catch (UnsupportedEncodingException e) {
+                 throw new RuntimeException(e.getMessage());
+            }
+        }
+
+        return value;
+    }
+%>
 <%
     final DataModel datamodel = (DataModel) session.getAttribute(DataModel.KEY);
 
@@ -16,7 +83,7 @@
     if (sitesearch == null) {
         sitesearch = "";
     }
-
+   
     if (request.getParameter("url") != null && request.getParameter("url").length() > 0) {
         response.sendRedirect(request.getParameter("url"));
     } else if (request.getParameter("URL") != null && request.getParameter("URL").length() > 0) {
@@ -44,7 +111,7 @@
         String q = request.getParameter("q");
 
         if (q != null) {
-            q = java.net.URLEncoder.encode(q, "UTF-8");
+            q = getParameterSafely(request, "q");
         } else {
             q = "";
         }
