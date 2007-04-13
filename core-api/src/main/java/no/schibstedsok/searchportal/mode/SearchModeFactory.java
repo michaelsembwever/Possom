@@ -150,7 +150,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String INFO_PARSING_RESULT_HANDLER = "  Parsing result handler ";
     private static final String INFO_PARSING_QUERY_TRANSFORMER = "  Parsing query transformer ";
     private static final String DEBUG_PARSED_PROPERTY = "  Property property ";
-    private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent mode {0} not found for command {1} in mode {2}";
+    private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent command {0} not found for {1} in mode {2}";
 
     // Attributes ----------------------------------------------------
 
