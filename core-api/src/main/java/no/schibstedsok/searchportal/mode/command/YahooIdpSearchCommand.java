@@ -99,6 +99,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
                         final String host = new URL(item.getField("clickurl")).getHost().replaceAll("/$","");
                         if(hideDomain.length() == 0 || !host.endsWith(hideDomain)){
                             searchResult.addResult(item);
+                        } else {
+                            // Improvent of HACK. Keeps the hitcount more accurate. SEARCH-2032
+                            searchResult.setHitCount(searchResult.getHitCount() - 1);
                         }
                     }
                     // build navigators
