@@ -17,6 +17,7 @@ import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.XorClause.Hint;
 import no.schibstedsok.searchportal.query.XorClause.Hint;
+import no.schibstedsok.searchportal.query.finder.Counter;
 import no.schibstedsok.searchportal.query.finder.PredicateFinder;
 import no.schibstedsok.searchportal.query.parser.alt.AbstractAlternation;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
@@ -40,7 +41,9 @@ public final class FullnameAlternation extends AbstractAlternation {
     
     // Constructors --------------------------------------------------
     
-    /** Creates a new instance of FullnameAlternation */
+    /** Creates a new instance of FullnameAlternation 
+     * @param cxt 
+     */
     public FullnameAlternation(final Context cxt) {
         super(cxt);
     }
@@ -60,31 +63,55 @@ public final class FullnameAlternation extends AbstractAlternation {
             
             if( fullname instanceof DefaultOperatorClause ){
                 
+                // find the right-leaning equilivalent of this fullname 
+                //  since the presumption is that the surname is on the right hand side
+                
+                DefaultOperatorClause rightLeaningFullname = null;
+                for(Clause fn : fullnames){
+                    if( fn.getTerm().replaceAll("\\(|\\)", "").equals(fullname.getTerm().replaceAll("\\(|\\)", "")) ){
+                        rightLeaningFullname = (DefaultOperatorClause) fn;
+                        //break;
+                    }
+                }
+                
                 final DefaultOperatorClause doFullname = (DefaultOperatorClause)fullname;
                 
-                final DoubleOperatorClause fullnameParent = result == fullname
-                        ? doFullname
-                        : (DoubleOperatorClause) context.getParentFinder().getParent(result, fullname);
+                // determine which children make up da lastname (we'll take da largest & furthest right fullname found)
+//                final Set<Clause> lastnames = finder.findClauses(
+//                        rightLeaningFullname, 
+//                        TokenPredicate.LASTNAME, 
+//                        context.getTokenEvaluationEngine());
                 
-                // determine which children make up the lastname (we'll take the largest fullname found)
-                Clause surname 
-                        = finder.findFirstClause(fullname, TokenPredicate.LASTNAME, context.getTokenEvaluationEngine());
+                Clause surname = finder.findFirstClause(
+                        rightLeaningFullname, 
+                        TokenPredicate.LASTNAME, 
+                        context.getTokenEvaluationEngine());
+//                for(Clause lastname : lastnames){
+//                    if( null != surname ){
+//                        surname = new Counter().getTermCount(lastname) == new Counter().getTermCount(surname)
+//                            ? lastname
+//                            : surname;
+//                    }else{
+//                        surname = lastname;
+//                    }
+//                }
+                
                 if(null == surname){
                     // default to second clause
-                    surname = doFullname.getSecondClause();
+                    surname = rightLeaningFullname.getSecondClause();
                 }
                 
                 final DefaultOperatorClause surnameParent 
-                        = (DefaultOperatorClause)context.getParentFinder().getParent(fullname, surname);
+                        = (DefaultOperatorClause)context.getParentFinder().getParent(rightLeaningFullname, surname);
                 
-                if(surnameParent.getSecondClause() != surname){
+                if(rightLeaningFullname.getSecondClause() != surname){
                     // surname must be on the right side
-                    surname = surnameParent.getSecondClause();
+                    surname = rightLeaningFullname.getSecondClause();
                 }
                 LOG.debug("surname detected as " + surname);
                 
                 // and the clause that comprises all givennames
-                final Clause givennames = surnameParent.getFirstClause();
+                final Clause givennames = rightLeaningFullname.getFirstClause();
                 LOG.debug("givennames detected as " + givennames);
                 
                 // create fullname phrase clause
@@ -109,6 +136,11 @@ public final class FullnameAlternation extends AbstractAlternation {
                 LOG.debug("XorClause created " + xorClause);
                 
                 // replace fullname with the new xorClause
+                
+                final DoubleOperatorClause fullnameParent = result == fullname
+                        ? doFullname
+                        : (DoubleOperatorClause) context.getParentFinder().getParent(result, fullname);
+                
                 result = result == fullname
                         ? xorClause
                         : replaceDescendant((DoubleOperatorClause)result, xorClause, doFullname, fullnameParent);

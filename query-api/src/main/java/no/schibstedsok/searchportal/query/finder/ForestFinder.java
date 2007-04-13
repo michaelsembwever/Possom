@@ -12,6 +12,11 @@ import no.schibstedsok.searchportal.query.parser.*;
 
 import org.apache.log4j.Logger;
 
+/**
+ * 
+ * @author mick
+ * @version $Id$
+ */
 public final class ForestFinder extends AbstractReflectionVisitor {
 
 
@@ -23,6 +28,11 @@ public final class ForestFinder extends AbstractReflectionVisitor {
     private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY 
             = "visit(object) can't be called directly on this visitor!";
 
+    /**
+     * 
+     * @param root 
+     * @return 
+     */
     public synchronized List<DoubleOperatorClause> findForestRoots(final OperationClause root) {
 
         if (searching) {
@@ -32,21 +42,33 @@ public final class ForestFinder extends AbstractReflectionVisitor {
         roots.clear();
         visit(root);
         searching = false;
-        return Collections.unmodifiableList(roots);
+        return Collections.unmodifiableList(new ArrayList<DoubleOperatorClause>(roots));
     }
 
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final OperationClause clause) {
 
         clause.getFirstClause().accept(this);
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final XorClause clause) {
 
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final DoubleOperatorClause clause) {
 
         final DoubleOperatorClause forestDepth = forestWalk(clause);
@@ -54,6 +76,10 @@ public final class ForestFinder extends AbstractReflectionVisitor {
         forestDepth.getSecondClause().accept(this);
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     protected void visitImpl(final LeafClause clause) {
         // leaves can't be forest roots :-)
     }

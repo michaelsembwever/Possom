@@ -44,6 +44,8 @@ public final class PredicateFinder extends AbstractReflectionVisitor {
 
     /** find the first clause containing the predicate.
      ** @param root 
+     * @param predicate 
+     * @param engine 
      * @return 
      */
     public synchronized Clause findFirstClause(
@@ -60,6 +62,8 @@ public final class PredicateFinder extends AbstractReflectionVisitor {
     /** find all the clauses containing the predicate.
      * returns largest multi-terms clauses and before leaf clauses.
      * @param root 
+     * @param predicate 
+     * @param engine 
      * @return 
      **/
     public synchronized Set<Clause> findClauses(
@@ -68,7 +72,7 @@ public final class PredicateFinder extends AbstractReflectionVisitor {
             final TokenEvaluationEngine engine) {
         
         findImpl(root, predicate, engine);        
-        return Collections.unmodifiableSet(clauses);
+        return Collections.unmodifiableSet(new HashSet<Clause>(clauses));
     }
     
     private void findImpl(
