@@ -50,10 +50,13 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
     private static final String MSG_NAV_PREFIX = "navigation_";
 
+    /**
+     * Name of the configuration file.
+     */
     public static final String VIEWS_XMLFILE = "views.xml";
 
     private static final Logger LOG = Logger.getLogger(SearchTabFactory.class);
-    private static final String ERR_DOC_BUILDER_CREATION 
+    private static final String ERR_DOC_BUILDER_CREATION
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String INFO_PARSING_TAB = "Parsing tab ";
     private static final String INFO_PARSING_ENRICHMENT = " Parsing enrichment ";
@@ -61,8 +64,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     private static final String INFO_PARSING_NAVIGATION_NAME = " Parsing navigation name ";
 
     private static final String MSG_DISPLAY_NAV_PREFIX = "navigation_display_";
-    private static final String MISSING_NAV = "Mo message prop. for ";            
-    
+    private static final String MISSING_NAV = "Mo message prop. for ";
+
     // Attributes ----------------------------------------------------
 
     private final Map<String,SearchTab> tabsByName = new HashMap<String,SearchTab>();
@@ -74,12 +77,15 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
 
     // Static --------------------------------------------------------
 
-    /** Return the factory in use for the skin defined within the context. **/
+    /** Return the factory in use for the skin defined within the context. *
+     * @param cxt
+     * @return
+     */
     public static SearchTabFactory valueOf(final Context cxt) {
 
         final Site site = cxt.getSite();
         assert null != site;
-        
+
         SearchTabFactory instance;
         try{
             INSTANCES_LOCK.readLock().lock();
@@ -143,6 +149,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
     /** Find the tab with the given id.
      * Search recursively up through the skin's parents.
      * <b>Allow to return null.</b>
+     * @param id
+     * @return
      */
     public SearchTab getTabByName(final String id){
 
@@ -162,17 +170,19 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     context
                 ));
             tab = factory.getTabByName(id);
-            
+
         }else{
             LOG.trace("found tab for " + id + " against SearchTabFactory for " + context.getSite());
         }
-        
+
         return tab;
     }
 
     /** Find the tab with the given key.
      * Search recursively up through the skin's parents.
      * <b>Allow to return null.</b>
+     * @param key
+     * @return
      */
     public SearchTab getTabByKey(final String key){
 
@@ -191,14 +201,14 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     context
                 ));
             tab = factory.getTabByKeyImpl(key);
-            
+
         }else{
             LOG.trace("found tab for " + key + " against SearchTabFactory for " + context.getSite());
         }
-        
+
         return tab;
     }
-    
+
 
     // Package protected ---------------------------------------------
 
@@ -267,19 +277,21 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                     final String urlSuffix = n.getAttribute("url-suffix");
                     final String image = n.getAttribute("image");
                     final int priority = parseInt(n.getAttribute("priority"), 0);
+                    final String template = parseString(n.getAttribute("template"), null);
                     final SearchTab.NavigatorHint navHint = new SearchTab.NavigatorHint(
-                            navId, 
-                            name, 
-                            displayName, 
-                            match, 
-                            tab, 
-                            urlSuffix, 
-                            image, 
-                            priority, 
+                            navId,
+                            name,
+                            displayName,
+                            match,
+                            tab,
+                            urlSuffix,
+                            image,
+                            priority,
+                            template,
                             this);
                     navigations.add(navHint);
                 }
-                
+
                 // because navigation hints dynamicaly link back to the leaf site's through the tab attribute
                 //  we need copy in the inherited navigation hints so they are applicable to this site's tabs.
                 if( null != inherit ){
@@ -287,7 +299,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         navigations.add(new SearchTab.NavigatorHint(hint, this));
                     }
                 }
-                
+
                 // the tab's layout
                 final Layout layout = new Layout(null != inherit ? inherit.getLayout() : null)
                         .readLayout((Element)tabE.getElementsByTagName("layout").item(0));
@@ -302,11 +314,11 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseBoolean(tabE.getAttribute("rss-hidden"), false),
                         parseInt(tabE.getAttribute("page-size"), inherit != null ? inherit.getPageSize() : -1),
                         navigations,
-                        parseInt(tabE.getAttribute("enrichment-limit"), inherit != null 
-                            ? inherit.getEnrichmentLimit() 
+                        parseInt(tabE.getAttribute("enrichment-limit"), inherit != null
+                            ? inherit.getEnrichmentLimit()
                             : -1),
-                        parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null 
-                            ? inherit.getEnrichmentOnTop() 
+                        parseInt(tabE.getAttribute("enrichment-on-top"), inherit != null
+                            ? inherit.getEnrichmentOnTop()
                             : -1),
                         parseInt(tabE.getAttribute("enrichment-on-top-score"), inherit != null
                             ? inherit.getEnrichmentOnTopScore()
@@ -316,8 +328,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
                         parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
                         Arrays.asList(css),
-                        parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null 
-                            ? inherit.getAbsoluteOrdering() 
+                        parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null
+                            ? inherit.getAbsoluteOrdering()
                             : false),
                         layout);
 
@@ -348,7 +360,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
             tabsLock.readLock().unlock();
         }
     }
-    
+
     private SearchTab getTabByKeyImpl(final String key){
 
         LOG.trace("getTabByKeyImpl(" + key + ')');
@@ -356,7 +368,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
         try{
             tabsLock.readLock().lock();
             return tabsByKey.get(key);
-            
+
         }finally{
             tabsLock.readLock().unlock();
         }
