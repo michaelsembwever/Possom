@@ -185,9 +185,9 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
 
         String t = super.getTransformedQuery();
 
-        final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
+        final TokenEvaluationEngine engine = getEngine();
 
-        exactCompany = engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, datamodel.getQuery().getQuery());
+        exactCompany = engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, getQuery());
 
         companyRank = exactCompany && !isTop3 && !getParameter("yprank").equals("standard") || getParameter("yprank").equals("company");
 
@@ -240,9 +240,9 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
     /** TODO comment me. **/
     protected String getSortBy() {
 
-        final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
+        final TokenEvaluationEngine engine = getEngine();
 
-        if (engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, datamodel.getQuery().getQuery())) {
+        if (engine.evaluateQuery(TokenPredicate.EXACT_COMPANYRANK, getQuery())) {
             return "yellowname";
         }
 

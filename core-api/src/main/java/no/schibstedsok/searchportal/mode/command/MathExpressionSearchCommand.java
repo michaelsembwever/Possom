@@ -44,7 +44,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
         final BasicSearchResult searchResult = new BasicSearchResult(this);
 
         try{
-            final Complex result = ((JepTokenEvaluator)context.getTokenEvaluationEngine()
+            final Complex result = ((JepTokenEvaluator)getEngine()
                     .getEvaluator(TokenPredicate.MATHPREDICATE))
                     .getComplex();
 
@@ -64,7 +64,7 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
                 final SearchResultItem item = new BasicSearchResultItem();
 
-                final String r = datamodel.getQuery().getQuery().getQueryString() + " = " + s;
+                final String r = getQuery().getQueryString() + " = " + s;
 
                 LOG.debug("Adding result " + r);
 

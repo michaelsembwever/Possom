@@ -161,7 +161,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
                 }
             }
 
-            searchResult.addField("generatedQuery", getQueryRepresentation(datamodel.getQuery().getQuery()));
+            searchResult.addField("generatedQuery", getQueryRepresentation(getQuery()));
 
             return searchResult;
 

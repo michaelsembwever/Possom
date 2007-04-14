@@ -32,15 +32,14 @@ public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand
     @Override
     public SearchResult execute() {
 
-		HittaMapSearchConfiguration bsc = (HittaMapSearchConfiguration) context
-				.getSearchConfiguration();
+		HittaMapSearchConfiguration bsc = (HittaMapSearchConfiguration) context.getSearchConfiguration();
 
-		final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
+		final TokenEvaluationEngine engine = getEngine();
 		/* Butiker */
 		final boolean isGEOGLOBAL = engine.evaluateQuery(
-				TokenPredicate.GEOGLOBAL, datamodel.getQuery().getQuery());
+				TokenPredicate.GEOGLOBAL, getQuery());
 //		final boolean isGEOLOCAL = engine.evaluateQuery(
-//				TokenPredicate.GEOLOCAL, datamodel.getQuery().getQuery());
+//				TokenPredicate.GEOLOCAL, getQuery());
 
 		final SearchResult result = new BasicSearchResult(this);
 		if (isGEOGLOBAL) {
