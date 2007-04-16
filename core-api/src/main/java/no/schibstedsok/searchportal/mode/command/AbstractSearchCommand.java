@@ -1017,7 +1017,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
          */
         protected void visitImpl(final XorClause clause) {
 
-            AbstractSearchCommand.this.visitXorClause(this, clause);
+            switch(clause.getHint()){
+// Uncomment the following to prevent fullnames turning into ("firstname lastname" "lastname first")                
+//            case FULLNAME_ON_LEFT:
+//                clause.getSecondClause().accept(this);
+//                break;
+            default:            
+                AbstractSearchCommand.this.visitXorClause(this, clause);
+            }
         }
     }
 
