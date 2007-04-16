@@ -67,6 +67,7 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
     private List<Category> parseCategories(DataModel datamodel) throws IOException, JDOMException {
 
         final URL url = new URL("http://" + datamodel.getSite().getSite().getName() + datamodel.getSite().getSite().getConfigContext() + categoriesXml);
+        LOG.debug("Loading categories xml from: " + url.toString());
         final HTTPClient client = HTTPClient.instance(url.getHost(), url.getHost(), url.getPort());
         BufferedInputStream in = null;
         try {

@@ -44,14 +44,27 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
         if (myNews != null && myNews.length() > 0) {
             StringBuilder newQuery = new StringBuilder();
             Matcher matcher = queryPattern.matcher(myNews);
-            while (matcher.find()) {
-                if (matcher.group(2).equals(config.getType())) {
-                    if (newQuery.length() == 0) {
-                        newQuery.append("filter(").append(config.getFilterField()).append(":or(");
-                    } else {
-                        newQuery.append(',');
+            if (config.getPosition() == -1) {
+                while (matcher.find()) {
+                    if (matcher.group(2).equals(config.getType())) {
+                        if (newQuery.length() == 0) {
+                            newQuery.append("filter(").append(config.getFilterField()).append(":or(");
+                        } else {
+                            newQuery.append(',');
+                        }
+                        newQuery.append('\"').append(matcher.group(1)).append('\"');
                     }
-                    newQuery.append('\"').append(matcher.group(1)).append('\"');
+                }
+            } else {
+                int curPos = 0;
+                while (matcher.find() && curPos < config.getPosition()) {
+                    // Just searching for the correct match.
+                    curPos++;
+                }
+                if (matcher.group(2).equals(config.getType()) && matcher.groupCount() > 0) {
+                    newQuery.append("filter(").append(config.getFilterField()).append('(').append('\"').append(matcher.group(1)).append('\"');
+                } else {
+                    return "";
                 }
             }
             if (newQuery.length() > 0) {
@@ -59,6 +72,6 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
                 return newQuery.toString();
             }
         }
-        return null;
+        return "";
     }
 }

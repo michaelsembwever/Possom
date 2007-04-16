@@ -112,6 +112,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         return super.execute();
     }
 
+    @Override
     public NewsAggregatorSearchConfiguration getSearchConfiguration() {
         return (NewsAggregatorSearchConfiguration) super.getSearchConfiguration();
     }

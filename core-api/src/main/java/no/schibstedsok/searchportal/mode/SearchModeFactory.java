@@ -24,6 +24,7 @@ import no.schibstedsok.searchportal.mode.config.MathExpressionSearchConfiguratio
 import no.schibstedsok.searchportal.mode.config.MobileSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.NewsMyNewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.NewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.PicSearchConfiguration;
@@ -396,7 +397,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         HITTAMAP_COMMAND(HittaMapSearchConfiguration.class),
         CATALOGUE_BANNERS_COMMAND(CatalogueBannersSearchConfiguration.class),
         CLUSTERING_ESP_FAST_COMMAND(ClusteringESPFastConfiguration.class),
-        NEWS_AGGREGATOR_COMMAND(NewsAggregatorSearchConfiguration.class);
+        NEWS_AGGREGATOR_COMMAND(NewsAggregatorSearchConfiguration.class),
+        NEWS_MY_NEWS_COMMAND(NewsMyNewsSearchConfiguration.class);
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
@@ -805,6 +807,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(nasc, inherit, "xmlMainFile", ParseType.String, commandE, "fp_main_main.xml");
                     fillBeanProperty(nasc, inherit, "geographicFields", ParseType.String, commandE, "");
                     fillBeanProperty(nasc, inherit, "categoryFields", ParseType.String, commandE, "");
+                }
+
+                if (sc instanceof NewsMyNewsSearchConfiguration) {
+
                 }
 
                 // query transformers
