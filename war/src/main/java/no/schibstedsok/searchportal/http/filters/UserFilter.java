@@ -49,6 +49,9 @@ public final class UserFilter implements Filter {
 
     // Constructors --------------------------------------------------
 
+    /**
+     * 
+     */
     public UserFilter() {
     }
 
@@ -58,7 +61,7 @@ public final class UserFilter implements Filter {
     /**
      *
      * @param request The servlet request we are processing
-     * @param result The servlet response we are creating
+     * @param response 
      * @param chain The filter chain we are processing
      *
      * @exception IOException if an input/output error occurs
@@ -191,7 +194,6 @@ public final class UserFilter implements Filter {
         final Cookie cookie = new Cookie(USER_COOKIE_KEY, content);
         cookie.setPath(USER_COOKIE_PATH);
         cookie.setMaxAge(Integer.MAX_VALUE);
-        cookie.setSecure(true);
 
         return cookie;
     }
