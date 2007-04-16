@@ -250,21 +250,18 @@
 </div>
 
 
-
-
-
-
-        <!-- start Gallup <%=locale  %>-->
+        <!-- start gallup - <%=locale  %> -->
         <% if ( "no".equals(locale) ) { %>        
-        <script type='text/javascript' language='JavaScript' src='javascript/tmv11.js'></script>
+        <script type='text/javascript' language='JavaScript' src='/javascript/tmv11.js'></script>
         <script type="text/javascript" language="JavaScript"><!--
-            var tmsec = new Array(2);
+            var tmsec = new Array(3);
             tmsec[0]="tmsec=sesam";
             tmsec[1]="tmsec=sesamforside";
+            tmsec[2]="tmsec=sesamforside";
             getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
             //-->
         </script>
-        <noscript><img src="http://statistik-gallup.net/V11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamforside" alt="" /></noscript>
+        <noscript><img src="http://statistik-gallup.net/V11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamforside&amp;tmsec=sesamforside" alt="" /></noscript>
         <% } %>
         <!-- end gallup -->
 
