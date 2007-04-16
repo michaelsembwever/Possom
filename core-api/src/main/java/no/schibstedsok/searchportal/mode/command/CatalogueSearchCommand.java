@@ -487,14 +487,16 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
 
         clause.getFirstClause().accept(this);
-        final int queryRepresentationLength = getQueryRepresentationLength();
+        final int queryRepLength = getQueryRepresentationLength();
 
 
         clause.getSecondClause().accept(this);
 
-        if(queryRepresentationLength > 0 && getQueryRepresentationLength() > queryRepresentationLength){
+        final boolean queryRepGrown = queryRepLength > 0 && getQueryRepresentationLength() > queryRepLength;
+
+        if(queryRepGrown && !(clause.getSecondClause() instanceof NotClause)){
             // we know the query representation got longer which means we need to insert the operator
-            insertToQueryRepresentation(queryRepresentationLength, QL_AND);
+            insertToQueryRepresentation(queryRepLength, QL_AND);
         }
     }
 
