@@ -250,7 +250,7 @@
 </div>
 
 
-        <!-- start gallup - <%=locale  %> -->
+        <!-- start gallup (<%=locale  %>) -->
         <% if ( "no".equals(locale) ) { %>        
         <script type='text/javascript' language='JavaScript' src='/javascript/tmv11.js'></script>
         <script type="text/javascript" language="JavaScript"><!--
