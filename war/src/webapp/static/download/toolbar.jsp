@@ -5,8 +5,8 @@
         <title>Sesam</title>
         <link media="screen" href="../../css/decorator-style.css" rel="stylesheet" type="text/css" />
         <link media="print" href="../../css/print-style.css" rel="stylesheet" type="text/css" />
-        <link rel="icon" href="../../favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="../../favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
+        <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     </head>
 
