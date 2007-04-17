@@ -8,23 +8,31 @@
 
 package no.schibstedsok.searchportal.datamodel.site;
 
-import java.io.Serializable;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 
-/** The SiteDataObject is the datamodel's container for Site related classes.
+import java.io.Serializable;
+
+/**
+ * The SiteDataObject is the datamodel's container for Site related classes.
  * These objects are intended to be shared instances corresponding to each site and therefore thread-safe.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
 @DataObject
-public interface SiteDataObject extends Serializable {
+public interface SiteDataObject extends Serializable, SiteContext {
 
-    /** The Site class is a key used by other classes that return site-dependent results. **/
+    /**
+     * The Site class is a key used by other classes that return site-dependent results. *
+     */
     Site getSite();
-    /** The SiteConfiguration class contains properties from the site's configuration.properties. **/
+
+    /**
+     * The SiteConfiguration class contains properties from the site's configuration.properties. *
+     */
     SiteConfiguration getSiteConfiguration();
     //Channels getChannels();
     //TextMessage getTextMessage();

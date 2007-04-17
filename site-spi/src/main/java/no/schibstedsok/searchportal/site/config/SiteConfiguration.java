@@ -69,10 +69,6 @@ public final class SiteConfiguration implements SiteKeyedFactory {
         }
     }
 
-    public SiteContext getSiteContext() {
-        return context;
-    }
-
     /**
      * TODO comment me. *
      */

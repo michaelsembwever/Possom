@@ -415,8 +415,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nn");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("cat");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("na");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nm");
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("na") && getTransformedQuery().trim().length() > 0;
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nc") && getTransformedQuery().trim().length() > 0;
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nm") && getTransformedQuery().trim().length() > 0;
 
             executeQuery |= null != filter && filter.length() > 0;
             LOG.info("executeQuery==" + executeQuery
@@ -483,7 +484,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                             context.getRunningQuery().addSource(modifier);
                         }
                     },
-                    context.getDataModel().getSite().getSiteConfiguration().getSiteContext(),
                     context
             );
             resultHandler.handleResult(resultHandlerContext, datamodel);
