@@ -19,27 +19,28 @@ import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
+import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.query.XorClause;
 
 /**
  *
  * A search command that uses the picsearch API.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class PicSearchCommand extends AbstractSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(PicSearchCommand.class);
     private final HTTPClient client;
     private final int port;
-    private static final String REQ_URL_FMT = "/query?ie=UTF-8&tldb={0}&filter={1}" +
-            "&custid={2}&version=2.6&thumbs={3}&q={4}&start={5}";
+    private static final String REQ_URL_FMT
+            = "/query?ie=UTF-8&tldb={0}&filter={1}&custid={2}&version=2.6&thumbs={3}&q={4}&start={5}";
 
     /**
      * Creates a new command in given context.
      *
      * @param cxt Context to run in.
-     * @param parameters Command parameters.
      */
     public PicSearchCommand(final Context cxt) {
 
@@ -53,7 +54,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         client = HTTPClient.instance("picture_search", host, port);
     }
 
-    /** {@inheritDoc} */
+    /** {@inherit} */
     public SearchResult execute() {
 
         String query = getTransformedQuery();
@@ -118,6 +119,24 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         if (childsTerm != null && childsTerm.length() > 0) {
             appendToQueryRepresentation("-");
             clause.getFirstClause().accept(this);
+        }
+    }
+
+    /**
+     *
+     * @param visitor
+     * @param clause
+     */
+    protected void visitXorClause(final Visitor visitor, final XorClause clause){
+
+        // determine which branch in the query-tree we want to use.
+        //  Both branches to a XorClause should never be used.
+        switch(clause.getHint()){
+        case FULLNAME_ON_LEFT:
+            clause.getSecondClause().accept(this);
+            break;
+        default:
+            super.visitXorClause(visitor, clause);
         }
     }
 

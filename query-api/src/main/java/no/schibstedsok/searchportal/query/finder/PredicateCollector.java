@@ -8,10 +8,7 @@
 
 package no.schibstedsok.searchportal.query.finder;
 
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DoubleOperatorClause;
@@ -22,16 +19,15 @@ import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import org.apache.commons.collections.Predicate;
 import org.apache.log4j.Logger;
 
 /**
  * Responsible for Visiting the Query and finding where the predicate lies.
- * This class is thread-safe.
+ * This class is thread-safe. (It is immutable).
  * TODO Handle predicates under NOT and ANDNOT clauses. Currently they are ignored.
  * 
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
- * @version $Id: Scorer.java 3518 2006-09-07 12:13:10Z mickw $
+ * @version $Id$
  */
 public final class PredicateCollector extends AbstractReflectionVisitor {
     
@@ -45,15 +41,27 @@ public final class PredicateCollector extends AbstractReflectionVisitor {
     private final Set<TokenPredicate> known = new HashSet<TokenPredicate>();
     private final Set<TokenPredicate> possible = new HashSet<TokenPredicate>();
     
+    /**
+     * 
+     * @param query 
+     */
     public PredicateCollector(final Query query){
         this.query = query;
         visit(query.getRootClause());
     }
     
+    /**
+     * 
+     * @return 
+     */
     public Set<TokenPredicate> getKnownPredicates(){
         return known;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public Set<TokenPredicate> getPossiblePredicates(){
         return possible;
     }

@@ -7,7 +7,6 @@
 
 package no.schibstedsok.searchportal.query.finder;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +17,6 @@ import no.schibstedsok.searchportal.query.DoubleOperatorClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
-import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
@@ -332,7 +330,7 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
     public static final class WhoWhereSplit{
         private final String who;
         private final String where;
-        private WhoWhereSplit(final String who, final String where){
+        public WhoWhereSplit(final String who, final String where){
             this.who = who;
             this.where = where;
         }

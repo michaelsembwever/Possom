@@ -1,5 +1,7 @@
 <%@ page import="no.schibstedsok.searchportal.util.TradeDoubler,java.net.URLEncoder" %>
 <%@ page import="no.schibstedsok.searchportal.datamodel.DataModel" %>
+
+
 <%
     final DataModel datamodel = (DataModel) session.getAttribute(DataModel.KEY);
 
@@ -16,7 +18,7 @@
     if (sitesearch == null) {
         sitesearch = "";
     }
-
+   
     if (request.getParameter("url") != null && request.getParameter("url").length() > 0) {
         response.sendRedirect(request.getParameter("url"));
     } else if (request.getParameter("URL") != null && request.getParameter("URL").length() > 0) {
@@ -44,7 +46,7 @@
         String q = request.getParameter("q");
 
         if (q != null) {
-            q = java.net.URLEncoder.encode(q, "UTF-8");
+            q = datamodel.getParameters().getValue("q").getUtf8UrlEncoded();
         } else {
             q = "";
         }

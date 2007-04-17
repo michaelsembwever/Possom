@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.query.parser;
 
@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,11 +29,15 @@ import no.schibstedsok.searchportal.site.Site;
  */
 public class DefaultOperatorClauseImpl extends AbstractOperationClause implements DefaultOperatorClause {
 
+    private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
+    private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
+    
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
     private static final Map<Site,Map<String,WeakReference<DefaultOperatorClauseImpl>>> WEAK_CACHE
-            = new HashMap<Site,Map<String,WeakReference<DefaultOperatorClauseImpl>>>();
+            = new ConcurrentHashMap<Site,Map<String,WeakReference<DefaultOperatorClauseImpl>>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -41,7 +45,7 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
     static {
         final Collection<TokenPredicate> predicates = new ArrayList();
 
-        // Add all TokenPredicates. Unfortunately we have now way of globally knowing
+        // Add all TokenPredicates. Unfortunately we have no way of globally knowing
         //  which TokenPredicates can be multi-term (multi-word) matches.
         predicates.addAll(TokenPredicate.getTokenPredicates());
         PREDICATES_APPLICABLE = Collections.unmodifiableCollection(predicates);
@@ -56,7 +60,7 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
      * them.
      * The methods also allow a chunk of creation logic for the OrClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
+     *
      * @param first the left child clause of the operation clause we are about to create (or find).
      * @param second the right child clause of the operation clause we are about to create (or find).
      * @param engine the factory handing out evaluators against TokenPredicates.
@@ -93,7 +97,12 @@ public class DefaultOperatorClauseImpl extends AbstractOperationClause implement
                     = WEAK_CACHE.get(engine.getSite());
 
             if(weakCache == null){
-                weakCache = new HashMap<String,WeakReference<DefaultOperatorClauseImpl>>();
+                
+                weakCache = new ConcurrentHashMap<String,WeakReference<DefaultOperatorClauseImpl>>(
+                        WEAK_CACHE_INITIAL_CAPACITY,
+                        WEAK_CACHE_LOAD_FACTOR,
+                        WEAK_CACHE_CONCURRENCY_LEVEL);
+                
                 WEAK_CACHE.put(engine.getSite(), weakCache);
             }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (2005-2006) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  */
 package no.schibstedsok.searchportal.query.parser;
 
@@ -7,7 +7,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -29,11 +29,15 @@ import no.schibstedsok.searchportal.site.Site;
  */
 public class OrClauseImpl extends AbstractOperationClause implements OrClause {
 
+    private static final int WEAK_CACHE_INITIAL_CAPACITY = 2000;
+    private static final float WEAK_CACHE_LOAD_FACTOR = 0.5f;
+    private static final int WEAK_CACHE_CONCURRENCY_LEVEL = 16;
+    
     /** Values are WeakReference object to AbstractClause.
      * Unsynchronized are there are no 'changing values', just existance or not of the AbstractClause in the system.
      */
     private static final Map<Site,Map<String,WeakReference<OrClauseImpl>>> WEAK_CACHE
-            = new HashMap<Site,Map<String,WeakReference<OrClauseImpl>>>();
+            = new ConcurrentHashMap<Site,Map<String,WeakReference<OrClauseImpl>>>();
 
     /* A WordClause specific collection of TokenPredicates that *could* apply to this Clause type. */
     private static final Collection<TokenPredicate> PREDICATES_APPLICABLE;
@@ -55,7 +59,7 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
      * them.
      * The methods also allow a chunk of creation logic for the OrClauseImpl to be moved
      * out of the QueryParserImpl.jj file to here.
-     * 
+     *
      * @param first the left child clause of the operation clause we are about to create (or find).
      * @param second the right child clause of the operation clause we are about to create (or find).
      * @param engine the factory handing out evaluators against TokenPredicates.
@@ -90,8 +94,14 @@ public class OrClauseImpl extends AbstractOperationClause implements OrClause {
             // the weakCache to use.
             Map<String,WeakReference<OrClauseImpl>> weakCache = WEAK_CACHE.get(engine.getSite());
             if(weakCache == null){
-                weakCache = new HashMap<String,WeakReference<OrClauseImpl>>();
+                
+                weakCache = new ConcurrentHashMap<String,WeakReference<OrClauseImpl>>(
+                        WEAK_CACHE_INITIAL_CAPACITY,
+                        WEAK_CACHE_LOAD_FACTOR,
+                        WEAK_CACHE_CONCURRENCY_LEVEL);
+                
                 WEAK_CACHE.put(engine.getSite(),weakCache);
+                
             }
 
             // use helper method from AbstractLeafClause

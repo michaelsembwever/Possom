@@ -10,7 +10,6 @@ import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.InfrastructureException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.Map;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
@@ -22,7 +21,6 @@ import nu.prisjakt.www.wsdl.PrisjaktPortType;
 import nu.prisjakt.www.wsdl.Resultat;
 import nu.prisjakt.www.wsdl.Produkt;
 import javax.xml.rpc.ServiceException;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.axis.client.Stub;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -64,20 +62,17 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
     @Override
     public SearchResult execute() {
 
-        final TokenEvaluationEngine engine = context.getTokenEvaluationEngine();
+        final TokenEvaluationEngine engine = getEngine();
         /*Butiker*/
-        final boolean isChain = engine.evaluateQuery(TokenPredicate.COMPANY_CHAIN,
-                datamodel.getQuery().getQuery());
+        final boolean isChain = engine.evaluateQuery(TokenPredicate.COMPANY_CHAIN, getQuery());
         /*Kategorier*/
-        final boolean isService = engine.evaluateQuery(TokenPredicate.CLASSIFIED_CATEGORY, datamodel.getQuery().getQuery());
+        final boolean isService = engine.evaluateQuery(TokenPredicate.CLASSIFIED_CATEGORY, getQuery());
 
 
         /*Produkter*/
-        final boolean isElectronics
-                = engine.evaluateQuery(TokenPredicate.PRODUCT_ELECTRONIC, datamodel.getQuery().getQuery());
-        final boolean isHousehold
-                = engine.evaluateQuery(TokenPredicate.PRODUCT_HOUSEHOLD, datamodel.getQuery().getQuery());
-        final boolean isMusic = engine.evaluateQuery(TokenPredicate.PRODUCT_MUSIC, datamodel.getQuery().getQuery());
+        final boolean isElectronics = engine.evaluateQuery(TokenPredicate.PRODUCT_ELECTRONIC, getQuery());
+        final boolean isHousehold = engine.evaluateQuery(TokenPredicate.PRODUCT_HOUSEHOLD, getQuery());
+        final boolean isMusic = engine.evaluateQuery(TokenPredicate.PRODUCT_MUSIC, getQuery());
 
         final SearchResult result = new BasicSearchResult(this);
 

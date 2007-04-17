@@ -46,7 +46,8 @@ public abstract class AbstractClause implements Clause {
     private static final String DEBUG_FOUND_PREDICATE_PREFIX = "Found (for \"";
     private static final String DEBUG_FOUND_PREDICATE_KNOWN = "\") known ";
     private static final String DEBUG_FOUND_PREDICATE_POSSIBLE = "\") possible ";
-    private static final String INFO_WEAK_CACHE_SIZE ="WeakCache size at ";
+    private static final String INFO_WEAK_CACHE_SIZE_1 ="WeakCache for ";
+    private static final String INFO_WEAK_CACHE_SIZE_2 =" at ";
     private static final String DEBUG_REFERENCE_REUSED = "Re-using a weakReference. Cache size: ";
     private static final String ERR_FAILED_TO_FIND_ALL_PREDICATES = "Failed to find all predicates."
             + " Marking token predicate stale >>";
@@ -96,7 +97,8 @@ public abstract class AbstractClause implements Clause {
 
         // log weakCache size every 100 increments
         if(weakCache.size() % 100 == 0){
-            LOG.info(INFO_WEAK_CACHE_SIZE +  weakCache.size());
+            LOG.info(INFO_WEAK_CACHE_SIZE_1 + clause.getClass().getSimpleName() 
+                    + INFO_WEAK_CACHE_SIZE_1 + weakCache.size());
         }
     }
 

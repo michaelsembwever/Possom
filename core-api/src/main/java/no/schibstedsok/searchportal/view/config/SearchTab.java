@@ -532,7 +532,18 @@ public final class SearchTab {
     /** Immutable POJO holding navigation information for a given tab. **/
     public static final class NavigatorHint {
         
-        /** Plain constructor. */
+        /** Plain constructor. 
+         * @param id 
+         * @param name 
+         * @param displayName 
+         * @param match 
+         * @param tabName 
+         * @param urlSuffix 
+         * @param image 
+         * @param priority 
+         * @param template
+         * @param tabFactory 
+         */
         public NavigatorHint(
                 final String id,
                 final String name,
@@ -542,6 +553,7 @@ public final class SearchTab {
                 final String urlSuffix,
                 final String image,
                 final int priority,
+                final String template,
                 final SearchTabFactory tabFactory){
             
             
@@ -555,10 +567,14 @@ public final class SearchTab {
             this.urlSuffix = urlSuffix;
             this.image = image;
             this.priority = priority;
+            this.template = template;
             this.tabFactory = tabFactory;
         }
         
-        /** Copy constructor. */
+        /** Copy constructor. 
+         * @param copy 
+         * @param tabFactory 
+         */
         public NavigatorHint(
                 final NavigatorHint copy,
                 final SearchTabFactory tabFactory){
@@ -574,6 +590,7 @@ public final class SearchTab {
             this.urlSuffix = copy.urlSuffix;
             this.image = copy.image;
             this.priority = copy.priority;
+            this.template = copy.template;
             this.tabFactory = tabFactory;
         }
 
@@ -623,6 +640,7 @@ public final class SearchTab {
 
         /**
          * Returns the tab associated with this hint.
+         * @return 
          */
         public SearchTab getTab() {
             return tabFactory.getTabByName(tabName);
@@ -701,6 +719,13 @@ public final class SearchTab {
         public int getPriority() {
             return this.priority;
         }
+        
+        private final String template;
+        
+        public String getTemplate(){
+            return template;
+        }
+        
     }
 
     /** POJO holding layout information for the given tab. 

@@ -22,13 +22,13 @@
     <head>
         <title>Sesam</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="css/front.css" rel="stylesheet" type="text/css" />
-        <link href="css/ps.css" rel="stylesheet" type="text/css" />
-        <link rel="icon" href="favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="search/?q=bil&c=d&output=opensearch" />
+        <link href="/css/front.css" rel="stylesheet" type="text/css" />
+        <link href="/css/ps.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
+        <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
+        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&c=d&output=opensearch" />
         </link>        
-        <script type="text/javascript" language="JavaScript" src="javascript/common.js"></script>
+        <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
             function strep(qtag) {
             if (window.RegExp && window.encodeURIComponent) {
@@ -126,6 +126,11 @@
 			    <tr>
 				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</td>
 			    </tr>
+                <%--
+			    <tr>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("map","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Karts&#248;k</td>
+			    </tr>
+                --%>
 			    <tr>
 				<td><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" alt="" align="left" /></a><div class="navbutend" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'>&nbsp;&nbsp;Lukk</div></td>
 			    </tr>
@@ -199,6 +204,15 @@
                     <td class="imgpad"><img src="images/menu/icons/ver.png" alt="" align="left" /></td>
 		    <td class="menupad"><a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a></td>
                 </tr>
+    <%--
+		<tr>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
+                </tr>
+                <tr>
+                    <td class="imgpad"><img src="images/menu/icons/kart.gif" alt="" align="left" /></td>
+		    <td class="menupad"><a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a></td>
+                </tr>
+    --%>
 		<tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
@@ -236,21 +250,18 @@
 </div>
 
 
-
-
-
-
-        <!-- start Gallup <%=locale  %>-->
+        <!-- start gallup (<%=locale  %>) -->
         <% if ( "no".equals(locale) ) { %>        
-        <script type='text/javascript' language='JavaScript' src='javascript/tmv11.js'></script>
+        <script type='text/javascript' language='JavaScript' src='/javascript/tmv11.js'></script>
         <script type="text/javascript" language="JavaScript"><!--
-            var tmsec = new Array(2);
+            var tmsec = new Array(3);
             tmsec[0]="tmsec=sesam";
             tmsec[1]="tmsec=sesamforside";
+            tmsec[2]="tmsec=sesamforside";
             getTMqs('','', 'sesam_no', 'no', 'iso-8859-15', tmsec);
             //-->
         </script>
-        <noscript><img src="http://statistik-gallup.net/V11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamforside" alt="" /></noscript>
+        <noscript><img src="http://statistik-gallup.net/V11***sesam_no/no/iso-8859-15/tmsec=sesam&amp;tmsec=sesamforside&amp;tmsec=sesamforside" alt="" /></noscript>
         <% } %>
         <!-- end gallup -->
 

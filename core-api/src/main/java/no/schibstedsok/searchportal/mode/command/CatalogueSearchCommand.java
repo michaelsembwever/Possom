@@ -10,12 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import no.schibstedsok.commons.ioc.BaseContext;
-import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
-import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
-import no.schibstedsok.searchportal.datamodel.query.QueryDataObject;
-import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -36,6 +30,7 @@ import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.Application;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
+import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
@@ -63,7 +58,6 @@ import org.apache.log4j.Logger;
  * query-parameter-where="where"
  *
  *
- *
  * The functionality in this class is enhanced by several QueryTransformers;
  *
  * @see no.schibstedsok.searchportal.query.transform.CatalogueExactTitleMatchQueryTransformer
@@ -72,9 +66,9 @@ import org.apache.log4j.Logger;
  *
  *
  * @author <a href="mailto:daniele@conduct.no">Daniel Engfeldt</a>
- * @version $Revision:$
+ * @version $Id$
  */
-public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
+public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
@@ -84,24 +78,22 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /** User supplied value for sorting type of search result. */
     private String userSortBy = "kw"; // default er sorting på keywords
-    
+
     /** The number of terms (words) in the largest COMPANY_KEYWORD_RESERVED match in the query.
      * Any leaf clauses within this match are boundary matched in the lemiypcfkeywords filter,
-     *  all other leaf clauses matches within COMPANY_KEYWORD_RESERVED will be treated as normal leaves. 
+     *  all other leaf clauses matches within COMPANY_KEYWORD_RESERVED will be treated as normal leaves.
      **/
     private int keywordReservedTermSize = 0;
 
     /**
-     * Indicate if q-parameter should be split on recogniced geographic
-     * location, set in modes.xml.
-     */
-    private final boolean split;
+     * The largest existing clause matching COMPANY_KEYWORD_RESERVED in the query.
+     * null if keywordReservedTermSize <= 0
+     **/
+    private transient Clause longestCkr;
 
-    /**
-     *  If split on known geo, put resulting found geographic locations in
-     *  knownGeo to be used while constructing query for catalogue search.
-     */
-    private List<String> knownGeo;
+    private transient Query whoQuery;
+    private transient TokenEvaluationEngine whoEngine;
+    private transient String whereString = "";
 
     /**
      *  Log strings for this class.
@@ -125,30 +117,34 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private static final String PARAMETER_NAME_WHERE = "catalogueWhere";
 
     /**
+     *  Represents a blank value in the query.
+     */
+    private static final String BLANK = "";
+
+    /**
      * Creates a new catalogue search command.
      * @param cxt current context for this search command.
      */
     public CatalogueSearchCommand(final Context cxt) {
 
         super(cxt);
-        
-        final CatalogueSearchConfiguration conf = (CatalogueSearchConfiguration) cxt
-                .getSearchConfiguration();
-        
+
+        final CatalogueSearchConfiguration conf = (CatalogueSearchConfiguration) cxt.getSearchConfiguration();
+
         LOG.debug(DEBUG_CONF_NFO + conf.getSearchBy() + ' '
                 + conf.getQueryParameterWhere() + ' '
                 + conf.getSplit());
 
-        split = conf.getSplit();
-        splitGeographicFromQuery();
-        createGeoQueryString();
-
+        final WhoWhereSplit whoWhere = initialiseWhoWhere();
+        initialiseWhoQuery(whoWhere);
+        initialiseWhereQuery(whoWhere);
 
         // user may specify sorting in two different ways from the GUI,
         // by company name or by keyword. Default is by keyword.
         if (getSingleParameter("userSortBy") != null
                 && getSingleParameter("userSortBy").length() > 0
                 && getSingleParameter("userSortBy").equals("name")) {
+
             userSortBy = "name";
         } else {
             userSortBy = "kw";
@@ -157,48 +153,30 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
 
     /**
-     *  Create geographic query.
-     *  If present, add the recogniced splitted geographic locations.
-     */
-    private void createGeoQueryString() {
-        final CatalogueSearchConfiguration conf = (CatalogueSearchConfiguration) context
-                .getSearchConfiguration();
-
-        ReconstructedQuery queryGeo = null;
-        String tmp ="";
-        if (getSingleParameter(conf.getQueryParameterWhere()) != null) 
-            tmp = getSingleParameter(conf.getQueryParameterWhere());
-
-        if(getKnownGeoString()!=null) tmp = tmp + " " + getKnownGeoString();
-
-        queryGeo = createQuery(tmp);
-
-        GeoVisitor geoVisitor = new GeoVisitor();
-        geoVisitor.visit(queryGeo.getQuery().getRootClause());
-
-        queryGeoString = geoVisitor.getQueryRepresentation();
-        LOG.info(DEBUG_SEARCHING_3 + queryGeoString);
-        
-    }
-
-
-    /**
      *  Do the split on recogniced known geographic locations, if specified
-     *  in modes.xml.
+     *  in modes.xml, or create a WhoWhereSplit from the url's corresponding parameters q & where.
      *
      *  Put the result into two different attributes, catalogueWhat and
      *  catalogueWhere to be used in the frontend.
      *
-     *  If the split results in empty Who and Where from split, use the 
+     *  If the split results in empty Who and Where from split, use the
      *  original untransformed query.
      *
      *  Populate the knownGeo and knownGeoString which is used by the visitXxx
-     *  methods to known which terms to ignore when constructing the
+     *  methods to know which terms to ignore when constructing the
      *  query for this searchcommand.
      */
-    private void splitGeographicFromQuery() {
+    private WhoWhereSplit initialiseWhoWhere() {
 
-        if(split){
+        final CatalogueSearchConfiguration conf = (CatalogueSearchConfiguration) context.getSearchConfiguration();
+
+        WhoWhereSplit splitQuery = new WhoWhereSplit(
+                datamodel.getQuery().getString(),
+                getSingleParameter(conf.getQueryParameterWhere()));
+
+        if(conf.getSplit()){
+
+            // this will overwrite anything in the where parameter
             final WhoWhereSplitter splitter = new WhoWhereSplitter(new WhoWhereSplitter.Context(){
                 private final List<Application> applications = Arrays.asList(Application.YELLOW);
                 public Map<Clause,String> getTransformedTerms(){
@@ -212,31 +190,70 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 }
             });
 
-            final WhoWhereSplit splitQuery = splitter.getWhoWhereSplit();
+            final WhoWhereSplit ww = splitter.getWhoWhereSplit();
 
-            if((splitQuery.getWho()==null || splitQuery.getWho().length()==0)
-               && (splitQuery.getWhere()==null || splitQuery.getWhere().length()==0)){
-                getParameters().put(PARAMETER_NAME_WHAT, getParameters().get("q"));
-                getParameters().put(PARAMETER_NAME_WHERE, "");
-               
-            
-            }else{
-                getParameters().put(PARAMETER_NAME_WHAT, splitQuery.getWho());
-                getParameters().put(PARAMETER_NAME_WHERE, splitQuery.getWhere());
-                
+            if(null != ww.getWho() && ww.getWho().length() > 0 && null != ww.getWhere() && ww.getWhere().length() > 0){
+
+                splitQuery = ww;
             }
-
-
-            String[] where = splitQuery.getWhere().split(" ");
-            List w = Arrays.asList(where);
 
             LOG.debug(DEBUG_SEARCHING_1 + splitQuery.getWho());
             LOG.debug(DEBUG_SEARCHING_2 + splitQuery.getWhere());
+        }
 
-            knownGeo=w;
+        return splitQuery;
+    }
+
+    /**
+     *  Initialise the who query.
+     */
+    private void initialiseWhoQuery(final WhoWhereSplit whoWhereSplit){
+
+        if(datamodel.getQuery().getString().equals(whoWhereSplit.getWho())){
+
+            whoQuery = datamodel.getQuery().getQuery();
+            whoEngine = context.getTokenEvaluationEngine();
+
+        }else{
+
+            // It's not the query we are looking for but a string held in a different parameter.
+            final ReconstructedQuery recon = createQuery(whoWhereSplit.getWho());
+
+            whoQuery = recon.getQuery();
+            whoEngine = recon.getEngine();
         }
     }
 
+    @Override
+    protected Query getQuery(){
+
+        return whoQuery;
+    }
+
+    @Override
+    protected TokenEvaluationEngine getEngine(){
+
+        return whoEngine;
+    }
+
+    /**
+     *  Initialise the geographic query.
+     */
+    private void initialiseWhereQuery(final WhoWhereSplit whoWhereSplit) {
+
+        if(null != whoWhereSplit.getWhere() && whoWhereSplit.getWhere().length() > 0){
+
+            final ReconstructedQuery queryGeo = createQuery(whoWhereSplit.getWhere());
+
+            final GeoVisitor geoVisitor = new GeoVisitor();
+            geoVisitor.visit(queryGeo.getQuery().getRootClause());
+            queryGeoString = geoVisitor.getQueryRepresentation();
+            whereString = whoWhereSplit.getWhere();
+        }
+
+
+        LOG.info(DEBUG_SEARCHING_3 + queryGeoString);
+    }
 
     /**
      *  Execute the search command query.
@@ -248,19 +265,19 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     public SearchResult execute() {
 
-        SearchResult result = super.execute();
+        final SearchResult result = super.execute();
 
-        List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
-        
-        Iterator iter = result.getResults().listIterator();
-        while (iter.hasNext()) {
-            BasicSearchResultItem basicResultItem = (BasicSearchResultItem) iter
-                    .next();
+        final List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
 
-            CatalogueSearchResultItem resultItem = new CatalogueSearchResultItem();
+        for (Iterator iter = result.getResults().listIterator(); iter.hasNext();) {
+
+            final BasicSearchResultItem basicResultItem = (BasicSearchResultItem) iter.next();
+
+            final CatalogueSearchResultItem resultItem = new CatalogueSearchResultItem();
+
             for (Object o : basicResultItem.getFieldNames()) {
-                String s = (String) o;
-                String v = basicResultItem.getField(s);
+                final String s = (String) o;
+                final String v = basicResultItem.getField(s);
                 resultItem.addField(s, v);
             }
 
@@ -271,6 +288,15 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         // to be used instead.
         result.getResults().clear();
         result.getResults().addAll(nyResultListe);
+
+        // add the who and where fields (preferred over using them out of the junkyard)
+        result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
+        result.addField(PARAMETER_NAME_WHERE, whereString);
+
+        // XXX deprecated approach
+        getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
+        getParameters().put(PARAMETER_NAME_WHERE, whereString);
+
 
         return result;
     }
@@ -285,40 +311,42 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     public String getTransformedQuery() {
-        String query = super.getTransformedQuery();
-        
-        boolean hasQueryString= (query!=null && query.length()>0);
-        boolean hasGeoQueryString = (queryGeoString != null && queryGeoString.length() > 0);
-        
+
+        final StringBuilder query = new StringBuilder(super.getTransformedQuery());
+
+        boolean hasQueryString= query != null && query.length() > 0;
+        boolean hasGeoQueryString = queryGeoString != null && queryGeoString.length() > 0;
+
         // two possible paths, with both what and where in query,
         // or just where. If nothing in either, something is wrong.
         if (hasQueryString && hasGeoQueryString){
 
             // both
-            query += ") " + QL_AND + " (" + queryGeoString + ")";
-            query = "(" + query;
+            query.append(") " + QL_AND + " (" + queryGeoString + ')');
+            query.insert(0, '(');
 
         } else if (!hasQueryString && hasGeoQueryString) {
 
             // just where
-            query = queryGeoString;
+            query.replace(0, query.length(), queryGeoString);
 
         } else if (hasQueryString && !hasGeoQueryString) {
-            
+
             // just what,
             // dosent need to do anything with the query, should just leave
             // the query as it is after transformation.
 
         } else{
 
-            // none of what and where, this should not be possible.
-            throw new IllegalStateException("Emty query strings, should not be possible. [Primary="+query+", Geo="+queryGeoString+"]");
+            // none of what and where, 
+            // if q is '*' and where is empty, then we would end here.
+            // Should be handled in a nice way, right now the query is
+            // blank, which would return every company in the index.
+            
         }
 
-        return query;
+        return query.toString();
     }
-
-
 
     /**
      * Set what to sort the resultset by.
@@ -333,34 +361,33 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     protected String getSortBy() {
-        String sortBy = SORTBY_KEYWORD;
+        String sortBy = super.getSortBy();
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
         }
         return sortBy;
     }
 
-    
     /**
      * Create query syntax for a phrase term.
      * @param term the term to make query syntax for.
      * @return created phrase query fragment for one term.
      */
     private String createPhraseQuerySyntax(final String term) {
-        StringBuffer sb = new StringBuffer();
-        sb.append("(");
-        sb.append("iypcfnavn:" + term + " ANY ");
-        sb.append("lemiypcfkeywords:" + term + " ANY ");
-        sb.append("lemiypcfkeywordslow:" + term);
-        sb.append(")");
-        return sb.toString();
-    }    
-    
+
+        return '('
+         + "iypcfnavn:" + term + " ANY "
+         + "lemiypcfkeywords:" + term + " ANY "
+         + "lemiypcfkeywordslow:" + term
+         + ')';
+
+    }
+
     /**
      * Create the query syntax for one(1) search term.
      *
      * If the query is defined to split known geographic locations from
-     * the terms and it is recognices as a known geographic location, 
+     * the terms and it is recognices as a known geographic location,
      * ignore the term.
      *
      * Check if there is any special characters in the query, if there
@@ -372,71 +399,65 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     protected void visitImpl(final LeafClause clause) {
-        
-        final boolean useTerm = !(split && knownGeo.contains(clause.getTerm()));
 
-        final Pattern p = Pattern.compile("\\.|\\-");        
+        final Pattern p = Pattern.compile("\\.|\\-");
         final Matcher m = p.matcher(getTransformedTerms().get(clause));
 
         final boolean hasNotWordCharacters = m.find();
 
-        if(useTerm){
-            
-            if(hasNotWordCharacters){
-            
-                appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
-            
-            }else if(!getTransformedTerms().get(clause).equals("")) {
-                
-                final Query query = context.getDataModel().getQuery().getQuery();
-                
-                final List<OperationClause> ancestors 
-                        = query.getParentFinder().getAncestors(query.getRootClause(), clause);
-                                
-                if(0 == keywordReservedTermSize){
-                    
-                    final Clause longestCkr = new PredicateFinder().findFirstClause(
-                            query.getRootClause(), 
-                            TokenPredicate.COMPANY_KEYWORD_RESERVED,
-                            context.getTokenEvaluationEngine());
+        if(hasNotWordCharacters){
 
-                    keywordReservedTermSize = null != longestCkr
-                            ? new Counter().getTermCount(longestCkr)
-                            : -1;
-                }
-                
+            appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
 
-                // Got an index out of bounds exception on ancestors.get(0) below.          
-                // just to get the code to run as excepted again.
-                boolean insideCKR = false;
-                final Clause ckr = ancestors.size()>0? ancestors.get(0) : null;
+        }else if(!getTransformedTerms().get(clause).equals(BLANK)) {
 
-                if(null != ckr){
-                     insideCKR = 
-                        0 < keywordReservedTermSize
-                        && new Counter().getTermCount(ckr) == keywordReservedTermSize
-                        && ParentFinder.insideOf(ancestors, TokenPredicate.COMPANY_KEYWORD_RESERVED);
-                }
-                
-                
-                if(insideCKR){
-                    
-                    // SEARCH-1796
-                    // XXX this will write out the same filter multiple times but hopefully fast won't object
+            final Query query = context.getDataModel().getQuery().getQuery();
+
+            final List<OperationClause> ancestors
+                    = query.getParentFinder().getAncestors(query.getRootClause(), clause);
+
+            if(0 == keywordReservedTermSize){
+
+                longestCkr = new PredicateFinder().findFirstClause(
+                        query.getRootClause(),
+                        TokenPredicate.COMPANY_KEYWORD_RESERVED,
+                        getEngine());
+
+                keywordReservedTermSize = null != longestCkr
+                        ? new Counter().getTermCount(longestCkr)
+                        : -1;
+            }
+
+            boolean insideCKR = false;
+            final Clause ckr = ancestors.size()>0? ancestors.get(0) : null;
+
+            if(null != ckr){
+                 insideCKR =
+                    0 < keywordReservedTermSize
+                    && new Counter().getTermCount(ckr) == keywordReservedTermSize
+                    && ParentFinder.insideOf(ancestors, TokenPredicate.COMPANY_KEYWORD_RESERVED);
+            }
+
+
+            if(insideCKR){
+
+                // SEARCH-1796
+                if( ((OperationClause)longestCkr).getFirstClause() == clause ){
+
                     appendToQueryRepresentation(
-                            "lemiypcfkeywords:^\"" 
+                            "lemiypcfkeywords:\"^"
                             + ckr.getTerm().replaceAll("\\(|\\)", "")
-                            + "\"$");
-                    
-                }else{
-                    
-                    appendToQueryRepresentation(
-                            '('
-                            + "iypcfphnavn:" + getTransformedTerms().get(clause) + " ANY "
-                            + "lemiypcfkeywords:" + getTransformedTerms().get(clause) + " ANY "
-                            + "lemiypcfkeywordslow:" + getTransformedTerms().get(clause)
-                            + ')');
+                            +   "$\"");
                 }
+
+            }else{
+
+                appendToQueryRepresentation(
+                        '('
+                        + "iypcfphnavn:" + getTransformedTerms().get(clause) + " ANY "
+                        + "lemiypcfkeywords:" + getTransformedTerms().get(clause) + " ANY "
+                        + "lemiypcfkeywordslow:" + getTransformedTerms().get(clause)
+                        + ')');
             }
         }
     }
@@ -448,88 +469,44 @@ public class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * If the query is defined to split known geographic locations from
      * the keywords, ignore the term.
      *
-     * If the term is '*', also ignore it.
+     * If the term is '', also ignore it.
      * @param clause the clause to process.
      */
     protected void visitImpl(final PhraseClause clause) {
-        boolean useTerm = true;
 
-        if(split && knownGeo.contains(clause.getTerm())){
-            useTerm=false;
-        }
+        if (!getTransformedTerms().get(clause).equals(BLANK)) {
 
-        if(useTerm){
-            if (!getTransformedTerms().get(clause).equals("")) {
-                appendToQueryRepresentation(
-                        createPhraseQuerySyntax(getTransformedTerms().get(clause)));
-            }
+            appendToQueryRepresentation(createPhraseQuerySyntax(getTransformedTerms().get(clause)));
         }
     }
-
 
     /**
      * {@inheritDoc}
      */
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
-        
+
 
         clause.getFirstClause().accept(this);
+        final int queryRepLength = getQueryRepresentationLength();
 
-        final boolean hasKnownGeo = isKnownGeo(clause.getFirstClause()) || isKnownGeo(clause.getSecondClause());
-
-        if (!(hasKnownGeo || clause.getSecondClause() instanceof NotClause)) {
-            appendToQueryRepresentation(QL_AND);
-        }
 
         clause.getSecondClause().accept(this);
-    }
 
+        final boolean queryRepGrown = queryRepLength > 0 && getQueryRepresentationLength() > queryRepLength;
 
-    /**
-     * Returns true if the clause is a leaf clause and if it will not produce
-     * any output in the query representation.
-     *
-     * If split is not done for the query, this method returns false for all
-     * clauses.
-     *
-     * @param clause The clause to examine.
-     * @return true if leaf is known geographic location and should be filtered.
-     */
-    private boolean isKnownGeo(final Clause clause) {
-        if(knownGeo==null) return false;
-
-        if (clause instanceof LeafClause) {
-            final LeafClause leafClause = (LeafClause) clause;
-            return knownGeo.contains(getTransformedTerm(clause));
-        } else {
-            return false;
+        if(queryRepGrown && !(clause.getSecondClause() instanceof NotClause)){
+            // we know the query representation got longer which means we need to insert the operator
+            insertToQueryRepresentation(queryRepLength, QL_AND);
         }
     }
-
-    /**
-     * Get the String representation of knownGeo-list.
-     * @return the known geo list represented as a string with whitespace separating
-     * the geographic locations.
-     */
-    public String getKnownGeoString() {
-        if(knownGeo==null) return null;
-
-        StringBuilder sb=new StringBuilder();
-
-        for(String s : knownGeo) {
-            sb.append(s).append(" ");
-        }
-        return sb.toString();
-    }
-
 
     /**
      * Query builder for creating the geographic query.
      *
      */
-    private final class GeoVisitor extends AbstractReflectionVisitor {
-        
+    private static class GeoVisitor extends AbstractReflectionVisitor {
+
         /** the composite field in the index to search in. */
         private static final String GEO_COMPOSITE_FIELD_NAME = "iypcfgeo:";
 

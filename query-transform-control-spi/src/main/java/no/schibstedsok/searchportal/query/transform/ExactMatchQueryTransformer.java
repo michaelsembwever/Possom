@@ -22,6 +22,8 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
 
     private transient boolean writtenStart = false;
     private transient Boolean visitingLast = null;
+    private final StringBuilder exact = new StringBuilder();
+    private LeafClause first;
     private ExactMatchQueryTransformerConfig config;
 
     /**
@@ -46,16 +48,28 @@ public final class ExactMatchQueryTransformer extends AbstractQueryTransformer {
                     ? config.getField() + ':'
                     : "";
             
-            getTransformedTerms().put(
-                    clause, 
-                    filter + "^\"" + getTransformedTerms().get(clause).replaceAll("^\"", ""));
+            first = clause;
+            exact.append(filter + "^\"" + getTransformedTerms().get(clause).replaceAll("^\"", ""));
             
             writtenStart = true;
             // also, if we got here without giving visitingLast a value then this is the only LeafClause in the query
             visitingLast = null == visitingLast;
+            
+        }else{
+            exact.append(' ' + getTransformedTerms().get(clause));
+            // everything gets blanked by default
+            getTransformedTerms().put(clause, "");
         }
+        
         if(visitingLast){
-            getTransformedTerms().put(clause, getTransformedTerms().get(clause).replaceAll("\"$", "") + "\"$");
+            
+            if(exact.charAt(exact.length()-1) == '\"'){
+                exact.setLength(exact.length()-1);
+            }
+            exact.append("\"$");
+            // first clause gets the whole phrased string
+            getTransformedTerms().put(first, exact.toString());
+            
         }
     }
 
