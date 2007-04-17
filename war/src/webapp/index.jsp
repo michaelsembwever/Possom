@@ -22,13 +22,13 @@
     <head>
         <title>Sesam</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <link href="css/front.css" rel="stylesheet" type="text/css" />
-        <link href="css/ps.css" rel="stylesheet" type="text/css" />
-        <link rel="icon" href="favicon.ico" type="image/x-icon" />
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="search/?q=bil&c=d&output=opensearch" />
+        <link href="/css/front.css" rel="stylesheet" type="text/css" />
+        <link href="/css/ps.css" rel="stylesheet" type="text/css" />
+        <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
+        <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
+        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&c=d&output=opensearch" />
         </link>        
-        <script type="text/javascript" language="JavaScript" src="javascript/common.js"></script>
+        <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
             function strep(qtag) {
             if (window.RegExp && window.encodeURIComponent) {
