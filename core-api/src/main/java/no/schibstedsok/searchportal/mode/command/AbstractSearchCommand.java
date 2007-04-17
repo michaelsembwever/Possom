@@ -483,6 +483,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                             context.getRunningQuery().addSource(modifier);
                         }
                     },
+                    context.getDataModel().getSite().getSiteConfiguration().getSiteContext(),
                     context
             );
             resultHandler.handleResult(resultHandlerContext, datamodel);
