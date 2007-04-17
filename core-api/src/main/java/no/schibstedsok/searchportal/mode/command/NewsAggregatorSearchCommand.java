@@ -286,6 +286,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
             searchResultItem.addNestedSearchResult("entries", nestedSearchResult);
             searchResult.addResult(searchResultItem);
+            nestedSearchResult.setHitCount(entryList.size());
             return entryList.size();
         }
 

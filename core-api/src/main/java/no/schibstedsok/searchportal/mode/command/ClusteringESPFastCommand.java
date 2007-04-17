@@ -96,8 +96,10 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
                     if (nestedResult == null) {
                         nestedResult = new BasicSearchResult(this);
                         parentResult.addNestedSearchResult(nestedResultsField, nestedResult);
+                        nestedResult.setHitCount(1);
                     }
                     addResult(config, nestedResult, document);
+                    nestedResult.setHitCount(nestedResult.getHitCount() + 1);
                 }
             } catch (NullPointerException e) {
                 // The doc count is not 100% accurate.
@@ -127,7 +129,11 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);
                 currentClusterId = document.getSummaryField(clusterField);
-                if (currentClusterId.isEmpty() || lastClusterId == null || lastClusterId.isEmpty() || (!currentClusterId.getStringValue().equals(lastClusterId.getStringValue()))) {
+                if (currentClusterId.isEmpty() ||
+                        lastClusterId == null ||
+                        lastClusterId.isEmpty() ||
+                        currentClusterId.getStringValue().equals("0") ||
+                        (!currentClusterId.getStringValue().equals(lastClusterId.getStringValue()))) {
                     collectedClusters++;
                     LOG.debug("Adding new cluster: " + currentClusterId + ", count is: " + collectedClusters);
                     if (collectedClusters < maxClusterCount) {
