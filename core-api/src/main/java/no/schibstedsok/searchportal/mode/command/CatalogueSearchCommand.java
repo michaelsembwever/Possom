@@ -163,7 +163,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      *  original untransformed query.
      *
      *  Populate the knownGeo and knownGeoString which is used by the visitXxx
-     *  methods to known which terms to ignore when constructing the
+     *  methods to know which terms to ignore when constructing the
      *  query for this searchcommand.
      */
     private WhoWhereSplit initialiseWhoWhere() {
@@ -338,9 +338,11 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         } else{
 
-            // none of what and where, this should not be possible.
-            // throw new IllegalStateException("Emty query strings, should not be possible.
-            //  [Primary="+query+", Geo="+queryGeoString+"]");
+            // none of what and where, 
+            // if q is '*' and where is empty, then we would end here.
+            // Should be handled in a nice way, right now the query is
+            // blank, which would return every company in the index.
+            
         }
 
         return query.toString();
@@ -359,7 +361,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     protected String getSortBy() {
-        String sortBy = SORTBY_KEYWORD;
+        String sortBy = super.getSortBy();
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
         }
@@ -373,13 +375,12 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     private String createPhraseQuerySyntax(final String term) {
 
-        final StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        sb.append("iypcfnavn:" + term + " ANY ");
-        sb.append("lemiypcfkeywords:" + term + " ANY ");
-        sb.append("lemiypcfkeywordslow:" + term);
-        sb.append(")");
-        return sb.toString();
+        return '('
+         + "iypcfnavn:" + term + " ANY "
+         + "lemiypcfkeywords:" + term + " ANY "
+         + "lemiypcfkeywordslow:" + term
+         + ')';
+
     }
 
     /**
@@ -468,7 +469,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * If the query is defined to split known geographic locations from
      * the keywords, ignore the term.
      *
-     * If the term is '*', also ignore it.
+     * If the term is '', also ignore it.
      * @param clause the clause to process.
      */
     protected void visitImpl(final PhraseClause clause) {
