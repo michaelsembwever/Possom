@@ -3,20 +3,19 @@ package no.schibstedsok.searchportal.result.handler;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
-import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,19 +25,22 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
     private static final String CMD_ATTR_ID = "id";
 
     private static final Logger LOG = Logger.getLogger(AddCategoryNavigationResultHandler.class);
-    private String categoriesXml = "conf/categories.xml";
+    private static List<Category> categoryList;
+    private String categoriesXml = "categories.xml";
     private String categoryFields;
 
     public void handleResult(Context cxt, DataModel datamodel) {
         try {
             if (cxt.getSearchResult() instanceof FastSearchResult) {
-                addCategoryNavigators(datamodel, (FastSearchResult) cxt.getSearchResult(), parseCategories(datamodel));
+                if (categoryList == null) {
+                    // This could happen more than once, but synchronize overhead would be on every call, so it ok. 
+                    categoryList = parseCategories(cxt, datamodel);
+                }
+                addCategoryNavigators(datamodel, (FastSearchResult) cxt.getSearchResult(), categoryList);
             } else {
                 LOG.error("Can not use " + AddCategoryNavigationResultHandler.class.getName() + " on a generic searchResult. Must be a " + FastSearchResult.class.getName());
             }
-        } catch (IOException e) {
-            LOG.error("Could not parse categories.", e);
-        } catch (JDOMException e) {
+        } catch (ParserConfigurationException e) {
             LOG.error("Could not parse categories.", e);
         }
     }
@@ -64,38 +66,23 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
         }
     }
 
-    private List<Category> parseCategories(DataModel datamodel) throws IOException, JDOMException {
-
-        final URL url = new URL("http://" + datamodel.getSite().getSite().getName() + datamodel.getSite().getSite().getConfigContext() + categoriesXml);
-        LOG.debug("Loading categories xml from: " + url.toString());
-        final HTTPClient client = HTTPClient.instance(url.getHost(), url.getHost(), url.getPort());
-        BufferedInputStream in = null;
-        try {
-            in = client.getBufferedStream(url.getHost(), url.getPath());
-            Document doc = getDocument(in);
-            final Element root = doc.getRootElement();
-            return parseCategories(root);
-        } finally {
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (Exception e) {
-                    // Ignoring
-                }
-            }
-        }
+    private List<Category> parseCategories(Context cxt, DataModel datamodel) throws ParserConfigurationException {
+        Document doc = getDocument(cxt, datamodel);
+        final Element root = doc.getDocumentElement();
+        return parseCategories(root);
     }
 
-    private Document getDocument(InputStream inputStream) throws JDOMException, IOException {
-        final SAXBuilder saxBuilder = new SAXBuilder();
-        saxBuilder.setValidation(false);
-        saxBuilder.setIgnoringElementContentWhitespace(true);
-        return saxBuilder.build(inputStream);
+    private Document getDocument(Context cxt, DataModel dataModel) throws ParserConfigurationException {
+        final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setValidating(false);
+        final DocumentBuilder builder = factory.newDocumentBuilder();
+        DocumentLoader documentLoader = cxt.newDocumentLoader(dataModel.getSite(), categoriesXml, builder);
+        documentLoader.abut();
+        return documentLoader.getDocument();
     }
 
     public List<Category> parseCategories(Element categoriesElement) {
-        //noinspection unchecked
-        List<Element> categoryElements = categoriesElement.getChildren(CMD_ELEMENT_CATEGORY);
+        List<Element> categoryElements = getDirectChildren(categoriesElement, CMD_ELEMENT_CATEGORY);
         return parseCategories(categoryElements);
     }
 
@@ -112,11 +99,22 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
     }
 
     private Category parseCategory(Element categoryElement) {
-        String id = categoryElement.getAttributeValue(CMD_ATTR_ID);
-        String displayName = categoryElement.getAttributeValue(CMD_ATTR_DISPLAY_NAME);
-        //noinspection unchecked
-        List<Category> subCategories = parseCategories(categoryElement.getChildren(CMD_ELEMENT_CATEGORY));
+        String id = categoryElement.getAttribute(CMD_ATTR_ID);
+        String displayName = categoryElement.getAttribute(CMD_ATTR_DISPLAY_NAME);
+        List<Category> subCategories = parseCategories(getDirectChildren(categoryElement, CMD_ELEMENT_CATEGORY));
         return new Category(id, displayName, subCategories);
+    }
+
+    private List<Element> getDirectChildren(Element element, String elementName) {
+        ArrayList<Element> children = new ArrayList<Element>();
+        NodeList childNodes = element.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node childNode = childNodes.item(i);
+            if (childNode instanceof Element && childNode.getNodeName().equals(elementName)) {
+                children.add((Element) childNode);
+            }
+        }
+        return children;
     }
 
     private String[] getCategoryFieldArray() {

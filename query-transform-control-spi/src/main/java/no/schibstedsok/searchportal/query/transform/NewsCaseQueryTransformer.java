@@ -10,8 +10,11 @@ import javax.naming.NamingException;
 import java.util.Properties;
 
 /**
- * Checks if the query should be transformed from a ejb lookup on the queryString. Transformation will replace
+ * Checks if the query should be transformed from a ejb lookup on the queryParameter. Transformation will replace
  * the whole query.
+ * <p/>
+ * <b>Note:</b> This queryTransformer ignores all earlier transforms on the query. All transforms to the resulting
+ * query should be done after this.
  */
 public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
     private final static Logger LOG = Logger.getLogger(NewsCaseQueryTransformer.class);
@@ -33,11 +36,11 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
      */
     public void visitImpl(final Clause clause) {
         dataAccess.setProperties(getContext().getDataModel().getSite().getSiteConfiguration().getProperties());
-        String queryString = getTransformedQueryString();
+        String queryString = (String) getContext().getDataModel().getJunkYard().getValue(config.getQueryParameter());
         LOG.debug("Original query is: '" + queryString + "'");
         String transformedQuery = dataAccess.getQuery(queryString, config.getQueryType());
         if (transformedQuery == null) {
-            transformedQuery = '"' + getContext().getQuery().getQueryString().trim() + '"';
+            transformedQuery = defaultTransform(queryString);
         }
         for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
             getContext().getTransformedTerms().put(keyClause, "");
@@ -50,12 +53,17 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
 
     }
 
-    private String getTransformedQueryString() {
-        StringBuilder sb = new StringBuilder();
-        for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
-            sb.append(getContext().getTransformedTerms().get(keyClause)).append(' ');
+    private String defaultTransform(String queryString) {
+        if (config.getTypeConversions() != null) {
+            String type = (String) getContext().getDataModel().getJunkYard().getValue(config.getTypeParameter());
+            if (type != null) {
+                String[] conversion = config.getTypeConversions().get(type);
+                if (conversion != null) {
+                    return conversion[0] + queryString + conversion[1];
+                }
+            }
         }
-        return sb.toString();
+        return '"' + queryString + '"';
     }
 
     /**
