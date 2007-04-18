@@ -36,26 +36,43 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
      */
     public void visitImpl(final Clause clause) {
         dataAccess.setProperties(getContext().getDataModel().getSite().getSiteConfiguration().getProperties());
-        String queryString = (String) getContext().getDataModel().getJunkYard().getValue(config.getQueryParameter());
+        String queryString;
+        if (config.getQueryParameter() == null) {
+            queryString = getTransformedTermsQuery();
+        } else {
+            queryString = (String) getContext().getDataModel().getJunkYard().getValue(config.getQueryParameter());
+        }
         LOG.debug("Original query is: '" + queryString + "'");
-        String transformedQuery = dataAccess.getQuery(queryString, config.getQueryType());
-        if (transformedQuery == null) {
-            transformedQuery = defaultTransform(queryString);
+        if (queryString != null && queryString.length() > 0) {
+            String transformedQuery = dataAccess.getQuery(queryString, config.getQueryType());
+            if (transformedQuery == null) {
+                transformedQuery = defaultTransform(queryString);
+            }
+            for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
+                getContext().getTransformedTerms().put(keyClause, "");
+            }
+            LOG.debug("New query is: '" + transformedQuery + "'");
+            if (transformedQuery.length() > 0) {
+                getContext().getDataModel().getJunkYard().setValue(config.getQueryType(), transformedQuery);
+                getContext().getTransformedTerms().put(getContext().getQuery().getFirstLeafClause(), transformedQuery);
+            }
         }
-        for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
-            getContext().getTransformedTerms().put(keyClause, "");
-        }
-        LOG.debug("New query is: '" + transformedQuery + "'");
-        if (transformedQuery.length() > 0) {
-            getContext().getDataModel().getJunkYard().setValue(config.getQueryType(), transformedQuery);
-            getContext().getTransformedTerms().put(getContext().getQuery().getFirstLeafClause(), transformedQuery);
-        }
+    }
 
+    private String getTransformedTermsQuery() {
+        StringBuilder query = new StringBuilder();
+        for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
+            query.append(getContext().getTransformedTerms().get(keyClause));
+        }
+        return query.toString();
     }
 
     private String defaultTransform(String queryString) {
         if (config.getTypeConversions() != null) {
             String type = (String) getContext().getDataModel().getJunkYard().getValue(config.getTypeParameter());
+            if (type == null) {
+                type = config.getDefaultType();
+            }
             if (type != null) {
                 String[] conversion = config.getTypeConversions().get(type);
                 if (conversion != null) {

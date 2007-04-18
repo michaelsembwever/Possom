@@ -27,12 +27,15 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     private static final String PREFIX = "prefix";
     private static final String POSTFIX = "postfix";
     private static final String TYPE_NAME = "name";
+    private static final String DEFAULT_TYPE = "default-type";
 
     private static final String DEFAULT_CONVERT_ELEMENT = "default-convert";
     private String queryType;
     private String queryParameter;
     private String typeParameter;
+    private String defaultType;
     private Map<String, String[]> typeConversions;
+
 
     /**
      * @return
@@ -53,12 +56,22 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         return typeConversions;
     }
 
+    public String getDefaultType() {
+        return defaultType;
+    }
+
     @Override
     public NewsCaseQueryTransformerConfig readQueryTransformer(final Element element) {
         Logger log = Logger.getLogger(NewsCaseQueryTransformerConfig.class);
         queryType = element.getAttribute(QUERY_TYPE);
-        queryParameter = element.getAttribute(QUERY_PARAMETER);
+        if (element.getAttribute(QUERY_PARAMETER) != null && element.getAttribute(QUERY_PARAMETER).length() > 0) {
+            queryParameter = element.getAttribute(QUERY_PARAMETER);
+        }
         typeParameter = element.getAttribute(TYPE_PARAMETER);
+        final String optionalParameter = element.getAttribute(DEFAULT_TYPE);
+        if (optionalParameter != null && optionalParameter.length() > 0) {
+            defaultType = optionalParameter;
+        }
         NodeList convertNodeList = element.getElementsByTagName(DEFAULT_CONVERT_ELEMENT);
         if (convertNodeList.getLength() > 0) {
             typeConversions = new HashMap<String, String[]>();

@@ -26,14 +26,14 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
     }
 
     public void visitImpl(final Clause clause) {
-        String myNews = getContext().getQuery().getQueryString();
+        String myNews = (String) getContext().getDataModel().getJunkYard().getValue(config.getQueryParameter());
         LOG.debug("Transforming query according to query = " + myNews);
         final String transformedQuery = transformQuery(myNews);
         if (transformedQuery != null) {
+            LOG.debug("New query is: '" + transformedQuery + "'");
             for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
                 getContext().getTransformedTerms().put(keyClause, "");
             }
-            LOG.debug("New query is: '" + transformedQuery + "'");
             if (transformedQuery.length() > 0) {
                 getContext().getTransformedTerms().put(getContext().getQuery().getFirstLeafClause(), transformedQuery);
             }
@@ -42,34 +42,39 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
 
     private String transformQuery(String myNews) {
         if (myNews != null && myNews.length() > 0) {
-            StringBuilder newQuery = new StringBuilder();
-            Matcher matcher = queryPattern.matcher(myNews);
+            final Matcher matcher = queryPattern.matcher(myNews);
             if (config.getPosition() == -1) {
+                LOG.debug("No position. Appending all matches.");
+                final StringBuilder newQuery = new StringBuilder();
                 while (matcher.find()) {
                     if (matcher.group(2).equals(config.getType())) {
                         if (newQuery.length() == 0) {
-                            newQuery.append("filter(").append(config.getFilterField()).append(":or(");
+                            if (config.getFilterField() != null) {
+                                newQuery.append("filter(").append(config.getFilterField()).append(":or(");
+                            }
                         } else {
                             newQuery.append(',');
                         }
                         newQuery.append('\"').append(matcher.group(1)).append('\"');
                     }
                 }
+                if (newQuery.length() > 0 && config.getFilterField() != null) {
+                    newQuery.append("))");
+                }
+                return newQuery.toString();
             } else {
+                LOG.debug("Position is: " + config.getPosition());
                 int curPos = 0;
                 while (matcher.find() && curPos < config.getPosition()) {
                     // Just searching for the correct match.
                     curPos++;
                 }
-                if (matcher.group(2).equals(config.getType()) && matcher.groupCount() > 0) {
-                    newQuery.append("filter(").append(config.getFilterField()).append('(').append('\"').append(matcher.group(1)).append('\"');
+                LOG.debug("Group at pos: " + config.getPosition() + " is " + matcher.group(0) + ", looking for " + config.getType());
+                if (matcher.groupCount() > 0 && matcher.group(2).equals(config.getType())) {
+                    return matcher.group(1);
                 } else {
                     return "";
                 }
-            }
-            if (newQuery.length() > 0) {
-                newQuery.append("))");
-                return newQuery.toString();
             }
         }
         return "";

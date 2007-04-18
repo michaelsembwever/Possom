@@ -7,6 +7,7 @@ public class ClusteringESPFastConfiguration extends NavigatableESPFastConfigurat
     private String clusterField;
     private String clusterMaxFetch;
     private String nestedResultsField;
+    private String userSortByParameter;
 
     public ClusteringESPFastConfiguration(SearchConfiguration asc) {
         super(asc);
@@ -17,7 +18,16 @@ public class ClusteringESPFastConfiguration extends NavigatableESPFastConfigurat
             clusterField = cefcc.getClusterField();
             clusterMaxFetch = cefcc.getClusterMaxFetch();
             nestedResultsField = cefcc.getNestedResultsField();
+            userSortByParameter = cefcc.getUserSortByParameter();
         }
+    }
+
+    public String getUserSortByParameter() {
+        return userSortByParameter;
+    }
+
+    public void setUserSortByParameter(String userSortByParameter) {
+        this.userSortByParameter = userSortByParameter;
     }
 
     public String getNestedResultsField() {

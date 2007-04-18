@@ -10,8 +10,9 @@ public class NewsMyNewsQueryTransformerConfig extends AbstractQueryTransformerCo
     private static final String TYPE = "type";
     private static final String FILTER_FIELD = "filter-field";
     private static final String POSITION = "position";
+    private static final String QUERY_PARAMETER = "query-parameter";
     private int position = -1;
-
+    private String queryParameter;
 
     public String getFilterField() {
         return filterField;
@@ -37,10 +38,17 @@ public class NewsMyNewsQueryTransformerConfig extends AbstractQueryTransformerCo
         this.position = position;
     }
 
+    public String getQueryParameter() {
+        return queryParameter;
+    }
+
     @Override
     public NewsMyNewsQueryTransformerConfig readQueryTransformer(final Element element) {
-        filterField = element.getAttribute(FILTER_FIELD);
         type = element.getAttribute(TYPE);
+        queryParameter = element.getAttribute(QUERY_PARAMETER);
+        if (element.getAttribute(FILTER_FIELD) != null && element.getAttribute(FILTER_FIELD).length() > 0) {
+            filterField = element.getAttribute(FILTER_FIELD);
+        }
         if (element.getAttribute(POSITION) != null && element.getAttribute(POSITION).length() > 0) {
             position = Integer.parseInt(element.getAttribute(POSITION));
         }

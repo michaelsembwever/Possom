@@ -35,6 +35,13 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
      */
     protected void modifyQuery(IQuery query) {
         final ClusteringESPFastConfiguration config = getSearchConfiguration();
+
+        // Can not use the default sort functionality since it hardcodes field name
+        final StringDataObject sortBy = datamodel.getParameters().getValue(config.getUserSortByParameter());
+        if (sortBy != null) {
+            query.setParameter(BaseParameter.SORT_BY, sortBy.getString());
+        }
+
         final StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());
         if (clusterId == null) {
             LOG.debug("--- Modifying query. ---");

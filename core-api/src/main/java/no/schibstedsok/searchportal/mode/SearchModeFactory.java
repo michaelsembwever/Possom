@@ -799,6 +799,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(cefc, inherit, "clusterField", ParseType.String, commandE, "cluster");
                     fillBeanProperty(cefc, inherit, "clusterMaxFetch", ParseType.Int, commandE, "10");
                     fillBeanProperty(cefc, inherit, "nestedResultsField", ParseType.String, commandE, "entries");
+                    fillBeanProperty(cefc, inherit, "userSortByField", ParseType.String, commandE, "publishedtime");
+                    fillBeanProperty(cefc, inherit, "userSortByParameter", ParseType.String, commandE, "sortBy");
                 }
 
                 if (sc instanceof NewsAggregatorSearchConfiguration) {

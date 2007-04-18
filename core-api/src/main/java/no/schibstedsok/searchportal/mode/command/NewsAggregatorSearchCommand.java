@@ -121,7 +121,11 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
         final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
         try {
-            SearchResult searchResult = newsAggregatorXmlParser.parseFullPage(config, getInputStream(config, xmlFile), this);
+            int offset = 0;
+            if (datamodel.getJunkYard().getValue("offset") != null) {
+                offset = Integer.parseInt((String) datamodel.getJunkYard().getValue("offset"));
+            }
+            SearchResult searchResult = newsAggregatorXmlParser.parseFullPage(config, offset, getInputStream(config, xmlFile), this);
             if (searchResult != null && searchResult.getHitCount() > 0) {
                 return searchResult;
             }
@@ -194,14 +198,14 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        public FastSearchResult parseFullPage(NewsAggregatorSearchConfiguration config, InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
+        public FastSearchResult parseFullPage(NewsAggregatorSearchConfiguration config, int offset, InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
             try {
 
                 final FastSearchResult searchResult = new FastSearchResult(searchCommand);
                 final Document doc = getDocument(inputStream);
                 final Element root = doc.getRootElement();
 
-                handleClusters(config, root.getChildren(ELEMENT_CLUSTER), searchResult, searchCommand);
+                handleClusters(config, offset, root.getChildren(ELEMENT_CLUSTER), searchResult, searchCommand);
                 handleRelated(config, root.getChild(ELEMENT_RELATED), searchResult);
                 handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
                 return searchResult;
@@ -243,9 +247,11 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        private void handleClusters(NewsAggregatorSearchConfiguration config, List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand) {
+        private void handleClusters(NewsAggregatorSearchConfiguration config, int offset, List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand) {
             int hitCount = 0;
-            for (Element cluster : clusters) {
+            int maxOffset = offset + config.getResultsToReturn();
+            for (int i = offset; i < clusters.size() && i < maxOffset; i++) {
+                Element cluster = clusters.get(i);
                 hitCount += handleCluster(config, cluster, searchCommand, searchResult);
             }
             searchResult.setHitCount(hitCount);
