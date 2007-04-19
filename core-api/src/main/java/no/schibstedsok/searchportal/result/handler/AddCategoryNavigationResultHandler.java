@@ -46,21 +46,23 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
     }
 
     private void addCategoryNavigators(DataModel datamodel, FastSearchResult searchResult, List<Category> categoryList) {
-        final String[] categoryFields = getCategoryFieldArray();
-        if (categoryFields.length > 0) {
-            for (String categoryField : categoryFields) {
-                Category selectedCategory = null;
-                StringDataObject selectedFieldData = datamodel.getParameters().getValue(categoryField);
-                for (Category category : categoryList) {
-                    searchResult.addModifier(categoryField, new Modifier(category.getDisplayName(), -1, null));
-                    if (selectedFieldData != null && selectedFieldData.getString().equals(category.getDisplayName())) {
-                        selectedCategory = category;
+        if (categoryList != null && categoryList.size() > 0) {
+            final String[] categoryFields = getCategoryFieldArray();
+            if (categoryFields.length > 0) {
+                for (String categoryField : categoryFields) {
+                    Category selectedCategory = null;
+                    StringDataObject selectedFieldData = datamodel.getParameters().getValue(categoryField);
+                    for (Category category : categoryList) {
+                        searchResult.addModifier(categoryField, new Modifier(category.getDisplayName(), -1, null));
+                        if (selectedFieldData != null && selectedFieldData.getString().equals(category.getDisplayName())) {
+                            selectedCategory = category;
+                        }
                     }
-                }
-                if (selectedCategory != null && selectedCategory.getSubCategories() != null) {
-                    categoryList = selectedCategory.getSubCategories();
-                } else {
-                    break;
+                    if (selectedCategory != null && selectedCategory.getSubCategories() != null) {
+                        categoryList = selectedCategory.getSubCategories();
+                    } else {
+                        break;
+                    }
                 }
             }
         }
@@ -107,11 +109,13 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
 
     private List<Element> getDirectChildren(Element element, String elementName) {
         ArrayList<Element> children = new ArrayList<Element>();
-        NodeList childNodes = element.getChildNodes();
-        for (int i = 0; i < childNodes.getLength(); i++) {
-            Node childNode = childNodes.item(i);
-            if (childNode instanceof Element && childNode.getNodeName().equals(elementName)) {
-                children.add((Element) childNode);
+        if (element != null) {
+            NodeList childNodes = element.getChildNodes();
+            for (int i = 0; i < childNodes.getLength(); i++) {
+                Node childNode = childNodes.item(i);
+                if (childNode instanceof Element && childNode.getNodeName().equals(elementName)) {
+                    children.add((Element) childNode);
+                }
             }
         }
         return children;
