@@ -71,7 +71,11 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
                 }
                 LOG.debug("Group at pos: " + config.getPosition() + " is " + matcher.group(0) + ", looking for " + config.getType());
                 if (matcher.groupCount() > 0 && matcher.group(2).equals(config.getType())) {
-                    return matcher.group(1);
+                    if (config.getFilterField() == null) {
+                        return matcher.group(1);
+                    } else {
+                        return config.getFilterField() + ":(\"" + matcher.group(1) + "\")";
+                    }
                 } else {
                     return "";
                 }

@@ -99,7 +99,6 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
                 SearchResultItem parentResult = collapseMap.get(collapseId);
                 if (parentResult == null) {
                     parentResult = addResult(config, searchResult, document);
-                    searchResult.addResult(parentResult);
                     collapseMap.put(collapseId, parentResult);
                 } else {
                     SearchResult nestedResult = parentResult.getNestedSearchResult(nestedResultsField);
@@ -141,7 +140,7 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
         SearchResultItem clusterEntry = null;
         SearchResult subResult = null;
 
-        LOG.debug("HitCount=" + result.getDocCount() + ", clusterField=" + clusterField + ", nestedResultsField=" + nestedResultsField);
+        LOG.debug("HitCount=" + result.getDocCount() + ", clusterField=" + clusterField + ", nestedResultsField=" + nestedResultsField + ", offset=" + offset);
         for (int i = offset; i < result.getDocCount(); i++) {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);

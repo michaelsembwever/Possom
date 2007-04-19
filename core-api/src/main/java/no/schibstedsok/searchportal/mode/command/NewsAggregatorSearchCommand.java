@@ -221,41 +221,47 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         }
 
         private void handleCounts(NewsAggregatorSearchConfiguration config, Element countsElement, int offset, FastSearchResult searchResult) {
-            final String entries = countsElement.getAttributeValue(ATTRIBUTE_ENTRY_COUNT);
-            if (entries != null && entries.length() > 0) {
-                searchResult.setHitCount(Integer.parseInt(entries));
-            }
-            final String clusters = countsElement.getAttributeValue(ATTRIBUTE_CLUSTER_COUNT);
-            if (clusters != null && clusters.length() > 0) {
-                if (offset + config.getResultsToReturn() < Integer.parseInt(clusters)) {
-                    searchResult.addField(ClusteringESPFastCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + config.getResultsToReturn()));
+            if (countsElement != null) {
+                final String entries = countsElement.getAttributeValue(ATTRIBUTE_ENTRY_COUNT);
+                if (entries != null && entries.length() > 0) {
+                    searchResult.setHitCount(Integer.parseInt(entries));
+                }
+                final String clusters = countsElement.getAttributeValue(ATTRIBUTE_CLUSTER_COUNT);
+                if (clusters != null && clusters.length() > 0) {
+                    if (offset + config.getResultsToReturn() < Integer.parseInt(clusters)) {
+                        searchResult.addField(ClusteringESPFastCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + config.getResultsToReturn()));
+                    }
                 }
             }
         }
 
         private void handleGeoNav(Element geonavElement, FastSearchResult searchResult) {
-            final List<Element> geoNavElements = geonavElement.getChildren();
-            for (Element geoNavElement : geoNavElements) {
-                String navigationType = geoNavElement.getAttributeValue(ATTRIBUTE_TYPE);
-                Navigator nav = new Navigator(geoNavElement.getAttributeValue(ATTRIBUTE_XML), null, geoNavElement.getAttributeValue(ATTRIBUTE_NAME), null);
-                Modifier modifier = new Modifier(geoNavElement.getAttributeValue(ATTRIBUTE_NAME), -1, nav);
-                searchResult.addModifier(navigationType, modifier);
+            if (geonavElement != null) {
+                final List<Element> geoNavElements = geonavElement.getChildren();
+                for (Element geoNavElement : geoNavElements) {
+                    String navigationType = geoNavElement.getAttributeValue(ATTRIBUTE_TYPE);
+                    Navigator nav = new Navigator(geoNavElement.getAttributeValue(ATTRIBUTE_XML), null, geoNavElement.getAttributeValue(ATTRIBUTE_NAME), null);
+                    Modifier modifier = new Modifier(geoNavElement.getAttributeValue(ATTRIBUTE_NAME), -1, nav);
+                    searchResult.addModifier(navigationType, modifier);
+                }
             }
         }
 
         private void handleRelated(NewsAggregatorSearchConfiguration config, Element relatedElement, FastSearchResult searchResult) {
-            final List<Element> categoryElements = relatedElement.getChildren(ELEMENT_CATEGORY);
-            for (Element categoryElement : categoryElements) {
-                final String categoryType = categoryElement.getAttributeValue(ATTRIBUTE_TYPE);
+            if (relatedElement != null) {
+                final List<Element> categoryElements = relatedElement.getChildren(ELEMENT_CATEGORY);
+                for (Element categoryElement : categoryElements) {
+                    final String categoryType = categoryElement.getAttributeValue(ATTRIBUTE_TYPE);
 
-                final List<Modifier> relatedList = searchResult.getModifiers(categoryType);
-                int categoryCount = 0;
-                if (relatedList != null) {
-                    categoryCount = relatedList.size();
-                }
-                if (categoryCount < config.getRelatedMaxCount()) {
-                    final Modifier modifier = new Modifier(categoryElement.getTextTrim(), -1, null);
-                    searchResult.addModifier(categoryType, modifier);
+                    final List<Modifier> relatedList = searchResult.getModifiers(categoryType);
+                    int categoryCount = 0;
+                    if (relatedList != null) {
+                        categoryCount = relatedList.size();
+                    }
+                    if (categoryCount < config.getRelatedMaxCount()) {
+                        final Modifier modifier = new Modifier(categoryElement.getTextTrim(), -1, null);
+                        searchResult.addModifier(categoryType, modifier);
+                    }
                 }
             }
         }
@@ -269,42 +275,49 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         }
 
         private void handleFlatCluster(NewsAggregatorSearchConfiguration config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
-            final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
-            final List<Element> entryList = entryCollectionElement.getChildren();
-            searchResult.setHitCount(entryList.size());
+            if (cluster != null) {
+                final Element entryCollectionElement = cluster.getChild(config.getNestedResultsField());
+                if (entryCollectionElement != null) {
+                    final List<Element> entryList = entryCollectionElement.getChildren();
+                    searchResult.setHitCount(entryList.size());
 
-            final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
-            for (Element entry : entryList) {
-                final SearchResultItem searchResultItem = new BasicSearchResultItem();
-                handleEntry(entry, searchResultItem);
-                addResult(config, searchResultItem, searchResult, searchCommand, collapseMap);
+                    final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
+                    for (Element entry : entryList) {
+                        final SearchResultItem searchResultItem = new BasicSearchResultItem();
+                        handleEntry(entry, searchResultItem);
+                        addResult(config, searchResultItem, searchResult, searchCommand, collapseMap);
+                    }
+                }
             }
         }
 
         private int handleCluster(NewsAggregatorSearchConfiguration config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
-            final SearchResultItem searchResultItem = new BasicSearchResultItem();
-            searchResultItem.addField("size", Integer.toString(Integer.parseInt(cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT)) - 1));
-            searchResultItem.addField(PARAM_CLUSTER_ID, cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
+            if (cluster != null) {
+                final SearchResultItem searchResultItem = new BasicSearchResultItem();
+                searchResultItem.addField("size", Integer.toString(Integer.parseInt(cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT)) - 1));
+                searchResultItem.addField(PARAM_CLUSTER_ID, cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
 
-            final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
-            final List<Element> entryList = entryCollectionElement.getChildren();
-            final BasicSearchResult nestedSearchResult = new BasicSearchResult(searchCommand);
+                final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
+                final List<Element> entryList = entryCollectionElement.getChildren();
+                final BasicSearchResult nestedSearchResult = new BasicSearchResult(searchCommand);
 
-            for (int i = 0; i < entryList.size(); i++) {
-                Element nestedEntry = entryList.get(i);
-                if (i == 0) {
-                    // First element is main result
-                    handleEntry(nestedEntry, searchResultItem);
-                } else {
-                    SearchResultItem nestedResultItem = new BasicSearchResultItem();
-                    handleEntry(nestedEntry, nestedResultItem);
-                    addResult(config, nestedResultItem, nestedSearchResult, searchCommand);
+                for (int i = 0; i < entryList.size(); i++) {
+                    Element nestedEntry = entryList.get(i);
+                    if (i == 0) {
+                        // First element is main result
+                        handleEntry(nestedEntry, searchResultItem);
+                    } else {
+                        SearchResultItem nestedResultItem = new BasicSearchResultItem();
+                        handleEntry(nestedEntry, nestedResultItem);
+                        addResult(config, nestedResultItem, nestedSearchResult, searchCommand);
+                    }
                 }
+                searchResultItem.addNestedSearchResult(config.getNestedResultsField(), nestedSearchResult);
+                searchResult.addResult(searchResultItem);
+                nestedSearchResult.setHitCount(entryList.size());
+                return entryList.size();
             }
-            searchResultItem.addNestedSearchResult(ATTRIBUTE_ENTRY_COUNT, nestedSearchResult);
-            searchResult.addResult(searchResultItem);
-            nestedSearchResult.setHitCount(entryList.size());
-            return entryList.size();
+            return 0;
         }
 
 

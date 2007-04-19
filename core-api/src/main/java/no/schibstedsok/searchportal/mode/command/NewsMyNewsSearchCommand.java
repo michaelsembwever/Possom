@@ -48,20 +48,17 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                     try {
                         LOG.debug("Waiting for " + commandName);
                         collectedResult = context.getRunningQuery().getSearchResult(commandName);
-                        if (collectedResult != null) {
-                            if (type.equals("cluster") && collectedResult.getResults().size() > clusterPos) {
-                                BasicSearchResult tmpResult = new BasicSearchResult(this);
-                                SearchResultItem resultItem = collectedResult.getResults().get(clusterPos);
-
-                                tmpResult.addResult(resultItem);
-                                collectedResult = tmpResult;
+                        if (collectedResult != null && collectedResult.getResults().size() > 0) {
+                            SearchResultItem searchResultItem;
+                            if (type.equals("knippe") && collectedResult.getResults().size() > clusterPos) {
+                                searchResultItem = collectedResult.getResults().get(clusterPos);
                                 clusterPos++;
+                            } else {
+                                searchResultItem = collectedResult.getResults().get(0);
                             }
-                            if (collectedResult.getResults().size() > 0) {
-                                SearchResultItem searchResultItem = collectedResult.getResults().get(0);
-                                searchResultItem.addField("type", type);
-                                mergedResult.addResult(searchResultItem);
-                            }
+                            searchResultItem.addField("type", type);
+                            mergedResult.addResult(searchResultItem);
+                            LOG.debug("Collected " + searchResultItem.getField("type") + ":" + searchResultItem.getField("title"));
                         }
                     } catch (InterruptedException e) {
                         LOG.error("Command was interrupted", e);
@@ -71,6 +68,7 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                 }
                 position++;
             }
+            mergedResult.setHitCount(position);
             return mergedResult;
         } else {
             return new BasicSearchResult(this);
