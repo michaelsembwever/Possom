@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
+    public static final String PARAM_NEXT_OFFSET = "nextOffset";
+
     private static final Logger LOG = Logger.getLogger(ClusteringESPFastCommand.class);
 
     public ClusteringESPFastCommand(Context cxt) {
@@ -37,9 +39,10 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
         final ClusteringESPFastConfiguration config = getSearchConfiguration();
 
         // Can not use the default sort functionality since it hardcodes field name
-        final StringDataObject sortBy = datamodel.getParameters().getValue(config.getUserSortByParameter());
-        if (sortBy != null) {
-            query.setParameter(BaseParameter.SORT_BY, sortBy.getString());
+        final StringDataObject sort = datamodel.getParameters().getValue(config.getUserSortParameter());
+        if (sort != null) {
+            query.setParameter(BaseParameter.SORT_BY, config.getUserSortField());
+            query.setParameter(BaseParameter.SORT_DIRECTION, sort.getString());
         }
 
         final StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());
@@ -68,7 +71,7 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
             final ClusteringESPFastConfiguration config = getSearchConfiguration();
             StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());
             if (clusterId == null) {
-                return createClusteredSearchResult(config, result);
+                return createClusteredSearchResult(config, getOffset(), result);
             } else {
                 return createSingleClusterResults(config, result);
             }
@@ -117,7 +120,15 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
         return searchResult;
     }
 
-    private FastSearchResult createClusteredSearchResult(ClusteringESPFastConfiguration config, IQueryResult result) throws IllegalType, EmptyValueException {
+    protected int getOffset() {
+        int offset = 0;
+        if (datamodel.getJunkYard().getValue("offset") != null) {
+            offset = Integer.parseInt((String) datamodel.getJunkYard().getValue("offset"));
+        }
+        return offset;
+    }
+
+    private FastSearchResult createClusteredSearchResult(ClusteringESPFastConfiguration config, int offset, IQueryResult result) throws IllegalType, EmptyValueException {
         final String clusterField = config.getClusterField();
         final String nestedResultsField = config.getNestedResultsField();
         final FastSearchResult searchResult = new FastSearchResult(this);
@@ -131,8 +142,7 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
         SearchResult subResult = null;
 
         LOG.debug("HitCount=" + result.getDocCount() + ", clusterField=" + clusterField + ", nestedResultsField=" + nestedResultsField);
-
-        for (int i = 0; i < result.getDocCount(); i++) {
+        for (int i = offset; i < result.getDocCount(); i++) {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);
                 currentClusterId = document.getSummaryField(clusterField);
@@ -172,7 +182,10 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
                 break;
             }
         }
-        searchResult.setHitCount(collectedHits);
+        if (offset + collectedHits < result.getDocCount()) {
+            searchResult.addField(ClusteringESPFastCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + collectedHits));
+        }
+        searchResult.setHitCount(result.getDocCount());
         return searchResult;
     }
 

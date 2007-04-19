@@ -35,7 +35,7 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                 SearchResult collectedResult;
                 String commandName = null;
                 final String type = matcher.group(2);
-                if (type.equals("cluster")) {
+                if (type.equals("knippe")) {
                     commandName = "clusterMyNews";
                 } else if (type.equals("sak")) {
                     commandName = "newsCase" + position;

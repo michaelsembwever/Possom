@@ -121,11 +121,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
     private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
         final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
         try {
-            int offset = 0;
-            if (datamodel.getJunkYard().getValue("offset") != null) {
-                offset = Integer.parseInt((String) datamodel.getJunkYard().getValue("offset"));
-            }
-            SearchResult searchResult = newsAggregatorXmlParser.parseFullPage(config, offset, getInputStream(config, xmlFile), this);
+            SearchResult searchResult = newsAggregatorXmlParser.parseFullPage(config, getOffset(), getInputStream(config, xmlFile), this);
             if (searchResult != null && searchResult.getHitCount() > 0) {
                 return searchResult;
             }
@@ -163,6 +159,9 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         private static final String ELEMENT_GEONAVIGATION = "geonavigation";
         private static final String ATTRIBUTE_NAME = "name";
         private static final String ATTRIBUTE_XML = "xml";
+        private static final String ELEMENT_COUNTS = "counts";
+        private static final String ATTRIBUTE_ENTRY_COUNT = "entries";
+        private static final String ATTRIBUTE_CLUSTER_COUNT = "clusters";
 
         private Document getDocument(InputStream inputStream) throws JDOMException, IOException {
             final SAXBuilder saxBuilder = new SAXBuilder();
@@ -206,6 +205,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                 final Element root = doc.getRootElement();
 
                 handleClusters(config, offset, root.getChildren(ELEMENT_CLUSTER), searchResult, searchCommand);
+                handleCounts(config, root.getChild(ELEMENT_COUNTS), offset, searchResult);
                 handleRelated(config, root.getChild(ELEMENT_RELATED), searchResult);
                 handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
                 return searchResult;
@@ -216,6 +216,19 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                     } catch (Exception e) {
                         // Ignoring
                     }
+                }
+            }
+        }
+
+        private void handleCounts(NewsAggregatorSearchConfiguration config, Element countsElement, int offset, FastSearchResult searchResult) {
+            final String entries = countsElement.getAttributeValue(ATTRIBUTE_ENTRY_COUNT);
+            if (entries != null && entries.length() > 0) {
+                searchResult.setHitCount(Integer.parseInt(entries));
+            }
+            final String clusters = countsElement.getAttributeValue(ATTRIBUTE_CLUSTER_COUNT);
+            if (clusters != null && clusters.length() > 0) {
+                if (offset + config.getResultsToReturn() < Integer.parseInt(clusters)) {
+                    searchResult.addField(ClusteringESPFastCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + config.getResultsToReturn()));
                 }
             }
         }
@@ -248,13 +261,11 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         }
 
         private void handleClusters(NewsAggregatorSearchConfiguration config, int offset, List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand) {
-            int hitCount = 0;
             int maxOffset = offset + config.getResultsToReturn();
             for (int i = offset; i < clusters.size() && i < maxOffset; i++) {
                 Element cluster = clusters.get(i);
-                hitCount += handleCluster(config, cluster, searchCommand, searchResult);
+                handleCluster(config, cluster, searchCommand, searchResult);
             }
-            searchResult.setHitCount(hitCount);
         }
 
         private void handleFlatCluster(NewsAggregatorSearchConfiguration config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
@@ -290,7 +301,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                     addResult(config, nestedResultItem, nestedSearchResult, searchCommand);
                 }
             }
-            searchResultItem.addNestedSearchResult("entries", nestedSearchResult);
+            searchResultItem.addNestedSearchResult(ATTRIBUTE_ENTRY_COUNT, nestedSearchResult);
             searchResult.addResult(searchResultItem);
             nestedSearchResult.setHitCount(entryList.size());
             return entryList.size();
