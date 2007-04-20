@@ -17,27 +17,28 @@ public final class AddDocCountModifier implements ResultHandler {
 
     private static final String ERR_UNKNOWN_MODIFIER_1 = "NavigationHint does not exist for modifier ";
 
-    private String modifierName;
+    private AddDocCountResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public AddDocCountModifier(final ResultHandlerConfig config){
+        this.config = (AddDocCountResultHandlerConfig)config;
+    }
 
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchResult result = cxt.getSearchResult();
         final Navigator navigator = new Navigator();
-        final SearchTab.NavigatorHint hint = cxt.getSearchTab().getNavigationHint(modifierName);
+        final SearchTab.NavigatorHint hint = cxt.getSearchTab().getNavigationHint(config.getModifierName());
         if( hint != null ){
             final Modifier mod = new Modifier(hint.getName(), result.getHitCount(), navigator);
             cxt.addSource(mod);
         }else{
-            throw new IllegalStateException(
-                    ERR_UNKNOWN_MODIFIER_1 + modifierName);
+            throw new IllegalStateException(ERR_UNKNOWN_MODIFIER_1 + config.getModifierName());
         }
     }
 
-    public String getModifierName() {
-        return modifierName;
-    }
-
-    public void setModifierName(final String modifierName) {
-        this.modifierName = modifierName;
-    }
 }

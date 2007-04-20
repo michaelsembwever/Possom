@@ -12,38 +12,38 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * WeatherCelciusHandler is part of no.schibstedsok.searchportal.result
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @version 0.1
- * @vesrion $Revision$, $Author$, $Date$
+ * @version $Id$
  */
-public class WeatherCelciusHandler implements ResultHandler  {
+public final class WeatherCelciusHandler implements ResultHandler  {
 
-    private String targetField;
-    private String sourceField;
-
-    public String getTargetField() {
-        return targetField;
+    private final WeatherCelciusResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public WeatherCelciusHandler(final ResultHandlerConfig config){
+        this.config = (WeatherCelciusResultHandlerConfig)config;
     }
-
-    public void setTargetField(final String targetField) {
-        this.targetField = targetField;
-    }
-
-    public void setSourceField(final String sourceField) {
-        this.sourceField = sourceField;
-    }
-
+    
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
+        
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
-            String celcius = item.getField(sourceField);
+            
+            final String celcius = item.getField(config.getSourceField());
             String newVal = null;
 
             try {
                 newVal = new DecimalFormat("#").parse(celcius) + "";
+                
             } catch (ParseException e) {
                 newVal = celcius;
             }
+            
             if ("-0".equals(newVal)) { newVal = "0"; }
-            item.addField(targetField, newVal);
+            
+            item.addField(config.getTargetField(), newVal);
         }
     }
 }

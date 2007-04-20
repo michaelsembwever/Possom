@@ -37,13 +37,16 @@ public final class DataModelResultHandler implements ResultHandler{
     private static final int PAGING_SIZE =  10;
 
     // Attributes ----------------------------------------------------
+    
+    private final DataModelResultHandlerConfig config;
 
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
 
     /** Creates a new instance of DataModelResultHandler */
-    public DataModelResultHandler() {
+    public DataModelResultHandler(final ResultHandlerConfig config) {
+        this.config = (DataModelResultHandlerConfig)config;
     }
 
     // Public --------------------------------------------------------

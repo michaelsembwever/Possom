@@ -6,13 +6,25 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
  * @author <a href="mailto:thomas.kjerstad@aftenposten.no">Thomas Kjærstad</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
-public class PhoneNumberFormatter implements ResultHandler {
+public final class PhoneNumberFormatter implements ResultHandler {
+    
+    private final PhoneNumberFormatterResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public PhoneNumberFormatter(final ResultHandlerConfig config){
+        this.config = (PhoneNumberFormatterResultHandlerConfig)config;
+    }
 
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+            
             final String ypanynumber = item.getField("ypanynumber");
             final String wpmobiltelefon = item.getField("wpmobiltelefon");
             final String wptelefon = item.getField("wptelefon");
@@ -37,23 +49,24 @@ public class PhoneNumberFormatter implements ResultHandler {
             if (ypanynumber != null) {
                 if (ypanynumber.length() == 8) {
                     //numbers starting with 8 should be formated as xxx xxxxx
-                    if (ypanynumber.substring(0, 1).equals("8"))
+                    if (ypanynumber.substring(0, 1).equals("8")){
                         format = ypanynumber.substring(0, 3) + " " + ypanynumber.substring(3, 8);
-                    else
+                    }else{
                         format = ypanynumber.substring(0, 2) + " " + ypanynumber.substring(2, 4) + " " + ypanynumber.substring(4, 6) + " " + ypanynumber.substring(6, 8);
-                } else
+                    }
+                } else{
                     format = ypanynumber;
-
+                }
                 item.addField("ypanynumber", format);
             }
 
             //formatting yptelefax in yip
             if (yptelefax != null) {
-                if (yptelefax.length() == 8)
+                if (yptelefax.length() == 8){
                     format = yptelefax.substring(0, 2) + " " + yptelefax.substring(2, 4) + " " + yptelefax.substring(4, 6) + " " + yptelefax.substring(6, 8);
-                else
+                }else{
                     format = yptelefax;
-
+                }
                 item.addField("yptelefax", format);
             }
 

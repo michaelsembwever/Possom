@@ -22,29 +22,27 @@ import org.apache.log4j.Logger;
 /**
  *
  * This class can be used to combine the modififers of two navigators into a new navigator.
+ * 
+ * Combine the navigators that has been added using addMapping into a new navigator.
  *
  * @author maek
+ * @version $Id$
  */
-public class CombineNavigatorsHandler implements ResultHandler {
+public final class CombineNavigatorsHandler implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(AbstractSimpleFastSearchCommand.class);
-    private static final String DEBUG_WRONG_RESULT_TYPE =
-            "Can only be applied to fast search results";
+    private static final String DEBUG_WRONG_RESULT_TYPE = "Can only be applied to fast search results";
 
-    private Map<String, Set<String>> mappings = new HashMap();
-    private String target;
-
-
-    /** Creates a new instance of CombineNavigatorsHandler */
-    public CombineNavigatorsHandler() {
+    private final CombineNavigatorsResultHandlerConfig config;
+    
+    /** Creates a new instance of CombineNavigatorsHandler 
+     * @param config 
+     */
+    public CombineNavigatorsHandler(final ResultHandlerConfig config) {
+        this.config = (CombineNavigatorsResultHandlerConfig)config;
     }
 
-    /**
-     * Combine the navigators that has been added using addMapping
-     * into a new navigator.
-     *
-     * @param cxt The context.
-     * @param parameters The parameters.
+    /** {@inherit}
      */
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
@@ -54,6 +52,7 @@ public class CombineNavigatorsHandler implements ResultHandler {
         }
 
         final FastSearchResult result = (FastSearchResult) cxt.getSearchResult();
+        final Map<String, Set<String>> mappings = config.getMappings();
 
         for (final String nav : mappings.keySet()) {
             for (final String mod : mappings.get(nav)) {
@@ -66,37 +65,14 @@ public class CombineNavigatorsHandler implements ResultHandler {
                     if (newMod.getName().equals("Norge")) {
                         newMod.subtractCount( result.getModifierCount("sources", "Mediearkivet") );
                     }
-                    result.addModifier(target, newMod);
+                    result.addModifier(config.getTarget(), newMod);
                 }
             }
         }
 
-        if (result.getModifiers(target) != null) {
-            Collections.sort(result.getModifiers(target));
+        if (result.getModifiers(config.getTarget()) != null) {
+            Collections.sort(result.getModifiers(config.getTarget()));
         }
     }
 
-    /**
-     * Adds a navigator mapping where navigator is the source navigator and modifier is
-     * the modifier to be used. (only modifiers explicitly added using this method will be added
-     * to the new navigator).
-     *
-     * @param navigator A source navigator.
-     * @param modifier The modifier name.
-     */
-    public void addMapping(final String navigator, final String modifier) {
-        if (! mappings.containsKey(navigator))
-            mappings.put(navigator, new HashSet());
-
-        mappings.get(navigator).add(modifier);
-    }
-
-    /**
-     * Sets the name of the target modifier.
-     *
-     * @param target The name of the target modifier.
-     */
-    public void setTarget(final String target) {
-        this.target = target;
-    }
 }

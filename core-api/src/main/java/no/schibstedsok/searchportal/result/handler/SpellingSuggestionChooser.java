@@ -27,127 +27,42 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
  * A new query is then created using the chosen suggestions.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class SpellingSuggestionChooser implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(SpellingSuggestionChooser.class);
-
-    private int minimumScore = -1;
-    private int maxSuggestions = 3;
-    private int maxDistance = 0;
-    private int muchBetter = 5;
-    private int maxSuggestionsForLongQueries = 2;
-    private int longQuery = 2;
-    private int veryLongQuery = 3;
+    
+    private final SpellingSuggestionChooserResultHandlerConfig config;
 
     /**
-     * Create a new SpellingSuggestionChooser. *
+     * Create a new SpellingSuggestionChooser. 
+     * @param config 
      */
-    public SpellingSuggestionChooser() {
+    public SpellingSuggestionChooser(final ResultHandlerConfig config) {
+        this.config = (SpellingSuggestionChooserResultHandlerConfig)config;
     }
 
     /**
-     * Create a new SpellingSuggestionChooser.
-     *
-     * @param minimumScore The minum score a suggestion needs to be considered.
-     */
-    public SpellingSuggestionChooser(final int minimumScore) {
-        this.minimumScore = minimumScore;
-    }
-
-    /**
-     * Create a new SpellingSuggestionChooser.
-     *
-     * @param minimumScore   The minum score a suggestion needs to be considered.
-     * @param maxSuggestions The maximum number of suggestions to choose.
-     */
-    public SpellingSuggestionChooser(final int minimumScore, final int maxSuggestions) {
-        this.minimumScore = minimumScore;
-        this.maxSuggestions = maxSuggestions;
-    }
-
-    /**
-     * Sets the minimum score a suggestions needs to have to be considered.
-     *
-     * @param minumScore New minimum score.
-     */
-    public void setMinScore(final int minumScore) {
-        this.minimumScore = minumScore;
-    }
-
-    /**
-     * Sets the maximum number of suggestions to choose.
-     *
-     * @param maxSuggestions New max number of suggestions.
-     */
-    public void setMaxSuggestions(final int maxSuggestions) {
-        this.maxSuggestions = maxSuggestions;
-    }
-
-    /**
-     * Sets the maximum difference in score a suggestion can have from the highest
-     * the suggestion with the highest score without being discarded.
-     *
-     * @param maxDistance New max distance.
-     */
-    public void setMaxDistance(final int maxDistance) {
-        this.maxDistance = maxDistance;
-    }
-
-    /**
-     * Sets the score difference needed for a suggestion to be rated as much better.
-     *
-     * @param muchBetter New difference.
-     */
-    public void setMuchBetter(final int muchBetter) {
-        this.muchBetter = muchBetter;
-    }
-
-    /**
-     * Sets the number of terms query needs to be considered as long.
-     *
-     * @param longQuery The new number of terms.
-     */
-    public void setLongQuery(final int longQuery) {
-        this.longQuery = longQuery;
-    }
-
-    /**
-     * Sets the number of terms a query needs to be considered as long.
-     *
-     * @param veryLongQuery The new number of terms.
-     */
-    public void setVeryLongQuery(final int veryLongQuery) {
-        this.veryLongQuery = veryLongQuery;
-    }
-
-    /**
-     * Sets the number of suggestions to choose for very long queries.
-     *
-     * @param maxSuggestionsForLongQueries The new number of suggestions.
-     */
-    public void setLongQueryMaxSuggestions(final int maxSuggestionsForLongQueries) {
-        this.maxSuggestionsForLongQueries = maxSuggestionsForLongQueries;
-    }
-
-    /**
-     * {@inheritDoc}
+     * {@inherit}
      */
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchResult result = cxt.getSearchResult();
+        
         if (LOG.isDebugEnabled()) {
             LOG.debug("Number of corrected terms are " + numberOfCorrectedTerms(result.getSpellingSuggestions()));
         }
 
         final int numberOfTermsInQuery = datamodel.getQuery().getQuery().getTermCount();
 
-        if (numberOfTermsInQuery >= veryLongQuery && numberOfCorrectedTerms(result.getSpellingSuggestions()) > 1) {
+        if (numberOfTermsInQuery >= config.getVeryLongQuery() 
+                && numberOfCorrectedTerms(result.getSpellingSuggestions()) > 1) {
+            
             result.getSpellingSuggestions().clear();
         }
 
-        for (final Iterator<List<SpellingSuggestion>> terms = result.getSpellingSuggestions().values().iterator()
+        for (Iterator<List<SpellingSuggestion>> terms = result.getSpellingSuggestions().values().iterator()
                 ; terms.hasNext();) {
             
             final List<SpellingSuggestion> suggestionList = terms.next();
@@ -155,16 +70,18 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             Collections.sort(suggestionList);
 
             removeSuggestionsWithTooLowScore(suggestionList);
-            limitNumberOfSuggestions(suggestionList, maxSuggestions);
+            limitNumberOfSuggestions(suggestionList, config.getMaxSuggestions());
             removeSuggestionsWithTooHighDifference(suggestionList);
 
-            if (numberOfTermsInQuery >= longQuery) {
+            if (numberOfTermsInQuery >= config.getLongQuery()) {
+                
                 if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 1) {
-                    limitNumberOfSuggestions(suggestionList, maxSuggestionsForLongQueries);
-                } else
-                if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 2 
-                        && numberOfTermsInQuery < veryLongQuery) {
                     
+                    limitNumberOfSuggestions(suggestionList, config.getLongQueryMaxSuggestions());
+                    
+                } else if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 2 
+                            && numberOfTermsInQuery < config.getVeryLongQuery()) {
+
                     if (suggestionList.size() > 1) {
                         removeAllIfOneIsNotMuchBetter(suggestionList);
                     }
@@ -192,7 +109,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
                     result.addQuerySuggestion(new QuerySuggestion(query, displayQuery));
                 }
             }
-        } else if (numberOfCorrections == 2 && numberOfTermsInQuery < veryLongQuery) {
+        } else if (numberOfCorrections == 2 && numberOfTermsInQuery < config.getVeryLongQuery() ) {
             String query = newQuery;
             String displayQuery = newQuery;
 
@@ -209,19 +126,25 @@ public final class SpellingSuggestionChooser implements ResultHandler {
     }
 
     private void removeAllIfOneIsNotMuchBetter(final List<SpellingSuggestion> suggestionList) {
+        
         final SpellingSuggestion best = suggestionList.get(0);
         final SpellingSuggestion nextBest = suggestionList.get(1);
 
-        if (best.getScore() < nextBest.getScore() + muchBetter) {
+        if (best.getScore() < nextBest.getScore() + config.getMuchBetter()) {
+            
             suggestionList.clear();
+            
             if (LOG.isDebugEnabled()) {
                 LOG.debug("All suggestions removed because the best is not much better than second best");
                 LOG.debug("Best " + best);
                 LOG.debug("Second best " + nextBest);
             }
+            
         } else {
+            
             suggestionList.clear();
             suggestionList.add(best);
+            
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Only the best suggestion kept");
             }
@@ -229,16 +152,18 @@ public final class SpellingSuggestionChooser implements ResultHandler {
     }
 
     private int numberOfCorrectedTerms(final Map<String, List<SpellingSuggestion>> spellingSuggestions) {
+        
         return spellingSuggestions.keySet().size();
     }
 
     private void removeSuggestionsWithTooHighDifference(final List<SpellingSuggestion> suggestionList) {
+        
         int lastScore = -1;
 
         for (final Iterator<SpellingSuggestion> iterator = suggestionList.iterator(); iterator.hasNext();) {
             final SpellingSuggestion suggestion = iterator.next();
 
-            if (suggestion.getScore() + maxDistance < lastScore) {
+            if (suggestion.getScore() + config.getMaxDistance() < lastScore) {
                 iterator.remove();
                 LOG.debug("Suggestion " + suggestion + " because difference too high");
 
@@ -249,6 +174,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
     }
 
     private void limitNumberOfSuggestions(final List<SpellingSuggestion> suggestionList, final int limit) {
+        
         if (suggestionList.size() > limit) {
             final int numberToRemove = suggestionList.size() - limit;
 
@@ -262,10 +188,14 @@ public final class SpellingSuggestionChooser implements ResultHandler {
     }
 
     private void removeSuggestionsWithTooLowScore(final List<SpellingSuggestion> suggestionList) {
+        
         for (final Iterator<SpellingSuggestion> suggestions = suggestionList.iterator(); suggestions.hasNext();) {
+            
             final SpellingSuggestion suggestion = suggestions.next();
-            if (suggestion.getScore() < minimumScore) {
+            if (suggestion.getScore() < config.getMinScore()) {
+                
                 suggestions.remove();
+                
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Suggestion " + suggestion + " removed due to low score");
                 }

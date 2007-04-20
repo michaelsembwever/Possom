@@ -6,10 +6,21 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
-public class PhoneNumberChooser implements ResultHandler {
+public final class PhoneNumberChooser implements ResultHandler {
+    
+    private final PhoneNumberChooserResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public PhoneNumberChooser(final ResultHandlerConfig config){
+        this.config = (PhoneNumberChooserResultHandlerConfig)config;
+    }
 
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {

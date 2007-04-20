@@ -11,24 +11,34 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 
 /**
  * @author <a href="mailto:larsj@conduct.no">Lars Johansson</a>
- * @version <tt>$Revision: 1 $</tt>
+ * @version <tt>$Id$</tt>
  */
-public class DiscardDuplicatesResultHandler implements ResultHandler {
+public final class DiscardDuplicatesResultHandler implements ResultHandler {
 
-    private String sourceField;
-    private boolean discardCase;
     private final List<String> keys = new ArrayList<String>();
 
+    private final DiscardDuplicatesResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public DiscardDuplicatesResultHandler(final ResultHandlerConfig config){
+        this.config = (DiscardDuplicatesResultHandlerConfig)config;
+    }
+    
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
 
         	final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
 
-            String uniqueField = searchResultItem.getField(sourceField) + "";	//avoid nullpointers
+            String uniqueField = searchResultItem.getField(config.getSourceField()) + "";	//avoid nullpointers
 
-            if(isDiscardCase())
+            if(config.isDiscardCase()){
             	uniqueField = uniqueField.toLowerCase();
+            }
 
             //remove entries with same name (not emtpy ones)
             if(uniqueField.length() != 0 && keys.contains(uniqueField)){
@@ -38,17 +48,5 @@ public class DiscardDuplicatesResultHandler implements ResultHandler {
         	}
         }
     }
-
-    public void setSourceField(final String string) {
-        sourceField = string;
-    }
-
-	public boolean isDiscardCase() {
-		return discardCase;
-	}
-
-	public void setDiscardCase(boolean discardCase) {
-		this.discardCase = discardCase;
-	}
 
 }

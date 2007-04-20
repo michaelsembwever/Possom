@@ -12,15 +12,23 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class MultiValuedFieldCollector implements ResultHandler {
-
-    private Map<String,String> fieldMap = new HashMap<String,String>();
-
-    public void addField(final String field, final String as){
-        fieldMap.put(field, as);
+public final class MultiValuedFieldCollector implements ResultHandler {
+    
+    private final MultivaluedFieldCollectorResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public MultiValuedFieldCollector(final ResultHandlerConfig config){
+        this.config = (MultivaluedFieldCollectorResultHandlerConfig)config;
     }
-
+    
+    /** {@inherit}
+     */
     public void handleResult(final Context cxt, final DataModel datamodel) {
+        
+        final Map<String,String> fieldMap = config.getFieldMap();
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
             for (final Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {
@@ -36,7 +44,10 @@ public class MultiValuedFieldCollector implements ResultHandler {
                         final String value = values[i];
 
                         if (value.length() == 8) {
-                            format = value.substring(0, 2) + " " + value.substring(2, 4) + " " + value.substring(4, 6) + " " + value.substring(6, 8);
+                            format = value.substring(0, 2) 
+                                    + ' ' + value.substring(2, 4) 
+                                    + ' ' + value.substring(4, 6) 
+                                    + ' ' + value.substring(6, 8);
                         } else
                             format = value;
 

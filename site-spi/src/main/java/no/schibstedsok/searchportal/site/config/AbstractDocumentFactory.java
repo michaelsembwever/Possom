@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 
-/**
+/** Utility class for deserialising from an xml document.
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -49,16 +49,38 @@ public abstract class AbstractDocumentFactory {
 
 
 
+    /**
+     * 
+     */
     public enum ParseType{
-        /** TODO comment me. **/
+        /** **/
         Boolean,
+        /**
+         * 
+         */
         Int,
+        /**
+         * 
+         */
         Float,
+        /**
+         * 
+         */
         String,
+        /**
+         * 
+         */
         Property
     };
 
-    /** TODO implement Type.Property. **/
+    /** TODO implement Type.Property. *
+     * @param beanObj 
+     * @param beanParent 
+     * @param property 
+     * @param type 
+     * @param element 
+     * @param def 
+     */
     public static final void fillBeanProperty(
             final Object beanObj,
             final Object beanParent,
@@ -110,7 +132,7 @@ public abstract class AbstractDocumentFactory {
     * <p>Then the {@link #getSeparator} property value is inserted so that it separates
     * each word.</p>
     *
-    * @param typeName The name string to convert.  If a JavaBean
+    * @param beanName The name string to convert.  If a JavaBean
     * class name, should included only the last part of the name
     * rather than the fully qualified name (e.g. FooBar rather than
     * org.example.FooBar).
@@ -130,7 +152,10 @@ public abstract class AbstractDocumentFactory {
         return xmlName.toString();
     }
 
-    /** The reverse transformation to beanToXmlName(string). **/
+    /** The reverse transformation to beanToXmlName(string). *
+     * @param xmlName 
+     * @return 
+     */
     public static String xmlToBeanName(final String xmlName){
 
         final StringBuilder beanName = new StringBuilder(xmlName);
@@ -144,23 +169,39 @@ public abstract class AbstractDocumentFactory {
         return beanName.toString();
     }
 
-    /** try to use fillBeanProperty instead. **/
-    protected static final boolean parseBoolean(final String s, final boolean def){
+    /** try to use fillBeanProperty instead. *
+     * @param s 
+     * @param def 
+     * @return 
+     */
+    public static final boolean parseBoolean(final String s, final boolean def){
         return s.trim().length() == 0 ? def : Boolean.parseBoolean(s);
     }
 
-    /** try to use fillBeanProperty instead. **/
-    protected static final float parseFloat(final String s, final float def){
+    /** try to use fillBeanProperty instead. *
+     * @param s 
+     * @param def 
+     * @return 
+     */
+    public static final float parseFloat(final String s, final float def){
         return s.trim().length() == 0 ? def : Float.parseFloat(s);
     }
 
-    /** try to use fillBeanProperty instead. **/
-    protected static final int parseInt(final String s, final int def){
+    /** try to use fillBeanProperty instead. *
+     * @param s 
+     * @param def 
+     * @return 
+     */
+    public static final int parseInt(final String s, final int def){
         return s.trim().length() == 0 ? def : Integer.parseInt(s);
     }
 
-    /** try to use fillBeanProperty instead. **/
-    protected static final String parseString(final String s, final String def){
+    /** try to use fillBeanProperty instead. *
+     * @param s 
+     * @param def 
+     * @return 
+     */
+    public static final String parseString(final String s, final String def){
         return s.trim().length() == 0 ? def : s;
     }
 

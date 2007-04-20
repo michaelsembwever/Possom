@@ -36,7 +36,7 @@ import static org.testng.AssertJUnit.*;
 /** Fast navigation tests.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class FastNavigatorsTest extends DataModelTestCase {
 
@@ -45,10 +45,18 @@ public final class FastNavigatorsTest extends DataModelTestCase {
     FastSearchConfiguration config;
     MockupResultHandler resultHandler;
 
+    /**
+     * 
+     * @return 
+     */
     public SearchConfiguration getSearchConfiguration() {
         return config;
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @BeforeClass
     protected void setUp() throws Exception {
 
@@ -56,10 +64,13 @@ public final class FastNavigatorsTest extends DataModelTestCase {
                 config = new FastSearchConfiguration();
         //this.config = config;
         config.setResultsToReturn(10);
-        resultHandler = new MockupResultHandler();
-        config.addResultHandler(resultHandler);
+//        resultHandler = new MockupResultHandler();
+//        config.addResultHandler(resultHandler);
     }
 
+    /**
+     * 
+     */
     @Test
     public void testNoNavigators() {
 
@@ -67,6 +78,9 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         assertTrue(config.getNavigators().isEmpty());
     }
 
+    /**
+     * 
+     */
     @Test
     public void testOneNavigator() {
 
@@ -79,6 +93,9 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 
     }
 
+    /**
+     * 
+     */
     @Test
     public void testHierarchicalNavigator() {
 
@@ -435,6 +452,10 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 //        }
 //    }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     public void tBackLinks() throws Exception{
 
         final DataModel datamodel = getDataModel();

@@ -12,6 +12,12 @@ import no.schibstedsok.searchportal.result.Modifier;
  * @version <tt>$Revision$</tt>
  */
 public final class ContentSourceCollector implements ResultHandler {
+    
+    private final ContentSourceCollectorResultHandlerConfig config;
+    
+    public ContentSourceCollector(final ResultHandlerConfig config){
+        this.config = (ContentSourceCollectorResultHandlerConfig)config;
+    }
 
     public void handleResult(final Context cxt, final DataModel datamodel) {
 

@@ -9,25 +9,32 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * modify. Needed because we get raw data from Storm.
  *
  * @author larsj
- *
+ * @version $Id$
  */
-public class ForecastWindHandler implements ResultHandler {
+public final class ForecastWindHandler implements ResultHandler {
+    
+    private final ForecastWindResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public ForecastWindHandler(final ResultHandlerConfig config){
+        this.config = (ForecastWindResultHandlerConfig)config;
+    }
 
-	public void handleResult(Context cxt, DataModel datamodel) {
+    /** {@inherit} **/
+	public void handleResult(final Context cxt, final DataModel datamodel) {
 
 		for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
 
 			//see if there are any forecasts for the location.
 			if (item.getNestedSearchResult("forecasts") != null) {
-				for (final SearchResultItem forecast : item
-						.getNestedSearchResult("forecasts").getResults()) {
+				for (final SearchResultItem forecast : item.getNestedSearchResult("forecasts").getResults()) {
 
-					final int direction = Integer.parseInt(forecast
-							.getField("winddirection"));
-					final int condition = Integer.parseInt(forecast
-							.getField("symbol"));
-					final float speed = Float.parseFloat(forecast
-							.getField("windspeed"));
+					final int direction = Integer.parseInt(forecast.getField("winddirection"));
+					final int condition = Integer.parseInt(forecast.getField("symbol"));
+					final float speed = Float.parseFloat(forecast.getField("windspeed"));
 
 					if (0 <= direction && direction <= 22) {
 						forecast.addField("winddirectionText", "N");

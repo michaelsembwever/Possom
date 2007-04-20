@@ -11,30 +11,41 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * Converts lat/long values into X/Y for map coordinate-system.
  *
  * @author larsj
- *
+ * @version $Id$
  */
-public class MapCoordHandler implements ResultHandler {
+public final class MapCoordHandler implements ResultHandler {
 
 	private static final int UTM_ZONE = 33;
 
     private static final Logger LOG = Logger.getLogger(MapCoordHandler.class);
+    
+    private final MapCoordResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public MapCoordHandler(final ResultHandlerConfig config){
+        this.config = (MapCoordResultHandlerConfig)config;
+    }
 
-	public void handleResult(Context cxt, DataModel datamodel) {
+    /** {@inherit} **/
+	public void handleResult(final Context cxt, final DataModel datamodel) {
 
 		for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
 
         	try {
-        		String tmp = null;
-        		double latitude = Double.parseDouble(item.getField("lat").replace(',', '.'));
-        		double longitude = Double.parseDouble(item.getField("long").replace(',', '.'));
+        		final double latitude = Double.parseDouble(item.getField("lat").replace(',', '.'));
+        		final double longitude = Double.parseDouble(item.getField("long").replace(',', '.'));
 
-            	MapCoordCalc coordCalculator = new MapCoordCalc();
-            	MapPoint point = coordCalculator.DD2UTM(longitude, latitude, UTM_ZONE);
+            	final MapCoordCalc coordCalculator = new MapCoordCalc();
+            	final MapPoint point = coordCalculator.DD2UTM(longitude, latitude, UTM_ZONE);
+                
                 item.addField("xcoord", point.getX() + "");
                 item.addField("ycoord", point.getY() + "");
+                
         	} catch (NumberFormatException e) {
 				// silent fail
-        		e.printStackTrace();
         		LOG.error("Unable to parse latitude/longitude from Storm weather service " + e);
         	}
 

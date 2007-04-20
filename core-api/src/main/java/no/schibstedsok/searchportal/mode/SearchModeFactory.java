@@ -51,43 +51,12 @@ import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutor;
 import no.schibstedsok.searchportal.mode.executor.SequentialSearchCommandExecutor;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.result.handler.AddCategoryNavigationResultHandler;
-import no.schibstedsok.searchportal.result.handler.AddDocCountModifier;
-import no.schibstedsok.searchportal.result.handler.AddLastWeekModifierResultHandler;
-import no.schibstedsok.searchportal.result.handler.AgeCalculatorResultHandler;
-import no.schibstedsok.searchportal.result.handler.CatalogueResultHandler;
-import no.schibstedsok.searchportal.result.handler.CategorySplitter;
-import no.schibstedsok.searchportal.result.handler.CombineNavigatorsHandler;
-import no.schibstedsok.searchportal.result.handler.ContentSourceCollector;
-import no.schibstedsok.searchportal.result.handler.DataModelResultHandler;
-import no.schibstedsok.searchportal.result.handler.DateFormatHandler;
-import no.schibstedsok.searchportal.result.handler.DiscardDuplicatesResultHandler;
-import no.schibstedsok.searchportal.result.handler.DiscardOldNewsResultHandler;
-import no.schibstedsok.searchportal.result.handler.FieldChooser;
-import no.schibstedsok.searchportal.result.handler.FieldEscapeHandler;
-import no.schibstedsok.searchportal.result.handler.FindFileFormat;
-import no.schibstedsok.searchportal.result.handler.ForecastDateHandler;
-import no.schibstedsok.searchportal.result.handler.ForecastWindHandler;
-import no.schibstedsok.searchportal.result.handler.ImageHelper;
-import no.schibstedsok.searchportal.result.handler.MapCoordHandler;
-import no.schibstedsok.searchportal.result.handler.MultiValuedFieldCollector;
-import no.schibstedsok.searchportal.result.handler.NumberOperationHandler;
-import no.schibstedsok.searchportal.result.handler.PhoneNumberChooser;
-import no.schibstedsok.searchportal.result.handler.PhoneNumberFormatter;
-import no.schibstedsok.searchportal.result.handler.ResultHandler;
-import no.schibstedsok.searchportal.result.handler.SpellingSuggestionChooser;
-import no.schibstedsok.searchportal.result.handler.SumFastModifiers;
-import no.schibstedsok.searchportal.result.handler.TvSearchSortingHandler;
-import no.schibstedsok.searchportal.result.handler.WeatherCelciusHandler;
-import no.schibstedsok.searchportal.result.handler.WeatherDateHandler;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
-import no.schibstedsok.searchportal.view.output.TextOutputResultHandler;
-import no.schibstedsok.searchportal.view.output.VelocityResultHandler;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -109,6 +78,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 
 /**
  * @author <a href="mailto:mick@wever.org>mick</a>
@@ -149,6 +119,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final String INFO_PARSING_NAVIGATOR = "  Parsing navigator ";
     private static final String INFO_PARSING_RESULT_HANDLER = "  Parsing result handler ";
     private static final String INFO_PARSING_QUERY_TRANSFORMER = "  Parsing query transformer ";
+    private static final String INFO_CONSTRUCT = "  Construct ";
     private static final String DEBUG_PARSED_PROPERTY = "  Property property ";
     private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent command {0} not found for {1} in mode {2}";
 
@@ -159,7 +130,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private final DocumentLoader loader;
     private final Context context;
-
+    
     private String templatePrefix;
 
     // Static --------------------------------------------------------
@@ -402,8 +373,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
-        private static final String ERR_INIT_SEARCH_VIEW = "Search view could not be initialized for ";
-
+        private final QueryTransformerFactory queryTransformerFactory = new QueryTransformerFactory();
+        private final ResultHandlerFactory resultHandlerFactory = new ResultHandlerFactory();
 
         CommandTypes(final Class<? extends SearchConfiguration> clazz) {
             this.clazz = clazz;
@@ -830,8 +801,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element qt = (Element) node;
-                        if (QueryTransformerFactory.supported(qt.getTagName())) {
-                            sc.addQueryTransformer(QueryTransformerFactory.parseQueryTransformer(qt));
+                        if (queryTransformerFactory.supported(qt.getTagName())) {
+                            sc.addQueryTransformer(queryTransformerFactory.parseQueryTransformer(qt));
                         }
                     }
                 }
@@ -851,10 +822,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element rh = (Element) node;
-                        for (ResultHandlerTypes rhType : ResultHandlerTypes.values()) {
-                            if (rh.getTagName().equals(rhType.getXmlName())) {
-                                sc.addResultHandler(rhType.parseResultHandler(rh));
-                            }
+                        if (resultHandlerFactory.supported(rh.getTagName())) {
+                            sc.addResultHandler(resultHandlerFactory.parseResultHandler(rh));
                         }
                     }
                 }
@@ -874,7 +843,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             } catch (InvocationTargetException ex) {
                 throw new InfrastructureException(ex);
             } catch (ParserConfigurationException e) {
-                // TODO Auto-generated catch block
                 throw new InfrastructureException(e);
             }
         }
@@ -937,36 +905,24 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
 
-    private static final class QueryTransformerFactory {
+    private static final class QueryTransformerFactory extends AbstractFactory{
 
-        private QueryTransformerFactory() {
+        QueryTransformerFactory() {
         }
 
-        static boolean supported(final String xmlName) {
+        QueryTransformerConfig parseQueryTransformer(final Element qt) {
 
-            return null != findClass(xmlName);
+            return ((QueryTransformerConfig)construct(qt)).readQueryTransformer(qt);
         }
 
-        static QueryTransformerConfig parseQueryTransformer(final Element qt) {
-
-            final String xmlName = qt.getTagName();
-            LOG.info(INFO_PARSING_QUERY_TRANSFORMER + xmlName);
-
-            try {
-                return findClass(xmlName).newInstance().readQueryTransformer(qt);
-
-            } catch (InstantiationException ex) {
-                throw new InfrastructureException(ex);
-            } catch (IllegalAccessException ex) {
-                throw new InfrastructureException(ex);
-            }
-        }
-
-        private static Class<? extends QueryTransformerConfig> findClass(final String xmlName) {
+        protected Class<? extends QueryTransformerConfig> findClass(final String xmlName) {
 
             Class clazz = null;
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
+            
+            LOG.info("findClass " + className);
+            
             try {
                 clazz = (Class<? extends QueryTransformerConfig>) Class.forName(
                         "no.schibstedsok.searchportal.query.transform."
@@ -981,240 +937,53 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     }
 
-    /**
-     * TODO rewrite following the cleaner architecture of QueryTransformerFactory. *
-     */
-    private enum ResultHandlerTypes {
-        ADD_DOC_COUNT(AddDocCountModifier.class),
-        AGE_CALCULATOR(AgeCalculatorResultHandler.class),
-        CATEGORY_SPLITTER(CategorySplitter.class),
-        CONTENT_SOURCE_COLLECTOR(ContentSourceCollector.class),
-        DATA_MODEL(DataModelResultHandler.class),
-        DISCARD_OLD_NEWS(DiscardOldNewsResultHandler.class),
-        DISCARD_DUPLICATES(DiscardDuplicatesResultHandler.class),
-        FIELD_CHOOSER(FieldChooser.class),
-        FIND_FILE_FORMAT(FindFileFormat.class),
-        IMAGE_HELPER(ImageHelper.class),
-        MULTIVALUED_FIELD_COLLECTOR(MultiValuedFieldCollector.class),
-        NUMBER_OPERATION(NumberOperationHandler.class),
-        PHONE_NUMBER_CHOOSER(PhoneNumberChooser.class),
-        PHONE_NUMBER_FORMATTER(PhoneNumberFormatter.class),
-        SPELLING_SUGGESTION_CHOOSER(SpellingSuggestionChooser.class),
-        SUM(SumFastModifiers.class),
-        DATE_FORMAT(DateFormatHandler.class),
-        WEATHER_CELCIUS(WeatherCelciusHandler.class),
-        WEATHER_DATE(WeatherDateHandler.class),
-        FORECAST_DATE(ForecastDateHandler.class),
-        FORECAST_WIND(ForecastWindHandler.class),
-        MAP_COORD(MapCoordHandler.class),
-        TVSEARCH_SORTING(TvSearchSortingHandler.class),
-        COMBINE_NAVIGATORS(CombineNavigatorsHandler.class),
-        TEXT_OUTPUT(TextOutputResultHandler.class),
-        VELOCITY_OUTPUT(VelocityResultHandler.class),
-        FIELD_ESCAPE(FieldEscapeHandler.class),
-        CATALOGUE(CatalogueResultHandler.class),
-        ADD_LAST_WEEK_MODIFIER(AddLastWeekModifierResultHandler.class),
-        ADD_CATEGORY_NAVIGATION(AddCategoryNavigationResultHandler.class);
+    private static final class ResultHandlerFactory extends AbstractFactory{
 
-
-        private final Class<? extends ResultHandler> clazz;
-        private final String xmlName;
-
-        ResultHandlerTypes(final Class<? extends ResultHandler> c) {
-            clazz = c;
-            xmlName = name().replaceAll("_", "-").toLowerCase();
+        ResultHandlerFactory() {
         }
 
-        public String getXmlName() {
-            return xmlName;
+        ResultHandlerConfig parseResultHandler(final Element rh) {
+
+            return ((ResultHandlerConfig)construct(rh)).readResultHandler(rh);
         }
 
-        public ResultHandler parseResultHandler(final Element rh) {
+        protected Class<? extends ResultHandlerConfig> findClass(final String xmlName) {
+
+            Class clazz = null;
+            final String bName = xmlToBeanName(xmlName);
+            final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
+            
+            LOG.info("findClass " + className);
+            
+            try {
+                clazz = (Class<? extends ResultHandlerConfig>) Class.forName(
+                        "no.schibstedsok.searchportal.result.handler."
+                                + className
+                                + "ResultHandlerConfig");
+
+            } catch (ClassNotFoundException cnfe) {
+                LOG.error(cnfe.getMessage(), cnfe);
+            }
+            return clazz;
+        }
+
+    }
+        
+    private static abstract class AbstractFactory{
+        AbstractFactory(){}
+        
+        boolean supported(final String xmlName) {
+
+            return null != findClass(xmlName);
+        }
+
+        protected Object construct(final Element element) {
+
+            final String xmlName = element.getTagName();
+            LOG.info(INFO_CONSTRUCT + xmlName);
 
             try {
-                LOG.info(INFO_PARSING_RESULT_HANDLER + xmlName);
-                final ResultHandler handler = clazz.newInstance();
-                switch (this) {
-                    case CATALOGUE:
-                        final CatalogueResultHandler crh = (CatalogueResultHandler) handler;
-                        break;
-
-                    case ADD_DOC_COUNT:
-                        final AddDocCountModifier adc = (AddDocCountModifier) handler;
-                        adc.setModifierName(rh.getAttribute("modifier"));
-                        break;
-                    case AGE_CALCULATOR:
-                        final AgeCalculatorResultHandler ac = (AgeCalculatorResultHandler) handler;
-                        ac.setTargetField(rh.getAttribute("target"));
-                        ac.setSourceField(rh.getAttribute("source"));
-                        fillBeanProperty(ac, null, "asDate", ParseType.Boolean, rh, "false");
-                        fillBeanProperty(ac, null, "recursiveField", ParseType.String, rh, null);
-                        break;
-                    case FIELD_CHOOSER:
-                        final FieldChooser fc = (FieldChooser) handler;
-                    {
-                        fc.setTargetField(rh.getAttribute("target"));
-                        final String[] fields = rh.getAttribute("fields").split(",");
-                        for (String field : fields) {
-                            fc.addField(field);
-                        }
-                    }
-                    break;
-                    case MULTIVALUED_FIELD_COLLECTOR:
-                        final MultiValuedFieldCollector mvfc = (MultiValuedFieldCollector) handler;
-                    {
-                        if (rh.getAttribute("fields").length() > 0) {
-                            final String[] fields = rh.getAttribute("fields").split(",");
-                            for (String field : fields) {
-                                if (field.contains(" AS ")) {
-                                    final String[] ff = field.split(" AS ");
-                                    mvfc.addField(ff[0], ff[1]);
-                                } else {
-                                    mvfc.addField(field, field);
-                                }
-                            }
-                        }
-                    }
-                    break;
-                    case NUMBER_OPERATION:
-                        final NumberOperationHandler noh = (NumberOperationHandler) handler;
-                    {
-                        if (rh.getAttribute("fields").length() > 0) {
-                            final String[] fields = rh.getAttribute("fields").split(",");
-                            for (String field : fields) {
-                                noh.addField(field);
-                            }
-                        }
-                        noh.setTarget(parseString(rh.getAttribute("target"), ""));
-                        noh.setOperation(parseString(rh.getAttribute("operation"), ""));
-                        noh.setMinDigits(parseInt(rh.getAttribute("min-digits"), 1));
-                        noh.setMaxDigits(parseInt(rh.getAttribute("max-digits"), 99));
-                        noh.setMinFractionDigits(parseInt(rh.getAttribute("min-fraction-digits"), 0));
-                        noh.setMaxFractionDigits(parseInt(rh.getAttribute("max-fraction-digits"), 99));
-                    }
-                    break;
-                    case IMAGE_HELPER:
-                        final ImageHelper im = (ImageHelper) handler;
-                    {
-                        if (rh.getAttribute("fields").length() > 0) {
-                            final String[] fields = rh.getAttribute("fields").split(",");
-                            for (String field : fields) {
-                                if (field.contains(" AS ")) {
-                                    final String[] ff = field.split(" AS ");
-                                    im.addField(ff[0], ff[1]);
-                                } else {
-                                    im.addField(field, field);
-                                }
-                            }
-                        }
-                    }
-                    break;
-                    case SPELLING_SUGGESTION_CHOOSER:
-                        final SpellingSuggestionChooser ssc = (SpellingSuggestionChooser) handler;
-                        ssc.setMinScore(parseInt(rh.getAttribute("min-score"), -1));
-                        ssc.setMaxSuggestions(parseInt(rh.getAttribute("max-suggestions"), -1));
-                        ssc.setMaxDistance(parseInt(rh.getAttribute("max-distance"), -1));
-                        ssc.setMuchBetter(parseInt(rh.getAttribute("much-better"), -1));
-                        ssc.setLongQuery(parseInt(rh.getAttribute("long-query"), -1));
-                        ssc.setVeryLongQuery(parseInt(rh.getAttribute("very-long-query"), -1));
-                        ssc.setLongQueryMaxSuggestions(parseInt(rh.getAttribute("long-query-max-suggestions"), -1));
-                        break;
-                    case SUM:
-                        final SumFastModifiers sfm = (SumFastModifiers) handler;
-                        final String[] modifiers = rh.getAttribute("modifiers").split(",");
-                        for (String modifier : modifiers) {
-                            sfm.addModifierName(modifier);
-                        }
-                        sfm.setNavigatorName(rh.getAttribute("navigation"));
-                        sfm.setTargetModifier(rh.getAttribute("target"));
-                        break;
-                    case DATE_FORMAT:
-                        final DateFormatHandler dh = (DateFormatHandler) handler;
-                        if (rh.hasAttribute("prefix")) {
-                            dh.setFieldPrefix(rh.getAttribute("prefix"));
-                        }
-                        dh.setSourceField(rh.getAttribute("source"));
-                        break;
-                    case WEATHER_CELCIUS:
-                        final WeatherCelciusHandler ch = (WeatherCelciusHandler) handler;
-                        ch.setTargetField(rh.getAttribute("target"));
-                        ch.setSourceField(rh.getAttribute("source"));
-                        break;
-                    case MAP_COORD:
-                        final MapCoordHandler mch = (MapCoordHandler) handler;
-                        break;
-                    case FORECAST_WIND:
-                        final ForecastWindHandler wh = (ForecastWindHandler) handler;
-                        break;
-                    case DISCARD_DUPLICATES:    //subclasses must be checked first
-                        final DiscardDuplicatesResultHandler ddh = (DiscardDuplicatesResultHandler) handler;
-                        ddh.setSourceField(rh.getAttribute("key"));
-                        ddh.setDiscardCase(new Boolean(rh.getAttribute("ignorecase")).booleanValue());
-                        break;
-                    case FORECAST_DATE:    //subclasses must be checked first
-                        final ForecastDateHandler sdateh = (ForecastDateHandler) handler;
-                        sdateh.setTargetField(rh.getAttribute("target"));
-                        sdateh.setSourceField(rh.getAttribute("source"));
-                        break;
-                    case WEATHER_DATE:
-                        final WeatherDateHandler dateh = (WeatherDateHandler) handler;
-                        dateh.setTargetField(rh.getAttribute("target"));
-                        dateh.setSourceField(rh.getAttribute("source"));
-                        break;
-                    case TVSEARCH_SORTING:
-                        final TvSearchSortingHandler tssh = (TvSearchSortingHandler) handler;
-
-                        tssh.setResultsPerBlock(Integer.parseInt(rh.getAttribute("results-per-block")));
-                        tssh.setBlocksPerPage(Integer.parseInt(rh.getAttribute("blocks-per-page")));
-                        break;
-                    case FIELD_ESCAPE:
-                        final FieldEscapeHandler feh = (FieldEscapeHandler) handler;
-                        feh.setSourceField(rh.getAttribute("source-field"));
-                        feh.setTargetField(rh.getAttribute("target-field"));
-                        break;
-                    case ADD_LAST_WEEK_MODIFIER:
-                        final AddLastWeekModifierResultHandler alwm = (AddLastWeekModifierResultHandler) handler;
-                        alwm.setDayModifierKey(rh.getAttribute("day-modifier-key"));
-                        alwm.setTargetNavigatorField(rh.getAttribute("target-navigator-field"));
-                        String optionalAttribute = rh.getAttribute("day-format");
-                        if (optionalAttribute != null && optionalAttribute.length() > 0) {
-                            alwm.setDayFormat(optionalAttribute);
-                        }
-                        optionalAttribute = rh.getAttribute("time-zone");
-                        if (optionalAttribute != null && optionalAttribute.length() > 0) {
-                            alwm.setTimeZone(optionalAttribute);
-                        }
-                        break;
-                    case COMBINE_NAVIGATORS:
-                        final CombineNavigatorsHandler cnh = (CombineNavigatorsHandler) handler;
-                        cnh.setTarget(rh.getAttribute("target"));
-
-                        final NodeList navs = rh.getElementsByTagName("navigator");
-
-                        for (int i = 0; i < navs.getLength(); i++) {
-                            final Element nav = (Element) navs.item(i);
-
-                            final NodeList mods = nav.getElementsByTagName("modifier");
-                            for (int j = 0; j < mods.getLength(); j++) {
-                                final Element mod = (Element) mods.item(j);
-
-                                cnh.addMapping(nav.getAttribute("name"), mod.getAttribute("name"));
-                            }
-                        }
-                        break;
-                    case ADD_CATEGORY_NAVIGATION:
-                        final AddCategoryNavigationResultHandler acnrh = (AddCategoryNavigationResultHandler) handler;
-                        acnrh.setCategoryFields(rh.getAttribute("category-fields"));
-                        final String categoryXml = rh.getAttribute("categories-xml");
-                        if (categoryXml != null && categoryXml.length() > 0) {
-                            acnrh.setCategoriesXml(categoryXml);
-                        }
-                        break;
-                    default:
-                        break;
-                }
-
-                return handler;
+                return findClass(xmlName).newInstance();
 
             } catch (InstantiationException ex) {
                 throw new InfrastructureException(ex);
@@ -1223,5 +992,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             }
         }
 
+        protected abstract Class<? extends Object> findClass(final String xmlName);      
     }
 }

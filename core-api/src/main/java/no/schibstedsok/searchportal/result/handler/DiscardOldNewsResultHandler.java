@@ -14,14 +14,20 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public class DiscardOldNewsResultHandler implements ResultHandler {
+public final class DiscardOldNewsResultHandler implements ResultHandler {
 
     private String sourceField;
     private long maxAgeInMilliseconds = Long.MAX_VALUE;
 
     //TODO: for performance reasons, is SimpleDateFormat usage avoidable?
     private static transient DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+    
+    private final DiscardOldNewsResultHandlerConfig config;
+    
+    public DiscardOldNewsResultHandler(final ResultHandlerConfig config){
+        this.config = (DiscardOldNewsResultHandlerConfig)config;
+    }
+    
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
 

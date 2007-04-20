@@ -5,7 +5,7 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
-import no.schibstedsok.searchportal.result.handler.ResultHandler;
+import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -37,14 +37,14 @@ public interface SearchConfiguration {
      *
      * @return The list of handlers.
      */
-    List<ResultHandler> getResultHandlers();
+    List<ResultHandlerConfig> getResultHandlers();
 
     /**
      * Adds a {@link no.schibstedsok.searchportal.result.handler.ResultHandler} to the list of handlers.
      *
      * @param handler The handler to add.
      */
-    void addResultHandler(ResultHandler handler);
+    void addResultHandler(ResultHandlerConfig handler);
 
     /**
      * Returns the name of this configuration.

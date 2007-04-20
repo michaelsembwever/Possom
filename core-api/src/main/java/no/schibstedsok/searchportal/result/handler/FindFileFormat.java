@@ -1,36 +1,47 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
+import javax.activation.MimetypesFileTypeMap;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: itthkjer
- * Date: 21.okt.2005
- * Time: 09:40:46
- * To change this template use File | Settings | File Templates.
+ * @version itthkjer
+ * @version $Id$
  */
-public class FindFileFormat implements ResultHandler {
+public final class FindFileFormat implements ResultHandler {
+    
+    private final FindFileFormatResultHandlerConfig config;
+    
+    private static final MimetypesFileTypeMap mimetypes = new MimetypesFileTypeMap();
 
+    /**
+     *
+     * @param config
+     */
+    public FindFileFormat(final ResultHandlerConfig config){
+        this.config = (FindFileFormatResultHandlerConfig) config;
+    }
+
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
+        
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+            
+            final String contentType = null != config.getField() ? item.getField(config.getField()) : null;
             final String url = item.getField("url");
+            final int dotIdx = url.lastIndexOf('.');
+            final String ext = dotIdx > 0 && dotIdx < url.length()
+                    ? url.substring(dotIdx + 1, url.length())
+                    : "";
+            final String fileformat = null != contentType && contentType.length() > 0
+                    ? contentType
+                    : mimetypes.getContentType(url);
+            
 
-            //print out the following fileformats after title
-            if (url.toLowerCase().endsWith(".pdf"))
-                item.addField("fileformat", "[pdf]");
-            else if (url.toLowerCase().endsWith(".doc"))
-                item.addField("fileformat", "[word]");
-            else if (url.toLowerCase().endsWith(".ppt"))
-                item.addField("fileformat", "[power point]");
-            else if (url.toLowerCase().endsWith(".xls"))
-                item.addField("fileformat", "[excel]");
-            else if (url.toLowerCase().endsWith(".txt"))
-                item.addField("fileformat", "[txt]");
-
+            item.addField("fileformat", fileformat);
         }
     }
 }

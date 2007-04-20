@@ -23,17 +23,23 @@ public final class NumberOperationHandler implements ResultHandler {
 
     private static final Logger LOG = Logger.getLogger(NumberOperationHandler.class);
 
-    private Collection<String> fields = new ArrayList<String>();
+    private final NumberOperationResultHandlerConfig config;
+    
+    
+    public NumberOperationHandler(final ResultHandlerConfig config){
+        this.config = (NumberOperationResultHandlerConfig)config;
+    }
 
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchResult result = cxt.getSearchResult();
 
         final NumberFormat formatter = NumberFormat.getInstance(datamodel.getSite().getSite().getLocale());
-        formatter.setMinimumIntegerDigits(minDigits);
-        formatter.setMaximumIntegerDigits(maxDigits);
-        formatter.setMinimumFractionDigits(minFractionDigits);
-        formatter.setMaximumFractionDigits(maxFractionDigits);
+        formatter.setMinimumIntegerDigits(config.getMinDigits());
+        formatter.setMaximumIntegerDigits(config.getMaxDigits());
+        formatter.setMinimumFractionDigits(config.getMinFractionDigits());
+        formatter.setMaximumFractionDigits(config.getMaxFractionDigits());
 
         final JEP parser = new JEP();
 
@@ -43,98 +49,17 @@ public final class NumberOperationHandler implements ResultHandler {
 
         for(SearchResultItem item : result.getResults()){
 
-            for(String field : fields){
+            for(String field : config.getFields()){
                 final String value = item.getField(field);
                 parser.addVariable(field, value != null && value.length()>0 ? Double.parseDouble(value) : 0D);
             }
 
-            parser.parseExpression(operation);
+            parser.parseExpression(config.getOperation());
 
             final String r = formatter.format(parser.getValue());
-            LOG.debug(operation + '=' + r);
-            item.addField(target, r);
+            LOG.debug(config.getOperation() + '=' + r);
+            item.addField(config.getTarget(), r);
         }
     }
 
-    public void addField(final String field) {
-        fields.add(field);
-    }
-
-    /**
-     * Holds value of property operation.
-     */
-    private String operation;
-
-    /**
-     * Setter for property operation.
-     * @param operation New value of property operation.
-     */
-    public void setOperation(String operation) {
-        this.operation = operation;
-    }
-
-    /**
-     * Holds value of property target.
-     */
-    private String target;
-
-    /**
-     * Setter for property target.
-     * @param target New value of property target.
-     */
-    public void setTarget(String target) {
-        this.target = target;
-    }
-
-    /**
-     * Holds value of property minFractionDigits.
-     */
-    private int minFractionDigits;
-
-    /**
-     * Setter for property minFractionDigits.
-     * @param minFractionDigits New value of property minFractionDigits.
-     */
-    public void setMinFractionDigits(int minFractionDigits) {
-        this.minFractionDigits = minFractionDigits;
-    }
-
-    /**
-     * Holds value of property maxFractionDigits.
-     */
-    private int maxFractionDigits;
-
-    /**
-     * Setter for property maxFractionDigitis.
-     * @param maxFractionDigitis New value of property maxFractionDigitis.
-     */
-    public void setMaxFractionDigits(int maxFractionDigits) {
-        this.maxFractionDigits = maxFractionDigits;
-    }
-
-    /**
-     * Holds value of property minDigits.
-     */
-    private int minDigits;
-
-    /**
-     * Setter for property minDigits.
-     * @param minDigits New value of property minDigits.
-     */
-    public void setMinDigits(int minDigits) {
-        this.minDigits = minDigits;
-    }
-
-    /**
-     * Holds value of property maxDigits.
-     */
-    private int maxDigits;
-
-    /**
-     * Setter for property maxDigits.
-     * @param maxDigits New value of property maxDigits.
-     */
-    public void setMaxDigits(int maxDigits) {
-        this.maxDigits = maxDigits;
-    }
 }

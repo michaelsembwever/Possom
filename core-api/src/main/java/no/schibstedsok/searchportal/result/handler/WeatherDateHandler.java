@@ -11,34 +11,38 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * WeatherDateHandler is part of no.schibstedsok.searchportal.result
  *
  * @author Ola Marius Sagli <a href="ola@schibstedsok.no">ola at schibstedsok</a>
- * @version 0.1
- * @vesrion $Revision$, $Author$, $Date$
+ * @version $Id$
  */
 public class WeatherDateHandler implements ResultHandler  {
 
-    static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-    static SimpleDateFormat timePart = new SimpleDateFormat("HH:mm");
-    static SimpleDateFormat datePart = new SimpleDateFormat("dd.MM.yyyy");
-
-    private String targetField;
-    protected String sourceField;
-
-    public String getTargetField() {
-        return targetField;
+    /**
+     * 
+     */
+    protected static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+    /**
+     * 
+     */
+    protected static final SimpleDateFormat timePart = new SimpleDateFormat("HH:mm");
+    /**
+     * 
+     */
+    protected static final SimpleDateFormat datePart = new SimpleDateFormat("dd.MM.yyyy");
+    
+    private final WeatherDateResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public WeatherDateHandler(final ResultHandlerConfig config){
+        this.config = (WeatherDateResultHandlerConfig)config;
     }
 
-    public void setTargetField(final String targetField) {
-        this.targetField = targetField;
-    }
-
-    public void setSourceField(String sourceField) {
-        this.sourceField = sourceField;
-    }
-
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
-            final String datestring = item.getField(sourceField);
+            final String datestring = item.getField(config.getSourceField());
             Date date = null;
 
             try {

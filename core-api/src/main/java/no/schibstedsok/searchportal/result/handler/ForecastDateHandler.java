@@ -16,14 +16,25 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * the field to modify.
  *
  * @author larsj
- *
+ * @version $Id$
  */
-public class ForecastDateHandler extends WeatherDateHandler {
+public final class ForecastDateHandler extends WeatherDateHandler {
 
-    static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+    
+    private final ForecastDateResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public ForecastDateHandler(final ResultHandlerConfig config){
+        super(config);
+        this.config = (ForecastDateResultHandlerConfig)config;
+    }
 
     @Override
-    public void handleResult(Context cxt, DataModel datamodel) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
 
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
@@ -33,17 +44,20 @@ public class ForecastDateHandler extends WeatherDateHandler {
 
                 for(final SearchResultItem forecast : item.getNestedSearchResult("forecasts").getResults()) {
 
-                    final String datestring = forecast.getField(sourceField);
+                    final String datestring = forecast.getField(config.getSourceField());
 
                     if(datestring != null){
+                        
                         Date date = null;
-                        Calendar cal = new GregorianCalendar(new Locale("no", "no"));
+                        final Calendar cal = new GregorianCalendar(new Locale("no", "no"));
                         try {
                             date = sdf.parse(datestring);
                             cal.setTime(date);
+                            
                         } catch (ParseException e) {
                             throw new IllegalArgumentException(e.getMessage());
                         }
+                        
                         forecast.addField("datePart", datePart.format(date));
                         forecast.addField("timePart", timePart.format(date));
 
@@ -52,6 +66,7 @@ public class ForecastDateHandler extends WeatherDateHandler {
                         } else {
                             forecast.addField("month", Integer.toString(cal.get(Calendar.MONTH) + 1));
                         }
+                        
                         forecast.addField("day", Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
                         forecast.addField("year", Integer.toString(cal.get(Calendar.YEAR)));
 

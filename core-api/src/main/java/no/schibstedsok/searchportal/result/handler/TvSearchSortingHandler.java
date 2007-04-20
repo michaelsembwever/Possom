@@ -18,30 +18,15 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * @author ajamtli
  * @version $Id$
  */
-public class TvSearchSortingHandler implements ResultHandler {
-
-    /** Number of results per block of channels, days or categories. **/
-    private int resultsPerBlock;
-
-    /** Number of blocks to display per page. **/
-    private int blocksPerPage;
-
-    public int getResultsPerBlock() {
-        return resultsPerBlock;
+public final class TvSearchSortingHandler implements ResultHandler {
+    
+    private final TvsearchSortingResultHandlerConfig config;
+    
+    public TvSearchSortingHandler(final ResultHandlerConfig config){
+        this.config = (TvsearchSortingResultHandlerConfig)config;
     }
 
-    public void setResultsPerBlock(int resultsPerBlock) {
-        this.resultsPerBlock = resultsPerBlock;
-    }
-
-    public int getBlocksPerPage() {
-        return blocksPerPage;
-    }
-
-    public void setBlocksPerPage(int blocksPerPage) {
-        this.blocksPerPage = blocksPerPage;
-    }
-
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
@@ -52,7 +37,7 @@ public class TvSearchSortingHandler implements ResultHandler {
 
         HashMap<String,ArrayList<SearchResultItem>> hm = new HashMap();
         SearchResult sr = cxt.getSearchResult();
-        final int resultsPerBlock = getResultsPerBlock();
+        final int resultsPerBlock = config.getResultsPerBlock();
         String field = "channel";
 
         if (sortBy.equals("day")) {
@@ -138,7 +123,7 @@ public class TvSearchSortingHandler implements ResultHandler {
 
         int i = 0;
         for (Modifier modifier : modifiers) {
-            if (i == getBlocksPerPage()) {
+            if (i == config.getBlocksPerPage()) {
                 break;
             }
             if (hm.containsKey(modifier.getName())) {

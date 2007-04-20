@@ -47,6 +47,11 @@
             <classifier>jdk15</classifier>
         </dependency>
 
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-site-spi</artifactId>
+            <version>${version}</version>
+        </dependency>
     </dependencies>
 
 </project>

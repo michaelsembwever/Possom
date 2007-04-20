@@ -15,6 +15,7 @@ import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
+import no.schibstedsok.searchportal.result.handler.SpellingSuggestionChooserResultHandlerConfig;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
@@ -27,21 +28,33 @@ import static org.testng.AssertJUnit.*;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class SpellingSuggestionChooserTest extends DataModelTestCase {
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testNoSuggestions()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         handleResult(chooser, result);
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneTermOneSuggestion()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
@@ -50,9 +63,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertEquals(1, numberOfSuggestions(result, "slankting"));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneTermOneSuggestionwithLimit()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(230);
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
@@ -60,9 +79,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneTermTwoSuggestionsSameScore()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
@@ -73,9 +98,17 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertEquals(2, numberOfSuggestions(result, "slankting"));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneTermNumberOfSuggestionsSameScoreOnLimit()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
+        
+        final SpellingSuggestionChooserResultHandlerConfig config = new SpellingSuggestionChooserResultHandlerConfig();
+        config.setMinScore(-1);
+        config.setMaxDistance(3);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
@@ -88,9 +121,18 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertEquals(3, numberOfSuggestions(result, "slankting"));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneTermNumberOfSuggestionsSameScoreOvertLimit()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
+        
+        final SpellingSuggestionChooserResultHandlerConfig config = new SpellingSuggestionChooserResultHandlerConfig();
+        config.setMinScore(-1);
+        config.setMaxDistance(3);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
+        
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
@@ -105,9 +147,17 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertEquals(3, numberOfSuggestions(result, "slankting"));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneTermNumberOfSuggestionsDiffScoreOvertLimit()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 3);
+
+        final SpellingSuggestionChooserResultHandlerConfig config = new SpellingSuggestionChooserResultHandlerConfig();
+        config.setMinScore(-1);
+        config.setMaxDistance(3);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 211);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
@@ -131,9 +181,17 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertFalse(suggestionList.contains(suggestion3));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneTermNumberOfSuggestionsSameScoreLimitToZero()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(-1, 0);
+        
+        final SpellingSuggestionChooserResultHandlerConfig config = new SpellingSuggestionChooserResultHandlerConfig();
+        config.setMinScore(-1);
+        config.setMaxDistance(0);
+        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);        
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
@@ -147,9 +205,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertEquals(0, numberOfTermsCorrected(result));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneTermTwoSuggestionsDifferentScore()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 230);
@@ -162,9 +226,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertFalse(suggestionList.contains(suggestion));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testTwoTermsBothWrong()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
@@ -178,9 +248,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertTrue(suggestionList2.contains(suggestion2));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testTwoTermsBothWrongManySuggestions()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
@@ -196,9 +272,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertNull(suggestionList2);
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testTwoTermsBothWrongManySuggestionsOneMuchBetter()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
@@ -214,9 +296,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertTrue(suggestionList2.contains(suggestion3));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testThreeTermsTwoWrong()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel bil"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
@@ -229,9 +317,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertEquals(0, result.getQuerySuggestions().size());
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testThreeTermsOneWrong()  throws Exception{
-        final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser();
+        
+        final SpellingSuggestionChooser chooser 
+                = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykkel bil"));
         final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);

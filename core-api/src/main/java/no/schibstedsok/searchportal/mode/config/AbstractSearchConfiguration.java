@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
-import no.schibstedsok.searchportal.result.handler.ResultHandler;
+import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.util.SearchConstants;
 
 import java.util.ArrayList;
@@ -14,9 +14,10 @@ import org.apache.log4j.Logger;
 
 /**
  * A common base class for search configurations.
+ * TODO rename to BaseSearchConfiguration since it is directly used by default commands in modes.xml
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public class AbstractSearchConfiguration implements SearchConfiguration {
 
@@ -26,7 +27,7 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
 
     private String name;
     private final List<QueryTransformerConfig> queryTransformers = new ArrayList<QueryTransformerConfig>();
-    private final List<ResultHandler> resultHandlers = new ArrayList<ResultHandler>();
+    private final List<ResultHandlerConfig> resultHandlers = new ArrayList<ResultHandlerConfig>();
     private int pageSize = SearchConstants.DEFAULT_DOCUMENTS_TO_RETURN;
     private final Map<String,String> resultFields = new HashMap<String,String>();
     private int resultsToReturn;
@@ -39,7 +40,9 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
 
     private String statisticalName;
 
-    /** TODO comment me. **/
+    /** TODO comment me. *
+     * @param sc 
+     */
     public AbstractSearchConfiguration(final SearchConfiguration sc){
         if(sc != null && sc instanceof AbstractSearchConfiguration){
             final AbstractSearchConfiguration asc = (AbstractSearchConfiguration) sc;
@@ -89,12 +92,12 @@ public class AbstractSearchConfiguration implements SearchConfiguration {
     }
 
     /** {@inheritDoc} **/
-    public final List<ResultHandler> getResultHandlers() {
+    public final List<ResultHandlerConfig> getResultHandlers() {
         return resultHandlers;
     }
 
     /** {@inheritDoc} **/
-    public final void addResultHandler(final ResultHandler handler) {
+    public final void addResultHandler(final ResultHandlerConfig handler) {
         resultHandlers.add(handler);
     }
 

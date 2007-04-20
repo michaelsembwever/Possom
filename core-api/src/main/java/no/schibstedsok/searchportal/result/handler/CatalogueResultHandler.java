@@ -25,115 +25,114 @@ import org.apache.log4j.Logger;
  */
 public final class CatalogueResultHandler implements ResultHandler {
 
-	private static final Logger LOG = Logger
-			.getLogger(CatalogueResultHandler.class);
+	private static final Logger LOG = Logger.getLogger(CatalogueResultHandler.class);
+    
+    private final CatalogueResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public CatalogueResultHandler(final ResultHandlerConfig config){
+        this.config = (CatalogueResultHandlerConfig)config;
+    }
 
-	/**
-	 * Handle the search result.
-	 *
-	 * @param cxt
-	 *            the context in which the resulthandler is executed in.
-	 * @param parameters
-	 *            sent to the resulthandler.
+	/** {@inherit}
 	 */
 	public void handleResult(final Context cxt, final DataModel datamodel) {
+        
 		LOG.info("Starter Catalogue ResultHandler.");
 
 		final SiteConfiguration siteConf = datamodel.getSite().getSiteConfiguration();
 
-		String url = (String) siteConf.getProperties().get(
-				"alfa_remote_service_url");
+		final String url = (String) siteConf.getProperties().get("alfa_remote_service_url");
 
-                String jndi = (String) siteConf.getProperties().get(
-				"alfa_remote_service_jndi_name");
+        final String jndi = (String) siteConf.getProperties().get("alfa_remote_service_jndi_name");
 
-		SearchResult searchResult = cxt.getSearchResult();
+		final SearchResult searchResult = cxt.getSearchResult();
 
                 
 		if (searchResult.getResults().iterator().hasNext()) {
 
-			CatalogueSearchResultItem cat = (CatalogueSearchResultItem) searchResult
-					.getResults().get(0);
+			final CatalogueSearchResultItem cat = (CatalogueSearchResultItem) searchResult.getResults().get(0);
 
-                        String sCompanyId = cat.getField("iypcompanyid");
-			int intCompanyId = -1;
-
-			intCompanyId = Integer.valueOf(sCompanyId);
-
+            final String sCompanyId = cat.getField("iypcompanyid");
+            
+			final int intCompanyId = Integer.valueOf(sCompanyId);
                         
-                        ProductSearchResult internalResult = null;
-                        no.schibstedsok.alfa.external.dto.ProductSearchResult eksternt = null;
-                        
-                        try {
-                            Properties properties = new Properties();
-                            properties.put("java.naming.factory.initial",
-                                            "org.jnp.interfaces.NamingContextFactory");
-                            properties.put("java.naming.factory.url.pkgs",
-                                            "org.jboss.naming:org.jnp.interfaces");
-                            properties.put("java.naming.provider.url", url);
+            ProductSearchResult internalResult = null;
+            no.schibstedsok.alfa.external.dto.ProductSearchResult eksternt = null;
 
-                            LOG.debug("Url: " + url);
-                            LOG.debug("JNDI_NAME: " + jndi);
-                            LOG.debug("CompanyId: " + intCompanyId);
+            try {
+                final Properties properties = new Properties();
+                properties.put("java.naming.factory.initial",
+                                "org.jnp.interfaces.NamingContextFactory");
+                properties.put("java.naming.factory.url.pkgs",
+                                "org.jboss.naming:org.jnp.interfaces");
+                properties.put("java.naming.provider.url", url);
 
-                            InitialContext ctx = new InitialContext(properties);
-                            
-                            // hent ut remoteinterfacet til server side ejbn vi vil kalle
-                            CompanyService service = (CompanyService) ctx.lookup(jndi);
-                            
-                            // kall sl-bean i salesadmin with company id parameter.                            
-                            eksternt = (no.schibstedsok.alfa.external.dto.ProductSearchResult) service
-                                            .getProductDataForCompany(intCompanyId);
-                            
-                        } catch (NamingException ex) {
-                            LOG.error("Jndi-lookup failed, "+ex.getMessage(),ex);
-                        }
+                LOG.debug("Url: " + url);
+                LOG.debug("JNDI_NAME: " + jndi);
+                LOG.debug("CompanyId: " + intCompanyId);
 
-                        
-                        
-                        /**
-                         *  Hent ut alle produkter som er lagt inn på infosiden.
-                         */
-                        internalResult = new ProductSearchResult();
-                        if (eksternt.hasInfoPageProducts()) {
-                                LOG.debug("Fant info page products, hent ut.");
-                                for (no.schibstedsok.alfa.external.dto.ProductResultItem prodItem : eksternt
-                                                .getInfoPageProducts()) {
-                                        ProductResultItem item = new ProductSearchResultItem();
+                final InitialContext ctx = new InitialContext(properties);
 
-                                        if (prodItem.getFields().size() > 0) {
-                                                item.setFields(prodItem.getFields());
-                                                LOG.info("Field: " + prodItem.getFields());
-                                                internalResult.addInfoPageResult(item);
-                                        }
-                                }
-                        } else {
-                            LOG.debug("Firmaet har ingen info page produkter.");
-                        }
+                // hent ut remoteinterfacet til server side ejbn vi vil kalle
+                final CompanyService service = (CompanyService) ctx.lookup(jndi);
 
-                        
-                        
-                        /**
-                         * Hent ut alle produkter som er lagt inn på søkeresultatet.
-                         *
-                         */
-                        if (eksternt.hasListingProducts()) {
-                                LOG.debug("Fant listing page products, hent ut.");
-                                for (no.schibstedsok.alfa.external.dto.ProductResultItem prodItem : eksternt
-                                                .getListingProducts()) {
-                                        ProductResultItem item = new ProductSearchResultItem();
+                // kall sl-bean i salesadmin with company id parameter.                            
+                eksternt = (no.schibstedsok.alfa.external.dto.ProductSearchResult) service
+                                .getProductDataForCompany(intCompanyId);
 
-                                        item.setFields(prodItem.getFields());
-                                        if (prodItem.getFields().size() > 0) {
-                                                LOG.info("Field: " + prodItem.getFields());
-                                                internalResult.addListingResult(item);
-                                        }
+            } catch (NamingException ex) {
+                LOG.error("Jndi-lookup failed, "+ex.getMessage(),ex);
+            }
 
-                                }
-                        } else {
-                                LOG.debug("Firmaet har ingen result page produkter.");
-                        }
-                        cat.addProducts(internalResult);    
+
+
+            /**
+             *  Hent ut alle produkter som er lagt inn på infosiden.
+             */
+            internalResult = new ProductSearchResult();
+            if (eksternt.hasInfoPageProducts()) {
+                LOG.debug("Fant info page products, hent ut.");
+                for (no.schibstedsok.alfa.external.dto.ProductResultItem prodItem : eksternt.getInfoPageProducts()) {
+                    
+                    final ProductResultItem item = new ProductSearchResultItem();
+
+                    if (prodItem.getFields().size() > 0) {
+                        item.setFields(prodItem.getFields());
+                        LOG.info("Field: " + prodItem.getFields());
+                        internalResult.addInfoPageResult(item);
+                    }
+                }
+            } else {
+                LOG.debug("Firmaet har ingen info page produkter.");
+            }
+
+
+
+            /**
+             * Hent ut alle produkter som er lagt inn på søkeresultatet.
+             *
+             */
+            if (eksternt.hasListingProducts()) {
+                LOG.debug("Fant listing page products, hent ut.");
+                for (no.schibstedsok.alfa.external.dto.ProductResultItem prodItem : eksternt.getListingProducts()) {
+                    
+                    final ProductResultItem item = new ProductSearchResultItem();
+
+                    item.setFields(prodItem.getFields());
+                    if (prodItem.getFields().size() > 0) {
+                            LOG.info("Field: " + prodItem.getFields());
+                            internalResult.addListingResult(item);
+                    }
+
+                }
+            } else {
+                    LOG.debug("Firmaet har ingen result page produkter.");
+            }
+            cat.addProducts(internalResult);    
 		}
 	}
 }

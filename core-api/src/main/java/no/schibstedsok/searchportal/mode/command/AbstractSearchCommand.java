@@ -45,6 +45,8 @@ import org.apache.log4j.MDC;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
+import no.schibstedsok.searchportal.result.handler.ResultHandlerFactory;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
@@ -382,7 +384,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /**
      * TODO comment me.
      *
-     * @return
      */
     protected final void performQueryTransformation() {
 
@@ -462,7 +463,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                         : datamodel.getQuery().getString());
 
         // process listed result handlers
-        for (ResultHandler resultHandler : getSearchConfiguration().getResultHandlers()) {
+        for (ResultHandlerConfig resultHandlerConfig : getSearchConfiguration().getResultHandlers()) {
+            
+            final ResultHandler resultHandler = ResultHandlerFactory.getController(resultHandlerConfig);
 
             final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
                     ResultHandler.Context.class,

@@ -7,33 +7,26 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 /**
  *
+ * @version $Id
  */
-public class FieldEscapeHandler implements ResultHandler {
-
-    private String sourceField;
-    private String targetField;
-
-    public String getSourceField() {
-        return sourceField;
+public final class FieldEscapeHandler implements ResultHandler {
+    
+    private final FieldEscapeResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public FieldEscapeHandler(final ResultHandlerConfig config){
+        this.config = (FieldEscapeResultHandlerConfig)config;
     }
 
-    public void setSourceField(final String sourceField) {
-        this.sourceField = sourceField;
-    }
-
-    public String getTargetField() {
-        return targetField;
-    }
-
-    public void setTargetField(final String targetField) {
-        this.targetField = targetField;
-    }
-
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
-            final String value = item.getField(sourceField);
-            item.addField(targetField, StringEscapeUtils.escapeJavaScript(value));
+            final String value = item.getField(config.getSourceField());
+            item.addField(config.getTargetField(), StringEscapeUtils.escapeJavaScript(value));
         }
     }
 }

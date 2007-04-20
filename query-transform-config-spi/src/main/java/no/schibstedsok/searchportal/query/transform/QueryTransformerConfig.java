@@ -20,5 +20,5 @@ public interface QueryTransformerConfig {
      * @param element 
      * @return 
      */
-    AbstractQueryTransformerConfig readQueryTransformer(Element element);
+    QueryTransformerConfig readQueryTransformer(Element element);
 }

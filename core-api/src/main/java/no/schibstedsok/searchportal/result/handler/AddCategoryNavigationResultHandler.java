@@ -19,16 +19,36 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AddCategoryNavigationResultHandler implements ResultHandler {
+/**
+ * 
+ * @author 
+ * @version $Id$
+ */
+public final class AddCategoryNavigationResultHandler implements ResultHandler {
+    
     private static final String CMD_ELEMENT_CATEGORY = "category";
     private static final String CMD_ATTR_DISPLAY_NAME = "display-name";
     private static final String CMD_ATTR_ID = "id";
 
     private static final Logger LOG = Logger.getLogger(AddCategoryNavigationResultHandler.class);
     private static List<Category> categoryList;
-    private String categoriesXml = "categories.xml";
-    private String categoryFields;
 
+    private final AddCategoryNavigationResultHandlerConfig config;
+
+    /**
+     *
+     * @param config
+     */
+    public AddCategoryNavigationResultHandler(final ResultHandlerConfig config){
+        this.config = (AddCategoryNavigationResultHandlerConfig) config;
+    }
+    
+
+    /**
+     * 
+     * @param cxt 
+     * @param datamodel 
+     */
     public void handleResult(Context cxt, DataModel datamodel) {
         try {
             if (cxt.getSearchResult() instanceof FastSearchResult) {
@@ -78,11 +98,16 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
         final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         factory.setValidating(false);
         final DocumentBuilder builder = factory.newDocumentBuilder();
-        DocumentLoader documentLoader = cxt.newDocumentLoader(dataModel.getSite(), categoriesXml, builder);
+        DocumentLoader documentLoader = cxt.newDocumentLoader(dataModel.getSite(), config.getCategoriesXml(), builder);
         documentLoader.abut();
         return documentLoader.getDocument();
     }
 
+    /**
+     * 
+     * @param categoriesElement 
+     * @return 
+     */
     public List<Category> parseCategories(Element categoriesElement) {
         List<Element> categoryElements = getDirectChildren(categoriesElement, CMD_ELEMENT_CATEGORY);
         return parseCategories(categoryElements);
@@ -122,23 +147,7 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
     }
 
     private String[] getCategoryFieldArray() {
-        return StringUtils.split(categoryFields, ',');
-    }
-
-    public String getCategoriesXml() {
-        return categoriesXml;
-    }
-
-    public void setCategoriesXml(String categoriesXml) {
-        this.categoriesXml = categoriesXml;
-    }
-
-    public String getCategoryFields() {
-        return categoryFields;
-    }
-
-    public void setCategoryFields(String categoryFields) {
-        this.categoryFields = categoryFields;
+        return StringUtils.split(config.getCategoryFields(), ',');
     }
 
     private static final class Category {

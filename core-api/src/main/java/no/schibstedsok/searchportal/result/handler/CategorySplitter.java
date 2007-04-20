@@ -6,14 +6,23 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 
 
 /**
- * Created by IntelliJ IDEA.
- * User: itthkjer
- * Date: 24.okt.2005
- * Time: 09:36:39
+ * @author itthkjer
+ * @version $Id$
  */
+public final class CategorySplitter implements ResultHandler {
+    
+    private final CategorySplitterResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public CategorySplitter(final ResultHandlerConfig config){
+        this.config = (CategorySplitterResultHandlerConfig)config;
+    }
 
-public class CategorySplitter implements ResultHandler {
-
+    /** {@inherit}
+     */
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
@@ -22,8 +31,9 @@ public class CategorySplitter implements ResultHandler {
             if (ypbransje != null) {
                 //splits bransje to show categories under YIP page
                 final String[]  split = ypbransje.split("FASTpbFAST");
-                for (int i = 0; i < split.length; i++)
+                for (int i = 0; i < split.length; i++){
                     item.addToMultivaluedField("manyCategories", split[i].trim());
+                }
             }
 
         }

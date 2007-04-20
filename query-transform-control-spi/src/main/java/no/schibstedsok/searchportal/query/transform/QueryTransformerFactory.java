@@ -11,7 +11,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import no.schibstedsok.searchportal.query.transform.AbstractQueryTransformerConfig.Controller;
 
-/**
+/** Obtain a working QueryTransformer from a given QueryTransformerConfig.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>

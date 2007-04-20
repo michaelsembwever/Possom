@@ -19,24 +19,35 @@ import java.util.TimeZone;
  * <p/>
  * <b>Note:</b> The implementation of this depends on that the day modifiers are sorted descending (last date first)
  * <b>Note:</b> This will only work on searchResults that are actually FastSearchResult
+ * 
+ * @version $Id$
  */
-public class AddLastWeekModifierResultHandler implements ResultHandler {
+public final class AddLastWeekModifierResultHandler implements ResultHandler {
+    
     private static final int DAYS_IN_WEEK = 7;
     private static final Logger LOG = Logger.getLogger(AddLastWeekModifierResultHandler.class);
-    private String dayFormat = "yyyy-MM-dd";
-    private String timeZone = "UTC";
-    private String dayModifierKey;
-    private String targetNavigatorField;
+    
+    private final AddLastWeekModifierResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public AddLastWeekModifierResultHandler(final ResultHandlerConfig config){
+        this.config = (AddLastWeekModifierResultHandlerConfig)config;
+    }
 
-    public void handleResult(Context cxt, DataModel datamodel) {
+    /** {@inherit} **/
+    public void handleResult(final Context cxt, final DataModel datamodel) {
+        
         try {
             final SearchResult searchResult = cxt.getSearchResult();
             if (searchResult instanceof FastSearchResult) {
                 int weekCount = 0;
                 final FastSearchResult fastResult = (FastSearchResult) searchResult;
-                final List<Modifier> dayModifiers = fastResult.getModifiers(dayModifierKey);
-                final SimpleDateFormat sdf = new SimpleDateFormat(dayFormat);
-                final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(timeZone));
+                final List<Modifier> dayModifiers = fastResult.getModifiers(config.getDayModifierKey());
+                final SimpleDateFormat sdf = new SimpleDateFormat(config.getDayFormat());
+                final Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(config.getTimeZone()));
                 calendar.add(Calendar.DAY_OF_YEAR, -(DAYS_IN_WEEK + 1));
 
                 // Going through day modifiers and counting
@@ -56,46 +67,16 @@ public class AddLastWeekModifierResultHandler implements ResultHandler {
                 // Creating the new modifier
                 calendar.add(Calendar.DAY_OF_YEAR, 1);
                 String fromDate = sdf.format(calendar.getTime());
-                LOG.debug("Creating modifier. Adding at " + targetNavigatorField + ", value=" + fromDate);
+                LOG.debug("Creating modifier. Adding at " + config.getTargetNavigatorField() + ", value=" + fromDate);
                 Modifier newModifier = new Modifier(fromDate, weekCount, null);
-                fastResult.addModifier(targetNavigatorField, newModifier);
+                fastResult.addModifier(config.getTargetNavigatorField(), newModifier);
             } else {
-                LOG.error("Can not use " + AddLastWeekModifierResultHandler.class.getName() + " on a generic searchResult. Must be a " + FastSearchResult.class.getName());
+                LOG.error("Can not use " + AddLastWeekModifierResultHandler.class.getName() 
+                        + " on a generic searchResult. Must be a " + FastSearchResult.class.getName());
             }
         } catch (ParseException e) {
-            LOG.error("Could not parse navigator. Expected format is '" + dayFormat + "'", e);
+            LOG.error("Could not parse navigator. Expected format is '" + config.getDayFormat() + "'", e);
         }
     }
 
-    public String getDayFormat() {
-        return dayFormat;
-    }
-
-    public void setDayFormat(String dayFormat) {
-        this.dayFormat = dayFormat;
-    }
-
-    public String getDayModifierKey() {
-        return dayModifierKey;
-    }
-
-    public void setDayModifierKey(String dayModifierKey) {
-        this.dayModifierKey = dayModifierKey;
-    }
-
-    public String getTargetNavigatorField() {
-        return targetNavigatorField;
-    }
-
-    public void setTargetNavigatorField(String targetNavigatorField) {
-        this.targetNavigatorField = targetNavigatorField;
-    }
-
-    public String getTimeZone() {
-        return timeZone;
-    }
-
-    public void setTimeZone(String timeZone) {
-        this.timeZone = timeZone;
-    }
 }

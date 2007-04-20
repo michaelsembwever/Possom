@@ -20,26 +20,28 @@ import java.util.TimeZone;
 
 /** Calculate Age.
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class AgeCalculatorResultHandler implements ResultHandler {
 
+    private static final Logger LOG = Logger.getLogger(AgeCalculatorResultHandler.class);
     private static final String FAST_DATE_FMT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-    private String targetField;
-    private String sourceField;
-    private String recursiveField;
-    private String dateFormat;
-    private Boolean asDate = Boolean.FALSE;
-    private String ageMessageFormat;
-
-    private static final Logger LOG = Logger.getLogger(AgeCalculatorResultHandler.class);
+    private final AgeCalculatorResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public AgeCalculatorResultHandler(final ResultHandlerConfig config){
+        this.config = (AgeCalculatorResultHandlerConfig)config;
+    }
 
     /** @inherit **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        final String fmt = dateFormat != null ? dateFormat : FAST_DATE_FMT;
-        final String ageFormatKey = ageMessageFormat != null ? ageMessageFormat : "age";
+        final String fmt = /*dateFormat != null ? dateFormat :*/ FAST_DATE_FMT;
+        final String ageFormatKey = /*ageMessageFormat != null ? ageMessageFormat :*/ "age";
         final DateFormat df = new SimpleDateFormat(fmt);
 
         // Zulu time is UTC. But java doesn't know that.
@@ -49,10 +51,16 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
         setAgeForAll(cxt.getSearchResult(), df, datamodel, cxt, ageFormatKey);
     }
 
-    private void setAgeForAll(SearchResult searchResult, DateFormat df, final DataModel datamodel, Context cxt, String ageFormatKey) {
+    private void setAgeForAll(
+            final SearchResult searchResult, 
+            final DateFormat df, 
+            final DataModel datamodel, 
+            final Context cxt, 
+            final String ageFormatKey) {
+        
         for (final SearchResultItem item : searchResult.getResults()) {
-            if (recursiveField != null) {
-                SearchResult subResult = item.getNestedSearchResult(recursiveField);
+            if (config.getRecursiveField() != null) {
+                SearchResult subResult = item.getNestedSearchResult(config.getRecursiveField());
                 if (subResult != null) {
                     setAgeForAll(subResult, df, datamodel, cxt, ageFormatKey);
                 }
@@ -61,8 +69,14 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
         }
     }
 
-    private void setAge(SearchResultItem item, DateFormat df, final DataModel datamodel, Context cxt, String ageFormatKey) {
-        final String docTime = item.getField(sourceField);
+    private void setAge(
+            final SearchResultItem item, 
+            final DateFormat df, 
+            final DataModel datamodel, 
+            final Context cxt, 
+            final String ageFormatKey) {
+        
+        final String docTime = item.getField(config.getSourceField());
 
         if (docTime != null) {
 
@@ -98,7 +112,8 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                         }));
 
                 //older than 3 days or source is Mediearkivet, show short date format.
-                if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || asDate.booleanValue()){
+                if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || config.getAsDate()){
+                    
                     final DateFormat shortFmt = DateFormat.getDateInstance(
                             DateFormat.SHORT,
                             datamodel.getSite().getSite().getLocale());
@@ -125,42 +140,15 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                 LOG.trace("Resulting age string is " + ageString);
 
                 if (stamp > 0) {
-                    item.addField(getTargetField(), ageString);
+                    item.addField(config.getTargetField(), ageString);
                 }
 
             } catch (ParseException e) {
                 LOG.warn("Unparsable date: " + docTime);
             }
         } else {
-            LOG.warn(sourceField + " is null");
+            LOG.warn(config.getSourceField() + " is null");
         }
     }
 
-    public String getRecursiveField() {
-        return recursiveField;
-    }
-
-    public void setRecursiveField(String recursiveField) {
-        this.recursiveField = recursiveField;
-    }
-
-    /** TODO comment me. **/
-    public String getTargetField() {
-        return targetField;
-    }
-
-    /** TODO comment me. **/
-    public void setTargetField(final String targetField) {
-        this.targetField = targetField;
-    }
-
-    /** TODO comment me. **/
-    public void setSourceField(final String string) {
-        sourceField = string;
-    }
-
-    /** TODO comment me. **/
-    public void setAsDate(final Boolean asDate) {
-        this.asDate = asDate;
-    }
 }

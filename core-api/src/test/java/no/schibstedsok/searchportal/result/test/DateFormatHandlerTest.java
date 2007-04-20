@@ -11,6 +11,7 @@ import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.handler.DateFormatHandler;
+import no.schibstedsok.searchportal.result.handler.DateFormatResultHandlerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
@@ -36,13 +37,12 @@ public final class DateFormatHandlerTest extends SiteTestCase {
     private static final String SOURCE_FIELD = "source_field";
     private static final String FIELD_PREFIX = "prefix";
 
-    private final DateFormatHandler rh;
-
+    /**
+     * 
+     * @param testName 
+     */
     public DateFormatHandlerTest(String testName) {
         super(testName);
-
-        rh = new DateFormatHandler();
-        rh.setSourceField(SOURCE_FIELD);
     }
 
     private ResultHandler.Context getResultHandlerContext() throws SiteKeyedFactoryInstantiationException{
@@ -100,8 +100,16 @@ public final class DateFormatHandlerTest extends SiteTestCase {
         return bsri;
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneWithoutPrefix() throws Exception{
+        
+        final DateFormatResultHandlerConfig config = new DateFormatResultHandlerConfig();
+        config.setSourceField(SOURCE_FIELD);
+        final DateFormatHandler rh = new DateFormatHandler(config);
 
         final ResultHandler.Context resultHandlerContext = getResultHandlerContext();
 
@@ -118,13 +126,19 @@ public final class DateFormatHandlerTest extends SiteTestCase {
         assertEquals("12", bsri.getField(Fields.SECOND.name()));
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testOneWithPrefix() throws Exception{
 
         final ResultHandler.Context resultHandlerContext = getResultHandlerContext();
-
-        rh.setFieldPrefix(FIELD_PREFIX);
-        rh.handleResult(resultHandlerContext, null);
+        
+        final DateFormatResultHandlerConfig config = new DateFormatResultHandlerConfig();
+        config.setSourceField(SOURCE_FIELD);
+        config.setFieldPrefix(FIELD_PREFIX);
+        final DateFormatHandler rh = new DateFormatHandler(config);        
 
         assertEquals(1, resultHandlerContext.getSearchResult().getResults().size());
         BasicSearchResultItem bsri = (BasicSearchResultItem) resultHandlerContext.getSearchResult().getResults().get(0);

@@ -1,7 +1,7 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.HashMap;
+
 import java.util.Iterator;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
@@ -9,20 +9,25 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Created by IntelliJ IDEA.
- * User: ssthkjer
- * Date: 20.des.2005
- * Time: 14:37:50
+ * @author ssthkjer
+ * @version $Id$
  */
-public class ImageHelper implements ResultHandler {
-
-    private Map<String,String> fieldMap = new HashMap<String,String>();
-
-    public void addField(final String field, final String as){
-        fieldMap.put(field, as);
+public final class ImageHelper implements ResultHandler {
+    
+    private final ImageHelperResultHandlerConfig config;
+    
+    /**
+     * 
+     * @param config 
+     */
+    public ImageHelper(final ResultHandlerConfig config){
+        this.config = (ImageHelperResultHandlerConfig)config;
     }
-
+    
+    /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
+        
+        final Map<String,String> fieldMap = config.getFieldMap();
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
 
@@ -55,4 +60,5 @@ public class ImageHelper implements ResultHandler {
             }
         }
     }
+    
 }

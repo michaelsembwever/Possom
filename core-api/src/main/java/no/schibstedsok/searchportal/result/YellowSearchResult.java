@@ -23,6 +23,8 @@ import no.schibstedsok.searchportal.view.config.SearchTab;
 
 
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
+import no.schibstedsok.searchportal.result.handler.PhoneNumberChooserResultHandlerConfig;
+import no.schibstedsok.searchportal.result.handler.PhoneNumberFormatterResultHandlerConfig;
 import org.apache.log4j.Logger;
 
 public final class YellowSearchResult extends FastSearchResult {
@@ -214,10 +216,10 @@ public final class YellowSearchResult extends FastSearchResult {
                 }
             };
 
-        final PhoneNumberChooser chooser = new PhoneNumberChooser();
+        final PhoneNumberChooser chooser = new PhoneNumberChooser(new PhoneNumberChooserResultHandlerConfig());
         chooser.handleResult(resultHandlerContext, null);
 
-        final PhoneNumberFormatter formatter = new PhoneNumberFormatter();
+        final PhoneNumberFormatter formatter = new PhoneNumberFormatter(new PhoneNumberFormatterResultHandlerConfig());
         formatter.handleResult(resultHandlerContext, null);
 
         final Iterator pResults = pseudoLocalResult.getResults().iterator();
