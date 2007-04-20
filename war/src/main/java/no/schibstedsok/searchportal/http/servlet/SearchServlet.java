@@ -278,7 +278,11 @@ public final class SearchServlet extends HttpServlet {
                 && request.getParameter("output").equals("savedecorator")) {
             final String userAgent = request.getHeader("User-Agent");
             String showid = request.getParameter("showId");
-            String fileName = ".ics";
+
+            // Changed for default file suffix ".vcs" to ".ics" for all platforms (not only Mac OS X).
+            // Clean this old code after the new version is tested for some time.
+
+            final String fileName = ".ics";
 //            String fileName = ".vcs";
             String charset = "utf-8";
 
