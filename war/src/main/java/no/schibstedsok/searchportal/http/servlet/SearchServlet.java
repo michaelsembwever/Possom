@@ -211,8 +211,9 @@ public final class SearchServlet extends HttpServlet {
             redirect = null != parametersDO.getContextPath() && parametersDO.getContextPath().length() >0
                     ? parametersDO.getContextPath()
                     : "/";
-
-        }else if (null != cParm && ("d".equals(cParm) || "g".equals(cParm) || "cat".equals(cParm) || "catip".equals(cParm)) && !isSitesearch) {
+        } else if (null != cParm
+                && ("d".equals(cParm) || "g".equals(cParm) || "cat".equals(cParm) || "catip".equals(cParm))
+                && !isSitesearch) {
             // Extra check for the Norwegian web search. Search with an empty query string
             // should return the first page.
             if ("cat".equals(cParm) || "catip".equals(cParm)) {
@@ -226,7 +227,7 @@ public final class SearchServlet extends HttpServlet {
             }
         }
 
-        if( null != redirect ){
+        if (null != redirect) {
             LOG.info("doGet(): Empty Query String redirect=" + redirect);
             response.sendRedirect(redirect);
         }
@@ -237,7 +238,7 @@ public final class SearchServlet extends HttpServlet {
             final String reload,
             final SiteContext genericCxt){
 
-        if( null != reload && reload.length() >0 ){
+        if (null != reload && reload.length() > 0){
             try{
                 final ReloadArg arg = ReloadArg.valueOf(reload.toUpperCase());
                 FactoryReloads.performReloads(genericCxt, arg);
@@ -276,16 +277,21 @@ public final class SearchServlet extends HttpServlet {
         } else if (request.getParameter("output") != null
                 && request.getParameter("output").equals("savedecorator")) {
             String showid = request.getParameter("showId");
-            String userAgent = request.getHeader("User-Agent");
-            String fileName = ".ics";
-//            String fileName = ".vcs";
-            String charset = "utf-8";
 
-            if (userAgent.indexOf("Windows") != -1) {
+
+//            String userAgent = request.getHeader("User-Agent");
+//            String fileName = ".vcs";
+//            String charset = "utf-8";
+//
+//            if (userAgent.indexOf("Windows") != -1) {
 //                charset = "iso-8859-1";
-            } else if(userAgent.indexOf("Mac OS X") != -1) {
+//            } else if (userAgent.indexOf("Mac OS X") != -1) {
 //                fileName = ".ics";
-            }
+//            }
+
+            final String fileName = ".ics";
+            final String charset = "utf-8";
+
 
             if (showid == null) {
                 showid = "";
@@ -293,25 +299,30 @@ public final class SearchServlet extends HttpServlet {
 
             response.setContentType("text/calendar; charset=" + charset);
             response.setHeader("Content-Disposition","attachment;filename=sesam-tvsok-" + showid + fileName);
-        } else if (request.getParameter ("output") != null && request.getParameter ("output").equals ("vcarddecorator")) {
-            String showid = request.getParameter ("showId");
-            String userAgent = request.getHeader ("User-Agent");
-            String fileName = ".vcf";
+        } else if (request.getParameter("output") != null && request.getParameter("output").equals("vcarddecorator")) {
+            final String userAgent = request.getHeader("User-Agent");
+            String showid = request.getParameter("showId");
             String charset = "utf-8";
-            if(userAgent.indexOf ("Windows") != -1)
+
+            if (userAgent.indexOf("Windows") != -1) {
                 charset = "iso-8859-1";
-            if(showid == null)
-                showid="";
-            response.setCharacterEncoding (charset);
-            response.setContentType ("text/x-vcard; charset=" +charset);
-            response.setHeader ("Content-Disposition","attachment;filename=vcard-" +showid + ".vcf");
-        } else if (request.getParameter ("output") != null
-                && (request.getParameter ("output").equals ("opensearch") || request.getParameter ("output").equals ("xml"))) {
-            String charset = "utf-8";
-            response.setCharacterEncoding (charset);
-            response.setContentType ("text/xml; charset=utf-8");
+            }
+            if (showid == null) {
+                showid = "";
+            }
+
+            response.setCharacterEncoding(charset);
+            response.setContentType("text/x-vcard; charset=" + charset);
+            response.setHeader("Content-Disposition","attachment;filename=vcard-" + showid + ".vcf");
+        } else if (request.getParameter("output") != null
+                && (request.getParameter("output").equals("opensearch")
+                        || request.getParameter("output").equals("xml"))) {
+            final String charset = "utf-8";
+            response.setCharacterEncoding(charset);
+            response.setContentType("text/xml; charset=" + charset);
         } else {
-            response.setContentType ("text/html; charset=utf-8");
+            final String charset = "utf-8";
+            response.setContentType("text/html; charset=" + charset);
         }
     }
 
@@ -323,7 +334,7 @@ public final class SearchServlet extends HttpServlet {
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
 
-        if (null == parametersDO.getValue("offset") || 0 == parametersDO.getValue("offset").getString().length() ) {
+        if (null == parametersDO.getValue("offset") || 0 == parametersDO.getValue("offset").getString().length()) {
             request.setAttribute("offset", "0"); // TODO remove, access through datamodel instead.
         }
 
