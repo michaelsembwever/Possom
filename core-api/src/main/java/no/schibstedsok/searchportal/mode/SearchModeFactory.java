@@ -1,6 +1,7 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode;
 
+
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
@@ -267,7 +268,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
                 mode.setId(id);
                 mode.setExecutor(parseExecutor(modeE.getAttribute("executor"),
-                        inherit != null ? inherit.getExecutor() : new SequentialSearchCommandExecutor()));
+                        inherit != null ? inherit.getExecutor() : SearchMode.SearchCommandExecutorConfig.SEQUENTIAL));
+                
                 fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
 
                 // setup new commands list for this mode
@@ -307,12 +309,15 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     }
 
-    private static SearchCommandExecutor parseExecutor(final String name, final SearchCommandExecutor def) {
+    private static SearchMode.SearchCommandExecutorConfig parseExecutor(
+            final String name, 
+            final SearchMode.SearchCommandExecutorConfig def) {
 
-        if ("parallel".equalsIgnoreCase(name)) {
-            return new ParallelSearchCommandExecutor();
-        } else if ("sequential".equalsIgnoreCase(name)) {
-            return new SequentialSearchCommandExecutor();
+        try{
+            return SearchMode.SearchCommandExecutorConfig.valueOf(name.toUpperCase());
+            
+        }catch(IllegalArgumentException iae){
+            LOG.error("Unparsable executor " + name, iae);
         }
         return def;
     }

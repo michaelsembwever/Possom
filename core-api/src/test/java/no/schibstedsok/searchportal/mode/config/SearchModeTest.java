@@ -29,13 +29,14 @@ import org.testng.annotations.Test;
 public final class SearchModeTest extends DataModelTestCase {
 
     /** Test the FastSearchConfiguration.
-     **/
+     ** @throws java.lang.Exception 
+     */
     @Test
     public void testFastSearchConfiguration() throws Exception {
 
         final SearchMode mode = new SearchMode();
 
-        mode.setExecutor(new ParallelSearchCommandExecutor());
+        mode.setExecutor(SearchMode.SearchCommandExecutorConfig.PARALLEL);
 
         final FastSearchConfiguration webCrawl = new FastSearchConfiguration();
 
@@ -96,14 +97,15 @@ public final class SearchModeTest extends DataModelTestCase {
     }
 
     /** Test the OverturePPCSearchConfiguration.
-     **/
+     ** @throws java.lang.Exception 
+     */
     @Test
     public void testOverturePPCConfiguration() throws Exception {
 
         final String query = "linux";
 
         final SearchMode mode = new SearchMode();
-        mode.setExecutor(new ParallelSearchCommandExecutor());
+        mode.setExecutor(SearchMode.SearchCommandExecutorConfig.PARALLEL);
         final OverturePPCSearchConfiguration searchConfiguration = new OverturePPCSearchConfiguration();
         searchConfiguration.setName("test-overture-ppc-command");
         searchConfiguration.setResultsToReturn(3);

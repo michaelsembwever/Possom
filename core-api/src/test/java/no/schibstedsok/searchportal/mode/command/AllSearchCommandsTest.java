@@ -16,6 +16,7 @@ import java.util.concurrent.Future;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
+import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutorFactory;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
@@ -37,42 +38,70 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
     private static final String DEBUG_EXECUTE_COMMAND = "Testing command ";
 
     
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testAllNorskNettsokSearchCommands() throws Exception{
         executeTestOfQuery("linux", "d");
     }
 
     
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testAllInternasjonalNettsokSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "g");
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testAllWhitepagesSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "w");
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testAllYellowpagesSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "y");
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testAllNyheterSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "m");
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testAllBilderSearchCommands() throws Exception{
 
         executeTestOfQuery("linux", "p");
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testAllTvSearchCommands() throws Exception{
         executeTestOfQuery("linux", "t");
@@ -104,7 +133,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         }
         try{
 
-            rqCxt.getSearchMode().getExecutor()
+            SearchCommandExecutorFactory.getController(rqCxt.getSearchMode().getExecutor())
                     .invokeAll(commands, new HashMap<String, Future<SearchResult>>(), Integer.MAX_VALUE);
             
         } catch (InterruptedException ex) {

@@ -40,6 +40,7 @@ import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutorFactory;
 import no.schibstedsok.searchportal.query.parser.AbstractQueryParserContext;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
@@ -113,9 +114,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     /**
      * Create a new Running Query instance.
      *
-     * @param mode
-     * @param queryStr
-     * @param parameters
+     * @param cxt 
+     * @param query 
      */
     public RunningQueryImpl(
             final Context cxt,
@@ -361,7 +361,10 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             /* Entering CS */
             try {
                 resultsLock.writeLock().lock();
-                context.getSearchMode().getExecutor().invokeAll(commands, results, TIMEOUT);
+                
+                SearchCommandExecutorFactory.getController(context.getSearchMode().getExecutor())
+                        .invokeAll(commands, results, TIMEOUT);
+                
             } finally {
                 /* Leaving CS */
                 resultsLock.writeLock().unlock();

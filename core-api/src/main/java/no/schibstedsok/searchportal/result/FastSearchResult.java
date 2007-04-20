@@ -15,7 +15,7 @@ import no.schibstedsok.searchportal.result.Navigator;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public class FastSearchResult extends BasicSearchResult implements SearchResult {
 
@@ -23,18 +23,36 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
     private Map currentNavigators = new HashMap();
     private List relevantQueries = new ArrayList();
 
+    /**
+     * 
+     * @param command 
+     */
     public FastSearchResult(final SearchCommand command) {
         super(command);
     }
 
+    /**
+     * 
+     * @param navigatorName 
+     * @return 
+     */
     public Navigator getNavigatedTo(final String navigatorName) {
         return ((FastSearchCommand) getSearchCommand()).getNavigatedTo(navigatorName);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public Map<String,Navigator> getNavigatedTo() {
         return ((FastSearchCommand) getSearchCommand()).getNavigatedTo();
     }
     
+    /**
+     * 
+     * @param navigatorName 
+     * @param modifier 
+     */
     public void addModifier(final String navigatorName, final Modifier modifier) {
 
         List modifiers;
@@ -50,10 +68,21 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
     }
 
 
+    /**
+     * 
+     * @param navigatorName 
+     * @return 
+     */
     public List<Modifier> getModifiers(final String navigatorName) {
         return (List<Modifier>) navigators.get(navigatorName);
     }
 
+    /**
+     * 
+     * @param navigatorName 
+     * @param modifierName 
+     * @return 
+     */
     public Modifier getModifier(final String navigatorName, final String modifierName) {
         final List modifiers = getModifiers(navigatorName);
 
@@ -69,6 +98,12 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         return null;
     }
 
+    /**
+     * 
+     * @param navigatorName 
+     * @param modifierName 
+     * @return 
+     */
     public int getModifierCount(final String navigatorName, final String modifierName) {
         final Modifier modifier = getModifier(navigatorName, modifierName);
 
@@ -79,14 +114,28 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         }
     }
 
+    /**
+     * 
+     * @param currentNavigator 
+     * @param navKey 
+     */
     public void addCurrentNavigator(final Navigator currentNavigator, final String navKey) {
         currentNavigators.put(navKey, currentNavigator);
     }
 
+    /**
+     * 
+     * @param navigatorName 
+     * @return 
+     */
     public Navigator getCurrentNavigator(final String navigatorName) {
         return (Navigator) currentNavigators.get(navigatorName);
     }
 
+    /**
+     * 
+     * @param query 
+     */
     public void addRelevantQuery(final RelevantQuery query) {
         relevantQueries.add(query);
     }

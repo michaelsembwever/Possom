@@ -37,7 +37,6 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
 
     /**
      * @param cxt       The context to execute in.
-     * @param dataModel The dataModel to use.
      */
     public NewsAggregatorSearchCommand(final Context cxt) {
         super(cxt);

@@ -1,6 +1,7 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -23,7 +24,6 @@ import no.schibstedsok.searchportal.fast.searchengine.test.MockupFastSearchEngin
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;

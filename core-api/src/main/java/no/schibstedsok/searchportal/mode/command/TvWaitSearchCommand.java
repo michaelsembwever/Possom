@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 /**
  *
  * @author andersjj
+ * @version $Id$
  */
 public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
 

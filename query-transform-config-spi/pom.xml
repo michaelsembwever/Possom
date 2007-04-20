@@ -49,11 +49,6 @@
 
         <dependency>
             <groupId>schibstedsok</groupId>
-            <artifactId>search-portal-site-spi</artifactId>
-            <version>${version}</version>
-        </dependency>
-        <dependency>
-            <groupId>schibstedsok</groupId>
             <artifactId>search-portal-query-api</artifactId>
             <version>${version}</version>
         </dependency>

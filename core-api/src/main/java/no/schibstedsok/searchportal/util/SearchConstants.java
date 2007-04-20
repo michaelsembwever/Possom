@@ -39,7 +39,6 @@ public final class SearchConstants {
 
     public static final String DEFAULT_LANGUAGE = "no";
     public static final String LANGUAGE_ENGLISH = "en";
-    public static final int DEFAULT_DOCUMENTS_TO_RETURN = 10;
 
     public static final String REQUEST_KEYPARAM_QUERY = "q";
     public static final String REQUEST_KEYPARAM_LANGUAGE = "lan";

@@ -2,7 +2,6 @@
 package no.schibstedsok.searchportal.result.handler;
 
 import no.schibstedsok.searchportal.result.Navigator;
-import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;

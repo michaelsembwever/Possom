@@ -8,6 +8,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.ConfigurationException;
 import no.fast.ds.search.FastSearchEngineFactory;

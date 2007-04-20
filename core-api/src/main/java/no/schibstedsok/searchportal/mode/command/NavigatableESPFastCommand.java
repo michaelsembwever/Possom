@@ -8,6 +8,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+
 import com.fastsearch.esp.search.result.IModifier;
 import com.fastsearch.esp.search.result.INavigator;
 import com.fastsearch.esp.search.result.IQueryResult;
