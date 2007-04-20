@@ -70,6 +70,8 @@ import org.apache.log4j.Logger;
  */
 public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
+    private boolean sortBy=false;
+    
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
 
@@ -292,12 +294,12 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         // add the who and where fields (preferred over using them out of the junkyard)
         result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         result.addField(PARAMETER_NAME_WHERE, whereString);
-
+        
         // XXX deprecated approach
         getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         getParameters().put(PARAMETER_NAME_WHERE, whereString);
 
-
+        getParameters().put("userSortBy",userSortBy);
         return result;
     }
 
@@ -364,7 +366,12 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         String sortBy = super.getSortBy();
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
+        }else{
+            if(this.sortBy) sortBy=SORTBY_COMPANYNAME;
+            else sortBy=SORTBY_KEYWORD;
         }
+        
+
         return sortBy;
     }
 
@@ -405,8 +412,15 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         final boolean hasNotWordCharacters = m.find();
 
-        if(hasNotWordCharacters){
 
+        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)
+           && (userSortBy==null || !userSortBy.equalsIgnoreCase("name"))){
+            userSortBy = "name";
+        }
+            
+            
+
+        if(hasNotWordCharacters){
             appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
 
         }else if(!getTransformedTerms().get(clause).equals(BLANK)) {
