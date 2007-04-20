@@ -276,12 +276,13 @@ public final class SearchServlet extends HttpServlet {
         } else if (request.getParameter ("output") != null && request.getParameter ("output").equals ("savedecorator")) {
             String showid = request.getParameter ("showId");
             String userAgent = request.getHeader ("User-Agent");
-            String fileName = ".vcs";
+            String fileName = ".ics";
+//            String fileName = ".vcs";
             String charset = "utf-8";
             if(userAgent.indexOf ("Windows") != -1){
-                charset = "iso-8859-1";
+//                charset = "iso-8859-1";
             }else if(userAgent.indexOf ("Mac OS X") != -1)
-                fileName=".ics";
+//                fileName=".ics";
             if(showid == null)
                 showid="";
             response.setContentType ("text/calendar; charset=" +charset);
