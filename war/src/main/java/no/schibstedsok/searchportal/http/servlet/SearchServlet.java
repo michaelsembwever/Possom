@@ -284,10 +284,10 @@ public final class SearchServlet extends HttpServlet {
 
             final String fileName = ".ics";
 //            String fileName = ".vcs";
-            String charset = "utf-8";
+            final String charset = "utf-8";
 
             if (userAgent.indexOf("Windows") != -1) {
-                charset = "iso-8859-1";
+//                charset = "iso-8859-1";
             } else if (userAgent.indexOf("Mac OS X") != -1) {
 //                fileName = ".ics";
             }
