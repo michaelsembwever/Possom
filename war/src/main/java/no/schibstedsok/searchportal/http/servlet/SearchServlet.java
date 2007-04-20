@@ -69,7 +69,7 @@ public final class SearchServlet extends HttpServlet {
     //
 
     // Static --------------------------------------------------------
-    
+
     static{
 
         // when the root logger is set to DEBUG do not limit connection times
@@ -218,7 +218,7 @@ public final class SearchServlet extends HttpServlet {
             if ("cat".equals(cParm) || "catip".equals(cParm)) {
                 if (wParam.trim().length() == 0 && qParam.trim().length() == 0) {
                     redirect = "/";
-                }                
+                }
             } else {
                 if (qParam.trim().length() == 0) {
                     redirect = "/";
@@ -230,7 +230,7 @@ public final class SearchServlet extends HttpServlet {
             LOG.info("doGet(): Empty Query String redirect=" + redirect);
             response.sendRedirect(redirect);
         }
-        return null != redirect;    
+        return null != redirect;
     }
 
     private static void performFactoryReloads(
@@ -273,21 +273,26 @@ public final class SearchServlet extends HttpServlet {
             } catch (IOException ex) {
                 LOG.error(ex.getMessage(), ex);
             }
-        } else if (request.getParameter ("output") != null && request.getParameter ("output").equals ("savedecorator")) {
-            String showid = request.getParameter ("showId");
-            String userAgent = request.getHeader ("User-Agent");
+        } else if (request.getParameter("output") != null
+                && request.getParameter("output").equals("savedecorator")) {
+            String showid = request.getParameter("showId");
+            String userAgent = request.getHeader("User-Agent");
             String fileName = ".ics";
 //            String fileName = ".vcs";
             String charset = "utf-8";
-            if(userAgent.indexOf ("Windows") != -1){
+
+            if (userAgent.indexOf("Windows") != -1) {
 //                charset = "iso-8859-1";
-            }else if(userAgent.indexOf ("Mac OS X") != -1)
-//                fileName=".ics";
-            if(showid == null)
-                showid="";
-            response.setContentType ("text/calendar; charset=" +charset);
-            response.setHeader ("Content-Disposition","attachment;filename=sesam-tvsok-" +showid +fileName	);
-            
+            } else if(userAgent.indexOf("Mac OS X") != -1) {
+//                fileName = ".ics";
+            }
+
+            if (showid == null) {
+                showid = "";
+            }
+
+            response.setContentType("text/calendar; charset=" + charset);
+            response.setHeader("Content-Disposition","attachment;filename=sesam-tvsok-" + showid + fileName);
         } else if (request.getParameter ("output") != null && request.getParameter ("output").equals ("vcarddecorator")) {
             String showid = request.getParameter ("showId");
             String userAgent = request.getHeader ("User-Agent");
@@ -325,7 +330,7 @@ public final class SearchServlet extends HttpServlet {
          // TODO remove next three, access through datamodel instead.
         request.setAttribute("tradedoubler", new TradeDoubler(request));
         request.setAttribute("text",TextMessages.valueOf(ContextWrapper.wrap(
-                TextMessages.Context.class, 
+                TextMessages.Context.class,
                 rqCxt,new SiteContext(){
                 public Site getSite() {
                     return datamodel.getSite().getSite();
@@ -417,7 +422,7 @@ public final class SearchServlet extends HttpServlet {
             LOG.error(ERR_MISSING_MODE + searchTab.getMode());
             throw new UnsupportedOperationException(ERR_MISSING_MODE + searchTab.getMode());
         }
-        
+
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final StringDataObject output = datamodel.getParameters().getValue("output");
 
@@ -440,7 +445,7 @@ public final class SearchServlet extends HttpServlet {
         updateAttributes(request, rqCxt);
 
         if(null == output || !"opensearch".equalsIgnoreCase(output.getString())){
-            
+
             try {
 
                 final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
