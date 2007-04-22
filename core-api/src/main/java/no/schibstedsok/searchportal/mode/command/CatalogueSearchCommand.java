@@ -409,7 +409,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
             appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
 
-        }else if(!getTransformedTerms().get(clause).equals(BLANK)) {
+        }else if(!BLANK.equals(getTransformedTerms().get(clause))) {
 
             final Query query = context.getDataModel().getQuery().getQuery();
 
@@ -474,7 +474,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     protected void visitImpl(final PhraseClause clause) {
 
-        if (!getTransformedTerms().get(clause).equals(BLANK)) {
+        if (!BLANK.equals(getTransformedTerms().get(clause))) {
 
             appendToQueryRepresentation(createPhraseQuerySyntax(getTransformedTerms().get(clause)));
         }
