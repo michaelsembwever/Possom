@@ -32,7 +32,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id: URLResourceLoader.java,v 1.3 2004/03/19 17:13:40 dlr Exp $
  */
-public final class URLVelocityTemplateLoader extends ResourceLoader {
+public class URLVelocityTemplateLoader extends ResourceLoader {
     
     public interface Context{
         boolean doesUrlExist(final String url, final String hostHeader);
@@ -87,7 +87,7 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
      * @throws ResourceNotFoundException if template not found
      *         in the file template path.
      */
-    public /*synchronized*/ InputStream getResourceStream(final String url) throws ResourceNotFoundException{
+     public /*synchronized*/ InputStream getResourceStream(final String url) throws ResourceNotFoundException{
 
         LOG.trace("start getResourceStream( " + url + " )");
         try{
