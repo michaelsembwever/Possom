@@ -818,7 +818,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         protected void visitImpl(final LeafClause clause) {
 
-            if(null != map.get(clause)){
+            if(null == map.get(clause)){
                 if (null != clause.getField()){
                     if(null == getFieldFilter(clause)){
                         
