@@ -73,7 +73,7 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
             if (clusterId == null) {
                 return createClusteredSearchResult(config, getOffset(), result);
             } else {
-                return createSingleClusterResults(config, result);
+                return createSingleClusterResults(config, getOffset(), result);
             }
         } catch (IllegalType e) {
             LOG.error("Could not convert result", e);
@@ -87,19 +87,23 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
     }
 
 
-    private FastSearchResult createSingleClusterResults(ClusteringESPFastConfiguration config, IQueryResult result) throws IllegalType, EmptyValueException {
+    private FastSearchResult createSingleClusterResults(ClusteringESPFastConfiguration config, int offset, IQueryResult result) throws IllegalType, EmptyValueException {
         final String nestedResultsField = config.getNestedResultsField();
         final FastSearchResult searchResult = new FastSearchResult(this);
         final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
         searchResult.setHitCount(result.getDocCount());
-        for (int i = 0; i < result.getDocCount(); i++) {
+        int collectedHits = 0;
+        for (int i = offset; i < result.getDocCount(); i++) {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);
                 final String collapseId = document.getSummaryField("collapseid").getStringValue();
                 SearchResultItem parentResult = collapseMap.get(collapseId);
                 if (parentResult == null) {
-                    parentResult = addResult(config, searchResult, document);
-                    collapseMap.put(collapseId, parentResult);
+                    if (collapseMap.size() < config.getResultsToReturn()) {
+                        parentResult = addResult(config, searchResult, document);
+                        collapseMap.put(collapseId, parentResult);
+                        collectedHits++;
+                    }
                 } else {
                     SearchResult nestedResult = parentResult.getNestedSearchResult(nestedResultsField);
                     if (nestedResult == null) {
@@ -109,12 +113,16 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
                     }
                     addResult(config, nestedResult, document);
                     nestedResult.setHitCount(nestedResult.getHitCount() + 1);
+                    collectedHits++;
                 }
             } catch (NullPointerException e) {
                 // The doc count is not 100% accurate.
                 LOG.debug("Error finding document ", e);
                 break;
             }
+        }
+        if (offset + collectedHits < result.getDocCount()) {
+            searchResult.addField(ClusteringESPFastCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + collectedHits));
         }
         return searchResult;
     }
