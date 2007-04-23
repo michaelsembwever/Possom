@@ -70,7 +70,10 @@ import org.apache.log4j.Logger;
  */
 public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
-    private boolean sortBy=false;
+    /** Yet another field that contain the result from text analysis and
+     *  which rank profile to use if there are keyword terms or company name terms.
+     */
+    private String analysisSortBy;
     
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
@@ -299,7 +302,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         getParameters().put(PARAMETER_NAME_WHERE, whereString);
 
-        getParameters().put("userSortBy",userSortBy);
+        getParameters().put("analysisSortBy",analysisSortBy);
         return result;
     }
 
@@ -358,7 +361,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * which rank-profile to sort by.
      *
      * The sorting may be altered if user has supplied the userSortBy
-     * parameter.
+     * parameter or if user has not supplied any sorting, the text analysis
+     * overides the specified sorting from modes.xml
+     * 
      * @return the sorting to be used when executing the query.
      */
     @Override
@@ -366,10 +371,10 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         String sortBy = super.getSortBy();
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
-        }else{
-            if(this.sortBy) sortBy=SORTBY_COMPANYNAME;
-            else sortBy=SORTBY_KEYWORD;
         }
+        
+        if(userSortBy==null && analysisSortBy!=null)
+            sortBy = analysisSortBy;
         
 
         return sortBy;
@@ -413,11 +418,13 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         final boolean hasNotWordCharacters = m.find();
 
 
-        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)
-           && (userSortBy==null || !userSortBy.equalsIgnoreCase("name"))){
-            userSortBy = "name";
+        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD)
+                && analysisSortBy==null){
+            analysisSortBy = SORTBY_KEYWORD;
+        }else if(clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)
+                && analysisSortBy==null){
+             analysisSortBy = SORTBY_COMPANYNAME;
         }
-            
             
 
         if(hasNotWordCharacters){
