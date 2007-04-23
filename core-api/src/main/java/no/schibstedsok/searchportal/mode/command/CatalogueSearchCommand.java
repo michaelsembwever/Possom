@@ -141,14 +141,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         // user may specify sorting in two different ways from the GUI,
         // by company name or by keyword. Default is by keyword.
-        if (getSingleParameter("userSortBy") != null
-                && getSingleParameter("userSortBy").length() > 0
-                && getSingleParameter("userSortBy").equals("name")) {
-
-            userSortBy = "name";
-        } else {
-            userSortBy = "kw";
-        }
+        userSortBy = "name".equals(getSingleParameter("userSortBy"))
+                ? "name"
+                : "kw";
     }
 
 
