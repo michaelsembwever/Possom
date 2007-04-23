@@ -87,10 +87,13 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             final ReconstructedQuery queryGeo
                     = createQuery(getSingleParameter(whereParameter));
 
-            queryGeoString = queryGeo.getQuery().getQueryString();
+            queryGeoString = queryGeo.getQuery().getQueryString().replaceAll("\\W", "").toLowerCase();
         } else {
             queryGeoString = DOMESTIC_SEARCH;
-        }
+        }        
+        
+        
+        originalQuery = super.getTransformedQuery().replaceAll("\\W", "").toLowerCase();
     }
 
     /**
@@ -155,16 +158,15 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             final SearchResultItem[] searchResults = new SearchResultItem[5];
 
             for (SearchResultItem item : firstQueryResult.getResults()) {
-
-                Pattern p = Pattern.compile("^" + originalQuery
-                        + queryGeoString+".*|.*;" + originalQuery + queryGeoString+".*");
+            
+                Pattern p = Pattern.compile("(^|;)"+originalQuery+queryGeoString+"(;|$)");
 
                 int i = 0;
                 boolean found = false;
                 for(; i < 5 ; i++){
                     if(item.getField("iypspkeywords"+(i+1))!=null){
                         Matcher m = p.matcher(item.getField("iypspkeywords"+(i+1)).trim().toLowerCase());
-                        found = m.matches();
+                        found = m.find();
 
                         if(found){
                             break;
@@ -176,7 +178,16 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
                     searchResults[i] = item;
                     LOG.info("Fant sponsortreff for plass " + (i+1) + ", " + item.getField("iypspkeywords"+(i+1)));
                 }else{
-                    LOG.error("Fant IKKE sponsortreff, det er ikke mulig, " + item);
+                    LOG.error("Fant IKKE sponsortreff, det er ikke mulig.");
+                    LOG.error("iypspkeywords5:"+item.getField("iypspkeywords5").trim().toLowerCase()+"\n"
+                            + "iypspkeywords4:"+item.getField("iypspkeywords4").trim().toLowerCase()+"\n"
+                            + "iypspkeywords3:"+item.getField("iypspkeywords3").trim().toLowerCase()+"\n"
+                            + "iypspkeywords2:"+item.getField("iypspkeywords2").trim().toLowerCase()+"\n"
+                            + "iypspkeywords1:"+item.getField("iypspkeywords1").trim().toLowerCase());
+                    LOG.error("Pattern was: "+ p.pattern());
+                    
+                    throw new IllegalStateException("Missing sponsor link in resultset, " +
+                            "it was returned from qserver but not found by code.");
                 }
             }
 
@@ -189,15 +200,14 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             secondQueryResult = super.execute();
             for (SearchResultItem item : secondQueryResult.getResults()) {
 
-                Pattern p = Pattern.compile("^" + originalQuery
-                        + DOMESTIC_SEARCH+".*|.*;" + originalQuery + DOMESTIC_SEARCH+".*");
+                Pattern p = Pattern.compile("(^|;)"+originalQuery+DOMESTIC_SEARCH+"(;|$)");
 
                 int i = 0;
                 boolean found = false;
                 for(; i < 5 ; i++){
                     if(item.getField("iypspkeywords"+(i+1))!=null){
                         Matcher m = p.matcher(item.getField("iypspkeywords"+(i+1)).trim().toLowerCase());
-                        found = m.matches();
+                        found = m.find();
 
                         if(found) break;
                     }
@@ -236,7 +246,6 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
     @Override
     public String getTransformedQuery() {
 
-        originalQuery = super.getTransformedQuery().replaceAll(" ", "").replace("\"","").toLowerCase();
         String query = null;
         String completeQuery = null;
 
