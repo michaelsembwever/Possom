@@ -41,8 +41,8 @@ public final class ImportPublish {
         final URL u = new URL(props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL) + page + ".html");
         final String hostHeader = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST);
         
-        final HTTPClient client = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), hostHeader);
-        final BufferedReader reader = client.getBufferedReader(u.getHost(), u.getPath());
+        final HTTPClient client = HTTPClient.instance(u.getHost(), u.getPort(), hostHeader);
+        final BufferedReader reader = client.getBufferedReader(u.getPath());
 
         try{
             for(String line = reader.readLine();line!=null;line=reader.readLine()){

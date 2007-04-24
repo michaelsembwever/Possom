@@ -36,7 +36,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(StormWeatherSearchCommand.class);
     /** TODO comment me. **/
-    private final HTTPClient client = HTTPClient.instance("weather", STORM_WEATHER_SEARCH_HOST, 80);
+    private final HTTPClient client = HTTPClient.instance(STORM_WEATHER_SEARCH_HOST, 80);
 
     /**
      * @param query         The query to act on.
@@ -310,7 +310,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
              try {
 
                  // Get from Storm service
-                 doc = client.getXmlDocument("weather", url);
+                 doc = client.getXmlDocument(url);
 
                  // Store in the cache
                  ADMIN.putInCache(cacheKey, doc);

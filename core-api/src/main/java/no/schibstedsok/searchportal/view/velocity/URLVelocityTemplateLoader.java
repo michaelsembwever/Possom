@@ -125,12 +125,11 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
             }
 
             final HTTPClient client = HTTPClient.instance(
-                    u.getHost(), 
                     u.getProtocol() + "://" + u.getHost(), 
                     u.getPort(), 
                     context.getHostHeader(url));
 
-            return client.getLastModified(u.getHost(), u.getPath());
+            return client.getLastModified(u.getPath());
 
         }catch( ResourceNotFoundException e ){
             LOG.error( ERR_RESOURCE_NOT_FOUND + resource.getName() );
@@ -201,13 +200,12 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
         }
         
         final HTTPClient client = HTTPClient.instance(
-                u.getHost(), 
                 u.getProtocol() + "://" +u.getHost(), 
                 u.getPort(), 
                 context.getHostHeader(url));
         
         try{
-            return client.getBufferedStream(u.getHost(), u.getPath());
+            return client.getBufferedStream(u.getPath());
             
         }catch(IOException ioe){
             throw client.interceptIOException(ioe);

@@ -26,9 +26,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.log4j.Logger;
 
 /** Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
- * Original implementation used Commons HttpClient but keepalive was disabled, due to a FAST Query-Matching bug,
- *  which was its original benefit.
- * The current implementation just using URL and URLConnection directly within the current thread.
+ * Keeps statistics on connection times and failures.
+ * TODO Provide Quality of Service through ramp up/down and throttling functionality.
+ * XXX redesign into multiple classes with less static methods.
  *
  * Supports protocols http, https, ftp, and file.
  * If no protocol is specified in the host it defaults to http.
@@ -44,8 +44,6 @@ public final class HTTPClient {
     private static final Logger LOG = Logger.getLogger(HTTPClient.class);
     private static final String DEBUG_USING_URL = "Using url ";
     private static final String DEBUG_USING_HOSTHEADER = "Using host header: ";
-
-    private static final Map<String,Statistic> STATISTICS = new ConcurrentHashMap<String,Statistic>();
 
     private final String id;
     private final String host, hostHeader;
@@ -64,32 +62,27 @@ public final class HTTPClient {
         }
         this.id = id;
         
-        if(null==STATISTICS.get(id)){
-            STATISTICS.put(id, new Statistic(id));
-        }
     }
 
     /**
      *
-     * @param id
      * @param host
      * @param port
      * @return
      */
-    public static HTTPClient instance(final String id, final String host, final int port) {
+    public static HTTPClient instance(final String host, final int port) {
 
         return new HTTPClient(host, port, host);
     }
 
     /**
      *
-     * @param id
      * @param host
      * @param port
      * @param hostHeader
      * @return
      */
-    public static HTTPClient instance(final String id, final String host, final int port, final String hostHeader) {
+    public static HTTPClient instance(final String host, final int port, final String hostHeader) {
 
         return new HTTPClient(host, port, hostHeader);
     }
@@ -116,16 +109,15 @@ public final class HTTPClient {
 
     /**
      *
-     * @param id
      * @param path
      * @return
      * @throws java.io.IOException
      * @throws org.xml.sax.SAXException
      */
-    public Document getXmlDocument(final String id, final String path) throws IOException, SAXException {
+    public Document getXmlDocument(final String path) throws IOException, SAXException {
 
         final int priority = Thread.currentThread().getPriority();
-        loadUrlConnection(id, path);
+        loadUrlConnection(path);
 
         if(!hostHeader.equals(host)){
 
@@ -144,7 +136,7 @@ public final class HTTPClient {
 
             final Document result = builder.parse(urlConn.getInputStream());
 
-            STATISTICS.get(this.id).addInvocation(System.nanoTime() - start);
+            Statistic.getStatistic(this.id).addInvocation(System.nanoTime() - start);
 
             return result;
 
@@ -169,15 +161,14 @@ public final class HTTPClient {
 
     /**
      *
-     * @param id
      * @param path
      * @return
      * @throws java.io.IOException
      */
-    public BufferedInputStream getBufferedStream(final String id, final String path) throws IOException {
+    public BufferedInputStream getBufferedStream(final String path) throws IOException {
 
         final int priority = Thread.currentThread().getPriority();
-        loadUrlConnection(id, path);
+        loadUrlConnection(path);
 
         try{
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -185,7 +176,7 @@ public final class HTTPClient {
 
             final BufferedInputStream result = new BufferedInputStream(urlConn.getInputStream());
 
-            STATISTICS.get(this.id).addInvocation(System.nanoTime() - start);
+            Statistic.getStatistic(this.id).addInvocation(System.nanoTime() - start);
 
             return result;
 
@@ -199,15 +190,14 @@ public final class HTTPClient {
 
     /**
      *
-     * @param id
      * @param path
      * @return
      * @throws java.io.IOException
      */
-    public BufferedReader getBufferedReader(final String id, final String path) throws IOException {
+    public BufferedReader getBufferedReader(final String path) throws IOException {
 
         final int priority = Thread.currentThread().getPriority();
-        loadUrlConnection(id, path);
+        loadUrlConnection(path);
 
         try{
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -215,7 +205,7 @@ public final class HTTPClient {
 
             final BufferedReader result = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
 
-            STATISTICS.get(this.id).addInvocation(System.nanoTime() - start);
+            Statistic.getStatistic(this.id).addInvocation(System.nanoTime() - start);
 
             return result;
 
@@ -229,15 +219,14 @@ public final class HTTPClient {
 
     /**
      *
-     * @param id
      * @param path
      * @return
      * @throws java.io.IOException
      */
-    public long getLastModified(final String id, final String path) throws IOException {
+    public long getLastModified(final String path) throws IOException {
 
         try{
-            return loadUrlConnection(id, path).getLastModified();
+            return loadUrlConnection(path).getLastModified();
             
         } catch (IOException e) {
             throw interceptIOException(e);
@@ -249,15 +238,14 @@ public final class HTTPClient {
 
     /**
      *
-     * @param id
      * @param path
      * @return
      * @throws java.io.IOException
      */
-    public boolean exists(final String id, final String path) throws IOException {
+    public boolean exists(final String path) throws IOException {
 
         boolean success = false;
-        loadUrlConnection(id, path);
+        loadUrlConnection(path);
 
         if(urlConn instanceof HttpURLConnection){
             try{
@@ -291,13 +279,50 @@ public final class HTTPClient {
      * @return 
      */
     public IOException interceptIOException(final IOException ioe){
-                
+        
+        final IOException e = interceptIOException(id, urlConn, ioe);
+        
+        // definitely done with connection now
+        urlConn = null;
+        
+        return e;
+    }
+    
+    /**
+     * 
+     * @param conn 
+     * @param ioe 
+     * @return 
+     */
+    public static IOException interceptIOException(
+            final URLConnection conn, 
+            final IOException ioe){
+        
+        final String id = conn.getURL().getHost() + ':' + conn.getURL().getPort();
+        
+        return interceptIOException(id, conn, ioe);
+    }
+             
+    /**
+     * 
+     * @param id 
+     * @param urlConn 
+     * @param ioe 
+     * @return 
+     */
+    public static IOException interceptIOException(
+            final String id, 
+            final URLConnection urlConn, 
+            final IOException ioe){
+        
         if( ioe instanceof SocketTimeoutException){
-            STATISTICS.get(this.id).addReadTimeout();
+            Statistic.getStatistic(id).addReadTimeout();
+            
         }else if( ioe instanceof ConnectException){
-            STATISTICS.get(this.id).addConnectTimeout();
+            Statistic.getStatistic(id).addConnectTimeout();
+            
         }else{
-            STATISTICS.get(this.id).addFailure();
+            Statistic.getStatistic(id).addFailure();
         }
 
         // Clean out the error stream. See
@@ -305,13 +330,23 @@ public final class HTTPClient {
             cleanErrorStream((HttpURLConnection)urlConn);
         }
         
-        // definitely done with connection now
-        urlConn = null;
         
         return ioe;
     }
-
-    private URLConnection loadUrlConnection(final String id, final String path) throws IOException {
+    
+    
+    /**
+     * 
+     * @param conn 
+     * @param time 
+     */
+    public static void addConnectionStatistic(final URLConnection conn, final long time){ 
+        
+        final String id = conn.getURL().getHost() + ':' + conn.getURL().getPort();
+        Statistic.getStatistic(id).addInvocation(time);
+    }
+    
+    private URLConnection loadUrlConnection(final String path) throws IOException {
 
         if(null == urlConn){
             urlConn = getURL(path).openConnection();
@@ -403,6 +438,8 @@ public final class HTTPClient {
     private static class Statistic implements Comparable<Statistic>{
         
 
+        private static final Map<String,Statistic> STATISTICS = new ConcurrentHashMap<String,Statistic>();
+    
         private static final Logger STATISTICS_LOG = Logger.getLogger(Statistic.class);        
             
         private final String id;
@@ -412,8 +449,16 @@ public final class HTTPClient {
         private volatile long readTimeouts = 0;
         private volatile long failures = 0;
         private static volatile long lastPrint = System.currentTimeMillis() / 60000;
+        
+        static Statistic getStatistic(final String id){
+            
+            if(null==STATISTICS.get(id)){
+                STATISTICS.put(id, new Statistic(id));
+            }
+            return STATISTICS.get(id);
+        }
 
-        Statistic(final String id){
+        private Statistic(final String id){
             this.id = id;
         }
 
@@ -422,7 +467,11 @@ public final class HTTPClient {
             totalTime += (time / 1000000);
             ++invocations;
             
-            if(STATISTICS_LOG.isDebugEnabled() && System.currentTimeMillis() / 60000 != lastPrint){ printStatistics(); }
+            if(STATISTICS_LOG.isDebugEnabled() && System.currentTimeMillis() / 60000 != lastPrint){ 
+                
+                printStatistics(); 
+                lastPrint = System.currentTimeMillis() / 60000;
+            }
         }
         
         void addFailure(){
@@ -473,8 +522,6 @@ public final class HTTPClient {
             }
             msg.append("------ ------------------------------ ------");
             STATISTICS_LOG.debug(msg.toString());
-            
-            lastPrint = System.currentTimeMillis() / 60000;
         }        
     }
 }

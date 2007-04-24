@@ -52,8 +52,8 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
         final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
 
         client = null != conf.getHostHeader() && conf.getHostHeader().length() >0
-                ? HTTPClient.instance(conf.getName(), host, port, conf.getHostHeader())
-                : HTTPClient.instance(conf.getName(), host, port);
+                ? HTTPClient.instance(host, port, conf.getHostHeader())
+                : HTTPClient.instance(host, port);
 
         partnerId = siteConf.getProperty(conf.getPartnerId());
     }
@@ -81,7 +81,7 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
     protected final Document getXmlResult() throws IOException, SAXException {
         final String url = createRequestURL();
         LOG.info("Using " + url);
-        return client.getXmlDocument(context.getSearchConfiguration().getName(), url);
+        return client.getXmlDocument(url);
     }
 
     /**
