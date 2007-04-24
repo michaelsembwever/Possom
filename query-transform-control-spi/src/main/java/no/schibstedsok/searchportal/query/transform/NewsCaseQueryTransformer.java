@@ -7,7 +7,10 @@ import org.apache.log4j.Logger;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Properties;
+import java.util.TimeZone;
 
 /**
  * Checks if the query should be transformed from a ejb lookup on the queryParameter. Transformation will replace
@@ -17,6 +20,7 @@ import java.util.Properties;
  * query should be done after this.
  */
 public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
+    private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     private final static Logger LOG = Logger.getLogger(NewsCaseQueryTransformer.class);
 
     private NewsQueryTransformerDataAccess dataAccess = new NewsQueryTransformerDataAccess();
@@ -51,12 +55,26 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
             for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
                 getContext().getTransformedTerms().put(keyClause, "");
             }
+            if (config.isUnclusteredDelayFilter()) {
+                transformedQuery = addUnclusteredDelayFilter(transformedQuery);
+            }
             LOG.debug("New query is: '" + transformedQuery + "'");
             if (transformedQuery.length() > 0) {
                 getContext().getDataModel().getJunkYard().setValue(config.getQueryType(), transformedQuery);
                 getContext().getTransformedTerms().put(getContext().getQuery().getFirstLeafClause(), transformedQuery);
             }
         }
+    }
+
+    private String addUnclusteredDelayFilter(String transformedQuery) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        cal.add(Calendar.MINUTE, -config.getUnclusteredDelayInMinutes());
+        StringBuilder sb = new StringBuilder(transformedQuery);
+        sb.insert(0, "and(");
+        sb.append(",cluster:range(1,max) or processingtime:range(min,");
+        sb.append(sdf.format(cal.getTime()));
+        sb.append("))");
+        return sb.toString();
     }
 
     private String getTransformedTermsQuery() {

@@ -28,12 +28,16 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     private static final String POSTFIX = "postfix";
     private static final String TYPE_NAME = "name";
     private static final String DEFAULT_TYPE = "default-type";
+    private static final String UNCLUSTERED_DELAY = "unclustered-delay";
+    private static final String UNCLUSTERED_DELAY_IN_MINUTES = "unclustered-delay-in-minutes";
 
     private static final String DEFAULT_CONVERT_ELEMENT = "default-convert";
     private String queryType;
     private String queryParameter;
     private String typeParameter;
     private String defaultType;
+    private boolean unclusteredDelayFilter = false;
+    private int unclusteredDelayInMinutes = 10;
     private Map<String, String[]> typeConversions;
 
 
@@ -60,6 +64,15 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         return defaultType;
     }
 
+
+    public boolean isUnclusteredDelayFilter() {
+        return unclusteredDelayFilter;
+    }
+
+    public int getUnclusteredDelayInMinutes() {
+        return unclusteredDelayInMinutes;
+    }
+
     @Override
     public NewsCaseQueryTransformerConfig readQueryTransformer(final Element element) {
         Logger log = Logger.getLogger(NewsCaseQueryTransformerConfig.class);
@@ -68,9 +81,17 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
             queryParameter = element.getAttribute(QUERY_PARAMETER);
         }
         typeParameter = element.getAttribute(TYPE_PARAMETER);
-        final String optionalParameter = element.getAttribute(DEFAULT_TYPE);
+        String optionalParameter = element.getAttribute(DEFAULT_TYPE);
         if (optionalParameter != null && optionalParameter.length() > 0) {
             defaultType = optionalParameter;
+        }
+        optionalParameter = element.getAttribute(UNCLUSTERED_DELAY);
+        if (optionalParameter != null && optionalParameter.equalsIgnoreCase("true")) {
+            unclusteredDelayFilter = true;
+        }
+        optionalParameter = element.getAttribute(UNCLUSTERED_DELAY_IN_MINUTES);
+        if (optionalParameter != null && optionalParameter.length() > 0) {
+            unclusteredDelayInMinutes = Integer.parseInt(optionalParameter);
         }
         NodeList convertNodeList = element.getElementsByTagName(DEFAULT_CONVERT_ELEMENT);
         if (convertNodeList.getLength() > 0) {

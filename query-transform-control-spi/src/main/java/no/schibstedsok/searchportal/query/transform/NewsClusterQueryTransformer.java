@@ -74,7 +74,8 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
             LOG.debug("Adding param from datamodel: " + paramField + "=" + paramValue);
             if (paramValue != null) {
                 filter.append(paramField).append(':');
-                filter.append('\"').append(paramValue).append('\"');
+                filter.append("equals(");
+                filter.append('\"').append(paramValue).append("\")");
                 filter.append(" and ");
             }
         }

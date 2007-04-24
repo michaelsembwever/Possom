@@ -38,11 +38,18 @@ public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
     protected void modifyQuery(IQuery query) {
         final ClusteringESPFastConfiguration config = getSearchConfiguration();
 
-        // Can not use the default sort functionality since it hardcodes field name
+        // Because of a bug in FAST ESP5 related to collapsing and sorting, we must use sort direcetion,
+        // and not the +fieldname syntax
         final StringDataObject sort = datamodel.getParameters().getValue(config.getUserSortParameter());
+        String sortType;
         if (sort != null) {
-            query.setParameter(BaseParameter.SORT_BY, config.getUserSortField());
-            query.setParameter(BaseParameter.SORT_DIRECTION, sort.getString());
+            sortType = sort.getString();
+        } else {
+            sortType = config.getDefaultSort();
+        }
+        if (!sortType.equals("relevance")) {
+            query.setParameter(BaseParameter.SORT_BY, config.getSortField());
+            query.setParameter(BaseParameter.SORT_DIRECTION, sortType);
         }
 
         final StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());

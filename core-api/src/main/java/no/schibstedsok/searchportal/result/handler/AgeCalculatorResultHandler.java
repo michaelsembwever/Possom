@@ -18,7 +18,9 @@ import java.util.Map;
 import java.util.TimeZone;
 
 
-/** Calculate Age.
+/**
+ * Calculate Age.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
@@ -28,20 +30,21 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
     private static final String FAST_DATE_FMT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
     private final AgeCalculatorResultHandlerConfig config;
-    
+
     /**
-     * 
-     * @param config 
+     * @param config
      */
-    public AgeCalculatorResultHandler(final ResultHandlerConfig config){
-        this.config = (AgeCalculatorResultHandlerConfig)config;
+    public AgeCalculatorResultHandler(final ResultHandlerConfig config) {
+        this.config = (AgeCalculatorResultHandlerConfig) config;
     }
 
-    /** @inherit **/
+    /**
+     * @inherit *
+     */
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final String fmt = /*dateFormat != null ? dateFormat :*/ FAST_DATE_FMT;
-        final String ageFormatKey = /*ageMessageFormat != null ? ageMessageFormat :*/ "age";
+        final String ageFormatKey = config.getAgeFormatKey();
         final DateFormat df = new SimpleDateFormat(fmt);
 
         // Zulu time is UTC. But java doesn't know that.
@@ -52,12 +55,12 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
     }
 
     private void setAgeForAll(
-            final SearchResult searchResult, 
-            final DateFormat df, 
-            final DataModel datamodel, 
-            final Context cxt, 
+            final SearchResult searchResult,
+            final DateFormat df,
+            final DataModel datamodel,
+            final Context cxt,
             final String ageFormatKey) {
-        
+
         for (final SearchResultItem item : searchResult.getResults()) {
             if (config.getRecursiveField() != null) {
                 SearchResult subResult = item.getNestedSearchResult(config.getRecursiveField());
@@ -70,12 +73,12 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
     }
 
     private void setAge(
-            final SearchResultItem item, 
-            final DateFormat df, 
-            final DataModel datamodel, 
-            final Context cxt, 
+            final SearchResultItem item,
+            final DateFormat df,
+            final DataModel datamodel,
+            final Context cxt,
             final String ageFormatKey) {
-        
+
         final String docTime = item.getField(config.getSourceField());
 
         if (docTime != null) {
@@ -95,45 +98,45 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                 dateParts[1] = Long.valueOf(age / (60 * 60 * 1000) % 24);
                 dateParts[2] = Long.valueOf(age / (60 * 1000) % 60);
 
-                final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
+                final Map<String, Object> parameters = datamodel.getJunkYard().getValues();
                 String ageString = "";
                 // = TextMessages.getMessages().getMessage(currentLocale, ageFormatKey, dateParts);
-                final String  s = parameters.get("contentsource") instanceof String[]
-                        ? ((String[])parameters.get("contentsource"))[0]
-                        : (String)parameters.get("contentsource");
+                final String s = parameters.get("contentsource") instanceof String[]
+                        ? ((String[]) parameters.get("contentsource"))[0]
+                        : (String) parameters.get("contentsource");
 
                 final TextMessages txtMsgs = TextMessages.valueOf(ContextWrapper.wrap(
                         TextMessages.Context.class,
                         cxt,
-                        new SiteContext(){
+                        new SiteContext() {
                             public Site getSite() {
                                 return datamodel.getSite().getSite();
                             }
                         }));
 
                 //older than 3 days or source is Mediearkivet, show short date format.
-                if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || config.getAsDate()){
-                    
+                if (dateParts[0].longValue() > 3 || s != null && s.equals("Mediearkivet") || config.getAsDate()) {
+
                     final DateFormat shortFmt = DateFormat.getDateInstance(
                             DateFormat.SHORT,
                             datamodel.getSite().getSite().getLocale());
 
                     ageString = shortFmt.format(new Date(stamp));
-                //more than 1 day, show days
-                }else if (dateParts[0].longValue() > 0) {
+                    //more than 1 day, show days
+                } else if (dateParts[0].longValue() > 0) {
                     dateParts[1] = Long.valueOf(0);
                     dateParts[2] = Long.valueOf(0);
-                    ageString = txtMsgs.getMessage(ageFormatKey, (Object[])  dateParts);
-                //more than 1 hour, show hours
+                    ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
+                    //more than 1 hour, show hours
                 } else if (dateParts[1].longValue() > 0) {
                     dateParts[2] = Long.valueOf(0);
                     ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
-                //if less than 1 hour, show minutes
+                    //if less than 1 hour, show minutes
                 } else if (dateParts[2].longValue() > 0) {
                     dateParts[0] = Long.valueOf(0);
                     dateParts[1] = Long.valueOf(0);
                     ageString = txtMsgs.getMessage(ageFormatKey, (Object[]) dateParts);
-                } else{
+                } else {
                     ageString = docTime.substring(8, 10) + "."
                             + docTime.substring(5, 7) + "." + docTime.substring(0, 4);
                 }

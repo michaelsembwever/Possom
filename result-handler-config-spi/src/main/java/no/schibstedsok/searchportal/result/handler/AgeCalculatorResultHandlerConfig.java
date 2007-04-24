@@ -9,7 +9,9 @@ import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 
 
-/** Calculate Age.
+/**
+ * Calculate Age.
+ *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
@@ -19,22 +21,21 @@ public final class AgeCalculatorResultHandlerConfig extends AbstractResultHandle
     private String targetField;
     private String sourceField;
     private String recursiveField;
+    private String ageFormatKey = "age";
     private Boolean asDate = Boolean.FALSE;
 
     private static final Logger LOG = Logger.getLogger(AgeCalculatorResultHandlerConfig.class);
 
 
     /**
-     * 
-     * @return 
+     * @return
      */
     public String getRecursiveField() {
         return recursiveField;
     }
 
     /**
-     * 
-     * @param recursiveField 
+     * @param recursiveField
      */
     public void setRecursiveField(String recursiveField) {
         this.recursiveField = recursiveField;
@@ -42,8 +43,7 @@ public final class AgeCalculatorResultHandlerConfig extends AbstractResultHandle
 
 
     /**
-     * 
-     * @return 
+     * @return
      */
     public String getTargetField() {
         return targetField;
@@ -51,8 +51,7 @@ public final class AgeCalculatorResultHandlerConfig extends AbstractResultHandle
 
 
     /**
-     * 
-     * @param targetField 
+     * @param targetField
      */
     public void setTargetField(final String targetField) {
         this.targetField = targetField;
@@ -60,49 +59,53 @@ public final class AgeCalculatorResultHandlerConfig extends AbstractResultHandle
 
 
     /**
-     * 
-     * @param string 
+     * @param string
      */
     public void setSourceField(final String string) {
         sourceField = string;
     }
 
     /**
-     * 
-     * @return 
+     * @return
      */
-    public String getSourceField(){
+    public String getSourceField() {
         return sourceField;
     }
 
     /**
-     * 
-     * @param asDate 
+     * @param asDate
      */
     public void setAsDate(final Boolean asDate) {
         this.asDate = asDate;
     }
-    
+
     /**
-     * 
-     * @return 
+     * @return
      */
-    public Boolean getAsDate(){
+    public Boolean getAsDate() {
         return asDate;
+    }
+
+    public String getAgeFormatKey() {
+        return ageFormatKey;
+    }
+
+    public void setAgeFormatKey(String ageFormatKey) {
+        this.ageFormatKey = ageFormatKey;
     }
 
     @Override
     public AbstractResultHandlerConfig readResultHandler(final Element element) {
-        
-        super.readResultHandler(element);        
+
+        super.readResultHandler(element);
 
         setTargetField(element.getAttribute("target"));
         setSourceField(element.getAttribute("source"));
         AbstractDocumentFactory.fillBeanProperty(this, null, "asDate", ParseType.Boolean, element, "false");
-        AbstractDocumentFactory.fillBeanProperty(this, null, "recursiveField", ParseType.String, element, null);        
-        
+        AbstractDocumentFactory.fillBeanProperty(this, null, "recursiveField", ParseType.String, element, null);
+        AbstractDocumentFactory.fillBeanProperty(this, null, "ageFormatKey", ParseType.String, element, "age");
         return this;
     }
-    
-    
+
+
 }
