@@ -55,8 +55,20 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                                 clusterPos++;
                             } else {
                                 searchResultItem = collectedResult.getResults().get(0);
+                                final int lastSubPos = Math.min(collectedResult.getResults().size(), 4);
+                                if (lastSubPos > 1) {
+                                    final SearchResult subSearchResults = new BasicSearchResult(this);
+                                    subSearchResults.setHitCount(collectedResult.getHitCount());
+                                    searchResultItem.addNestedSearchResult("entries", subSearchResults);
+                                    for (int i = 1; i < lastSubPos; i++) {
+                                        subSearchResults.addResult(collectedResult.getResults().get(i));
+                                    }
+                                }
                             }
                             searchResultItem.addField("type", type);
+                            if (type.equals("sak") || type.equals("person")) {
+                                searchResultItem.addField("newsCase", matcher.group(1));
+                            }
                             mergedResult.addResult(searchResultItem);
                             LOG.debug("Collected " + searchResultItem.getField("type") + ":" + searchResultItem.getField("title"));
                         }
