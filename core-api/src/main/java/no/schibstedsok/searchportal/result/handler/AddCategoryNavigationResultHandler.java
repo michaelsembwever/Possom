@@ -80,6 +80,10 @@ public class AddCategoryNavigationResultHandler implements ResultHandler {
             Document doc = getDocument(in);
             final Element root = doc.getRootElement();
             return parseCategories(root);
+            
+        }catch(IOException ioe){
+            throw client.interceptIOException(ioe);
+            
         } finally {
             if (in != null) {
                 try {

@@ -50,6 +50,7 @@ public final class HTTPClient {
     private final String id;
     private final String host, hostHeader;
     private final int port;
+    private volatile URLConnection urlConn;
 
     private HTTPClient(final String host, final int port, final String hostHeader) {
 
@@ -124,7 +125,7 @@ public final class HTTPClient {
     public Document getXmlDocument(final String id, final String path) throws IOException, SAXException {
 
         final int priority = Thread.currentThread().getPriority();
-        final URLConnection urlConn = getUrlConnection(id, path);
+        loadUrlConnection(id, path);
 
         if(!hostHeader.equals(host)){
 
@@ -151,26 +152,17 @@ public final class HTTPClient {
             throw new IOException(e.getMessage());
 
         } catch (IOException e) {
-            
-            if( e instanceof SocketTimeoutException){
-                STATISTICS.get(this.id).addReadTimeout();
-            }else if( e instanceof ConnectException){
-                STATISTICS.get(this.id).addConnectTimeout();
-            }else{
-                STATISTICS.get(this.id).addFailure();
-            }
-            
-            // Clean out the error stream. See
-            if(urlConn instanceof HttpURLConnection){
-                cleanErrorStream((HttpURLConnection)urlConn);
-            }
-            throw e;
+            throw interceptIOException(e);
 
         }finally{
-
             Thread.currentThread().setPriority(priority);
+            
             if(null != urlConn && null != urlConn.getInputStream()){
                 urlConn.getInputStream().close();
+            }
+            if(null != urlConn){
+                // definitely done with connection now
+                urlConn = null;
             }
         }
     }
@@ -185,7 +177,7 @@ public final class HTTPClient {
     public BufferedInputStream getBufferedStream(final String id, final String path) throws IOException {
 
         final int priority = Thread.currentThread().getPriority();
-        final URLConnection urlConn = getUrlConnection(id, path);
+        loadUrlConnection(id, path);
 
         try{
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -198,27 +190,10 @@ public final class HTTPClient {
             return result;
 
         } catch (IOException e) {
-            
-            if( e instanceof SocketTimeoutException){
-                STATISTICS.get(this.id).addReadTimeout();
-            }else if( e instanceof ConnectException){
-                STATISTICS.get(this.id).addConnectTimeout();
-            }else{
-                STATISTICS.get(this.id).addFailure();
-            }
-            
-            // Clean out the error stream. See
-            if(urlConn instanceof HttpURLConnection){
-                cleanErrorStream((HttpURLConnection)urlConn);
-            }
-            throw e;
+            throw interceptIOException(e);
 
         }finally{
-
             Thread.currentThread().setPriority(priority);
-//            if(null != urlConn && null != urlConn.getInputStream()){
-//                urlConn.getInputStream().close();
-//            }
         }
     }
 
@@ -232,7 +207,7 @@ public final class HTTPClient {
     public BufferedReader getBufferedReader(final String id, final String path) throws IOException {
 
         final int priority = Thread.currentThread().getPriority();
-        final URLConnection urlConn = getUrlConnection(id, path);
+        loadUrlConnection(id, path);
 
         try{
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
@@ -245,27 +220,10 @@ public final class HTTPClient {
             return result;
 
         } catch (IOException e) {
-            
-            if( e instanceof SocketTimeoutException){
-                STATISTICS.get(this.id).addReadTimeout();
-            }else if( e instanceof ConnectException){
-                STATISTICS.get(this.id).addConnectTimeout();
-            }else{
-                STATISTICS.get(this.id).addFailure();
-            }
-            
-            // Clean out the error stream. See
-            if(urlConn instanceof HttpURLConnection){
-                cleanErrorStream((HttpURLConnection)urlConn);
-            }
-            throw e;
+            throw interceptIOException(e);
 
         }finally{
-
             Thread.currentThread().setPriority(priority);
-//            if(null != urlConn && null != urlConn.getInputStream()){
-//                urlConn.getInputStream().close();
-//            }
         }
     }
 
@@ -278,7 +236,15 @@ public final class HTTPClient {
      */
     public long getLastModified(final String id, final String path) throws IOException {
 
-        return getUrlConnection(id, path).getLastModified();
+        try{
+            return loadUrlConnection(id, path).getLastModified();
+            
+        } catch (IOException e) {
+            throw interceptIOException(e);
+
+        }finally{
+            urlConn = null;
+        }
     }
 
     /**
@@ -291,42 +257,84 @@ public final class HTTPClient {
     public boolean exists(final String id, final String path) throws IOException {
 
         boolean success = false;
-        final URLConnection conn = getUrlConnection(id, path);
+        loadUrlConnection(id, path);
 
-        if(conn instanceof HttpURLConnection){
-            final HttpURLConnection con = (HttpURLConnection)conn;
-            con.setInstanceFollowRedirects(false);
-            con.setRequestMethod("HEAD");
-            con.addRequestProperty("host", hostHeader);
-            con.setConnectTimeout(1000);
-            con.setReadTimeout(1000);
-            success = HttpURLConnection.HTTP_OK == con.getResponseCode();
+        if(urlConn instanceof HttpURLConnection){
+            try{
+                
+                final HttpURLConnection con = (HttpURLConnection)urlConn;
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("HEAD");
+                con.addRequestProperty("host", hostHeader);
+                con.setConnectTimeout(1000);
+                con.setReadTimeout(1000);
+                success = HttpURLConnection.HTTP_OK == con.getResponseCode();
+                
+            } catch (IOException e) {
+                throw interceptIOException(e);
+
+            }finally{
+                urlConn = null;
+            }
+            
         }else{
+            
             final File file = new File(path);
             success = file.exists();
         }
         return success;
     }
-
-    private URLConnection getUrlConnection(final String id, final String path) throws IOException {
-
-        final URLConnection urlConn = getURL(path).openConnection();
-
-        if( !hostHeader.equals(host) ){
-            LOG.trace(DEBUG_USING_HOSTHEADER + hostHeader);
-            urlConn.addRequestProperty("host", hostHeader);
+    
+    /**
+     * 
+     * @param ioe 
+     * @return 
+     */
+    public IOException interceptIOException(final IOException ioe){
+                
+        if( ioe instanceof SocketTimeoutException){
+            STATISTICS.get(this.id).addReadTimeout();
+        }else if( ioe instanceof ConnectException){
+            STATISTICS.get(this.id).addConnectTimeout();
+        }else{
+            STATISTICS.get(this.id).addFailure();
         }
 
+        // Clean out the error stream. See
+        if(urlConn instanceof HttpURLConnection){
+            cleanErrorStream((HttpURLConnection)urlConn);
+        }
+        
+        // definitely done with connection now
+        urlConn = null;
+        
+        return ioe;
+    }
+
+    private URLConnection loadUrlConnection(final String id, final String path) throws IOException {
+
+        if(null == urlConn){
+            urlConn = getURL(path).openConnection();
+
+            if( !hostHeader.equals(host) ){
+                LOG.trace(DEBUG_USING_HOSTHEADER + hostHeader);
+                urlConn.addRequestProperty("host", hostHeader);
+            }
+        }
         return urlConn;
     }
 
-    private void cleanErrorStream(final HttpURLConnection con) throws IOException{
+    private static void cleanErrorStream(final HttpURLConnection con){
 
         if(null != con.getErrorStream()){
             final BufferedReader errReader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
             final StringBuilder err = new StringBuilder();
-            for(String line = errReader.readLine(); null != line; line = errReader.readLine()){
-                err.append(line);
+            try{
+                for(String line = errReader.readLine(); null != line; line = errReader.readLine()){
+                    err.append(line);
+                }
+            }catch(IOException ioe){
+                LOG.warn(ioe.getMessage(), ioe);
             }
             LOG.info(err.toString());
         }

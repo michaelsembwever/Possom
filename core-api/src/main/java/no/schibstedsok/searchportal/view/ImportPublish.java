@@ -44,9 +44,13 @@ public final class ImportPublish {
         final HTTPClient client = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), hostHeader);
         final BufferedReader reader = client.getBufferedReader(u.getHost(), u.getPath());
 
-        for(String line = reader.readLine();line!=null;line=reader.readLine()){
-            out.write(line);
-            out.write('\n');
+        try{
+            for(String line = reader.readLine();line!=null;line=reader.readLine()){
+                out.write(line);
+                out.write('\n');
+            }
+        }catch(IOException ioe){
+            throw client.interceptIOException(ioe);
         }
     }
     

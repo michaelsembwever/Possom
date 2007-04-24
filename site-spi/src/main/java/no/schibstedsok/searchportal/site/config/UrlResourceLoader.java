@@ -180,15 +180,15 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     @Override
     protected final InputStream getInputStreamFor(String resource) {
 
+        HTTPClient client = null;
         try {
             final URL u = new URL(getUrlFor(resource));
-            final HTTPClient client 
-                    = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), getHostHeaderFor(resource));
+            client = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), getHostHeaderFor(resource));
             
             return client.getBufferedStream(u.getHost(), u.getPath());
 
         }catch (IOException ex) {
-            throw new ResourceLoadException(ex.getMessage(), ex);
+            throw new ResourceLoadException(ex.getMessage(), null != client ? client.interceptIOException(ex) : ex);
         }
 
 

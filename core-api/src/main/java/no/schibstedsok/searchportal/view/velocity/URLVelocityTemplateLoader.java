@@ -206,7 +206,12 @@ public final class URLVelocityTemplateLoader extends ResourceLoader {
                 u.getPort(), 
                 context.getHostHeader(url));
         
-        return client.getBufferedStream(u.getHost(), u.getPath());
+        try{
+            return client.getBufferedStream(u.getHost(), u.getPath());
+            
+        }catch(IOException ioe){
+            throw client.interceptIOException(ioe);
+        }
     }
     
     
