@@ -13,11 +13,12 @@ public class NewsMediumQueryTransformer extends AbstractQueryTransformer {
 
     public void visitImpl(final Clause clause) {
         String medium = (String) getContext().getDataModel().getJunkYard().getValue(config.getMediumParameter());
-        if (!NewsMediumQueryTransformerConfig.ALL_MEDIUMS.equals(medium)) {
+        final String originalQuery = getTransformedTermsQuery();
+        if (!NewsMediumQueryTransformerConfig.ALL_MEDIUMS.equals(medium) && originalQuery.length() > 0) {
             if (medium == null || medium.length() == 0) {
                 medium = config.getDefaultMedium();
             }
-            StringBuilder query = new StringBuilder(getTransformedTermsQuery());
+            StringBuilder query = new StringBuilder(originalQuery);
             query.insert(0, "and(");
             query.append(", ").append(config.getMediumPrefix()).append(':').append(medium).append(')');
             for (Clause keyClause : getContext().getTransformedTerms().keySet()) {

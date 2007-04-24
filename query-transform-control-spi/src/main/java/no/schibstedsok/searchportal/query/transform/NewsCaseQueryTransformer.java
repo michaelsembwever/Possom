@@ -67,14 +67,18 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
     }
 
     private String addUnclusteredDelayFilter(String transformedQuery) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        cal.add(Calendar.MINUTE, -config.getUnclusteredDelayInMinutes());
-        StringBuilder sb = new StringBuilder(transformedQuery);
-        sb.insert(0, "and(");
-        sb.append(",cluster:range(1,max) or processingtime:range(min,");
-        sb.append(sdf.format(cal.getTime()));
-        sb.append("))");
-        return sb.toString();
+        if (transformedQuery != null && transformedQuery.length() > 0) {
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            cal.add(Calendar.MINUTE, -config.getUnclusteredDelayInMinutes());
+            StringBuilder sb = new StringBuilder(transformedQuery);
+            sb.insert(0, "and(");
+            sb.append(",cluster:range(1,max) or processingtime:range(min,");
+            sb.append(sdf.format(cal.getTime()));
+            sb.append("))");
+            return sb.toString();
+        } else {
+            return transformedQuery;
+        }
     }
 
     private String getTransformedTermsQuery() {
