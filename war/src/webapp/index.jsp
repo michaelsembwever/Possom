@@ -106,7 +106,7 @@
 			<div id="front_button_layer">
 			<table border="0" cellspacing="1" cellpadding="0" id="front_button_table">
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m","&amp;newscountry=Norge&amp;vertikal=m");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</td>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</td>
 			    </tr>
 			    <tr>
 				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("y","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bedriftss&#248;k</td>
@@ -160,7 +160,7 @@
             <table id="front_menu" cellspacing="0" cellpadding="0">
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/nyheter.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="/search/?c=m&amp;newscountry=Norge&amp;vertikal=m&amp;q=" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=m" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
                 </tr>
                 <tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
@@ -202,7 +202,7 @@
                 </tr>
                 <tr>
                     <td class="imgpad"><img src="images/menu/icons/ver.png" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a></td>
                 </tr>
     <%--
 		<tr>
@@ -213,9 +213,6 @@
 		    <td class="menupad"><a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a></td>
                 </tr>
     --%>
-		<tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
                 <tr>
                     <td class="lastpad" colspan="2" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
                 </tr>
