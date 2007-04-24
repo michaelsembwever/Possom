@@ -82,7 +82,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private String queryGeoString = null;
 
     /** User supplied value for sorting type of search result. */
-    private String userSortBy = "kw"; // default er sorting på keywords
+    private String userSortBy; // default er sorting på keywords
 
     /** The number of terms (words) in the largest COMPANY_KEYWORD_RESERVED match in the query.
      * Any leaf clauses within this match are boundary matched in the lemiypcfkeywords filter,
@@ -151,7 +151,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 && getSingleParameter("userSortBy").equals("name")) {
 
             userSortBy = "name";
-        } else {
+        } else if(getSingleParameter("userSortBy") != null
+                && getSingleParameter("userSortBy").length() > 0
+                && getSingleParameter("userSortBy").equals("kw")){
             userSortBy = "kw";
         }
     }
@@ -269,9 +271,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * @return the search result found by the executed query.
      */
     public SearchResult execute() {
-
+        
         final SearchResult result = super.execute();
-
         final List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
 
         for (Iterator iter = result.getResults().listIterator(); iter.hasNext();) {
@@ -302,7 +303,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         getParameters().put(PARAMETER_NAME_WHERE, whereString);
 
-        getParameters().put("analysisSortBy",analysisSortBy);
+        result.addField("sortBy",getSortBy());
         return result;
     }
 
@@ -417,13 +418,10 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         final boolean hasNotWordCharacters = m.find();
 
-
+        // Hvis søket er et nøkkelord, bruk iyprpkw, ellers brukes iyprpnavn
         if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD)
                 && analysisSortBy==null){
             analysisSortBy = SORTBY_KEYWORD;
-        }else if(clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)
-                && analysisSortBy==null){
-             analysisSortBy = SORTBY_COMPANYNAME;
         }
             
 
