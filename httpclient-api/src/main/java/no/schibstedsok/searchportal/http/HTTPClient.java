@@ -138,7 +138,7 @@ public final class HTTPClient {
         try {
             builder = factory.newDocumentBuilder();
 
-            //Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             final long start = System.nanoTime();
 
             final Document result = builder.parse(urlConn.getInputStream());
@@ -188,7 +188,7 @@ public final class HTTPClient {
         final URLConnection urlConn = getUrlConnection(id, path);
 
         try{
-            //Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             final long start = System.nanoTime();
 
             final BufferedInputStream result = new BufferedInputStream(urlConn.getInputStream());
@@ -235,7 +235,7 @@ public final class HTTPClient {
         final URLConnection urlConn = getUrlConnection(id, path);
 
         try{
-            //Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             final long start = System.nanoTime();
 
             final BufferedReader result = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
@@ -439,7 +439,7 @@ public final class HTTPClient {
             return ": " +  new DecimalFormat("000,000,000").format(invocations)
                     + " : " + new DecimalFormat("000,000,000").format(totalTime)
                     + "ms : " + new DecimalFormat("0,000,000").format(getAverageInvocationTime())
-                    + "µs : " + new DecimalFormat("00,000").format(failures)
+                    + "µs :   " + new DecimalFormat("00,000").format(failures)
                     + " :         " + new DecimalFormat("00,000").format(connectTimeouts)
                     + " : " + new DecimalFormat("00,000").format(readTimeouts)
                     + " <-- " + id;
@@ -458,7 +458,7 @@ public final class HTTPClient {
             final StringBuilder msg = new StringBuilder();
             msg.append("\n------ Printing HTTPClient statistics ------\n"
                     + ": invocations : total time    : average     "
-                    + ":failures: connect errors : read timeouts <- client\n");
+                    + ": failures : connect errors : read timeouts <- client\n");
             
             for(Statistic stat : list){
                 msg.append(stat.toString() + '\n');
