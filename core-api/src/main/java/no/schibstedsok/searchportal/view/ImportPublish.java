@@ -7,6 +7,8 @@
 
 package no.schibstedsok.searchportal.view;
 
+import com.opensymphony.oscache.base.NeedsRefreshException;
+import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
@@ -25,12 +27,21 @@ import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 public final class ImportPublish {
     
     // Constants -----------------------------------------------------
-    
+
+    private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();   
+    private static final int REFRESH_PERIOD = 60; // one minute
     
     // Attributes ----------------------------------------------------
     
     // Static --------------------------------------------------------
     
+    /**
+     * 
+     * @param page 
+     * @param datamodel 
+     * @param out 
+     * @throws java.io.IOException 
+     */
     public static void importPage(
             final String page, 
             final DataModel datamodel, 
@@ -40,17 +51,34 @@ public final class ImportPublish {
 
         final URL u = new URL(props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_URL) + page + ".html");
         final String hostHeader = props.getProperty(SiteConfiguration.PUBLISH_SYSTEM_HOST);
+        final String cacheKey = '[' + hostHeader + ']' + u.toString();
         
-        final HTTPClient client = HTTPClient.instance(u.getHost(), u.getPort(), hostHeader);
-        final BufferedReader reader = client.getBufferedReader(u.getPath());
-
+        String content = "";
         try{
-            for(String line = reader.readLine();line!=null;line=reader.readLine()){
-                out.write(line);
-                out.write('\n');
+            content = (String) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
+        
+        } catch (NeedsRefreshException nre) {
+        
+            final HTTPClient client = HTTPClient.instance(u.getHost(), u.getPort(), hostHeader);
+            final BufferedReader reader = client.getBufferedReader(u.getPath());
+            final StringBuilder builder = new StringBuilder();
+
+            try{
+                for(String line = reader.readLine();line!=null;line=reader.readLine()){
+                    builder.append(line);
+                    builder.append('\n');
+                }
+                content = builder.toString();
+                CACHE.putInCache(cacheKey, content);
+
+            }catch(IOException ioe){
+                content = (String) nre.getCacheContent();
+                CACHE.cancelUpdate(cacheKey);
+                throw client.interceptIOException(ioe);
+                
             }
-        }catch(IOException ioe){
-            throw client.interceptIOException(ioe);
+        }finally{
+            out.write(content);
         }
     }
     
