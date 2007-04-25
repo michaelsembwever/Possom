@@ -884,24 +884,30 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     private class MapInitialisor extends AbstractReflectionVisitor {
 
-        private final Map map;
+        private final Map<Clause,String> map;
 
-        public MapInitialisor(final Map m) {
+        public MapInitialisor(final Map<Clause,String> m) {
             map = m;
         }
 
         protected void visitImpl(final LeafClause clause) {
 
-            if (null != clause.getField()) {
-                if (null == getFieldFilter(clause)) {
-                    // Escape any fielded leafs for fields that are not supported by this command.
-                    // Performed here in order to make the correct terms visible to the query transformers.
-                    map.put(clause, escapeFieldedLeaf(clause));
+            if(null == map.get(clause)){
+                if (null != clause.getField()){
+                    if(null == getFieldFilter(clause)){
+                        
+                        // Escape any fielded leafs for fields that are not supported by this command.
+                        // Performed here in order to make the correct terms visible to the query transformers.
+                        map.put(clause, escapeFieldedLeaf(clause));
+                        
+                    }else{
+                        
+                        map.put(clause, "");
+                    }
                 } else {
-                    map.put(clause, "");
+                    
+                    map.put(clause, clause.getTerm());
                 }
-            } else {
-                map.put(clause, clause.getTerm());
             }
         }
 
@@ -909,20 +915,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             clause.getFirstClause().accept(this);
         }
 
-        protected void visitImpl(final DefaultOperatorClause clause) {
+        protected void visitImpl(final DoubleOperatorClause clause) {
             clause.getFirstClause().accept(this);
             clause.getSecondClause().accept(this);
         }
 
-        protected void visitImpl(final AndClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
-
-        protected void visitImpl(final OrClause clause) {
-            clause.getFirstClause().accept(this);
-            clause.getSecondClause().accept(this);
-        }
     }
 
 

@@ -75,7 +75,6 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
     private volatile boolean init = false;
 
     private final HTTPClient httpClient;
-    private final String clientConfId;
     private final Context context;
     private final Map<String, List<TokenMatch>> analysisResult = new HashMap<String,List<TokenMatch>>();
 
@@ -94,9 +93,8 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
                         ContextWrapper.wrap(SiteConfiguration.Context.class,context)).getProperties();
         final String host = props.getProperty(TOKEN_HOST_PROPERTY);
         final int port = Integer.parseInt(props.getProperty(TOKEN_PORT_PROPERTY));
-        clientConfId = "token_evaluator(" + host + ':' + port + ')';
 
-        httpClient = HTTPClient.instance(clientConfId, host, port);
+        httpClient = HTTPClient.instance(host, port);
         if (httpClient == null) {
             throw new IllegalArgumentException("Not allowed to use null HTTPClient!");
         }
@@ -265,7 +263,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
 
             url = CGI_PATH + token;
 
-            final Document doc = httpClient.getXmlDocument(clientConfId, url);
+            final Document doc = httpClient.getXmlDocument(url);
 
             NodeList l = doc.getElementsByTagName("QUERYTRANSFORMS");
             final Element e = (Element) l.item(0);

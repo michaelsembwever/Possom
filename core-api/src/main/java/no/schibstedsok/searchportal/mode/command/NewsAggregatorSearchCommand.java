@@ -138,7 +138,11 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
 //        Can not use HTTPClient in this case since it ignores protocol of the url. (need file:// and https://)
 //  --------
 //        final HTTPClient client = HTTPClient.instance(url.getHost(), url.getHost(), url.getPort());
-//        return client.getBufferedStream(url.getHost(), url.getPath());
+//        try{
+//            return client.getBufferedStream(url.getHost(), url.getPath());
+//        }catch (IOException ex) {
+//            throw client.interceptIOException(ex);
+//        }
         final URLConnection urlConnection = url.openConnection();
         urlConnection.setConnectTimeout(1000);
         urlConnection.setReadTimeout(1000);

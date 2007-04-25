@@ -76,6 +76,7 @@ public final class SearchServlet extends HttpServlet {
         if(Logger.getRootLogger().getLevel().isGreaterOrEqual(Level.INFO)){
             System.setProperty("sun.net.client.defaultConnectTimeout", "1000");
             System.setProperty("sun.net.client.defaultReadTimeout", "3000");
+            System.setProperty("sun.net.http.errorstream.enableBuffering", "true");
         }
     }
 

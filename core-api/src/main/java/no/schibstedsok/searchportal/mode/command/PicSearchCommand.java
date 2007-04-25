@@ -51,7 +51,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
         final String host = siteConfig.getProperty(psConfig.getQueryServerHost());
         port = Integer.parseInt(siteConfig.getProperty(psConfig.getQueryServerPort()));
-        client = HTTPClient.instance("picture_search", host, port);
+        client = HTTPClient.instance(host, port);
     }
 
     /** {@inherit} */
@@ -143,7 +143,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     private Document doSearch(final String url) {
 
         try {
-            return client.getXmlDocument("picture_search", url);
+            return client.getXmlDocument(url);
         } catch (IOException e) {
             LOG.error("Problems with connection to " + url, e);
         } catch (SAXException e) {

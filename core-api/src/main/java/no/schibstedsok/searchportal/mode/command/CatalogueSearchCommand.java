@@ -82,7 +82,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private String queryGeoString = null;
 
     /** User supplied value for sorting type of search result. */
-    private String userSortBy; // default er sorting på keywords
+    private final String userSortBy; // default er sorting på keywords
 
     /** The number of terms (words) in the largest COMPANY_KEYWORD_RESERVED match in the query.
      * Any leaf clauses within this match are boundary matched in the lemiypcfkeywords filter,
@@ -146,16 +146,10 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         // user may specify sorting in two different ways from the GUI,
         // by company name or by keyword. Default is by keyword.
-        if (getSingleParameter("userSortBy") != null
-                && getSingleParameter("userSortBy").length() > 0
-                && getSingleParameter("userSortBy").equals("name")) {
+        userSortBy = "name".equals(getSingleParameter("userSortBy"))
+                ? "name"
+                : ("kw".equals(getSingleParameter("userSortBy")) ? "kw" : null);
 
-            userSortBy = "name";
-        } else if(getSingleParameter("userSortBy") != null
-                && getSingleParameter("userSortBy").length() > 0
-                && getSingleParameter("userSortBy").equals("kw")){
-            userSortBy = "kw";
-        }
     }
 
 
@@ -428,7 +422,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         if(hasNotWordCharacters){
             appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
 
-        }else if(!getTransformedTerms().get(clause).equals(BLANK)) {
+        }else if(!BLANK.equals(getTransformedTerms().get(clause))) {
 
             final Query query = context.getDataModel().getQuery().getQuery();
 
@@ -493,7 +487,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     protected void visitImpl(final PhraseClause clause) {
 
-        if (!getTransformedTerms().get(clause).equals(BLANK)) {
+        if (!BLANK.equals(getTransformedTerms().get(clause))) {
 
             appendToQueryRepresentation(createPhraseQuerySyntax(getTransformedTerms().get(clause)));
         }
