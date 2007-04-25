@@ -498,7 +498,7 @@ public final class HTTPClient {
         public String toString() {
                         
             return ": " +  new DecimalFormat("000,000,000").format(invocations)
-                    + " : " + new DecimalFormat("000,000,000").format(longest)
+                    + " : " + new DecimalFormat("00,000").format(longest)
                     + "ms : " + new DecimalFormat("0,000,000").format(getAverageInvocationTime())
                     + "µs :   " + new DecimalFormat("00,000").format(failures)
                     + " :         " + new DecimalFormat("00,000").format(connectTimeouts)
@@ -518,7 +518,7 @@ public final class HTTPClient {
 
             final StringBuilder msg = new StringBuilder();
             msg.append("\n------ Printing HTTPClient statistics ------\n"
-                    + ": invocations : longest       : average     "
+                    + ": invocations : longest  : average     "
                     + ": failures : connect errors : read timeouts <- client\n");
             
             for(Statistic stat : list){
