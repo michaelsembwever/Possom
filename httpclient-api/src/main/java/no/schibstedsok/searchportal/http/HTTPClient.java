@@ -462,9 +462,10 @@ public final class HTTPClient {
 
         synchronized void addInvocation(final long time){
 
-            totalTime += (time / 1000000);
-            if(time > longest){
-                longest = time;
+            final long timeMs = (time / 1000000);
+            totalTime += timeMs;
+            if(timeMs > longest){
+                longest = timeMs;
             }
             ++invocations;
             
