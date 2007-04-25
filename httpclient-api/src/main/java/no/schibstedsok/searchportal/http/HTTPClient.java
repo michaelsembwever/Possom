@@ -298,19 +298,13 @@ public final class HTTPClient {
             final URLConnection conn, 
             final IOException ioe){
         
-        final String id = conn.getURL().getHost() + ':' + conn.getURL().getPort();
+        final String id = conn.getURL().getHost() + ':' 
+                + (-1 != conn.getURL().getPort() ? conn.getURL().getPort() : 80);
         
         return interceptIOException(id, conn, ioe);
     }
              
-    /**
-     * 
-     * @param id 
-     * @param urlConn 
-     * @param ioe 
-     * @return 
-     */
-    public static IOException interceptIOException(
+    private static IOException interceptIOException(
             final String id, 
             final URLConnection urlConn, 
             final IOException ioe){
@@ -362,12 +356,15 @@ public final class HTTPClient {
     private static void cleanErrorStream(final HttpURLConnection con){
 
         if(null != con.getErrorStream()){
+            
             final BufferedReader errReader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
             final StringBuilder err = new StringBuilder();
             try{
                 for(String line = errReader.readLine(); null != line; line = errReader.readLine()){
                     err.append(line);
                 }
+                con.getErrorStream().close();
+                
             }catch(IOException ioe){
                 LOG.warn(ioe.getMessage(), ioe);
             }
@@ -444,6 +441,7 @@ public final class HTTPClient {
             
         private final String id;
         private long totalTime = 0;
+        private long longest = 0;
         private long invocations = 0;
         private volatile long connectTimeouts = 0;
         private volatile long readTimeouts = 0;
@@ -465,6 +463,9 @@ public final class HTTPClient {
         synchronized void addInvocation(final long time){
 
             totalTime += (time / 1000000);
+            if(time > longest){
+                longest = time;
+            }
             ++invocations;
             
             if(STATISTICS_LOG.isDebugEnabled() && System.currentTimeMillis() / 60000 != lastPrint){ 
@@ -494,7 +495,7 @@ public final class HTTPClient {
         public String toString() {
                         
             return ": " +  new DecimalFormat("000,000,000").format(invocations)
-                    + " : " + new DecimalFormat("000,000,000").format(totalTime)
+                    + " : " + new DecimalFormat("000,000,000").format(longest)
                     + "ms : " + new DecimalFormat("0,000,000").format(getAverageInvocationTime())
                     + "µs :   " + new DecimalFormat("00,000").format(failures)
                     + " :         " + new DecimalFormat("00,000").format(connectTimeouts)
@@ -514,7 +515,7 @@ public final class HTTPClient {
 
             final StringBuilder msg = new StringBuilder();
             msg.append("\n------ Printing HTTPClient statistics ------\n"
-                    + ": invocations : total time    : average     "
+                    + ": invocations : longest       : average     "
                     + ": failures : connect errors : read timeouts <- client\n");
             
             for(Statistic stat : list){
