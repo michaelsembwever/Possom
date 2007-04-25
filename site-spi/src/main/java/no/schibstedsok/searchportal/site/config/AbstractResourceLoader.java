@@ -38,7 +38,7 @@ import org.xml.sax.SAXParseException;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 abstract class AbstractResourceLoader
-        implements Runnable, DocumentLoader, PropertiesLoader, ClasspathLoader {
+        implements Runnable, DocumentLoader, PropertiesLoader {
     
     private enum Polymorphism{
         NONE,
@@ -50,9 +50,8 @@ abstract class AbstractResourceLoader
     private enum Resource{
         
         PROPERTIES(Polymorphism.UP_HEIRARCHY),
-        DOM_DOCUMENT(Polymorphism.NONE),
-        CLASSPATH(Polymorphism.FIRST_FOUND);
-        
+        DOM_DOCUMENT(Polymorphism.NONE);
+
         final private Polymorphism polymorphism;
         
         Resource(final Polymorphism polymorphism){
@@ -171,14 +170,6 @@ abstract class AbstractResourceLoader
         postInit();
     }
     
-    public void init(String classpath, final ClassLoader parent) {
-
-        resourceType = Resource.CLASSPATH;
-        preInit(classpath);
-        parentClassloader = parent;
-        postInit();
-    }
-    
     private void preInit(final String resource){
         
         if (future != null && !future.isDone()) {
@@ -282,11 +273,6 @@ abstract class AbstractResourceLoader
             case DOM_DOCUMENT:
                 document = builder.newDocument();
                 break;
-
-            case CLASSPATH:
-                //FIXME Broken. Manual localhost URLs with host-header required in findClass() method.
-                classloader = new URLClassLoader(new URL[]{}, parentClassloader);
-                break;
         }
 
         success = true;
@@ -328,12 +314,6 @@ abstract class AbstractResourceLoader
                         
                     case DOM_DOCUMENT:
                         document = builder.parse( new InputSource(new InputStreamReader(is)) );
-                        break;
-                        
-                    case CLASSPATH:
-                        final URL url = new URL(getUrlFor(resource));
-                        //FIXME Broken. Manual localhost URLs with host-header required in findClass() method.
-                        classloader = new URLClassLoader(new URL[]{url}, parentClassloader);
                         break;
                 }
 

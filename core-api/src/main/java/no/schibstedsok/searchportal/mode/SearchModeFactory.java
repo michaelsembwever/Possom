@@ -56,6 +56,7 @@ import no.schibstedsok.searchportal.site.SiteKeyedFactory;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
+import no.schibstedsok.searchportal.site.config.SiteClassLoaderFactory;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -96,7 +97,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
 
     /**
-     * TODO comment me. *
+     * The name of the modes configuration file.
      */
     public static final String MODES_XMLFILE = "modes.xml";
 
@@ -807,8 +808,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element qt = (Element) node;
-                        if (queryTransformerFactory.supported(qt.getTagName())) {
-                            sc.addQueryTransformer(queryTransformerFactory.parseQueryTransformer(qt));
+                        if (queryTransformerFactory.supported(qt.getTagName(), cxt.getSite())) {
+                            sc.addQueryTransformer(queryTransformerFactory.parseQueryTransformer(qt, cxt.getSite()));
                         }
                     }
                 }
@@ -828,8 +829,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element rh = (Element) node;
-                        if (resultHandlerFactory.supported(rh.getTagName())) {
-                            sc.addResultHandler(resultHandlerFactory.parseResultHandler(rh));
+                        if (resultHandlerFactory.supported(rh.getTagName(), cxt.getSite())) {
+                            sc.addResultHandler(resultHandlerFactory.parseResultHandler(rh, cxt.getSite()));
                         }
                     }
                 }
@@ -911,94 +912,86 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
 
-    private static final class QueryTransformerFactory extends AbstractFactory {
+    private static final class QueryTransformerFactory extends AbstractFactory<QueryTransformerConfig> {
 
         QueryTransformerFactory() {
         }
 
-        QueryTransformerConfig parseQueryTransformer(final Element qt) {
-
-            return ((QueryTransformerConfig) construct(qt)).readQueryTransformer(qt);
+        QueryTransformerConfig parseQueryTransformer(final Element qt, final Site site) {
+            return construct(qt, site).readQueryTransformer(qt);
         }
 
-        protected Class<? extends QueryTransformerConfig> findClass(final String xmlName) {
+        @SuppressWarnings("unchecked")
+        protected Class<QueryTransformerConfig> findClass(final String xmlName, final Site site)
+                throws ClassNotFoundException {
 
-            Class clazz = null;
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
             LOG.info("findClass " + className);
-
-            try {
-                clazz = (Class<? extends QueryTransformerConfig>) Class.forName(
-                        "no.schibstedsok.searchportal.query.transform."
+            final Class clazz = (Class<QueryTransformerConfig>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
+                "no.schibstedsok.searchportal.query.transform."
                                 + className
                                 + "QueryTransformerConfig");
-
-            } catch (ClassNotFoundException cnfe) {
-                LOG.error(cnfe.getMessage(), cnfe);
-            }
+            LOG.info("Found class " + clazz.getName());
             return clazz;
         }
-
     }
 
-    private static final class ResultHandlerFactory extends AbstractFactory {
+    private static final class ResultHandlerFactory extends AbstractFactory<ResultHandlerConfig> {
 
         ResultHandlerFactory() {
         }
 
-        ResultHandlerConfig parseResultHandler(final Element rh) {
-
-            return ((ResultHandlerConfig) construct(rh)).readResultHandler(rh);
+        ResultHandlerConfig parseResultHandler(final Element rh, final Site site) {
+            return construct(rh, site).readResultHandler(rh);
         }
 
-        protected Class<? extends ResultHandlerConfig> findClass(final String xmlName) {
+        @SuppressWarnings("unchecked")
+        protected Class<ResultHandlerConfig> findClass(final String xmlName, final Site site)
+                throws ClassNotFoundException {
 
-            Class clazz = null;
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
             LOG.info("findClass " + className);
 
-            try {
-                clazz = (Class<? extends ResultHandlerConfig>) Class.forName(
-                        "no.schibstedsok.searchportal.result.handler."
-                                + className
-                                + "ResultHandlerConfig");
-
-            } catch (ClassNotFoundException cnfe) {
-                LOG.error(cnfe.getMessage(), cnfe);
-            }
-            return clazz;
+            return (Class<ResultHandlerConfig>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
+                    "no.schibstedsok.searchportal.result.handler."
+                            + className
+                            + "ResultHandlerConfig");
         }
-
     }
 
-    private static abstract class AbstractFactory {
-        AbstractFactory() {
+    private static abstract class AbstractFactory<C>{
+        AbstractFactory(){}
+        
+        boolean supported(final String xmlName, final Site site) {
+
+            try {
+                return null != findClass(xmlName, site);
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
         }
 
-        boolean supported(final String xmlName) {
-
-            return null != findClass(xmlName);
-        }
-
-        protected Object construct(final Element element) {
+        protected C construct(final Element element, final Site site) {
 
             final String xmlName = element.getTagName();
             LOG.info(INFO_CONSTRUCT + xmlName);
 
             try {
-                return findClass(xmlName).newInstance();
-
+                return findClass(xmlName, site).newInstance();
             } catch (InstantiationException ex) {
                 throw new InfrastructureException(ex);
             } catch (IllegalAccessException ex) {
                 throw new InfrastructureException(ex);
+            } catch (ClassNotFoundException e) {
+                LOG.error(e.getMessage(), e);
+                return null;
             }
         }
 
-        protected abstract Class<? extends Object> findClass(final String xmlName);
+        protected abstract Class<C> findClass(final String xmlName, final Site site) throws ClassNotFoundException;
     }
 }

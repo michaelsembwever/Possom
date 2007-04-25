@@ -72,15 +72,6 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return dl;
     }
 
-    public static ClasspathLoader newClassLoader(
-            final SiteContext siteCxt,
-            final ClassLoader parent){
-
-        final ClasspathLoader cl = new UrlResourceLoader(siteCxt);
-        cl.init("src/", parent);
-        return cl;
-    }
-
     public static boolean doesUrlExist(final String url, final String hostHeader){
 
         boolean success = false;
@@ -182,7 +173,8 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
         try {
             final URL u = new URL(getUrlFor(resource));
-            final HTTPClient client 
+
+            final HTTPClient client
                     = HTTPClient.instance(u.getHost(), u.getHost(), u.getPort(), getHostHeaderFor(resource));
             
             return client.getBufferedStream(u.getHost(), u.getPath());

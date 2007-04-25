@@ -32,6 +32,8 @@ public final class StockSearchCommand extends AbstractSearchCommand {
         final String q = getTransformedQuery();
         LOG.info("transformed query is " + q);
 
+        // TODO: Remove this dependency on the query transformer. Prevents the query transformer from being moved into
+        // TODO: the skin.
         // for now we are only interested in complete matches. and the SynonymQT only deals with stock-tickers.
         if( SynonymQueryTransformer.isSynonym( q )){
 
