@@ -105,10 +105,9 @@
 
                     <search:include include="spellcheck"/>
                     <search:include include="middle-col-two"/>
-
                     <search:include include="middle-col-three"/>
-
                     <search:include include="middle-col-four"/>
+                    <search:include include="middle-col-five"/>
 
                     </td>
                     <td class="cell_four">
