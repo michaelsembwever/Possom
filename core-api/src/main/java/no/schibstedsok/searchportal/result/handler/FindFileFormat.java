@@ -11,10 +11,10 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * @version $Id$
  */
 public final class FindFileFormat implements ResultHandler {
-    
+
     private final FindFileFormatResultHandlerConfig config;
-    
-    private static final MimetypesFileTypeMap mimetypes = new MimetypesFileTypeMap();
+
+    private static final MimetypesFileTypeMap TYPES = new MimetypesFileTypeMap();
 
     /**
      *
@@ -26,20 +26,19 @@ public final class FindFileFormat implements ResultHandler {
 
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
-        
+
 
         for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
-            
-            final String contentType = null != config.getField() ? item.getField(config.getField()) : null;
+
+            final String type = null != config.getField() ? item.getField(config.getField()) : null;
             final String url = item.getField("url");
-            final int dotIdx = url.lastIndexOf('.');
-            final String ext = dotIdx > 0 && dotIdx < url.length()
-                    ? url.substring(dotIdx + 1, url.length())
-                    : "";
-            final String fileformat = null != contentType && contentType.length() > 0
-                    ? contentType
-                    : mimetypes.getContentType(url);
-            
+
+            final String fileformat = null != type && type.length() > 0
+                    ? type
+                    : ("application/octet-stream".equals(TYPES.getContentType(url))
+                        ? "text/html"
+                        : TYPES.getContentType(url));
+
 
             item.addField("fileformat", fileformat);
         }

@@ -14,21 +14,6 @@ import org.w3c.dom.Element;
 @Controller("FindFileFormat")
 public final class FindFileFormatResultHandlerConfig extends AbstractResultHandlerConfig {
     
-//    static final Map<String,String> EXTENSION_MAP;
-//    
-//    static{
-//        
-//        final Map<String,String> map = new HashMap<String,String>();
-//        map.put(".html", "text/html");
-//        map.put(".pdf", "");
-//        map.put(".doc", "");
-//        map.put(".ppt", "");
-//        map.put(".xls", "");
-//        map.put(".txt", "text/plain");
-//        
-//        EXTENSION_MAP = Collections.unmodifiableMap(map);
-//    }
-    
     private String field;
     
     /**
