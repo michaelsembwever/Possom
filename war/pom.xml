@@ -204,6 +204,13 @@
             <build>
                 <finalName>ROOT.alpha</finalName>
             </build>
+            <distributionManagement>
+                <repository>
+                    <id>Sesam-Alpha</id>
+                    <name>Schibsted Søk's Alpha repository</name>
+                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-alpha</url>
+                </repository>
+            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -220,6 +227,13 @@
             <build>
                 <finalName>ROOT.nuclei</finalName>
             </build>
+            <distributionManagement>
+                <repository>
+                    <id>Sesam-Nuclei</id>
+                    <name>Schibsted Søk's Nuclei repository</name>
+                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-nuclei</url>
+                </repository>
+            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -236,6 +250,13 @@
             <build>
                 <finalName>ROOT.beta</finalName>
             </build>
+            <distributionManagement>
+                <repository>
+                    <id>Sesam-Beta</id>
+                    <name>Schibsted Søk's Beta repository</name>
+                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-beta</url>
+                </repository>
+            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -252,6 +273,13 @@
             <build>
                 <finalName>ROOT.electron</finalName>
             </build>
+            <distributionManagement>
+                <repository>
+                    <id>Sesam-Electron</id>
+                    <name>Schibsted Søk's Electron repository</name>
+                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-electron</url>
+                </repository>
+            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
@@ -268,6 +296,13 @@
             <build>
                 <finalName>ROOT.gamma</finalName>
             </build>
+            <distributionManagement>
+                <repository>
+                    <id>Sesam-Gamma</id>
+                    <name>Schibsted Søk's Gamma repository</name>
+                    <url>scp://localhost/www/schibstedsok/data/httpd/dev.schibstedsok.no_443/htdocs/maven2-gamma</url>
+                </repository>
+            </distributionManagement>
             <properties>
                 <tradedoubler.form.action>$$url</tradedoubler.form.action>
                 <tradedoubler.context.url>http://www.sesam.no</tradedoubler.context.url>
