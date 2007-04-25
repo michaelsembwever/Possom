@@ -11,7 +11,7 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 
 /**
  * UrlVelocityTemplateLoaderDebug adds border around every
- * velocity template that it loaded. This is a nice way to
+ * velocity template that is loaded. This is a nice way to
  * see wich templates are loaded and where they are loaded.
  * 
  * @author Ola M Sagli <a mailto="ola@sesam.no">ola@sesam.no</a>
@@ -20,14 +20,13 @@ import org.apache.velocity.exception.ResourceNotFoundException;
 public class URLVelocityTemplateLoaderDebug extends URLVelocityTemplateLoader {
 	
 	private static Logger log = Logger.getLogger(URLVelocityTemplateLoaderDebug.class);
-	
 	static String HTML_DIV = "<div style=\"margin: 3px; border: 1px solid #C0C0C0\">\n";
-	
 	static int NOT_MATCH = -1;
 	
 	private String header(String content) {
 		return "<div style=\"background:#DDDDDD; font-size:10px\">" + content + "</div>\n";
 	}
+
 	/**
 	 * getResourceStream() loads resource from url. Then add frame and display velocity filename 
 	 * before returning the content. 
@@ -39,7 +38,6 @@ public class URLVelocityTemplateLoaderDebug extends URLVelocityTemplateLoader {
 		String relUrl = url.replaceAll("http://(.*?)/", "/");		
 
 		InputStream stream = null;
-		
 		String base = System.getProperty("OVERRIDE_VELOCITY_TEMPLATES");
 		
 		if(base == null) {
