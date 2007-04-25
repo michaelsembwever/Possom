@@ -335,16 +335,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 scores.put(config.getName(), score);
 
                                 if (config.isAlwaysRun() || score >= eHint.getThreshold()) {
-                                    commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt));
+                                    commands.add(SearchCommandFactory.getController(searchCmdCxt));
                                 }
 
                             } else if (config.isAlwaysRun()) {
-                                commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt));
+                                commands.add(SearchCommandFactory.getController(searchCmdCxt));
                             }
 
                         } else {
 
-                            commands.add(SearchCommandFactory.createSearchCommand(searchCmdCxt));
+                            commands.add(SearchCommandFactory.getController(searchCmdCxt));
                         }
                     }
                 }catch(RuntimeException re){

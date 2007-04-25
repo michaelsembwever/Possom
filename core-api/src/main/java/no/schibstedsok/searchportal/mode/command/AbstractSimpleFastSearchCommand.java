@@ -96,7 +96,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     static {
         try {
             engineFactory = FastSearchEngineFactory.newInstance();
+            
         } catch (ConfigurationException e) {
+            LOG.fatal(e.getMessage(), e);
+            // Who exactly is expected to catch from a static constructor?
             throw new InfrastructureException(e);
         }
     }

@@ -8,12 +8,14 @@
 
 package no.schibstedsok.searchportal.mode.config;
 
+import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration.Controller;
 
 /**
  *
  * @author magnuse
  * @version $Id$
  */
+@Controller("MobileSearchCommand")
 public class MobileSearchConfiguration extends AbstractSearchConfiguration {
 
     private String source;

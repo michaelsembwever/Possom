@@ -2,12 +2,14 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import java.util.Map;
+import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration.Controller;
 
 /**
  * Configuration for the blocket command.
  * 
  * @version $Id$
  */
+@Controller("BlocketSearchCommand")
 public final class BlocketSearchConfiguration extends AbstractSearchConfiguration {
 
     private Map blocketMap;

@@ -15,8 +15,8 @@ import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration.Cont
  * @author magnuse
  * @version $Id$
  */
-@Controller("WebSearchConmmand")
-public class WebSearchConfiguration extends FastSearchConfiguration {
+@Controller("WebSearchCommand")
+public final class WebSearchConfiguration extends FastSearchConfiguration {
 
     /**
      * 

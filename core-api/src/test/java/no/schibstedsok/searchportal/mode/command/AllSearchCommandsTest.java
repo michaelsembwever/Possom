@@ -127,7 +127,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
 
             final SearchCommand.Context cxt = createCommandContext(rq, rqCxt, conf.getName());
 
-            final SearchCommand cmd = SearchCommandFactory.createSearchCommand(cxt);
+            final SearchCommand cmd = SearchCommandFactory.getController(cxt);
 
             commands.add(cmd);
         }

@@ -479,8 +479,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 
         // Nothing navigated
 
-        FastSearchCommand command = (FastSearchCommand) SearchCommandFactory
-                .createSearchCommand(createTestSearchCommandContext("bil") );
+        FastSearchCommand command = (FastSearchCommand) SearchCommandFactory.getController(createTestSearchCommandContext("bil") );
         command.setSearchEngineFactory(new MockupFastSearchEngineFactory());
 
         command.call();
@@ -498,8 +497,8 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("nav_geographic", navigated);
         params.put("ywfylke", navigatedValue);
 
-        command = (FastSearchCommand) SearchCommandFactory
-                .createSearchCommand(createTestSearchCommandContext("bil"));
+        
+        command = (FastSearchCommand) SearchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
         List links = command.getNavigatorBackLinks("geographic");
@@ -519,8 +518,8 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywfylke", navigatedValue);
         params.put("ywkommune", navigatedValue2);
 
-        command = (FastSearchCommand) SearchCommandFactory
-                .createSearchCommand(createTestSearchCommandContext("bil"));
+        
+        command = (FastSearchCommand) SearchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");
@@ -542,8 +541,8 @@ public final class FastNavigatorsTest extends DataModelTestCase {
         params.put("ywkommune", navigatedValue2);
         params.put("ywbydel", navigatedValue3);
 
-        command = (FastSearchCommand) SearchCommandFactory
-                .createSearchCommand(createTestSearchCommandContext("bil"));
+        
+        command = (FastSearchCommand) SearchCommandFactory.getController(createTestSearchCommandContext("bil"));
         command.call();
 
         links = command.getNavigatorBackLinks("geographic");

@@ -15,13 +15,13 @@ import no.schibstedsok.searchportal.query.XorClause;
  *
  * A search command for the web search.
  * @author magnuse
+ * @version $Id$
  */
-public class WebSearchCommand extends FastSearchCommand {
+public final class WebSearchCommand extends FastSearchCommand {
 
     /** Creates a new instance of WebSearchCommand
      *
      * @param cxt Search command context.
-     * @param parameters Search command parameters.
      */
     public WebSearchCommand(final Context cxt) {
 
@@ -34,7 +34,9 @@ public class WebSearchCommand extends FastSearchCommand {
      *
      * @param clause The clause to examine.
      */
+    @Override
     protected void visitXorClause(final Visitor visitor, final XorClause clause) {
+        
         switch(clause.getHint()){
         case PHRASE_ON_LEFT:
         case FULLNAME_ON_LEFT:

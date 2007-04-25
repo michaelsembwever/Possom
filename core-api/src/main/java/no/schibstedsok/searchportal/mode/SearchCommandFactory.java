@@ -10,69 +10,53 @@ package no.schibstedsok.searchportal.mode;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
+import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration.Controller;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 
 
 /** This factory creates the appropriate command for a given SearchConfiguration.
- * Uses a simple renaming lookup with reflection to create the SearchCommand.
- * That is, it tries to return a class with the same name except "Configuration" replaced with "Command".
  *
  * @author mick
  * @version $Id: SearchCommandFactory.java 3359 2006-08-03 08:13:22Z mickw $
  */
 public final class SearchCommandFactory {
 
-    private static final String ERR_NO_COMMAND = "Cannot find suitable command for ";
-
     private SearchCommandFactory() {  }
 
-    /** Create the appropriate command.
-     **/
-    public static SearchCommand createSearchCommand(final SearchCommand.Context cxt) {
-
-
+    
+    /** Create the appropriate command given the configuration inside the context.
+     * 
+     * @param cxt 
+     * @return 
+     */
+    public static SearchCommand getController(final SearchCommand.Context cxt){
+        
         final SearchConfiguration config = cxt.getSearchConfiguration();
-        try {
+        
+        final String name = "no.schibstedsok.searchportal.mode.command." 
+                + config.getClass().getAnnotation(Controller.class).value();
+        
+        try{
+            
+            final Class<? extends SearchCommand> cls 
+                    = (Class<? extends SearchCommand>)config.getClass().getClassLoader().loadClass(name);
+            
+            final Constructor<? extends SearchCommand> constructor 
+                    = cls.getConstructor(SearchCommand.Context.class);
 
-            final Class<SearchCommand> commandCls = (Class<SearchCommand>)
-                    Class.forName(config.getClass().getName()
-                    .replaceAll("Configuration", "Command")
-                    .replaceAll("config", "command"));
-
-            final Constructor<SearchCommand> commandConstr
-                    = commandCls.getConstructor(SearchCommand.Context.class);
-
-            return commandConstr.newInstance(cxt);
-
-
+            return constructor.newInstance(cxt);
+            
         } catch (ClassNotFoundException ex) {
-            throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-
-        } catch (SecurityException ex) {
-            throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-
+            throw new IllegalArgumentException(ex);
         } catch (NoSuchMethodException ex) {
-            throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-
-        } catch (IllegalArgumentException ex) {
-            throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-
+            throw new IllegalArgumentException(ex);
         } catch (InvocationTargetException ex) {
-            throw ex.getCause() instanceof RuntimeException
-                    ? (RuntimeException)ex.getCause()
-                    : new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-
+            throw new IllegalArgumentException(ex);
         } catch (InstantiationException ex) {
-            throw ex.getCause() instanceof RuntimeException
-                    ? (RuntimeException)ex.getCause()
-                    : new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
-
+            throw new IllegalArgumentException(ex);
         } catch (IllegalAccessException ex) {
-            throw new UnsupportedOperationException(ERR_NO_COMMAND + config.getName(), ex);
+            throw new IllegalArgumentException(ex);
         }
-
-      }
+    }    
 }

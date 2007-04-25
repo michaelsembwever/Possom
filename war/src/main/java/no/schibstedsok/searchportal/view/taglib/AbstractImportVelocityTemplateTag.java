@@ -67,6 +67,9 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
     /**Called by the container to invoke this tag.
      * The implementation of this method is provided by the tag library developer,
      * and handles all tag processing, body iteration, etc.
+     * @param templateName 
+     * @param map 
+     * @throws javax.servlet.jsp.JspException 
      */
     protected final void importTemplate(final String templateName, final Map<String,Object> map) throws JspException {
 

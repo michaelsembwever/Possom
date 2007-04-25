@@ -5,7 +5,8 @@ import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration.Cont
 
 
 /**
- * @version <tt>$Id $</tt>
+ * @version <tt>$Id$</tt>
+ * @author mick
  */
 @Controller("HittaSearchCommand")
 public final class HittaSearchConfiguration extends AbstractWebServiceSearchConfiguration {
