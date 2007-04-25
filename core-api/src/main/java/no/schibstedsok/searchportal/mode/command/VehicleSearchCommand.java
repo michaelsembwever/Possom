@@ -23,6 +23,10 @@ import org.jdom.input.SAXBuilder;
 import se.blocket.www2.search.SearchLocator;
 import se.blocket.www2.search.SearchPortType;
 
+// FIXME Replace JDom with org.w3c. 
+//      JDom provides nothing extra and it's just a pain when switching sax/dom implementations.
+
+
 public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(VehicleSearchCommand.class);
@@ -136,11 +140,9 @@ public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand 
         } catch (UnsupportedEncodingException usee) {
             LOG.error(ERR_FAILED_ENCODE_BLOCKET, usee);
         } catch (JDOMException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(ERR_FAILED_ENCODE_BLOCKET, e);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(ERR_FAILED_ENCODE_BLOCKET, e);
         }
 
         return result;

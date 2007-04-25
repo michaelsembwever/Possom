@@ -264,7 +264,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final SearchMode mode = new SearchMode(inherit);
 
                 mode.setId(id);
-                mode.setExecutor(parseExecutor(modeE.getAttribute("executor"),
+                mode.setExecutor(parseExecutor(
+                        modeE.getAttribute("executor"),
                         inherit != null ? inherit.getExecutor() : SearchMode.SearchCommandExecutorConfig.SEQUENTIAL));
 
                 fillBeanProperty(mode, inherit, "analysis", ParseType.Boolean, modeE, "false");
@@ -311,7 +312,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchMode.SearchCommandExecutorConfig def) {
 
         try {
-            return SearchMode.SearchCommandExecutorConfig.valueOf(name.toUpperCase());
+            if(0 < name.length()){
+                return SearchMode.SearchCommandExecutorConfig.valueOf(name.toUpperCase());
+            }
 
         } catch (IllegalArgumentException iae) {
             LOG.error("Unparsable executor " + name, iae);
