@@ -31,23 +31,29 @@
         <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
             function strep(qtag) {
-            if (window.RegExp && window.encodeURIComponent) {
-            var qlink=qtag.href;
-            var qenc=encodeURIComponent(document.forms[0].q.value);
-            if(qlink.indexOf("q=")!=-1){
-            qtag.href=qlink.replace(new RegExp("q=[^&$]*"),"q="+qenc);
-            }else{
-            qtag.href=qlink+"&q="+qenc;
-            }
-            }
-            return 1;
+	            if (window.RegExp && window.encodeURIComponent) {
+		            var qlink=qtag.href;
+		            var qenc=encodeURIComponent(document.forms[0].q.value);
+		            var str=qlink;
+		            if(document.forms[0].q.value == ""){
+		                str=qlink.replace("c=m","c=na");
+		            }else{
+		                str=qlink.replace("c=na","c=m");
+		            }
+		            if(qlink.indexOf("q=")!=-1){
+		            	qtag.href=str.replace(new RegExp("q=[^&$]*"),"q="+qenc);
+		            }else{
+			            qtag.href=str+"&q="+qenc;
+		            }
+	            }
+	            return 1;
             }
 
             function check() {
-            if(document.forms[0].q.value == ""){
-            document.forms[0].q.focus();
-            return false;
-            }
+	            if(document.forms[0].q.value == ""){
+		            document.forms[0].q.focus();
+		            return false;
+	            }
             }
 
             var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://www.sesam.no/\');">Sett som startside</a> &nbsp;&nbsp;|&nbsp;&nbsp;';
