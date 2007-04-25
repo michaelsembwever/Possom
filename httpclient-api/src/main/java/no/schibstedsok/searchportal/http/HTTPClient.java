@@ -336,7 +336,9 @@ public final class HTTPClient {
      */
     public static void addConnectionStatistic(final URLConnection conn, final long time){ 
         
-        final String id = conn.getURL().getHost() + ':' + conn.getURL().getPort();
+        final String id = conn.getURL().getHost() + ':' 
+                + (-1 != conn.getURL().getPort() ? conn.getURL().getPort() : 80);
+        
         Statistic.getStatistic(id).addInvocation(time);
     }
     
