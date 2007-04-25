@@ -234,7 +234,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                 LOG.info(INFO_PARSING_TAB + id);
                 final SearchTab inherit = getTabByName(tabE.getAttribute("inherit"));
                 final String mode = parseString(tabE.getAttribute("mode"), inherit != null ? inherit.getMode() : "");
-                final String key = parseString(tabE.getAttribute("key"), inherit != null ? inherit.getKey() : "");
+                final String key = parseString(tabE.getAttribute("key"), "");
                 final String parentKey = parseString(tabE.getAttribute("parent-key"),
                         inherit != null ? inherit.getParentKey() : "");
                 final String adCommand = parseString(tabE.getAttribute("ad-command"),
