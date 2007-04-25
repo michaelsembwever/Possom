@@ -35,6 +35,8 @@ import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
+import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
+import no.schibstedsok.searchportal.result.handler.ResultHandlerFactory;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.view.config.SearchTab;
@@ -45,8 +47,6 @@ import org.apache.log4j.MDC;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
-import no.schibstedsok.searchportal.result.handler.ResultHandlerFactory;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
@@ -383,7 +383,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /**
      * TODO comment me.
-     *
      */
     protected final void performQueryTransformation() {
 
@@ -464,7 +463,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         // process listed result handlers
         for (ResultHandlerConfig resultHandlerConfig : getSearchConfiguration().getResultHandlers()) {
-            
+
             final ResultHandler resultHandler = ResultHandlerFactory.getController(resultHandlerConfig);
 
             final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
@@ -570,6 +569,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final void appendToQueryRepresentation(final CharSequence addition) {
         sb.append(addition);
     }
+
+    protected final void appendToQueryRepresentation(final char addition) {
+        sb.append(addition);
+    }
+
 
     /**
      * TODO comment me. *
@@ -884,28 +888,28 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     private class MapInitialisor extends AbstractReflectionVisitor {
 
-        private final Map<Clause,String> map;
+        private final Map<Clause, String> map;
 
-        public MapInitialisor(final Map<Clause,String> m) {
+        public MapInitialisor(final Map<Clause, String> m) {
             map = m;
         }
 
         protected void visitImpl(final LeafClause clause) {
 
-            if(null == map.get(clause)){
-                if (null != clause.getField()){
-                    if(null == getFieldFilter(clause)){
-                        
+            if (null == map.get(clause)) {
+                if (null != clause.getField()) {
+                    if (null == getFieldFilter(clause)) {
+
                         // Escape any fielded leafs for fields that are not supported by this command.
                         // Performed here in order to make the correct terms visible to the query transformers.
                         map.put(clause, escapeFieldedLeaf(clause));
-                        
-                    }else{
-                        
+
+                    } else {
+
                         map.put(clause, "");
                     }
                 } else {
-                    
+
                     map.put(clause, clause.getTerm());
                 }
             }

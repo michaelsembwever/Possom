@@ -8,7 +8,7 @@ import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration.Cont
  * @version $Id$
  */
 @Controller("ClusteringESPFastCommand")
-public class ClusteringESPFastConfiguration extends NavigatableESPFastConfiguration {
+public class ClusteringESPFastConfiguration extends NewsEspSearchConfiguration {
 
     private String clusterIdParameter = "clusterId";
     private int resultsPerCluster;

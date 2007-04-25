@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClusteringESPFastCommand extends NavigatableESPFastCommand {
+public class ClusteringESPFastCommand extends NewsEspSearchCommand {
     public static final String PARAM_NEXT_OFFSET = "nextOffset";
 
     private static final Logger LOG = Logger.getLogger(ClusteringESPFastCommand.class);

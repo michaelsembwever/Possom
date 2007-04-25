@@ -25,6 +25,7 @@ import no.schibstedsok.searchportal.mode.config.MathExpressionSearchConfiguratio
 import no.schibstedsok.searchportal.mode.config.MobileSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
 import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.NewsEspSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.NewsMyNewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.NewsSearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
@@ -313,7 +314,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchMode.SearchCommandExecutorConfig def) {
 
         try {
-            if(0 < name.length()){
+            if (0 < name.length()) {
                 return SearchMode.SearchCommandExecutorConfig.valueOf(name.toUpperCase());
             }
 
@@ -375,7 +376,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         CATALOGUE_BANNERS_COMMAND(CatalogueBannersSearchConfiguration.class),
         CLUSTERING_ESP_FAST_COMMAND(ClusteringESPFastConfiguration.class),
         NEWS_AGGREGATOR_COMMAND(NewsAggregatorSearchConfiguration.class),
-        NEWS_MY_NEWS_COMMAND(NewsMyNewsSearchConfiguration.class);
+        NEWS_MY_NEWS_COMMAND(NewsMyNewsSearchConfiguration.class),
+        NEWS_ESP_COMMAND(NewsEspSearchConfiguration.class);
 
         private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
@@ -769,6 +771,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(cbsc, inherit, "queryParameterWhere", ParseType.String, commandE, "");
                 }
 
+                if (sc instanceof NewsEspSearchConfiguration) {
+                    final NewsEspSearchConfiguration nesc = (NewsEspSearchConfiguration) sc;
+                    fillBeanProperty(nesc, inherit, "mediumPrefix", ParseType.String, commandE, "medium");
+                    fillBeanProperty(nesc, inherit, "defaultMedium", ParseType.String, commandE, "webnewsarticle");
+                    fillBeanProperty(nesc, inherit, "mediumParameter", ParseType.String, commandE, "medium");
+                }
+
                 if (sc instanceof ClusteringESPFastConfiguration) {
                     final ClusteringESPFastConfiguration cefc = (ClusteringESPFastConfiguration) sc;
                     fillBeanProperty(cefc, inherit, "clusterIdParameter", ParseType.String, commandE, "clusterId");
@@ -930,9 +939,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.info("findClass " + className);
             final Class clazz = (Class<QueryTransformerConfig>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
-                "no.schibstedsok.searchportal.query.transform."
-                                + className
-                                + "QueryTransformerConfig");
+                    "no.schibstedsok.searchportal.query.transform."
+                            + className
+                            + "QueryTransformerConfig");
             LOG.info("Found class " + clazz.getName());
             return clazz;
         }
@@ -963,9 +972,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
     }
 
-    private static abstract class AbstractFactory<C>{
-        AbstractFactory(){}
-        
+    private static abstract class AbstractFactory<C> {
+        AbstractFactory() {
+        }
+
         boolean supported(final String xmlName, final Site site) {
 
             try {
