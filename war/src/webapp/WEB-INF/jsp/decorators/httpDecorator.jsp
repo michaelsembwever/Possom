@@ -112,6 +112,7 @@
                     </td>
                     <td class="cell_four">
                         <search:include include="right-col-one"/>
+                        <search:include include="right-col-two"/>
                     </td>
                 </tr>
                 <c:if test="${tab.layout.properties['offset-pager-hide'] != 'true'}">
