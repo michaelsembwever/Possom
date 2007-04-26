@@ -19,27 +19,29 @@ import java.util.TimeZone;
  * <p/>
  * <b>Note:</b> The implementation of this depends on that the day modifiers are sorted descending (last date first)
  * <b>Note:</b> This will only work on searchResults that are actually FastSearchResult
- * 
+ *
+ * @author Geir H. Pettersen (T-Rank)
  * @version $Id$
  */
 public final class AddLastWeekModifierResultHandler implements ResultHandler {
-    
+
     private static final int DAYS_IN_WEEK = 7;
     private static final Logger LOG = Logger.getLogger(AddLastWeekModifierResultHandler.class);
-    
+
     private final AddLastWeekModifierResultHandlerConfig config;
-    
+
     /**
-     * 
-     * @param config 
+     * @param config
      */
-    public AddLastWeekModifierResultHandler(final ResultHandlerConfig config){
-        this.config = (AddLastWeekModifierResultHandlerConfig)config;
+    public AddLastWeekModifierResultHandler(final ResultHandlerConfig config) {
+        this.config = (AddLastWeekModifierResultHandlerConfig) config;
     }
 
-    /** {@inherit} **/
+    /**
+     * {@inherit} *
+     */
     public void handleResult(final Context cxt, final DataModel datamodel) {
-        
+
         try {
             final SearchResult searchResult = cxt.getSearchResult();
             if (searchResult instanceof FastSearchResult) {
@@ -71,7 +73,7 @@ public final class AddLastWeekModifierResultHandler implements ResultHandler {
                 Modifier newModifier = new Modifier(fromDate, weekCount, null);
                 fastResult.addModifier(config.getTargetNavigatorField(), newModifier);
             } else {
-                LOG.error("Can not use " + AddLastWeekModifierResultHandler.class.getName() 
+                LOG.error("Can not use " + AddLastWeekModifierResultHandler.class.getName()
                         + " on a generic searchResult. Must be a " + FastSearchResult.class.getName());
             }
         } catch (ParseException e) {

@@ -3,12 +3,10 @@ package no.schibstedsok.searchportal.result.handler;
 
 import no.schibstedsok.searchportal.result.handler.AbstractResultHandlerConfig.Controller;
 import org.apache.log4j.Logger;
-
 import org.w3c.dom.Element;
 
 /**
- * 
- * @author 
+ * @author Geir H. Pettersen (T-Rank)
  * @version $Id$
  */
 @Controller("AddCategoryNavigationResultHandler")
@@ -19,39 +17,35 @@ public final class AddCategoryNavigationResultHandlerConfig extends AbstractResu
     private String categoryFields;
 
     /**
-     * 
-     * @return 
+     * @return
      */
     public String getCategoriesXml() {
         return categoriesXml;
     }
 
     /**
-     * 
-     * @param categoriesXml 
+     * @param categoriesXml
      */
     public void setCategoriesXml(String categoriesXml) {
         this.categoriesXml = categoriesXml;
     }
 
     /**
-     * 
-     * @return 
+     * @return
      */
     public String getCategoryFields() {
         return categoryFields;
     }
 
     /**
-     * 
-     * @param categoryFields 
+     * @param categoryFields
      */
     public void setCategoryFields(String categoryFields) {
         this.categoryFields = categoryFields;
     }
 
     public AddCategoryNavigationResultHandlerConfig readResultHandler(Element element) {
-        
+
         super.readResultHandler(element);
         setCategoryFields(element.getAttribute("category-fields"));
         final String categoryXml = element.getAttribute("categories-xml");

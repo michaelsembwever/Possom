@@ -20,12 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
- * @author 
+ * @author Geir H. Pettersen (T-Rank)
  * @version $Id$
  */
 public final class AddCategoryNavigationResultHandler implements ResultHandler {
-    
+
     private static final String CMD_ELEMENT_CATEGORY = "category";
     private static final String CMD_ATTR_DISPLAY_NAME = "display-name";
     private static final String CMD_ATTR_ID = "id";
@@ -36,18 +35,16 @@ public final class AddCategoryNavigationResultHandler implements ResultHandler {
     private final AddCategoryNavigationResultHandlerConfig config;
 
     /**
-     *
      * @param config
      */
-    public AddCategoryNavigationResultHandler(final ResultHandlerConfig config){
+    public AddCategoryNavigationResultHandler(final ResultHandlerConfig config) {
         this.config = (AddCategoryNavigationResultHandlerConfig) config;
     }
-    
+
 
     /**
-     * 
-     * @param cxt 
-     * @param datamodel 
+     * @param cxt
+     * @param datamodel
      */
     public void handleResult(Context cxt, DataModel datamodel) {
         try {
@@ -104,9 +101,8 @@ public final class AddCategoryNavigationResultHandler implements ResultHandler {
     }
 
     /**
-     * 
-     * @param categoriesElement 
-     * @return 
+     * @param categoriesElement
+     * @return
      */
     public List<Category> parseCategories(Element categoriesElement) {
         List<Element> categoryElements = getDirectChildren(categoriesElement, CMD_ELEMENT_CATEGORY);
