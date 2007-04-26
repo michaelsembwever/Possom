@@ -115,6 +115,7 @@
                         <search:include include="right-col-two"/>
                     </td>
                 </tr>
+                <search:include include="bottom-ads"/>
                 <c:if test="${tab.layout.properties['offset-pager-hide'] != 'true'}">
                     <tr>
                         <td>&nbsp;</td>
