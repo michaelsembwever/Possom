@@ -35,10 +35,16 @@ public class URLVelocityTemplateLoaderDebug extends URLVelocityTemplateLoader {
 	public InputStream getResourceStream(String url) throws ResourceNotFoundException {
 		log.info("getResourceStream() " + url);
 
+		String 	showBorder = System.getProperty("VELOCITY_DEBUG_BORDER");
+		
+		if("false".equals(showBorder)) {
+			return super.getResourceStream(url);
+		}
+		
 		String relUrl = url.replaceAll("http://(.*?)/", "/");		
 
 		InputStream stream = null;
-		String base = System.getProperty("OVERRIDE_VELOCITY_TEMPLATES");
+		String base = System.getProperty("VELOCITY_DEBUG_TEMPLATES");
 		
 		if(base == null) {
 			stream = super.getResourceStream(url);
