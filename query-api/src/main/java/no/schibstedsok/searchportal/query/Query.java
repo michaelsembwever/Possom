@@ -38,13 +38,24 @@ public interface Query {
 
     /** Return the number of terms in this query.
      * Terms are represented by LeafClauses.
-     **/
+     ** @return 
+     */
     int getTermCount();
     
-    /** Is the query blank (or just full of useless symbols). **/
+    /** Is the query blank (or just full of useless symbols). *
+     * @return 
+     */
     boolean isBlank();
 
+    /**
+     * 
+     * @return 
+     */
     ParentFinder getParentFinder();
 
+    /**
+     * 
+     * @return 
+     */
     TokenEvaluationEngine.State getEvaluationState();
 }
