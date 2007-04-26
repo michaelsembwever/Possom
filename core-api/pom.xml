@@ -238,6 +238,12 @@
             <scope>test</scope>
             <classifier>jdk15</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+            <version>3.3</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
 </project>
