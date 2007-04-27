@@ -413,8 +413,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         final boolean hasNotWordCharacters = m.find();
 
         // Hvis søket er et nøkkelord, bruk iyprpkw, ellers brukes iyprpnavn
-        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD)
-                && analysisSortBy==null){
+        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD) && analysisSortBy == null){
             analysisSortBy = SORTBY_KEYWORD;
         }
             
@@ -464,12 +463,17 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 }
 
             }else{
+                
+                final String transformedTerm = getTransformedTerms().get(clause);
+                final String kwTerm = clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD_RESERVED)
+                        ? "\"^" + transformedTerm + "$\""
+                        : transformedTerm;
 
                 appendToQueryRepresentation(
                         '('
-                        + "iypcfphnavn:" + getTransformedTerms().get(clause) + " ANY "
-                        + "lemiypcfkeywords:" + getTransformedTerms().get(clause) + " ANY "
-                        + "lemiypcfkeywordslow:" + getTransformedTerms().get(clause)
+                        + "iypcfphnavn:" + transformedTerm + " ANY "
+                        + "lemiypcfkeywords:" + kwTerm + " ANY "
+                        + "lemiypcfkeywordslow:" + transformedTerm
                         + ')');
             }
         }
