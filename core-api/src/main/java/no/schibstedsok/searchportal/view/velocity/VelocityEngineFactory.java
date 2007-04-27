@@ -8,6 +8,8 @@
 
 package no.schibstedsok.searchportal.view.velocity;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -67,6 +69,8 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.Log4JLogChute";
     private static final String LOG_NAME = "runtime.log.logsystem.log4j.logger";
 
+    private static final boolean VELOCITY_DEBUG = "true".equals(System.getProperty("VELOCITY_DEBUG"));
+    
     private static final String DIRECTIVES =
             "no.schibstedsok.searchportal.view.velocity.UrlEncodeDirective,"
             + "no.schibstedsok.searchportal.view.velocity.HtmlEscapeDirective,"
@@ -97,6 +101,9 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     private final VelocityEngine engine;
 
     private final Context context;
+
+
+    
 
     // Static --------------------------------------------------------
 
@@ -138,7 +145,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("math", new MathTool());
         // date tool
         context.put("date", new DateTool());
-
+   
         return context;
     }
 
@@ -205,6 +212,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     /** Creates a new instance of VelocityEngineFactory */
     private VelocityEngineFactory(final Context cxt) {
 
+    	
         try{
             INSTANCES_LOCK.writeLock().lock();
             context = cxt;
@@ -231,14 +239,16 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             };
 
             try  {
-                
-
+            	
                 engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
                 engine.setProperty(LOG_NAME, logger.getName());
                 engine.setProperty(Velocity.RESOURCE_LOADER, "url");
                 engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
-                engine.setProperty("url.resource.loader.cache", "true");
-                engine.setProperty("url.resource.loader.modificationCheckInterval", "0"); // cache forever
+                
+                if(!VELOCITY_DEBUG) {
+                	engine.setProperty("url.resource.loader.cache", "true");
+                	engine.setProperty("url.resource.loader.modificationCheckInterval", "0"); // cache forever
+                }
                 engine.setProperty(Site.NAME_KEY, site);
 
                 engine.setProperty("input.encoding", "UTF-8");
