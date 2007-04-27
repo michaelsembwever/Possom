@@ -37,10 +37,10 @@ import org.w3c.dom.Element;
  */
 public class URLVelocityTemplateLoader extends URLResourceLoader {
 
-	static String DIV_TAG = "div";
-	static String STYLE_ATTRIB = "style";
-	static String STYLE_BORDER = "margin:3px;border:1px solid #C0C0C0";
-	static String STYLE_HEADING="background:#DDDDDD;font-size:10px";
+	private static final String DIV_TAG = "div";
+	private static final String STYLE_ATTRIB = "style";
+	private static final String STYLE_BORDER = "margin:3px;border:1px solid #C0C0C0";
+	private static final String STYLE_HEADING="background:#DDDDDD;font-size:10px";
 
 	/**
 	 * getResourceStream() loads resource from url. Then add border around the
@@ -51,31 +51,41 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 			throws ResourceNotFoundException {
 
 		boolean VELOCITY_DEBUG = "true".equals(System.getProperty("VELOCITY_DEBUG"));
-
-		if (!VELOCITY_DEBUG) {
+		boolean VELOCITY_DEBUG_ON ="true".equals(System.getProperty("VELOCITY_DEBUG_ON"));
+		
+		if(!(VELOCITY_DEBUG && VELOCITY_DEBUG_ON)) {
 			return super.getResourceStream(url);
 		}
+		
 		InputStream stream = null;
 		String filePath = url.replaceAll("http://(.*?)/", "/").replace("locahost", "");
 		String templatesDir = System.getProperty("VELOCITY_TEMPLATES_DIR");
 
+		if(filePath.endsWith("head.vm")) {
+			return super.getResourceStream(url);
+		}
 		stream = getStream(templatesDir, filePath, url);
 			// If rss, means the output is xml. 
 		if (url.indexOf("rss") != -1) {
 			return stream;
 		}
 
-		byte byteContent[];
+		StringBuffer streamBuffer = new StringBuffer();
+
 		try {
-			byteContent = new byte[stream.available()];
-			stream.read(byteContent);
-			stream.close();
+			int c;
+			while((c = stream.read()) != -1) {
+				streamBuffer.append((char)c);
+			}
 		} catch (IOException e) {
 			throw new ResourceNotFoundException(e.getMessage());
 		}
 
 		// Create html 
-		String template= "\n" + new String(byteContent) + "\n";
+		StringBuffer template= new  StringBuffer();
+		template.append("\n");
+		template.append(streamBuffer);
+		template.append("\n");
 
 		StringWriter writer = new StringWriter();
 		Document doc = createDocument();
@@ -88,15 +98,16 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		divHeader.appendChild(doc.createTextNode(filePath));
 		border.appendChild(divHeader);
 		
-		border.appendChild(doc.createCDATASection(template));
+		border.appendChild(doc.createCDATASection(template.toString()));
 		doc.appendChild(border);
 
 		internalWriteDocument(doc, writer);
-		
+	
 		String result = writer.getBuffer().toString();
 		result = result.replace("<![CDATA[", "");
 		result = result.replace("]]>", "");
-			// log.info("Result: " + buffer.toString());
+		//System.out.println("*** Result: " + result.toString());
+		//System.out.println("*** Result.length: " + result.length());
 		return new ByteArrayInputStream(result.getBytes());
 	}
 
