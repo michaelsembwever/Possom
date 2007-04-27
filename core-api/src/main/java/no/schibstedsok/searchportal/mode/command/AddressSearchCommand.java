@@ -5,6 +5,9 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javax.measure.units.SI;
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
@@ -41,6 +44,13 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
             for (SearchResultItem item : sr.getResults()) {
                 if (item.getField("collapseid").equals(prevCollapseId)) {
                     sr.getResults().remove(item);
+                } else if (item.getField("streetHash") != null) {
+                    final Map<String,String> streetNumbers = new LinkedHashMap<String,String>();
+                    for (String record : item.getField("streetHash").split(";")) {
+                        final String[] values = record.split(":");
+                        streetNumbers.put(values[0], values[1]);
+                    }
+                    item.addObjectField("streetHashList", streetNumbers);
                 }
             }
         }
