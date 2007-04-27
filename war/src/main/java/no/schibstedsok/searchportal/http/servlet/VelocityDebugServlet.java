@@ -30,8 +30,10 @@ import org.w3c.dom.Element;
 public class VelocityDebugServlet extends HttpServlet{
 	
 	private static final Logger LOG = Logger.getLogger(VelocityDebugServlet.class);
-	/* Key for switching velocitydebug on/off */
+	/* Key that must be set as system property when starting tomcat */
 	private static final String VELOCITY_DEBUG = "VELOCITY_DEBUG";
+	/* Key for switching velocitydebug on/off */
+	private static final String VELOCITY_DEBUG_ON = "VELOCITY_DEBUG_ON";
 	/* Html tag */
 	private static final String HTML = "html";
 	/* Body tag */
@@ -49,14 +51,17 @@ public class VelocityDebugServlet extends HttpServlet{
 		Element html = doc.createElement(HTML);
 		Element body = doc.createElement(BODY);
 		
-		if(!isLocalhost(request)) {
-			LOG.warn("velocitydebug when running localhost only.");
-			body.appendChild(doc.createTextNode("Localhost only."));
+		if(!isLocalhost(request) || !"true".equals(System.getProperty(VELOCITY_DEBUG))) {
+			LOG.warn("velocitydebug when running localhost and VELOCITY_DEBUG set to true");
+			
+			body.appendChild(doc.createTextNode("Localhost only, start with -DVELOCITY_DEBUG=true"));
+			html.appendChild(body);
+			doc.appendChild(html);
 			internalWriteDocument(doc, response.getWriter());
 			return;
 		}
 		// TODO Auto-generated method stub
-		String velocityDebug = System.getProperty(VELOCITY_DEBUG);
+		String velocityDebug = System.getProperty(VELOCITY_DEBUG_ON);
 		String debugStatus = "false";
 		
 		if("true".equals(velocityDebug)) {
@@ -64,8 +69,12 @@ public class VelocityDebugServlet extends HttpServlet{
 		}else{
 			debugStatus = "true";
 		}
-		
-		System.setProperty(VELOCITY_DEBUG, debugStatus);		
+		System.setProperty(VELOCITY_DEBUG_ON, debugStatus);				
+
+		if(request.getQueryString() != null) {
+			response.sendRedirect("/search/?" + request.getQueryString());
+		}
+
 		body.appendChild(doc.createTextNode(ON_OFF + " " + debugStatus));
 		html.appendChild(body);
 		doc.appendChild(html);
