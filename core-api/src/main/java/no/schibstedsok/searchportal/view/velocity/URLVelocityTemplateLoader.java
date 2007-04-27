@@ -40,7 +40,7 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	private static final String DIV_TAG = "div";
 	private static final String STYLE_ATTRIB = "style";
 	private static final String STYLE_BORDER = "margin:3px;border:1px solid #C0C0C0";
-	private static final String STYLE_HEADING="background:#DDDDDD;font-size:10px";
+	private static final String STYLE_HEADING="text-decoration:underline;font-size:10px";
 
 	/**
 	 * getResourceStream() loads resource from url. Then add border around the
