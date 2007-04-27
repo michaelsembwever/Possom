@@ -33,7 +33,7 @@ import org.w3c.dom.Element;
  * @author Ola M Sagli <a mailto="ola@sesam.no">ola@sesam.no</a>
  * 
  */
-public class URLVelocityTemplateLoaderDebug extends URLResourceLoader {
+public class URLVelocityTemplateLoader extends URLResourceLoader {
 
 	static String DIV_TAG = "div";
 	static String STYLE_ATTRIB = "style";
