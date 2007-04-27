@@ -45,9 +45,14 @@ public class VelocityDebugServlet extends HttpServlet{
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
+		Document doc = createDocument();		
+		Element html = doc.createElement(HTML);
+		Element body = doc.createElement(BODY);
 		
 		if(isLocalhost(request)) {
 			LOG.warn("velocitydebug when running localhost only.");
+			body.appendChild(doc.createTextNode("Localhost only."));
+			internalWriteDocument(doc, response.getWriter()));
 			return;
 		}
 		// TODO Auto-generated method stub
@@ -62,11 +67,8 @@ public class VelocityDebugServlet extends HttpServlet{
 		
 		System.setProperty(VELOCITY_DEBUG, debugStatus);		
 
-		Document doc = createDocument();
-		
-		Element html = doc.createElement(HTML);
-		Element body = doc.createElement(BODY);
-		
+
+
 		body.appendChild(doc.createTextNode(ON_OFF + " " + debugStatus));
 		
 		html.appendChild(body);
