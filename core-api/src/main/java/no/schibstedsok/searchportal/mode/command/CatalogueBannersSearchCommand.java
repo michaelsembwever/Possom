@@ -8,7 +8,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
-import no.schibstedsok.searchportal.mode.config.CatalogueBannersSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.CatalogueBannersCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
@@ -49,7 +49,7 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
         
         super(cxt);
                 
-        final CatalogueBannersSearchConfiguration conf = (CatalogueBannersSearchConfiguration) cxt
+        final CatalogueBannersCommandConfig conf = (CatalogueBannersCommandConfig) cxt
                 .getSearchConfiguration();
         
         final String whereParameter = conf.getQueryParameterWhere();

@@ -12,7 +12,7 @@ import javax.xml.rpc.holders.LongHolder;
 import javax.xml.rpc.holders.StringHolder;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.mode.config.VehicleSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.VehicleCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.axis.client.Stub;
@@ -53,7 +53,7 @@ public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand 
     @Override
     public SearchResult execute() {
 
-        VehicleSearchConfiguration vsc = (VehicleSearchConfiguration) context.getSearchConfiguration();
+        VehicleCommandConfig vsc = (VehicleCommandConfig) context.getSearchConfiguration();
 
         final SearchLocator service = new SearchLocator();
         final SearchResult result = new BasicSearchResult(this);

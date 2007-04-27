@@ -229,9 +229,9 @@ public final class TestVisitor extends SiteTestCase {
     @Test
     public void testUnicodeAgainstQueryParser3() {
         basicQueryParserWithTestVisitorImpl(
-                "\u0938\u093F\u0926\u094D\u0927\u093E\u0930\u094D\u0925 \u0917\u094C\u0924\u092E",
-                "\u0938\u093F\u0926\u094D\u0927\u093E\u0930\u094D\u0925 \u0917\u094C\u0924\u092E",
-                "(\u0938\u093F\u0926\u094D\u0927\u093E\u0930\u094D\u0925 \u0917\u094C\u0924\u092E)");
+                "सिद्धार्थ गौतम",
+                "सिद्धार्थ गौतम",
+                "(सिद्धार्थ गौतम)");
     }
 
     private void basicQueryParserWithTestVisitorImpl(

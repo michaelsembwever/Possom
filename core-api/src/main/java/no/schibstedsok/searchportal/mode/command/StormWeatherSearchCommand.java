@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Map;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.StormWeatherSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.StormweatherCommandConfig;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
@@ -277,8 +277,8 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
          return e;
      }
 
-     public StormWeatherSearchConfiguration getSearchConfiguration() {
-         return (StormWeatherSearchConfiguration)super.getSearchConfiguration();
+     public StormweatherCommandConfig getSearchConfiguration() {
+         return (StormweatherCommandConfig)super.getSearchConfiguration();
      }
 
 

@@ -9,6 +9,7 @@ import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 
 import java.util.List;
 import java.util.Map;
+import org.w3c.dom.Element;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -88,10 +89,10 @@ public interface SearchConfiguration {
      */
     void setResultsToReturn(int numberOfResults);
 
-    /** TODO comment me. *
-     * @return 
-     */
-    boolean isChild();
+//    /** TODO comment me. *
+//     * @return 
+//     */
+//    boolean isChild();
 
     /** TODO comment me. *
      * @return 
@@ -124,4 +125,12 @@ public interface SearchConfiguration {
      * Removes all field filters associated with this configuration.
      */
     void clearFieldFilters();
+        
+    /**
+     * 
+     * @param element 
+     * @param inherit 
+     * @return 
+     */
+    SearchConfiguration readSearchConfiguration(Element element, SearchConfiguration inherit); 
 }

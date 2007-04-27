@@ -3,7 +3,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
-import no.schibstedsok.searchportal.mode.config.NewsAggregatorSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.NewsAggregatorCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
@@ -43,7 +43,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
     }
 
     public SearchResult execute() {
-        NewsAggregatorSearchConfiguration config = getSearchConfiguration();
+        NewsAggregatorCommandConfig config = getSearchConfiguration();
         StringDataObject clusterId = datamodel.getParameters().getValue(PARAM_CLUSTER_ID);
         String xmlFile = getXmlFileName(datamodel, config);
         LOG.debug("Loading xml file at: " + config.getXmlSource() + xmlFile);
@@ -54,7 +54,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         }
     }
 
-    private String getXmlFileName(DataModel dataModel, NewsAggregatorSearchConfiguration config) {
+    private String getXmlFileName(DataModel dataModel, NewsAggregatorCommandConfig config) {
         String geographic = "main";
         String category = "main";
         String[] geographicFields = config.getGeographicFieldArray();
@@ -86,7 +86,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         return newString;
     }
 
-    private SearchResult getClusterResult(NewsAggregatorSearchConfiguration config, StringDataObject clusterId, String xmlFile) {
+    private SearchResult getClusterResult(NewsAggregatorCommandConfig config, StringDataObject clusterId, String xmlFile) {
         try {
             final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
             final InputStream inputStream = getInputStream(config, xmlFile);
@@ -102,7 +102,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         return search(config, clusterId.getString());
     }
 
-    private SearchResult search(NewsAggregatorSearchConfiguration config, String clusterId) {
+    private SearchResult search(NewsAggregatorCommandConfig config, String clusterId) {
         LOG.debug("------ Running search to get clusters ---------");
         LOG.debug("clusterId=" + clusterId);
         LOG.debug("result-fields=" + config.getResultFields());
@@ -112,12 +112,12 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
     }
 
     @Override
-    public NewsAggregatorSearchConfiguration getSearchConfiguration() {
-        return (NewsAggregatorSearchConfiguration) super.getSearchConfiguration();
+    public NewsAggregatorCommandConfig getSearchConfiguration() {
+        return (NewsAggregatorCommandConfig) super.getSearchConfiguration();
     }
 
 
-    private SearchResult getPageResult(NewsAggregatorSearchConfiguration config, String xmlFile) {
+    private SearchResult getPageResult(NewsAggregatorCommandConfig config, String xmlFile) {
         final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
         try {
             SearchResult searchResult = newsAggregatorXmlParser.parseFullPage(config, getOffset(), getInputStream(config, xmlFile), this);
@@ -132,7 +132,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         return search(config, null);
     }
 
-    private InputStream getInputStream(NewsAggregatorSearchConfiguration config, String xmlFile) throws IOException {
+    private InputStream getInputStream(NewsAggregatorCommandConfig config, String xmlFile) throws IOException {
         final URL url = new URL(config.getXmlSource() + xmlFile);
 // ---------
 //        Can not use HTTPClient in this case since it ignores protocol of the url. (need file:// and https://)
@@ -174,7 +174,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             return saxBuilder.build(inputStream);
         }
 
-        public FastSearchResult parseCluster(NewsAggregatorSearchConfiguration config, InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
+        public FastSearchResult parseCluster(NewsAggregatorCommandConfig config, InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
             try {
                 final FastSearchResult searchResult = new FastSearchResult(searchCommand);
                 final Document doc = getDocument(inputStream);
@@ -200,7 +200,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        public FastSearchResult parseFullPage(NewsAggregatorSearchConfiguration config, int offset, InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
+        public FastSearchResult parseFullPage(NewsAggregatorCommandConfig config, int offset, InputStream inputStream, SearchCommand searchCommand) throws JDOMException, IOException {
             try {
 
                 final FastSearchResult searchResult = new FastSearchResult(searchCommand);
@@ -223,7 +223,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        private void handleCounts(NewsAggregatorSearchConfiguration config, Element countsElement, int offset, FastSearchResult searchResult) {
+        private void handleCounts(NewsAggregatorCommandConfig config, Element countsElement, int offset, FastSearchResult searchResult) {
             if (countsElement != null) {
                 final String entries = countsElement.getAttributeValue(ATTRIBUTE_ENTRY_COUNT);
                 if (entries != null && entries.length() > 0) {
@@ -250,7 +250,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        private void handleRelated(NewsAggregatorSearchConfiguration config, Element relatedElement, FastSearchResult searchResult) {
+        private void handleRelated(NewsAggregatorCommandConfig config, Element relatedElement, FastSearchResult searchResult) {
             if (relatedElement != null) {
                 final List<Element> categoryElements = relatedElement.getChildren(ELEMENT_CATEGORY);
                 for (Element categoryElement : categoryElements) {
@@ -269,7 +269,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        private void handleClusters(NewsAggregatorSearchConfiguration config, int offset, List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand) {
+        private void handleClusters(NewsAggregatorCommandConfig config, int offset, List<Element> clusters, SearchResult searchResult, SearchCommand searchCommand) {
             int maxOffset = offset + config.getResultsToReturn();
             for (int i = offset; i < clusters.size() && i < maxOffset; i++) {
                 Element cluster = clusters.get(i);
@@ -277,7 +277,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        private void handleFlatCluster(NewsAggregatorSearchConfiguration config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
+        private void handleFlatCluster(NewsAggregatorCommandConfig config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
             if (cluster != null) {
                 final Element entryCollectionElement = cluster.getChild(config.getNestedResultsField());
                 if (entryCollectionElement != null) {
@@ -294,7 +294,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        private int handleCluster(NewsAggregatorSearchConfiguration config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
+        private int handleCluster(NewsAggregatorCommandConfig config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
             if (cluster != null) {
                 final SearchResultItem searchResultItem = new BasicSearchResultItem();
                 searchResultItem.addField("size", Integer.toString(Integer.parseInt(cluster.getAttributeValue(ATTRIBUTE_FULL_COUNT)) - 1));
@@ -333,14 +333,14 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        private void addResult(NewsAggregatorSearchConfiguration config, SearchResultItem nestedResultItem,
+        private void addResult(NewsAggregatorCommandConfig config, SearchResultItem nestedResultItem,
                                SearchResult nestedSearchResult,
                                SearchCommand searchCommand) {
             addResult(config, nestedResultItem, nestedSearchResult, searchCommand, null);
         }
 
 
-        private void addResult(NewsAggregatorSearchConfiguration config,
+        private void addResult(NewsAggregatorCommandConfig config,
                                SearchResultItem nestedResultItem,
                                SearchResult nestedSearchResult,
                                SearchCommand searchCommand,

@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.TvsearchCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -32,8 +32,8 @@ public final class TvSearchSortingHandler implements ResultHandler {
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         final String sortBy = parameters.containsKey("userSortBy") ? ((String)parameters.get("userSortBy")) : "channel";
 
-        final TvSearchConfiguration searchConfiguration
-                = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+        final TvsearchCommandConfig searchConfiguration
+                = (TvsearchCommandConfig) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
 
         HashMap<String,ArrayList<SearchResultItem>> hm = new HashMap();
         SearchResult sr = cxt.getSearchResult();
@@ -112,8 +112,8 @@ public final class TvSearchSortingHandler implements ResultHandler {
 
     private final SearchResult joinBlocks(final Context cxt, final HashMap hm, final String modifiersId) {
 
-        final TvSearchConfiguration searchConfiguration
-                = (TvSearchConfiguration) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+        final TvsearchCommandConfig searchConfiguration
+                = (TvsearchCommandConfig) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
         final List<Modifier> modifiers = ((FastSearchResult) cxt.getSearchResult()).getModifiers(modifiersId);
         final SearchResult sr = cxt.getSearchResult();
 

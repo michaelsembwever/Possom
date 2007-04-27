@@ -9,7 +9,7 @@ import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
 
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.OverturePPCSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.OverturePpcCommandConfig;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
@@ -99,8 +99,8 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      * @return Returns the request url used for the ppc ads.
      */
     protected String createRequestURL() {
-        final OverturePPCSearchConfiguration ppcConfig
-                = (OverturePPCSearchConfiguration) context.getSearchConfiguration();
+        final OverturePpcCommandConfig ppcConfig
+                = (OverturePpcCommandConfig) context.getSearchConfiguration();
 
         final StringBuilder url = new StringBuilder(ppcConfig.getUrl());
 

@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.xml.rpc.ServiceException;
-import no.schibstedsok.searchportal.mode.config.HittaSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.HittaCommandConfig;
 import no.schibstedsok.searchportal.query.Clause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter;
@@ -80,7 +80,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
     /** @inherit **/
     public SearchResult execute(){
 
-        final HittaSearchConfiguration conf = (HittaSearchConfiguration) context.getSearchConfiguration();
+        final HittaCommandConfig conf = (HittaCommandConfig) context.getSearchConfiguration();
         int hits = 0;
 
         LOG.debug(DEBUG_CONF_NFO + conf.getCatalog() + ' ' + conf.getKey());

@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Map;
 
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.YahooIdpSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.YahooIdpCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
@@ -131,7 +131,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
     /** TODO comment me. **/
     protected String createRequestURL() {
-        final YahooIdpSearchConfiguration conf = (YahooIdpSearchConfiguration) context.getSearchConfiguration();
+        final YahooIdpCommandConfig conf = (YahooIdpCommandConfig) context.getSearchConfiguration();
 
         final String dateRange = '-' + new SimpleDateFormat(DATE_PATTERN).format(new Date());
 
@@ -172,8 +172,8 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     }
 
     /** Assured that associated SearchConfiguration is always of this type. **/
-    public YahooIdpSearchConfiguration getSearchConfiguration() {
-        return (YahooIdpSearchConfiguration)super.getSearchConfiguration();
+    public YahooIdpCommandConfig getSearchConfiguration() {
+        return (YahooIdpCommandConfig)super.getSearchConfiguration();
     }
 
     /** TODO comment me. **/

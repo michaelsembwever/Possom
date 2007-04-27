@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 import se.hitta.www.HittaService.GetPlaceStreetDetailsResponseGetPlaceStreetDetailsResult;
 import se.hitta.www.HittaService.HittaServiceLocator;
 import se.hitta.www.HittaService.HittaServiceSoap;
-import no.schibstedsok.searchportal.mode.config.HittaMapSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.HittamapCommandConfig;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
@@ -32,7 +32,7 @@ public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand
     @Override
     public SearchResult execute() {
 
-		HittaMapSearchConfiguration bsc = (HittaMapSearchConfiguration) context.getSearchConfiguration();
+		HittamapCommandConfig bsc = (HittamapCommandConfig) context.getSearchConfiguration();
 
 		final TokenEvaluationEngine engine = getEngine();
 		/* Butiker */

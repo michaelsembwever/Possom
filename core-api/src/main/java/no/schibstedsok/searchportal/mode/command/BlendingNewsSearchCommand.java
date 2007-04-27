@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.mode.config.BlendingNewsSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.BlendingNewsCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -33,7 +33,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
 
     private static final String FAST_DATE_FMT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
 
-    private final BlendingNewsSearchConfiguration cfg;
+    private final BlendingNewsCommandConfig cfg;
     private String additionalFilter;
     private boolean fakeResultsToReturn = false;
     private SearchResult result;
@@ -48,7 +48,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
 
         super(cxt);
 
-        cfg = (BlendingNewsSearchConfiguration) cxt.getSearchConfiguration();
+        cfg = (BlendingNewsCommandConfig) cxt.getSearchConfiguration();
     }
 
     public SearchResult execute() {

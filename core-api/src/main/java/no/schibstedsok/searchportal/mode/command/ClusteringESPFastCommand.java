@@ -9,7 +9,7 @@ import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.result.IllegalType;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
-import no.schibstedsok.searchportal.mode.config.ClusteringESPFastConfiguration;
+import no.schibstedsok.searchportal.mode.config.ClusteringEspFastCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
@@ -36,7 +36,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
      * @param query the FAST IQuery to modify
      */
     protected void modifyQuery(IQuery query) {
-        final ClusteringESPFastConfiguration config = getSearchConfiguration();
+        final ClusteringEspFastCommandConfig config = getSearchConfiguration();
 
         // Because of a bug in FAST ESP5 related to collapsing and sorting, we must use sort direcetion,
         // and not the +fieldname syntax
@@ -75,7 +75,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
      */
     protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
         try {
-            final ClusteringESPFastConfiguration config = getSearchConfiguration();
+            final ClusteringEspFastCommandConfig config = getSearchConfiguration();
             StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());
             if (clusterId == null) {
                 return createClusteredSearchResult(config, getOffset(), result);
@@ -94,7 +94,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
     }
 
 
-    private FastSearchResult createSingleClusterResults(ClusteringESPFastConfiguration config, int offset, IQueryResult result) throws IllegalType, EmptyValueException {
+    private FastSearchResult createSingleClusterResults(ClusteringEspFastCommandConfig config, int offset, IQueryResult result) throws IllegalType, EmptyValueException {
         final String nestedResultsField = config.getNestedResultsField();
         final FastSearchResult searchResult = new FastSearchResult(this);
         final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
@@ -142,7 +142,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
         return offset;
     }
 
-    private FastSearchResult createClusteredSearchResult(ClusteringESPFastConfiguration config, int offset, IQueryResult result) throws IllegalType, EmptyValueException {
+    private FastSearchResult createClusteredSearchResult(ClusteringEspFastCommandConfig config, int offset, IQueryResult result) throws IllegalType, EmptyValueException {
         final String clusterField = config.getClusterField();
         final String nestedResultsField = config.getNestedResultsField();
         final FastSearchResult searchResult = new FastSearchResult(this);
@@ -203,7 +203,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
         return searchResult;
     }
 
-    private static SearchResultItem addResult(ClusteringESPFastConfiguration config, SearchResult searchResult, IDocumentSummary document) {
+    private static SearchResultItem addResult(ClusteringEspFastCommandConfig config, SearchResult searchResult, IDocumentSummary document) {
         SearchResultItem searchResultItem = new BasicSearchResultItem();
 
         for (final Map.Entry<String, String> entry : config.getResultFields().entrySet()) {
@@ -217,8 +217,8 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
     }
 
 
-    public ClusteringESPFastConfiguration getSearchConfiguration() {
-        return (ClusteringESPFastConfiguration) super.getSearchConfiguration();
+    public ClusteringEspFastCommandConfig getSearchConfiguration() {
+        return (ClusteringEspFastCommandConfig) super.getSearchConfiguration();
     }
 
 

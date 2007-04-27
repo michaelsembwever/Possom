@@ -5,7 +5,7 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.mode.config.YahooMediaSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.YahooMediaCommandConfig;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.OrClause;
@@ -101,7 +101,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
 
         String query = getTransformedQuery();
 
-        final YahooMediaSearchConfiguration cfg = (YahooMediaSearchConfiguration) context.getSearchConfiguration();
+        final YahooMediaCommandConfig cfg = (YahooMediaCommandConfig) context.getSearchConfiguration();
 
         if (cfg.getSite().length() > 0) {
             query += " +site:" + cfg.getSite();

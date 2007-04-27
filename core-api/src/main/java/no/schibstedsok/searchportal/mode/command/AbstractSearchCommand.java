@@ -5,7 +5,7 @@ package no.schibstedsok.searchportal.mode.command;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.FastCommandConfig;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -984,8 +984,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             }
             final String fieldAs = fieldFilters.get(field);
 
-            if (getSearchConfiguration() instanceof FastSearchConfiguration) {
-                final FastSearchConfiguration fsc = (FastSearchConfiguration) getSearchConfiguration();
+            if (getSearchConfiguration() instanceof FastCommandConfig) {
+                final FastCommandConfig fsc = (FastCommandConfig) getSearchConfiguration();
                 if ("adv".equals(fsc.getFiltertype()))
                     filterBuilder.append(" AND " + (fieldAs.length() > 0 ? fieldAs + ':' + term : term));
                 else

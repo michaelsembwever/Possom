@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import no.schibstedsok.commons.ioc.ContextWrapper;
-import no.schibstedsok.searchportal.mode.config.TvWaitSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.TvwaitsearchCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
@@ -53,7 +53,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     // Attributes ----------------------------------------------------
 
     /** Search command configuration */
-    private final TvWaitSearchConfiguration config;
+    private final TvwaitsearchCommandConfig config;
 
     /** Wait on search result */
     private FastSearchResult wosr;
@@ -87,7 +87,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         super(cxt);
 
         blankQuery = getQuery().isBlank();
-        this.config = (TvWaitSearchConfiguration) cxt.getSearchConfiguration();
+        this.config = (TvwaitsearchCommandConfig) cxt.getSearchConfiguration();
 
         final String defaultUserSortBy = blankQuery ? "CHANNEL" : "DAY";
         final String usbp = getParameters().containsKey("userSortBy")

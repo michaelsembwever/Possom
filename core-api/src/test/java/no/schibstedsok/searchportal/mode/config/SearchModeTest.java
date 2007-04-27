@@ -28,17 +28,17 @@ import org.testng.annotations.Test;
  */
 public final class SearchModeTest extends DataModelTestCase {
 
-    /** Test the FastSearchConfiguration.
+    /** Test the FastCommandConfig.
      ** @throws java.lang.Exception 
      */
     @Test
-    public void testFastSearchConfiguration() throws Exception {
+    public void testFastCommandConfig() throws Exception {
 
         final SearchMode mode = new SearchMode();
 
         mode.setExecutor(SearchMode.SearchCommandExecutorConfig.PARALLEL);
 
-        final FastSearchConfiguration webCrawl = new FastSearchConfiguration();
+        final FastCommandConfig webCrawl = new FastCommandConfig();
 
         webCrawl.setName("test-fast-search-configuration");
         webCrawl.setQueryServerUrl("queryServerURL.1");
@@ -96,7 +96,7 @@ public final class SearchModeTest extends DataModelTestCase {
 
     }
 
-    /** Test the OverturePPCSearchConfiguration.
+    /** Test the OverturePPCCommandConfig.
      ** @throws java.lang.Exception 
      */
     @Test
@@ -106,7 +106,7 @@ public final class SearchModeTest extends DataModelTestCase {
 
         final SearchMode mode = new SearchMode();
         mode.setExecutor(SearchMode.SearchCommandExecutorConfig.PARALLEL);
-        final OverturePPCSearchConfiguration searchConfiguration = new OverturePPCSearchConfiguration();
+        final OverturePpcCommandConfig searchConfiguration = new OverturePpcCommandConfig();
         searchConfiguration.setName("test-overture-ppc-command");
         searchConfiguration.setResultsToReturn(3);
         searchConfiguration.setHost("overtureHost");

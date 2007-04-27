@@ -13,7 +13,7 @@ package no.schibstedsok.searchportal.mode.config;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public abstract class AbstractYahooSearchConfiguration extends AbstractSearchConfiguration {
+public abstract class AbstractYahooSearchConfiguration extends CommandConfig {
 
 
     // Constants -----------------------------------------------------
@@ -45,7 +45,6 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * Creates a new instance of AbstractYahooSearchConfiguration
      */
     public AbstractYahooSearchConfiguration() {
-        super(null);
     }
 
     /**
@@ -53,7 +52,7 @@ public abstract class AbstractYahooSearchConfiguration extends AbstractSearchCon
      * @param asc 
      */
     public AbstractYahooSearchConfiguration(final SearchConfiguration asc){
-        super(asc);
+
         if(asc != null && asc instanceof AbstractYahooSearchConfiguration){
             final AbstractYahooSearchConfiguration osc = (AbstractYahooSearchConfiguration) asc;
             encoding = osc.encoding;

@@ -4,7 +4,7 @@
  */
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.mode.config.TvSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.TvsearchCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
@@ -33,7 +33,7 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
 //            defaultChannelFilter = new StringBuilder(super.getAdditionalFilter());
 
         defaultChannelFilter.append("+(");
-        for (String channel : getTvSearchConfiguration().getDefaultChannels()) {
+        for (String channel : getTvsearchCommandConfig().getDefaultChannels()) {
             defaultChannelFilter.append(" sgeneric5nav:");
             defaultChannelFilter.append(channel);
         }
@@ -48,9 +48,9 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
             return 15;
         }
         if (getRunningQuery().getQuery().isBlank()) {
-            return getTvSearchConfiguration().getResultsToFetch();
+            return getTvsearchCommandConfig().getResultsToFetch();
         } else {
-            return getTvSearchConfiguration().getResultsToReturn();
+            return getTvsearchCommandConfig().getResultsToReturn();
         }
     }
 
@@ -75,8 +75,8 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
         return sr;
     }
 
-    private TvSearchConfiguration getTvSearchConfiguration() {
-        return (TvSearchConfiguration) getSearchConfiguration();
+    private TvsearchCommandConfig getTvsearchCommandConfig() {
+        return (TvsearchCommandConfig) getSearchConfiguration();
     }
 
     protected String getAdditionalFilter() {

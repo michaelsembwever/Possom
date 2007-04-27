@@ -1,6 +1,6 @@
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.mode.config.NewsEspSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.NewsEspCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -20,9 +20,9 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
 
     private void addMedium(Clause clause) {
         if (getQuery().getRootClause() == clause) {
-            NewsEspSearchConfiguration config = getSearchConfiguration();
+            NewsEspCommandConfig config = getSearchConfiguration();
             String medium = (String) datamodel.getJunkYard().getValue(config.getMediumParameter());
-            if (!NewsEspSearchConfiguration.ALL_MEDIUMS.equals(medium) && getTransformedQuery().length() > 0) {
+            if (!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium) && getTransformedQuery().length() > 0) {
                 if (medium == null || medium.length() == 0) {
                     medium = config.getDefaultMedium();
                 }
@@ -94,7 +94,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     @Override
-    public NewsEspSearchConfiguration getSearchConfiguration() {
-        return (NewsEspSearchConfiguration) super.getSearchConfiguration();
+    public NewsEspCommandConfig getSearchConfiguration() {
+        return (NewsEspCommandConfig) super.getSearchConfiguration();
     }
 }

@@ -1,7 +1,7 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.mode.config.NewsMyNewsSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.NewsMyNewsCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
@@ -88,7 +88,7 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
     }
 
     @Override
-    public NewsMyNewsSearchConfiguration getSearchConfiguration() {
-        return (NewsMyNewsSearchConfiguration) super.getSearchConfiguration();
+    public NewsMyNewsCommandConfig getSearchConfiguration() {
+        return (NewsMyNewsCommandConfig) super.getSearchConfiguration();
     }
 }

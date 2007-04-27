@@ -7,7 +7,7 @@ import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.mode.config.PicSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.PictureCommandConfig;
 import no.schibstedsok.searchportal.query.NotClause;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -47,7 +47,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         super(cxt);
 
         final SiteConfiguration siteConfig = datamodel.getSite().getSiteConfiguration();
-        final PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
+        final PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
 
         final String host = siteConfig.getProperty(psConfig.getQueryServerHost());
         port = Integer.parseInt(siteConfig.getProperty(psConfig.getQueryServerPort()));
@@ -58,7 +58,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     public SearchResult execute() {
 
         String query = getTransformedQuery();
-        final PicSearchConfiguration psConfig = (PicSearchConfiguration) context.getSearchConfiguration();
+        final PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
 
         try {
             query = URLEncoder.encode(query, "utf-8");

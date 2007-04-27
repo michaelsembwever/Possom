@@ -11,7 +11,7 @@ package no.schibstedsok.searchportal.mode;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
-import no.schibstedsok.searchportal.mode.config.AbstractSearchConfiguration.Controller;
+import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 
 

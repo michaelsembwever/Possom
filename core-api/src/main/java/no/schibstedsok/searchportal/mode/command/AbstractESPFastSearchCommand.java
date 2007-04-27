@@ -20,7 +20,7 @@ import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.view.ISearchView;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.ESPFastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.EspFastCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -51,7 +51,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
 
     // Attributes ----------------------------------------------------
-    private final ESPFastSearchConfiguration cfg;
+    private final EspFastCommandConfig cfg;
     private final String queryServer;
     private final ISearchView searchView;
     private IQueryResult result;
@@ -94,13 +94,12 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      * Creates new instance of search command.
      *
      * @param cxt        The context to work in.
-     * @param parameters The command parameters to use.
      */
     public AbstractESPFastSearchCommand(final Context cxt) {
 
         super(cxt);
 
-        cfg = (ESPFastSearchConfiguration) getSearchConfiguration();
+        cfg = (EspFastCommandConfig) getSearchConfiguration();
         final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
         queryServer = siteConf.getProperty(cfg.getQueryServer());
         searchView = initialiseSearchView();
@@ -436,7 +435,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     private int getMaxDocIndex(
             final IQueryResult iQueryResult,
             final int cnt,
-            final ESPFastSearchConfiguration fastSearchConfiguration) {
+            final EspFastCommandConfig fastSearchConfiguration) {
         return Math.min(cnt + fastSearchConfiguration.getResultsToReturn(), iQueryResult.getDocCount());
     }
 

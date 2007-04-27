@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
-import no.schibstedsok.searchportal.mode.config.CatalogueSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.CatalogueCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.Clause;
@@ -134,7 +134,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         super(cxt);
 
-        final CatalogueSearchConfiguration conf = (CatalogueSearchConfiguration) cxt.getSearchConfiguration();
+        final CatalogueCommandConfig conf = (CatalogueCommandConfig) cxt.getSearchConfiguration();
 
         LOG.debug(DEBUG_CONF_NFO + conf.getSearchBy() + ' '
                 + conf.getQueryParameterWhere() + ' '
@@ -169,7 +169,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     private WhoWhereSplit initialiseWhoWhere() {
 
-        final CatalogueSearchConfiguration conf = (CatalogueSearchConfiguration) context.getSearchConfiguration();
+        final CatalogueCommandConfig conf = (CatalogueCommandConfig) context.getSearchConfiguration();
 
         WhoWhereSplit splitQuery = new WhoWhereSplit(
                 datamodel.getQuery().getString(),

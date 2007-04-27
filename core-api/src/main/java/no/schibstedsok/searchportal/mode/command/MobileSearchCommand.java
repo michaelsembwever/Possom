@@ -29,7 +29,7 @@ import no.fast.msearch.search.MSearchInfoFactory;
 import no.fast.personalization.api.ExplicitUserGroupPersonalizationFactory;
 import no.fast.personalization.api.IPersonalizationSpecification;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.MobileSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.MobileCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -55,12 +55,12 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
     private static final String MSEARCH_CLIENT_PROPS = "msearch-client.properties";
     private static final String ORIGINATION_PARAMETER = "originator";
 
-    private final MobileSearchConfiguration cfg;
+    private final MobileCommandConfig cfg;
 
     public MobileSearchCommand(final Context cxt) {
 
         super(cxt);
-        cfg = (MobileSearchConfiguration) cxt.getSearchConfiguration();
+        cfg = (MobileCommandConfig) cxt.getSearchConfiguration();
     }
 
 

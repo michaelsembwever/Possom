@@ -12,7 +12,7 @@ package no.schibstedsok.searchportal.mode.command;
 import com.fastsearch.esp.search.result.IModifier;
 import com.fastsearch.esp.search.result.INavigator;
 import com.fastsearch.esp.search.result.IQueryResult;
-import no.schibstedsok.searchportal.mode.config.NavigatableESPFastConfiguration;
+import no.schibstedsok.searchportal.mode.config.NavigatableEspFastCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
@@ -210,8 +210,8 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     /**
      * Assured associated search configuration will always be of this type. *
      */
-    public NavigatableESPFastConfiguration getSearchConfiguration() {
-        return (NavigatableESPFastConfiguration) super.getSearchConfiguration();
+    public NavigatableEspFastCommandConfig getSearchConfiguration() {
+        return (NavigatableEspFastCommandConfig) super.getSearchConfiguration();
     }
 
     public List getNavigatorBackLinks(final String navigatorKey) {

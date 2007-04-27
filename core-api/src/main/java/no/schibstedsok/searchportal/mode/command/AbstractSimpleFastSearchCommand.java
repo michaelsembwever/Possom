@@ -28,7 +28,7 @@ import no.fast.ds.search.SearchEngineException;
 import no.fast.ds.search.SearchParameter;
 import no.fast.ds.search.SearchParameters;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.FastCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.LeafClause;
@@ -113,7 +113,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         super(cxt);
 
-        final FastSearchConfiguration conf = (FastSearchConfiguration) cxt.getSearchConfiguration();
+        final FastCommandConfig conf = (FastCommandConfig) cxt.getSearchConfiguration();
         final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
         queryServerUrl = siteConf.getProperty(conf.getQueryServerUrl());
     }
@@ -371,8 +371,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     /**
      * Assured associated search configuration will always be of this type. *
      */
-    public FastSearchConfiguration getSearchConfiguration() {
-        return (FastSearchConfiguration) super.getSearchConfiguration();
+    public FastCommandConfig getSearchConfiguration() {
+        return (FastCommandConfig) super.getSearchConfiguration();
     }
 
     /**

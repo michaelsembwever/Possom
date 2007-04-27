@@ -1,7 +1,7 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.mode.config.TvEnrichSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.TvenrichCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -23,7 +23,7 @@ public class TvEnrichSearchCommand extends StaticSearchCommand {
         int hitCount = 0;
 
         final SearchResult result = new BasicSearchResult(this);
-        TvEnrichSearchConfiguration tesc = (TvEnrichSearchConfiguration) this.getSearchConfiguration();
+        TvenrichCommandConfig tesc = (TvenrichCommandConfig) this.getSearchConfiguration();
         if (tesc.getWaitOn() != null) {
             final String waitOn = tesc.getWaitOn();
 

@@ -17,7 +17,7 @@ import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
-import no.schibstedsok.searchportal.mode.config.CatalogueAdsSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.CatalogueAdsCommandConfig;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
@@ -72,7 +72,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 
         super(cxt);
 
-        final CatalogueAdsSearchConfiguration conf = (CatalogueAdsSearchConfiguration) cxt
+        final CatalogueAdsCommandConfig conf = (CatalogueAdsCommandConfig) cxt
                 .getSearchConfiguration();
 
         final String whereParameter = conf.getQueryParameterWhere();

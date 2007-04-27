@@ -12,7 +12,7 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.FastSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.FastCommandConfig;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
@@ -42,7 +42,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 
     private static final Logger LOG = Logger.getLogger(FastNavigatorsTest.class);
 
-    FastSearchConfiguration config;
+    FastCommandConfig config;
     MockupResultHandler resultHandler;
 
     /**
@@ -60,8 +60,8 @@ public final class FastNavigatorsTest extends DataModelTestCase {
     @BeforeClass
     protected void setUp() throws Exception {
 
-        //final FastSearchConfiguration
-                config = new FastSearchConfiguration();
+        //final FastCommandConfig
+                config = new FastCommandConfig();
         //this.config = config;
         config.setResultsToReturn(10);
 //        resultHandler = new MockupResultHandler();
@@ -74,7 +74,7 @@ public final class FastNavigatorsTest extends DataModelTestCase {
     @Test
     public void testNoNavigators() {
 
-        final FastSearchConfiguration config = new FastSearchConfiguration();
+        final FastCommandConfig config = new FastCommandConfig();
         assertTrue(config.getNavigators().isEmpty());
     }
 

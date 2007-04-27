@@ -17,7 +17,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.mode.config.PlatefoodPPCSearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.PlatefoodPpcCommandConfig;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
@@ -69,8 +69,8 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         // could have prevented exact matching in the previous evaluation.
         final ReconstructedQuery rq = createQuery(getTransformedQuery());
 
-        final PlatefoodPPCSearchConfiguration ppcConfig
-            = (PlatefoodPPCSearchConfiguration) context.getSearchConfiguration();
+        final PlatefoodPpcCommandConfig ppcConfig
+            = (PlatefoodPpcCommandConfig) context.getSearchConfiguration();
 
 
         top = rq.getEngine().evaluateQuery(TokenPredicate.LOAN_TRIGGER, rq.getQuery());
@@ -116,8 +116,8 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
      * @return Return the request url used to get ads.
      **/
     protected String createRequestURL() {
-        final PlatefoodPPCSearchConfiguration ppcConfig
-                = (PlatefoodPPCSearchConfiguration) context.getSearchConfiguration();
+        final PlatefoodPpcCommandConfig ppcConfig
+                = (PlatefoodPpcCommandConfig) context.getSearchConfiguration();
         final String partnerId = getPartnerId();
         final StringBuilder url = new StringBuilder(ppcConfig.getUrl());
 
