@@ -26,9 +26,11 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * UrlVelocityTemplateLoaderDebug adds border around every velocity template
- * that is loaded. This is a nice way to see wich templates are loaded and where
- * they are loaded.
+ * 
+ * Load templates and adds debuginformation if VELOCITY_DEBUG is set to true.
+ * 
+ * @see URLResourceLoader
+ * 
  * 
  * @author Ola M Sagli <a mailto="ola@sesam.no">ola@sesam.no</a>
  * 
