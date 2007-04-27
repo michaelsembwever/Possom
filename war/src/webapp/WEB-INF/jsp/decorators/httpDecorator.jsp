@@ -15,130 +15,68 @@
     </head>
 
     <body onload="SesamInit.onLoad('<c:out value="${tab.key}"/>', '<c:out value="${vertikal}"/>', '<c:out value="${datamodel.query.xmlEscaped}"/>', <c:out value="${null != page}"/>);">
+        <%-- This is the real thing. The new templating system all should use. --%>
 
+        <search:include include="topBar"/>
+        <search:include include="header"/>
 
-        <c:choose>
-            <%-- old-school sitesearch [REMOVE ME-start] --%>
-            <c:when test="${c == 'd' && (param.ss == 'di' || param.ss == 'pr' || param.ss == 'im' || param.ss == 'af' || param.ss == 'fv' || param.ss == 'aa' || param.ss == 'bt' || param.ss == 'sa')}">
+        <table cellspacing="0" cellpadding="0" id="body_table">
+            <tr>
+                <c:choose>
+                    <c:when test="${tab.layout.properties['left-column-hide'] == 'true'}">
+                        <td valign="top" colspan="3">
+                    </c:when>
+                    <c:otherwise>
+                        <td class="cell_one" valign="top">
+                            <search:include include="left-col-one"/>
 
-                <div id="frame">
-                    <div id="header">
-                        <search:velocity template="legacy/skin/headers/${param.ss}"/>
-                        <search:include include="search-bar"/>
-                    </div>
-                    <div id="content_ss">
-                        <div id="globalmenu_table"><img src="../images/pix.gif" width="1" height="6" alt="" /></div>
-                        <div id ="content_top">
-                            <dl>
-                                <dt>
-                                    <span class="sitename">
-                                        <c:choose>
-                                            <c:when test="${param.ssr == 'ds'}"> Dinside:</c:when>
-                                            <c:when test="${param.ssr == 'di'}"> Digi:</c:when>
-                                            <c:when test="${param.ssr == 'pr'}"> Propaganda:</c:when>
-                                            <c:when test="${param.ssr == 'it'}"> Itavisen:</c:when>
-                                            <c:when test="${param.ssr == 'im'}"> iMarkedet:</c:when>
-                                            <c:when test="${param.ssr == 'nrk'}"> NRK:</c:when>
-                                            <c:when test="${param.ssr == 'af'}"> Aftenposten:</c:when>
-                                            <c:when test="${param.ssr == 'fv'}"> F&#230;drelandsvennen:</c:when>
-                                            <c:when test="${param.ssr == 'aa'}"> no:</c:when>
-                                            <c:when test="${param.ssr == 'bt'}"> bt.no:</c:when>
-                                            <c:when test="${param.ssr == 'sa'}"> Stavanger Aftenblad::</c:when>
-                                            <c:when test="${param.ssr == 'd'}"> Nettet:</c:when>
-                                        </c:choose>
-                                    </span>
-                                    <search:include include="greybar-sitesearch"/>
-                                </dt>
-                                <dd><search:include include="greybar-ad"/></dd>
-                            </dl>
-                        </div>
-                        <div class="greybar_line"><img src="../images/pix.gif" width="1" height="1" alt="" /></div>
-                        <%--sesam search in sitesearch modus--%>
-                        <div id="content_left_ss">
-                            <search:include include="fast-results"/>
-                        </div>
-                        <div id="content_right_ss">
-                            <search:include include="ads"/>
-                        </div>
-                    </div>
-                    <div id="footer_ss">
-                        <search:include include="offsetPager"/>
-                    </div>
-                </div><%-- old-school sitesearch [REMOVE ME-end] --%>
+                            <search:include include="left-col-two"/>
 
+                            <search:include include="left-col-three"/>
 
+                            <c:if test="${tab.showRss}">
+                                <search:include include="left-col-four"/>
+                            </c:if>
+                        </td>
+                        <td class="cell_three" valign="top" colspan="2">
+                    </c:otherwise>
+                </c:choose>
 
+                <search:include include="middle-col-one"/>
 
+                <search:include include="spellcheck"/>
+                <search:include include="middle-col-two"/>
+                <search:include include="middle-col-three"/>
+                <search:include include="middle-col-four"/>
+                <search:include include="middle-col-five"/>
 
-
-
-        </c:when>
-        <c:otherwise>
-            <%-- This is the real thing. The new templating system all should use. --%>
-
-            <search:include include="topBar"/>
-            <search:include include="header"/>
-
-            <table cellspacing="0" cellpadding="0" id="body_table">
+                </td>
+                <td class="cell_four">
+                    <search:include include="right-col-one"/>
+                    <search:include include="right-col-two"/>
+                </td>
+            </tr>
+            <search:include include="bottom-ads"/>
+            <c:if test="${tab.layout.properties['offset-pager-hide'] != 'true'}">
                 <tr>
-                    <c:choose>
-                        <c:when test="${tab.layout.properties['left-column-hide'] == 'true'}">
-                            <td valign="top" colspan="3">
-                        </c:when>
-                        <c:otherwise>
-                            <td class="cell_one" valign="top">
-                                <search:include include="left-col-one"/>
-
-                                <search:include include="left-col-two"/>
-
-                                <search:include include="left-col-three"/>
-
-                                <c:if test="${tab.showRss}">
-                                    <search:include include="left-col-four"/>
-                                </c:if>
-                            </td>
-                            <td class="cell_three" valign="top" colspan="2">
-                        </c:otherwise>
-                    </c:choose>
-
-                    <search:include include="middle-col-one"/>
-
-                    <search:include include="spellcheck"/>
-                    <search:include include="middle-col-two"/>
-                    <search:include include="middle-col-three"/>
-                    <search:include include="middle-col-four"/>
-                    <search:include include="middle-col-five"/>
-
-                    </td>
-                    <td class="cell_four">
-                        <search:include include="right-col-one"/>
-                        <search:include include="right-col-two"/>
+                    <td>&nbsp;</td>
+                    <td colspan="2">
+                        <search:include include="offsetPager"/>
                     </td>
                 </tr>
-                <search:include include="bottom-ads"/>
-                <c:if test="${tab.layout.properties['offset-pager-hide'] != 'true'}">
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td colspan="2">
-                            <search:include include="offsetPager"/>
-                        </td>
-                    </tr>
-                </c:if>
-                <c:if test="${tab.layout.properties['top3-ads-bottom-hide'] != 'true'}">
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td>
-                            <search:include include="top3-ads-bottom"/>
-                        </td>
-                        <td>&nbsp;</td>
-                    </tr>
-                </c:if>
-            </table>
-            <search:include include="verbosePager"/>
-            <search:include include="footer"/>
-
-            </c:otherwise>
-        </c:choose>
+            </c:if>
+            <c:if test="${tab.layout.properties['top3-ads-bottom-hide'] != 'true'}">
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>
+                        <search:include include="top3-ads-bottom"/>
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+            </c:if>
+        </table>
+        <search:include include="verbosePager"/>
+        <search:include include="footer"/>
 
         <search:include include="map-script"/>
 
