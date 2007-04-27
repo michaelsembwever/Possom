@@ -22,14 +22,19 @@
           if("true".equals(System.getProperty("VELOCITY_DEBUG"))) {
             String loadPath = System.getProperty("VELOCITY_DEBUG_TEMPLATE_DIR");
             if(loadPath == null) {
-              loadPath = "(Using standard URLResourceLoader)";
+              loadPath = "(URLResourceLoader)";
             }
             %>
-          <div width="100%" style="font-size:11px;background-color:#AD248D;border:1px solid #C0C0C0; color:white">
-                <b>DeveloperBar:</b>
-                VelocityDebug: <a style="color: white" href="/servlet/VelocityDebug?<%= request.getQueryString()%>"> <b>On/Off</b> </a>
+            <%
+                String background =  "#DDDDDD";
+                String color = "black";
+            %>
+
+            <div width="100%" style="font-size:12px;background-color:<%=background%>;border:1px solid #C0C0C0; color:<%=color%>">
+                DeveloperBar:
+                VelocityDebug: <a style="color: blue" href="/servlet/VelocityDebug?<%= request.getQueryString()%>"> On/Off </a>
                 |
-                TemplatePath:  <b><%= loadPath %> </b>
+                TemplatePath:  <%= loadPath %> 
                 </div> 
               </font>
             </div>
