@@ -13,6 +13,7 @@ public interface SearchResultItem {
     SearchResult getNestedSearchResult(String field);
     String getField(String field);
     Object getFieldAsObject(String field);
+    void addObjectField(String field, Object value);
     Collection getFieldNames();
     public Collection getMultivaluedField(String field);
     public void addToMultivaluedField(String field, String value);

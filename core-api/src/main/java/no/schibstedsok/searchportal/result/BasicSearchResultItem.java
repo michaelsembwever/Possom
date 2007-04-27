@@ -34,6 +34,10 @@ public class BasicSearchResultItem implements SearchResultItem {
         return fields.get(field);
     }
 
+    public void addObjectField(final String field, final Object value) {
+        fields.put(field, value);
+    }
+    
     public Integer getInteger(final String field) {
         final String fieldValue = (String) fields.get(field);
 
