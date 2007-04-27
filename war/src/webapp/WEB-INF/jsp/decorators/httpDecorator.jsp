@@ -17,6 +17,26 @@
     <body onload="SesamInit.onLoad('<c:out value="${tab.key}"/>', '<c:out value="${vertikal}"/>', '<c:out value="${datamodel.query.xmlEscaped}"/>', <c:out value="${null != page}"/>);">
         <%-- This is the real thing. The new templating system all should use. --%>
 
+        <% // If velocity debug is turned on, display developer bar . 
+           // TODO Move to wanted place or add show/hide function to the developerbar
+          if("true".equals(System.getProperty("VELOCITY_DEBUG"))) {
+            String loadPath = System.getProperty("VELOCITY_DEBUG_TEMPLATE_DIR");
+            if(loadPath == null) {
+              loadPath = "(Using standard URLResourceLoader)";
+            }
+            %>
+          <div width="100%" style="font-size:11px;background-color:#AD248D;border:1px solid #C0C0C0; color:white">
+                <b>DeveloperBar:</b>
+                VelocityDebug: <a style="color: white" href="/servlet/VelocityDebug?<%= request.getQueryString()%>"> <b>On/Off</b> </a>
+                |
+                TemplatePath:  <b><%= loadPath %> </b>
+                </div> 
+              </font>
+            </div>
+            <%
+          }
+        %>
+
         <search:include include="topBar"/>
         <search:include include="header"/>
 
