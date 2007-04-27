@@ -32,7 +32,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id: URLResourceLoader.java,v 1.3 2004/03/19 17:13:40 dlr Exp $
  */
-public class URLVelocityTemplateLoader extends ResourceLoader {
+public class URLResourceLoader extends ResourceLoader {
     
     public interface Context{
         boolean doesUrlExist(final String url, final String hostHeader);
@@ -42,7 +42,7 @@ public class URLVelocityTemplateLoader extends ResourceLoader {
 
     // Constants -----------------------------------------------------
     
-    private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
+    private static final Logger LOG = Logger.getLogger(URLResourceLoader.class);
 
     private static final String ERR_RESOURCE_NOT_FOUND = "Cannot find resource ";
     private static final String DEBUG_LOOKING_FOR = "Looking for ";
@@ -63,7 +63,7 @@ public class URLVelocityTemplateLoader extends ResourceLoader {
     
     // Allows the tests to switch the Velocity ResourceLoader over to a file based one.
     static void setContext(final Context context){
-        URLVelocityTemplateLoader.context = context;
+        URLResourceLoader.context = context;
     }
     
     // Constructors --------------------------------------------------
