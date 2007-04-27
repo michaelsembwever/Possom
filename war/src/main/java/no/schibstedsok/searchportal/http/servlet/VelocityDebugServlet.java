@@ -49,10 +49,10 @@ public class VelocityDebugServlet extends HttpServlet{
 		Element html = doc.createElement(HTML);
 		Element body = doc.createElement(BODY);
 		
-		if(isLocalhost(request)) {
+		if(!isLocalhost(request)) {
 			LOG.warn("velocitydebug when running localhost only.");
 			body.appendChild(doc.createTextNode("Localhost only."));
-			internalWriteDocument(doc, response.getWriter()));
+			internalWriteDocument(doc, response.getWriter());
 			return;
 		}
 		// TODO Auto-generated method stub
@@ -66,23 +66,20 @@ public class VelocityDebugServlet extends HttpServlet{
 		}
 		
 		System.setProperty(VELOCITY_DEBUG, debugStatus);		
-
-
-
 		body.appendChild(doc.createTextNode(ON_OFF + " " + debugStatus));
-		
 		html.appendChild(body);
 		doc.appendChild(html);
-
 		internalWriteDocument(doc, response.getWriter());
-		
 	}
 
 	/*
 	 * Assure that debug is only used when running localhost
 	 */
 	private boolean isLocalhost(HttpServletRequest request) {
-		String ipAddr = (String)request.getAttribute("REMOTE_ADDR") + "";
+		String ipAddr = (String)request.getAttribute("REMOTE_ADDR");
+		if(ipAddr == null) {
+			ipAddr = request.getRemoteAddr() + "";
+		}
         return ipAddr.startsWith("127.") || ipAddr.startsWith("10.") || ipAddr.startsWith("0:0:0:0:0:0:0:1%0");
 	}
 	
