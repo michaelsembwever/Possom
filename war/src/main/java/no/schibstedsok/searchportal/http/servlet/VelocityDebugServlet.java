@@ -46,7 +46,7 @@ public class VelocityDebugServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
 		
-		if(!isLocalhost(request)) {
+		if(isLocalhost(request)) {
 			LOG.warn("velocitydebug when running localhost only.");
 			return;
 		}
