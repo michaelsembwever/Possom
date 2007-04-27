@@ -46,7 +46,8 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	 * getResourceStream() loads resource from url. Then add border around the
 	 * template so its easy to see wich templates are loaded.
 	 */
-	public InputStream getResourceStreamDebug(String url)
+	@Override
+	public InputStream getResourceStream(String url)
 			throws ResourceNotFoundException {
 
 		boolean VELOCITY_DEBUG = "true".equals(System.getProperty("VELOCITY_DEBUG"));
@@ -74,7 +75,8 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		}
 
 		// Create html 
-		String template= new String(byteContent);
+		String template= "\n" + new String(byteContent) + "\n";
+
 		StringWriter writer = new StringWriter();
 		Document doc = createDocument();
 		
@@ -94,7 +96,6 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		String result = writer.getBuffer().toString();
 		result = result.replace("<![CDATA[", "");
 		result = result.replace("]]>", "");
-		System.out.println("Tamplate =" + result);
 			// log.info("Result: " + buffer.toString());
 		return new ByteArrayInputStream(result.getBytes());
 	}
@@ -103,8 +104,6 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	 * Get stream from file of or url.
 	 */
 	private InputStream getStream(String templatesDir, String filePath,String url) {
-		
-		System.out.println("*** Loading: " + templatesDir + filePath + ", or url: " + url);
 
 		if(templatesDir == null) {
 			return super.getResourceStream(url);
