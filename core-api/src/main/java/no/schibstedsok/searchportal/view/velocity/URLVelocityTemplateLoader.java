@@ -55,24 +55,30 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		boolean VELOCITY_DEBUG = "true".equals(System.getProperty("VELOCITY_DEBUG"));
 		boolean VELOCITY_DEBUG_ON ="true".equals(System.getProperty("VELOCITY_DEBUG_ON"));
 		boolean STYLE_ONMOUSEOVER ="onmouseover".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
+		boolean STYLE_SILENT ="silent".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
+		
 		boolean foundLocal = false;
+		
+		if(!VELOCITY_DEBUG) {
+			return super.getResourceStream(url);
+		}
+		
 		final String templatesDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");		
 		InputStream stream = null;
 
-		if(!(VELOCITY_DEBUG && VELOCITY_DEBUG_ON)) {
-			return super.getResourceStream(url);
-		}
-
 		String filePath = url.replaceAll("http://(.*?)/", "/").replace("localhost/", "");
-		//filePath = filePath.replace("localhost/", "");
 
 		File file = getFile(templatesDir, filePath);
-			//navbarMain.vm is trouble
+
 		if(file.exists()) {
 			foundLocal = true;
 			stream = getStream(file);
 		}else{
 			stream = super.getResourceStream(url);
+		}
+
+		if(!VELOCITY_DEBUG_ON) {
+			return stream;
 		}
 			// If rss, means the output is xml. 
 		if (url.indexOf("rss") != -1) {
@@ -104,6 +110,8 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		if(STYLE_ONMOUSEOVER) {
 			div.setAttribute("onmouseover", ONMOUSEOVER);
 			div.setAttribute("onmouseout", ONMOUSEOUT);
+		}else if(STYLE_SILENT){
+				// Just print title as popup.
 		}else {
 			Element divHeader = doc.createElement(DIV_TAG);
 			divHeader.setAttribute(STYLE_ATTRIB, STYLE_HEADING);
