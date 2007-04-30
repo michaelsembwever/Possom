@@ -25,7 +25,7 @@ public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransf
     private String timestampField;
     private String clusterField;
     private String clusterIdField = "clusterId";
-    private int maxAgeInDays = 7;
+    private int maxAgeInDays = 0;
 
     /**
      * @return
@@ -46,6 +46,11 @@ public final class NewsClusterQueryTransformerConfig extends AbstractQueryTransf
         return clusterIdField;
     }
 
+    /**
+     * I max age is set to 0, No max age is defined.
+     *
+     * @return
+     */
     public int getMaxAgeInDays() {
         return maxAgeInDays;
     }

@@ -40,6 +40,14 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
         }
     }
 
+    protected int getOffset() {
+        int offset = 0;
+        if (getContext().getDataModel().getJunkYard().getValue("offset") != null) {
+            offset = Integer.parseInt((String) getContext().getDataModel().getJunkYard().getValue("offset"));
+        }
+        return offset;
+    }
+
     private String transformQuery(String myNews) {
         if (myNews != null && myNews.length() > 0) {
             final Matcher matcher = queryPattern.matcher(myNews);
@@ -64,12 +72,15 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
                 return newQuery.toString();
             } else {
                 LOG.debug("Position is: " + config.getPosition());
+
                 int curPos = 0;
-                while (matcher.find() && curPos < config.getPosition()) {
+                int offset = getOffset();
+                int pos = config.getPosition() + offset;
+                while (matcher.find() && curPos < pos) {
                     // Just searching for the correct match.
                     curPos++;
                 }
-                LOG.debug("Group at pos: " + config.getPosition() + " is " + matcher.group(0) + ", looking for " + config.getType());
+                LOG.debug("Group at pos: " + pos + " is " + matcher.group(0) + ", looking for " + config.getType());
                 if (matcher.groupCount() > 0 && matcher.group(2).equals(config.getType())) {
                     if (config.getFilterField() == null) {
                         return matcher.group(1);

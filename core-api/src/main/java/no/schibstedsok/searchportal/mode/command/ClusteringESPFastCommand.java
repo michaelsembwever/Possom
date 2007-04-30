@@ -19,8 +19,6 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 
 public class ClusteringESPFastCommand extends NewsEspSearchCommand {
-    public static final String PARAM_NEXT_OFFSET = "nextOffset";
-
     private static final Logger LOG = Logger.getLogger(ClusteringESPFastCommand.class);
 
     public ClusteringESPFastCommand(Context cxt) {
@@ -104,7 +102,8 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
         SearchResult subResult = null;
 
         LOG.debug("HitCount=" + result.getDocCount() + ", clusterField=" + clusterField + ", nestedResultsField=" + nestedResultsField + ", offset=" + offset);
-        for (int i = offset; i < result.getDocCount(); i++) {
+        final int firstHit = config.isIgnoreOffset() ? 0 : offset;
+        for (int i = firstHit; i < result.getDocCount(); i++) {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);
                 currentClusterId = document.getSummaryField(clusterField);
@@ -113,7 +112,6 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
                         lastClusterId.isEmpty() ||
                         currentClusterId.getStringValue().equals("0") ||
                         (!currentClusterId.getStringValue().equals(lastClusterId.getStringValue()))) {
-                    collectedClusters++;
                     LOG.debug("Adding new cluster: " + currentClusterId + ", count is: " + collectedClusters);
                     if (collectedClusters < maxClusterCount) {
                         clusterEntry = addResult(config, searchResult, document);
@@ -124,6 +122,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
                     } else {
                         break;
                     }
+                    collectedClusters++;
                     subResult = null;
                 } else {
                     LOG.debug("Adding subResult for: " + currentClusterId.getStringValue());

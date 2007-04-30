@@ -10,6 +10,7 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     private String mediumParameter = "medium";
     private String nestedResultsField;
     private int collapsingMaxFetch;
+    private boolean ignoreOffset = false;
 
 
     public NewsEspCommandConfig() {
@@ -79,4 +80,13 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     public void setMediumParameter(String mediumParameter) {
         this.mediumParameter = mediumParameter;
     }
+
+    public boolean isIgnoreOffset() {
+        return ignoreOffset;
+    }
+
+    public void setIgnoreOffset(boolean ignoreOffset) {
+        this.ignoreOffset = ignoreOffset;
+    }
+
 }

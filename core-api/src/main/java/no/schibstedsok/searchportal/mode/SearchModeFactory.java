@@ -695,6 +695,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(nesc, inherit, "mediumParameter", ParseType.String, commandE, "medium");
                     fillBeanProperty(nesc, inherit, "nestedResultsField", ParseType.String, commandE, "entries");
                     fillBeanProperty(nesc, inherit, "collapsingMaxFetch", ParseType.Int, commandE, "10");
+                    fillBeanProperty(nesc, inherit, "ignoreOffset", ParseType.Boolean, commandE, "false");
                 }
 
                 if (sc instanceof ClusteringEspFastCommandConfig) {

@@ -84,11 +84,13 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
             filter.append(config.getClusterField()).append(":").append('\"').append(clusterId).append("\" ");
         } else {
             filter.append(config.getClusterField()).append(":range(1,max) ");
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
-            calendar.add(Calendar.DAY_OF_WEEK, -config.getMaxAgeInDays());
-            filter.append("and ").append(config.getTimestampField()).append(':');
-            filter.append("range(").append(sdf.format(calendar.getTime())).append(",max)");
+            if (config.getMaxAgeInDays() > 0) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeZone(TimeZone.getTimeZone("UTC"));
+                calendar.add(Calendar.DAY_OF_WEEK, -config.getMaxAgeInDays());
+                filter.append("and ").append(config.getTimestampField()).append(':');
+                filter.append("range(").append(sdf.format(calendar.getTime())).append(",max)");
+            }
         }
         return filter.toString();
     }

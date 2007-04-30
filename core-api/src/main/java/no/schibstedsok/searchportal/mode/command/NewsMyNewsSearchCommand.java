@@ -24,19 +24,27 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
     }
 
     public SearchResult execute() {
+        NewsMyNewsCommandConfig config = getSearchConfiguration();
         String myNews = (String) context.getDataModel().getJunkYard().getValue("myNews");
         LOG.debug("Cookie is: " + myNews);
         if (myNews != null && myNews.length() > 0) {
             final SearchResult mergedResult = new BasicSearchResult(this);
             Matcher matcher = cookiePattern.matcher(myNews);
             int position = 0;
-            int clusterPos = 0;
-            while (matcher.find()) {
+            int offset = getOffset();
+            for (int i = 0; i < offset; i++) {
+                // Forward matcher to correct place in cookie.
+                if (!matcher.find()) {
+                    break;
+                }
+            }
+
+            while (matcher.find() && position < config.getResultsToReturn()) {
                 SearchResult collectedResult;
                 String commandName = null;
                 final String type = matcher.group(2);
                 if (type.equals("knippe")) {
-                    commandName = "clusterMyNews";
+                    commandName = "clusterMyNews" + position;
                 } else if (type.equals("sak")) {
                     commandName = "newsCase" + position;
                 } else if (type.equals("person")) {
@@ -49,20 +57,14 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                         LOG.debug("Waiting for " + commandName);
                         collectedResult = context.getRunningQuery().getSearchResult(commandName);
                         if (collectedResult != null && collectedResult.getResults().size() > 0) {
-                            SearchResultItem searchResultItem;
-                            if (type.equals("knippe") && collectedResult.getResults().size() > clusterPos) {
-                                searchResultItem = collectedResult.getResults().get(clusterPos);
-                                clusterPos++;
-                            } else {
-                                searchResultItem = collectedResult.getResults().get(0);
-                                final int lastSubPos = Math.min(collectedResult.getResults().size(), 4);
-                                if (lastSubPos > 1) {
-                                    final SearchResult subSearchResults = new BasicSearchResult(this);
-                                    subSearchResults.setHitCount(collectedResult.getHitCount());
-                                    searchResultItem.addNestedSearchResult("entries", subSearchResults);
-                                    for (int i = 1; i < lastSubPos; i++) {
-                                        subSearchResults.addResult(collectedResult.getResults().get(i));
-                                    }
+                            SearchResultItem searchResultItem = collectedResult.getResults().get(0);
+                            final int lastSubPos = Math.min(collectedResult.getResults().size(), 4);
+                            if (lastSubPos > 1) {
+                                final SearchResult subSearchResults = new BasicSearchResult(this);
+                                subSearchResults.setHitCount(collectedResult.getHitCount());
+                                searchResultItem.addNestedSearchResult("entries", subSearchResults);
+                                for (int i = 1; i < lastSubPos; i++) {
+                                    subSearchResults.addResult(collectedResult.getResults().get(i));
                                 }
                             }
                             searchResultItem.addField("type", type);
@@ -80,11 +82,35 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                 }
                 position++;
             }
-            mergedResult.setHitCount(position);
+
+            while (matcher.find()) {
+                // count all cookies
+                position++;
+            }
+            mergedResult.setHitCount(position + 1 + offset);
+
+            setNextOffset(mergedResult, config.getResultsToReturn());
+
             return mergedResult;
         } else {
             return new BasicSearchResult(this);
         }
+    }
+
+    private void setNextOffset(SearchResult searchResult, int returnedResults) {
+        int offset = getOffset();
+        if (offset + returnedResults < searchResult.getHitCount()) {
+            LOG.debug("Setting next offset to: " + (offset + returnedResults));
+            searchResult.addField(NewsEspSearchCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + returnedResults));
+        }
+    }
+
+    private int getOffset() {
+        int offset = 0;
+        if (datamodel.getJunkYard().getValue("offset") != null) {
+            offset = Integer.parseInt((String) datamodel.getJunkYard().getValue("offset"));
+        }
+        return offset;
     }
 
     @Override

@@ -2,6 +2,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import com.fastsearch.esp.search.query.BaseParameter;
 import com.fastsearch.esp.search.query.IQuery;
+import com.fastsearch.esp.search.query.SearchParameter;
 import com.fastsearch.esp.search.result.EmptyValueException;
 import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NewsEspSearchCommand extends NavigatableESPFastCommand {
+    public static final String PARAM_NEXT_OFFSET = "nextOffset";
     private static final Logger LOG = Logger.getLogger(NewsEspSearchCommand.class);
 
     public NewsEspSearchCommand(Context cxt) {
@@ -40,6 +42,9 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         super.modifyQuery(query);
         final NewsEspCommandConfig config = getSearchConfiguration();
         query.setParameter(BaseParameter.HITS, Math.max(config.getCollapsingMaxFetch(), config.getResultsToReturn()));
+        if (config.isIgnoreOffset()) {
+            query.setParameter(new SearchParameter(BaseParameter.OFFSET, 0));
+        }
     }
 
     @Override
@@ -142,7 +147,8 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         searchResult.setHitCount(result.getDocCount());
         int collectedHits = 0;
         int analyzedHits = 0;
-        for (int i = offset; i < result.getDocCount() && analyzedHits < config.getCollapsingMaxFetch(); i++) {
+        final int firstHit = config.isIgnoreOffset() ? 0 : offset;
+        for (int i = firstHit; i < result.getDocCount() && analyzedHits < config.getCollapsingMaxFetch(); i++) {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);
                 final String collapseId = document.getSummaryField("collapseid").getStringValue();
@@ -172,7 +178,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
             }
         }
         if (offset + collectedHits < result.getDocCount()) {
-            searchResult.addField(ClusteringESPFastCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + collectedHits));
+            searchResult.addField(NewsEspSearchCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + collectedHits));
         }
         return searchResult;
     }
