@@ -51,14 +51,17 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	@Override
 	public InputStream getResourceStream(String url)
 			throws ResourceNotFoundException {
-
+			// Enable/disable velocity debug
 		boolean VELOCITY_DEBUG = "true".equals(System.getProperty("VELOCITY_DEBUG"));
+		    // Activate debug (Show borders/debuginfo)
 		boolean VELOCITY_DEBUG_ON ="true".equals(System.getProperty("VELOCITY_DEBUG_ON"));
+		    // Onmouseover style
 		boolean STYLE_ONMOUSEOVER ="onmouseover".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
+		   // Silent style
 		boolean STYLE_SILENT ="silent".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
-		
+		   // Indicates if we found file local.(Can be edited)
 		boolean foundLocal = false;
-		
+			
 		if(!VELOCITY_DEBUG) {
 			return super.getResourceStream(url);
 		}
@@ -67,7 +70,6 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		InputStream stream = null;
 
 		String filePath = url.replaceAll("http://(.*?)/", "/").replace("localhost/", "");
-
 		File file = getFile(templatesDir, filePath);
 
 		if(file.exists()) {
@@ -76,7 +78,7 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		}else{
 			stream = super.getResourceStream(url);
 		}
-
+			// If debug is not currently activated.
 		if(!VELOCITY_DEBUG_ON) {
 			return stream;
 		}
