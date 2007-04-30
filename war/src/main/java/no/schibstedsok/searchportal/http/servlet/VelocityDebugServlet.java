@@ -1,5 +1,6 @@
 package no.schibstedsok.searchportal.http.servlet;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 
@@ -50,6 +51,7 @@ public class VelocityDebugServlet extends HttpServlet{
 		Document doc = createDocument();		
 		Element html = doc.createElement(HTML);
 		Element body = doc.createElement(BODY);
+		String templateDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");
 		
 		if(!isLocalhost(request) || !"true".equals(System.getProperty(VELOCITY_DEBUG))) {
 			LOG.warn("velocitydebug when running localhost and VELOCITY_DEBUG set to true");
@@ -65,6 +67,7 @@ public class VelocityDebugServlet extends HttpServlet{
 		String velocityDebug = System.getProperty(VELOCITY_DEBUG_ON);
 		String debugStatus = "false";
 		
+		
 		if("true".equals(velocityDebug)) {
 			debugStatus = "false";
 		}else{
@@ -72,11 +75,21 @@ public class VelocityDebugServlet extends HttpServlet{
 		}
 		System.setProperty(VELOCITY_DEBUG_ON, debugStatus);				
 
+		if(templateDir != null) {
+			String paths[] = templateDir.split(",");
+			for(String path : paths) {
+				File file = new File(path);
+				body.appendChild(doc.createTextNode("TemplateDir: " + file.getAbsolutePath() + " " + file.exists()));
+				body.appendChild(doc.createElement("BR"));
+			}
+		}
 		//if(request.getQueryString() != null) {
 		//	response.sendRedirect("/search/?" + request.getQueryString());
 		//}
-
+		
 		body.appendChild(doc.createTextNode(ON_OFF + " " + debugStatus));
+		body.appendChild(doc.createElement("BR"));
+		
 		html.appendChild(body);
 		doc.appendChild(html);
 		internalWriteDocument(doc, response.getWriter());
