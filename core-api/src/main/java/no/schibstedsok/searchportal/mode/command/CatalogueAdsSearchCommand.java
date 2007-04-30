@@ -15,12 +15,13 @@ import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.mode.config.CatalogueAdsCommandConfig;
 import no.schibstedsok.searchportal.query.AndNotClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
+import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.query.XorClause;
 import org.apache.log4j.Logger;
 
 /**
@@ -294,6 +295,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     protected void visitImpl(DefaultOperatorClause clause) {
+
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
@@ -322,5 +324,9 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         clause.getFirstClause().accept(this);
         clause.getSecondClause().accept(this);
     }
-
+    
+    protected void visitXorClause(Visitor visitor, XorClause clause){
+        clause.getSecondClause().accept(this);
+    }
+    
 }
