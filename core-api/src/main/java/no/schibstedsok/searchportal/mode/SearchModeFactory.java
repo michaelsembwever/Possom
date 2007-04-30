@@ -79,8 +79,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private static final Map<Site, SearchModeFactory> INSTANCES = new HashMap<Site, SearchModeFactory>();
     private static final ReentrantReadWriteLock INSTANCES_LOCK = new ReentrantReadWriteLock();
-    
-    
+
+
     private static final SearchCommandFactory searchConfigurationFactory = new SearchCommandFactory();
     private static final QueryTransformerFactory queryTransformerFactory = new QueryTransformerFactory();
     private static final ResultHandlerFactory resultHandlerFactory = new ResultHandlerFactory();
@@ -276,16 +276,16 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     if (!(commandN instanceof Element)) {
                         continue;
                     }
-                    final Element commandE = (Element)commandN;
+                    final Element commandE = (Element) commandN;
 
-                    if(searchConfigurationFactory.supported(commandE.getTagName(), context.getSite())){
-                        
+                    if (searchConfigurationFactory.supported(commandE.getTagName(), context.getSite())) {
+
                         final SearchConfiguration sc = CommandTypes.DUMMY.parseSearchConfiguration(context, commandE, mode);
                         modesCommands.put(sc.getName(), sc);
                         mode.addSearchConfiguration(sc);
                     }
                 }
-                
+
                 // add mode
                 try {
                     modesLock.writeLock().lock();
@@ -331,10 +331,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     /**
      * @deprecated we'll use SearchCommandFactory directly soon.
-     **/
-    private enum CommandTypes {DUMMY;
+     */
+    private enum CommandTypes {
+        DUMMY;
 
-//        private final Class<? extends SearchConfiguration> clazz;
+        //        private final Class<? extends SearchConfiguration> clazz;
         private final String xmlName;
 //        private final SearchCommandFactory searchConfigurationFactory = new SearchCommandFactory();
 //        private final QueryTransformerFactory queryTransformerFactory = new QueryTransformerFactory();
@@ -368,9 +369,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             try {
 
-                final SearchConfiguration sc 
+                final SearchConfiguration sc
                         = searchConfigurationFactory.parseSearchConfiguration(commandE, inherit, cxt.getSite());
-                
+
                 if (sc instanceof FastCommandConfig) {
                     final FastCommandConfig fsc = (FastCommandConfig) sc;
                     final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig
@@ -692,6 +693,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(nesc, inherit, "mediumPrefix", ParseType.String, commandE, "medium");
                     fillBeanProperty(nesc, inherit, "defaultMedium", ParseType.String, commandE, "webnewsarticle");
                     fillBeanProperty(nesc, inherit, "mediumParameter", ParseType.String, commandE, "medium");
+                    fillBeanProperty(nesc, inherit, "nestedResultsField", ParseType.String, commandE, "entries");
+                    fillBeanProperty(nesc, inherit, "collapsingMaxFetch", ParseType.Int, commandE, "10");
                 }
 
                 if (sc instanceof ClusteringEspFastCommandConfig) {
@@ -699,8 +702,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     fillBeanProperty(cefc, inherit, "clusterIdParameter", ParseType.String, commandE, "clusterId");
                     fillBeanProperty(cefc, inherit, "resultsPerCluster", ParseType.Int, commandE, "");
                     fillBeanProperty(cefc, inherit, "clusterField", ParseType.String, commandE, "cluster");
-                    fillBeanProperty(cefc, inherit, "clusterMaxFetch", ParseType.Int, commandE, "10");
-                    fillBeanProperty(cefc, inherit, "nestedResultsField", ParseType.String, commandE, "entries");
+
                     fillBeanProperty(cefc, inherit, "sortField", ParseType.String, commandE, "publishedtime");
                     fillBeanProperty(cefc, inherit, "defaultSort", ParseType.String, commandE, "descending");
                     fillBeanProperty(cefc, inherit, "userSortParameter", ParseType.String, commandE, "sort");
@@ -737,9 +739,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             sc.addQueryTransformer(queryTransformerFactory.parseQueryTransformer(qt, cxt.getSite()));
                         }
                     }
-                }else if(null!=inherit){
+                } else if (null != inherit) {
                     // inherit all
-                    for(QueryTransformerConfig qtc : inherit.getQueryTransformers()){
+                    for (QueryTransformerConfig qtc : inherit.getQueryTransformers()) {
                         sc.addQueryTransformer(qtc);
                     }
                 }
@@ -763,9 +765,9 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             sc.addResultHandler(resultHandlerFactory.parseResultHandler(rh, cxt.getSite()));
                         }
                     }
-                }else if(null!=inherit){
+                } else if (null != inherit) {
                     // inherit all
-                    for(ResultHandlerConfig rhc : inherit.getResultHandlers()){
+                    for (ResultHandlerConfig rhc : inherit.getResultHandlers()) {
                         sc.addResultHandler(rhc);
                     }
                 }
@@ -844,10 +846,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         }
 
         SearchConfiguration parseSearchConfiguration(
-                final Element element, 
-                final SearchConfiguration inherit, 
+                final Element element,
+                final SearchConfiguration inherit,
                 final Site site) {
-            
+
             return construct(element, site).readSearchConfiguration(element, inherit);
         }
 
@@ -859,12 +861,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
             LOG.info("findClass " + className);
-            final Class<SearchConfiguration> clazz 
+            final Class<SearchConfiguration> clazz
                     = (Class<SearchConfiguration>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
-                                "no.schibstedsok.searchportal.mode.config."
-                                + className
-                                + "Config");
-            
+                    "no.schibstedsok.searchportal.mode.config."
+                            + className
+                            + "Config");
+
             LOG.info("Found class " + clazz.getName());
             return clazz;
         }
@@ -888,13 +890,13 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.info("findClass " + className);
 
-            final Class<QueryTransformerConfig> clazz 
+            final Class<QueryTransformerConfig> clazz
                     = (Class<QueryTransformerConfig>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
-                                "no.schibstedsok.searchportal.query.transform."
-                                + className
-                                + "QueryTransformerConfig");
+                    "no.schibstedsok.searchportal.query.transform."
+                            + className
+                            + "QueryTransformerConfig");
 
-            
+
             LOG.info("Found class " + clazz.getName());
             return clazz;
         }
@@ -918,23 +920,24 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.info("findClass " + className);
 
-            final Class<ResultHandlerConfig> clazz = 
+            final Class<ResultHandlerConfig> clazz =
                     (Class<ResultHandlerConfig>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
                             "no.schibstedsok.searchportal.result.handler."
-                            + className
-                            + "ResultHandlerConfig");
-            
+                                    + className
+                                    + "ResultHandlerConfig");
+
             LOG.info("Found class " + clazz.getName());
             return clazz;
         }
     }
 
-    private static abstract class AbstractFactory<C>{
-        
+    private static abstract class AbstractFactory<C> {
+
         private static final String INFO_CONSTRUCT = "  Construct ";
-        
-        AbstractFactory(){}
-        
+
+        AbstractFactory() {
+        }
+
         boolean supported(final String xmlName, final Site site) {
 
             try {

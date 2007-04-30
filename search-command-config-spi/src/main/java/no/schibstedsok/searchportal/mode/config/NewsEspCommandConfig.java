@@ -8,8 +8,12 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     private String mediumPrefix = "medium";
     private String defaultMedium = "webnewsarticle";
     private String mediumParameter = "medium";
+    private String nestedResultsField;
+    private int collapsingMaxFetch;
 
-    public NewsEspCommandConfig(){}
+
+    public NewsEspCommandConfig() {
+    }
 
     public NewsEspCommandConfig(final SearchConfiguration asc) {
 
@@ -18,7 +22,38 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
             mediumPrefix = nesc.getMediumPrefix();
             defaultMedium = nesc.getDefaultMedium();
             mediumParameter = nesc.getMediumParameter();
+            nestedResultsField = nesc.getNestedResultsField();
+            collapsingMaxFetch = nesc.getCollapsingMaxFetch();
         }
+    }
+
+
+    /**
+     * @return
+     */
+    public int getCollapsingMaxFetch() {
+        return collapsingMaxFetch;
+    }
+
+    /**
+     * @param collapsingMaxFetch
+     */
+    public void setCollapsingMaxFetch(int collapsingMaxFetch) {
+        this.collapsingMaxFetch = collapsingMaxFetch;
+    }
+
+    /**
+     * @return
+     */
+    public String getNestedResultsField() {
+        return nestedResultsField;
+    }
+
+    /**
+     * @param nestedResultsField
+     */
+    public void setNestedResultsField(String nestedResultsField) {
+        this.nestedResultsField = nestedResultsField;
     }
 
     public String getMediumPrefix() {

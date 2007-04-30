@@ -13,26 +13,22 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
     private String clusterIdParameter = "clusterId";
     private int resultsPerCluster;
     private String clusterField;
-    private String clusterMaxFetch;
-    private String nestedResultsField;
     private String userSortParameter;
     private String sortField;
     private String defaultSort;
 
-    public ClusteringEspFastCommandConfig(){}
-    
+    public ClusteringEspFastCommandConfig() {
+    }
+
     /**
      * @param asc
      */
     public ClusteringEspFastCommandConfig(SearchConfiguration asc) {
-
         if (asc instanceof ClusteringEspFastCommandConfig) {
             ClusteringEspFastCommandConfig cefcc = (ClusteringEspFastCommandConfig) asc;
             clusterIdParameter = cefcc.getClusterIdParameter();
             resultsPerCluster = cefcc.getResultsPerCluster();
             clusterField = cefcc.getClusterField();
-            clusterMaxFetch = cefcc.getClusterMaxFetch();
-            nestedResultsField = cefcc.getNestedResultsField();
             userSortParameter = cefcc.getUserSortParameter();
             sortField = cefcc.getSortField();
         }
@@ -50,20 +46,6 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
      */
     public void setUserSortParameter(String userSortParameter) {
         this.userSortParameter = userSortParameter;
-    }
-
-    /**
-     * @return
-     */
-    public String getNestedResultsField() {
-        return nestedResultsField;
-    }
-
-    /**
-     * @param nestedResultsField
-     */
-    public void setNestedResultsField(String nestedResultsField) {
-        this.nestedResultsField = nestedResultsField;
     }
 
     /**
@@ -106,20 +88,6 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
      */
     public void setClusterField(String clusterField) {
         this.clusterField = clusterField;
-    }
-
-    /**
-     * @return
-     */
-    public String getClusterMaxFetch() {
-        return clusterMaxFetch;
-    }
-
-    /**
-     * @param clusterMaxFetch
-     */
-    public void setClusterMaxFetch(String clusterMaxFetch) {
-        this.clusterMaxFetch = clusterMaxFetch;
     }
 
     /**
