@@ -72,9 +72,9 @@ public class VelocityDebugServlet extends HttpServlet{
 		}
 		System.setProperty(VELOCITY_DEBUG_ON, debugStatus);				
 
-		if(request.getQueryString() != null) {
-			response.sendRedirect("/search/?" + request.getQueryString());
-		}
+		//if(request.getQueryString() != null) {
+		//	response.sendRedirect("/search/?" + request.getQueryString());
+		//}
 
 		body.appendChild(doc.createTextNode(ON_OFF + " " + debugStatus));
 		html.appendChild(body);
