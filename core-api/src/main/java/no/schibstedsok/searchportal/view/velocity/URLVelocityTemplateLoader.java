@@ -62,7 +62,6 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		if(!(VELOCITY_DEBUG && VELOCITY_DEBUG_ON)) {
 			return super.getResourceStream(url);
 		}
-		
 
 		String filePath = url.replaceAll("http://(.*?)/", "/").replace("localhost/", "");
 		//filePath = filePath.replace("localhost/", "");
@@ -130,6 +129,9 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	 * Create file object
 	 */
 	private File getFile(String templatesDir, String filePath) {
+		if(templatesDir == null) {
+			return new File("null" + filePath);
+		}
 		String paths[] = templatesDir.split(",");
 		
 		for(String p : paths) {
