@@ -3,6 +3,7 @@ package no.schibstedsok.searchportal.http.servlet;
 import java.io.IOException;
 import java.io.Writer;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,6 @@ public class VelocityDebugServlet extends HttpServlet{
 	/* Message to user */
  	private static final String ON_OFF = "Velocityborder is ";
 
-	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) 
 		throws ServletException, IOException {
@@ -60,6 +60,7 @@ public class VelocityDebugServlet extends HttpServlet{
 			internalWriteDocument(doc, response.getWriter());
 			return;
 		}
+		
 		// TODO Auto-generated method stub
 		String velocityDebug = System.getProperty(VELOCITY_DEBUG_ON);
 		String debugStatus = "false";
