@@ -41,7 +41,9 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	private static final String STYLE_ATTRIB = "style";
 	private static final String STYLE_BORDER = "margin:3px;border:1px solid #C0C0C0";
 	private static final String STYLE_HEADING="text-decoration:underline;font-size:10px";
-
+	private static final String ONMOUSEOVER = "this.style.border='1px solid #C0C0C0';this.style.margin='4px'";
+	private static final String ONMOUSEOUT = "this.style.border='none'";
+	
 	/**
 	 * getResourceStream() loads resource from url. Then add border around the
 	 * template so its easy to see wich templates are loaded.
@@ -52,19 +54,27 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 
 		boolean VELOCITY_DEBUG = "true".equals(System.getProperty("VELOCITY_DEBUG"));
 		boolean VELOCITY_DEBUG_ON ="true".equals(System.getProperty("VELOCITY_DEBUG_ON"));
-		
+		boolean STYLE_ONMOUSEOVER ="onmouseover".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
+		boolean foundLocal = false;
+		final String templatesDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");		
+		InputStream stream = null;
+
 		if(!(VELOCITY_DEBUG && VELOCITY_DEBUG_ON)) {
 			return super.getResourceStream(url);
 		}
 		
-		InputStream stream = null;
-		String filePath = url.replaceAll("http://(.*?)/", "/").replace("locahost", "");
-		String templatesDir = System.getProperty("VELOCITY_TEMPLATES_DIR");
 
-		if(filePath.endsWith("head.vm")) {
-			return super.getResourceStream(url);
+		String filePath = url.replaceAll("http://(.*?)/", "/").replace("localhost/", "");
+		//filePath = filePath.replace("localhost/", "");
+
+		File file = getFile(templatesDir, filePath);
+			//navbarMain.vm is trouble
+		if(file.exists()) {
+			foundLocal = true;
+			stream = getStream(file);
+		}else{
+			stream = super.getResourceStream(url);
 		}
-		stream = getStream(templatesDir, filePath, url);
 			// If rss, means the output is xml. 
 		if (url.indexOf("rss") != -1) {
 			return stream;
@@ -90,45 +100,60 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		StringWriter writer = new StringWriter();
 		Document doc = createDocument();
 		
-		Element border = doc.createElement(DIV_TAG);
-		border.setAttribute(STYLE_ATTRIB, STYLE_BORDER);
-			
-		Element divHeader = doc.createElement(DIV_TAG);
-		divHeader.setAttribute(STYLE_ATTRIB, STYLE_HEADING);
-		divHeader.appendChild(doc.createTextNode(filePath));
-		border.appendChild(divHeader);
+		Element div = doc.createElement(DIV_TAG);
 		
-		border.appendChild(doc.createCDATASection(template.toString()));
-		doc.appendChild(border);
+		if(STYLE_ONMOUSEOVER) {
+			div.setAttribute("onmouseover", ONMOUSEOVER);
+			div.setAttribute("onmouseout", ONMOUSEOUT);
+		}else {
+			Element divHeader = doc.createElement(DIV_TAG);
+			divHeader.setAttribute(STYLE_ATTRIB, STYLE_HEADING);
+			divHeader.appendChild(doc.createTextNode(filePath));
+			div.appendChild(divHeader);
+			div.setAttribute("style", STYLE_BORDER);
+		}
+		
+		div.setAttribute("title", file.getName() + (foundLocal ? "(Editable)" : "(Not editable)"));		
+		div.appendChild(doc.createCDATASection(template.toString()));
+		doc.appendChild(div);
 
 		internalWriteDocument(doc, writer);
 	
 		String result = writer.getBuffer().toString();
 		result = result.replace("<![CDATA[", "");
 		result = result.replace("]]>", "");
-		//System.out.println("*** Result: " + result.toString());
-		//System.out.println("*** Result.length: " + result.length());
+
 		return new ByteArrayInputStream(result.getBytes());
+	}
+
+	/*
+	 * Create file object
+	 */
+	private File getFile(String templatesDir, String filePath) {
+		String paths[] = templatesDir.split(",");
+		
+		for(String p : paths) {
+			File file = new File(p + filePath);
+			if(file.exists()) {
+				return file;
+			}
+		}
+		return new File(filePath);
 	}
 
 	/*
 	 * Get stream from file of or url.
 	 */
-	private InputStream getStream(String templatesDir, String filePath,String url) {
+	private InputStream getStream(File file) {
 
-		if(templatesDir == null) {
-			return super.getResourceStream(url);
-		}
-		
-		File file = new File(templatesDir + filePath);
 		if (file.exists()) {
 			try {
 				return new FileInputStream(file);
 			} catch (FileNotFoundException ignore) {
-				return super.getResourceStream(url);
+				throw new RuntimeException("File exist but filenotfoundexception thrown: " + ignore);
 			}
 		} else {
-			return super.getResourceStream(url);
+			throw new IllegalArgumentException("File does not exist");
 		}
 	}
     // -- Write the document to the writer
