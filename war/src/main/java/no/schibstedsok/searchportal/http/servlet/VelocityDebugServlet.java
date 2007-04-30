@@ -54,8 +54,8 @@ public class VelocityDebugServlet extends HttpServlet{
 		String templateDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");
 		
 		if(!isLocalhost(request) || !"true".equals(System.getProperty(VELOCITY_DEBUG))) {
-			LOG.warn("velocitydebug when running localhost and VELOCITY_DEBUG set to true");
-			
+			LOG.warn("velocitydebug when running localhost and VELOCITY_DEBUG set to true: ipAddr=" + request.getRemoteAddr());
+			LOG.warn("your ip is " + request.getRemoteAddr() + " isLocalhost ? " + isLocalhost(request));
 			body.appendChild(doc.createTextNode("Localhost only, start with -DVELOCITY_DEBUG=true"));
 			html.appendChild(body);
 			doc.appendChild(html);
