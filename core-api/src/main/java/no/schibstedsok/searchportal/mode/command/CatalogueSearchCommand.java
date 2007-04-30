@@ -70,11 +70,6 @@ import org.apache.log4j.Logger;
  */
 public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
-    /** Yet another field that contain the result from text analysis and
-     *  which rank profile to use if there are keyword terms or company name terms.
-     */
-    private String analysisSortBy;
-    
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
 
@@ -82,7 +77,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     private String queryGeoString = null;
 
     /** User supplied value for sorting type of search result. */
-    private final String userSortBy; // default er sorting på keywords
+    private String userSortBy = "kw"; // default er sorting på keywords
 
     /** The number of terms (words) in the largest COMPANY_KEYWORD_RESERVED match in the query.
      * Any leaf clauses within this match are boundary matched in the lemiypcfkeywords filter,
@@ -96,6 +91,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      **/
     private transient Clause longestCkr;
 
+    /**
+     *  Todo: Javadoc.    
+     */
     private transient Query whoQuery;
     private transient TokenEvaluationEngine whoEngine;
     private transient String whereString = "";
@@ -146,10 +144,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         // user may specify sorting in two different ways from the GUI,
         // by company name or by keyword. Default is by keyword.
-        userSortBy = "name".equals(getSingleParameter("userSortBy"))
+         userSortBy = "name".equals(getSingleParameter("userSortBy"))
                 ? "name"
                 : ("kw".equals(getSingleParameter("userSortBy")) ? "kw" : null);
-
     }
 
 
@@ -207,6 +204,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /**
      *  Initialise the who query.
+     *  Todo: Javadoc.
      */
     private void initialiseWhoQuery(final WhoWhereSplit whoWhereSplit){
 
@@ -225,12 +223,18 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         }
     }
 
+    /**
+     *  Todo: Javadoc.
+     */
     @Override
     protected Query getQuery(){
 
         return whoQuery;
     }
 
+    /**
+     *  Todo: Javadoc.
+     */
     @Override
     protected TokenEvaluationEngine getEngine(){
 
@@ -239,6 +243,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /**
      *  Initialise the geographic query.
+     *  Todo: Javadoc.
      */
     private void initialiseWhereQuery(final WhoWhereSplit whoWhereSplit) {
 
@@ -265,8 +270,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * @return the search result found by the executed query.
      */
     public SearchResult execute() {
-        
+
         final SearchResult result = super.execute();
+
         final List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
 
         for (Iterator iter = result.getResults().listIterator(); iter.hasNext();) {
@@ -292,7 +298,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         // add the who and where fields (preferred over using them out of the junkyard)
         result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         result.addField(PARAMETER_NAME_WHERE, whereString);
-        
+
         // XXX deprecated approach
         getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         getParameters().put(PARAMETER_NAME_WHERE, whereString);
@@ -356,9 +362,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * which rank-profile to sort by.
      *
      * The sorting may be altered if user has supplied the userSortBy
-     * parameter or if user has not supplied any sorting, the text analysis
-     * overides the specified sorting from modes.xml
-     * 
+     * parameter.
      * @return the sorting to be used when executing the query.
      */
     @Override
@@ -367,11 +371,6 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
         }
-        
-        if(userSortBy==null && analysisSortBy!=null)
-            sortBy = analysisSortBy;
-        
-
         return sortBy;
     }
 
@@ -412,13 +411,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         final boolean hasNotWordCharacters = m.find();
 
-        // Hvis søket er et nøkkelord, bruk iyprpkw, ellers brukes iyprpnavn
-        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD) && analysisSortBy == null){
-            analysisSortBy = SORTBY_KEYWORD;
-        }
-            
-
         if(hasNotWordCharacters){
+
             appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
 
         }else if(!BLANK.equals(getTransformedTerms().get(clause))) {
@@ -463,14 +457,14 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                 }
 
             }else{
-                
+
                 final String transformedTerm = getTransformedTerms().get(clause);
                 final String kwTerm = clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD_RESERVED)
                         ? "\"^" + transformedTerm + "$\""
                         : transformedTerm;
-
-                appendToQueryRepresentation(
-                        '('
+ 
+                 appendToQueryRepresentation(
+                         '('
                         + "iypcfphnavn:" + transformedTerm + " ANY "
                         + "lemiypcfkeywords:" + kwTerm + " ANY "
                         + "lemiypcfkeywordslow:" + transformedTerm
@@ -499,6 +493,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /**
      * {@inheritDoc}
+     * Todo: Javadoc
      */
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
