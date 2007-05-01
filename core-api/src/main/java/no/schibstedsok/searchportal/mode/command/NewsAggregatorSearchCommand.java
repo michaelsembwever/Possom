@@ -36,7 +36,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
     private static final String PARAM_CLUSTER_ID = "clusterId";
 
     /**
-     * @param cxt       The context to execute in.
+     * @param cxt The context to execute in.
      */
     public NewsAggregatorSearchCommand(final Context cxt) {
         super(cxt);
@@ -187,7 +187,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                         break;
                     }
                 }
-                handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
+//                handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
                 return searchResult;
             } finally {
                 if (inputStream != null) {
@@ -210,7 +210,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                 handleClusters(config, offset, root.getChildren(ELEMENT_CLUSTER), searchResult, searchCommand);
                 handleCounts(config, root.getChild(ELEMENT_COUNTS), offset, searchResult);
                 handleRelated(config, root.getChild(ELEMENT_RELATED), searchResult);
-                handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
+//                handleGeoNav(root.getChild(ELEMENT_GEONAVIGATION), searchResult);
                 return searchResult;
             } finally {
                 if (inputStream != null) {
