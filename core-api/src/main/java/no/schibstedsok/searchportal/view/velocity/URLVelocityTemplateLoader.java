@@ -69,7 +69,8 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		final String templatesDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");		
 		InputStream stream = null;
 
-		String filePath = url.replaceAll("http://(.*?)/", "/").replace("localhost/", "");
+        // Get the file equivalece of the URL by removing the host as well as the web application context path.
+        String filePath = url.replaceAll("http://(.*?)/[^/]+/", "/").replace("localhost/", "");
 		File file = getFile(templatesDir, filePath);
 
 		if(file.exists()) {
