@@ -176,12 +176,15 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
 
         public FastSearchResult parseCluster(NewsAggregatorCommandConfig config, InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
             try {
+                LOG.debug("Parsing cluster: " + clusterId);
                 final FastSearchResult searchResult = new FastSearchResult(searchCommand);
                 final Document doc = getDocument(inputStream);
                 final Element root = doc.getRootElement();
                 List<Element> clusters = root.getChildren(ELEMENT_CLUSTER);
                 for (Element cluster : clusters) {
+                    LOG.debug("Looking at element: " + cluster.getName() + ", clusterId=" + cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
                     if (cluster.getAttributeValue(ATTRIBUTE_CLUSTERID).equals(clusterId)) {
+                        LOG.debug("Found correct cluster. Handling.");
                         handleFlatCluster(config, cluster, searchCommand, searchResult);
                         handleRelated(config, cluster.getChild(ELEMENT_RELATED), searchResult);
                         break;
@@ -279,7 +282,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
 
         private void handleFlatCluster(NewsAggregatorCommandConfig config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
             if (cluster != null) {
-                final Element entryCollectionElement = cluster.getChild(config.getNestedResultsField());
+                final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
                 if (entryCollectionElement != null) {
                     final List<Element> entryList = entryCollectionElement.getChildren();
                     searchResult.setHitCount(entryList.size());
