@@ -90,7 +90,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         try {
             final NewsAggregatorXmlParser newsAggregatorXmlParser = new NewsAggregatorXmlParser();
             final InputStream inputStream = getInputStream(config, xmlFile);
-            SearchResult searchResult = newsAggregatorXmlParser.parseCluster(config, inputStream, clusterId.getString(), this);
+            SearchResult searchResult = newsAggregatorXmlParser.parseCluster(config, inputStream, clusterId.getString(), getOffset(), this);
             if (searchResult != null && searchResult.getHitCount() > 0) {
                 return searchResult;
             }
@@ -174,7 +174,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             return saxBuilder.build(inputStream);
         }
 
-        public FastSearchResult parseCluster(NewsAggregatorCommandConfig config, InputStream inputStream, String clusterId, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
+        public FastSearchResult parseCluster(NewsAggregatorCommandConfig config, InputStream inputStream, String clusterId, int offset, NewsAggregatorSearchCommand searchCommand) throws JDOMException, IOException {
             try {
                 LOG.debug("Parsing cluster: " + clusterId);
                 final FastSearchResult searchResult = new FastSearchResult(searchCommand);
@@ -185,7 +185,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                     LOG.debug("Looking at element: " + cluster.getName() + ", clusterId=" + cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
                     if (cluster.getAttributeValue(ATTRIBUTE_CLUSTERID).equals(clusterId)) {
                         LOG.debug("Found correct cluster. Handling.");
-                        handleFlatCluster(config, cluster, searchCommand, searchResult);
+                        handleFlatCluster(config, cluster, searchCommand, searchResult, offset);
                         handleRelated(config, cluster.getChild(ELEMENT_RELATED), searchResult);
                         break;
                     }
@@ -235,7 +235,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                 final String clusters = countsElement.getAttributeValue(ATTRIBUTE_CLUSTER_COUNT);
                 if (clusters != null && clusters.length() > 0) {
                     if (offset + config.getResultsToReturn() < Integer.parseInt(clusters)) {
-                        searchResult.addField(ClusteringESPFastCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + config.getResultsToReturn()));
+                        addNextOffsetField(offset + config.getResultsToReturn(), searchResult);
                     }
                 }
             }
@@ -280,18 +280,26 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
             }
         }
 
-        private void handleFlatCluster(NewsAggregatorCommandConfig config, Element cluster, SearchCommand searchCommand, SearchResult searchResult) {
+        private void handleFlatCluster(NewsAggregatorCommandConfig config, Element cluster, SearchCommand searchCommand, SearchResult searchResult, int offset) {
             if (cluster != null) {
                 final Element entryCollectionElement = cluster.getChild(ELEMENT_ENTRY_COLLECTION);
                 if (entryCollectionElement != null) {
+                    int offsetCount = 0;
                     final List<Element> entryList = entryCollectionElement.getChildren();
                     searchResult.setHitCount(entryList.size());
 
                     final HashMap<String, SearchResultItem> collapseMap = new HashMap<String, SearchResultItem>();
-                    for (Element entry : entryList) {
+                    offset = config.isIgnoreOffset() ? 0 : offset;
+                    for (int i = offset; i < entryList.size(); i++) {
+                        Element entry = entryList.get(i);
                         final SearchResultItem searchResultItem = new BasicSearchResultItem();
                         handleEntry(entry, searchResultItem);
-                        addResult(config, searchResultItem, searchResult, searchCommand, collapseMap);
+                        if (addResult(config, searchResultItem, searchResult, searchCommand, collapseMap)) {
+                            offsetCount++;
+                        }
+                    }
+                    if (offsetCount < entryList.size()) {
+                        addNextOffsetField(offsetCount, searchResult);
                     }
                 }
             }
@@ -343,11 +351,11 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
         }
 
 
-        private void addResult(NewsAggregatorCommandConfig config,
-                               SearchResultItem nestedResultItem,
-                               SearchResult nestedSearchResult,
-                               SearchCommand searchCommand,
-                               HashMap<String, SearchResultItem> collapseMap) {
+        private boolean addResult(NewsAggregatorCommandConfig config,
+                                  SearchResultItem nestedResultItem,
+                                  SearchResult nestedSearchResult,
+                                  SearchCommand searchCommand,
+                                  HashMap<String, SearchResultItem> collapseMap) {
             // Check if entry is duplicate and should be a subresult
             SearchResultItem collapseParent = null;
             String collapseId = nestedResultItem.getField(ELEMENT_COLLAPSEID);
@@ -355,11 +363,16 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                 collapseParent = collapseMap.get(collapseId);
             }
             if (collapseParent == null) {
-                // No duplicate in results or should not be collapsed
-                nestedSearchResult.addResult(nestedResultItem);
-                if (collapseMap != null) {
-                    collapseMap.put(collapseId, nestedResultItem);
+                // Skipping add if max returned results has been reached.
+                if (nestedSearchResult.getResults().size() < config.getResultsToReturn()) {
+                    // No duplicate in results or should not be collapsed
+                    nestedSearchResult.addResult(nestedResultItem);
+                    if (collapseMap != null) {
+                        collapseMap.put(collapseId, nestedResultItem);
+                    }
+                    return true;
                 }
+                return false;
             } else {
                 // duplicate item, adding as a subresult to first item.
                 SearchResult collapsedResults = collapseParent.getNestedSearchResult(config.getNestedResultsField());
@@ -368,6 +381,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                     collapseParent.addNestedSearchResult(config.getNestedResultsField(), collapsedResults);
                 }
                 collapsedResults.addResult(nestedResultItem);
+                return true;
             }
         }
     }

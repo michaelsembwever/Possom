@@ -36,6 +36,9 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         super(cxt);
     }
 
+    protected static void addNextOffsetField(int nextOffset, SearchResult searchResult) {
+        searchResult.addField(NewsEspSearchCommand.PARAM_NEXT_OFFSET, Integer.toString(nextOffset));
+    }
 
     @Override
     protected void modifyQuery(IQuery query) {
@@ -88,49 +91,63 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         }
     }
 
+    @Override
+    protected void visitImpl(final Object clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        super.visitImpl(clause);
+    }
+
     protected void visitImpl(final Clause clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final LeafClause clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final OperationClause clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final AndClause clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final OrClause clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final NotClause clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final AndNotClause clause) {
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
         addMedium(clause);
     }
@@ -178,7 +195,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
             }
         }
         if (offset + collectedHits < result.getDocCount()) {
-            searchResult.addField(NewsEspSearchCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + collectedHits));
+            addNextOffsetField(offset + collectedHits, searchResult);
         }
         return searchResult;
     }

@@ -144,7 +144,7 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
             }
         }
         if (offset + collectedHits < result.getDocCount()) {
-            searchResult.addField(ClusteringESPFastCommand.PARAM_NEXT_OFFSET, Integer.toString(offset + collectedHits));
+            addNextOffsetField(offset + collectedHits, searchResult);
         }
         searchResult.setHitCount(result.getDocCount());
         return searchResult;
