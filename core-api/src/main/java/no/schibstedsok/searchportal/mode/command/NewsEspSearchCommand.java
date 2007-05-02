@@ -75,7 +75,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         if (getQuery().getRootClause() == clause) {
             NewsEspCommandConfig config = getSearchConfiguration();
             String medium = (String) datamodel.getJunkYard().getValue(config.getMediumParameter());
-            if (!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium) && getTransformedQuery().length() > 0) {
+            if (!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium) && getQueryRepresentationLength() > 0) {
                 if (medium == null || medium.length() == 0) {
                     medium = config.getDefaultMedium();
                 }
@@ -86,8 +86,9 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
                 appendToQueryRepresentation(medium);
                 appendToQueryRepresentation(')');
                 LOG.debug("Added medium");
+            } else {
+                LOG.debug("Did not add medium on rootclause: medium=" + medium + ", transformedQuery=" + getQueryRepresentationLength());
             }
-
         }
     }
 
@@ -95,6 +96,9 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     protected void visitImpl(final Object clause) {
         LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
         super.visitImpl(clause);
+        if (clause instanceof Clause) {
+            addMedium((Clause) clause);
+        }
     }
 
     protected void visitImpl(final Clause clause) {
@@ -102,6 +106,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         super.visitImpl(clause);
         addMedium(clause);
     }
+
 
     @Override
     protected void visitImpl(final LeafClause clause) {
