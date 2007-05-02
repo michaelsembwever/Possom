@@ -2,6 +2,9 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
 
 /**
  * @author mick
@@ -9,26 +12,6 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  */
 @Controller("YahooIdpSearchCommand")
 public final class YahooIdpCommandConfig extends AbstractYahooSearchConfiguration {
-
-    /** TODO comment me. **/
-    public YahooIdpCommandConfig(){
-
-    }
-
-    /** TODO comment me. *
-     * @param asc 
-     */
-    public YahooIdpCommandConfig(final SearchConfiguration asc){
-
-        if(asc != null && asc instanceof YahooIdpCommandConfig){
-            final YahooIdpCommandConfig ysc = (YahooIdpCommandConfig) asc;
-            database = ysc.database;
-            dateRange = ysc.dateRange;
-            regionMix = ysc.regionMix;
-            spellState = ysc.spellState;
-            unique = ysc.unique;
-        }
-    }
 
     /**
      * Holds value of property database.
@@ -239,6 +222,27 @@ public final class YahooIdpCommandConfig extends AbstractYahooSearchConfiguratio
      */
     public void setLanguageMix(String languageMix) {
         this.languageMix = languageMix;
+    }
+
+    @Override
+    public AbstractYahooSearchConfiguration readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "database", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "dateRange", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "hideDomain", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "language", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "languageMix", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "region", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "regionMix", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "spellState", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "unique", ParseType.String, element, "");
+
+        return this;
     }
 
 

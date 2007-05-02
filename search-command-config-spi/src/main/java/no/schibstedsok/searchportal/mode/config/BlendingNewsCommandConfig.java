@@ -7,8 +7,10 @@
 
 package no.schibstedsok.searchportal.mode.config;
 
+import java.util.ArrayList;
 import java.util.List;
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -21,12 +23,6 @@ public final class BlendingNewsCommandConfig extends FastCommandConfig {
     private List<String> filtersToBlend;
     private int documentsPerFilter;
     
-    /**
-     * 
-     */
-    public BlendingNewsCommandConfig() {
-    }
-
     /**
      * 
      * @return 
@@ -58,5 +54,29 @@ public final class BlendingNewsCommandConfig extends FastCommandConfig {
     public void setFiltersToBlend(final List<String> filtersToBlend) {
         this.filtersToBlend = filtersToBlend;
     }
+
+    @Override
+    public FastCommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        // TODO use fillBeanProperty pattern instead
+        final String[] filters = element.getAttribute("filters").split(",");
+
+        final List<String> filterList = new ArrayList<String>();
+
+        for (String filter : filters) {
+            filterList.add(filter.trim());
+        }
+        
+        setFiltersToBlend(filterList);
+        setDocumentsPerFilter(Integer.parseInt(element.getAttribute("documentsPerFilter")));
+
+        return this;
+    }
+    
+    
 
 }

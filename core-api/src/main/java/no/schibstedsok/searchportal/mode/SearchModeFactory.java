@@ -98,13 +98,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     private static final Logger LOG = Logger.getLogger(SearchModeFactory.class);
     private static final String ERR_DOC_BUILDER_CREATION
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
-    private static final String ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED
-            = "Each FastNavigator is only allowed to have one child. Parent was ";
-    private static final String ERR_FAST_EPS_QR_SERVER =
-            "Query server address cannot contain the scheme (http://): ";
     private static final String INFO_PARSING_MODE = "Parsing mode ";
     private static final String INFO_PARSING_CONFIGURATION = " Parsing configuration ";
-    private static final String INFO_PARSING_NAVIGATOR = "  Parsing navigator ";
     private static final String INFO_PARSING_RESULT_HANDLER = "  Parsing result handler ";
     private static final String INFO_PARSING_QUERY_TRANSFORMER = "  Parsing query transformer ";
     private static final String DEBUG_PARSED_PROPERTY = "  Property property ";
@@ -124,6 +119,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     /**
      * TODO comment me. *
+     * @param cxt 
+     * @return 
      */
     public static SearchModeFactory valueOf(final Context cxt) {
 
@@ -195,6 +192,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     /**
      * TODO comment me. *
+     * @param id 
+     * @return 
      */
     public SearchMode getMode(final String id) {
 
@@ -278,9 +277,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     }
                     final Element commandE = (Element) commandN;
 
-                    if (searchConfigurationFactory.supported(commandE.getTagName(), context.getSite())) {
+                    if(searchConfigurationFactory.supported(commandE.getTagName(), context.getSite())){
 
-                        final SearchConfiguration sc = CommandTypes.DUMMY.parseSearchConfiguration(context, commandE, mode);
+                        final SearchConfiguration sc 
+                                = searchConfigurationFactory.parseSearchConfiguration(context, commandE, mode);
+
                         modesCommands.put(sc.getName(), sc);
                         mode.addSearchConfiguration(sc);
                     }
@@ -329,28 +330,14 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     // Inner classes -------------------------------------------------
 
-    /**
-     * @deprecated we'll use SearchCommandFactory directly soon.
-     */
-    private enum CommandTypes {
-        DUMMY;
 
-        //        private final Class<? extends SearchConfiguration> clazz;
-        private final String xmlName;
-//        private final SearchCommandFactory searchConfigurationFactory = new SearchCommandFactory();
-//        private final QueryTransformerFactory queryTransformerFactory = new QueryTransformerFactory();
-//        private final ResultHandlerFactory resultHandlerFactory = new ResultHandlerFactory();
+    private static final class SearchCommandFactory extends AbstractFactory<SearchConfiguration> {
 
-        CommandTypes(/*final Class<? extends SearchConfiguration> clazz*/) {
-//            this.clazz = clazz;
-            xmlName = name().replaceAll("_", "-").toLowerCase();
+        SearchCommandFactory() {
+            
         }
-
-        public String getXmlName() {
-            return xmlName;
-        }
-
-        public SearchConfiguration parseSearchConfiguration(
+        
+        SearchConfiguration parseSearchConfiguration(
                 final Context cxt,
                 final Element commandE,
                 final SearchMode mode) {
@@ -361,6 +348,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final SearchConfiguration inherit = findParent(parentName, mode);
 
             if (!"".equals(parentName) && inherit == null) {
+                
                 throw new IllegalArgumentException(
                         MessageFormat.format(ERR_PARENT_COMMAND_NOT_FOUND, parentName, id, mode.getId()));
             }
@@ -368,358 +356,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             LOG.info(INFO_PARSING_CONFIGURATION + commandE.getLocalName() + " " + id);
 
             try {
-
-                final SearchConfiguration sc
-                        = searchConfigurationFactory.parseSearchConfiguration(commandE, inherit, cxt.getSite());
-
-                if (sc instanceof FastCommandConfig) {
-                    final FastCommandConfig fsc = (FastCommandConfig) sc;
-                    final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig
-                            ? (FastCommandConfig) inherit
-                            : null;
-                    fillBeanProperty(sc, inherit, "clustering", ParseType.Boolean, commandE, "false");
-                    fillBeanProperty(sc, inherit, "collapsing", ParseType.Boolean, commandE, "false");
-                    fillBeanProperty(sc, inherit, "expansion", ParseType.Boolean, commandE, "false");
-
-                    if (commandE.getAttribute("collections").length() > 0) {
-                        fsc.getCollections().clear();
-                        final String[] collections = commandE.getAttribute("collections").split(",");
-                        for (String collection : collections) {
-                            fsc.addCollection(collection);
-                        }
-                    }
-
-                    fillBeanProperty(sc, inherit, "filter", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "project", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "project", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "filtertype", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "ignoreNavigation", ParseType.Boolean, commandE, "false");
-                    fillBeanProperty(sc, inherit, "offensiveScoreLimit", ParseType.Int, commandE, "-1");
-                    fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "queryServerUrl", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "relevantQueries", ParseType.Boolean, commandE, "false");
-                    fillBeanProperty(sc, inherit, "sortBy", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "spamScoreLimit", ParseType.Int, commandE, "-1");
-                    fillBeanProperty(sc, inherit, "spellcheck", ParseType.Boolean, commandE, "false");
-                    fillBeanProperty(sc, inherit, "spellchecklanguage", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "lemmatise", ParseType.Boolean, commandE, "false");
-
-                    if (fsc.getQueryServerUrl() == null || "".equals(fsc.getQueryServerUrl())) {
-                        LOG.debug("queryServerURL is empty for " + fsc.getName());
-                    }
-
-                    // navigators
-                    if (fscInherit != null && fscInherit.getNavigators() != null) {
-                        for (final Map.Entry<String, Navigator> nav : fscInherit.getNavigators().entrySet()) {
-                            fsc.addNavigator(nav.getValue(), nav.getKey());
-                        }
-                    }
-
-                    final NodeList nList = commandE.getElementsByTagName("navigators");
-
-                    for (int i = 0; i < nList.getLength(); ++i) {
-                        final Collection<Navigator> navigators = parseNavigators((Element) nList.item(i));
-                        for (Navigator navigator : navigators) {
-                            fsc.addNavigator(navigator, navigator.getId());
-                        }
-
-                    }
-                }
-                if (sc instanceof EspFastCommandConfig) {
-                    final EspFastCommandConfig esc = (EspFastCommandConfig) sc;
-
-                    final EspFastCommandConfig ascInherit = inherit instanceof EspFastCommandConfig
-                            ? (EspFastCommandConfig) inherit
-                            : null;
-
-                    fillBeanProperty(sc, inherit, "view", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "sortBy", ParseType.String, commandE, "default");
-                    fillBeanProperty(sc, inherit, "collapsingRemoves", ParseType.Boolean, commandE, "false");
-                    fillBeanProperty(sc, inherit, "collapsingEnabled", ParseType.Boolean, commandE, "false");
-                    fillBeanProperty(sc, inherit, "expansionEnabled", ParseType.Boolean, commandE, "false");
-                    fillBeanProperty(sc, inherit, "qtPipeline", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "queryServer", ParseType.String, commandE, "");
-
-                    if (null != esc.getQueryServer() && esc.getQueryServer().startsWith("http://")) {
-                        throw new IllegalArgumentException(ERR_FAST_EPS_QR_SERVER + esc.getQueryServer());
-                    }
-
-                    // navigators
-                    final NodeList nList = commandE.getElementsByTagName("navigators");
-                    for (int i = 0; i < nList.getLength(); ++i) {
-                        final Collection<Navigator> navigators = parseNavigators((Element) nList.item(i));
-                        for (Navigator navigator : navigators) {
-                            esc.addNavigator(navigator, navigator.getId());
-                        }
-
-                    }
-                }
-
-                if (sc instanceof NavigatableEspFastCommandConfig) {
-                    final NavigatableEspFastCommandConfig nasc = (NavigatableEspFastCommandConfig) sc;
-                    // navigators
-                    final NodeList nList = commandE.getElementsByTagName("navigators");
-                    for (int i = 0; i < nList.getLength(); ++i) {
-                        final Collection<Navigator> navigators = parseNavigators((Element) nList.item(i));
-                        for (Navigator navigator : navigators) {
-                            nasc.addNavigator(navigator, navigator.getId());
-                        }
-                    }
-                }
-                if (sc instanceof HittaCommandConfig) {
-                    fillBeanProperty(sc, inherit, "catalog", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "key", ParseType.String, commandE, "");
-                }
-
-                if (sc instanceof PrisjaktCommandConfig) {
-                }
-
-                if (sc instanceof BlocketCommandConfig) {
-                    final BlocketCommandConfig bsc = (BlocketCommandConfig) sc;
-
-                    /**
-                     * Read blocket.se's around 400 most commonly used search phrases excluding vehicle oriented stuff, from blocket_search_words.xml.
-                     */
-                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    factory.setValidating(false);
-                    final DocumentBuilder builder = factory.newDocumentBuilder();
-                    DocumentLoader loader = cxt.newDocumentLoader(cxt, bsc.getBlocketConfigFileName(), builder);
-                    loader.abut();
-
-                    final Map<String, String> blocketmap = new HashMap<String, String>();
-                    final Document doc = loader.getDocument();
-                    final Element root = doc.getDocumentElement();
-
-                    final NodeList wordList = root.getElementsByTagName("word");
-
-                    // loop through words.
-                    for (int i = 0; i < wordList.getLength(); ++i) {
-                        final Element wordElement = (Element) wordList.item(i);
-                        final String cid = wordElement.getAttribute("category-id");
-                        final String catName = wordElement.getAttribute("category");
-                        final String word = wordElement.getTextContent();
-                        // Put words into a map
-                        blocketmap.put(word, cid + ":" + catName);
-                    }
-                    bsc.setBlocketMap(blocketmap);
-                }
-
-                if (sc instanceof VehicleCommandConfig) {
-                    final VehicleCommandConfig vsc = (VehicleCommandConfig) sc;
-
-                    /**
-                     * Read vehicle specific properties for bytbil.com and blocket.se
-                     */
-                    final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    factory.setValidating(false);
-                    final DocumentBuilder builder = factory.newDocumentBuilder();
-                    DocumentLoader loader = cxt.newDocumentLoader(cxt, vsc.getAccessoriesFileName(), builder);
-                    loader.abut();
-
-                    final Set<String> accessoriesSet = new HashSet<String>();
-                    final Document doc = loader.getDocument();
-                    final Element root = doc.getDocumentElement();
-
-                    final NodeList accList = root.getElementsByTagName("accessory");
-
-                    /**
-                     * Put car accessory search words from xml in a set
-                     */
-                    for (int i = 0; i < accList.getLength(); ++i) {
-                        final Element wordElement = (Element) accList.item(i);
-                        final String acc = wordElement.getTextContent();
-                        accessoriesSet.add(acc);
-                    }
-                    vsc.setAccessoriesSet(accessoriesSet);
-
-
-                    final Map<String, String> carMap = new HashMap<String, String>();
-                    final DocumentBuilder builder2 = factory.newDocumentBuilder();
-                    DocumentLoader carLoader = cxt.newDocumentLoader(cxt, vsc.getCarsPropertiesFileName(), builder2);
-                    carLoader.abut();
-
-                    final Document doc2 = carLoader.getDocument();
-                    final Element root2 = doc2.getDocumentElement();
-
-                    /**
-                     * Put car words from xml into a map
-                     */
-                    final NodeList carList = root2.getElementsByTagName("car");
-
-                    for (int i = 0; i < carList.getLength(); ++i) {
-                        final Element wordElement = (Element) carList.item(i);
-                        final String brand = wordElement.getAttribute("brand");
-                        final String model = wordElement.getAttribute("model");
-                        final String car = wordElement.getTextContent();
-                        carMap.put(car, brand + ";" + model);   // "volvo p 1800" , "volvo;p 1800"
-                    }
-                    vsc.setCarsMap(carMap);
-                }
-
-                if (sc instanceof AbstractYahooSearchConfiguration) {
-                    fillBeanProperty(sc, inherit, "encoding", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "partnerId", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "host", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "port", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "hostHeader", ParseType.String, commandE, "");
-                }
-                if (sc instanceof YahooMediaCommandConfig) {
-
-                    fillBeanProperty(sc, inherit, "catalog", ParseType.String, commandE,
-                            YahooMediaCommandConfig.DEFAULT_CATALOG);
-                    fillBeanProperty(sc, inherit, "ocr", ParseType.String, commandE,
-                            YahooMediaCommandConfig.DEFAULT_OCR);
-                    fillBeanProperty(sc, inherit, "site", ParseType.String, commandE, "");
-                }
-                if (sc instanceof OverturePpcCommandConfig) {
-                    fillBeanProperty(sc, inherit, "url", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "type", ParseType.String, commandE, "");
-                }
-                if (sc instanceof PlatefoodPpcCommandConfig) {
-                    fillBeanProperty(sc, inherit, "url", ParseType.String, commandE, "");
-                }
-                if (sc instanceof YahooIdpCommandConfig) {
-                    fillBeanProperty(sc, inherit, "database", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "dateRange", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "filter", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "hideDomain", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "language", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "languageMix", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "region", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "regionMix", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "spellState", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "unique", ParseType.String, commandE, "");
-                }
-                if (sc instanceof PictureCommandConfig) {
-
-                    fillBeanProperty(sc, inherit, "queryServerHost", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "queryServerPort", ParseType.String, commandE, "");
-                    fillBeanProperty(sc, inherit, "country", ParseType.String, commandE, "no");
-                    fillBeanProperty(sc, inherit, "filter", ParseType.String, commandE, "medium");
-                    fillBeanProperty(sc, inherit, "customerId", ParseType.String, commandE, "558735");
-
-                    LOG.debug("Inherited customerid " + ((PictureCommandConfig) sc).getCustomerId());
-
-                }
-                if (sc instanceof MobileCommandConfig) {
-                    final MobileCommandConfig msc = (MobileCommandConfig) sc;
-
-                    // TODO use fillBeanProperty pattern instead
-                    msc.setPersonalizationGroup(commandE.getAttribute("personalization-group"));
-                    // TODO use fillBeanProperty pattern instead
-                    msc.setTelenorPersonalizationGroup(commandE.getAttribute("telenor-personalization-group"));
-                    // TODO use fillBeanProperty pattern instead
-                    msc.setSortBy(commandE.getAttribute("sort-by"));
-                    // TODO use fillBeanProperty pattern instead
-                    msc.setSource(commandE.getAttribute("source"));
-                    // TODO use fillBeanProperty pattern instead
-                    msc.setFilter(commandE.getAttribute("filter"));
-                }
-                if (sc instanceof BlendingNewsCommandConfig) {
-                    final BlendingNewsCommandConfig bnsc = (BlendingNewsCommandConfig) sc;
-
-                    final String[] filters = commandE.getAttribute("filters").split(",");
-
-                    final List<String> filterList = new ArrayList<String>();
-
-                    for (int i = 0; i < filters.length; i++) {
-                        filterList.add(filters[i].trim());
-                    }
-                    // TODO use fillBeanProperty pattern instead
-                    bnsc.setFiltersToBlend(filterList);
-                    // TODO use fillBeanProperty pattern instead
-                    bnsc.setDocumentsPerFilter(Integer.parseInt(commandE.getAttribute("documentsPerFilter")));
-                }
-
-                if (sc instanceof StormweatherCommandConfig) {
-                    final StormweatherCommandConfig swsc = (StormweatherCommandConfig) sc;
-                    if (commandE.getAttribute("xml-elements").length() > 0) {
-                        final String[] elms = commandE.getAttribute("xml-elements").split(",");
-                        for (String elm : elms) {
-                            swsc.addElementValue(elm.trim());
-                        }
-                    }
-
-                    // Add inherited xml elemts.
-                    if (inherit instanceof StormweatherCommandConfig) {
-                        final StormweatherCommandConfig swsi = (StormweatherCommandConfig) inherit;
-                        for (String elm : swsi.getElementValues()) {
-                            swsc.addElementValue(elm);
-                        }
-                    }
-                }
-
-                if (sc instanceof TvsearchCommandConfig) {
-                    final TvsearchCommandConfig tssc = (TvsearchCommandConfig) sc;
-                    final String[] defaultChannels = commandE.getAttribute("default-channels").split(",");
-                    for (String channel : defaultChannels) {
-                        tssc.addDefaultChannel(channel.trim());
-                    }
-                    // TODO use fillBeanProperty pattern instead
-                    tssc.setResultsToFetch(Integer.parseInt(commandE.getAttribute("results-to-fetch")));
-
-                }
-
-                if (sc instanceof TvwaitsearchCommandConfig) {
-                    final TvwaitsearchCommandConfig twsc = (TvwaitsearchCommandConfig) sc;
-                    fillBeanProperty(twsc, inherit, "index", ParseType.Int, commandE, "0");
-                    fillBeanProperty(twsc, inherit, "waitOn", ParseType.String, commandE, null);
-                    fillBeanProperty(twsc, inherit, "useMyChannels", ParseType.Boolean, commandE, "false");
-                }
-
-                if (sc instanceof TvenrichCommandConfig) {
-                    final TvenrichCommandConfig tesc = (TvenrichCommandConfig) sc;
-                    fillBeanProperty(tesc, inherit, "waitOn", ParseType.String, commandE, null);
-                }
-
-                if (sc instanceof CatalogueCommandConfig) {
-                    final CatalogueCommandConfig csc = (CatalogueCommandConfig) sc;
-                    fillBeanProperty(csc, inherit, "queryParameterWhere", ParseType.String, commandE, "");
-                    fillBeanProperty(csc, inherit, "searchBy", ParseType.String, commandE, "");
-                    fillBeanProperty(csc, inherit, "split", ParseType.Boolean, commandE, "false");
-                }
-                if (sc instanceof CatalogueAdsCommandConfig) {
-                    final CatalogueAdsCommandConfig casc = (CatalogueAdsCommandConfig) sc;
-                    fillBeanProperty(casc, inherit, "queryParameterWhere", ParseType.String, commandE, "");
-                }
-
-                if (sc instanceof CatalogueBannersCommandConfig) {
-                    final CatalogueBannersCommandConfig cbsc = (CatalogueBannersCommandConfig) sc;
-                    fillBeanProperty(cbsc, inherit, "queryParameterWhere", ParseType.String, commandE, "");
-                }
-
-                if (sc instanceof NewsEspCommandConfig) {
-                    final NewsEspCommandConfig nesc = (NewsEspCommandConfig) sc;
-                    fillBeanProperty(nesc, inherit, "mediumPrefix", ParseType.String, commandE, "medium");
-                    fillBeanProperty(nesc, inherit, "defaultMedium", ParseType.String, commandE, "webnewsarticle");
-                    fillBeanProperty(nesc, inherit, "mediumParameter", ParseType.String, commandE, "medium");
-                    fillBeanProperty(nesc, inherit, "nestedResultsField", ParseType.String, commandE, "entries");
-                    fillBeanProperty(nesc, inherit, "collapsingMaxFetch", ParseType.Int, commandE, "10");
-                    fillBeanProperty(nesc, inherit, "ignoreOffset", ParseType.Boolean, commandE, "false");
-                }
-
-                if (sc instanceof ClusteringEspFastCommandConfig) {
-                    final ClusteringEspFastCommandConfig cefc = (ClusteringEspFastCommandConfig) sc;
-                    fillBeanProperty(cefc, inherit, "clusterIdParameter", ParseType.String, commandE, "clusterId");
-                    fillBeanProperty(cefc, inherit, "resultsPerCluster", ParseType.Int, commandE, "");
-                    fillBeanProperty(cefc, inherit, "clusterField", ParseType.String, commandE, "cluster");
-
-                    fillBeanProperty(cefc, inherit, "sortField", ParseType.String, commandE, "publishedtime");
-                    fillBeanProperty(cefc, inherit, "defaultSort", ParseType.String, commandE, "descending");
-                    fillBeanProperty(cefc, inherit, "userSortParameter", ParseType.String, commandE, "sort");
-                }
-
-                if (sc instanceof NewsAggregatorCommandConfig) {
-                    final NewsAggregatorCommandConfig nasc = (NewsAggregatorCommandConfig) sc;
-                    fillBeanProperty(nasc, inherit, "xmlSource", ParseType.String, commandE, "");
-                    fillBeanProperty(nasc, inherit, "xmlMainFile", ParseType.String, commandE, "fp_main_main.xml");
-                    fillBeanProperty(nasc, inherit, "geographicFields", ParseType.String, commandE, "");
-                    fillBeanProperty(nasc, inherit, "categoryFields", ParseType.String, commandE, "");
-                }
-
-                if (sc instanceof NewsMyNewsCommandConfig) {
-
-                }
+            
+                final SearchConfiguration sc = parseSearchConfigurationImpl(commandE, inherit, cxt.getSite());
 
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
@@ -779,8 +417,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 throw new InfrastructureException(ex);
             } catch (IllegalArgumentException ex) {
                 throw new InfrastructureException(ex);
-            } catch (ParserConfigurationException e) {
-                throw new InfrastructureException(e);
             }
         }
 
@@ -806,47 +442,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             return config;
         }
 
-        private Collection<Navigator> parseNavigators(final Element navsE) {
-
-            final Collection<Navigator> navigators = new ArrayList<Navigator>();
-            final NodeList children = navsE.getChildNodes();
-            for (int i = 0; i < children.getLength(); ++i) {
-                final Node child = children.item(i);
-                if (child instanceof Element && "navigator".equals(((Element) child).getTagName())) {
-                    final Element navE = (Element) child;
-                    final String id = navE.getAttribute("id");
-                    final String name = navE.getAttribute("name");
-                    final String sortAttr = navE.getAttribute("sort") != null && navE.getAttribute("sort").length() > 0
-                            ? navE.getAttribute("sort").toUpperCase() : "COUNT";
-                    LOG.info(INFO_PARSING_NAVIGATOR + id + " [" + name + "]" + ", sort=" + sortAttr);
-                    final Navigator.Sort sort = Navigator.Sort.valueOf(sortAttr);
-
-                    final Navigator nav = new Navigator(
-                            name,
-                            navE.getAttribute("field"),
-                            navE.getAttribute("display-name"),
-                            sort);
-                    nav.setId(id);
-                    final Collection<Navigator> childNavigators = parseNavigators(navE);
-                    if (childNavigators.size() > 1) {
-                        throw new IllegalStateException(ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED + id);
-                    } else if (childNavigators.size() == 1) {
-                        nav.setChildNavigator(childNavigators.iterator().next());
-                    }
-                    navigators.add(nav);
-                }
-            }
-
-            return navigators;
-        }
-    }
-
-    private static final class SearchCommandFactory extends AbstractFactory<SearchConfiguration> {
-
-        SearchCommandFactory() {
-        }
-
-        SearchConfiguration parseSearchConfiguration(
+        private SearchConfiguration parseSearchConfigurationImpl(
                 final Element element,
                 final SearchConfiguration inherit,
                 final Site site) {
@@ -864,9 +460,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             LOG.info("findClass " + className);
             final Class<SearchConfiguration> clazz
                     = (Class<SearchConfiguration>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
-                    "no.schibstedsok.searchportal.mode.config."
-                            + className
-                            + "Config");
+                                "no.schibstedsok.searchportal.mode.config."
+                                + className
+                                + "Config");
+
 
             LOG.info("Found class " + clazz.getName());
             return clazz;
@@ -924,20 +521,20 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             final Class<ResultHandlerConfig> clazz =
                     (Class<ResultHandlerConfig>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
                             "no.schibstedsok.searchportal.result.handler."
-                                    + className
-                                    + "ResultHandlerConfig");
+                            + className
+                            + "ResultHandlerConfig");
+
 
             LOG.info("Found class " + clazz.getName());
             return clazz;
         }
     }
 
-    private static abstract class AbstractFactory<C> {
+    private static abstract class AbstractFactory<C>{
 
         private static final String INFO_CONSTRUCT = "  Construct ";
 
-        AbstractFactory() {
-        }
+        AbstractFactory(){}
 
         boolean supported(final String xmlName, final Site site) {
 

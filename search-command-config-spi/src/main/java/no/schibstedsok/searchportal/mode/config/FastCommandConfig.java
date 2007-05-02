@@ -12,8 +12,12 @@ import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
 import no.schibstedsok.searchportal.result.Navigator;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -522,4 +526,68 @@ public class FastCommandConfig extends CommandConfig {
     public void setExpansion(final boolean expansion) {
         this.expansion = expansion;
     }
+
+    @Override
+    public FastCommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+
+        final FastCommandConfig fscInherit = inherit instanceof FastCommandConfig
+                ? (FastCommandConfig) inherit
+                : null;
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "clustering", ParseType.Boolean, element, "false");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "collapsing", ParseType.Boolean, element, "false");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "expansion", ParseType.Boolean, element, "false");
+
+        if (element.getAttribute("collections").length() > 0) {
+            final String[] collections = element.getAttribute("collections").split(",");
+            for (String collection : collections) {
+                addCollection(collection);
+            }
+        }else if(null != fscInherit){
+            collections.addAll(fscInherit.getCollections());
+        }
+
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "project", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "project", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "filtertype", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "ignoreNavigation", ParseType.Boolean, element, "false");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "offensiveScoreLimit", ParseType.Int, element, "-1");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "qtPipeline", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServerUrl", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "relevantQueries", ParseType.Boolean, element, "false");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortBy", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "spamScoreLimit", ParseType.Int, element, "-1");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "spellcheck", ParseType.Boolean, element, "false");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "spellchecklanguage", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "lemmatise", ParseType.Boolean, element, "false");
+
+        if (getQueryServerUrl() == null || "".equals(getQueryServerUrl())) {
+            LOG.debug("queryServerURL is empty for " + getName());
+        }
+
+        // navigators
+        if (fscInherit != null && fscInherit.getNavigators() != null) {
+            
+            navigators.putAll(fscInherit.getNavigators());
+        }
+
+        final NodeList nList = element.getElementsByTagName("navigators");
+
+        for (int i = 0; i < nList.getLength(); ++i) {
+            final Collection<Navigator> navigators = parseNavigators((Element) nList.item(i));
+            for (Navigator navigator : navigators) {
+                addNavigator(navigator, navigator.getId());
+            }
+
+        }
+
+        return this;
+    }
+    
+    
 }

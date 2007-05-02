@@ -4,6 +4,9 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
 
 /**
  * An implementation of Search Configuration for yellow searches.
@@ -32,12 +35,6 @@ public final class CatalogueCommandConfig extends FastCommandConfig {
      * based on recognised geographic locations.
      */
     private Boolean split;
-    
-    /**
-     * 
-     */
-    public CatalogueCommandConfig(){
-    }
     
     /**
      *  getter for queryParameterWhere
@@ -87,5 +84,20 @@ public final class CatalogueCommandConfig extends FastCommandConfig {
     public Boolean getSplit(){
         return this.split;
     }
+
+    @Override
+    public FastCommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryParameterWhere", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "searchBy", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "split", ParseType.Boolean, element, "false");
+
+        return this;
+    }
+    
     
 }

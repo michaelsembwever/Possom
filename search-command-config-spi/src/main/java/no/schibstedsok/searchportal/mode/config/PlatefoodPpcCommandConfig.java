@@ -8,6 +8,9 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -16,31 +19,8 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  */
 @Controller("PlatefoodPPCSearchCommand")
 public final class PlatefoodPpcCommandConfig extends AbstractYahooSearchConfiguration {
-       
-    /**
-     * 
-     */
-    public PlatefoodPpcCommandConfig(){
-
-    }    
-
-    /**
-     * 
-     * @param asc 
-     */
-    public PlatefoodPpcCommandConfig(final SearchConfiguration asc){
-
-        if(asc != null && asc instanceof PlatefoodPpcCommandConfig){
-            final PlatefoodPpcCommandConfig osc = (PlatefoodPpcCommandConfig) asc;
-            resultsOnTop = osc.resultsOnTop;
-            url = osc.url;
-        }
-    }
-
-
 
     private int resultsOnTop;
-
 
 
     /** @deprecated use views.xml instead **/
@@ -75,5 +55,19 @@ public final class PlatefoodPpcCommandConfig extends AbstractYahooSearchConfigur
     public void setUrl(final String url) {
         this.url = url;
     }
+
+    @Override
+    public AbstractYahooSearchConfiguration readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "url", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsOnTop", ParseType.String, element, "");
+                    
+        return this;
+    }
+    
     
 }

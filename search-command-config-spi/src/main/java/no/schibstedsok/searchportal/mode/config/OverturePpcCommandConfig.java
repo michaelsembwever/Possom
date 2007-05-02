@@ -2,6 +2,9 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -9,41 +12,6 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  */
 @Controller("OverturePPCSearchCommand")
 public final class OverturePpcCommandConfig extends AbstractYahooSearchConfiguration {
-
-    /**
-     * 
-     */
-    public OverturePpcCommandConfig(){
-
-    }
-
-    /**
-     * 
-     * @param asc 
-     */
-    public OverturePpcCommandConfig(final SearchConfiguration asc){
-
-        if(asc != null && asc instanceof OverturePpcCommandConfig){
-            final OverturePpcCommandConfig osc = (OverturePpcCommandConfig) asc;
-//            resultsOnTop = osc.resultsOnTop;
-            url = osc.url;
-            type = osc.type;
-        }
-    }
-
-
-
-//    private int resultsOnTop;
-//
-//    /** @deprecated use views.xml instead **/
-//    public int getResultsOnTop() {
-//        return resultsOnTop;
-//    }
-//
-//    /** @deprecated use views.xml instead **/
-//    public void setResultsOnTop(final int resultsOnTop) {
-//        this.resultsOnTop = resultsOnTop;
-//    }
 
     /**
      * Holds value of property url.
@@ -87,6 +55,19 @@ public final class OverturePpcCommandConfig extends AbstractYahooSearchConfigura
      */
     public void setType(final String type) {
         this.type = type;
+    }
+
+    @Override
+    public AbstractYahooSearchConfiguration readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "url", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "type", ParseType.String, element, "");
+        
+        return this;
     }
 
     

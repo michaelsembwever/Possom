@@ -14,7 +14,9 @@ import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
@@ -42,7 +44,11 @@ public class CommandConfig implements SearchConfiguration {
 
     private static final Logger LOG = Logger.getLogger(CommandConfig.class);
 
+    private static final String ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED
+            = "Each FastNavigator is only allowed to have one child. Parent was ";
+    
     private static final String ERR_FAILED_QUERYTRANSFORMERS_COPY = "Failed to defensively clone QueryTransformers";
+    private static final String INFO_PARSING_NAVIGATOR = "  Parsing navigator ";
 
     private String name;
     private final List<QueryTransformerConfig> queryTransformers = new ArrayList<QueryTransformerConfig>();
@@ -290,6 +296,41 @@ public class CommandConfig implements SearchConfiguration {
 
         return this;
     }
+    
+    /** Currently only used by the fast subclasses but hopefully open to all one day. **/
+    protected final Collection<Navigator> parseNavigators(final Element navsE) {
+
+            final Collection<Navigator> navigators = new ArrayList<Navigator>();
+            final NodeList children = navsE.getChildNodes();
+            for (int i = 0; i < children.getLength(); ++i) {
+                final Node child = children.item(i);
+                if (child instanceof Element && "navigator".equals(((Element) child).getTagName())) {
+                    final Element navE = (Element) child;
+                    final String id = navE.getAttribute("id");
+                    final String name = navE.getAttribute("name");
+                    final String sortAttr = navE.getAttribute("sort") != null && navE.getAttribute("sort").length() > 0
+                            ? navE.getAttribute("sort").toUpperCase() : "COUNT";
+                    LOG.info(INFO_PARSING_NAVIGATOR + id + " [" + name + "]" + ", sort=" + sortAttr);
+                    final Navigator.Sort sort = Navigator.Sort.valueOf(sortAttr);
+
+                    final Navigator nav = new Navigator(
+                            name,
+                            navE.getAttribute("field"),
+                            navE.getAttribute("display-name"),
+                            sort);
+                    nav.setId(id);
+                    final Collection<Navigator> childNavigators = parseNavigators(navE);
+                    if (childNavigators.size() > 1) {
+                        throw new IllegalStateException(ERR_ONLY_ONE_CHILD_NAVIGATOR_ALLOWED + id);
+                    } else if (childNavigators.size() == 1) {
+                        nav.setChildNavigator(childNavigators.iterator().next());
+                    }
+                    navigators.add(nav);
+                }
+            }
+
+            return navigators;
+        }
 
     /**
      *

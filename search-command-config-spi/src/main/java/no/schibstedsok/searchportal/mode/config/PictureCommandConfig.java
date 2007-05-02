@@ -2,6 +2,10 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -9,6 +13,8 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  */
 @Controller("PicSearchCommand")
 public final class PictureCommandConfig extends CommandConfig {
+    
+    private static final Logger LOG = Logger.getLogger(PictureCommandConfig.class);
 
     /**
      * Holds value of property key for the queryServerHost.
@@ -23,12 +29,6 @@ public final class PictureCommandConfig extends CommandConfig {
     private String country;
     private String filter;
     private String customerId;
-
-    /**
-     * 
-     */
-    public PictureCommandConfig(){
-    }
     
     /**
      * Getter for property key for queryServerUrl.
@@ -113,4 +113,24 @@ public final class PictureCommandConfig extends CommandConfig {
     public void setCustomerId(final String customerId) {
         this.customerId = customerId;
     }
+
+    @Override
+    public CommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServerHost", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServerPort", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "country", ParseType.String, element, "no");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "medium");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "customerId", ParseType.String, element, "558735");
+
+        LOG.debug("customerid " + getCustomerId());
+
+        return this;
+    }
+    
+    
 }

@@ -12,6 +12,7 @@ package no.schibstedsok.searchportal.mode.config;
 import java.util.ArrayList;
 import java.util.List;
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import org.w3c.dom.Element;
 
 /**
  * Configuration class for the TvSearchCommand
@@ -20,7 +21,7 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  * @version $Id$
  */
 @Controller("TvSearchCommand")
-public class TvsearchCommandConfig extends FastCommandConfig {
+public final class TvsearchCommandConfig extends FastCommandConfig {
     
     /** Filter for use when an empty query is sumbitted or no spesific sorting is used. **/
     private List<String> defaultChannels = new ArrayList<String>();
@@ -67,4 +68,24 @@ public class TvsearchCommandConfig extends FastCommandConfig {
     public void setResultsToFetch(int resultsToFetch) {
         this.resultsToFetch = resultsToFetch;
     }
+
+    @Override
+    public FastCommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        // TODO handle inheritence
+        final String[] defaultChannels = element.getAttribute("default-channels").split(",");
+        for (String channel : defaultChannels) {
+            addDefaultChannel(channel.trim());
+        }
+        // TODO use fillBeanProperty pattern instead
+        setResultsToFetch(Integer.parseInt(element.getAttribute("results-to-fetch")));
+
+        return this;
+    }
+
+    
 }

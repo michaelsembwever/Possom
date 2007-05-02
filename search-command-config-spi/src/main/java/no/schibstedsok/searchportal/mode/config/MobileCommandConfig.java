@@ -9,6 +9,7 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -16,7 +17,7 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  * @version $Id$
  */
 @Controller("MobileSearchCommand")
-public class MobileCommandConfig extends CommandConfig {
+public final class MobileCommandConfig extends CommandConfig {
 
     private String source;
     private String personalizationGroup;
@@ -25,98 +26,110 @@ public class MobileCommandConfig extends CommandConfig {
     private String filter;
 
     /**
-     * 
-     * @param asc 
-     */
-    public MobileCommandConfig(final SearchConfiguration asc) {
-
-        if(asc != null && asc instanceof MobileCommandConfig){
-            final MobileCommandConfig cfg = (MobileCommandConfig) asc;
-            source = cfg.source;
-            personalizationGroup = cfg.personalizationGroup;
-            telenorPersonalizationGroup = cfg.telenorPersonalizationGroup;
-            sortBy = cfg.sortBy;
-            filter = cfg.filter;
-        }
-    }
-
-    /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getSource() {
         return source;
     }
-    
+
     /**
-     * 
-     * @param source 
+     *
+     * @param source
      */
     public void setSource(final String source) {
         this.source = source;
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getPersonalizationGroup() {
         return personalizationGroup;
     }
-    
+
     /**
-     * 
-     * @param group 
+     *
+     * @param group
      */
     public void setPersonalizationGroup(final String group) {
         this.personalizationGroup = group;
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getTelenorPersonalizationGroup() {
         return telenorPersonalizationGroup;
     }
 
     /**
-     * 
-     * @param telenorPersonalizationGroup 
+     *
+     * @param telenorPersonalizationGroup
      */
     public void setTelenorPersonalizationGroup(final String telenorPersonalizationGroup) {
         this.telenorPersonalizationGroup = telenorPersonalizationGroup;
     }
-    
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getSortBy() {
         return sortBy;
     }
 
     /**
-     * 
-     * @param sortBy 
+     *
+     * @param sortBy
      */
     public void setSortBy(final String sortBy) {
         this.sortBy = sortBy;
     }
 
     /**
-     * 
-     * @param filter 
+     *
+     * @param filter
      */
     public void setFilter(final String filter) {
         this.filter = filter;
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getFilter() {
         return filter;
     }
+
+    @Override
+    public CommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+
+        super.readSearchConfiguration(element, inherit);
+
+        // TODO use fillBeanProperty pattern instead
+
+        if(inherit != null && inherit instanceof MobileCommandConfig){
+            final MobileCommandConfig cfg = (MobileCommandConfig) inherit;
+            source = cfg.source;
+            personalizationGroup = cfg.personalizationGroup;
+            telenorPersonalizationGroup = cfg.telenorPersonalizationGroup;
+            sortBy = cfg.sortBy;
+            filter = cfg.filter;
+        }
+        setPersonalizationGroup(element.getAttribute("personalization-group"));
+        setTelenorPersonalizationGroup(element.getAttribute("telenor-personalization-group"));
+        setSortBy(element.getAttribute("sort-by"));
+        setSource(element.getAttribute("source"));
+        setFilter(element.getAttribute("filter"));
+
+        return this;
+    }
+
+
 }

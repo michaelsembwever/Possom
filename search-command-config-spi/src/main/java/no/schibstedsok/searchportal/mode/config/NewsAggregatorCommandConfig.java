@@ -2,12 +2,15 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.w3c.dom.Element;
 
 /**
  * 
- * @author mick
+ * @author geir
  * @version $Id$
  */
 @Controller("NewsAggregatorSearchCommand")
@@ -137,4 +140,21 @@ public class NewsAggregatorCommandConfig extends ClusteringEspFastCommandConfig 
         return StringUtils.split(geographicFields, ',');
     }
 
+    @Override
+    public CommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "xmlSource", ParseType.String, element, "");
+        AbstractDocumentFactory
+                .fillBeanProperty(this, inherit, "xmlMainFile", ParseType.String, element, "fp_main_main.xml");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "geographicFields", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "categoryFields", ParseType.String, element, "");
+
+        return this;
+    }
+
+    
 }

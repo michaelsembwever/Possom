@@ -11,12 +11,4 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  * @version <tt>$Id$</tt>
  */
 @Controller("AddressSearchCommand")
-public class AddressCommandConfig extends FastCommandConfig{
-    
-    /**
-     * 
-     */
-    public AddressCommandConfig() {
-    }
-    
-}
+public class AddressCommandConfig extends FastCommandConfig{}

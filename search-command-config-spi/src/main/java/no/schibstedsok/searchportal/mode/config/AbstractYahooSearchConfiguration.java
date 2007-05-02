@@ -8,6 +8,10 @@
 
 package no.schibstedsok.searchportal.mode.config;
 
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
+
 /**
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
@@ -41,41 +45,7 @@ public abstract class AbstractYahooSearchConfiguration extends CommandConfig {
 
     // Constructors --------------------------------------------------
 
-    /**
-     * Creates a new instance of AbstractYahooSearchConfiguration
-     */
-    public AbstractYahooSearchConfiguration() {
-    }
-
-    /**
-     * 
-     * @param asc 
-     */
-    public AbstractYahooSearchConfiguration(final SearchConfiguration asc){
-
-        if(asc != null && asc instanceof AbstractYahooSearchConfiguration){
-            final AbstractYahooSearchConfiguration osc = (AbstractYahooSearchConfiguration) asc;
-            encoding = osc.encoding;
-            host = osc.host;
-            partnerId = osc.partnerId;
-            port = osc.port;
-        }
-    }
-
     // Public --------------------------------------------------------
-
-    // Z implementation ----------------------------------------------
-
-    // Y overrides ---------------------------------------------------
-
-    // Package protected ---------------------------------------------
-
-    // Protected -----------------------------------------------------
-
-    // Private -------------------------------------------------------
-
-    // Inner classes -------------------------------------------------
-
 
     /**
      * 
@@ -169,4 +139,34 @@ public abstract class AbstractYahooSearchConfiguration extends CommandConfig {
         this.hostHeader = hostHeader;
     }
 
+    @Override
+    public AbstractYahooSearchConfiguration readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "encoding", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "partnerId", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "host", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "port", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "hostHeader", ParseType.String, element, "");
+
+        return this;
+    }
+
+
+
+    // Z implementation ----------------------------------------------
+
+    // Y overrides ---------------------------------------------------
+
+    // Package protected ---------------------------------------------
+
+    // Protected -----------------------------------------------------
+
+    // Private -------------------------------------------------------
+
+    // Inner classes -------------------------------------------------
+    
 }

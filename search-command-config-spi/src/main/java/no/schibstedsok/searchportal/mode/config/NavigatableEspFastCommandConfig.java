@@ -35,4 +35,5 @@ public class NavigatableEspFastCommandConfig extends EspFastCommandConfig {
     public Navigator getNavigator(final String navigatorKey) {
         return navigators.get(navigatorKey);
     }
+     
 }

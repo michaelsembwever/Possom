@@ -1,9 +1,20 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
 
+/**
+ * 
+ * @author geir
+ * @version $Id$
+ */
 @Controller("NewsEspSearchCommand")
 public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
+    /**
+     * 
+     */
     public static final String ALL_MEDIUMS = "all";
     private String mediumPrefix = "medium";
     private String defaultMedium = "webnewsarticle";
@@ -11,23 +22,6 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     private String nestedResultsField;
     private int collapsingMaxFetch;
     private boolean ignoreOffset = false;
-
-
-    public NewsEspCommandConfig() {
-    }
-
-    public NewsEspCommandConfig(final SearchConfiguration asc) {
-
-        if (asc instanceof NewsEspCommandConfig) {
-            final NewsEspCommandConfig nesc = (NewsEspCommandConfig) asc;
-            mediumPrefix = nesc.getMediumPrefix();
-            defaultMedium = nesc.getDefaultMedium();
-            mediumParameter = nesc.getMediumParameter();
-            nestedResultsField = nesc.getNestedResultsField();
-            collapsingMaxFetch = nesc.getCollapsingMaxFetch();
-        }
-    }
-
 
     /**
      * @return
@@ -61,26 +55,66 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
         return mediumPrefix;
     }
 
+    /**
+     * 
+     * @param mediumPrefix 
+     */
     public void setMediumPrefix(String mediumPrefix) {
         this.mediumPrefix = mediumPrefix;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public String getDefaultMedium() {
         return defaultMedium;
     }
 
+    /**
+     * 
+     * @param defaultMedium 
+     */
     public void setDefaultMedium(String defaultMedium) {
         this.defaultMedium = defaultMedium;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public String getMediumParameter() {
         return mediumParameter;
     }
 
+    /**
+     * 
+     * @param mediumParameter 
+     */
     public void setMediumParameter(String mediumParameter) {
         this.mediumParameter = mediumParameter;
     }
 
+    @Override
+    public CommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory
+                .fillBeanProperty(this, inherit, "mediumPrefix", ParseType.String, element, "medium");
+        AbstractDocumentFactory
+                .fillBeanProperty(this, inherit, "defaultMedium", ParseType.String, element, "webnewsarticle");
+        AbstractDocumentFactory
+                .fillBeanProperty(this, inherit, "mediumParameter", ParseType.String, element, "medium");
+        AbstractDocumentFactory
+                .fillBeanProperty(this, inherit, "ignoreOffset", ParseType.Boolean, element, "false");
+        
+        return this;
+    }
+    
+    
     public boolean isIgnoreOffset() {
         return ignoreOffset;
     }
@@ -88,5 +122,6 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     public void setIgnoreOffset(boolean ignoreOffset) {
         this.ignoreOffset = ignoreOffset;
     }
+
 
 }

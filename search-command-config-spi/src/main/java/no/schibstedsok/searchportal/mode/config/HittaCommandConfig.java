@@ -2,6 +2,9 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
 
 
 /**
@@ -70,6 +73,19 @@ public final class HittaCommandConfig extends AbstractWebServiceSearchConfigurat
      */
     public void setKey(final String key) {
         this.key = key;
+    }
+
+    @Override
+    public CommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "catalog", ParseType.String, element, "");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "key", ParseType.String, element, "");
+
+        return this;
     }
 
 

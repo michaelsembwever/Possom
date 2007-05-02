@@ -16,12 +16,4 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  * @version $Id$
  */
 @Controller("BlogSearchCommand")
-public final class BlogCommandConfig extends NavigatableEspFastCommandConfig {
-    
-    /**
-     * 
-     */
-    public BlogCommandConfig(){
-    }
-
-}
+public final class BlogCommandConfig extends NavigatableEspFastCommandConfig {}

@@ -11,6 +11,9 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
 
 /**
  *
@@ -18,7 +21,8 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  * @version $Id$
  */
 @Controller("TvWaitSearchCommand")
-public class TvwaitsearchCommandConfig extends FastCommandConfig {
+public final class TvwaitsearchCommandConfig extends FastCommandConfig {
+    
     /** Modifier index to use */
     private int index = 0;
     
@@ -75,4 +79,20 @@ public class TvwaitsearchCommandConfig extends FastCommandConfig {
     public final boolean getUseMyChannels() {
         return useMyChannels;
     }
+
+    @Override
+    public FastCommandConfig readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "index", ParseType.Int, element, "0");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "waitOn", ParseType.String, element, null);
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "useMyChannels", ParseType.Boolean, element, "false");
+
+        return this;
+    }
+
+    
 }

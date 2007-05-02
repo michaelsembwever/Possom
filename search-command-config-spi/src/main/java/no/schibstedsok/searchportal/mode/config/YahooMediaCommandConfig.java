@@ -2,6 +2,9 @@
 package no.schibstedsok.searchportal.mode.config;
 
 import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
+import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseType;
+import org.w3c.dom.Element;
 
 /**
  * Search configuration for the Yahoo! media search.
@@ -9,7 +12,7 @@ import no.schibstedsok.searchportal.mode.config.CommandConfig.Controller;
  * @version $Id$
  */
 @Controller("YahooMediaSearchCommand")
-public class YahooMediaCommandConfig extends AbstractYahooSearchConfiguration {
+public final class YahooMediaCommandConfig extends AbstractYahooSearchConfiguration {
 
     /**
      * 
@@ -23,27 +26,6 @@ public class YahooMediaCommandConfig extends AbstractYahooSearchConfiguration {
     private String catalog;
     private String ocr;
     private String site;
-
-    /**
-     * Creates a new instance of the configuration.
-     */
-    public YahooMediaCommandConfig(){
-    }
-
-    /**
-     * Creates a new instance of the configuration inheriting values from a parent.
-     *
-     * @param parent The parent configuration to inherit from.
-     */
-    public YahooMediaCommandConfig(final SearchConfiguration parent){
-
-        if(parent != null && parent instanceof YahooMediaCommandConfig){
-            final YahooMediaCommandConfig ysc = (YahooMediaCommandConfig) parent;
-            catalog = ysc.catalog;
-            ocr = ysc.ocr;
-            site = ysc.site;
-        }
-    }
 
     /**
      * Getter for property 'site'.
@@ -98,4 +80,23 @@ public class YahooMediaCommandConfig extends AbstractYahooSearchConfiguration {
     public void setOcr(final String ocr) {
         this.ocr = ocr;
     }
+
+    @Override
+    public AbstractYahooSearchConfiguration readSearchConfiguration(
+            final Element element,
+            final SearchConfiguration inherit) {
+        
+        super.readSearchConfiguration(element, inherit);
+        
+        
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "catalog", ParseType.String, element,
+                YahooMediaCommandConfig.DEFAULT_CATALOG);
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "ocr", ParseType.String, element,
+                YahooMediaCommandConfig.DEFAULT_OCR);
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "site", ParseType.String, element, "");
+
+        return this;
+    }
+    
+    
 }
