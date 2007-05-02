@@ -8,8 +8,15 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import no.schibstedsok.searchportal.query.UrlClause;
 import no.schibstedsok.searchportal.query.LeafClause;
+import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.BlogSearchResultItem;
+import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
 
@@ -41,17 +48,25 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
     // Public --------------------------------------------------------
     public SearchResult execute() {
         final SearchResult result = super.execute();
+        for(SearchResultItem item : result.getResults()) {
+            String publishedTime = item.getField("publishedtime");
 
+            if (isEpoch(publishedTime)) {
+            	publishedTime = item.getField("httpheaderdate");
+            }
+            item.addField("publishedtime", publishedTime);
+        }
+        	
         if (getParameter("collapse") != null && !getParameter("collapse").equals("")) {
             final SearchResultItem item = result.getResults().get(0);
-
-            final String publishedTimed = item.getField("publishedtime");
-
-            if (! publishedTimed.startsWith("1970")) {
-                result.addField("expandedBlog", item.getField("title"));
+            String publishedTime = item.getField("publishedtime");
+            if (isEpoch(publishedTime)) {
+            	publishedTime = item.getField("httpheaderdate");
+            }
+            if(!isEpoch(publishedTime)) {
+            	result.addField("expandedBlog", item.getField("title"));
             }
         }
-
         return result;
     }
 
@@ -85,6 +100,10 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
         appendToQueryRepresentation("extended:");
         appendToQueryRepresentation(term);
         appendToQueryRepresentation(")");
+    }
+    
+    private boolean isEpoch(String dateString) {
+    	return dateString.startsWith("1970");
     }
 
 }
