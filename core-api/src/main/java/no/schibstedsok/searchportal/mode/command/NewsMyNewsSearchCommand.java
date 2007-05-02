@@ -101,7 +101,7 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
         int offset = getOffset();
         if (offset + returnedResults < searchResult.getHitCount()) {
             LOG.debug("Setting next offset to: " + (offset + returnedResults));
-            setNextOffset(searchResult, offset + returnedResults);
+            NewsEspSearchCommand.addNextOffsetField(offset + returnedResults, searchResult);
         }
     }
 
