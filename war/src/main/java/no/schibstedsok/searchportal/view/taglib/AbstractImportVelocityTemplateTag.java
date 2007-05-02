@@ -117,8 +117,13 @@ public abstract class AbstractImportVelocityTemplateTag extends SimpleTagSupport
             }
             context.put("datamodel", datamodel);
             context.put("text", text);
+            
             // it's quite long to write $datamodel.site.siteConfiguration.properties so put this in for convenience
-            context.put("configuration", datamodel.getSite().getSiteConfiguration().getProperties());
+            context.put("configuration", null != datamodel && null != datamodel.getSite()
+                    ? datamodel.getSite().getSiteConfiguration().getProperties()
+                    // we haven't gone through the SiteLocatorFilter so get site manually
+                    : SiteConfiguration.valueOf(site).getProperties());
+            
             context.put("channelCategories", Channel.Category.values());
 
             // push all parameters into velocity context attributes

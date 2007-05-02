@@ -22,6 +22,7 @@ import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.XorClause.Hint;
+import no.schibstedsok.searchportal.query.finder.Counter;
 import no.schibstedsok.searchportal.query.finder.ParentFinder;
 import no.schibstedsok.searchportal.query.finder.ForestFinder;
 import no.schibstedsok.searchportal.query.parser.QueryParser;
@@ -182,43 +183,47 @@ public final class RotationAlternation extends AbstractAlternation{
      */
     public Clause alternate(final Clause originalRoot) {
 
-        // find forests (subtrees) of AndClauses and OrClauses.
-        // TODO handle forests hidden behind SingleOperatorClauses (NOT and ANDNO)
-        //  although queries rarely start with such clauses.
-        // XXX This implementation only handles forests that exist down the right branch only.
-        if(originalRoot instanceof DoubleOperatorClause){
+        // don't rotate any query tree consisting of more than ten clauses. this will disable analysis!
+        if(new Counter().getTermCount(originalRoot) < 10){
+        
+            // find forests (subtrees) of AndClauses and OrClauses.
+            // TODO handle forests hidden behind SingleOperatorClauses (NOT and ANDNO)
+            //  although queries rarely start with such clauses.
+            // XXX This implementation only handles forests that exist down the right branch only.
+            if(originalRoot instanceof DoubleOperatorClause){
 
-            LOG.debug(DEBUG_STARTING_ROTATIONS);
-            DoubleOperatorClause root = (DoubleOperatorClause) originalRoot;
+                LOG.debug(DEBUG_STARTING_ROTATIONS);
+                DoubleOperatorClause root = (DoubleOperatorClause) originalRoot;
 
-            final List<DoubleOperatorClause> forestRoots = new ForestFinder().findForestRoots(root);
-            LOG.debug(DEBUG_FOUND_FORESTS + forestRoots.size());
+                final List<DoubleOperatorClause> forestRoots = new ForestFinder().findForestRoots(root);
+                LOG.debug(DEBUG_FOUND_FORESTS + forestRoots.size());
 
-            for(DoubleOperatorClause clause : forestRoots){
+                for(DoubleOperatorClause clause : forestRoots){
 
-                final LinkedList<? extends DoubleOperatorClause> rotations = createForestRotation(clause);
+                    final LinkedList<? extends DoubleOperatorClause> rotations = createForestRotation(clause);
 
-                final XorClause result = createXorClause(rotations);
-                // search in root for all occurances of clause and 'replaceDescendant' on each.
-                if(root == clause){
-                    root = result;
-                }else{
+                    final XorClause result = createXorClause(rotations);
                     // search in root for all occurances of clause and 'replaceDescendant' on each.
-                    final List<DoubleOperatorClause> parents = parents(root, clause);
-                    for(DoubleOperatorClause clauseParent : parents){
-                        root = replaceDescendant(root, result, clause, clauseParent);
+                    if(root == clause){
+                        root = result;
+                    }else{
+                        // search in root for all occurances of clause and 'replaceDescendant' on each.
+                        final List<DoubleOperatorClause> parents = parents(root, clause);
+                        for(DoubleOperatorClause clauseParent : parents){
+                            root = replaceDescendant(root, result, clause, clauseParent);
+                        }
                     }
+
+                    originalFromNew.clear();
+                    newFromOriginal.clear();
+                    beforeRotationFromNew.clear();
+                    beforeRotationFromOriginal.clear();
                 }
+                LOG.info(INFO_ROTATIONS_RESULT + root);
+                LOG.debug(DEBUG_FINISHED_ROTATIONS);
 
-                originalFromNew.clear();
-                newFromOriginal.clear();
-                beforeRotationFromNew.clear();
-                beforeRotationFromOriginal.clear();
+                return root;
             }
-            LOG.info(INFO_ROTATIONS_RESULT + root);
-            LOG.debug(DEBUG_FINISHED_ROTATIONS);
-
-            return root;
         }
         return originalRoot;
     }

@@ -12,12 +12,14 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.parser.AbstractReflectionVisitor;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
+import org.apache.log4j.Logger;
 
 
 /** Visitor used to find a clause's parents.
  * Clauses' do not keep references to their parents as they are immutable and can thus be reused within different trees.
  * 
  * @author mick
+ * @version $Id$
  */
 public final class ParentFinder extends AbstractReflectionVisitor {
 
@@ -28,9 +30,13 @@ public final class ParentFinder extends AbstractReflectionVisitor {
     private final Map<Clause, Map<Clause, List<OperationClause>>> cache 
             = new HashMap<Clause, Map<Clause, List<OperationClause>>>();
 
+    
+    private static final Logger LOG = Logger.getLogger(ParentFinder.class);
     private static final String ERR_CANNOT_CALL_VISIT_DIRECTLY 
             = "visit(object) can't be called directly on this visitor!";
     private static final String ERR_CHILD_NOT_IN_HEIRARCHY = "The child is not part of this clause family!";
+    
+    private final List<Clause> visitStack = new ArrayList<Clause>();
 
 
     /**
@@ -121,6 +127,8 @@ public final class ParentFinder extends AbstractReflectionVisitor {
         }
         searching = true;
         parents.clear();
+        visitStack.clear();
+        addVisit(root);
         if(null == findInCache(root)){
             visit(root);
             updateCache(root);
@@ -137,7 +145,10 @@ public final class ParentFinder extends AbstractReflectionVisitor {
      */
     protected void visitImpl(final OperationClause clause) {
         if (!singleMode || parents.size() == 0) {
+            
+            addVisit(clause.getFirstClause());
             clause.getFirstClause().accept(this);
+            removeVisit(clause.getFirstClause());
         }
     }
 
@@ -150,8 +161,12 @@ public final class ParentFinder extends AbstractReflectionVisitor {
             if (clause.getFirstClause() == child || clause.getSecondClause() == child) {
                 parents.add(clause);
             }  else  {
+                addVisit(clause.getFirstClause());
                 clause.getFirstClause().accept(this);
+                removeVisit(clause.getFirstClause());
+                addVisit(clause.getSecondClause());
                 clause.getSecondClause().accept(this);
+                removeVisit(clause.getSecondClause());
             }
         }
     }
@@ -164,4 +179,30 @@ public final class ParentFinder extends AbstractReflectionVisitor {
         // leaves can't be parents :-)
     }
 
+    
+    private void addVisit(final Clause clause){
+        
+        if(visitStack.contains(clause)){
+            // !serious error! we've gotten into a recursive loop! See SEARCH-2235
+            final String msg = "!serious error! we've gotten into a recursive loop! See SEARCH-2235\n";
+            final StringBuilder builder = new StringBuilder(msg);
+            
+            builder.append("Were looking for child " + child + '\n');
+            
+            for(Clause c: visitStack){
+                builder.append(c.toString() + '\n');
+            }
+            builder.append(clause.toString() + '\n');
+            
+            LOG.error(builder.toString());
+            throw new IllegalStateException(msg);
+        }
+        
+        visitStack.add(clause);
+    }
+    
+    private void removeVisit(final Clause clause){
+        
+        visitStack.remove(clause);
+    }
 }
