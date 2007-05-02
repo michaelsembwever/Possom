@@ -182,9 +182,7 @@ public class NewsAggregatorSearchCommand extends ClusteringESPFastCommand {
                 final Element root = doc.getRootElement();
                 List<Element> clusters = root.getChildren(ELEMENT_CLUSTER);
                 for (Element cluster : clusters) {
-                    LOG.debug("Looking at element: " + cluster.getName() + ", clusterId=" + cluster.getAttributeValue(ATTRIBUTE_CLUSTERID));
                     if (cluster.getAttributeValue(ATTRIBUTE_CLUSTERID).equals(clusterId)) {
-                        LOG.debug("Found correct cluster. Handling.");
                         handleFlatCluster(config, cluster, searchCommand, searchResult, offset);
                         handleRelated(config, cluster.getChild(ELEMENT_RELATED), searchResult);
                         break;
