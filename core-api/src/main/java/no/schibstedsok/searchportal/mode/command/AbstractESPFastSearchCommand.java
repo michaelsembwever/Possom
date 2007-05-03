@@ -86,7 +86,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         INT("int"),
         FLOAT("float"),
         DOUBLE("double"),
-        DATETIME("datatime"),
+        DATETIME("datetime"),
         RANGE("range"),
         FILTER("filter"),
         STARTS_WITH("starts-with"),
