@@ -26,7 +26,7 @@
         <link href="/css/ps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
-        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&c=d&output=opensearch" />
+        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&c=d&output=opensearch&IGNORE=NOCOUNT" />
         </link>        
         <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
