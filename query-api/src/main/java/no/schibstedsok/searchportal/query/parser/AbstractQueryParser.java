@@ -261,7 +261,7 @@ public abstract class AbstractQueryParser implements QueryParser {
                 
         // create and add each alternation
         alternations.add(new RotationAlternation(cxt));
-        alternations.add(new FullnameAlternation(cxt));
+        //alternations.add(new FullnameAlternation(cxt)); // disable. see SEARCH-2269 
 
         return alternations;
     }
