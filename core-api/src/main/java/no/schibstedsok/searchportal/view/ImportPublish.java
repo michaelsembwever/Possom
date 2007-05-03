@@ -20,6 +20,7 @@ import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 
 /**
  * General support to import page fragments from publishing system.
+ * Caches content on a one minute basis to reduce outbound socket connections.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
@@ -59,23 +60,29 @@ public final class ImportPublish {
         
         } catch (NeedsRefreshException nre) {
         
+            boolean updatedCache = false;
             final HTTPClient client = HTTPClient.instance(u.getHost(), u.getPort(), hostHeader);
-            final BufferedReader reader = client.getBufferedReader(u.getPath());
-            final StringBuilder builder = new StringBuilder();
-
+            
             try{
-                for(String line = reader.readLine();line!=null;line=reader.readLine()){
+                final BufferedReader reader = client.getBufferedReader(u.getPath());
+                final StringBuilder builder = new StringBuilder();
+          
+                for(String line = reader.readLine(); line != null; line = reader.readLine()){
                     builder.append(line);
                     builder.append('\n');
                 }
                 content = builder.toString();
                 CACHE.putInCache(cacheKey, content);
+                updatedCache = true;
 
             }catch(IOException ioe){
                 content = (String) nre.getCacheContent();
-                CACHE.cancelUpdate(cacheKey);
                 throw client.interceptIOException(ioe);
                 
+            }finally{
+                if(!updatedCache){ 
+                    CACHE.cancelUpdate(cacheKey);
+                }
             }
         }finally{
             out.write(content);
