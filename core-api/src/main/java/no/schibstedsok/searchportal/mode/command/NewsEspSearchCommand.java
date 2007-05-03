@@ -75,10 +75,10 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         if (getQuery().getRootClause() == clause) {
             NewsEspCommandConfig config = getSearchConfiguration();
             String medium = (String) datamodel.getJunkYard().getValue(config.getMediumParameter());
+            if (medium == null || medium.length() == 0) {
+                medium = config.getDefaultMedium();
+            }
             if (!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium) && getQueryRepresentationLength() > 0) {
-                if (medium == null || medium.length() == 0) {
-                    medium = config.getDefaultMedium();
-                }
                 insertToQueryRepresentation(0, "and(");
                 appendToQueryRepresentation(',');
                 appendToQueryRepresentation(config.getMediumPrefix());
