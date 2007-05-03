@@ -92,16 +92,14 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
 
 
     /**
-     * 
-     * @return 
+     * @return
      */
     public String getDefaultSort() {
         return defaultSort;
     }
 
     /**
-     * 
-     * @param defaultSort 
+     * @param defaultSort
      */
     public void setDefaultSort(String defaultSort) {
         this.defaultSort = defaultSort;
@@ -111,22 +109,19 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
     public CommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
-        
+
         super.readSearchConfiguration(element, inherit);
-        
+
         AbstractDocumentFactory
                 .fillBeanProperty(this, inherit, "clusterIdParameter", ParseType.String, element, "clusterId");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsPerCluster", ParseType.Int, element, "");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "clusterField", ParseType.String, element, "cluster");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "clusterMaxFetch", ParseType.Int, element, "10");
-        AbstractDocumentFactory
-                .fillBeanProperty(this, inherit, "nestedResultsField", ParseType.String, element, "entries");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortField", ParseType.String, element, "publishedtime");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "defaultSort", ParseType.String, element, "descending");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "userSortParameter", ParseType.String, element, "sort");
 
         return this;
     }
-    
-    
+
+
 }

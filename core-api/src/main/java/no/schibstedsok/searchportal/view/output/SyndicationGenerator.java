@@ -45,6 +45,7 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
+import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModuleImpl;
 
 /** Used by the rssDecorator.jsp to print out the results in rss format.
@@ -55,6 +56,9 @@ import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResult
  * and simplify other things as well (such as date handling)
  * The only problem is to get rid of leading whitespace generated before the xml declaration
  * by the jsp. JSP 2.1 has page property to do this.
+ * 
+ * @todo this class should be more based off the datamodel and less the request and response.
+ * Infact it should be completely request and response independent.
  *
  */
 public final class SyndicationGenerator {
@@ -285,6 +289,7 @@ public final class SyndicationGenerator {
             }
 
             cxt.put("query", query);
+            cxt.put("datamodel", request.getSession().getAttribute(DataModel.KEY));
 
             final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
             cxt.put("uri", origUri);

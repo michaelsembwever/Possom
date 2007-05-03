@@ -6,14 +6,13 @@ import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory.ParseTyp
 import org.w3c.dom.Element;
 
 /**
- * 
  * @author geir
  * @version $Id$
  */
 @Controller("NewsEspSearchCommand")
 public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     /**
-     * 
+     *
      */
     public static final String ALL_MEDIUMS = "all";
     private String mediumPrefix = "medium";
@@ -56,40 +55,35 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     }
 
     /**
-     * 
-     * @param mediumPrefix 
+     * @param mediumPrefix
      */
     public void setMediumPrefix(String mediumPrefix) {
         this.mediumPrefix = mediumPrefix;
     }
 
     /**
-     * 
-     * @return 
+     * @return
      */
     public String getDefaultMedium() {
         return defaultMedium;
     }
 
     /**
-     * 
-     * @param defaultMedium 
+     * @param defaultMedium
      */
     public void setDefaultMedium(String defaultMedium) {
         this.defaultMedium = defaultMedium;
     }
 
     /**
-     * 
-     * @return 
+     * @return
      */
     public String getMediumParameter() {
         return mediumParameter;
     }
 
     /**
-     * 
-     * @param mediumParameter 
+     * @param mediumParameter
      */
     public void setMediumParameter(String mediumParameter) {
         this.mediumParameter = mediumParameter;
@@ -99,9 +93,9 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     public CommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
-        
+
         super.readSearchConfiguration(element, inherit);
-        
+
         AbstractDocumentFactory
                 .fillBeanProperty(this, inherit, "mediumPrefix", ParseType.String, element, "medium");
         AbstractDocumentFactory
@@ -109,12 +103,16 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
         AbstractDocumentFactory
                 .fillBeanProperty(this, inherit, "mediumParameter", ParseType.String, element, "medium");
         AbstractDocumentFactory
+                .fillBeanProperty(this, inherit, "nestedResultsField", ParseType.String, element, "entries");
+        AbstractDocumentFactory
+                .fillBeanProperty(this, inherit, "collapsingMaxFetch", ParseType.Int, element, "10");
+        AbstractDocumentFactory
                 .fillBeanProperty(this, inherit, "ignoreOffset", ParseType.Boolean, element, "false");
-        
+
         return this;
     }
-    
-    
+
+
     public boolean isIgnoreOffset() {
         return ignoreOffset;
     }

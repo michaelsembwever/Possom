@@ -26,7 +26,7 @@
         <link href="/css/ps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
-        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&c=d&output=opensearch" />
+        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&c=d&output=opensearch&IGNORE=NOCOUNT" />
         </link>        
         <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
@@ -130,6 +130,9 @@
 				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>TV-s&#248;k</td>
 			    </tr>
 			    <tr>
+				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("wt","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>NettTV-s&#248;k</td>
+			    </tr>
+			    <tr>
 				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</td>
 			    </tr>
                 <%--
@@ -203,7 +206,14 @@
                     <td class="imgpad"><img src="images/menu/icons/tv.png" alt="" align="left" /></td>
 		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a></td>
                 </tr>
-		<tr>
+                <tr>
+                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
+                </tr>
+                <tr>
+                    <td class="imgpad"><img src="images/menu/icons/webtv.png" alt="" align="left" /></td>
+		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=wt" param="category:front_service" index="true"/>' onclick="return strep(this);">NettTV-s&#248;k</a></td>
+                </tr>
+				<tr>
                     <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
                 </tr>
                 <tr>

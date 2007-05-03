@@ -75,7 +75,25 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     private enum ReservedWord {
         AND("and"),
         OR("or"),
-        ANDNOT("andnot");
+        ANDNOT("andnot"),
+        MAX("max"),
+        MIN("min"),
+        ANY("any"),
+        PHRASE("phrase"),
+        RANK("rank"),
+        NEAR("near"),
+        ONEAR("onear"),
+        INT("int"),
+        FLOAT("float"),
+        DOUBLE("double"),
+        DATETIME("datetime"),
+        RANGE("range"),
+        FILTER("filter"),
+        STARTS_WITH("starts-with"),
+        ENDS_WITH("ends-with"),
+        EQUALS("equals"),
+        COUNT("count"),
+        STRING("string");
 
         private String word;
 
