@@ -1,12 +1,12 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Collections;
-import java.util.List;
 import no.schibstedsok.searchportal.result.handler.AbstractResultHandlerConfig.Controller;
 import org.w3c.dom.Element;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -18,44 +18,68 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
 
     private final List<String> fields = new ArrayList<String>();
     private String targetField;
+    private String defaultValue;
+    private String recursiveField;
 
     /**
-     * 
-     * @param fieldName 
+     * @param fieldName
      */
     public void addField(final String fieldName) {
         fields.add(fieldName);
     }
 
     /**
-     * 
-     * @return 
+     * @return
      */
-    public List<String> getFields(){
+    public List<String> getFields() {
         return Collections.unmodifiableList(fields);
     }
+
     /**
-     * 
-     * @param fieldName 
+     * @param fieldName
      */
     public void setTargetField(final String fieldName) {
         targetField = fieldName;
     }
-    
+
     /**
-     * 
-     * @return 
+     * @return
      */
-    public String getTargetField(){
+    public String getTargetField() {
         return targetField;
+    }
+
+
+    public String getDefaultValue() {
+        return defaultValue;
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue = defaultValue;
+    }
+
+    public String getRecursiveField() {
+        return recursiveField;
+    }
+
+    public void setRecursiveField(String recursiveField) {
+        this.recursiveField = recursiveField;
     }
 
     @Override
     public AbstractResultHandlerConfig readResultHandler(final Element element) {
-        
+
         super.readResultHandler(element);
-        
+
         setTargetField(element.getAttribute("target"));
+        String optAttr = element.getAttribute("recursive-field");
+        if (optAttr != null && optAttr.length() > 0) {
+            recursiveField = optAttr;
+        }
+        optAttr = element.getAttribute("default-value");
+        if (optAttr != null && optAttr.length() > 0) {
+            defaultValue = optAttr;
+        }
         final String[] fields = element.getAttribute("fields").split(",");
         for (String field : fields) {
             addField(field);
@@ -63,6 +87,6 @@ public final class FieldChooserResultHandlerConfig extends AbstractResultHandler
 
         return this;
     }
-    
-    
+
+
 }
