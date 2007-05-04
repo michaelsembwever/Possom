@@ -299,9 +299,9 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
                     case MONTH_YEAR:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.MONTH_YEAR);
                         break;
-                    case YEAR_MONTH:
-                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR_MONTH);
-                        break;
+//                    case YEAR_MONTH:
+//                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR_MONTH);
+//                        break;
                     case NONE:
                         // Use the soting the index returns
                         break;
