@@ -16,23 +16,6 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
     private String clusterIdParameter = "clusterId";
     private int resultsPerCluster;
     private String clusterField;
-    private String userSortParameter;
-    private String sortField;
-    private String defaultSort;
-
-    /**
-     * @return
-     */
-    public String getUserSortParameter() {
-        return userSortParameter;
-    }
-
-    /**
-     * @param userSortParameter
-     */
-    public void setUserSortParameter(String userSortParameter) {
-        this.userSortParameter = userSortParameter;
-    }
 
     /**
      * @return
@@ -76,34 +59,6 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
         this.clusterField = clusterField;
     }
 
-    /**
-     * @return
-     */
-    public String getSortField() {
-        return sortField;
-    }
-
-    /**
-     * @param sortField
-     */
-    public void setSortField(String sortField) {
-        this.sortField = sortField;
-    }
-
-
-    /**
-     * @return
-     */
-    public String getDefaultSort() {
-        return defaultSort;
-    }
-
-    /**
-     * @param defaultSort
-     */
-    public void setDefaultSort(String defaultSort) {
-        this.defaultSort = defaultSort;
-    }
 
     @Override
     public CommandConfig readSearchConfiguration(
@@ -116,10 +71,6 @@ public class ClusteringEspFastCommandConfig extends NewsEspCommandConfig {
                 .fillBeanProperty(this, inherit, "clusterIdParameter", ParseType.String, element, "clusterId");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "resultsPerCluster", ParseType.Int, element, "");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "clusterField", ParseType.String, element, "cluster");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortField", ParseType.String, element, "publishedtime");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "defaultSort", ParseType.String, element, "descending");
-        AbstractDocumentFactory.fillBeanProperty(this, inherit, "userSortParameter", ParseType.String, element, "sort");
-
         return this;
     }
 

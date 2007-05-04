@@ -20,7 +20,56 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
     private String mediumParameter = "medium";
     private String nestedResultsField;
     private int collapsingMaxFetch;
+    private String userSortParameter;
+    private String sortField;
+    private String defaultSort;
+
     private boolean ignoreOffset = false;
+    private String relevanceSortField;
+
+
+    /**
+     * @return
+     */
+    public String getUserSortParameter() {
+        return userSortParameter;
+    }
+
+    /**
+     * @param userSortParameter
+     */
+    public void setUserSortParameter(String userSortParameter) {
+        this.userSortParameter = userSortParameter;
+    }
+
+    /**
+     * @return
+     */
+    public String getSortField() {
+        return sortField;
+    }
+
+    /**
+     * @param sortField
+     */
+    public void setSortField(String sortField) {
+        this.sortField = sortField;
+    }
+
+
+    /**
+     * @return
+     */
+    public String getDefaultSort() {
+        return defaultSort;
+    }
+
+    /**
+     * @param defaultSort
+     */
+    public void setDefaultSort(String defaultSort) {
+        this.defaultSort = defaultSort;
+    }
 
     /**
      * @return
@@ -89,6 +138,23 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
         this.mediumParameter = mediumParameter;
     }
 
+    public boolean isIgnoreOffset() {
+        return ignoreOffset;
+    }
+
+    public void setIgnoreOffset(boolean ignoreOffset) {
+        this.ignoreOffset = ignoreOffset;
+    }
+
+
+    public String getRelevanceSortField() {
+        return relevanceSortField;
+    }
+
+    public void setRelevanceSortField(String relevanceSortField) {
+        this.relevanceSortField = relevanceSortField;
+    }
+
     @Override
     public CommandConfig readSearchConfiguration(
             final Element element,
@@ -109,16 +175,11 @@ public class NewsEspCommandConfig extends NavigatableEspFastCommandConfig {
         AbstractDocumentFactory
                 .fillBeanProperty(this, inherit, "ignoreOffset", ParseType.Boolean, element, "false");
 
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "sortField", ParseType.String, element, "publishedtime");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "defaultSort", ParseType.String, element, "descending");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "userSortParameter", ParseType.String, element, "sort");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "relevanceSortField", ParseType.String, element, "freshnessprofile");
         return this;
-    }
-
-
-    public boolean isIgnoreOffset() {
-        return ignoreOffset;
-    }
-
-    public void setIgnoreOffset(boolean ignoreOffset) {
-        this.ignoreOffset = ignoreOffset;
     }
 
 

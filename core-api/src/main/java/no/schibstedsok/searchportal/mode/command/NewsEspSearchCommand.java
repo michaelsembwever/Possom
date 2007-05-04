@@ -8,6 +8,7 @@ import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.result.IllegalType;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsEspCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -44,6 +45,24 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     protected void modifyQuery(IQuery query) {
         super.modifyQuery(query);
         final NewsEspCommandConfig config = getSearchConfiguration();
+
+        // Because of a bug in FAST ESP5 related to collapsing and sorting, we must use sort direcetion,
+        // and not the +fieldname syntax
+        final StringDataObject sort = datamodel.getParameters().getValue(config.getUserSortParameter());
+        String sortType;
+        if (sort != null) {
+            sortType = sort.getString();
+        } else {
+            sortType = config.getDefaultSort();
+        }
+        if (sortType.equals("relevance")) {
+            query.setParameter(BaseParameter.SORT_BY, config.getRelevanceSortField());
+            query.setParameter(BaseParameter.SORT_DIRECTION, "descending");
+        } else {
+            query.setParameter(BaseParameter.SORT_BY, config.getSortField());
+            query.setParameter(BaseParameter.SORT_DIRECTION, sortType);
+        }
+
         query.setParameter(BaseParameter.HITS, Math.max(config.getCollapsingMaxFetch(), config.getResultsToReturn()));
         if (config.isIgnoreOffset()) {
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, 0));
