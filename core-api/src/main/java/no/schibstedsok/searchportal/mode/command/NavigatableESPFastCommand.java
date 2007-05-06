@@ -265,8 +265,11 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
 
         final Navigator nav = navigatedTo.get(navigatorKey);
+        INavigator navigator = null;
 
-        INavigator navigator = result.getNavigator(nav.getName());
+        if (result != null) {
+            navigator = result.getNavigator(nav.getName());
+        }
 
         if (navigator != null) {
 
