@@ -104,7 +104,6 @@ public class NavigationCommand extends AbstractSearchCommand {
                                     ExtendedNavigator navigator = new ExtendedNavigator(modifier.getName(), urlFragment, modifier.getCount());
                                     if (!selectionDone) {
                                         selectedValue = context.getDataModel().getParameters().getValue(navEntry.getField());
-                                        LOG.debug("Value = " + navEntry.getField() + ",Comparing " + (selectedValue == null ? "" : selectedValue.getString()) + " with " + value);
                                         if (selectedValue != null && selectedValue.getString().equals(value)) {
                                             navigator.setSelected(true);
                                             selectionDone = true;
