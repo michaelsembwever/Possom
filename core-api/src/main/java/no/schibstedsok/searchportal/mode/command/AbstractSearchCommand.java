@@ -271,7 +271,22 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param clause
      */
     protected void visitImpl(final LeafClause clause) {
+        
         appendToQueryRepresentation(getTransformedTerm(clause));
+        
+//        if (null == getTransformedTerm(clause)) {
+//            if (null != clause.getField()) {
+//                if (null == getFieldFilter(clause)) {
+//
+//                    // Escape any fielded leafs for fields that are not supported by this command.
+//                    appendToQueryRepresentation(getTransformedTerm(clause));
+//
+//                }
+//            } else {
+//
+//                appendToQueryRepresentation(getTransformedTerm(clause));
+//            }
+//        }
     }
 
     /**
@@ -598,6 +613,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final String getTransformedTerm(final Clause clause) {
         final String transformedTerm = transformedTerms.get(clause);
         return escapeTerm(transformedTerm != null ? transformedTerm : clause.getTerm());
+        
     }
 
     /**
@@ -933,7 +949,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @todo add correct handling of NotClause and AndNotClause.
      * This also needs to be added to the query builder visitor above.
-     * @todo move to an abstract fast search command?
+     * @todo design for polymorphism and push out fast specifics to appropriate subclass.
      */
     private final class FilterVisitor extends AbstractReflectionVisitor {
 
@@ -980,6 +996,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             final Map<String, String> fieldFilters = getSearchConfiguration().getFieldFilters();
             if ("site".equals(field)) {
+                // XXX fast specific stuff. push down to fast command.
                 // site fields do not accept quotes
                 term = term.replaceAll("\"", "");
             }

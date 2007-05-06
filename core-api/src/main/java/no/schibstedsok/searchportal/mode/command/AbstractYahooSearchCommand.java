@@ -3,24 +3,20 @@
  */
 package no.schibstedsok.searchportal.mode.command;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 
 import org.apache.log4j.Logger;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 /**
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
  */
-public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
+public abstract class AbstractYahooSearchCommand extends AbstractXmlSearchCommand {
 
 
     // Constants -----------------------------------------------------
@@ -29,7 +25,6 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
 
     // Attributes ----------------------------------------------------
 
-    private final HTTPClient client;
     private final String partnerId;
 
     // Static --------------------------------------------------------
@@ -48,12 +43,6 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
         final AbstractYahooSearchConfiguration conf = (AbstractYahooSearchConfiguration)cxt.getSearchConfiguration();
 
         final SiteConfiguration siteConf = cxt.getDataModel().getSite().getSiteConfiguration();
-        final String host = siteConf.getProperty(conf.getHost());
-        final int port = Integer.parseInt(siteConf.getProperty(conf.getPort()));
-
-        client = null != conf.getHostHeader() && conf.getHostHeader().length() >0
-                ? HTTPClient.instance(host, port, conf.getHostHeader())
-                : HTTPClient.instance(host, port);
 
         partnerId = siteConf.getProperty(conf.getPartnerId());
     }
@@ -68,20 +57,12 @@ public abstract class AbstractYahooSearchCommand extends AbstractSearchCommand {
 
     // Protected -----------------------------------------------------
 
-    protected abstract String createRequestURL();
-
-    protected int getResultsToReturn(){
-        return context.getSearchConfiguration().getResultsToReturn();
-    }
-
+    /**
+     * 
+     * @return 
+     */
     protected String getPartnerId(){
         return partnerId;
-    }
-
-    protected final Document getXmlResult() throws IOException, SAXException {
-        final String url = createRequestURL();
-        LOG.info("Using " + url);
-        return client.getXmlDocument(url);
     }
 
     /**

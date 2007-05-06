@@ -135,7 +135,11 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
         final String dateRange = '-' + new SimpleDateFormat(DATE_PATTERN).format(new Date());
 
-        final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + ')';
+        final String wrappedTransformedQuery = ALLWORDS 
+                + getTransformedQuery() + ' '
+                // HACK since AbstractSearchCommand.FilterVisitor is built for FAST prepending filters with +
+                + getAdditionalFilter().replaceAll("\\+", "") 
+                + ')';
 
         final StringBuilder fields = new StringBuilder();
 
@@ -202,24 +206,24 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     protected void visitImpl(final AndClause clause) {
         appendToQueryRepresentation(ALLWORDS);
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
+        appendToQueryRepresentation(' ');
         clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(")");
+        appendToQueryRepresentation(')');
     }
 
     /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         appendToQueryRepresentation(ANYWORDS);
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
+        appendToQueryRepresentation(' ');
         clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(")");
+        appendToQueryRepresentation(')');
     }
 
     /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
+        appendToQueryRepresentation(' ');
         clause.getSecondClause().accept(this);
     }
 
