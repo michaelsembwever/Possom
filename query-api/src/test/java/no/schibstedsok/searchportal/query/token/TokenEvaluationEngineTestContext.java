@@ -12,10 +12,7 @@ package no.schibstedsok.searchportal.query.token;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import no.schibstedsok.searchportal.site.SiteTestCase;
-import no.schibstedsok.searchportal.site.config.FileResourcesSiteConfigurationTest;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 
@@ -58,6 +55,10 @@ public final class TokenEvaluationEngineTestContext extends SiteTestCase impleme
 
         return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
     }
+    public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+        return FileResourceLoader.newBytecodeLoader(context, className);
+    }
+
 
     /** TODO comment me. **/
     public Site getSite()  {

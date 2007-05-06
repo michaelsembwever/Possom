@@ -17,13 +17,11 @@ import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.fast.searchengine.test.MockupFastSearchEngineFactory;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
@@ -582,6 +580,10 @@ public final class FastNavigatorsTest extends DataModelTestCase {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
+            }
+
             public DataModel getDataModel(){
                 return datamodel;
             }

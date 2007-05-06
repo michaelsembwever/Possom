@@ -13,8 +13,7 @@ package no.schibstedsok.searchportal.site.config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.io.ByteArrayOutputStream;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -38,8 +37,8 @@ import org.xml.sax.SAXParseException;
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
 abstract class AbstractResourceLoader
-        implements Runnable, DocumentLoader, PropertiesLoader {
-    
+        implements Runnable, DocumentLoader, PropertiesLoader, BytecodeLoader {
+
     private enum Polymorphism{
         NONE,
         FIRST_FOUND,
@@ -50,7 +49,8 @@ abstract class AbstractResourceLoader
     private enum Resource{
         
         PROPERTIES(Polymorphism.UP_HEIRARCHY),
-        DOM_DOCUMENT(Polymorphism.NONE);
+        DOM_DOCUMENT(Polymorphism.NONE),
+        BYTECODE(Polymorphism.NONE);
 
         final private Polymorphism polymorphism;
         
@@ -79,12 +79,13 @@ abstract class AbstractResourceLoader
     protected DocumentBuilder builder;
     /** Document. **/
     protected Document document;
-    /** Classloader. **/
-    private ClassLoader parentClassloader;
-    protected ClassLoader classloader;
+
+    /** Bytecode **/
+    private byte[] bytecode;
 
     private static final String ERR_MUST_USE_PROPS_INITIALISER = "Must use properties initialiser to use this method!";
     private static final String ERR_MUST_USE_XSTREAM_INITIALISER = "Must use xstream initialiser to use this method!";
+    private static final String ERR_MUST_USE_BYTECODE_INITIALISER = "Must use bytecode initialiser to use this method";
     private static final String ERR_ONE_USE_ONLY = "This AbstractResourceLoader instance already in use!";
     private static final String ERR_MUST_USE_CONTEXT_CONSTRUCTOR = "Must use constructor that supplies a context!";
     private static final String ERR_INTERRUPTED_WAITING_4_RSC_2_LOAD = "Interrupted waiting for resource to load";
@@ -145,8 +146,12 @@ abstract class AbstractResourceLoader
         return document;
     }
 
-    public ClassLoader getClassLoader() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public byte[] getBytecode() {
+        if (bytecode == null) {
+            throw new IllegalStateException(ERR_MUST_USE_BYTECODE_INITIALISER);
+        }
+
+        return bytecode;
     }
 
     /** {@inheritDoc}
@@ -169,13 +174,27 @@ abstract class AbstractResourceLoader
         this.builder = builder;
         postInit();
     }
-    
+
+    /** {@inheritDoc}
+     */
+    public void initBytecodeLoader(String className) {
+        resourceType = Resource.BYTECODE;
+        preInit(className);
+        postInit();
+    }
+
     private void preInit(final String resource){
         
         if (future != null && !future.isDone()) {
             throw new IllegalStateException(ERR_ONE_USE_ONLY);
         }
-        this.resource = resource;
+
+        if (resourceType == Resource.BYTECODE) {
+            // Convert package structure to path.
+            this.resource = resource.replace(".", "/") + ".class";
+        } else {
+            this.resource = resource;
+        }
     }
     
     private void postInit(){
@@ -260,24 +279,21 @@ abstract class AbstractResourceLoader
         
         LOG.debug("Loading empty resource for " + resource);
 
-        boolean success = false;
         switch(resourceType){
-
             case PROPERTIES:
-
-
                 props.put(context.getSite().getName(), getUrlFor(resource));
-
                 break;
 
             case DOM_DOCUMENT:
                 document = builder.newDocument();
                 break;
+
+            case BYTECODE:
+                bytecode = new byte[0];
+                break;
+            
         }
 
-        success = true;
-
-        
         return true;
     }
     
@@ -314,6 +330,16 @@ abstract class AbstractResourceLoader
                         
                     case DOM_DOCUMENT:
                         document = builder.parse( new InputSource(new InputStreamReader(is)) );
+                        break;
+
+                    case BYTECODE:
+                        final ByteArrayOutputStream bytecodeOutputStream = new ByteArrayOutputStream();
+
+                        for(int i = is.read(); i != -1; i = is.read()) {
+                            bytecodeOutputStream.write(i);
+                        }
+
+                        bytecode = bytecodeOutputStream.toByteArray();
                         break;
                 }
 

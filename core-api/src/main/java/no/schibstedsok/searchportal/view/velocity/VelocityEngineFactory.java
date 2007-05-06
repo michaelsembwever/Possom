@@ -20,10 +20,7 @@ import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.site.config.ResourceContext;
-import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.result.Decoder;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -202,6 +199,10 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
                 return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return UrlResourceLoader.newBytecodeLoader(context, className);
+            }
+
         });
         return instance;
     }

@@ -8,6 +8,7 @@
 package no.schibstedsok.searchportal.site;
 
 import no.schibstedsok.commons.ioc.BaseContext;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 
 /** Defines the context for consumers of Site objects.
  *

@@ -23,9 +23,7 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineTestContext
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteTestCase;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import java.util.Map;
@@ -116,6 +114,9 @@ public final class QueryTransformerTestContext extends SiteTestCase implements Q
         return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
     }
 
+    public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+        return FileResourceLoader.newBytecodeLoader(context, className);
+    }
     /**
      * TODO comment me. *
      */

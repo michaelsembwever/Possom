@@ -15,6 +15,7 @@ import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import no.schibstedsok.searchportal.site.*;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 import org.apache.log4j.Logger;
@@ -67,6 +68,11 @@ public class FactoryReloadsTest extends SiteTestCase {
                 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
+
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
+            }
+            
             public Site getSite() {
                 return getTestingSite();
             }

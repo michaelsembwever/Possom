@@ -11,11 +11,8 @@ import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
-import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.run.QueryFactory;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.view.config.SearchTab;
@@ -34,7 +31,7 @@ import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.Linkpulse;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.util.TradeDoubler;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
 import org.apache.log4j.Level;
@@ -119,24 +116,29 @@ public final class SearchServlet extends HttpServlet {
             // BaseContext providing SiteContext and ResourceContext.
             //  We need it casted as a SiteContext for the ResourceContext code to be happy.
             final SiteContext genericCxt = new SiteContext(){
-                    public PropertiesLoader newPropertiesLoader(
-                            final SiteContext siteCxt,
-                            final String resource,
-                            final Properties properties) {
+                public PropertiesLoader newPropertiesLoader(
+                        final SiteContext siteCxt,
+                        final String resource,
+                        final Properties properties) {
 
-                        return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
-                    }
-                    public DocumentLoader newDocumentLoader(
+                    return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
+                }
+                public DocumentLoader newDocumentLoader(
                             final SiteContext siteCxt,
                             final String resource,
                             final DocumentBuilder builder) {
 
-                        return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
-                    }
-                    public Site getSite() {
-                        return site;
-                    }
-                };
+                    return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+                }
+
+                public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                    return UrlResourceLoader.newBytecodeLoader(context, className);
+                }
+
+                public Site getSite() {
+                    return site;
+                }
+            };
 
             if (!isEmptyQuery(datamodel, response, genericCxt)) {
 

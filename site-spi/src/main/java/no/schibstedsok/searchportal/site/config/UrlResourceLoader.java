@@ -72,6 +72,19 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return dl;
     }
 
+    /**
+     * Creates new BytecodeLoader for the given site and resource.
+     *
+     * @param siteCxt context telling us which site to use.
+     * @param resource the class to load bytecode for.
+     * @return a bytecode loader for resource.
+     */
+    public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource) {
+        final BytecodeLoader bcLoader = new UrlResourceLoader(siteCxt);
+        bcLoader.initBytecodeLoader(resource);
+        return bcLoader;
+    }
+
     public static boolean doesUrlExist(final String url, final String hostHeader){
 
         boolean success = false;
@@ -153,7 +166,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
         return "http://"
                 + site.getName()
                 + site.getConfigContext()
-                + "conf/"
+                + (getResource().endsWith(".class") ? "classes/" : "conf/")
                 + getResource();
     }
 

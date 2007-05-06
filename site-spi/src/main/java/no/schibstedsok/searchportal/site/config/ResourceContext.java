@@ -18,5 +18,5 @@ import no.schibstedsok.commons.ioc.BaseContext;
  * @version $Id$
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  */
-public interface ResourceContext extends BaseContext, DocumentContext, PropertiesContext {
+public interface ResourceContext extends BaseContext, DocumentContext, PropertiesContext, BytecodeContext {
 }

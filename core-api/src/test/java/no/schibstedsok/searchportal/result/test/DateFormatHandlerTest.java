@@ -15,9 +15,7 @@ import no.schibstedsok.searchportal.result.handler.DateFormatResultHandlerConfig
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 import static no.schibstedsok.searchportal.result.handler.DateFormatHandler.Fields;
@@ -88,6 +86,9 @@ public final class DateFormatHandlerTest extends SiteTestCase {
 
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
+            }            
         };
         cxt.getSearchResult().addResult(createItem("2006-04-27T10:11:12Z"));
         return cxt;

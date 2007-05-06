@@ -14,11 +14,8 @@ import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
 import static org.testng.AssertJUnit.*;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.site.SiteTestCase;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
@@ -78,6 +75,10 @@ public final class SearchModeFactoryTest extends SiteTestCase {
                     final DocumentBuilder builder) {
                 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+            }
+
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
             }
         };
 

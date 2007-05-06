@@ -6,7 +6,6 @@ import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
 import no.schibstedsok.searchportal.result.SearchResult;
@@ -16,8 +15,7 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
@@ -57,6 +55,10 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
 
             return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
         }
+        public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+            return UrlResourceLoader.newBytecodeLoader(context, className);
+        }
+        
         public DataModel getDataModel(){
                 return datamodel;
             }

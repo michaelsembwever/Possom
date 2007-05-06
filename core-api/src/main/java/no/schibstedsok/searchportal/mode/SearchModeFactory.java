@@ -5,44 +5,14 @@ package no.schibstedsok.searchportal.mode;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.mode.config.AbstractYahooSearchConfiguration;
-import no.schibstedsok.searchportal.mode.config.BlendingNewsCommandConfig;
-import no.schibstedsok.searchportal.mode.config.BlocketCommandConfig;
-import no.schibstedsok.searchportal.mode.config.CatalogueAdsCommandConfig;
-import no.schibstedsok.searchportal.mode.config.CatalogueBannersCommandConfig;
-import no.schibstedsok.searchportal.mode.config.CatalogueCommandConfig;
-import no.schibstedsok.searchportal.mode.config.ClusteringEspFastCommandConfig;
-import no.schibstedsok.searchportal.mode.config.EspFastCommandConfig;
-import no.schibstedsok.searchportal.mode.config.FastCommandConfig;
-import no.schibstedsok.searchportal.mode.config.HittaCommandConfig;
-import no.schibstedsok.searchportal.mode.config.MobileCommandConfig;
-import no.schibstedsok.searchportal.mode.config.NavigatableEspFastCommandConfig;
-import no.schibstedsok.searchportal.mode.config.NewsAggregatorCommandConfig;
-import no.schibstedsok.searchportal.mode.config.NewsEspCommandConfig;
-import no.schibstedsok.searchportal.mode.config.NewsMyNewsCommandConfig;
-import no.schibstedsok.searchportal.mode.config.OverturePpcCommandConfig;
-import no.schibstedsok.searchportal.mode.config.PictureCommandConfig;
-import no.schibstedsok.searchportal.mode.config.PlatefoodPpcCommandConfig;
-import no.schibstedsok.searchportal.mode.config.PrisjaktCommandConfig;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
-import no.schibstedsok.searchportal.mode.config.StormweatherCommandConfig;
-import no.schibstedsok.searchportal.mode.config.TvenrichCommandConfig;
-import no.schibstedsok.searchportal.mode.config.TvsearchCommandConfig;
-import no.schibstedsok.searchportal.mode.config.TvwaitsearchCommandConfig;
-import no.schibstedsok.searchportal.mode.config.VehicleCommandConfig;
-import no.schibstedsok.searchportal.mode.config.YahooIdpCommandConfig;
-import no.schibstedsok.searchportal.mode.config.YahooMediaCommandConfig;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
-import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
-import no.schibstedsok.searchportal.site.config.AbstractDocumentFactory;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.ResourceContext;
-import no.schibstedsok.searchportal.site.config.SiteClassLoaderFactory;
+import no.schibstedsok.searchportal.site.config.*;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -53,14 +23,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -72,7 +37,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     /**
      * The context any SearchModeFactory must work against. *
      */
-    public interface Context extends BaseContext, ResourceContext, SiteContext {
+    public interface Context extends BaseContext, ResourceContext, SiteContext, BytecodeContext {
     }
 
     // Constants -----------------------------------------------------
@@ -100,9 +65,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             = "Failed to DocumentBuilderFactory.newInstance().newDocumentBuilder()";
     private static final String INFO_PARSING_MODE = "Parsing mode ";
     private static final String INFO_PARSING_CONFIGURATION = " Parsing configuration ";
-    private static final String INFO_PARSING_RESULT_HANDLER = "  Parsing result handler ";
-    private static final String INFO_PARSING_QUERY_TRANSFORMER = "  Parsing query transformer ";
-    private static final String DEBUG_PARSED_PROPERTY = "  Property property ";
     private static final String ERR_PARENT_COMMAND_NOT_FOUND = "Parent command {0} not found for {1} in mode {2}";
 
     // Attributes ----------------------------------------------------
@@ -112,8 +74,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
     private final DocumentLoader loader;
     private final Context context;
-
-    private String templatePrefix;
 
     // Static --------------------------------------------------------
 
@@ -145,7 +105,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
     }
 
     /**
-     * TODO comment me. *
+     * Removes mode factory associated with site causing configuration to be reloaded.
      */
     public boolean remove(final Site site) {
 
@@ -237,8 +197,6 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         final Element root = doc.getDocumentElement();
 
         if (null != root) {
-            templatePrefix = root.getAttribute("template-prefix");
-
             // loop through modes.
             final NodeList modeList = root.getElementsByTagName("mode");
 
@@ -277,7 +235,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                     }
                     final Element commandE = (Element) commandN;
 
-                    if(searchConfigurationFactory.supported(commandE.getTagName(), context.getSite())){
+                    if(searchConfigurationFactory.supported(commandE.getTagName(), context)){
 
                         final SearchConfiguration sc 
                                 = searchConfigurationFactory.parseSearchConfiguration(context, commandE, mode);
@@ -357,7 +315,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             try {
             
-                final SearchConfiguration sc = parseSearchConfigurationImpl(commandE, inherit, cxt.getSite());
+                final SearchConfiguration sc = parseSearchConfigurationImpl(commandE, inherit, cxt);
 
                 // query transformers
                 NodeList qtNodeList = commandE.getElementsByTagName("query-transformers");
@@ -374,8 +332,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element qt = (Element) node;
-                        if (queryTransformerFactory.supported(qt.getTagName(), cxt.getSite())) {
-                            sc.addQueryTransformer(queryTransformerFactory.parseQueryTransformer(qt, cxt.getSite()));
+                        if (queryTransformerFactory.supported(qt.getTagName(), cxt)) {
+                            sc.addQueryTransformer(queryTransformerFactory.parseQueryTransformer(qt, cxt));
                         }
                     }
                 } else if (null != inherit) {
@@ -400,8 +358,8 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                             continue;
                         }
                         final Element rh = (Element) node;
-                        if (resultHandlerFactory.supported(rh.getTagName(), cxt.getSite())) {
-                            sc.addResultHandler(resultHandlerFactory.parseResultHandler(rh, cxt.getSite()));
+                        if (resultHandlerFactory.supported(rh.getTagName(), cxt)) {
+                            sc.addResultHandler(resultHandlerFactory.parseResultHandler(rh, cxt));
                         }
                     }
                 } else if (null != inherit) {
@@ -425,7 +383,7 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
                 final SearchMode mode) {
 
             SearchMode m = mode;
-            SearchConfiguration config = null;
+            SearchConfiguration config;
             do {
                 final Map<String, SearchConfiguration> configs;
                 try {
@@ -445,25 +403,22 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         private SearchConfiguration parseSearchConfigurationImpl(
                 final Element element,
                 final SearchConfiguration inherit,
-                final Site site) {
+                final Context context) {
 
-            return construct(element, site).readSearchConfiguration(element, inherit);
+            return construct(element, context).readSearchConfiguration(element, inherit);
         }
 
         @SuppressWarnings("unchecked")
-        protected Class<SearchConfiguration> findClass(final String xmlName, final Site site)
+        protected Class<SearchConfiguration> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
             final String bName = xmlToBeanName(xmlName);
             final String className = Character.toUpperCase(bName.charAt(0)) + bName.substring(1, bName.length());
 
             LOG.info("findClass " + className);
-            final Class<SearchConfiguration> clazz
-                    = (Class<SearchConfiguration>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
-                                "no.schibstedsok.searchportal.mode.config."
-                                + className
-                                + "Config");
 
+            String classNameFQ = "no.schibstedsok.searchportal.mode.config."+ className+ "Config";
+            final Class<SearchConfiguration> clazz = loadClass(context, classNameFQ);
 
             LOG.info("Found class " + clazz.getName());
             return clazz;
@@ -475,12 +430,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         QueryTransformerFactory() {
         }
 
-        QueryTransformerConfig parseQueryTransformer(final Element qt, final Site site) {
-            return construct(qt, site).readQueryTransformer(qt);
+        QueryTransformerConfig parseQueryTransformer(final Element qt, final Context context) {
+            return construct(qt, context).readQueryTransformer(qt);
         }
 
-        @SuppressWarnings("unchecked")
-        protected Class<QueryTransformerConfig> findClass(final String xmlName, final Site site)
+        protected Class<QueryTransformerConfig> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
             final String bName = xmlToBeanName(xmlName);
@@ -488,12 +442,10 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.info("findClass " + className);
 
-            final Class<QueryTransformerConfig> clazz
-                    = (Class<QueryTransformerConfig>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
-                    "no.schibstedsok.searchportal.query.transform."
+            String classNameFQ = "no.schibstedsok.searchportal.query.transform."
                             + className
-                            + "QueryTransformerConfig");
-
+                            + "QueryTransformerConfig";
+            final Class<QueryTransformerConfig> clazz = loadClass(context, classNameFQ);
 
             LOG.info("Found class " + clazz.getName());
             return clazz;
@@ -505,12 +457,12 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
         ResultHandlerFactory() {
         }
 
-        ResultHandlerConfig parseResultHandler(final Element rh, final Site site) {
-            return construct(rh, site).readResultHandler(rh);
+        ResultHandlerConfig parseResultHandler(final Element rh, final Context context) {
+            return construct(rh, context).readResultHandler(rh);
         }
 
         @SuppressWarnings("unchecked")
-        protected Class<ResultHandlerConfig> findClass(final String xmlName, final Site site)
+        protected Class<ResultHandlerConfig> findClass(final String xmlName, final Context context)
                 throws ClassNotFoundException {
 
             final String bName = xmlToBeanName(xmlName);
@@ -518,12 +470,11 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
             LOG.info("findClass " + className);
 
-            final Class<ResultHandlerConfig> clazz =
-                    (Class<ResultHandlerConfig>) SiteClassLoaderFactory.valueOf(site).getClassLoader().loadClass(
-                            "no.schibstedsok.searchportal.result.handler."
-                            + className
-                            + "ResultHandlerConfig");
-
+            String classNameFQ = "no.schibstedsok.searchportal.result.handler."
+                    + className
+                    + "ResultHandlerConfig";
+            
+            final Class<ResultHandlerConfig> clazz = loadClass(context, classNameFQ);
 
             LOG.info("Found class " + clazz.getName());
             return clazz;
@@ -536,22 +487,22 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
 
         AbstractFactory(){}
 
-        boolean supported(final String xmlName, final Site site) {
+        boolean supported(final String xmlName, final Context context) {
 
             try {
-                return null != findClass(xmlName, site);
+                return null != findClass(xmlName, context);
             } catch (ClassNotFoundException e) {
                 return false;
             }
         }
 
-        protected C construct(final Element element, final Site site) {
+        protected C construct(final Element element, final Context context) {
 
             final String xmlName = element.getTagName();
             LOG.info(INFO_CONSTRUCT + xmlName);
 
             try {
-                return findClass(xmlName, site).newInstance();
+                return findClass(xmlName, context).newInstance();
             } catch (InstantiationException ex) {
                 throw new InfrastructureException(ex);
             } catch (IllegalAccessException ex) {
@@ -562,6 +513,23 @@ public final class SearchModeFactory extends AbstractDocumentFactory implements 
             }
         }
 
-        protected abstract Class<C> findClass(final String xmlName, final Site site) throws ClassNotFoundException;
+        protected abstract Class<C> findClass(final String xmlName, final Context context) throws ClassNotFoundException;
+
+        @SuppressWarnings("unchecked")
+        protected Class<C> loadClass(final Context context, String classNameFQ) throws ClassNotFoundException {
+            SiteClassLoaderFactory.Context c = new SiteClassLoaderFactory.Context() {
+                public BytecodeLoader newBytecodeLoader(SiteContext siteCxt, String className) {
+                    return context.newBytecodeLoader(siteCxt, className);
+                }
+
+                public Site getSite() {
+                    return context.getSite();
+                }
+            };
+
+            ClassLoader classLoader = SiteClassLoaderFactory.valueOf(c).getClassLoader();
+
+            return (Class<C>) classLoader.loadClass(classNameFQ);
+        }
     }
 }

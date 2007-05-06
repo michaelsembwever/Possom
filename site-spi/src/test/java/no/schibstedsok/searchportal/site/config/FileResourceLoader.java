@@ -67,6 +67,19 @@ public class FileResourceLoader extends AbstractResourceLoader {
         return dl;
     }
 
+    /**
+     * Creates new BytecodeLoader for the given site and resource.
+     *
+     * @param siteCxt context telling us which site to use.
+     * @param resource the class to load bytecode for.
+     * @return a bytecode loader for resource.
+     */
+    public static BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String resource) {
+        final BytecodeLoader bcLoader = new FileResourceLoader(siteCxt);
+        bcLoader.initBytecodeLoader(resource);
+        return bcLoader;
+    }
+
     /** {@inheritDoc}
      */
     protected FileResourceLoader(final SiteContext cxt) {

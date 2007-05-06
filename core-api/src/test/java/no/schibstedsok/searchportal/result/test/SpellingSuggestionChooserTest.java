@@ -17,9 +17,7 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.result.handler.SpellingSuggestionChooserResultHandlerConfig;
 import no.schibstedsok.searchportal.site.SiteContext;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.testng.annotations.Test;
 import static org.testng.AssertJUnit.*;
@@ -371,6 +369,9 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
                     final DocumentBuilder builder) {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+            }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
             }
             public String getQueryString() {
                 return datamodel.getQuery().getString();

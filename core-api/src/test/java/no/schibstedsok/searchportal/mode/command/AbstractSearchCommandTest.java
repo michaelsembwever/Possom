@@ -21,6 +21,7 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.site.config.DocumentLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
@@ -94,6 +95,10 @@ public abstract class AbstractSearchCommandTest extends DataModelTestCase {
                     final DocumentBuilder builder) {
                 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
+            }
+
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
             }
         };
     }

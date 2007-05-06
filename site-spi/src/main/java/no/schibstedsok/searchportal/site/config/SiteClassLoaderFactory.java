@@ -8,13 +8,10 @@
 package no.schibstedsok.searchportal.site.config;
 
 import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactory;
+import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
-import org.apache.commons.lang.StringUtils;
 
-import java.io.IOException;
-import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -25,15 +22,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author magnuse
  */
 public final class SiteClassLoaderFactory implements SiteKeyedFactory {
-    public interface Context extends SiteContext {
-    }
 
-    private static final String LOADING_CLASS = "Loading class from URL: ";
-
+    public interface Context extends BytecodeContext, SiteContext {}
+    
     private static final String CREATING_CLASS_LOADER = "Creating new class loader for ";
-    private static final String CLASS_LOADER_CREATED = "New URL class loader created. Loading from urls: ";
     private static final String CLASS_LOADER_REMOVED = "Class loader removed for: ";
-    private static final String INVALID_URL = "Invalid URL";
     private static final String CLASS_LOADER_WANTED = "Looking for an existing class loader for ";
 
     private static final Map<Site, SiteClassLoaderFactory> INSTANCES = new HashMap<Site, SiteClassLoaderFactory>();
@@ -41,37 +34,38 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
 
     private static final Logger LOG = Logger.getLogger(SiteConfiguration.class);
 
-    /** The site for which to load classes */
-    private final Site site;
-
     /** The actual class loader for the site */
     private final ClassLoader classLoader;
-
-    private class T extends ClassLoader {
-        
-    }
 
     /**
      * Creates a new class loader for site.
      *
-     * @param site The site.
+     * @param context The context.
      * @param parentClassLoader Classloader of parent site.
      */
-    private SiteClassLoaderFactory(final Site site, final ClassLoader parentClassLoader) {
-        this.site = site;
-        final URL[] urls = {getConnectionURL(getURLToLoadFrom())};
-        classLoader = new URLClassLoader(urls, parentClassLoader);
+    private SiteClassLoaderFactory(final Context context, final ClassLoader parentClassLoader) {
+        final ResourceClassLoader.Context classLoaderContext = new ResourceClassLoader.Context() {
+            public Site getSite() {
+                return context.getSite();
+            }
 
-        LOG.info(CLASS_LOADER_CREATED + StringUtils.join(urls, ','));
+            public BytecodeLoader newBytecodeLoader(SiteContext siteCxt, String className) {
+                return context.newBytecodeLoader(siteCxt, className);
+            }
+        };
+
+        classLoader = new ResourceClassLoader(classLoaderContext, parentClassLoader);
     }
 
     /**
      * Returns a class 
      *
-     * @param site The site to get a class loader factory for.
+     * @param context The site and bytecode loader.
      * @return a class loader factory for the site.
      */
-    public static SiteClassLoaderFactory valueOf(final Site site) {
+    public static SiteClassLoaderFactory valueOf(final Context context) {
+
+        final Site site = context.getSite();
 
         if (LOG.isTraceEnabled()) {
             LOG.trace(CLASS_LOADER_WANTED + site);
@@ -86,7 +80,7 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
 
                     if (null == INSTANCES.get(site)) {
                         LOG.info(CREATING_CLASS_LOADER + site);
-                        INSTANCES.put(site, new SiteClassLoaderFactory(site, getParentClassLoader(site)));
+                        INSTANCES.put(site, new SiteClassLoaderFactory(context, getParentClassLoader(context)));
                     }
                 } finally {
                     INSTANCES_LOCK.readLock().lock();
@@ -103,11 +97,23 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
      * Returns the class loader of the parent site. If the site does not have a parent, the standard class loader is
      * returned.
      *
-     * @param site The site.
+     * @param context The context containing site.
      * @return the parents class loader.
      */
-    private static ClassLoader getParentClassLoader(Site site) {
-        return null != site.getParent() ? valueOf(site.getParent()).getClassLoader() : site.getClass().getClassLoader();
+    private static ClassLoader getParentClassLoader(final Context context) {
+        final Site site = context.getSite();
+
+        final Context parentContext = new Context() {
+            public BytecodeLoader newBytecodeLoader(SiteContext siteCxt, String className) {
+                return context.newBytecodeLoader(siteCxt, className);
+            }
+
+            public Site getSite() {
+                return context.getSite().getParent();
+            }
+        };
+
+        return null != site.getParent() ? valueOf(parentContext).getClassLoader() : site.getClass().getClassLoader();
     }
 
     /**
@@ -130,48 +136,6 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
         } finally {
             INSTANCES_LOCK.writeLock().unlock();
             LOG.info(CLASS_LOADER_REMOVED);
-        }
-    }
-
-    private URL getURLToLoadFrom() {
-        try {
-            return new URL("http://"
-                    + site.getName()
-                    + site.getConfigContext()
-                    + "classes/");
-        } catch (MalformedURLException e) {
-            LOG.error(INVALID_URL, e);
-            return null;
-        }
-    }
-
-    /**
-     * This class creates a new URL form the given one where the host has been replaced with localhost. Any connections
-     * initiated using the returned URL will instead use the host as a host header.
-     *
-     * @param url The url (e.g. http://sesam.no/pix.gif)
-     * @return The new url (e.g. http://localhost/pix.gif and with a URLStreamHandler causing URLConnection to add
-     *         sesam.no as a host header)
-     */
-    private URL getConnectionURL(final URL url) {
-
-        LOG.info(LOADING_CLASS + url);
-
-        try {
-
-            final URLStreamHandler customHeaders = new URLStreamHandler() {
-                protected URLConnection openConnection(final URL u) throws IOException {
-                    final URL connectionURL = new URL(u.getProtocol(), "localhost", u.getPort(), u.getFile());
-                    final URLConnection connection = connectionURL.openConnection();
-                    connection.addRequestProperty("host", u.getHost());
-                    return connection;
-                }
-            };
-
-            return new URL(url.getProtocol(), url.getHost(), url.getPort(), url.getFile(), customHeaders);
-        } catch (MalformedURLException e) {
-            LOG.error(INVALID_URL, e);
-            return null;
         }
     }
 }

@@ -15,10 +15,7 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineImpl;
-import no.schibstedsok.searchportal.site.config.FileResourcesSiteConfigurationTest;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
@@ -74,6 +71,10 @@ public final class TestVisitor extends SiteTestCase {
 
                         return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
                     }
+                    public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                        return FileResourceLoader.newBytecodeLoader(context, className);
+                    }
+
                     public Site getSite()  {
                         return getTestingSite();
                     }

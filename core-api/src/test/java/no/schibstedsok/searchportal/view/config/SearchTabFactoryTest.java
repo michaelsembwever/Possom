@@ -11,11 +11,9 @@ package no.schibstedsok.searchportal.view.config;
 import java.util.Locale;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-import no.schibstedsok.searchportal.site.config.SiteConfiguration;
+
 import no.schibstedsok.searchportal.site.SiteTestCase;
-import no.schibstedsok.searchportal.site.config.DocumentLoader;
-import no.schibstedsok.searchportal.site.config.FileResourceLoader;
-import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import org.apache.log4j.Logger;
@@ -158,6 +156,10 @@ public final class SearchTabFactoryTest extends SiteTestCase {
                         ? getTestingSite()
                         : Site.valueOf(siteConstructorContext, getTestingSite().getName(), locale);
             }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
+            }
+
         };
 
         final SearchTabFactory result = SearchTabFactory.valueOf(cxt);

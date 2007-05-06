@@ -15,6 +15,7 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
 import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.FileResourceLoader;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
@@ -85,6 +86,9 @@ public final class SearchModeTest extends DataModelTestCase {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
+            }
             public DataModel getDataModel(){
                 return datamodel;
             }
@@ -147,6 +151,11 @@ public final class SearchModeTest extends DataModelTestCase {
 
                 return FileResourceLoader.newDocumentLoader(siteCxt, resource, builder);
             }
+
+            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+                return FileResourceLoader.newBytecodeLoader(context, className);
+            }
+            
             public DataModel getDataModel(){
                 return datamodel;
             }
