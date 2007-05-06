@@ -420,6 +420,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nc") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nm") && getTransformedQuery().trim().length() > 0;
             executeQuery |= this instanceof NewsMyNewsSearchCommand;
+            executeQuery |= this instanceof NavigationCommand;
 
             executeQuery |= null != filter && filter.length() > 0;
             LOG.info("executeQuery==" + executeQuery
