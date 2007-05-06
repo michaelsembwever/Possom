@@ -100,7 +100,7 @@ public class NavigationCommand extends AbstractSearchCommand {
                                 for (Modifier modifier : modifiers) {
                                     final String navigatorName = modifier.getNavigator() == null ? null : modifier.getNavigator().getName();
                                     final String value = navEntry.isRealNavigator() && navigatorName != null ? navigatorName : modifier.getName();
-                                    final String urlFragment = getUrlFragment(navEntry, value);
+                                    final String urlFragment = getUrlFragment(navEntry, modifier.getName(), navigatorName);
                                     ExtendedNavigator navigator = new ExtendedNavigator(modifier.getName(), urlFragment, modifier.getCount());
                                     if (!selectionDone) {
                                         selectedValue = context.getDataModel().getParameters().getValue(navEntry.getField());
@@ -187,7 +187,11 @@ public class NavigationCommand extends AbstractSearchCommand {
             return getUrlFragment(navEntry, value);
         }
 
-        public String getUrlFragment(NavigationCommandConfig.Nav navEntry, String value) {
+        private String getUrlFragment(NavigationCommandConfig.Nav navEntry, String value) {
+            return getUrlFragment(navEntry, value, null);
+        }
+
+        public String getUrlFragment(NavigationCommandConfig.Nav navEntry, String value, String navigatorName) {
             StringBuilder sb = new StringBuilder();
             String tab = navEntry.getTab();
             if (tab == null) {
@@ -199,6 +203,9 @@ public class NavigationCommand extends AbstractSearchCommand {
             }
             if (value != null && value.length() > 0) {
                 sb.append('&').append(enc(navEntry.getField())).append('=').append(enc(value));
+                if (navEntry.isRealNavigator() && navigatorName != null) {
+                    sb.append('&').append("nav_").append(enc(navEntry.getField())).append('=').append(enc(navigatorName));
+                }
             }
             if (!navEntry.isOut()) {
                 addParentFragment(sb, navEntry);
