@@ -77,7 +77,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             
             final SearchResult searchResult = new BasicSearchResult(this);
                 
-            if(getTransformedQuery().trim().length() > 0){
+            if(getTransformedQuery().trim().length() > 0 
+                    || getAdditionalFilter().trim().length() > 0 
+                    || "*".equals(getQuery().getQueryString())){
 
                 final Document doc = getXmlResult();
 
@@ -131,15 +133,16 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
     /** TODO comment me. **/
     protected String createRequestURL() {
+        
         final YahooIdpCommandConfig conf = (YahooIdpCommandConfig) context.getSearchConfiguration();
 
         final String dateRange = '-' + new SimpleDateFormat(DATE_PATTERN).format(new Date());
 
         final String wrappedTransformedQuery = ALLWORDS 
-                + getTransformedQuery() + ' '
+                // support "*" searches that return everything in the index.
+                + ("*".equals(getQuery().getQueryString()) ? '*' : getTransformedQuery()) + ' '
                 // HACK since AbstractSearchCommand.FilterVisitor is built for FAST prepending filters with +
-                + getAdditionalFilter().replaceAll("\\+", "") 
-                + ')';
+                + getAdditionalFilter().replaceAll("\\+", "") + ')';
 
         final StringBuilder fields = new StringBuilder();
 
