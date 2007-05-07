@@ -15,6 +15,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import com.opensymphony.oscache.base.NeedsRefreshException;
+import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.TvwaitsearchCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
@@ -36,6 +38,9 @@ import org.apache.log4j.Logger;
 public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
 
     // Constants -----------------------------------------------------
+    
+    private static final GeneralCacheAdministrator CACHE = new GeneralCacheAdministrator();   
+    private static final int REFRESH_PERIOD = 60; // one minute
 
     /** Logger */
     private static final Logger LOG = Logger.getLogger(TvWaitSearchCommand.class);
@@ -180,7 +185,47 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             return new FastSearchResult(this);
         }
 
-        SearchResult sr = super.execute();
+        SearchResult sr = null;
+        if (blankQuery && waitOn != null && datamodel.getParameters().getValue("nav_categories") == null) {
+            final int day = getParameters().containsKey("day") ? Integer.parseInt((String) getParameters().get("day")) : 0;
+            final StringBuilder sb = new StringBuilder();
+            sb.append("child/").append(userSortBy.name()).append("/");
+            int maxIdx = 0;
+            switch(userSortBy) {
+            case CHANNEL:
+                sb.append(day);
+                sb.append("/").append(((Modifier) wosr.getModifiers("channels").get(index)).getName());
+                break;
+            case DAY:
+                sb.append(index);
+                maxIdx = wosr.getModifiers("channels").size() < 5 ? wosr.getModifiers("channels").size() : 5;
+                for (Modifier modifier : wosr.getModifiers("channels").subList(0, maxIdx)) {
+                    sb.append("/").append(modifier.getName());
+                }
+                break;
+            case CATEGORY:
+                sb.append(day);
+                final Modifier modifier = (Modifier) wosr.getModifiers("categories").get(index);
+                sb.append("/").append(modifier.getName());
+                maxIdx = wosr.getModifiers("channels").size() < 5 ? wosr.getModifiers("channels").size() : 5;
+                for (Modifier channelModifier : wosr.getModifiers("channels").subList(0, maxIdx)) {
+                    sb.append("/").append(channelModifier.getName());
+                }
+                break;
+            }
+            
+            final String cacheKey = sb.toString();
+            
+            try {
+                sr = (SearchResult) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
+            } catch (NeedsRefreshException e) {
+                sr = super.execute();
+                CACHE.putInCache(cacheKey, sr);
+            }
+        } else {
+            sr = super.execute();
+        }
+        
         if (sr.getHitCount() > 0) {
             SearchResultItem sri = sr.getResults().get(0);
             String startTime = sri.getField("starttime");
