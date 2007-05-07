@@ -683,38 +683,46 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final ReconstructedQuery createQuery(final String queryString) {
 
         LOG.debug("createQuery(" + queryString + ')');
+        
+        if(datamodel.getQuery().getQuery().getQueryString().equalsIgnoreCase(queryString)){
+            
+            // return original query and engine
+            return new ReconstructedQuery(datamodel.getQuery().getQuery(), context.getTokenEvaluationEngine());
+            
+        }else{
 
-        final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                TokenEvaluationEngine.Context.class,
-                context,
-                new BaseContext() {
-                    public String getQueryString() {
-                        return queryString;
-                    }
+            final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                    TokenEvaluationEngine.Context.class,
+                    context,
+                    new BaseContext() {
+                        public String getQueryString() {
+                            return queryString;
+                        }
 
-                    public Site getSite() {
-                        return datamodel.getSite().getSite();
+                        public Site getSite() {
+                            return datamodel.getSite().getSite();
+                        }
                     }
+            );
+
+            // This will among other things perform the initial fast search
+            // for textual analysis.
+            final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+
+            // queryStr parser
+            final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
+                public TokenEvaluationEngine getTokenEvaluationEngine() {
+                    return engine;
                 }
-        );
+            });
 
-        // This will among other things perform the initial fast search
-        // for textual analysis.
-        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+            try {
+                return new ReconstructedQuery(parser.getQuery(), engine);
 
-        // queryStr parser
-        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-            public TokenEvaluationEngine getTokenEvaluationEngine() {
-                return engine;
+            } catch (TokenMgrError ex) {
+                // Errors (as opposed to exceptions) are fatal.
+                LOG.fatal(ERR_PARSING, ex);
             }
-        });
-
-        try {
-            return new ReconstructedQuery(parser.getQuery(), engine);
-
-        } catch (TokenMgrError ex) {
-            // Errors (as opposed to exceptions) are fatal.
-            LOG.fatal(ERR_PARSING, ex);
         }
         return null;
     }
