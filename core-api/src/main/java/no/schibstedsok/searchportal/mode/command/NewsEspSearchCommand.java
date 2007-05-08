@@ -18,6 +18,8 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
+import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
@@ -113,7 +115,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
 
     @Override
     protected void visitImpl(final Object clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         if (clause instanceof Clause) {
             addMedium((Clause) clause);
@@ -121,7 +123,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     protected void visitImpl(final Clause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
@@ -129,50 +131,58 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
 
     @Override
     protected void visitImpl(final LeafClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final OperationClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final AndClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final OrClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final NotClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final AndNotClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
+        addMedium(clause);
+    }
+
+
+    @Override
+    protected void visitXorClause(final Visitor visitor, final XorClause clause) {
+        LOG.debug("Visit xorClause called with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
+        super.visitXorClause(visitor, clause);
         addMedium(clause);
     }
 

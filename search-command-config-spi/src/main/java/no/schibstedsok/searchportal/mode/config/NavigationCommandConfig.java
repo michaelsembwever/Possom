@@ -137,18 +137,26 @@ public class NavigationCommandConfig extends CommandConfig {
             final List<Element> navElements = getDirectChildren(navigationElement, NAV_ELEMENT);
             navList = new ArrayList<Nav>(navElements.size());
             this.navMap = new HashMap<String, Nav>();
-            for (Element navElement : navElements) {
-                Nav nav = new Nav(this, navElement);
-                navList.add(nav);
-                updateNavMap(nav, navMap);
-                updateNavMap(nav, this.navMap);
-            }
+            addNavElements(navElements, navMap);
             final List<Element> resetNavElements = getDirectChildren(navigationElement, RESET_NAV_ELEMENT);
             resetNavSet = new HashSet<String>(resetNavElements.size());
             for (Element resetNavElement : resetNavElements) {
                 String id = resetNavElement.getAttribute("id");
                 if (id != null) {
                     resetNavSet.add(id);
+                }
+            }
+        }
+
+        private void addNavElements(List<Element> navElements, HashMap<String, Nav> navMap) {
+            for (Element navElement : navElements) {
+                Nav nav = new Nav(this, navElement);
+                navList.add(nav);
+                updateNavMap(nav, navMap);
+                updateNavMap(nav, this.navMap);
+                List<Element> childNavElements = getDirectChildren(navElement, NAV_ELEMENT);
+                if (childNavElements.size() > 0) {
+                    addNavElements(childNavElements, navMap);
                 }
             }
         }
