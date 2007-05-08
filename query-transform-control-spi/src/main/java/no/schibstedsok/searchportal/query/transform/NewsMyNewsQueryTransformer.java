@@ -63,7 +63,8 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
                         } else {
                             newQuery.append(',');
                         }
-                        newQuery.append('\"').append(matcher.group(1)).append('\"');
+                        String fastCompatibleString = matcher.group(1).replace('?', ' ');
+                        newQuery.append('\"').append(fastCompatibleString).append('\"');
                     }
                 }
                 if (newQuery.length() > 0 && config.getFilterField() != null) {
