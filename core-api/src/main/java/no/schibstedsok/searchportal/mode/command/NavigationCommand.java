@@ -226,15 +226,24 @@ public class NavigationCommand extends AbstractSearchCommand {
         private void addNavigationFragments(NavigationCommandConfig.Navigation navigation, StringBuilder sb, NavigationCommandConfig.Nav navEntry) {
             final Set<String> fieldFilterSet = new HashSet<String>();
             for (NavigationCommandConfig.Nav nav : navigation.getNavList()) {
-                StringDataObject fieldValue = context.getDataModel().getParameters().getValue(nav.getField());
-                if (!fieldFilterSet.contains(nav.getField())) {
-                    addPreviousField(fieldValue, sb, navEntry, nav.getField());
-                    fieldFilterSet.add(nav.getField());
-                    for (String staticKey : nav.getStaticParameters().keySet()) {
-                        fieldValue = context.getDataModel().getParameters().getValue(staticKey);
-                        if (!fieldFilterSet.contains(staticKey)) {
-                            addPreviousField(fieldValue, sb, navEntry, staticKey);
-                        }
+                addNavigationFragment(fieldFilterSet, nav, sb, navEntry);
+            }
+        }
+
+        private void addNavigationFragment(Set<String> fieldFilterSet, NavigationCommandConfig.Nav nav, StringBuilder sb, NavigationCommandConfig.Nav navEntry) {
+            StringDataObject fieldValue = context.getDataModel().getParameters().getValue(nav.getField());
+            if (!fieldFilterSet.contains(nav.getField())) {
+                addPreviousField(fieldValue, sb, navEntry, nav.getField());
+                fieldFilterSet.add(nav.getField());
+                for (String staticKey : nav.getStaticParameters().keySet()) {
+                    fieldValue = context.getDataModel().getParameters().getValue(staticKey);
+                    if (!fieldFilterSet.contains(staticKey)) {
+                        addPreviousField(fieldValue, sb, navEntry, staticKey);
+                    }
+                }
+                if (nav.getChildNavs() != null) {
+                    for (NavigationCommandConfig.Nav childNav : nav.getChildNavs()) {
+                        addNavigationFragment(fieldFilterSet, childNav, sb, navEntry);
                     }
                 }
             }
