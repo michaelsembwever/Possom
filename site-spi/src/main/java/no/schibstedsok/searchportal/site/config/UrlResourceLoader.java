@@ -8,6 +8,9 @@
 
 package no.schibstedsok.searchportal.site.config;
 
+
+import com.opensymphony.oscache.base.NeedsRefreshException;
+import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -29,6 +32,9 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
     // Constants -----------------------------------------------------
 
+    private static final GeneralCacheAdministrator PRESENCE_CACHE = new GeneralCacheAdministrator();   
+    private static final int REFRESH_PERIOD = 60; // one minute
+    
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);
 
     private static final String DEBUG_CHECKING_EXISTANCE_OF = "Checking existance of ";
@@ -75,33 +81,48 @@ public class UrlResourceLoader extends AbstractResourceLoader {
     public static boolean doesUrlExist(final String url, final String hostHeader){
 
         boolean success = false;
-        HttpURLConnection con = null;
-        try {
+        
+        try{
+            success = (Boolean)PRESENCE_CACHE.getFromCache(url, REFRESH_PERIOD);
+            
+        }catch(NeedsRefreshException nre){
+           
+            boolean updatedCache = false;
+            HttpURLConnection con = null;
+            try {
 
-            final URL u = new URL(url);
+                final URL u = new URL(url);
 
-            con = (HttpURLConnection) u.openConnection();
-            con.setInstanceFollowRedirects(false);
-            con.setRequestMethod("HEAD");
-            con.addRequestProperty("host", hostHeader);
-            con.setConnectTimeout(1000);
-            con.setReadTimeout(1000);
-            success = HttpURLConnection.HTTP_OK == con.getResponseCode();
+                con = (HttpURLConnection) u.openConnection();
+                con.setInstanceFollowRedirects(false);
+                con.setRequestMethod("HEAD");
+                con.addRequestProperty("host", hostHeader);
+                con.setConnectTimeout(1000);
+                con.setReadTimeout(1000);
+                
+                success = HttpURLConnection.HTTP_OK == con.getResponseCode();
+                PRESENCE_CACHE.putInCache(url, success);
+                updatedCache = true;
 
-            LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + u + " is " + success);
+                LOG.trace(DEBUG_CHECKING_EXISTANCE_OF + u + " is " + success);
 
-        } catch (NullPointerException e) {
-            LOG.debug( '[' + hostHeader + "] " + url, e);
+            } catch (NullPointerException e) {
+                LOG.debug( '[' + hostHeader + "] " + url, e);
 
-        } catch (SocketTimeoutException ste) {
-            LOG.debug( '[' + hostHeader + "] " + url + '\n' + ste);
+            } catch (SocketTimeoutException ste) {
+                LOG.debug( '[' + hostHeader + "] " + url + '\n' + ste);
 
-        } catch (IOException e) {
-            LOG.warn( '[' + hostHeader + "] " + url, e);
+            } catch (IOException e) {
+                LOG.warn( '[' + hostHeader + "] " + url, e);
 
-        }  finally  {
-            if (con != null) {
-                con.disconnect();
+            }  finally  {
+                
+                if(!updatedCache){ 
+                    PRESENCE_CACHE.cancelUpdate(url);
+                }
+                if (con != null) {
+                    con.disconnect();
+                }
             }
         }
 
