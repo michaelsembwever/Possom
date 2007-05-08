@@ -63,8 +63,7 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
                         } else {
                             newQuery.append(',');
                         }
-                        String fastCompatibleString = matcher.group(1).replace('?', ' ');
-                        newQuery.append('\"').append(fastCompatibleString).append('\"');
+                        newQuery.append('\"').append(matcher.group(1)).append('\"');
                     }
                 }
                 if (newQuery.length() > 0 && config.getFilterField() != null) {
@@ -83,10 +82,11 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
                 }
                 LOG.debug("Group at pos: " + pos + " is " + matcher.group(0) + ", looking for " + config.getType());
                 if (matcher.groupCount() > 0 && matcher.group(2).equals(config.getType())) {
+                    final String fastCompatibleString = matcher.group(1).replace('?', ' ');
                     if (config.getFilterField() == null) {
-                        return matcher.group(1);
+                        return fastCompatibleString;
                     } else {
-                        return config.getFilterField() + ":(\"" + matcher.group(1) + "\")";
+                        return config.getFilterField() + ":(\"" + fastCompatibleString + "\")";
                     }
                 } else {
                     return "";
