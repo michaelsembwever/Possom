@@ -1,6 +1,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import no.schibstedsok.searchportal.mode.config.NavigationCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
@@ -142,6 +143,7 @@ public class NavigationCommand extends AbstractSearchCommand {
                             match = true;
                             if (selectedValue == null && option.isDefaultSelect()) {
                                 navigator.setSelected(true);
+                                selectedValue = new StringDataObjectSupport("dummy");
                             }
                             if (option.getDisplayName() != null) {
                                 navigator.setName(option.getDisplayName());
