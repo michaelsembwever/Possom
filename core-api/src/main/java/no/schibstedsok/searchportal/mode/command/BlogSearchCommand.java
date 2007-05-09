@@ -55,7 +55,6 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
                     sortBy = "+blogsearchprofile";
                 }
            }
-        System.out.println("**** SORT BY = " + sortBy);
         return sortBy;
     }
 
