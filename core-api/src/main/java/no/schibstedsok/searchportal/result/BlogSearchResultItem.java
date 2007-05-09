@@ -187,9 +187,10 @@ public class BlogSearchResultItem extends BasicSearchResultItem { // Extend Basi
     }
 
     /**
-     * If the blog result does not refert to a parentUrl it means that
-     * we have the frontpage of the article. Otherwise it may a comment
-     * from the article.
+     * Todo: Come up with a better way to find out wether the result is a blog frontpage or not.
+     *
+     * if blog or comments is not null and we got a parenturl that is not equal to url, then
+     * we have a frontpage ? 
      * @return if entry is blog frontpage.
      */
     public boolean isFrontPage() {
