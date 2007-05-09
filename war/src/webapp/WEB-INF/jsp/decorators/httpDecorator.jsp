@@ -63,9 +63,7 @@
 
             <search:include include="left-col-three"/>
 
-            <c:if test="${tab.showRss}">
-                <search:include include="left-col-four"/>
-            </c:if>
+            <search:include include="left-col-four"/>
 
             <search:include include="left-col-five"/>
         </td>
