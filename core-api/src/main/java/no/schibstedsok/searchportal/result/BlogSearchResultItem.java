@@ -197,7 +197,6 @@ public class BlogSearchResultItem extends BasicSearchResultItem { // Extend Basi
         if(parentUrl == null) {
             return true;
         }
-        boolean isFrontPage = parentUrl.equals(url);
-        return isFrontPage;
+        return parentUrl.equals(url);
     }
 }
