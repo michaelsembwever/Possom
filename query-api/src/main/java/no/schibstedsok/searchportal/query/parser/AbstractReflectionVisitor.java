@@ -63,10 +63,17 @@ public abstract class AbstractReflectionVisitor implements Visitor {
 
         } catch (IllegalArgumentException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
+            
         } catch (InvocationTargetException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
+            // IllegalArgumentException are often mean an underlying exception
+            for (Throwable t = ex; t != null; t = t.getCause()) {
+                LOG.error(t.getMessage(), t);
+            }
+            
         } catch (IllegalAccessException ex) {
             LOG.error(ERR_FAILED_TO_VISIT + clause, ex);
+            
         }  finally  {
             method.setAccessible(false);
         }
