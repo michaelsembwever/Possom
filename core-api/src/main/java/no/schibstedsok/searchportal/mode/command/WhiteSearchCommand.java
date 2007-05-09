@@ -8,12 +8,16 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import no.fast.ds.search.ISearchParameters;
+import no.fast.ds.search.SearchParameter;
+import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
+import no.schibstedsok.searchportal.util.GeoSearchUtil;
 
 /**
  *
@@ -31,6 +35,18 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
     public WhiteSearchCommand(final Context cxt) {
 
         super(cxt);
+    }
+    
+    /**
+     * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#getSortBy()
+     */
+    @Override
+    protected String getSortBy(){
+        final ParametersDataObject pdo = datamodel.getParameters();
+        if(GeoSearchUtil.isGeoSearch(pdo)){
+            return GeoSearchUtil.GEO_SORT_BY;
+        }
+        return super.getSortBy();
     }
 
     /**
@@ -82,6 +98,26 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
             }
 
         }
+    }
+    
+    /**
+     * If the search is a GEO search, add required GEO search parameters.
+     * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#setAdditionalParameters(ISearchParameters)
+     */
+    protected void setAdditionalParameters(ISearchParameters params) {
+        super.setAdditionalParameters(params);
+        final ParametersDataObject pdo = datamodel.getParameters();
+       
+        if(!GeoSearchUtil.isGeoSearch(pdo)){
+            return;
+        }
+     
+        final String center = GeoSearchUtil.getCenter(pdo);
+       
+        final String restrictRadius = "10";
+        params.setParameter(new SearchParameter("qtf_geosearch:unit", GeoSearchUtil.RADIUS_MEASURE_UNIT_TYPE));
+        params.setParameter(new SearchParameter("qtf_geosearch:radius", restrictRadius));
+        params.setParameter(new SearchParameter("qtf_geosearch:center", center));
     }
 
     /**

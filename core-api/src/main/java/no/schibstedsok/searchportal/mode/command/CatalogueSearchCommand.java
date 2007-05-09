@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import no.fast.ds.search.ISearchParameters;
+import no.fast.ds.search.SearchParameter;
+import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.mode.config.CatalogueCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -35,6 +39,7 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.util.GeoSearchUtil;
 
 import org.apache.log4j.Logger;
 
@@ -124,6 +129,24 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     private static final String BLANK = "";
 
+    @Override
+    protected void setAdditionalParameters(final ISearchParameters params) {
+        super.setAdditionalParameters(params);
+        final ParametersDataObject pdo = datamodel.getParameters();
+       
+        if(!GeoSearchUtil.isGeoSearch(pdo)){
+            return;
+        }
+     
+        final String center = GeoSearchUtil.getCenter(pdo);
+        
+        LOG.debug("center : " + center);
+        
+        final String restrictRadius = "10";
+        params.setParameter(new SearchParameter("qtf_geosearch:unit", GeoSearchUtil.RADIUS_MEASURE_UNIT_TYPE));
+        params.setParameter(new SearchParameter("qtf_geosearch:radius", restrictRadius));
+        params.setParameter(new SearchParameter("qtf_geosearch:center", center));
+    }
     /**
      * Creates a new catalogue search command.
      * @param cxt current context for this search command.
@@ -353,6 +376,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         return query.toString();
     }
+    
+    
 
     /**
      * Set what to sort the resultset by.
@@ -370,6 +395,10 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         String sortBy = super.getSortBy();
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
+        }
+        final ParametersDataObject pdo = datamodel.getParameters();
+        if(GeoSearchUtil.isGeoSearch(pdo)){
+            sortBy= GeoSearchUtil.GEO_SORT_BY;
         }
         return sortBy;
     }
