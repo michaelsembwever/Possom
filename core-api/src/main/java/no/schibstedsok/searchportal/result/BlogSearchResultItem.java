@@ -193,7 +193,9 @@ public class BlogSearchResultItem extends BasicSearchResultItem { // Extend Basi
      * @return if entry is blog frontpage.
      */
     public boolean isFrontPage() {
-
+        if(isHitInBody() || isHitInComments()) {
+            return false;
+        }
         if(parentUrl == null) {
             return true;
         }
