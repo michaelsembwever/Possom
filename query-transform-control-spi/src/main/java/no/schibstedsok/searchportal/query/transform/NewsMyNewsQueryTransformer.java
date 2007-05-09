@@ -1,3 +1,4 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.query.transform;
 
 import no.schibstedsok.searchportal.query.Clause;
@@ -14,46 +15,75 @@ import java.util.regex.Pattern;
  * <p/>
  * <b>Note:</b> This queryTransformer ignores all earlier transforms on the query. All transforms to the resulting
  * query should be done after this.
+ * 
+ * @author geir
+ * @version $Id$
  */
-public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
+public final class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
+    
     private static final Logger LOG = Logger.getLogger(NewsMyNewsQueryTransformer.class);
     private static final Pattern queryPattern = Pattern.compile("(?:\\A|\\|)([^\\|]+)\\:{2}([^\\|]+)\\|?");
 
-    private NewsMyNewsQueryTransformerConfig config;
+    private final NewsMyNewsQueryTransformerConfig config;
 
-    public NewsMyNewsQueryTransformer(QueryTransformerConfig config) {
+    /**
+     * 
+     * @param config 
+     */
+    public NewsMyNewsQueryTransformer(final QueryTransformerConfig config) {
         this.config = (NewsMyNewsQueryTransformerConfig) config;
     }
 
+    /**
+     * 
+     * @param clause 
+     */
     public void visitImpl(final Clause clause) {
-        String myNews = (String) getContext().getDataModel().getJunkYard().getValue(config.getQueryParameter());
+        
+        final String myNews = (String) getContext().getDataModel().getJunkYard().getValue(config.getQueryParameter());
+        
+        // FIXME use instead the following
+        //final String myNews 
+        //        = (String) getContext().getDataModel().getParameters().getValue(config.getQueryParameter()).getString();
+        
         LOG.debug("Transforming query according to query = " + myNews);
         final String transformedQuery = transformQuery(myNews);
+        
         if (transformedQuery != null) {
-            LOG.debug("New query is: '" + transformedQuery + "'");
+            LOG.debug("New query is: '" + transformedQuery + '\'');
+            
             for (Clause keyClause : getContext().getTransformedTerms().keySet()) {
                 getContext().getTransformedTerms().put(keyClause, "");
             }
+            
             if (transformedQuery.length() > 0) {
                 getContext().getTransformedTerms().put(getContext().getQuery().getFirstLeafClause(), transformedQuery);
             }
         }
     }
 
+    /**
+     * 
+     * @return 
+     */
     protected int getOffset() {
-        int offset = 0;
-        if (getContext().getDataModel().getJunkYard().getValue("offset") != null) {
-            offset = Integer.parseInt((String) getContext().getDataModel().getJunkYard().getValue("offset"));
-        }
-        return offset;
+        
+        return null != getContext().getDataModel().getJunkYard().getValue("offset")
+                ? Integer.parseInt((String) getContext().getDataModel().getJunkYard().getValue("offset"))
+                : 0;
     }
 
-    private String transformQuery(String myNews) {
+    private String transformQuery(final String myNews) {
+        
+        final StringBuilder newQuery = new StringBuilder();
+        
         if (myNews != null && myNews.length() > 0) {
+            
             final Matcher matcher = queryPattern.matcher(myNews);
             if (config.getPosition() == -1) {
+                
                 LOG.debug("No position. Appending all matches.");
-                final StringBuilder newQuery = new StringBuilder();
+                                
                 while (matcher.find()) {
                     if (matcher.group(2).equals(config.getType())) {
                         if (newQuery.length() == 0) {
@@ -69,30 +99,38 @@ public class NewsMyNewsQueryTransformer extends AbstractQueryTransformer {
                 if (newQuery.length() > 0 && config.getFilterField() != null) {
                     newQuery.append("))");
                 }
-                return newQuery.toString();
+                
             } else {
+                
                 LOG.debug("Position is: " + config.getPosition());
 
                 int curPos = 0;
-                int offset = getOffset();
-                int pos = config.getPosition() + offset;
+                final int offset = getOffset();
+                final int pos = config.getPosition() + offset;
+                
                 while (matcher.find() && curPos < pos) {
                     // Just searching for the correct match.
                     curPos++;
                 }
-                LOG.debug("Group at pos: " + pos + " is " + matcher.group(0) + ", looking for " + config.getType());
+                
+                try{
+                    // YUK! any way to do this and avoid having to wrap in try-catch?? XXX
+                    LOG.debug("Group at pos: " + pos + " is " + matcher.group(0) + ", looking for " + config.getType());
+                    
+                }catch(IllegalStateException ise){
+                    LOG.trace(ise.getMessage(), ise);
+                }
+                
                 if (matcher.groupCount() > 0 && matcher.group(2).equals(config.getType())) {
+                    
                     final String fastCompatibleString = matcher.group(1).replace('?', ' ');
-                    if (config.getFilterField() == null) {
-                        return fastCompatibleString;
-                    } else {
-                        return config.getFilterField() + ":(\"" + fastCompatibleString + "\")";
-                    }
-                } else {
-                    return "";
+                    
+                    return null == config.getFilterField() 
+                            ? fastCompatibleString 
+                            : config.getFilterField() + ":(\"" + fastCompatibleString + "\")";                    
                 }
             }
         }
-        return "";
+        return newQuery.toString();
     }
 }
