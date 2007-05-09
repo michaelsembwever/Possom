@@ -42,6 +42,11 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
     }
 
 
+    /**
+     * Switches sorting by based on the request parameter "userSortBy"
+     * Sortoptions are "+blogsearchprofile" "and publishedtime", default is publishedtime.
+     * @return sort field.
+     */
     protected String getSortBy() {
 
         String sortBy = super.getSortBy();
