@@ -77,7 +77,7 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
             
             final InputStream stream = file.exists() ? getStream(file) : super.getResourceStream(url);
 
-            if(velocityDebugOn || -1 == url.indexOf("rss")){
+            if(velocityDebugOn && -1 == url.indexOf("rss")){
                 
                 final StringBuilder streamBuffer = new StringBuilder();
 

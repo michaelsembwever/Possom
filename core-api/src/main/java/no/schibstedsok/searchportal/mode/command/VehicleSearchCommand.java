@@ -11,7 +11,6 @@ import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.holders.LongHolder;
 import javax.xml.rpc.holders.StringHolder;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.VehicleCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
