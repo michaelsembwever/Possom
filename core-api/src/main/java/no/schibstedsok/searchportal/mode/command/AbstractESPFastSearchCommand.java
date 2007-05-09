@@ -11,6 +11,7 @@ package no.schibstedsok.searchportal.mode.command;
 import com.fastsearch.esp.search.ConfigurationException;
 import com.fastsearch.esp.search.SearchEngineException;
 import com.fastsearch.esp.search.SearchFactory;
+import com.fastsearch.esp.search.view.ISearchView;
 import com.fastsearch.esp.search.query.BaseParameter;
 import com.fastsearch.esp.search.query.IQuery;
 import com.fastsearch.esp.search.query.Query;
@@ -123,6 +124,24 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         searchView = initialiseSearchView();
     }
 
+    protected String getSortBy() {
+        String sortBy = cfg.getSortBy();
+
+           if (getParameters().containsKey("userSortBy")) {
+
+                final String userSortBy = getParameter("userSortBy");
+                LOG.debug("execute: SortBy " + userSortBy);
+
+                if ("standard".equals(userSortBy)) {
+                    sortBy = "-frontpagename -contentprofile -docdatetime";
+                } else if ("datetime".equals(userSortBy)) {
+                    sortBy = "-frontpagename -docdatetime";
+                }
+           }
+
+        return sortBy;
+    }
+
     // Public --------------------------------------------------------
 
     /**
@@ -162,20 +181,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                     filterBuilder.append("+collapseid:").append(collapseId);
                 }
             }
-
-            //check sortby
-            String sortBy = cfg.getSortBy();
-            if (getParameters().containsKey("userSortBy")) {
-
-                final String userSortBy = getParameter("userSortBy");
-                LOG.debug("execute: SortBy " + userSortBy);
-
-                if ("standard".equals(userSortBy)) {
-                    sortBy = "-frontpagename -contentprofile -docdatetime";
-                } else if ("datetime".equals(userSortBy)) {
-                    sortBy = "-frontpagename -docdatetime";
-                }
-            }
+ 
+            String sortBy = getSortBy();
 
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, getCurrentOffset(0)));
             query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));
@@ -415,6 +422,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         final String searchViewKey = queryServer + "/" + view;
 
+        System.out.println("*** searchViewKey = " + searchViewKey);
         // XXX There is no synchronisation around this static map.
         //   Not critical as any clashing threads will just override the values,
         //    and the cost of the occasional double-up creation probably doesn't compare
@@ -436,7 +444,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 final String serverName = queryServer.substring(0, queryServer.indexOf(':'));
                 final String serverPort = queryServer.substring(queryServer.indexOf(':') + 1);
                 searchView.setServerAddress(serverName, Integer.parseInt(serverPort), false);
-
+                System.out.println("*** ServerName =" + serverName);
             } catch (ConfigurationException e) {
                 throw new InfrastructureException(e);
             } catch (SearchEngineException e) {
@@ -462,7 +470,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         final SearchResultItem item = new BasicSearchResultItem();
 
         for (final Map.Entry<String, String> entry : cfg.getResultFields().entrySet()) {
-
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
             if (summary != null && !summary.isEmpty())
