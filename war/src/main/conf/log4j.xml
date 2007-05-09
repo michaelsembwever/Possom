@@ -38,7 +38,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} %X{site} %X{UNIQUE_ID} %m%n"/>
+            <param name="ConversionPattern" value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
     </appender>
     

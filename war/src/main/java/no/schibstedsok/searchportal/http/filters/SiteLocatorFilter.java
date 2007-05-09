@@ -23,8 +23,10 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpSession;
 
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
@@ -33,11 +35,13 @@ import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
 /** Loads the appropriate Site object in as a request attribute.
- * Will redirect to correct (search-front-config) url for resources (css,images, javascript).
+ * Will redirect to correct (search-front-config) url for resources (css,images, javascript). <br/>
+ * Also responsible for logging each request and response like an apache access logfile.
  *
  * @author  <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -61,6 +65,8 @@ public final class SiteLocatorFilter implements Filter {
 
     private static final String HTTP = "http://";
     private static final String PUBLISH_DIR = "/img/";
+    
+    private static final String UNKNOWN = "unknown";
 
     /** Changes to this list must also change the ProxyPass|ProxyPassReverse configuration in httpd.conf **/
     private static final Collection<String> EXTERNAL_DIRS =
@@ -126,16 +132,20 @@ public final class SiteLocatorFilter implements Filter {
     //@Override jdk 1.6
     public void doFilter(
             final ServletRequest request,
-            final ServletResponse response,
+            final ServletResponse r,
             final FilterChain chain)
                 throws IOException, ServletException {
 
         LOG.trace("doFilter(..)");
+        
+        final ServletResponse response = r instanceof HttpServletResponse
+            ? new AccessLogResponse((HttpServletResponse)r)
+            : r;
 
         try  {
 
             doBeforeProcessing(request, response);
-            logAccess(request);
+            logAccessRequest(request);
 
             if (request instanceof HttpServletRequest) {
 
@@ -206,12 +216,16 @@ public final class SiteLocatorFilter implements Filter {
                 LOG.error(t.getMessage(), t);
             }
             throw new ServletException(e);
+            
+        }finally{
+            logAccessResponse(request, response);
         }
 
     }
 
     /**
      * Return the filter configuration object for this filter.
+     * @return 
      */
     public FilterConfig getFilterConfig() {
         return (filterConfig);
@@ -265,6 +279,7 @@ public final class SiteLocatorFilter implements Filter {
     /** The method to obtain the correct Site from the request.
      * It only returns a site with a locale supported by that site.
      ** @param servletRequest 
+     * @return 
      */
     public static Site getSite(final ServletRequest servletRequest) {
         // find the current site. Since we are behind a ajp13 connection request.getServerName() won't work!
@@ -346,10 +361,11 @@ public final class SiteLocatorFilter implements Filter {
         
         // datamodel is NOT request-safe. all the user's requests must execute in sequence!
         synchronized( lock ){   
-            
+                        
             // request will be processed by search-portal
             LOG.info("Incoming! Duck!");
             chain.doFilter(request, response);
+            
         }
     }
 
@@ -421,23 +437,90 @@ public final class SiteLocatorFilter implements Filter {
         return datamodel;
     }
 
-    private static void logAccess(final ServletRequest request){
+    private static void logAccessRequest(final ServletRequest request){
        
+        final StringBuilder url = new StringBuilder();
+        final String referer;
+        final String method;
+        final String ip = request.getRemoteAddr();
+        final String userAgent;
+        final String sesamId;
+        final String sesamUser;
+        
         if(request instanceof HttpServletRequest){  
+            
             final HttpServletRequest req = (HttpServletRequest)request;
-            ACCESS_LOG.info(req.getRequestURI() + (null != req.getQueryString() ? '?' + req.getQueryString() : ""));
+            url.append(req.getRequestURI() + (null != req.getQueryString() ? '?' + req.getQueryString() : ""));
+            referer = req.getHeader("Referer");
+            method = req.getMethod();
+            userAgent = req.getHeader("User-Agent");
+            sesamId = getCookieValue(req, "SesamID");
+            sesamUser = getCookieValue(req, "SesamUser");
             
         }else{
-            final StringBuilder sb = new StringBuilder();
+            
             for( Enumeration<String> en = request.getParameterNames(); en.hasMoreElements(); ){
                 final String param = en.nextElement();
-                sb.append(param + '=' + request.getParameter(param));
+                url.append(param + '=' + request.getParameter(param));
                 if(en.hasMoreElements()){
-                    sb.append('&');
+                    url.append('&');
                 }
             }
-            ACCESS_LOG.info(sb.toString());
+            referer = method = userAgent = sesamId = sesamUser = UNKNOWN;
         }
+        
+        ACCESS_LOG.info("<request>"
+                + "<url method=\"" + method + "\">" + StringEscapeUtils.escapeXml(url.toString()) + "</url>"
+                + "<referer>" + StringEscapeUtils.escapeXml(referer) + "</referer>"
+                + "<browser ipaddress=\"" + ip + "\">" + StringEscapeUtils.escapeXml(userAgent) + "</browser>"
+                + "<user id=\"" + sesamId + "\">" + sesamUser + "</user>"
+                + "</request>");
+    }
+    
+    private static void logAccessResponse(final ServletRequest request, final ServletResponse response){
+       
+        final String code;
+        
+        if(request instanceof HttpServletRequest){  
+            
+            final HttpServletRequest req = (HttpServletRequest)request;
+            
+        }else{
+            
+        }
+        
+        if(response instanceof AccessLogResponse){  
+            
+            final AccessLogResponse res = (AccessLogResponse)response;
+            code = String.valueOf(res.getStatus());
+            
+        }else{
+            
+            code = UNKNOWN;
+        }
+        
+        ACCESS_LOG.info("<response code=\"" + code + "\">");
+    }
+    
+    // probably apache commons could simplify this
+    private static String getCookieValue(final HttpServletRequest request, final String cookieName){
+    
+        String value = "";
+        // Look in attributes (it could have already been updated this request)
+        if( null != request ){
+
+            // Look through cookies
+            if( null != request.getCookies() ){
+                for( Cookie c : request.getCookies()){
+                    if( c.getName().equals( cookieName ) ){
+                        value = c.getValue();
+                        break;
+                    }
+                }
+            }
+        }
+
+        return value;
     }
     
     private static String getServerName(final ServletRequest servletRequest){
@@ -450,5 +533,45 @@ public final class SiteLocatorFilter implements Filter {
             ? (String) servletRequest.getAttribute("SERVER_NAME")
             // falls back to this when not behind Apache. (Development machine).
             : servletRequest.getServerName() + ":" + servletRequest.getServerPort();
+    }
+    
+    private static class AccessLogResponse extends HttpServletResponseWrapper{
+        
+        private int status = HttpServletResponse.SC_OK;
+        
+        public AccessLogResponse(final HttpServletResponse response){
+            super(response);
+        }
+        
+        @Override
+        public void setStatus(final int status){
+            super.setStatus(status);
+            this.status = status;
+        }
+        @Override
+        public void setStatus(final int status, final String msg){
+            super.setStatus(status, msg);
+            this.status = status;
+        }
+        @Override
+        public void sendError(final int sc) throws IOException{
+            super.sendError(sc);
+            status = sc;
+        }
+        @Override
+        public void sendError(final int sc, final String msg) throws IOException{
+            super.sendError(sc, msg);
+            status = sc;
+        }
+        @Override
+        public void sendRedirect(final String arg0) throws IOException {
+            super.sendRedirect(arg0);
+            this.status = HttpServletResponse.SC_TEMPORARY_REDIRECT;
+        }
+        
+        public int getStatus(){
+            return status;
+        }
+              
     }
 }
