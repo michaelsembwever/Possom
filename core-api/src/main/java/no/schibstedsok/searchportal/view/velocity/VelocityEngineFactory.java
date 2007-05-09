@@ -66,7 +66,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     private static final String LOGSYSTEM_CLASS = "org.apache.velocity.runtime.log.Log4JLogChute";
     private static final String LOG_NAME = "runtime.log.logsystem.log4j.logger";
 
-    private static final boolean VELOCITY_DEBUG = "true".equals(System.getProperty("VELOCITY_DEBUG"));
+    private static final boolean VELOCITY_DEBUG = Boolean.getBoolean("VELOCITY_DEBUG");
     
     private static final String DIRECTIVES =
             "no.schibstedsok.searchportal.view.velocity.UrlEncodeDirective,"
@@ -248,7 +248,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 
                 if(!VELOCITY_DEBUG) {
                 	engine.setProperty("url.resource.loader.cache", "true");
-                	engine.setProperty("url.resource.loader.modificationCheckInterval", "0"); // cache forever
+                	engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minutes
                 }
                 engine.setProperty(Site.NAME_KEY, site);
 

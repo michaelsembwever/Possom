@@ -87,13 +87,15 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                 // count all cookies
                 position++;
             }
-            mergedResult.setHitCount(position + 1 + offset);
+            mergedResult.setHitCount(position + offset);
 
             setNextOffset(mergedResult, config.getResultsToReturn());
 
             return mergedResult;
         } else {
-            return new BasicSearchResult(this);
+            BasicSearchResult searchResult = new BasicSearchResult(this);
+            searchResult.setHitCount(0);
+            return searchResult;
         }
     }
 

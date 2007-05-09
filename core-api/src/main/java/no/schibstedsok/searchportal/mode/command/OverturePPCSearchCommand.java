@@ -10,6 +10,8 @@ import java.net.URLEncoder;
 
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.OverturePpcCommandConfig;
+import no.schibstedsok.searchportal.query.AndNotClause;
+import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
@@ -123,6 +125,19 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         return url.toString();
     }
 
+    /**
+     * TODO comment me. *
+     *
+     * @param clause
+     */
+    protected void visitImpl(final NotClause clause) {}
+
+    /**
+     * TODO comment me. *
+     *
+     * @param clause
+     */
+    protected void visitImpl(final AndNotClause clause) {}    
 
     /** TODO comment me. **/
     protected int getResultsToReturn(){

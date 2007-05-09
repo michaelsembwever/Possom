@@ -8,6 +8,7 @@ import com.fastsearch.esp.search.result.IDocumentSummary;
 import com.fastsearch.esp.search.result.IDocumentSummaryField;
 import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.result.IllegalType;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.NewsEspCommandConfig;
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -17,6 +18,8 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
+import no.schibstedsok.searchportal.query.Visitor;
+import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
@@ -44,6 +47,24 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     protected void modifyQuery(IQuery query) {
         super.modifyQuery(query);
         final NewsEspCommandConfig config = getSearchConfiguration();
+
+        // Because of a bug in FAST ESP5 related to collapsing and sorting, we must use sort direcetion,
+        // and not the +fieldname syntax
+        final StringDataObject sort = datamodel.getParameters().getValue(config.getUserSortParameter());
+        String sortType;
+        if (sort != null) {
+            sortType = sort.getString();
+        } else {
+            sortType = config.getDefaultSort();
+        }
+        if (sortType.equals("relevance")) {
+            query.setParameter(BaseParameter.SORT_BY, config.getRelevanceSortField());
+            query.setParameter(BaseParameter.SORT_DIRECTION, "descending");
+        } else {
+            query.setParameter(BaseParameter.SORT_BY, config.getSortField());
+            query.setParameter(BaseParameter.SORT_DIRECTION, sortType);
+        }
+
         query.setParameter(BaseParameter.HITS, Math.max(config.getCollapsingMaxFetch(), config.getResultsToReturn()));
         if (config.isIgnoreOffset()) {
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, 0));
@@ -75,10 +96,10 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
         if (getQuery().getRootClause() == clause) {
             NewsEspCommandConfig config = getSearchConfiguration();
             String medium = (String) datamodel.getJunkYard().getValue(config.getMediumParameter());
+            if (medium == null || medium.length() == 0) {
+                medium = config.getDefaultMedium();
+            }
             if (!NewsEspCommandConfig.ALL_MEDIUMS.equals(medium) && getQueryRepresentationLength() > 0) {
-                if (medium == null || medium.length() == 0) {
-                    medium = config.getDefaultMedium();
-                }
                 insertToQueryRepresentation(0, "and(");
                 appendToQueryRepresentation(',');
                 appendToQueryRepresentation(config.getMediumPrefix());
@@ -94,7 +115,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
 
     @Override
     protected void visitImpl(final Object clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         if (clause instanceof Clause) {
             addMedium((Clause) clause);
@@ -102,7 +123,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     protected void visitImpl(final Clause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
@@ -110,50 +131,58 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
 
     @Override
     protected void visitImpl(final LeafClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final OperationClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final AndClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final OrClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final NotClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
         addMedium(clause);
     }
 
     @Override
     protected void visitImpl(final AndNotClause clause) {
-        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause));
+        LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
         super.visitImpl(clause);
+        addMedium(clause);
+    }
+
+
+    @Override
+    protected void visitXorClause(final Visitor visitor, final XorClause clause) {
+        LOG.debug("Visit xorClause called with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
+        super.visitXorClause(visitor, clause);
         addMedium(clause);
     }
 

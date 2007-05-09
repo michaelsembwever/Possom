@@ -77,7 +77,9 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
             
             final SearchResult searchResult = new BasicSearchResult(this);
                 
-            if(getTransformedQuery().trim().length() > 0){
+            if(getTransformedQuery().trim().length() > 0 
+                    || getAdditionalFilter().trim().length() > 0 
+                    || "*".equals(getQuery().getQueryString())){
 
                 final Document doc = getXmlResult();
 
@@ -131,11 +133,16 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
     /** TODO comment me. **/
     protected String createRequestURL() {
+        
         final YahooIdpCommandConfig conf = (YahooIdpCommandConfig) context.getSearchConfiguration();
 
         final String dateRange = '-' + new SimpleDateFormat(DATE_PATTERN).format(new Date());
 
-        final String wrappedTransformedQuery = ALLWORDS + getTransformedQuery() + ')';
+        final String wrappedTransformedQuery = ALLWORDS 
+                // support "*" searches that return everything in the index.
+                + ("*".equals(getQuery().getQueryString()) ? '*' : getTransformedQuery()) + ' '
+                // HACK since AbstractSearchCommand.FilterVisitor is built for FAST prepending filters with +
+                + getAdditionalFilter().replaceAll("\\+", "") + ')';
 
         final StringBuilder fields = new StringBuilder();
 
@@ -202,24 +209,24 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     protected void visitImpl(final AndClause clause) {
         appendToQueryRepresentation(ALLWORDS);
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
+        appendToQueryRepresentation(' ');
         clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(")");
+        appendToQueryRepresentation(')');
     }
 
     /** TODO comment me. **/
     protected void visitImpl(final OrClause clause) {
         appendToQueryRepresentation(ANYWORDS);
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
+        appendToQueryRepresentation(' ');
         clause.getSecondClause().accept(this);
-        appendToQueryRepresentation(")");
+        appendToQueryRepresentation(')');
     }
 
     /** TODO comment me. **/
     protected void visitImpl(final DefaultOperatorClause clause) {
         clause.getFirstClause().accept(this);
-        appendToQueryRepresentation(" ");
+        appendToQueryRepresentation(' ');
         clause.getSecondClause().accept(this);
     }
 

@@ -34,16 +34,10 @@
 	            if (window.RegExp && window.encodeURIComponent) {
 		            var qlink=qtag.href;
 		            var qenc=encodeURIComponent(document.forms[0].q.value);
-		            var str=qlink;
-		            if(document.forms[0].q.value == ""){
-		                str=qlink.replace("c=m","c=na");
-		            }else{
-		                str=qlink.replace("c=na","c=m");
-		            }
 		            if(qlink.indexOf("q=")!=-1){
-		            	qtag.href=str.replace(new RegExp("q=[^&$]*"),"q="+qenc);
+		            	qtag.href=qlink.replace(new RegExp("q=[^&$]*"),"q="+qenc);
 		            }else{
-			            qtag.href=str+"&q="+qenc;
+			            qtag.href=qlink+"&q="+qenc;
 		            }
 	            }
 	            return 1;

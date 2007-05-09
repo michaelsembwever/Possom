@@ -271,7 +271,22 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param clause
      */
     protected void visitImpl(final LeafClause clause) {
+        
         appendToQueryRepresentation(getTransformedTerm(clause));
+        
+//        if (null == getTransformedTerm(clause)) {
+//            if (null != clause.getField()) {
+//                if (null == getFieldFilter(clause)) {
+//
+//                    // Escape any fielded leafs for fields that are not supported by this command.
+//                    appendToQueryRepresentation(getTransformedTerm(clause));
+//
+//                }
+//            } else {
+//
+//                appendToQueryRepresentation(getTransformedTerm(clause));
+//            }
+//        }
     }
 
     /**
@@ -411,15 +426,17 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             executeQuery |= null != parameters.get("contentsource");
             executeQuery |= null != parameters.get("newscountry")
                     && (parameters.get("c").equals("m") || parameters.get("c").equals("l"));
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("wt");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("n");
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nn");
-            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t");
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("wt") && getSearchConfiguration().isAlwaysRun();
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("t") && getSearchConfiguration().isAlwaysRun();
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("cat");
+            executeQuery |= null != parameters.get("c") && parameters.get("c").equals("l") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("na") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nc") && getTransformedQuery().trim().length() > 0;
             executeQuery |= null != parameters.get("c") && parameters.get("c").equals("nm") && getTransformedQuery().trim().length() > 0;
             executeQuery |= this instanceof NewsMyNewsSearchCommand;
+            executeQuery |= this instanceof NavigationCommand;
 
             executeQuery |= null != filter && filter.length() > 0;
             LOG.info("executeQuery==" + executeQuery
@@ -597,6 +614,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final String getTransformedTerm(final Clause clause) {
         final String transformedTerm = transformedTerms.get(clause);
         return escapeTerm(transformedTerm != null ? transformedTerm : clause.getTerm());
+        
     }
 
     /**
@@ -666,38 +684,46 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final ReconstructedQuery createQuery(final String queryString) {
 
         LOG.debug("createQuery(" + queryString + ')');
+        
+        if(datamodel.getQuery().getQuery().getQueryString().equalsIgnoreCase(queryString)){
+            
+            // return original query and engine
+            return new ReconstructedQuery(datamodel.getQuery().getQuery(), context.getTokenEvaluationEngine());
+            
+        }else{
 
-        final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
-                TokenEvaluationEngine.Context.class,
-                context,
-                new BaseContext() {
-                    public String getQueryString() {
-                        return queryString;
-                    }
+            final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
+                    TokenEvaluationEngine.Context.class,
+                    context,
+                    new BaseContext() {
+                        public String getQueryString() {
+                            return queryString;
+                        }
 
-                    public Site getSite() {
-                        return datamodel.getSite().getSite();
+                        public Site getSite() {
+                            return datamodel.getSite().getSite();
+                        }
                     }
+            );
+
+            // This will among other things perform the initial fast search
+            // for textual analysis.
+            final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+
+            // queryStr parser
+            final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
+                public TokenEvaluationEngine getTokenEvaluationEngine() {
+                    return engine;
                 }
-        );
+            });
 
-        // This will among other things perform the initial fast search
-        // for textual analysis.
-        final TokenEvaluationEngine engine = new TokenEvaluationEngineImpl(tokenEvalFactoryCxt);
+            try {
+                return new ReconstructedQuery(parser.getQuery(), engine);
 
-        // queryStr parser
-        final QueryParser parser = new QueryParserImpl(new AbstractQueryParserContext() {
-            public TokenEvaluationEngine getTokenEvaluationEngine() {
-                return engine;
+            } catch (TokenMgrError ex) {
+                // Errors (as opposed to exceptions) are fatal.
+                LOG.fatal(ERR_PARSING, ex);
             }
-        });
-
-        try {
-            return new ReconstructedQuery(parser.getQuery(), engine);
-
-        } catch (TokenMgrError ex) {
-            // Errors (as opposed to exceptions) are fatal.
-            LOG.fatal(ERR_PARSING, ex);
         }
         return null;
     }
@@ -932,7 +958,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @todo add correct handling of NotClause and AndNotClause.
      * This also needs to be added to the query builder visitor above.
-     * @todo move to an abstract fast search command?
+     * @todo design for polymorphism and push out fast specifics to appropriate subclass.
      */
     private final class FilterVisitor extends AbstractReflectionVisitor {
 
@@ -979,6 +1005,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
             final Map<String, String> fieldFilters = getSearchConfiguration().getFieldFilters();
             if ("site".equals(field)) {
+                // XXX fast specific stuff. push down to fast command.
                 // site fields do not accept quotes
                 term = term.replaceAll("\"", "");
             }

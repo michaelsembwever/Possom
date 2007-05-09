@@ -35,20 +35,6 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
         super.modifyQuery(query);
         final ClusteringEspFastCommandConfig config = getSearchConfiguration();
 
-        // Because of a bug in FAST ESP5 related to collapsing and sorting, we must use sort direcetion,
-        // and not the +fieldname syntax
-        final StringDataObject sort = datamodel.getParameters().getValue(config.getUserSortParameter());
-        String sortType;
-        if (sort != null) {
-            sortType = sort.getString();
-        } else {
-            sortType = config.getDefaultSort();
-        }
-        if (!sortType.equals("relevance")) {
-            query.setParameter(BaseParameter.SORT_BY, config.getSortField());
-            query.setParameter(BaseParameter.SORT_DIRECTION, sortType);
-        }
-
         final StringDataObject clusterId = datamodel.getParameters().getValue(config.getClusterIdParameter());
         if (clusterId == null) {
             LOG.debug("--- Modifying query. ---");

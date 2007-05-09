@@ -151,7 +151,7 @@ public final class SiteLocatorFilter implements Filter {
 
                     // This URL does not belong to search-front-html
                     final Site site = (Site) req.getAttribute(Site.NAME_KEY);
-                    String url = "";
+                    final String url;
 
                     if (resource.startsWith(PUBLISH_DIR)) { // publishing system
                         // the publishing system is responsible for this.
@@ -170,7 +170,7 @@ public final class SiteLocatorFilter implements Filter {
 
                         if (url == null) {
                             res.sendError(HttpServletResponse.SC_NOT_FOUND);
-                            url = null;
+                            
                             if(resource.endsWith(".css")){
                                 LOG.info(ERR_NOT_FOUND + resource);
                             }else{
@@ -180,6 +180,10 @@ public final class SiteLocatorFilter implements Filter {
                     }
 
                     if (url != null) {
+                        // Cache the client-resource redirects on a short (session-equivilant) period
+                        res.setHeader("Cache-Control", "Public"); 
+                        res.setDateHeader("Expires", System.currentTimeMillis() + 1000*60*10); // ten minutes
+                        // send the redirect to where the resource really resides
                         res.sendRedirect(url);
                         LOG.trace(resource + DEBUG_REDIRECTING_TO + url);
                     }
@@ -404,7 +408,7 @@ public final class SiteLocatorFilter implements Filter {
 
     }
 
-     private static DataModel getDataModel(final ServletRequest request){
+    private static DataModel getDataModel(final ServletRequest request){
 
         DataModel datamodel = null;
         if(request instanceof HttpServletRequest){
@@ -420,7 +424,7 @@ public final class SiteLocatorFilter implements Filter {
     private static void logAccess(final ServletRequest request){
        
         if(request instanceof HttpServletRequest){  
-            HttpServletRequest req = (HttpServletRequest)request;
+            final HttpServletRequest req = (HttpServletRequest)request;
             ACCESS_LOG.info(req.getRequestURI() + (null != req.getQueryString() ? '?' + req.getQueryString() : ""));
             
         }else{

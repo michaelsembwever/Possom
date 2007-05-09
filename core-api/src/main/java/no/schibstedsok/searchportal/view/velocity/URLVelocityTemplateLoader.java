@@ -1,3 +1,4 @@
+// Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.view.velocity;
 
 import java.io.ByteArrayInputStream;
@@ -9,7 +10,6 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -19,8 +19,8 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.apache.log4j.Logger;
+
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -36,6 +36,8 @@ import org.w3c.dom.Element;
  * 
  */
 public class URLVelocityTemplateLoader extends URLResourceLoader {
+    
+    private static final Logger LOG = Logger.getLogger(URLVelocityTemplateLoader.class);
 
 	private static final String DIV_TAG = "div";
 	private static final String STYLE_ATTRIB = "style";
@@ -47,157 +49,171 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 	/**
 	 * getResourceStream() loads resource from url. Then add border around the
 	 * template so its easy to see wich templates are loaded.
-	 */
+	 * @throws org.apache.velocity.exception.ResourceNotFoundException 
+     */
 	@Override
-	public InputStream getResourceStream(String url)
-			throws ResourceNotFoundException {
-			// Enable/disable velocity debug
-		boolean VELOCITY_DEBUG = "true".equals(System.getProperty("VELOCITY_DEBUG"));
-		    // Activate debug (Show borders/debuginfo)
-		boolean VELOCITY_DEBUG_ON ="true".equals(System.getProperty("VELOCITY_DEBUG_ON"));
-		    // Onmouseover style
-		boolean STYLE_ONMOUSEOVER ="onmouseover".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
-		   // Silent style
-		boolean STYLE_SILENT ="silent".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
-		   // Indicates if we found file local.(Can be edited)
+	public InputStream getResourceStream(final String url) throws ResourceNotFoundException {
+        
+        // Enable/disable velocity debug
+		final boolean velocityDebug = Boolean.getBoolean("VELOCITY_DEBUG");
+        // Activate debug (Show borders/debuginfo)
+		final boolean velocityDebugOn = Boolean.getBoolean("VELOCITY_DEBUG_ON");
+        // Onmouseover style
+		final boolean styleOnmouseover ="onmouseover".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
+        // Silent style
+		final boolean styleSilent ="silent".equals(System.getProperty("VELOCITY_DEBUG_STYLE"));
+        // Indicates if we found file local.(Can be edited)
 		boolean foundLocal = false;
 			
-		if(!VELOCITY_DEBUG) {
-			return super.getResourceStream(url);
-		}
+		if(velocityDebug) {
 		
-		final String templatesDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");		
-		InputStream stream = null;
+            final String templatesDir = System.getProperty("VELOCITY_DEVELOP_BASEDIR");		
 
-        // Get the file equivalece of the URL by removing the host as well as the web application context path.
-        String filePath = url.replaceAll("http://(.*?)/[^/]+/", "/").replace("localhost/", "");
-		File file = getFile(templatesDir, filePath);
+            // Get the file equivalece of the URL by removing the host as well as the web application context path.
+            final String filePath = url.replaceAll("http://(.*?)/[^/]+/", "/").replace("localhost/", "");
+            final File file = getFile(templatesDir, filePath);
 
-		if(file.exists()) {
-			foundLocal = true;
-			stream = getStream(file);
-		}else{
-			stream = super.getResourceStream(url);
-		}
-			// If debug is not currently activated.
-		if(!VELOCITY_DEBUG_ON) {
-			return stream;
-		}
-			// If rss, means the output is xml. 
-		if (url.indexOf("rss") != -1) {
-			return stream;
-		}
+            foundLocal = file.exists();
+            
+            final InputStream stream = file.exists() ? getStream(file) : super.getResourceStream(url);
 
-		StringBuffer streamBuffer = new StringBuffer();
+            if(velocityDebugOn && -1 == url.indexOf("rss")){
+                
+                final StringBuilder streamBuffer = new StringBuilder();
 
-		try {
-			int c;
-			while((c = stream.read()) != -1) {
-				streamBuffer.append((char)c);
-			}
-		} catch (IOException e) {
-			throw new ResourceNotFoundException(e.getMessage());
-		}
+                try {
+                    
+                    for(int c = stream.read(); c != -1; c = stream.read()) {
+                        streamBuffer.append((char)c);
+                    }
 
-		// Create html 
-		StringBuffer template= new  StringBuffer();
-		template.append("\n");
-		template.append(streamBuffer);
-		template.append("\n");
+                } catch (IOException e) {
+                    throw new ResourceNotFoundException(e.getMessage());
+                }
 
-		StringWriter writer = new StringWriter();
-		Document doc = createDocument();
-		
-		Element div = doc.createElement(DIV_TAG);
-		
-		if(STYLE_ONMOUSEOVER) {
-			div.setAttribute("onmouseover", ONMOUSEOVER);
-			div.setAttribute("onmouseout", ONMOUSEOUT);
-		}else if(STYLE_SILENT){
-				// Just print title as popup.
-		}else {
-			Element divHeader = doc.createElement(DIV_TAG);
-			divHeader.setAttribute(STYLE_ATTRIB, STYLE_HEADING);
-			divHeader.appendChild(doc.createTextNode(filePath));
-			div.appendChild(divHeader);
-			div.setAttribute("style", STYLE_BORDER);
-		}
-		
-		div.setAttribute("title", file.getName() + (foundLocal ? "(Editable)" : "(Not editable)"));		
-		div.appendChild(doc.createCDATASection(template.toString()));
-		doc.appendChild(div);
+                // Create html 
+                final StringBuilder template= new  StringBuilder();
+                template.append("\n");
+                template.append(streamBuffer);
+                template.append("\n");
 
-		internalWriteDocument(doc, writer);
-	
-		String result = writer.getBuffer().toString();
-		result = result.replace("<![CDATA[", "");
-		result = result.replace("]]>", "");
+                final StringWriter writer = new StringWriter();
+                final Document doc = createDocument();
 
-		return new ByteArrayInputStream(result.getBytes());
+                final Element div = doc.createElement(DIV_TAG);
+
+                if(styleOnmouseover) {
+
+                    div.setAttribute("onmouseover", ONMOUSEOVER);
+                    div.setAttribute("onmouseout", ONMOUSEOUT);
+
+                }else if(styleSilent){
+
+                        // Just print title as popup.
+                }else {
+
+                    final Element divHeader = doc.createElement(DIV_TAG);
+                    divHeader.setAttribute(STYLE_ATTRIB, STYLE_HEADING);
+                    divHeader.appendChild(doc.createTextNode(filePath));
+                    div.appendChild(divHeader);
+                    div.setAttribute("style", STYLE_BORDER);
+                }
+
+                div.setAttribute("title", file.getName() + (foundLocal ? "(Editable)" : "(Not editable)"));		
+                div.appendChild(doc.createCDATASection(template.toString()));
+                doc.appendChild(div);
+
+                internalWriteDocument(doc, writer);
+
+                final String result = writer.getBuffer().toString()
+                        .replace("<![CDATA[", "")
+                        .replace("]]>", "");
+
+                return new ByteArrayInputStream(result.getBytes());
+                
+            }else{
+                // If debug is not currently activated OR If rss, means the output is xml. 
+                return stream;
+            }
+        }
+		return super.getResourceStream(url);
 	}
 
 	/*
 	 * Create file object
 	 */
-	private File getFile(String templatesDir, String filePath) {
-		if(templatesDir == null) {
-			return new File("null" + filePath);
-		}
-		String paths[] = templatesDir.split(",");
-		
-		for(String p : paths) {
-			File file = new File(p + filePath);
-			if(file.exists()) {
-				return file;
-			}
-		}
-		return new File(filePath);
+	private File getFile(final String templatesDir, final String filePath) {
+        
+        File result = null;
+        
+		if(null == templatesDir) {
+			result = new File("null" + filePath);
+            
+		}else{
+        		
+            for(String p : templatesDir.split(",")) {
+
+                final File file = new File(p + filePath);
+                if(file.exists()) {
+                    result = file;
+                    break;
+                }
+            }
+        }
+        
+		return null == result ? new File(filePath) : result;
 	}
 
 	/*
 	 * Get stream from file of or url.
 	 */
-	private InputStream getStream(File file) {
+	private InputStream getStream(final File file) {
 
 		if (file.exists()) {
+            
 			try {
 				return new FileInputStream(file);
+                
 			} catch (FileNotFoundException ignore) {
-				throw new RuntimeException("File exist but filenotfoundexception thrown: " + ignore);
+				throw new IllegalStateException("File exist but filenotfoundexception thrown: " + ignore);
 			}
+            
 		} else {
 			throw new IllegalArgumentException("File does not exist");
 		}
 	}
+    
     // -- Write the document to the writer
-    private void internalWriteDocument(Document d, Writer w) {
-        DOMSource source = new DOMSource(d);
-        StreamResult result = new StreamResult(w);
+    private void internalWriteDocument(final Document d, final Writer w) {
+        
+        final DOMSource source = new DOMSource(d);
+        final StreamResult result = new StreamResult(w);
 
-        TransformerFactory factory = TransformerFactory.newInstance();
-        Transformer transformer;
+        final TransformerFactory factory = TransformerFactory.newInstance();
+        
         try {
-            transformer = factory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION,
-                    "yes");
+            final Transformer transformer = factory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.transform(source, result);
+            
         } catch (TransformerConfigurationException e) {
             throw new RuntimeException("Xml Parser: " + e);
+            
         } catch (TransformerException ignore) {
+            LOG.debug("Ingoring the following ", ignore);
         }
     }
     
     // -- Create a DOM document
     private Document createDocument() {
-        DocumentBuilderFactory docFactory = DocumentBuilderFactory
-                .newInstance();
-        DocumentBuilder builder = null;
+        
+        final DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+
         try {
-            builder = docFactory.newDocumentBuilder();
+            return docFactory.newDocumentBuilder().newDocument();
+            
         } catch (ParserConfigurationException e) {
             throw new RuntimeException(e);
         }
-        Document doc = builder.newDocument();
-        return doc;
     }
 }

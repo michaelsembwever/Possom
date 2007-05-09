@@ -265,8 +265,11 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
     private void collectModifier(String navigatorKey, IQueryResult result, FastSearchResult searchResult) {
 
         final Navigator nav = navigatedTo.get(navigatorKey);
+        INavigator navigator = null;
 
-        INavigator navigator = result.getNavigator(nav.getName());
+        if (result != null) {
+            navigator = result.getNavigator(nav.getName());
+        }
 
         if (navigator != null) {
 
@@ -298,6 +301,9 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
                         break;
                     case MONTH_YEAR:
                         Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.MONTH_YEAR);
+                        break;
+                    case YEAR_MONTH:
+                        Collections.sort(searchResult.getModifiers(navigatorKey), ModifierDateComparator.YEAR_MONTH);
                         break;
                     case NONE:
                         // Use the soting the index returns

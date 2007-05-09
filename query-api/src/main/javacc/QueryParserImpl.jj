@@ -101,7 +101,7 @@ TOKEN : { <QUOTED_WORD: "\"" (<WORD>|(<WORD_SEPARATOR>)+)* "\""> }
     | <#PHONE_MIDDLE: ((" ")*<PHONE_SYMBOL>(" ")*)|(" ")+>
     | <#PHONE_SYMBOL: (".")|("-")|("/")>
     | <#WORD_SYMBOL_PREFIX: (".")|("<")|("=")|(">")>
-    | <#WORD_SYMBOL_MIDDLE: (".")|("-")|("_")>
+    | <#WORD_SYMBOL_MIDDLE: (".")|("-")|("_")|("+")>
     | <#WORD_SEPARATOR: [ // just a copy of the SKIP declaration.
             " ", "!", 
             "\u0023"-"\u0040",
