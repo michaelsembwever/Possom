@@ -11,38 +11,55 @@
 package no.schibstedsok.searchportal.view.velocity;
 
 import org.apache.log4j.Logger;
-import org.apache.velocity.runtime.directive.Directive;
-import org.apache.velocity.runtime.parser.node.Node;
-import org.apache.velocity.runtime.parser.Token;
 import org.apache.velocity.context.InternalContextAdapter;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.exception.ParseErrorException;
 import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.runtime.directive.Directive;
+import org.apache.velocity.runtime.parser.Token;
+import org.apache.velocity.runtime.parser.node.Node;
 
-import java.io.Writer;
 import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
+import java.io.Writer;
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 
 /**
- *
  * A velocity directive to format newsnavigator date
- * 
- * Newsdate comes from the fastnavigator in two forms:
+ * <p/>
+ * Newsdate comes from the fastnavigator in four forms:
  * 1. 10-2006     -> oktober 2006
- * 2. 10-24-2006  -> 10. oktober 2006
- *
+ * 2. 24-10-2006  -> 24. oktober 2006
+ * 3. 2006-10     -> oktober 2006
+ * 4. 2006-10-24  -> 24. oktober 2006
+ * <p/>
  * if 'newsdateOnly' navigator, we shuold check if the date is today or yesterday
- *
  */
 public final class DateFormattingDirective extends Directive {
-    
+    private static DateFormatSymbols formatSymbols = new DateFormatSymbols();
+
+    static {
+        // Default symbols are all lowercase for "no", so we have to set new ones.
+        formatSymbols.setMonths(new String[]{"Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"});
+    }
+
+    private static SimpleDateFormat shortFormatter = new SimpleDateFormat("MMMMM yyyy", formatSymbols);
+    private static SimpleDateFormat longFormatter = new SimpleDateFormat("d. MMMMM yyyy", formatSymbols);
+
     private static final Logger LOG = Logger.getLogger(DateFormattingDirective.class);
 
     private static final String NAME = "dateFormatting";
+
+    private static SimpleDateFormat formOneParser = new SimpleDateFormat("MM-yyyy");
+    private static SimpleDateFormat formTwoParser = new SimpleDateFormat("dd-MM-yyyy");
+    private static SimpleDateFormat formThreeParser = new SimpleDateFormat("yyyy-MM");
+    private static SimpleDateFormat formFourParser = new SimpleDateFormat("yyyy-MM-dd");
+
 
     /**
      * {@inheritDoc}
@@ -69,42 +86,18 @@ public final class DateFormattingDirective extends Directive {
         }
 
         final String input = node.jjtGetChild(0).value(context).toString();
-        final String navName = node.jjtGetChild(1).value(context).toString();        
-        
-        final SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        Map<String, String> map = new HashMap<String, String>();
-        map.put("01", "Januar");
-        map.put("02", "Februar");
-        map.put("03", "Mars");
-        map.put("04", "April");
-        map.put("05", "Mai");
-        map.put("06", "Juni");
-        map.put("07", "Juli");
-        map.put("08", "August");
-        map.put("09", "September");
-        map.put("10", "Oktober");
-        map.put("11", "November");
-        map.put("12", "Desember");
-        
-        String fDate = "";
-        final Date today = new Date();
-        long time = today.getTime();
-        time -= 24*60*60*1000;
-        final Date yesterday = new Date(time);
-        String sToday = formatter.format(today);
-        String sYesterday = formatter.format(yesterday);                        
-        
-        if (sToday.equals(input) && "newsdateOnly".equals(navName))
-            fDate = "I dag";
-        else if (sYesterday.equals(input) && "newsdateOnly".equals(navName))
-            fDate = "I g&#229;r"; 
-        else if (input.length() == 7)
-            fDate = map.get(input.substring(0,2)) + " " + input.substring(3,7);
-        else if (input.length() == 10)
-            fDate = input.substring(0, 2) + ". " + map.get(input.substring(3,5)).toLowerCase() + " " + input.substring(6,10);
-        else
-            fDate = input;    
 
+        String navName = null;
+        if (node.jjtGetNumChildren() > 1) {
+            navName = node.jjtGetChild(1).value(context).toString();
+        }
+
+        String fDate = input;
+        try {
+            fDate = formatDate(input, navName);
+        } catch (ParseException e) {
+            LOG.error("Could not parse date", e);
+        }
         writer.write(fDate);
 
         final Token lastToken = node.getLastToken();
@@ -115,5 +108,72 @@ public final class DateFormattingDirective extends Directive {
 
         return true;
     }
-    
+
+    protected String formatDate(String input, String navName) throws ParseException {
+        if (input.substring(2, 3).equals("-")) {
+            // Form one or two
+            if (input.length() == 10) {
+                return formatFormTwo(input, "newsdateOnly".equals(navName));
+            } else {
+                return formatFormOne(input);
+            }
+        } else {
+            // From three or four
+            if (input.length() == 10) {
+                return formatFormFour(input, "newsdateOnly".equals(navName));
+            } else {
+                return formatFormThree(input);
+            }
+        }
+    }
+
+    protected String formatFormOne(String input) throws ParseException {
+        // 1. 10-2006     -> oktober 2006
+        return shortFormatter.format(formOneParser.parse(input));
+    }
+
+    protected String formatFormTwo(String input, boolean newsDateOnly) throws ParseException {
+        // 2. 24-10-2006  -> 24. oktober 2006
+        Date parsedDate = formTwoParser.parse(input);
+        return longFormat(parsedDate, newsDateOnly);
+    }
+
+    protected String formatFormThree(String input) throws ParseException {
+        // 3. 2006-10     -> oktober 2006
+        return shortFormatter.format(formThreeParser.parse(input));
+    }
+
+    protected String formatFormFour(String input, boolean newsDateOnly) throws ParseException {
+        Date parsedDate = formFourParser.parse(input);
+        return longFormat(parsedDate, newsDateOnly);
+    }
+
+    private String longFormat(Date parsedDate, boolean newsDateOnly) {
+        if (newsDateOnly) {
+            if (isToday(parsedDate)) {
+                return "I dag";
+            } else if (isYesterday(parsedDate)) {
+                return "I g&#229;r";
+            }
+        }
+        return longFormatter.format(parsedDate);
+    }
+
+    private boolean isToday(Date parsedDate) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        int todayDay = cal.get(Calendar.DAY_OF_YEAR);
+        int year = cal.get(Calendar.YEAR);
+        cal.setTime(parsedDate);
+        return todayDay == cal.get(Calendar.DAY_OF_YEAR) && year == cal.get(Calendar.YEAR);
+    }
+
+    private boolean isYesterday(Date parsedDate) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        cal.add(Calendar.DAY_OF_YEAR, -1);
+        int yesterdayDay = cal.get(Calendar.DAY_OF_YEAR);
+        int year = cal.get(Calendar.YEAR);
+        cal.setTime(parsedDate);
+        return yesterdayDay == cal.get(Calendar.DAY_OF_YEAR) && year == cal.get(Calendar.YEAR);
+    }
+
 }
