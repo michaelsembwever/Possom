@@ -155,10 +155,11 @@ public final class SearchServlet extends HttpServlet {
                 // determine the c parameter. default is 'd' unless there exists a page parameter when it becomes 'i'.
                 final StringDataObject c = parametersDO.getValue("c");
                 final StringDataObject page = parametersDO.getValue("page");
+                final String defaultSearchTabKey = datamodel.getSite().getSiteConfiguration().getProperty(SiteConfiguration.DEFAULTTAB_KEY);
                 final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
                         ? c.getString()
-                        : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : "d";
-
+                        : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : null != defaultSearchTabKey && !defaultSearchTabKey.equals("") ? defaultSearchTabKey: "c";
+                 LOG.info("searchTabKey:" +searchTabKey);
                 final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
 
                 if (searchTab == null) {

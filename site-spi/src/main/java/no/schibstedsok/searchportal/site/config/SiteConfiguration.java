@@ -42,6 +42,8 @@ public final class SiteConfiguration implements SiteKeyedFactory {
      */
     public static final String IS_SITESEARCH_KEY = "site.issitesearch";
 
+    public static final String DEFAULTTAB_KEY = "site.defaultTab";
+    
     public interface Context extends BaseContext, PropertiesContext, SiteContext {
     }
 
