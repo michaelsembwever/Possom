@@ -90,8 +90,8 @@ public class GeoSearchUtil {
             return false;
         }
         
-        if (requestParameters.getValue(MIN_X).getString() == null || requestParameters.getValue(MAX_X).getString() == null || requestParameters.getValue(MIN_Y).getString() == null
-                || requestParameters.getValue(MAX_Y).getString() == null) {
+        if (requestParameters.getValue(MIN_X).getString().length() == 0 || requestParameters.getValue(MAX_X).getString().length() == 0 || requestParameters.getValue(MIN_Y).getString().length() == 0 
+                || requestParameters.getValue(MAX_Y).getString().length() == 0) {
             return false;
         }
         return true;
