@@ -62,7 +62,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
         // important that the key argument is unique to this object.
         final String key = field != null
             ? field + ':' + term
-            : term;
+            : null != term ? term : "";
 
         // check weak reference cache of immutable wordClauses here.
         // no need to synchronise, no big lost if duplicate identical objects are created and added over each other
@@ -83,7 +83,7 @@ public abstract class AbstractLeafClause extends AbstractClause implements LeafC
                     );
                     // use the constructor...
                     clause = constructor.newInstance(
-                        term,
+                        null != term ? term : "",
                         field,
                         engine.getState().getKnownPredicates(),
                         engine.getState().getPossiblePredicates()
