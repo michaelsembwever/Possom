@@ -471,7 +471,7 @@ public final class SiteLocatorFilter implements Filter {
         
         ACCESS_LOG.info("<request>"
                 + "<url method=\"" + method + "\">" + StringEscapeUtils.escapeXml(url.toString()) + "</url>"
-                + "<referer>" + StringEscapeUtils.escapeXml(referer) + "</referer>"
+                + (null != referer ? "<referer>" + StringEscapeUtils.escapeXml(referer) + "</referer>" : "")
                 + "<browser ipaddress=\"" + ip + "\">" + StringEscapeUtils.escapeXml(userAgent) + "</browser>"
                 + "<user id=\"" + sesamId + "\">" + sesamUser + "</user>"
                 + "</request>");
@@ -566,7 +566,7 @@ public final class SiteLocatorFilter implements Filter {
         @Override
         public void sendRedirect(final String arg0) throws IOException {
             super.sendRedirect(arg0);
-            this.status = HttpServletResponse.SC_TEMPORARY_REDIRECT;
+            this.status = HttpServletResponse.SC_FOUND;
         }
         
         public int getStatus(){

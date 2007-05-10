@@ -34,6 +34,7 @@ import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.util.TradeDoubler;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -52,6 +53,7 @@ public final class SearchServlet extends HttpServlet {
     private static final long serialVersionUID = 3068140845772756438L;
 
     private static final Logger LOG = Logger.getLogger(SearchServlet.class);
+    private static final Logger ACCESS_LOG = Logger.getLogger("no.schibstedsok.Access");
     private static final Logger STATISTICS_LOG = Logger.getLogger("no.schibstedsok.Statistics");
 
     private static final String ERR_MISSING_TAB = "No existing implementation for tab ";
@@ -104,6 +106,12 @@ public final class SearchServlet extends HttpServlet {
             final HttpServletResponse response)
                 throws ServletException, IOException {
 
+        final String url = request.getRequestURI() 
+                + (null != request.getQueryString() ? '?' + request.getQueryString() : "");
+        
+        ACCESS_LOG.info("<search-servlet>"
+                + "<real-url>" + StringEscapeUtils.escapeXml(url) + "</real-url>"
+                + "</search-servlet>");
 
         final DataModel datamodel = (DataModel) request.getSession().getAttribute(DataModel.KEY);
         final ParametersDataObject parametersDO = datamodel.getParameters();
