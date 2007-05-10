@@ -64,10 +64,10 @@ public class GeoSearchUtil {
         final LatLong llMin = UTM.utmToLatLong(utmMin, ReferenceEllipsoid.WGS84);
         final LatLong llMax = UTM.utmToLatLong(utmMax, ReferenceEllipsoid.WGS84);
 
-        final double llMinX = llMin.longitudeValue(SI.RADIAN);
-        final double llMaxX = llMax.longitudeValue(SI.RADIAN);
-        final double llMinY = llMin.latitudeValue(SI.RADIAN);
-        final double llMaxY = llMax.latitudeValue(SI.RADIAN);
+        final double llMinX = llMin.getOrdinate(1);
+        final double llMaxX = llMax.getOrdinate(1);
+        final double llMinY = llMin.getOrdinate(0);
+        final double llMaxY = llMax.getOrdinate(0);
 
         LOG.debug("(" + minX + "," + minY + ") (" + llMinX + "," + llMinY + ")");
         LOG.debug("(" + maxX + "," + maxY + ") (" + llMaxX + "," + llMaxY + ")");
@@ -77,6 +77,8 @@ public class GeoSearchUtil {
         return center;
 
     }
+    
+  
     
     /**
      * Responsible for checking if a ParameterDataObject is a geosearch.
