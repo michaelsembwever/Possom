@@ -78,7 +78,7 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
         
         LOG.debug("center : " + center);
         //TODO: calculate this.
-        final String restrictRadius = "10";
+        final String restrictRadius = "50";
 
         params.setParameter(new SearchParameter("qtf_geosearch:unit", GeoSearchUtil.RADIUS_MEASURE_UNIT_TYPE));
         params.setParameter(new SearchParameter("qtf_geosearch:radius", restrictRadius));
