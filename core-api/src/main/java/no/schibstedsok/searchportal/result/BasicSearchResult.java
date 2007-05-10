@@ -3,10 +3,10 @@ package no.schibstedsok.searchportal.result;
 
 import java.util.Map;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
-import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
-import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.HashMap;
 import org.apache.log4j.Logger;
@@ -23,10 +23,11 @@ public class BasicSearchResult implements SearchResult {
     /** TODO comment me. **/
     private int hitCount = -1;
     private final List<SearchResultItem> results = new ArrayList<SearchResultItem>();
-    private final Map<String,List<SpellingSuggestion>> spellingSuggestions = new HashMap<String,List<SpellingSuggestion>>();
-    private final List<QuerySuggestion> querySuggestions = new ArrayList<QuerySuggestion>();
+    private final Map<String,List<WeightedSuggestion>> spellingSuggestions = new HashMap<String,List<WeightedSuggestion>>();
+    private final List<Suggestion> querySuggestions = new ArrayList<Suggestion>();
 
     private final Map<String, String> fields = new HashMap();
+    private List relevantQueries = new ArrayList();    
 
     /** TODO comment me. **/
     public BasicSearchResult(final SearchCommand command) {
@@ -54,12 +55,13 @@ public class BasicSearchResult implements SearchResult {
     }
 
     /** {@inheritDoc} **/
-    public void addSpellingSuggestion(final SpellingSuggestion suggestion) {
+    public void addSpellingSuggestion(final WeightedSuggestion suggestion) {
+        
         if (spellingSuggestions.containsKey(suggestion.getOriginal())) {
-            final List<SpellingSuggestion> exising = spellingSuggestions.get(suggestion.getOriginal());
+            final List<WeightedSuggestion> exising = spellingSuggestions.get(suggestion.getOriginal());
             exising.add(suggestion);
         } else {
-            final List<SpellingSuggestion> existingSuggestions = new ArrayList<SpellingSuggestion>();
+            final List<WeightedSuggestion> existingSuggestions = new ArrayList<WeightedSuggestion>();
             existingSuggestions.add(suggestion);
             spellingSuggestions.put(suggestion.getOriginal(), existingSuggestions);
         }
@@ -70,17 +72,27 @@ public class BasicSearchResult implements SearchResult {
     }
 
     /** {@inheritDoc} **/
-    public Map<String,List<SpellingSuggestion>> getSpellingSuggestions() {
+    public List<WeightedSuggestion> getSpellingSuggestions() {
+        
+        final List<WeightedSuggestion> result = new ArrayList<WeightedSuggestion>();
+        for(List<WeightedSuggestion> v : spellingSuggestions.values()){
+            result.addAll(v);
+        }
+        return result;
+    }
+    
+    /** {@inheritDoc} **/
+    public Map<String,List<WeightedSuggestion>> getSpellingSuggestionsMap() {
         return spellingSuggestions;
     }
 
     /** {@inheritDoc} **/
-    public List<QuerySuggestion> getQuerySuggestions() {
+    public Collection<Suggestion> getQuerySuggestions() {
        return querySuggestions;
     }
 
     /** {@inheritDoc} **/
-    public void addQuerySuggestion(final QuerySuggestion query) {
+    public void addQuerySuggestion(final Suggestion query) {
         querySuggestions.add(query);
     }
 
@@ -97,6 +109,31 @@ public class BasicSearchResult implements SearchResult {
     /** {@inheritDoc} **/
     public String getField(final String name){
         return fields.get(name);
+    }
+    
+
+    /**
+     * 
+     * @param query 
+     */
+    public void addRelevantQuery(final WeightedSuggestion query) {
+        relevantQueries.add(query);
+    }
+
+    /**
+     * Get the relevantQueries.
+     *
+     * @return the relevantQueries.
+     */
+    public List<WeightedSuggestion> getRelevantQueries() {
+        
+        Collections.sort(relevantQueries);
+        return relevantQueries;
+    }
+
+    public Collection<String> getFieldNames() {
+        
+        return fields.keySet();
     }
 }
 

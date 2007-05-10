@@ -1,15 +1,18 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
+import no.schibstedsok.searchportal.result.SpellingSuggestion;
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
-import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.result.QuerySuggestion;
+import no.schibstedsok.searchportal.result.SpellingSuggestion;
 import org.apache.log4j.Logger;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.WeightedSuggestion;
 
 
 /**
@@ -50,22 +53,23 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
         final SearchResult result = cxt.getSearchResult();
         
+        final Map<String,List<WeightedSuggestion>> weightedSuggestionsMap
+                = ((BasicSearchResult)result).getSpellingSuggestionsMap();
+        
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Number of corrected terms are " + numberOfCorrectedTerms(result.getSpellingSuggestions()));
+            LOG.debug("Number of corrected terms are " + numberOfCorrectedTerms(weightedSuggestionsMap));
         }
 
         final int numberOfTermsInQuery = datamodel.getQuery().getQuery().getTermCount();
 
-        if (numberOfTermsInQuery >= config.getVeryLongQuery() 
-                && numberOfCorrectedTerms(result.getSpellingSuggestions()) > 1) {
+        if (numberOfTermsInQuery >= config.getVeryLongQuery() && numberOfCorrectedTerms(weightedSuggestionsMap) > 1) {
             
             result.getSpellingSuggestions().clear();
         }
 
-        for (Iterator<List<SpellingSuggestion>> terms = result.getSpellingSuggestions().values().iterator()
-                ; terms.hasNext();) {
+        for (Iterator<List<WeightedSuggestion>> terms = weightedSuggestionsMap.values().iterator(); terms.hasNext();) {
             
-            final List<SpellingSuggestion> suggestionList = terms.next();
+            final List<WeightedSuggestion> suggestionList = terms.next();
 
             Collections.sort(suggestionList);
 
@@ -75,11 +79,11 @@ public final class SpellingSuggestionChooser implements ResultHandler {
 
             if (numberOfTermsInQuery >= config.getLongQuery()) {
                 
-                if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 1) {
+                if (numberOfCorrectedTerms(weightedSuggestionsMap) == 1) {
                     
                     limitNumberOfSuggestions(suggestionList, config.getLongQueryMaxSuggestions());
                     
-                } else if (numberOfCorrectedTerms(result.getSpellingSuggestions()) == 2 
+                } else if (numberOfCorrectedTerms(weightedSuggestionsMap) == 2 
                             && numberOfTermsInQuery < config.getVeryLongQuery()) {
 
                     if (suggestionList.size() > 1) {
@@ -93,44 +97,47 @@ public final class SpellingSuggestionChooser implements ResultHandler {
             }
         }
 
-        final int numberOfCorrections = numberOfCorrectedTerms(result.getSpellingSuggestions());
+        final int numberOfCorrections = numberOfCorrectedTerms(weightedSuggestionsMap);
 
         final String newQuery = datamodel.getQuery().getString().toLowerCase(datamodel.getSite().getSite().getLocale());
 
         if (numberOfCorrections == 1) {
 
-            for (List<SpellingSuggestion> spellingSuggestions : result.getSpellingSuggestions().values()) {
-                for (SpellingSuggestion suggestion : spellingSuggestions) {
+            for (List<WeightedSuggestion> spellingSuggestions : weightedSuggestionsMap.values()) {
+                for (WeightedSuggestion suggestion : spellingSuggestions) {
                     String query = newQuery;
                     String displayQuery = newQuery;
                     query = query.replaceAll(suggestion.getOriginal(), suggestion.getSuggestion());
                     displayQuery = displayQuery
                             .replaceAll(suggestion.getOriginal(), "<b>" + suggestion.getSuggestion() + "</b>");
-                    result.addQuerySuggestion(new QuerySuggestion(query, displayQuery));
+                    result.addQuerySuggestion(new QuerySuggestion(suggestion.getOriginal(), query, displayQuery));
                 }
             }
         } else if (numberOfCorrections == 2 && numberOfTermsInQuery < config.getVeryLongQuery() ) {
+            
+            String original = newQuery;
             String query = newQuery;
             String displayQuery = newQuery;
 
-            for (List<SpellingSuggestion> spellingSuggestions : result.getSpellingSuggestions().values()) {
-                for (SpellingSuggestion spellingSuggestion : spellingSuggestions) {
+            for (List<WeightedSuggestion> spellingSuggestions : weightedSuggestionsMap.values()) {
+                for (WeightedSuggestion spellingSuggestion : spellingSuggestions) {
+                    original = spellingSuggestion.getOriginal();
                     query = query.replaceAll(spellingSuggestion.getOriginal(), spellingSuggestion.getSuggestion());
                     displayQuery = displayQuery.replaceAll(
                             spellingSuggestion.getOriginal(), 
                             "<b>" + spellingSuggestion.getSuggestion() + "</b>");
                 }
             }
-            result.addQuerySuggestion(new QuerySuggestion(query, displayQuery));
+            result.addQuerySuggestion(new QuerySuggestion(original, query, displayQuery));
         }
     }
 
-    private void removeAllIfOneIsNotMuchBetter(final List<SpellingSuggestion> suggestionList) {
+    private void removeAllIfOneIsNotMuchBetter(final List<WeightedSuggestion> suggestionList) {
         
-        final SpellingSuggestion best = suggestionList.get(0);
-        final SpellingSuggestion nextBest = suggestionList.get(1);
+        final WeightedSuggestion best = suggestionList.get(0);
+        final WeightedSuggestion nextBest = suggestionList.get(1);
 
-        if (best.getScore() < nextBest.getScore() + config.getMuchBetter()) {
+        if (best.getWeight() < nextBest.getWeight() + config.getMuchBetter()) {
             
             suggestionList.clear();
             
@@ -151,35 +158,35 @@ public final class SpellingSuggestionChooser implements ResultHandler {
         }
     }
 
-    private int numberOfCorrectedTerms(final Map<String, List<SpellingSuggestion>> spellingSuggestions) {
+    private int numberOfCorrectedTerms(final Map<String, List<WeightedSuggestion>> spellingSuggestions) {
         
         return spellingSuggestions.keySet().size();
     }
 
-    private void removeSuggestionsWithTooHighDifference(final List<SpellingSuggestion> suggestionList) {
+    private void removeSuggestionsWithTooHighDifference(final List<WeightedSuggestion> suggestionList) {
         
         int lastScore = -1;
 
-        for (final Iterator<SpellingSuggestion> iterator = suggestionList.iterator(); iterator.hasNext();) {
-            final SpellingSuggestion suggestion = iterator.next();
+        for (final Iterator<WeightedSuggestion> iterator = suggestionList.iterator(); iterator.hasNext();) {
+            final WeightedSuggestion suggestion = iterator.next();
 
-            if (suggestion.getScore() + config.getMaxDistance() < lastScore) {
+            if (suggestion.getWeight() + config.getMaxDistance() < lastScore) {
                 iterator.remove();
                 LOG.debug("Suggestion " + suggestion + " because difference too high");
 
             } else {
-                lastScore = suggestion.getScore();
+                lastScore = suggestion.getWeight();
             }
         }
     }
 
-    private void limitNumberOfSuggestions(final List<SpellingSuggestion> suggestionList, final int limit) {
+    private void limitNumberOfSuggestions(final List<WeightedSuggestion> suggestionList, final int limit) {
         
         if (suggestionList.size() > limit) {
             final int numberToRemove = suggestionList.size() - limit;
 
             for (int i = 0; i < numberToRemove; i++) {
-                final SpellingSuggestion removed = suggestionList.remove(suggestionList.size() - 1);
+                final WeightedSuggestion removed = suggestionList.remove(suggestionList.size() - 1);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("Suggestion " + removed + " to reach maximum number of suggestions");
                 }
@@ -187,12 +194,12 @@ public final class SpellingSuggestionChooser implements ResultHandler {
         }
     }
 
-    private void removeSuggestionsWithTooLowScore(final List<SpellingSuggestion> suggestionList) {
+    private void removeSuggestionsWithTooLowScore(final List<WeightedSuggestion> suggestionList) {
         
-        for (final Iterator<SpellingSuggestion> suggestions = suggestionList.iterator(); suggestions.hasNext();) {
+        for (final Iterator<WeightedSuggestion> suggestions = suggestionList.iterator(); suggestions.hasNext();) {
             
-            final SpellingSuggestion suggestion = suggestions.next();
-            if (suggestion.getScore() < config.getMinScore()) {
+            final WeightedSuggestion suggestion = suggestions.next();
+            if (suggestion.getWeight() < config.getMinScore()) {
                 
                 suggestions.remove();
                 

@@ -20,6 +20,12 @@ public interface Suggestion extends Serializable{
      * 
      * @return 
      */
+    String getOriginal();
+    
+    /**
+     * 
+     * @return 
+     */
     String getSuggestion();
     
     /**

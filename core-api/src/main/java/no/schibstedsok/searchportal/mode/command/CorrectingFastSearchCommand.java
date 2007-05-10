@@ -8,16 +8,19 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import no.schibstedsok.searchportal.result.SpellingSuggestion;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.result.SpellingSuggestion;
 import org.apache.log4j.Logger;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.WeightedSuggestion;
 
 /**
  *
@@ -27,13 +30,12 @@ import java.util.Map;
  * are spelling suggestions available, correct the query and rerun the command.
  *
  * @author maek
+ * @version $Id$
  */
 public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchCommand {
 
-    private static final String ERR_CANNOT_CREATE_COMMAND =
-            "Unable to create command to rerun.";
-    private static final String RESULT_FIELD_CORRECTED_QUERY =
-            "autoCorrectedQuery";
+    private static final String ERR_CANNOT_CREATE_COMMAND = "Unable to create command to rerun.";
+    private static final String RESULT_FIELD_CORRECTED_QUERY = "autoCorrectedQuery";
 
     private static final Logger LOG = Logger.getLogger(CorrectingFastSearchCommand.class);
 
@@ -52,7 +54,8 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
     public SearchResult execute() {
 
         final SearchResult originalResult = super.execute();
-        final Map<String, List<SpellingSuggestion>> suggestions = originalResult.getSpellingSuggestions();
+        final Map<String, List<WeightedSuggestion>> suggestions 
+                = ((BasicSearchResult)originalResult).getSpellingSuggestionsMap();
 
         // Rerun command?
         // TODO Consider moving the isCorrectionEnabled() call after the
@@ -126,15 +129,15 @@ public abstract class CorrectingFastSearchCommand extends AdvancedFastSearchComm
     }
 
     private String correctQuery(
-            final Map<String, List<SpellingSuggestion>> suggestions,
+            final Map<String, List<WeightedSuggestion>> suggestions,
             String q) {
 
         // Query suggestions is returned in lowercase from Fast, including the keys that
         // maybe had mixed case. Lowers the case first to make the replacement work.
         q = q.toLowerCase();
 
-        for (final List<SpellingSuggestion> suggestionList : suggestions.values()) {
-            for (final SpellingSuggestion s : suggestionList) {
+        for (final List<WeightedSuggestion> suggestionList : suggestions.values()) {
+            for (final WeightedSuggestion s : suggestionList) {
                 q = q.replaceAll(s.getOriginal(), s.getSuggestion());
             }
         }

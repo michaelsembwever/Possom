@@ -4,10 +4,11 @@ package no.schibstedsok.searchportal.result;
 import java.util.Collection;
 
 /**
+ * @deprecated ResultItem is the replacement. migration in progress.
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Revision$</tt>
  */
-public interface SearchResultItem {
+public interface SearchResultItem extends ResultItem{
     void addField(String field, String value);
     void addNestedSearchResult(String field, SearchResult nestedResult);
     SearchResult getNestedSearchResult(String field);

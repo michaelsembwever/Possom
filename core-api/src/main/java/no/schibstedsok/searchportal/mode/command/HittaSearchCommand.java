@@ -8,6 +8,7 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import no.schibstedsok.searchportal.result.SpellingSuggestion;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,8 +26,10 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.SearchResultItem;
-import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
-import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.result.QuerySuggestion;
+import no.schibstedsok.searchportal.result.SpellingSuggestion;
+import no.schibstedsok.searchportal.result.Suggestion;
+import no.schibstedsok.searchportal.result.WeightedSuggestion;
 import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 import se.hitta.www.HittaService.HittaServiceLocator;
@@ -166,11 +169,11 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
-        public Map<String, List<SpellingSuggestion>> getSpellingSuggestions() {
+        public Map<String, List<WeightedSuggestion>> getSpellingSuggestionsMap() {
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
-        public List<QuerySuggestion> getQuerySuggestions() {
+        public List<Suggestion> getQuerySuggestions() {
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 

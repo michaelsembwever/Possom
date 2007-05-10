@@ -2,14 +2,12 @@
 package no.schibstedsok.searchportal.result;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
-import no.schibstedsok.searchportal.view.spell.RelevantQuery;
 import no.schibstedsok.searchportal.result.Navigator;
 
 
@@ -21,7 +19,7 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
 
     private HashMap navigators = new HashMap();
     private Map currentNavigators = new HashMap();
-    private List relevantQueries = new ArrayList();
+
 
     /**
      * 
@@ -132,21 +130,4 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
         return (Navigator) currentNavigators.get(navigatorName);
     }
 
-    /**
-     * 
-     * @param query 
-     */
-    public void addRelevantQuery(final RelevantQuery query) {
-        relevantQueries.add(query);
-    }
-
-    /**
-     * Get the relevantQueries.
-     *
-     * @return the relevantQueries.
-     */
-    public List getRelevantQueries() {
-        Collections.sort(relevantQueries);
-        return relevantQueries;
-    }
 }

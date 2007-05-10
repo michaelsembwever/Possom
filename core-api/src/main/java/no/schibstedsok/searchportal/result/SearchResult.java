@@ -1,20 +1,25 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
+import java.util.Collection;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
-import no.schibstedsok.searchportal.view.spell.QuerySuggestion;
-import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
 
 import java.util.List;
-import java.util.Map;
 
 
 /*
- * @version <tt>$Revision$</tt>
+ * @deprecated ResultItem is the replacement. migration in progress.
+ * @version <tt>$Id$</tt>
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  *
  */
-public interface SearchResult {
+/*
+ * @deprecated ResultItem is the replacement. migration in progress.
+ * @version <tt>$Id$</tt>
+ * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
+ *
+ */
+public interface SearchResult extends ResultList{
     /**
      * Returns the {@link SearchCommand} that produced this result.
      * @deprecated should not be accessing search command from the view domain.
@@ -30,13 +35,13 @@ public interface SearchResult {
 
     void addResult(SearchResultItem item);
 
-    void addSpellingSuggestion(SpellingSuggestion suggestion);
+    void addSpellingSuggestion(WeightedSuggestion suggestion);
 
-    Map<String,List<SpellingSuggestion>> getSpellingSuggestions();
+    List<WeightedSuggestion> getSpellingSuggestions();
 
-    List<QuerySuggestion> getQuerySuggestions();
+    Collection<Suggestion> getQuerySuggestions();
 
-    void addQuerySuggestion(QuerySuggestion query);
+    void addQuerySuggestion(Suggestion query);
 
     /**
      * Adds a result level (as opposed to item level) field to the search result.

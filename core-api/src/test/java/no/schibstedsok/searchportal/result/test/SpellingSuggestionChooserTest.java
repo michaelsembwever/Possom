@@ -1,6 +1,7 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.test;
 
+import no.schibstedsok.searchportal.result.SpellingSuggestion;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
@@ -9,7 +10,7 @@ import no.schibstedsok.searchportal.result.handler.SpellingSuggestionChooser;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
-import no.schibstedsok.searchportal.view.spell.SpellingSuggestion;
+import no.schibstedsok.searchportal.result.SpellingSuggestion;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
@@ -54,7 +55,7 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting"));
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
@@ -71,7 +72,7 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(0, numberOfTermsCorrected(result));
@@ -87,8 +88,8 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", "slanking", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
@@ -108,9 +109,9 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         config.setMaxDistance(3);
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
-        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", "slanking", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", "slankinga",227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -132,10 +133,10 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
         
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
-        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
-        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", "slanking", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", "slankinga", 227);
+        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", "slafnkinga", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -157,12 +158,12 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         config.setMaxDistance(3);
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 211);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
-        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 223);
-        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
-        final SpellingSuggestion suggestion5 = new SpellingSuggestion("slankting", "slankinga", 227);
-        final SpellingSuggestion suggestion6 = new SpellingSuggestion("slankting", "slafnkinga", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 211);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", "slanking", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", "slankinga", 223);
+        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", "slafnkinga", 227);
+        final SpellingSuggestion suggestion5 = new SpellingSuggestion("slankting", "slankinga", "slankinga", 227);
+        final SpellingSuggestion suggestion6 = new SpellingSuggestion("slankting", "slafnkinga", "slafnkinga", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -173,7 +174,7 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(3, numberOfSuggestions(result, "slankting"));
 
-        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestionsMap().get("slankting");
 
         assertFalse(suggestionList.contains(suggestion));
         assertFalse(suggestionList.contains(suggestion3));
@@ -191,10 +192,10 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         config.setMaxDistance(0);
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);        
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 227);
-        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", 227);
-        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", "slanking", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("slankting", "slankinga", "slankinga", 227);
+        final SpellingSuggestion suggestion4 = new SpellingSuggestion("slankting", "slafnkinga", "slafnkinga", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -213,14 +214,14 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", 230);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("slankting", "slanking", "slanking", 230);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
         assertEquals(1, numberOfSuggestions(result, "slankting"));
-        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestionsMap().get("slankting");
         assertFalse(suggestionList.contains(suggestion));
     }
 
@@ -234,15 +235,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", "sykkel", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
         assertEquals(2, numberOfTermsCorrected(result));
-        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestionsMap().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
-        final List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
+        final List suggestionList2 = (List) result.getSpellingSuggestionsMap().get("sykel");
         assertTrue(suggestionList2.contains(suggestion2));
     }
 
@@ -256,17 +257,17 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
-        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", "sykkel", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", "sykkkel", 227);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
-        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestionsMap().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
-        final List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
+        final List suggestionList2 = (List) result.getSpellingSuggestionsMap().get("sykel");
         assertNull(suggestionList2);
     }
 
@@ -280,17 +281,17 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
-        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 240);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", "sykkel", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", "sykkkel", 240);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
         handleResult(chooser, result);
         assertEquals(2, numberOfTermsCorrected(result));
-        final List suggestionList = (List) result.getSpellingSuggestions().get("slankting");
+        final List suggestionList = (List) result.getSpellingSuggestionsMap().get("slankting");
         assertTrue(suggestionList.contains(suggestion));
-        final List suggestionList2 = (List) result.getSpellingSuggestions().get("sykel");
+        final List suggestionList2 = (List) result.getSpellingSuggestionsMap().get("sykel");
         assertTrue(suggestionList2.contains(suggestion3));
     }
 
@@ -304,9 +305,9 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel bil"));
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
-        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", 227);
-        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", 240);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
+        final SpellingSuggestion suggestion2 = new SpellingSuggestion("sykel", "sykkel", "sykkel", 227);
+        final SpellingSuggestion suggestion3 = new SpellingSuggestion("sykel", "sykkkel", "sykkkel", 240);
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -325,7 +326,7 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykkel bil"));
-        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", 227);
+        final SpellingSuggestion suggestion = new SpellingSuggestion("slankting", "slakting", "slakting", 227);
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
@@ -334,11 +335,11 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
 
 
     private int numberOfTermsCorrected(final BasicSearchResult result) {
-        return result.getSpellingSuggestions().keySet().size();
+        return result.getSpellingSuggestionsMap().keySet().size();
     }
 
     private int numberOfSuggestions(final BasicSearchResult result, final String term) {
-        final List listOfSuggestions = (List) result.getSpellingSuggestions().get(term);
+        final List listOfSuggestions = (List) result.getSpellingSuggestionsMap().get(term);
         return listOfSuggestions.size();
     }
 
