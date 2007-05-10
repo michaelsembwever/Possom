@@ -1,0 +1,30 @@
+/*
+ * Suggestion.java
+ * 
+ * Created on 10/05/2007, 13:20:03
+ * 
+ */
+
+package no.schibstedsok.searchportal.result;
+
+import java.io.Serializable;
+
+/**
+ *
+ * @author mick
+ * @version $Id$
+ */
+public interface Suggestion extends Serializable{
+
+    /**
+     * 
+     * @return 
+     */
+    String getSuggestion();
+    
+    /**
+     * 
+     * @return 
+     */
+    String getHtmlSuggestion();
+}
