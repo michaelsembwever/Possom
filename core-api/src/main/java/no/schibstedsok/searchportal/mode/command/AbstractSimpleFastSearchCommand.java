@@ -617,17 +617,17 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
 
         if ("42".equals(datamodel.getQuery().getString())) {
-            final WeightedSuggestion egg = new BasicWeightedSuggestion("42", "Meningen med livet", "Meningen med livet", 1000);
+            final WeightedSuggestion egg = BasicWeightedSuggestion.instanceOf("42", "Meningen med livet", "Meningen med livet", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
 
         if ("kvasir".equalsIgnoreCase(datamodel.getQuery().getString())) {
-            final WeightedSuggestion egg = new BasicWeightedSuggestion("kvasir", "sesam", "sesam", 1000);
+            final WeightedSuggestion egg = BasicWeightedSuggestion.instanceOf("kvasir", "sesam", "sesam", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
 
         if ("meningen med livet".equalsIgnoreCase(datamodel.getQuery().getString())) {
-            final WeightedSuggestion egg = new BasicWeightedSuggestion("meningen med livet", "42", "42", 1000);
+            final WeightedSuggestion egg = BasicWeightedSuggestion.instanceOf("meningen med livet", "42", "42", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
     }
@@ -643,7 +643,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         final String string = custom.substring(suggestionIndex + 2, qualityIndex - 2);
         final String quality = custom.substring(qualityIndex + 9, qualityIndex + 12);
 
-        return new BasicWeightedSuggestion(orig, string, string, Integer.parseInt(quality));
+        return BasicWeightedSuggestion.instanceOf(orig, string, string, Integer.parseInt(quality));
     }
 
     private FastSearchResult collectResults(final IQueryResult result) {
@@ -1027,7 +1027,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             return null;
         }
 
-        return new BasicWeightedSuggestion(orig, string, string, 1000);
+        return BasicWeightedSuggestion.instanceOf(orig, string, string, 1000);
     }
 
     private void collectRelevantQueries(IQueryResult result, FastSearchResult searchResult) {
@@ -1051,7 +1051,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
                             if (!datamodel.getQuery().getString().equalsIgnoreCase(suggAndWeight[0])) {
 
-                                final WeightedSuggestion rq = new BasicWeightedSuggestion(getQuery().getQueryString(),
+                                final WeightedSuggestion rq = BasicWeightedSuggestion.instanceOf(
+                                        getQuery().getQueryString(),
                                         suggAndWeight[0], 
                                         suggAndWeight[0], 
                                         Integer.valueOf(suggAndWeight[1]));

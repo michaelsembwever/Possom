@@ -109,7 +109,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
                     query = query.replaceAll(suggestion.getOriginal(), suggestion.getSuggestion());
                     displayQuery = displayQuery
                             .replaceAll(suggestion.getOriginal(), "<b>" + suggestion.getSuggestion() + "</b>");
-                    result.addQuerySuggestion(new BasicSuggestion(suggestion.getOriginal(), query, displayQuery));
+                    result.addQuerySuggestion(BasicSuggestion.instanceOf(suggestion.getOriginal(), query, displayQuery));
                 }
             }
         } else if (numberOfCorrections == 2 && numberOfTermsInQuery < config.getVeryLongQuery() ) {
@@ -127,7 +127,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
                             "<b>" + spellingSuggestion.getSuggestion() + "</b>");
                 }
             }
-            result.addQuerySuggestion(new BasicSuggestion(original, query, displayQuery));
+            result.addQuerySuggestion(BasicSuggestion.instanceOf(original, query, displayQuery));
         }
     }
 

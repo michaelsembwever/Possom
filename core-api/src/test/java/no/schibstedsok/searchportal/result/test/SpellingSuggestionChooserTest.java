@@ -54,7 +54,9 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting"));
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
@@ -71,7 +73,9 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(0, numberOfTermsCorrected(result));
@@ -87,8 +91,12 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("slankting", "slanking", "slanking", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slanking", "slanking", 227);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
@@ -108,9 +116,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         config.setMaxDistance(3);
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("slankting", "slanking", "slanking", 227);
-        final BasicWeightedSuggestion suggestion3 = new BasicWeightedSuggestion("slankting", "slankinga", "slankinga",227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slanking", "slanking", 227);
+        
+        final BasicWeightedSuggestion suggestion3 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slankinga", "slankinga",227);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -132,10 +146,18 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
         
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("slankting", "slanking", "slanking", 227);
-        final BasicWeightedSuggestion suggestion3 = new BasicWeightedSuggestion("slankting", "slankinga", "slankinga", 227);
-        final BasicWeightedSuggestion suggestion4 = new BasicWeightedSuggestion("slankting", "slafnkinga", "slafnkinga", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slanking", "slanking", 227);
+        
+        final BasicWeightedSuggestion suggestion3 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slankinga", "slankinga", 227);
+        
+        final BasicWeightedSuggestion suggestion4 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slafnkinga", "slafnkinga", 227);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -157,12 +179,24 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         config.setMaxDistance(3);
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 211);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("slankting", "slanking", "slanking", 227);
-        final BasicWeightedSuggestion suggestion3 = new BasicWeightedSuggestion("slankting", "slankinga", "slankinga", 223);
-        final BasicWeightedSuggestion suggestion4 = new BasicWeightedSuggestion("slankting", "slafnkinga", "slafnkinga", 227);
-        final BasicWeightedSuggestion suggestion5 = new BasicWeightedSuggestion("slankting", "slankinga", "slankinga", 227);
-        final BasicWeightedSuggestion suggestion6 = new BasicWeightedSuggestion("slankting", "slafnkinga", "slafnkinga", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 211);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slanking", "slanking", 227);
+        
+        final BasicWeightedSuggestion suggestion3 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slankinga", "slankinga", 223);
+        
+        final BasicWeightedSuggestion suggestion4 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slafnkinga", "slafnkinga", 227);
+        
+        final BasicWeightedSuggestion suggestion5 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slankinga", "slankinga", 227);
+        
+        final BasicWeightedSuggestion suggestion6 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slafnkinga", "slafnkinga", 227);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -191,10 +225,18 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         config.setMaxDistance(0);
         final SpellingSuggestionChooser chooser = new SpellingSuggestionChooser(config);        
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("slankting", "slanking", "slanking", 227);
-        final BasicWeightedSuggestion suggestion3 = new BasicWeightedSuggestion("slankting", "slankinga", "slankinga", 227);
-        final BasicWeightedSuggestion suggestion4 = new BasicWeightedSuggestion("slankting", "slafnkinga", "slafnkinga", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slanking", "slanking", 227);
+        
+        final BasicWeightedSuggestion suggestion3 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slankinga", "slankinga", 227);
+        
+        final BasicWeightedSuggestion suggestion4 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slafnkinga", "slafnkinga", 227);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -213,8 +255,12 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand());
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("slankting", "slanking", "slanking", 230);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slanking", "slanking", 230);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
@@ -234,8 +280,12 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("sykel", "sykkel", "sykkel", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("sykel", "sykkel", "sykkel", 227);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         handleResult(chooser, result);
@@ -256,9 +306,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("sykel", "sykkel", "sykkel", 227);
-        final BasicWeightedSuggestion suggestion3 = new BasicWeightedSuggestion("sykel", "sykkkel", "sykkkel", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("sykel", "sykkel", "sykkel", 227);
+        
+        final BasicWeightedSuggestion suggestion3 
+                = BasicWeightedSuggestion.instanceOf("sykel", "sykkkel", "sykkkel", 227);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -280,9 +336,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel"));
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("sykel", "sykkel", "sykkel", 227);
-        final BasicWeightedSuggestion suggestion3 = new BasicWeightedSuggestion("sykel", "sykkkel", "sykkkel", 240);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("sykel", "sykkel", "sykkel", 227);
+        
+        final BasicWeightedSuggestion suggestion3 
+                = BasicWeightedSuggestion.instanceOf("sykel", "sykkkel", "sykkkel", 240);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -304,9 +366,15 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykel bil"));
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
-        final BasicWeightedSuggestion suggestion2 = new BasicWeightedSuggestion("sykel", "sykkel", "sykkel", 227);
-        final BasicWeightedSuggestion suggestion3 = new BasicWeightedSuggestion("sykel", "sykkkel", "sykkkel", 240);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
+        final BasicWeightedSuggestion suggestion2 
+                = BasicWeightedSuggestion.instanceOf("sykel", "sykkel", "sykkel", 227);
+        
+        final BasicWeightedSuggestion suggestion3 
+                = BasicWeightedSuggestion.instanceOf("sykel", "sykkkel", "sykkkel", 240);
+        
         result.addSpellingSuggestion(suggestion);
         result.addSpellingSuggestion(suggestion2);
         result.addSpellingSuggestion(suggestion3);
@@ -325,7 +393,9 @@ public final class SpellingSuggestionChooserTest extends DataModelTestCase {
         final SpellingSuggestionChooser chooser 
                 = new SpellingSuggestionChooser(new SpellingSuggestionChooserResultHandlerConfig());
         final BasicSearchResult result = new BasicSearchResult(new MockupSearchCommand("slankting sykkel bil"));
-        final BasicWeightedSuggestion suggestion = new BasicWeightedSuggestion("slankting", "slakting", "slakting", 227);
+        final BasicWeightedSuggestion suggestion 
+                = BasicWeightedSuggestion.instanceOf("slankting", "slakting", "slakting", 227);
+        
         result.addSpellingSuggestion(suggestion);
         handleResult(chooser, result);
         assertEquals(1, numberOfTermsCorrected(result));
