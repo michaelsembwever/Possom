@@ -8,8 +8,6 @@
 
 package no.schibstedsok.searchportal.view.velocity;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -90,6 +88,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             + "no.schibstedsok.searchportal.view.velocity.BoldWordDirective,"
             + "no.schibstedsok.searchportal.view.velocity.ChannelCategoryListDirective,"
             + "no.schibstedsok.searchportal.view.velocity.RemovePrefixDirective,"
+            + "no.schibstedsok.searchportal.view.velocity.NavigatorDirective,"
             + "no.schibstedsok.searchportal.view.velocity.SlashTrimStringDirective";
 
 
@@ -142,7 +141,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("math", new MathTool());
         // date tool
         context.put("date", new DateTool());
-   
+        
         return context;
     }
 
