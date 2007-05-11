@@ -7,7 +7,7 @@ package no.schibstedsok.searchportal.result;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public final class SpellingSuggestion extends QuerySuggestion implements WeightedSuggestion {
+public final class BasicWeightedSuggestion extends BasicSuggestion implements WeightedSuggestion {
 
     private int weight;
 
@@ -16,7 +16,7 @@ public final class SpellingSuggestion extends QuerySuggestion implements Weighte
      * @param suggestion 
      * @param weight 
      */
-    public SpellingSuggestion(
+    public BasicWeightedSuggestion(
             final String original, 
             final String suggestion, 
             final String htmlSuggestion, 

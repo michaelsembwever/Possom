@@ -6,7 +6,7 @@ package no.schibstedsok.searchportal.result;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public class QuerySuggestion implements Suggestion{
+public class BasicSuggestion implements Suggestion{
 
     private final String original;
     private final String suggestion;
@@ -18,7 +18,7 @@ public class QuerySuggestion implements Suggestion{
      * @param suggestion 
      * @param htmlSuggestion 
      */
-    public QuerySuggestion(final String original, final String suggestion, final String htmlSuggestion) {
+    public BasicSuggestion(final String original, final String suggestion, final String htmlSuggestion) {
         
         this.original = original;
         this.htmlSuggestion = htmlSuggestion;

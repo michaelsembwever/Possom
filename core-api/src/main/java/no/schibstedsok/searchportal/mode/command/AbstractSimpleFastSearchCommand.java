@@ -9,7 +9,7 @@
 package no.schibstedsok.searchportal.mode.command;
 
 
-import no.schibstedsok.searchportal.result.SpellingSuggestion;
+
 import no.fast.ds.search.BaseParameter;
 import no.fast.ds.search.ConfigurationException;
 import no.fast.ds.search.FastSearchEngineFactory;
@@ -44,7 +44,7 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.util.ModifierDateComparator;
-import no.schibstedsok.searchportal.result.SpellingSuggestion;
+import no.schibstedsok.searchportal.result.BasicWeightedSuggestion;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -602,13 +602,13 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
                 if (transformation.getName().equals("FastQT_SpellCheck") && transformation.getAction().equals("nop")) {
                     final String custom = transformation.getCustom();
-                    final SpellingSuggestion suggestion = createSpellingSuggestion(custom);
+                    final WeightedSuggestion suggestion = createSpellingSuggestion(custom);
                     searchResult.addSpellingSuggestion(suggestion);
                 }
 
                 if (transformation.getName().equals("FastQT_ProperName")) {
                     String custom = transformation.getCustom();
-                    SpellingSuggestion suggestion = createProperNameSuggestion(custom);
+                    WeightedSuggestion suggestion = createProperNameSuggestion(custom);
                     if (suggestion != null) {
                         searchResult.addSpellingSuggestion(suggestion);
                     }
@@ -617,22 +617,22 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         }
 
         if ("42".equals(datamodel.getQuery().getString())) {
-            final SpellingSuggestion egg = new SpellingSuggestion("42", "Meningen med livet", "Meningen med livet", 1000);
+            final WeightedSuggestion egg = new BasicWeightedSuggestion("42", "Meningen med livet", "Meningen med livet", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
 
         if ("kvasir".equalsIgnoreCase(datamodel.getQuery().getString())) {
-            final SpellingSuggestion egg = new SpellingSuggestion("kvasir", "sesam", "sesam", 1000);
+            final WeightedSuggestion egg = new BasicWeightedSuggestion("kvasir", "sesam", "sesam", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
 
         if ("meningen med livet".equalsIgnoreCase(datamodel.getQuery().getString())) {
-            final SpellingSuggestion egg = new SpellingSuggestion("meningen med livet", "42", "42", 1000);
+            final WeightedSuggestion egg = new BasicWeightedSuggestion("meningen med livet", "42", "42", 1000);
             searchResult.addSpellingSuggestion(egg);
         }
     }
 
-    private SpellingSuggestion createSpellingSuggestion(final String custom) {
+    private WeightedSuggestion createSpellingSuggestion(final String custom) {
 
         final int suggestionIndex = custom.indexOf("->");
         final int qualityIndex = custom.indexOf("Quality:");
@@ -643,7 +643,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         final String string = custom.substring(suggestionIndex + 2, qualityIndex - 2);
         final String quality = custom.substring(qualityIndex + 9, qualityIndex + 12);
 
-        return new SpellingSuggestion(orig, string, string, Integer.parseInt(quality));
+        return new BasicWeightedSuggestion(orig, string, string, Integer.parseInt(quality));
     }
 
     private FastSearchResult collectResults(final IQueryResult result) {
@@ -1010,7 +1010,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return findChildNavigator(nav.getChildNavigator(), nameToFind);
     }
 
-    private SpellingSuggestion createProperNameSuggestion(String custom) {
+    private WeightedSuggestion createProperNameSuggestion(String custom) {
 
         int suggestionIndex = custom.indexOf("->");
 
@@ -1027,7 +1027,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             return null;
         }
 
-        return new SpellingSuggestion(orig, string, string, 1000);
+        return new BasicWeightedSuggestion(orig, string, string, 1000);
     }
 
     private void collectRelevantQueries(IQueryResult result, FastSearchResult searchResult) {
@@ -1051,7 +1051,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
                             if (!datamodel.getQuery().getString().equalsIgnoreCase(suggAndWeight[0])) {
 
-                                final WeightedSuggestion rq = new SpellingSuggestion(getQuery().getQueryString(),
+                                final WeightedSuggestion rq = new BasicWeightedSuggestion(getQuery().getQueryString(),
                                         suggAndWeight[0], 
                                         suggAndWeight[0], 
                                         Integer.valueOf(suggAndWeight[1]));

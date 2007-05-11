@@ -1,10 +1,9 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result.handler;
 
-import no.schibstedsok.searchportal.result.SpellingSuggestion;
+
 import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.QuerySuggestion;
-import no.schibstedsok.searchportal.result.SpellingSuggestion;
+import no.schibstedsok.searchportal.result.BasicSuggestion;
 import org.apache.log4j.Logger;
 import java.util.Collections;
 import java.util.Iterator;
@@ -110,7 +109,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
                     query = query.replaceAll(suggestion.getOriginal(), suggestion.getSuggestion());
                     displayQuery = displayQuery
                             .replaceAll(suggestion.getOriginal(), "<b>" + suggestion.getSuggestion() + "</b>");
-                    result.addQuerySuggestion(new QuerySuggestion(suggestion.getOriginal(), query, displayQuery));
+                    result.addQuerySuggestion(new BasicSuggestion(suggestion.getOriginal(), query, displayQuery));
                 }
             }
         } else if (numberOfCorrections == 2 && numberOfTermsInQuery < config.getVeryLongQuery() ) {
@@ -128,7 +127,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
                             "<b>" + spellingSuggestion.getSuggestion() + "</b>");
                 }
             }
-            result.addQuerySuggestion(new QuerySuggestion(original, query, displayQuery));
+            result.addQuerySuggestion(new BasicSuggestion(original, query, displayQuery));
         }
     }
 
