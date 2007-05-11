@@ -12,14 +12,13 @@
     <!-- Global rewrites applicable to every skin (sitesearch and country!) -->
 
     <!-- tomcat puts in the name of the welcome page -->
-    <rule><from>^/index.jsp$</from><to>/</to></rule> 
+    <rule><from>^/index.jsp$</from><to>/</to></rule>
+    <rule><from>^/robots.txt$</from><to>/robots.jsp</to></rule>
     <rule><from>^/psearch/(.*)$</from><to>/search/$1</to></rule>
     
     
     <!-- Everything non-specified falls back to the default search (unspecified c parameter) -->
     <!-- TODO more work is needed to exclude 
-      - /robots.txt
-      - /favicon.ico
       - /search/(.*)
       - /map/(.*)
       - /servlet/(.*)
