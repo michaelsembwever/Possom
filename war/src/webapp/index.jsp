@@ -28,6 +28,7 @@
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&c=d&output=opensearch&IGNORE=NOCOUNT" />
         </link>        
+        <script type="text/javascript" language="JavaScript" src="/javascript/external/prototype.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
             function strep(qtag) {
@@ -152,96 +153,64 @@
     </tr>
     <tr>
         <td valign="top" align="left">
-	<script type="text/javascript" language="JavaScript">
-	    var menuCookie = getCookie("sesam_menu");
-	    if(menuCookie == "closed"){
-	      document.write('<div id="menutable" style="display:none;">'); 
-	    }else{
-	      document.write('<div id="menutable">');	
-	    }
-	</script>
-            <table id="front_menu" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/nyheter.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=m" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/bedrift.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/person.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/bilde.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/blogg.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a><span class="betaNavbar">beta</span></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/tv.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/webtv.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=wt" param="category:front_service" index="true"/>' onclick="return strep(this);">NettTV-s&#248;k</a></td>
-                </tr>
-				<tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/ver.png" alt="" align="left" /></td>
-		    <td class="menupad" align="left"><a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a></td>
-                </tr>
-    <%--
-		<tr>
-                    <td colspan="2"><img src="images/index/dottedline.gif" alt="" /></td>
-                </tr>
-                <tr>
-                    <td class="imgpad"><img src="images/menu/icons/kart.gif" alt="" align="left" /></td>
-		    <td class="menupad"><a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a></td>
-                </tr>
-    --%>
-                <tr>
-                    <td class="lastpad" colspan="2" style="border-top: 1px solid #C5C5C5;"><a href="#" onclick='setCookie("sesam_menu", "closed", "", "/");document.getElementById("menutable").style.display="none";document.getElementById("menuopen").style.display="block";'><img src="images/index/skjul_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Skjul meny</div></a></td>
-                </tr>
-            </table>
+            <% String hide = ""; String open = ""; %>
+            <script type="text/javascript" language="JavaScript">
+                var menuCookie = getCookie("sesam_menu");
+                if (menuCookie == "closed") {
+                    <% hide = "style='display:none;"; %>
+                    <% open = ""; %>
+                } else {
+                    <% hide = ""; %>
+                    <% open = "style='display:none;'"; %>                
+                }
+            </script>         
+            <div id="menutable" <%=hide %>>
+                <div class="navMain">
+                    <div class="navRow">
+                        <img src="images/menu/icons/nyheter.png" width="16" height="16" alt="" />
+                        <a href='<search:linkPulse url="/search/?c=m" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a>
+                    </div>
+                    <div class="navRow">
+                        <img src="images/menu/icons/bedrift.png" width="16" height="16" alt="" />
+                        <a href='<search:linkPulse url="/search/?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a>
+                    </div>
+                    <div class="navRow">
+                        <img src="images/menu/icons/person.png" width="16" height="16" alt="" />
+                        <a href='<search:linkPulse url="/search/?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a>
+                    </div>
+                    <div class="navRow">
+                        <img src="images/menu/icons/bilde.png" width="16" height="16" alt="" />
+                        <a href='<search:linkPulse url="/search/?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a>
+                    </div>
+                    <div class="navRow">
+                        <img src="images/menu/icons/blogg.png" width="16" height="16" alt="" />
+                        <a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a><span class="betaNavbar">beta</span>
+                    </div>
+                    <div class="navRow">
+                        <img src="images/menu/icons/tv.png" width="16" height="16" alt="" />
+                        <a href='<search:linkPulse url="/search/?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a>
+                    </div>
+                    <div class="navRow">
+                        <img src="images/menu/icons/webtv.png" width="16" height="16" alt="" />
+                        <a href='<search:linkPulse url="/search/?c=wt" param="category:front_service" index="true"/>' onclick="return strep(this);">NettTV-s&#248;k</a>
+                    </div>
+                    <div class="navRow">
+                        <img src="images/menu/icons/ver.png" width="16" height="16" alt="" />
+                        <a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>
+                    </div>
+                </div>
+                <div id="navToggleHide">    
+                    <img src="images/index/skjul_meny.png" width="21" height="20" alt="" />
+                    <span>Skjul meny</span>
+                </div>
             </div>
-	    <script type="text/javascript" language="JavaScript">
-	    	var menuCookie = getCookie("sesam_menu");
-	    	if(menuCookie == "closed"){
-	      	  document.write('<div id="menuopen">'); 
-	    	}else{
-	      	  document.write('<div id="menuopen" style="display: none;">');	
-	    	}
-	    </script>
-            <table id="front_menu" border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                    <td class="lastpad"><a href="#" onclick='deleteCookie("sesam_menu", "/");document.getElementById("menutable").style.display="block";document.getElementById("menuopen").style.display="none";'><img src="images/index/vis_meny.png" border="0" align="left" /><div style="padding-top: 3px;"> &nbsp;&nbsp;Vis meny</div></a></td>
-                </tr>
-            </table>
-            </div>
+            <div id="menuopen" <%=open %> >
+                <div id="navToggleOpen">
+                    <img src="images/index/vis_meny.png" width="21" height="20" alt="" />
+                    <span>Vis meny</span>
+                </div>
+            </div>    
+            <div style="clear: both;"></div>
         </td>
         <td valign="top" align="left">
             <search:publish page="/pages/front"/>
