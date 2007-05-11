@@ -397,7 +397,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         }
         final ParametersDataObject pdo = datamodel.getParameters();
         if(GeoSearchUtil.isGeoSearch(pdo)){
-            sortBy= GeoSearchUtil.GEO_SORT_BY;
+            sortBy="iypgeosortable";
         }
         return sortBy;
     }
