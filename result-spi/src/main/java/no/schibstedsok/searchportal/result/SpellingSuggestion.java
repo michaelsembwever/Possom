@@ -3,6 +3,7 @@ package no.schibstedsok.searchportal.result;
 
 
 /**
+ * <b> Immutable </b>
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
