@@ -141,10 +141,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         final String center = GeoSearchUtil.getCenter(pdo);
         
         LOG.debug("center : " + center);
-        
-        final String restrictRadius = "10";
+ 
         params.setParameter(new SearchParameter("qtf_geosearch:unit", GeoSearchUtil.RADIUS_MEASURE_UNIT_TYPE));
-        params.setParameter(new SearchParameter("qtf_geosearch:radius", restrictRadius));
+        params.setParameter(new SearchParameter("qtf_geosearch:radius", GeoSearchUtil.getRadiusRestriction(pdo)));
         params.setParameter(new SearchParameter("qtf_geosearch:center", center));
     }
     /**

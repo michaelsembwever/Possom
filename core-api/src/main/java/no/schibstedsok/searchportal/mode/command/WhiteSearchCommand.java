@@ -113,10 +113,9 @@ public class WhiteSearchCommand extends CorrectingFastSearchCommand {
         }
      
         final String center = GeoSearchUtil.getCenter(pdo);
-       
-        final String restrictRadius = "50";
+ 
         params.setParameter(new SearchParameter("qtf_geosearch:unit", GeoSearchUtil.RADIUS_MEASURE_UNIT_TYPE));
-        params.setParameter(new SearchParameter("qtf_geosearch:radius", restrictRadius));
+        params.setParameter(new SearchParameter("qtf_geosearch:radius", GeoSearchUtil.getRadiusRestriction(pdo)));
         params.setParameter(new SearchParameter("qtf_geosearch:center", center));
     }
 
