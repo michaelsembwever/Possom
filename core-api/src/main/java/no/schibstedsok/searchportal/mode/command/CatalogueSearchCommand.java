@@ -196,9 +196,16 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         final CatalogueCommandConfig conf = (CatalogueCommandConfig) context.getSearchConfiguration();
 
+        String whoParameter 
+                = datamodel.getParameters().getValue("who")!=null ? 
+                    datamodel.getParameters().getValue("who").getUtf8UrlEncoded() : datamodel.getQuery().getString();
+
+        
         WhoWhereSplit splitQuery = new WhoWhereSplit(
-                datamodel.getQuery().getString(),
+                whoParameter,
                 getSingleParameter(conf.getQueryParameterWhere()));
+        
+        
 
         if(conf.getSplit()){
 
