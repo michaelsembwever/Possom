@@ -247,7 +247,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 
                 if(!VELOCITY_DEBUG) {
                 	engine.setProperty("url.resource.loader.cache", "true");
-                	engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minutes
+                	engine.setProperty("url.resource.loader.modificationCheckInterval", "0"); // 5 minutes
                     engine.setProperty(Velocity.RESOURCE_MANAGER_CLASS, QuickResourceManagerImpl.class.getName());
                     engine.setProperty(Velocity.RESOURCE_MANAGER_CACHE_CLASS, QuickResourceCacheImpl.class.getName());
                     engine.setProperty(Velocity.RESOURCE_MANAGER_DEFAULTCACHE_SIZE, "0");
