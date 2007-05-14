@@ -31,13 +31,13 @@ import java.util.TimeZone;
 
 
 /**
- * A velocity directive to format newsnavigator date
+ * A velocity directive to format newsnavigator date.
  * <p/>
- * Newsdate comes from the fastnavigator in four forms:
- * 1. 10-2006     -> oktober 2006
- * 2. 24-10-2006  -> 24. oktober 2006
- * 3. 2006-10     -> oktober 2006
- * 4. 2006-10-24  -> 24. oktober 2006
+ * Newsdate comes from the fastnavigator in four forms:<br/>
+ * 1. 10-2006     -> oktober 2006<br/>
+ * 2. 24-10-2006  -> 24. oktober 2006<br/>
+ * 3. 2006-10     -> oktober 2006<br/>
+ * 4. 2006-10-24  -> 24. oktober 2006<br/>
  * <p/>
  * if 'newsdateOnly' navigator, we shuold check if the date is today or yesterday
  */
