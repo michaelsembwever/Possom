@@ -76,7 +76,7 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
      */
     @Override
     public String getTransformedQuery() {
-        return "iypcfbannerkw:"+super.getTransformedQuery()+queryGeoString;
+        return "iypcfbannerkw:"+super.getTransformedQuery();
     }
 
     /**

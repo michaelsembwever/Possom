@@ -75,6 +75,12 @@ import org.apache.log4j.Logger;
  */
 public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
+    /** boolean flags to which get set during visitor pass.
+     *  used by getSortBy to determin which rank profile to use.
+     */
+    private boolean foundCompanyNameInQuery=false;
+    private boolean foundKeywordInQuery=false;
+    
     /** Logger for this class. */
     private static final Logger LOG = Logger.getLogger(CatalogueSearchCommand.class);
 
@@ -380,21 +386,32 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
     /**
      * Set what to sort the resultset by.
-     * The possible value is sort by company name, or by keywords.
+     * The possible value is sort by company name, or by keywords
+     * or even more advanced, by iypgeosortable
      *
      * This value is used by the call to Fast-servers, to specify
      * which rank-profile to sort by.
      *
-     * The sorting may be altered if user has supplied the userSortBy
-     * parameter.
+     * If keyword found, sort with keyword rank profile,
+     * else if company name found, sort with company name rank profile.
+     * if neither keyword or company name is found, use the value 
+     * from modes.xml.
+     *
+     * The sorting can be overrided by user specified sorting, or if 
+     * it is a geo search.
+     *
      * @return the sorting to be used when executing the query.
      */
     @Override
     protected String getSortBy() {
         String sortBy = super.getSortBy();
+        
+        sortBy = foundKeywordInQuery?SORTBY_KEYWORD:foundCompanyNameInQuery?SORTBY_COMPANYNAME:sortBy;
+        
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
         }
+        
         final ParametersDataObject pdo = datamodel.getParameters();
         if(GeoSearchUtil.isGeoSearch(pdo)){
             sortBy="iypgeosortable";
@@ -438,6 +455,17 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         final Matcher m = p.matcher(getTransformedTerms().get(clause));
 
         final boolean hasNotWordCharacters = m.find();
+        
+        // check if this is a known keyword.
+        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD_RESERVED)){
+            foundKeywordInQuery=true;
+        }
+        
+        // check if this is a known company name.
+        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANYRANK)
+        || clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)){
+            foundCompanyNameInQuery=true;
+        }
 
         if(hasNotWordCharacters){
 
