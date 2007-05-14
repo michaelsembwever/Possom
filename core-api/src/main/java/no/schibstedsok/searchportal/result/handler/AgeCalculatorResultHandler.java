@@ -3,8 +3,6 @@ package no.schibstedsok.searchportal.result.handler;
 
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
@@ -16,6 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 
 /**
@@ -55,25 +55,25 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
     }
 
     private void setAgeForAll(
-            final SearchResult searchResult,
+            final ResultList<ResultItem> searchResult,
             final DateFormat df,
             final DataModel datamodel,
             final Context cxt,
             final String ageFormatKey) {
 
-        for (final SearchResultItem item : searchResult.getResults()) {
-            if (config.getRecursiveField() != null) {
-                SearchResult subResult = item.getNestedSearchResult(config.getRecursiveField());
+        for (final ResultItem item : searchResult.getResults()) {
+            if (item instanceof ResultList<?>) {
+                ResultList<ResultItem> subResult = (ResultList<ResultItem>)item;
                 if (subResult != null) {
                     setAgeForAll(subResult, df, datamodel, cxt, ageFormatKey);
                 }
             }
-            setAge(item, df, datamodel, cxt, ageFormatKey);
+            searchResult.replaceResult(item, setAge(item, df, datamodel, cxt, ageFormatKey));
         }
     }
 
-    private void setAge(
-            final SearchResultItem item,
+    private ResultItem setAge(
+            ResultItem item,
             final DateFormat df,
             final DataModel datamodel,
             final Context cxt,
@@ -143,7 +143,7 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
                 LOG.trace("Resulting age string is " + ageString);
 
                 if (stamp > 0) {
-                    item.addField(config.getTargetField(), ageString);
+                    item = item.addField(config.getTargetField(), ageString);
                 }
 
             } catch (ParseException e) {
@@ -152,6 +152,8 @@ public final class AgeCalculatorResultHandler implements ResultHandler {
         } else {
             LOG.warn(config.getSourceField() + " is null");
         }
+        
+        return item;
     }
 
 }

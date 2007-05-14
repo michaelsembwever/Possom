@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 /**
  * WeatherDateHandler is part of no.schibstedsok.searchportal.result
@@ -41,17 +41,21 @@ public class WeatherDateHandler implements ResultHandler  {
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+        for (final ResultItem item : cxt.getSearchResult().getResults()) {
+            
             final String datestring = item.getField(config.getSourceField());
-            Date date = null;
+            final Date date;
 
             try {
                 date = sdf.parse(datestring);
             } catch (ParseException e) {
                 throw new IllegalArgumentException(e.getMessage());
             }
-            item.addField("datePart", datePart.format(date));
-            item.addField("timePart", timePart.format(date));
+            
+            cxt.getSearchResult().replaceResult(item, 
+                    item.addField("datePart", datePart.format(date))
+                        .addField("timePart", timePart.format(date))
+                    );
         }
     }
 }

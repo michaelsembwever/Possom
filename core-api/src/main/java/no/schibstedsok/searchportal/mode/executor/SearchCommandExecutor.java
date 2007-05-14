@@ -5,7 +5,8 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * An object that executes a list of {@link java.util.concurrent.Callable} tasks.
@@ -29,7 +30,8 @@ public interface SearchCommandExecutor {
      * @return the list of Futures holding the results.
      * @throws InterruptedException
      */
-    Map<String,Future<SearchResult>> invokeAll(Collection<Callable<SearchResult>> callables, Map<String, Future<SearchResult>> results, int timeoutInMillis)
-            throws InterruptedException;
+    Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> invokeAll(
+            Collection<Callable<ResultList<? extends ResultItem>>> callables, 
+            int timeoutInMillis) throws InterruptedException;
 
 }

@@ -4,13 +4,14 @@ package no.schibstedsok.searchportal.mode.command;
 import no.schibstedsok.searchportal.mode.config.TvenrichCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
  * A search command that combine the results from TV and WebTV search.
  */
-public class TvEnrichSearchCommand extends StaticSearchCommand {
+public final class TvEnrichSearchCommand extends StaticSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(TvEnrichSearchCommand.class);
 
@@ -19,10 +20,10 @@ public class TvEnrichSearchCommand extends StaticSearchCommand {
         super(cxt);
     }
 
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         int hitCount = 0;
 
-        final SearchResult result = new BasicSearchResult(this);
+        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
         TvenrichCommandConfig tesc = (TvenrichCommandConfig) this.getSearchConfiguration();
         if (tesc.getWaitOn() != null) {
             final String waitOn = tesc.getWaitOn();
@@ -36,7 +37,7 @@ public class TvEnrichSearchCommand extends StaticSearchCommand {
                 }
             } catch (Exception e) {
                 LOG.error(e);
-                return new BasicSearchResult(this);
+                return new BasicSearchResult<ResultItem>();
             }
         }
 

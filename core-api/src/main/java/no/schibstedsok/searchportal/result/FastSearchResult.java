@@ -1,13 +1,13 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
+import no.schibstedsok.searchportal.result.BasicSearchResult;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.mode.command.FastSearchCommand;
-import no.schibstedsok.searchportal.mode.command.SearchCommand;
+import no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand;
 import no.schibstedsok.searchportal.result.Navigator;
 
 
@@ -15,18 +15,21 @@ import no.schibstedsok.searchportal.result.Navigator;
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public class FastSearchResult extends BasicSearchResult implements SearchResult {
+public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>{
 
-    private HashMap navigators = new HashMap();
-    private Map currentNavigators = new HashMap();
+    /** @deprecated will be removed without replacement in future version. **/
+    final AbstractSimpleFastSearchCommand command;
+    private Map<String,List<Modifier>> navigators = new HashMap<String,List<Modifier>>();
+    private Map<String,Navigator> currentNavigators = new HashMap<String,Navigator>();
 
 
     /**
      * 
      * @param command 
      */
-    public FastSearchResult(final SearchCommand command) {
-        super(command);
+    public FastSearchResult(final AbstractSimpleFastSearchCommand command) {
+        super();
+        this.command = command;
     }
 
     /**
@@ -35,7 +38,7 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
      * @return 
      */
     public Navigator getNavigatedTo(final String navigatorName) {
-        return ((FastSearchCommand) getSearchCommand()).getNavigatedTo(navigatorName);
+        return command.getNavigatedTo(navigatorName);
     }
 
     /**
@@ -43,7 +46,7 @@ public class FastSearchResult extends BasicSearchResult implements SearchResult 
      * @return 
      */
     public Map<String,Navigator> getNavigatedTo() {
-        return ((FastSearchCommand) getSearchCommand()).getNavigatedTo();
+        return command.getNavigatedTo();
     }
     
     /**

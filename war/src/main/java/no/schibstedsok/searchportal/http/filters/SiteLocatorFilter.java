@@ -36,6 +36,7 @@ import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.log4j.Logger;
 import org.apache.log4j.MDC;
 
@@ -137,13 +138,16 @@ public final class SiteLocatorFilter implements Filter {
                 throws IOException, ServletException {
 
         LOG.trace("doFilter(..)");
-        
+
+        final StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         final ServletResponse response = r instanceof HttpServletResponse
             ? new AccessLogResponse((HttpServletResponse)r)
             : r;
 
-        try  {
-
+        try{
+                
             doBeforeProcessing(request, response);
             logAccessRequest(request);
 
@@ -218,7 +222,7 @@ public final class SiteLocatorFilter implements Filter {
             throw new ServletException(e);
             
         }finally{
-            logAccessResponse(request, response);
+            logAccessResponse(request, response, stopWatch);
         }
 
     }
@@ -371,6 +375,8 @@ public final class SiteLocatorFilter implements Filter {
 
     private String recursivelyFindResource(final String resource, final Site site) {
 
+        // Problem with this approach is that skins can be updated without the server restarting (& updating START_TIME)
+        // TODO an alternative approach would be to collect the lastModified timestamp of the resource and use it.
         final String datedResource = resource
                 .replaceAll("/", "/" + START_TIME + "/")
                 .replaceFirst("/" + START_TIME + "/", "");
@@ -477,7 +483,10 @@ public final class SiteLocatorFilter implements Filter {
                 + "</request>");
     }
     
-    private static void logAccessResponse(final ServletRequest request, final ServletResponse response){
+    private static void logAccessResponse(
+            final ServletRequest request, 
+            final ServletResponse response,
+            final StopWatch stopWatch){
        
         final String code;
         
@@ -499,7 +508,9 @@ public final class SiteLocatorFilter implements Filter {
             code = UNKNOWN;
         }
         
-        ACCESS_LOG.info("<response code=\"" + code + "\">");
+        stopWatch.stop();
+        
+        ACCESS_LOG.info("<response code=\"" + code + "\" time=\"" + stopWatch + "\">");
     }
     
     // probably apache commons could simplify this

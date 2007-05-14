@@ -39,6 +39,12 @@ public final class StringChopper {
     
     // Static --------------------------------------------------------
     
+    /**
+     * 
+     * @param s 
+     * @param length 
+     * @return 
+     */
     public static String chop(final String s, final int length) {
         
         final StringBuilder choppedString = new StringBuilder();

@@ -3,7 +3,7 @@ package no.schibstedsok.searchportal.result.handler;
 
 import javax.activation.MimetypesFileTypeMap;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 
 /**
@@ -28,7 +28,7 @@ public final class FindFileFormat implements ResultHandler {
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
 
-        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+        for (final ResultItem item : cxt.getSearchResult().getResults()) {
 
             final String type = null != config.getField() ? item.getField(config.getField()) : null;
             final String url = item.getField("url");
@@ -40,7 +40,7 @@ public final class FindFileFormat implements ResultHandler {
                         : TYPES.getContentType(url));
 
 
-            item.addField("fileformat", fileformat);
+            cxt.getSearchResult().replaceResult(item, item.addField("fileformat", fileformat));
         }
     }
 }

@@ -87,8 +87,9 @@ public class BlogSearchResultItem extends BasicSearchResultItem { // Extend Basi
         return url;
     }
 
-    public void setUrl(String url) {
+    public BlogSearchResultItem setUrl(String url) {
         this.url = url;
+        return this;
     }
 
     public String getBody() {

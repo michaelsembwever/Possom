@@ -6,8 +6,6 @@ package no.schibstedsok.searchportal.mode.command;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.query.IntegerClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.query.PhoneNumberClause;
@@ -18,7 +16,8 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenMatch;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.YellowSearchResult;
 import org.apache.log4j.Logger;
 
@@ -66,7 +65,7 @@ public class YellowSearchCommand extends CorrectingFastSearchCommand {
     }
 
     /** TODO comment me. **/
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         boolean viewAll = false;
 

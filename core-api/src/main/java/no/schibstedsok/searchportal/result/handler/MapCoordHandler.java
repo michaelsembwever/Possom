@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import no.geodata.maputil.MapCoordCalc;
 import no.geodata.maputil.MapPoint;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 /**
  * Converts lat/long values into X/Y for map coordinate-system.
@@ -32,7 +32,7 @@ public final class MapCoordHandler implements ResultHandler {
     /** {@inherit} **/
 	public void handleResult(final Context cxt, final DataModel datamodel) {
 
-		for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+		for (final ResultItem item : cxt.getSearchResult().getResults()) {
 
         	try {
         		final double latitude = Double.parseDouble(item.getField("lat").replace(',', '.'));
@@ -41,8 +41,10 @@ public final class MapCoordHandler implements ResultHandler {
             	final MapCoordCalc coordCalculator = new MapCoordCalc();
             	final MapPoint point = coordCalculator.DD2UTM(longitude, latitude, UTM_ZONE);
                 
-                item.addField("xcoord", point.getX() + "");
-                item.addField("ycoord", point.getY() + "");
+                cxt.getSearchResult().replaceResult(
+                        item, 
+                        item.addField("xcoord", point.getX() + "").addField("ycoord", point.getY() + "")
+                    );
                 
         	} catch (NumberFormatException e) {
 				// silent fail

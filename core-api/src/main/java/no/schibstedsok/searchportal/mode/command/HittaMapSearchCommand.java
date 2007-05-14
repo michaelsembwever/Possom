@@ -5,7 +5,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import javax.xml.rpc.ServiceException;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import org.apache.log4j.Logger;
 import se.hitta.www.HittaService.GetPlaceStreetDetailsResponseGetPlaceStreetDetailsResult;
 import se.hitta.www.HittaService.HittaServiceLocator;
@@ -14,7 +13,8 @@ import no.schibstedsok.searchportal.mode.config.HittamapCommandConfig;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand {
 
@@ -30,7 +30,7 @@ public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand
     }
 
     @Override
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
 		HittamapCommandConfig bsc = (HittamapCommandConfig) context.getSearchConfiguration();
 
@@ -41,7 +41,7 @@ public final class HittaMapSearchCommand extends AbstractWebServiceSearchCommand
 //		final boolean isGEOLOCAL = engine.evaluateQuery(
 //				TokenPredicate.GEOLOCAL, getQuery());
 
-		final SearchResult result = new BasicSearchResult(this);
+		final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
 		if (isGEOGLOBAL) {
 			try {
 				HittaServiceLocator locator = new HittaServiceLocator();

@@ -2,11 +2,9 @@
 package no.schibstedsok.searchportal.result.handler;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 
 /**
@@ -30,9 +28,7 @@ public final class DiscardDuplicatesResultHandler implements ResultHandler {
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-
-        	final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (ResultItem searchResultItem : cxt.getSearchResult().getResults()) {
 
             String uniqueField = searchResultItem.getField(config.getSourceField()) + "";	//avoid nullpointers
 
@@ -41,8 +37,8 @@ public final class DiscardDuplicatesResultHandler implements ResultHandler {
             }
 
             //remove entries with same name (not emtpy ones)
-            if(uniqueField.length() != 0 && keys.contains(uniqueField)){
-        		iterator.remove();
+            if(uniqueField.length() > 0 && keys.contains(uniqueField)){
+        		cxt.getSearchResult().removeResult(searchResultItem);
         	} else {
         		keys.add(uniqueField);
         	}

@@ -12,7 +12,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.run.RunningQuery;
@@ -56,7 +57,7 @@ public final class DataModelResultHandler implements ResultHandler{
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         final SearchTab tab = cxt.getSearchTab();
-        final SearchConfiguration config = cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+        final SearchConfiguration config = cxt.getSearchConfiguration();
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
         // simple beginnngs of the datamodel handler
@@ -66,13 +67,15 @@ public final class DataModelResultHandler implements ResultHandler{
         // results
         synchronized( parameters ){
             if( parameters.get("results") == null ){
-                parameters.put("results", new Hashtable<String,SearchResult>());
+                parameters.put("results", new Hashtable<String,ResultList<ResultItem>>());
                 parameters.put("runningQuery", (RunningQuery) parameters.get("query"));
                 LOG.debug(DEBUG_CREATED_RESULTS);
             }
         }
-        final Hashtable<String,SearchResult> results
-                = (Hashtable<String,SearchResult>)parameters.get("results");
+        
+        final Map<String,ResultList<ResultItem>> results
+                = (Hashtable<String,ResultList<ResultItem>>)parameters.get("results");
+        
         LOG.debug(DEBUG_ADD_RESULT + config.getName());
         results.put(config.getName(), cxt.getSearchResult());
 
@@ -91,7 +94,7 @@ public final class DataModelResultHandler implements ResultHandler{
                     parameters.put("pagers", new Hashtable<String,PagingDisplayHelper>());
                 }
             }
-            final Hashtable<String,PagingDisplayHelper> pagers
+            final Map<String,PagingDisplayHelper> pagers
                     = (Hashtable<String,PagingDisplayHelper>)parameters.get("pagers");
 
             pagers.put(config.getName(), pager);

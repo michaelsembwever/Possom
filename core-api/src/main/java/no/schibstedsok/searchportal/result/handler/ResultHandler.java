@@ -2,13 +2,15 @@
 package no.schibstedsok.searchportal.result.handler;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
-/*
- * @version <tt>$Revision$</tt>
+/**
+ * @version <tt>$Id$</tt>
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  *
  */
@@ -20,15 +22,35 @@ public interface ResultHandler {
      */
     public interface Context extends ResourceContext {
 
-        SearchResult getSearchResult();
+        /**
+         * 
+         * @return 
+         */
+        ResultList<ResultItem> getSearchResult();
 
+        /**
+         * 
+         * @return 
+         */
         SearchTab getSearchTab();
+        
+        /**
+         * 
+         * @return 
+         */
+        SearchConfiguration getSearchConfiguration();
 
         /**
          * Result handling action *
+         * @param modifier 
          */
         void addSource(Modifier modifier);
     }
 
+    /**
+     * 
+     * @param cxt 
+     * @param datamodel 
+     */
     void handleResult(Context cxt, DataModel datamodel);
 }

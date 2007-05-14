@@ -38,7 +38,8 @@ import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.util.GeoSearchUtil;
 
 import org.apache.log4j.Logger;
@@ -304,9 +305,9 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      *  search result.
      * @return the search result found by the executed query.
      */
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
-        final SearchResult result = super.execute();
+        final ResultList<ResultItem> result = (ResultList<ResultItem>) super.execute();
 
         final List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
 
@@ -325,8 +326,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             nyResultListe.add(resultItem);
         }
 
-        // clear the old BasicSearchResult, and add our new CatalogueSearchResult
-        // to be used instead.
+        // clear the old BasicSearchResult, and add our new CatalogueSearchResult to be used instead.
         result.getResults().clear();
         result.getResults().addAll(nyResultListe);
 

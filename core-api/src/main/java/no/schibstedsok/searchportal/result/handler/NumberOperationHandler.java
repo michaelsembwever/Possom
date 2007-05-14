@@ -3,15 +3,12 @@ package no.schibstedsok.searchportal.result.handler;
 
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 import org.nfunk.jep.JEP;
-import org.nfunk.jep.type.Complex;
 
 
 /** Perform a JEP operation.
@@ -26,6 +23,10 @@ public final class NumberOperationHandler implements ResultHandler {
     private final NumberOperationResultHandlerConfig config;
     
     
+    /**
+     * 
+     * @param config 
+     */
     public NumberOperationHandler(final ResultHandlerConfig config){
         this.config = (NumberOperationResultHandlerConfig)config;
     }
@@ -33,7 +34,7 @@ public final class NumberOperationHandler implements ResultHandler {
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        final SearchResult result = cxt.getSearchResult();
+        final ResultList<ResultItem> result = cxt.getSearchResult();
 
         final NumberFormat formatter = NumberFormat.getInstance(datamodel.getSite().getSite().getLocale());
         formatter.setMinimumIntegerDigits(config.getMinDigits());
@@ -47,10 +48,11 @@ public final class NumberOperationHandler implements ResultHandler {
         parser.addStandardFunctions();
         parser.addComplex();
 
-        for(SearchResultItem item : result.getResults()){
+        for(ResultItem i : result.getResults()){
 
+            final BasicSearchResultItem item = (BasicSearchResultItem) i;
             for(String field : config.getFields()){
-                final String value = item.getField(field);
+                final String value = (String) item.getField(field);
                 parser.addVariable(field, value != null && value.length()>0 ? Double.parseDouble(value) : 0D);
             }
 

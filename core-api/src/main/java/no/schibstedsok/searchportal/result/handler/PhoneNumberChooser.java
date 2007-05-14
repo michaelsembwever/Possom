@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.result.handler;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
@@ -23,7 +23,7 @@ public final class PhoneNumberChooser implements ResultHandler {
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+        for (final ResultItem item : cxt.getSearchResult().getResults()) {
             final String phoneNumber = item.getField("yphovedtelefon");
             final String otherNumbers = item.getField("ypandretelefoner");
             final String mobileNumber = item.getField("ypmobiltelefon");
@@ -44,7 +44,7 @@ public final class PhoneNumberChooser implements ResultHandler {
                 }
             }
 
-            item.addField("ypanynumber", chosenNumber);
+            cxt.getSearchResult().replaceResult(item, item.addField("ypanynumber", chosenNumber));
         }
     }
 }

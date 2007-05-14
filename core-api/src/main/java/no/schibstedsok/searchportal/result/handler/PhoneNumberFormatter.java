@@ -2,7 +2,7 @@
 package no.schibstedsok.searchportal.result.handler;
 
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 /**
  * @author <a href="mailto:thomas.kjerstad@aftenposten.no">Thomas Kjærstad</a>
@@ -23,25 +23,27 @@ public final class PhoneNumberFormatter implements ResultHandler {
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+        for (final ResultItem i : cxt.getSearchResult().getResults()) {
             
-            final String ypanynumber = item.getField("ypanynumber");
-            final String wpmobiltelefon = item.getField("wpmobiltelefon");
-            final String wptelefon = item.getField("wptelefon");
-            final String yptelefax = item.getField("yptelefax");
+            final String ypanynumber = i.getField("ypanynumber");
+            final String wpmobiltelefon = i.getField("wpmobiltelefon");
+            final String wptelefon = i.getField("wptelefon");
+            final String yptelefax = i.getField("yptelefax");
             String format = null;
+            
+            ResultItem item = i;
 
             // TODO: put formatting oh white numbers in here too. For now this will be formatted in MultiValueFieldCollector
             //formatting wp mobile numbers in enrichment
             if (wpmobiltelefon != null) {
                 format = wpmobiltelefon.substring(0, 2) + " " + wpmobiltelefon.substring(2, 4) + " " + wpmobiltelefon.substring(4, 6) + " " + wpmobiltelefon.substring(6, 8);
-                item.addField("wpmobiltelefon", format);
+                item = item.addField("wpmobiltelefon", format);
             }
 
             //formatting wptelefon in enrichment
             if (wptelefon != null) {
                 format = wptelefon.substring(0, 2) + " " + wptelefon.substring(2, 4) + " " + wptelefon.substring(4, 6) + " " + wptelefon.substring(6, 8);
-                item.addField("wptelefon", format);
+                item = item.addField("wptelefon", format);
             }
 
             //formatting yp numbers
@@ -57,7 +59,7 @@ public final class PhoneNumberFormatter implements ResultHandler {
                 } else{
                     format = ypanynumber;
                 }
-                item.addField("ypanynumber", format);
+                item = item.addField("ypanynumber", format);
             }
 
             //formatting yptelefax in yip
@@ -67,10 +69,10 @@ public final class PhoneNumberFormatter implements ResultHandler {
                 }else{
                     format = yptelefax;
                 }
-                item.addField("yptelefax", format);
+                item = item.addField("yptelefax", format);
             }
 
-
+            cxt.getSearchResult().replaceResult(i, item);
         }
     }
 }

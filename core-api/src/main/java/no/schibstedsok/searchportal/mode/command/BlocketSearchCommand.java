@@ -5,15 +5,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 import java.rmi.RemoteException;
-import java.util.Map;
 import javax.xml.rpc.ServiceException;
 import javax.xml.rpc.holders.LongHolder;
 import javax.xml.rpc.holders.StringHolder;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.BlocketCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 import se.blocket.www2.search.SearchLocator;
@@ -34,12 +33,12 @@ public final class BlocketSearchCommand extends AbstractWebServiceSearchCommand 
     }
 
     @Override
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         BlocketCommandConfig bsc = (BlocketCommandConfig) context.getSearchConfiguration();
 
         final SearchLocator service = new SearchLocator();
-        final SearchResult result = new BasicSearchResult(this);
+        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
 
         try {
             final SearchPortType port = service.getsearchPort(new java.net.URL(service.getsearchPortAddress()));

@@ -16,7 +16,6 @@ import no.schibstedsok.searchportal.mode.config.NavigatableEspFastCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.util.ModifierDateComparator;
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +27,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * This class provies an advanced fast search command with navigation
@@ -62,7 +63,7 @@ public class NavigatableESPFastCommand extends ESPFastSearchCommand {
         return filterStrings;
     }
 
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         if (getNavigators() != null) {
             for (String navigatorKey : getNavigators().keySet()) {
 

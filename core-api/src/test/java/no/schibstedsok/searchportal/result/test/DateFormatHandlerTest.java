@@ -3,13 +3,15 @@ package no.schibstedsok.searchportal.result.test;
 
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.handler.DateFormatHandler;
 import no.schibstedsok.searchportal.result.handler.DateFormatResultHandlerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
@@ -46,23 +48,27 @@ public final class DateFormatHandlerTest extends SiteTestCase {
     private ResultHandler.Context getResultHandlerContext() throws SiteKeyedFactoryInstantiationException{
 
         final MockupSearchCommand command = new MockupSearchCommand();
-        final BasicSearchResult bsr = new BasicSearchResult(command);
+        final BasicSearchResult<ResultItem> bsr = new BasicSearchResult<ResultItem>();
         final ResultHandler.Context cxt = new ResultHandler.Context() {
 
-            public SearchResult getSearchResult() {
+            public ResultList<ResultItem> getSearchResult() {
                 return bsr;
+            }
+            
+            public SearchConfiguration getSearchConfiguration(){
+                return command.getSearchConfiguration();
             }
 
             public SearchTab getSearchTab() {
-                return null;
+                return command.getRunningQuery().getSearchTab();
             }
 
             public String getQueryString() {
-                return null;
+                return command.getRunningQuery().getQuery().getQueryString();
             }
 
             public Query getQuery() {
-                return null;
+                return command.getRunningQuery().getQuery();
             }
 
             public void addSource(final Modifier modifier) {
@@ -86,7 +92,7 @@ public final class DateFormatHandlerTest extends SiteTestCase {
 
                 return FileResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
             }
-            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
+            public BytecodeLoader newBytecodeLoader(final SiteContext context, final String className) {
                 return FileResourceLoader.newBytecodeLoader(context, className);
             }            
         };

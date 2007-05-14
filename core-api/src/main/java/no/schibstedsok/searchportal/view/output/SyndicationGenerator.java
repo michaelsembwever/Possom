@@ -18,8 +18,6 @@ import java.util.TimeZone;
 import javax.servlet.http.HttpServletRequest;
 
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.view.i18n.TextMessages;
@@ -46,6 +44,8 @@ import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModuleImpl;
 
 /** Used by the rssDecorator.jsp to print out the results in rss format.
@@ -82,7 +82,7 @@ public final class SyndicationGenerator {
     
     // Attributes ----------------------------------------------------
     
-    private final SearchResult result;
+    private final ResultList<? extends ResultItem> result;
     private final Site site;
     private final TextMessages text;
     private String feedType = "rss_2.0";
@@ -100,7 +100,7 @@ public final class SyndicationGenerator {
     
     // Constructors --------------------------------------------------
 
-    public SyndicationGenerator(final SearchResult result,
+    public SyndicationGenerator(final ResultList<? extends ResultItem> result,
                                 final Site site,
                                 final HttpServletRequest request,
                                 final String modeId) {
@@ -174,7 +174,7 @@ public final class SyndicationGenerator {
             final List<SyndEntry> entries = new ArrayList<SyndEntry>();
 
             int idx = 0;
-            for (SearchResultItem item : result.getResults()) {
+            for (ResultItem item : result.getResults()) {
                 ++idx;
 
                 final SyndEntry entry = new SyndEntryImpl();
@@ -272,7 +272,7 @@ public final class SyndicationGenerator {
     
     private String render(
             final String name,
-            final SearchResultItem item,
+            final ResultItem item,
             final int itemIdx) throws ResourceNotFoundException {
 
         final String templateUri = templateDir + name;

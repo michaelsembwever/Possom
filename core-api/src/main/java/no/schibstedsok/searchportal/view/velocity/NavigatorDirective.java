@@ -5,9 +5,10 @@
 
 package no.schibstedsok.searchportal.view.velocity;
 
+import no.schibstedsok.searchportal.result.NavigatorHelper;
 import java.io.IOException;
 import java.io.Writer;
-import no.schibstedsok.searchportal.util.NavigatorHelper;
+import no.schibstedsok.searchportal.result.NavigatorHelper;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
 import org.apache.velocity.exception.ParseErrorException;

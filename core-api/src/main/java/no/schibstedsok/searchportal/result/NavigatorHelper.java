@@ -4,7 +4,7 @@
  * Created on 30-Apr-2007, 16:15:40
  */
 
-package no.schibstedsok.searchportal.util;
+package no.schibstedsok.searchportal.result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +20,23 @@ import org.apache.log4j.Logger;
 
 /**
  * @author andersjj
+ * @version $Id$
  */
-public class NavigatorHelper {
+public final class NavigatorHelper {
 
-    public class NavigatorWrapper {
+    public final class NavigatorWrapper {
+        
         private final Navigator navigator;
         private final String url;
         private final String backUrl;
         private final StringDataObject fieldValue;
         
-        public NavigatorWrapper(final Navigator navigator, final String url, final String backUrl, final StringDataObject fieldValue) {
+        public NavigatorWrapper(
+                final Navigator navigator, 
+                final String url, 
+                final String backUrl, 
+                final StringDataObject fieldValue) {
+            
             this.navigator = navigator;
             this.url = url;
             this.backUrl = backUrl;
@@ -86,7 +93,11 @@ public class NavigatorHelper {
         return INSTANCE;
     }
     
-    public final List<Navigator> getNavigatorList(final DataModel datamodel, final AbstractSimpleFastSearchCommand asfsc, final String navigatorKey) {
+    public final List<Navigator> getNavigatorList(
+            final DataModel datamodel, 
+            final AbstractSimpleFastSearchCommand asfsc, 
+            final String navigatorKey) {
+        
         if (datamodel == null) {
             throw new NullPointerException("datamodel");
         } 
@@ -120,8 +131,12 @@ public class NavigatorHelper {
         return navigatorList;
     }
     
-    public final List<NavigatorWrapper> getNavigators(final DataModel datamodel, final FastSearchResult fsr, final String navigatorKey) {
-        final AbstractSimpleFastSearchCommand asfsc = (AbstractSimpleFastSearchCommand) fsr.getSearchCommand();
+    public final List<NavigatorWrapper> getNavigators(
+            final DataModel datamodel, 
+            final FastSearchResult fsr, 
+            final String navigatorKey) {
+
+        final AbstractSimpleFastSearchCommand asfsc = (AbstractSimpleFastSearchCommand) fsr.command;
         final List<Navigator> navigatorList = getNavigatorList(datamodel, asfsc, navigatorKey);
         final ParametersDataObject parameters = datamodel.getParameters();
         final List<NavigatorWrapper> backLinks = new ArrayList<NavigatorWrapper>();

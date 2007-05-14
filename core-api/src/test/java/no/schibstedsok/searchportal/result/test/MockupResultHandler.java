@@ -2,25 +2,28 @@
 package no.schibstedsok.searchportal.result.test;
 
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultList;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public class MockupResultHandler implements ResultHandler {
-    private SearchResult result;
+    
+    private ResultList<ResultItem> result;
     private Map parameters;
 
-    public void handleResult(Context cxt, DataModel datamodel) {
+    public void handleResult(final Context cxt, final DataModel datamodel) {
+        
         this.result = cxt.getSearchResult();
         this.parameters = parameters;
     }
 
 
-    public SearchResult getResult() {
+    public ResultList<ResultItem> getResult() {
         return result;
     }
 

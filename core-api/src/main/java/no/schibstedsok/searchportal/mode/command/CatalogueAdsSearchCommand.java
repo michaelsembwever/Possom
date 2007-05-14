@@ -7,14 +7,13 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import no.schibstedsok.searchportal.query.AndClause;
 import no.schibstedsok.searchportal.query.DefaultOperatorClause;
 import no.schibstedsok.searchportal.query.OrClause;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.mode.command.AbstractSearchCommand.ReconstructedQuery;
 import no.schibstedsok.searchportal.mode.config.CatalogueAdsCommandConfig;
 import no.schibstedsok.searchportal.query.AndNotClause;
@@ -22,6 +21,8 @@ import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
@@ -128,27 +129,27 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
      * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#execute
      */
     @Override
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         /**
          * search result from first query, this will be reused and returned
          * out from this method, with processed search result if needed.
          */
-        SearchResult firstQueryResult = null;
+        ResultList<ResultItem> firstQueryResult = null;
 
-        SearchResult secondQueryResult = null;
+        ResultList<? extends ResultItem> secondQueryResult = null;
 
         // if the query type is domestic, then we dont need to run more than 
         // the domestic search and return the results the way they were returned
         // by Fast.
         if(queryGeoString.equals(DOMESTIC_SEARCH)){
             whichQueryToRun = QueryType.INGENSTEDS;
-            firstQueryResult = super.execute();   
+            firstQueryResult = (ResultList<ResultItem>) super.execute();   
             return firstQueryResult;
         }
         
         whichQueryToRun = QueryType.GEO;
-        firstQueryResult = super.execute();
+        firstQueryResult = (ResultList<ResultItem>) super.execute();
 
         LOG.info("Found "+firstQueryResult.getHitCount()+" sponsed links");
 
@@ -156,9 +157,9 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 
             // Build the search result to return from this method
             // during processing in this array.
-            final SearchResultItem[] searchResults = new SearchResultItem[5];
+            final ResultItem[] searchResults = new ResultItem[5];
 
-            for (SearchResultItem item : firstQueryResult.getResults()) {
+            for (ResultItem item : firstQueryResult.getResults()) {
             
                 Pattern p = Pattern.compile("(^|;)"+originalQuery+queryGeoString+"(;|$)");
 
@@ -199,7 +200,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             whichQueryToRun = QueryType.INGENSTEDS;
             performQueryTransformation();
             secondQueryResult = super.execute();
-            for (SearchResultItem item : secondQueryResult.getResults()) {
+            for (ResultItem item : secondQueryResult.getResults()) {
 
                 Pattern p = Pattern.compile("(^|;)"+originalQuery+DOMESTIC_SEARCH+"(;|$)");
 
@@ -222,7 +223,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
 
             firstQueryResult.getResults().clear();
             LOG.info("Cleared original result.");
-            for(SearchResultItem item:searchResults){
+            for(ResultItem item:searchResults){
                 if(item!=null){
                     firstQueryResult.addResult(item);
                     LOG.info("Added item "+item.getField("iypcompanyid"));
@@ -230,7 +231,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             }
 
             firstQueryResult.setHitCount(firstQueryResult.getResults().size());
-            java.util.Collections.reverse(firstQueryResult.getResults());
+            Collections.reverse(firstQueryResult.getResults());
 
         }
 

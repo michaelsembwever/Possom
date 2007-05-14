@@ -6,14 +6,15 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
-public class SearchTask extends FutureTask<SearchResult> {
+public final class SearchTask extends FutureTask<ResultList<? extends ResultItem>> {
 
     private static final Logger LOG = Logger.getLogger(SearchTask.class);
 
@@ -35,7 +36,7 @@ public class SearchTask extends FutureTask<SearchResult> {
         return super.cancel(mayInterruptIfRunning);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
-    public synchronized SearchResult get() {
+    public synchronized ResultList<? extends ResultItem> get() {
 
         try {
             LOG.debug("Calling get on " + command);
@@ -50,7 +51,7 @@ public class SearchTask extends FutureTask<SearchResult> {
         }
     }
 
-    public synchronized SearchResult get(final long timeout, final TimeUnit unit) {
+    public synchronized ResultList<? extends ResultItem> get(final long timeout, final TimeUnit unit) {
 
         try {
             return super.get(timeout, unit);

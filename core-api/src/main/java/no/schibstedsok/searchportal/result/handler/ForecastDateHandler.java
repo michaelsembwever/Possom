@@ -7,9 +7,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * A Storm result handler that looks into nested searchresults for
@@ -37,14 +37,15 @@ public final class ForecastDateHandler extends WeatherDateHandler {
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
 
-        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+        for (final ResultItem item : cxt.getSearchResult().getResults()) {
 
             //see if there are any forecasts for the location.
-            if(item.getNestedSearchResult("forecasts") != null){
+            if(item instanceof ResultList<?>){
 
-                for(final SearchResultItem forecast : item.getNestedSearchResult("forecasts").getResults()) {
+                final ResultList<ResultItem> forecasts = (ResultList<ResultItem>)item;
+                for(final ResultItem f : forecasts.getResults()) {
 
-                    final String datestring = forecast.getField(config.getSourceField());
+                    final String datestring = f.getField(config.getSourceField());
 
                     if(datestring != null){
                         
@@ -58,43 +59,46 @@ public final class ForecastDateHandler extends WeatherDateHandler {
                             throw new IllegalArgumentException(e.getMessage());
                         }
                         
-                        forecast.addField("datePart", datePart.format(date));
-                        forecast.addField("timePart", timePart.format(date));
+                        ResultItem forecast = f;
+                        forecast = forecast.addField("datePart", datePart.format(date));
+                        forecast = forecast.addField("timePart", timePart.format(date));
 
                         if (cal.get(Calendar.MONTH) < 9) {
-                            forecast.addField("month", "0" + Integer.toString(cal.get(Calendar.MONTH) + 1));
+                            forecast = forecast.addField("month", "0" + Integer.toString(cal.get(Calendar.MONTH) + 1));
                         } else {
-                            forecast.addField("month", Integer.toString(cal.get(Calendar.MONTH) + 1));
+                            forecast = forecast.addField("month", Integer.toString(cal.get(Calendar.MONTH) + 1));
                         }
                         
-                        forecast.addField("day", Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
-                        forecast.addField("year", Integer.toString(cal.get(Calendar.YEAR)));
+                        forecast = forecast.addField("day", Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
+                        forecast = forecast.addField("year", Integer.toString(cal.get(Calendar.YEAR)));
 
                         switch (cal.get(Calendar.DAY_OF_WEEK)) {
                             case 2:
-                                forecast.addField("weekday", "day0");
+                                forecast = forecast.addField("weekday", "day0");
                                 break;
                             case 3:
-                                forecast.addField("weekday", "day1");
+                                forecast = forecast.addField("weekday", "day1");
                                 break;
                             case 4:
-                                forecast.addField("weekday", "day2");
+                                forecast = forecast.addField("weekday", "day2");
                                 break;
                             case 5:
-                                forecast.addField("weekday", "day3");
+                                forecast = forecast.addField("weekday", "day3");
                                 break;
                             case 6:
-                                forecast.addField("weekday", "day4");
+                                forecast = forecast.addField("weekday", "day4");
                                 break;
                             case 7:
-                                forecast.addField("weekday", "day5");
+                                forecast = forecast.addField("weekday", "day5");
                                 break;
                             case 1:
-                                forecast.addField("weekday", "day6");
+                                forecast = forecast.addField("weekday", "day6");
                                 break;
                             default:
                                 break;
                         }
+                        
+                        forecasts.replaceResult(f, forecast);
                     }
                 }
 

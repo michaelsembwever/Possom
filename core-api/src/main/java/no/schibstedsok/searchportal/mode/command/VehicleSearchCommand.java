@@ -13,7 +13,8 @@ import javax.xml.rpc.holders.StringHolder;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.VehicleCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.axis.client.Stub;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
@@ -26,6 +27,10 @@ import se.blocket.www2.search.SearchPortType;
 //      JDom provides nothing extra and it's just a pain when switching sax/dom implementations.
 
 
+/**
+ * 
+ * @author mick
+ */
 public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(VehicleSearchCommand.class);
@@ -44,18 +49,22 @@ public final class VehicleSearchCommand extends AbstractWebServiceSearchCommand 
 
     private final static String BLOCKET_ALL_ADS_TYPE = "";
 
+    /**
+     * 
+     * @param cxt 
+     */
     public VehicleSearchCommand(final Context cxt) {
 
         super(cxt);
     }
 
     @Override
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
-        VehicleCommandConfig vsc = (VehicleCommandConfig) context.getSearchConfiguration();
+        final VehicleCommandConfig vsc = (VehicleCommandConfig) context.getSearchConfiguration();
 
         final SearchLocator service = new SearchLocator();
-        final SearchResult result = new BasicSearchResult(this);
+        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
 
         try {
 

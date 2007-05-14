@@ -34,8 +34,6 @@ import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
@@ -44,6 +42,9 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * Base class for commands querying a FAST EPS Server.
@@ -147,7 +148,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     /**
      * {@inheritDoc}
      */
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         try {
 
@@ -207,7 +208,8 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         } catch (SearchEngineException ex) {
             LOG.error(ex.getMessage() + ' ' + ex.getCause());
-            return new FastSearchResult(this);
+            return new BasicSearchResult<ResultItem>();
+            
         } catch (IOException ex) {
             LOG.error(ex.getMessage(), ex);
             throw new InfrastructureException(ex);
@@ -254,7 +256,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      * @throws IOException if something bad happens... Like, an invalid url. (Actually just to not break old code.)
      */
     protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
-        final FastSearchResult searchResult = new FastSearchResult(this);
+        
+        // The following throws a ClassCastException OR a NullPointerException
+        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null); 
         final int cnt = getCurrentOffset(0);
         final int maxIndex = getMaxDocIndex(result, cnt, cfg);
 
@@ -275,7 +279,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             final String collapseId = getParameter(COLLAPSE_PARAMETER);
             if (collapseId != null && !collapseId.equals("")) {
                 if (searchResult.getResults().size() > 0) {
-                    final SearchResultItem itm = searchResult.getResults().get(0);
+                    final ResultItem itm = (ResultItem) searchResult.getResults().get(0);
                     final URL url = new URL(itm.getField("url"));
                     searchResult.addField("collapsedDomain", url.getHost());
                 }
@@ -465,15 +469,16 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         return Math.min(cnt + fastSearchConfiguration.getResultsToReturn(), iQueryResult.getDocCount());
     }
 
-    private SearchResultItem createResultItem(final IDocumentSummary document) {
+    private ResultItem createResultItem(final IDocumentSummary document) {
 
-        final SearchResultItem item = new BasicSearchResultItem();
+        ResultItem item = new BasicSearchResultItem();
 
         for (final Map.Entry<String, String> entry : cfg.getResultFields().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
-            if (summary != null && !summary.isEmpty())
-                item.addField(entry.getValue(), summary.getStringValue().trim());
+            if (summary != null && !summary.isEmpty()){
+                item = item.addField(entry.getValue(), summary.getStringValue().trim());
+            }
         }
 
         if (cfg.isCollapsingEnabled()) {
@@ -482,9 +487,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             if (currCollapseId == null || currCollapseId.equals("")) {
 
                 if (!document.getSummaryField("fcocount").isEmpty() && Integer.parseInt(document.getSummaryField("fcocount").getStringValue()) > 1) {
-                    item.addField("moreHits", "true");
-                    item.addField("collapseParameter", COLLAPSE_PARAMETER);
-                    item.addField("collapseId", document.getSummaryField("collapseid").getStringValue());
+                    item = item.addField("moreHits", "true")
+                            .addField("collapseParameter", COLLAPSE_PARAMETER)
+                            .addField("collapseId", document.getSummaryField("collapseid").getStringValue());
                 }
             }
         }

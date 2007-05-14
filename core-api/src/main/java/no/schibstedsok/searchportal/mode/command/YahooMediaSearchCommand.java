@@ -1,9 +1,7 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.mode.command;
 
-import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.mode.config.YahooMediaCommandConfig;
 import no.schibstedsok.searchportal.InfrastructureException;
@@ -18,7 +16,8 @@ import java.net.URLEncoder;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -135,11 +134,11 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
     }
 
     /** {@inheritDoc} */
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         try {
 
             final Document doc = getXmlResult();
-            final SearchResult searchResult = new BasicSearchResult(this);
+            final ResultList<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
 
             if (doc != null) {
 
@@ -168,7 +167,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-            return new BasicSearchResult(this);
+            return new BasicSearchResult<ResultItem>();
 
         } catch (final IOException e) {
             throw new InfrastructureException(e);
@@ -255,7 +254,7 @@ public final class YahooMediaSearchCommand extends AbstractYahooSearchCommand {
         insideNot = originalInsideAndNot;
     }
 
-    private SearchResultItem createResultItem(final Element listing) {
+    private ResultItem createResultItem(final Element listing) {
         final BasicSearchResultItem item = new BasicSearchResultItem();
 
         for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){

@@ -5,13 +5,11 @@ import no.schibstedsok.searchportal.query.token.JepTokenEvaluator;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import org.apache.log4j.Logger;
-import java.util.Map;
 import java.text.NumberFormat;
-import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.nfunk.jep.type.Complex;
 
 /** Create a single result item that transforms the query into a mathematical expression with it's solution.
@@ -27,7 +25,6 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
     /**
      * @param cxt         The context to work within.
-     * @param parameters    Command parameters.
      */
     public MathExpressionSearchCommand(final Context cxt) {
 
@@ -36,12 +33,12 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
 
 
     /** {@inherit} **/
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
 
         final NumberFormat f = NumberFormat.getInstance();
 
-        final BasicSearchResult searchResult = new BasicSearchResult(this);
+        final BasicSearchResult<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
 
         try{
             final Complex result = ((JepTokenEvaluator)getEngine()
@@ -62,13 +59,13 @@ public final class MathExpressionSearchCommand extends AbstractSearchCommand {
                     }
                 }
 
-                final SearchResultItem item = new BasicSearchResultItem();
+                ResultItem item = new BasicSearchResultItem();
 
                 final String r = getQuery().getQueryString() + " = " + s;
 
                 LOG.debug("Adding result " + r);
 
-                item.addField("result", r);
+                item = item.addField("result", r);
 
                 searchResult.setHitCount(1);
                 searchResult.addResult(item);

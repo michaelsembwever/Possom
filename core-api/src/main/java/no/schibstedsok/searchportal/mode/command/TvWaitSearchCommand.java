@@ -22,8 +22,8 @@ import no.schibstedsok.searchportal.mode.config.TvwaitsearchCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.util.Channel;
@@ -61,7 +61,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
     private final TvwaitsearchCommandConfig config;
 
     /** Wait on search result */
-    private FastSearchResult wosr;
+    private FastSearchResult<ResultItem> wosr;
 
     /** Index to use when creating filters */
     private final int index;
@@ -122,7 +122,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
 
     // Public --------------------------------------------------------
 
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         if (!executeQuery) {
             return new FastSearchResult(this);
@@ -185,7 +185,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             return new FastSearchResult(this);
         }
 
-        SearchResult sr = null;
+        ResultList<ResultItem> sr = null;
         if (blankQuery && waitOn != null && datamodel.getParameters().getValue("nav_categories") == null) {
             final int day = getParameters().containsKey("day") ? Integer.parseInt((String) getParameters().get("day")) : 0;
             final StringBuilder sb = new StringBuilder();
@@ -217,13 +217,13 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             final String cacheKey = sb.toString();
             
             try {
-                sr = (SearchResult) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
+                sr = (ResultList<ResultItem>) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
                 
             } catch (NeedsRefreshException e) {
                 
                 boolean updatedCache = false;
                 try{
-                    sr = super.execute();
+                    sr = (ResultList<ResultItem>) super.execute();
                     CACHE.putInCache(cacheKey, sr);
                     updatedCache = true;
                     
@@ -235,11 +235,11 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 }
             }
         } else {
-            sr = super.execute();
+            sr = (ResultList<ResultItem>) super.execute();
         }
         
         if (sr.getHitCount() > 0) {
-            SearchResultItem sri = sr.getResults().get(0);
+            ResultItem sri = sr.getResults().get(0);
             String startTime = sri.getField("starttime");
             String endTime = sri.getField("endtime");
             Calendar cal = Calendar.getInstance();
@@ -251,9 +251,12 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 Date et = sdf.parse(endTime);
 
                 if (now.compareTo(st) >= 0 && now.compareTo(et) < 0) {
-                    sri.addField("current", "true");
+                    sr.replaceResult(sri, sri.addField("current", "true"));
                 }
-            } catch (ParseException e) {}
+                
+            } catch (ParseException e) {
+                LOG.trace(e.getMessage(), e);
+            }
         }
         return sr;
     }

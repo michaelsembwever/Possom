@@ -9,46 +9,51 @@ package no.schibstedsok.searchportal.mode.command;
 import no.schibstedsok.searchportal.query.transform.SynonymQueryTransformer;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
  *
  * @author magnuse
+ * @version $Id$
  */
 public final class StockSearchCommand extends AbstractSearchCommand {
 
     private static final Logger LOG = Logger.getLogger(StockSearchCommand.class);
 
+    /**
+     * 
+     * @param cxt 
+     */
     public StockSearchCommand(final Context cxt) {
 
         super(cxt);
     }
 
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
-        final SearchResult result = new BasicSearchResult(this);
+        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
         final String q = getTransformedQuery();
         LOG.info("transformed query is " + q);
 
         // TODO: Remove this dependency on the query transformer. Prevents the query transformer from being moved into
-        // TODO: the skin.
+        // the skin.
         // for now we are only interested in complete matches. and the SynonymQT only deals with stock-tickers.
         if( SynonymQueryTransformer.isSynonym( q )){
 
-            final SearchResultItem item = new BasicSearchResultItem();
+            ResultItem item = new BasicSearchResultItem();
 
 
             final String tickerCode = SynonymQueryTransformer.isTicker(q)
                     ? q
                     : SynonymQueryTransformer.getSynonym(q);
-           final String tickerName = SynonymQueryTransformer.isTickersFullname(q)
+            final String tickerName = SynonymQueryTransformer.isTickersFullname(q)
                     ? q
                     : SynonymQueryTransformer.getSynonym(q);
 
-            item.addField("tickerCode", tickerCode);
-            item.addField("tickerName", tickerName);
+            
+            item = item.addField("tickerCode", tickerCode).addField("tickerName", tickerName);
 
             result.addResult(item);
             result.setHitCount(1);

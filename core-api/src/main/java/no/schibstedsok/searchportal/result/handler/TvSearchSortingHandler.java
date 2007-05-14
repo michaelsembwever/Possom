@@ -10,8 +10,8 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.TvsearchCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * TvSearchSortingHandler sorts the result by channel, day or category
@@ -32,11 +32,10 @@ public final class TvSearchSortingHandler implements ResultHandler {
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
         final String sortBy = parameters.containsKey("userSortBy") ? ((String)parameters.get("userSortBy")) : "channel";
 
-        final TvsearchCommandConfig searchConfiguration
-                = (TvsearchCommandConfig) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
+        final TvsearchCommandConfig searchConfiguration = (TvsearchCommandConfig) cxt.getSearchConfiguration();
 
-        HashMap<String,ArrayList<SearchResultItem>> hm = new HashMap();
-        SearchResult sr = cxt.getSearchResult();
+        HashMap<String,ArrayList<ResultItem>> hm = new HashMap<String,ArrayList<ResultItem>>();
+        ResultList<ResultItem> sr = cxt.getSearchResult();
         final int resultsPerBlock = config.getResultsPerBlock();
         String field = "channel";
 
@@ -65,13 +64,13 @@ public final class TvSearchSortingHandler implements ResultHandler {
         }
 
         /* Split search result */
-        for (SearchResultItem sri : sr.getResults()) {
+        for (ResultItem sri : sr.getResults()) {
             String fieldValue = sri.getField(field);
             if (!hm.containsKey(fieldValue)) {
-                hm.put(fieldValue, new ArrayList<SearchResultItem>());
+                hm.put(fieldValue, new ArrayList<ResultItem>());
             }
 
-            List<SearchResultItem> results = hm.get(fieldValue);
+            List<ResultItem> results = hm.get(fieldValue);
 
             if (results.size() < resultsPerBlock) {
                 results.add(sri);
@@ -110,12 +109,10 @@ public final class TvSearchSortingHandler implements ResultHandler {
         }
     }
 
-    private final SearchResult joinBlocks(final Context cxt, final HashMap hm, final String modifiersId) {
+    private final ResultList<ResultItem> joinBlocks(final Context cxt, final HashMap hm, final String modifiersId) {
 
-        final TvsearchCommandConfig searchConfiguration
-                = (TvsearchCommandConfig) cxt.getSearchResult().getSearchCommand().getSearchConfiguration();
         final List<Modifier> modifiers = ((FastSearchResult) cxt.getSearchResult()).getModifiers(modifiersId);
-        final SearchResult sr = cxt.getSearchResult();
+        final ResultList<ResultItem> sr = cxt.getSearchResult();
 
         if (modifiers == null) {
             return sr;
@@ -127,7 +124,7 @@ public final class TvSearchSortingHandler implements ResultHandler {
                 break;
             }
             if (hm.containsKey(modifier.getName())) {
-                sr.getResults().addAll((List<SearchResultItem>)hm.get(modifier.getName()));
+                sr.getResults().addAll((List<ResultItem>)hm.get(modifier.getName()));
             }
             i++;
         }

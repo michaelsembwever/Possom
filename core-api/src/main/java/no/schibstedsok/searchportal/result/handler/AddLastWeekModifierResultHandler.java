@@ -4,7 +4,6 @@ package no.schibstedsok.searchportal.result.handler;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
 
 import java.text.ParseException;
@@ -13,6 +12,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * Adds a modifier to the searchResult with a count for the last week based on day modifiers.
@@ -43,7 +44,7 @@ public final class AddLastWeekModifierResultHandler implements ResultHandler {
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
         try {
-            final SearchResult searchResult = cxt.getSearchResult();
+            final ResultList<? extends ResultItem> searchResult = cxt.getSearchResult();
             if (searchResult instanceof FastSearchResult) {
                 int weekCount = 0;
                 final FastSearchResult fastResult = (FastSearchResult) searchResult;

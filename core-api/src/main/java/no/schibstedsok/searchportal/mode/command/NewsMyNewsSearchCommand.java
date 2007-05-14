@@ -3,32 +3,38 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.mode.config.NewsMyNewsCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
 
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
-public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
+/**
+ * 
+ * @author geir
+ * @version $Id$
+ */
+public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
+    
     private static final Logger LOG = Logger.getLogger(NewsMyNewsSearchCommand.class);
     private static final Pattern cookiePattern = Pattern.compile("(?:\\A|\\|)([^\\|]+)\\:{2}([^\\|]+)\\|?");
 
     /**
      * @param cxt        The context to execute in.
-     * @param parameters The search parameters to use.
      */
     public NewsMyNewsSearchCommand(Context cxt) {
         super(cxt);
     }
 
-    public SearchResult execute() {
-        NewsMyNewsCommandConfig config = getSearchConfiguration();
+    public ResultList<? extends ResultItem> execute() {
+        
+        final NewsMyNewsCommandConfig config = getSearchConfiguration();
         String myNews = (String) context.getDataModel().getJunkYard().getValue("myNews");
         LOG.debug("Cookie is: " + myNews);
         if (myNews != null && myNews.length() > 0) {
-            final SearchResult mergedResult = new BasicSearchResult(this);
+            final ResultList<ResultItem> mergedResult = new BasicSearchResult<ResultItem>();
             Matcher matcher = cookiePattern.matcher(myNews);
             int position = 0;
             int offset = getOffset();
@@ -40,7 +46,7 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
             }
 
             while (matcher.find() && position < config.getResultsToReturn()) {
-                SearchResult collectedResult;
+                ResultList<? extends ResultItem> collectedResult;
                 String commandName = null;
                 final String type = matcher.group(2);
                 if (type.equals("knippe")) {
@@ -56,20 +62,25 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                     try {
                         LOG.debug("Waiting for " + commandName);
                         collectedResult = context.getRunningQuery().getSearchResult(commandName);
-                        if (collectedResult != null && collectedResult.getResults().size() > 0) {
-                            SearchResultItem searchResultItem = collectedResult.getResults().get(0);
+                        if (collectedResult != null 
+                                && collectedResult.getResults().size() > 0
+                                && collectedResult.getResults().get(0) instanceof ResultList<?>) {
+                            
+                            ResultList<ResultItem> searchResultItem 
+                                    = (ResultList<ResultItem>) collectedResult.getResults().get(0);
+                            
                             final int lastSubPos = Math.min(collectedResult.getResults().size(), 4);
                             if (lastSubPos > 1) {
-                                final SearchResult subSearchResults = new BasicSearchResult(this);
+                                final ResultList<ResultItem> subSearchResults = new BasicSearchResult<ResultItem>();
                                 subSearchResults.setHitCount(collectedResult.getHitCount());
-                                searchResultItem.addNestedSearchResult("entries", subSearchResults);
+                                searchResultItem.addResult(subSearchResults);
                                 for (int i = 1; i < lastSubPos; i++) {
                                     subSearchResults.addResult(collectedResult.getResults().get(i));
                                 }
                             }
-                            searchResultItem.addField("type", type);
+                            searchResultItem = searchResultItem.addField("type", type);
                             if (type.equals("sak") || type.equals("person")) {
-                                searchResultItem.addField("newsCase", matcher.group(1));
+                                searchResultItem = searchResultItem.addField("newsCase", matcher.group(1));
                             }
                             mergedResult.addResult(searchResultItem);
                             LOG.debug("Collected " + searchResultItem.getField("type") + ":" + searchResultItem.getField("title"));
@@ -93,13 +104,14 @@ public class NewsMyNewsSearchCommand extends AbstractSearchCommand {
 
             return mergedResult;
         } else {
-            BasicSearchResult searchResult = new BasicSearchResult(this);
+            
+            ResultList<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
             searchResult.setHitCount(0);
             return searchResult;
         }
     }
 
-    private void setNextOffset(SearchResult searchResult, int returnedResults) {
+    private void setNextOffset(ResultList<? extends ResultItem> searchResult, int returnedResults) {
         int offset = getOffset();
         if (offset + returnedResults < searchResult.getHitCount()) {
             LOG.debug("Setting next offset to: " + (offset + returnedResults));

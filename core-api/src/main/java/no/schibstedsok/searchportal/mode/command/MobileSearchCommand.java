@@ -32,13 +32,12 @@ import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.MobileCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
@@ -64,7 +63,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
     }
 
 
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         try {
             final IMSearchFactory factory = MSearchFactory.newInstance();
             final IMSearchEngine engine = factory.createSearchEngine();
@@ -131,7 +130,7 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
 
             final IQueryResult result = mResult.getResult();
 
-            final SearchResult searchResult = new BasicSearchResult(this);
+            final ResultList<ResultItem> searchResult = new BasicSearchResult();
 
             if( null != result ){
 
@@ -144,8 +143,9 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
                     //catch nullpointerException because of unaccurate doccount
                     try {
                         final IDocumentSummary document = result.getDocument(i + 1);
-                        final SearchResultItem item = createResultItem(document);
+                        final ResultItem item = createResultItem(document);
                         searchResult.addResult(item);
+                        
                     } catch (NullPointerException e) {
                         return searchResult;
                     }
@@ -177,15 +177,16 @@ public final class MobileSearchCommand extends AbstractSearchCommand {
         return cap;
     }
 
-    private SearchResultItem createResultItem(final IDocumentSummary document) {
-        final SearchResultItem item = new BasicSearchResultItem();
+    private ResultItem createResultItem(final IDocumentSummary document) {
+        
+        ResultItem item = new BasicSearchResultItem();
 
         for (final Map.Entry<String,String> entry : cfg.getResultFields().entrySet()) {
 
                 final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
                 if (summary != null) {
-                    item.addField(entry.getValue(), summary.getSummary());
+                    item = item.addField(entry.getValue(), summary.getSummary());
                 }
         }
 

@@ -9,14 +9,17 @@
 package no.geodata.maputil;
 
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import java.util.*;
+import no.schibstedsok.searchportal.result.ResultItem;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author hanst
  */
-public class CoordHelper {
+public final class CoordHelper {
+    
+    private static final Logger LOG = Logger.getLogger(CoordHelper.class);
 
     public final static long zoom_1 = 2000;
     public final static long zoom_2 = 6000;
@@ -181,17 +184,17 @@ public class CoordHelper {
     /**
      * lopper igjennom listetreffet for å sjekke om noen av treffene inneholder koordinater
      */
-    public boolean checkCoords(final List companies) {
-        SearchResultItem company;
+    public boolean checkCoords(final List<ResultItem> companies) {
+
         for (int i = 0; i < companies.size(); i++) {
             MapPoint mp = new MapPoint();
-            company = (SearchResultItem) companies.get(i);
+            ResultItem company = companies.get(i);
             try  {
                 mp.x = Double.parseDouble(company.getField("xcoord"));
                 mp.y = Double.parseDouble(company.getField("ycoord"));
                 return true;
-            }
-            catch (Exception e) {
+            }catch (Exception e) {
+                LOG.debug(e.getMessage(), e);
             }
         }
         return false;
@@ -212,20 +215,20 @@ public class CoordHelper {
      * Extracts coordinates from a list of Company objects. Returns av vector of MapPoints.
      *
      */
-    private Vector extractMapPoints(final List companies) {
+    private Vector extractMapPoints(final List<ResultItem> companies) {
+        
         Vector mps = new Vector();
-        SearchResultItem company;
         boolean hasCoords;
         for (int i = 0; i < companies.size(); i++) {
             MapPoint mp = new MapPoint();
             hasCoords = false;
-            company = (SearchResultItem) companies.get(i);
+            ResultItem company = companies.get(i);
             try  {
                 mp.x = Double.parseDouble(company.getField("xcoord"));
                 mp.y = Double.parseDouble(company.getField("ycoord"));
                 hasCoords = true;
-            }
-            catch (Exception e) {
+            }catch (Exception e) {
+                LOG.debug(e.getMessage(), e);
             }
             if (!hasCoords) {
                 mp.x = defaultNoCoord;

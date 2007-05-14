@@ -23,7 +23,8 @@ import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.PhraseClause;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -71,11 +72,11 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
     }
 
     /** {@inherit} **/
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         
         try {
             
-            final SearchResult searchResult = new BasicSearchResult(this);
+            final ResultList<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
                 
             if(getTransformedQuery().trim().length() > 0 
                     || getAdditionalFilter().trim().length() > 0 
@@ -121,7 +122,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-            return new BasicSearchResult(this);
+            return new BasicSearchResult<ResultItem>();
 
         } catch (IOException e) {
             throw new InfrastructureException(e);
@@ -185,6 +186,7 @@ public final class YahooIdpSearchCommand extends AbstractYahooSearchCommand {
 
     /** TODO comment me. **/
     protected BasicSearchResultItem createItem(final Element result) {
+        
         final BasicSearchResultItem item = new BasicSearchResultItem();
 
         for (final Map.Entry<String,String> entry : context.getSearchConfiguration().getResultFields().entrySet()){

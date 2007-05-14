@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -48,7 +49,8 @@ import no.schibstedsok.searchportal.query.parser.QueryParserImpl;
 import no.schibstedsok.searchportal.query.token.VeryFastListQueryException;
 import no.schibstedsok.searchportal.result.Enrichment;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
@@ -88,7 +90,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     private final AnalysisRuleFactory rules;
 
     /** Map of search command IDs to SearchResult */
-    private final Map<String, Future<SearchResult>> results = new HashMap<String,Future<SearchResult>>();
+    private final Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> results 
+            = new HashMap<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>>();
 
     /** Mutext for results variable */
     private final ReadWriteLock resultsLock = new ReentrantReadWriteLock();
@@ -221,20 +224,26 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     }
 
     /** {@inheritDoc} */
-    public final SearchResult getSearchResult(final String id) throws InterruptedException, ExecutionException {
+    public final ResultList<? extends ResultItem> getSearchResult(final String id) 
+            throws InterruptedException, ExecutionException {
 
-        final Future<SearchResult> task;
+        Future<ResultList<? extends ResultItem>> task = null;
         try {
-            resultsLock.readLock().lock();
-            if (!results.containsKey(id)) {
-                return null;
+            
+            for(Map.Entry<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> entry 
+                    : results.entrySet()){
+                
+                if(id.equals(((SearchCommand)entry.getValue()).getSearchConfiguration().getName())){
+                    task = entry.getKey();
+                    break;
+                }
             }
-            task = results.get(id);
+            
         } finally {
             resultsLock.readLock().unlock();
         }
 
-        return task.get();
+        return null != task ? task.get() : null;
     }
 
     /**
@@ -253,7 +262,8 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
         try {
 
-            final Collection<Callable<SearchResult>> commands = new ArrayList<Callable<SearchResult>>();
+            final Collection<Callable<ResultList<? extends ResultItem>>> commands 
+                    = new ArrayList<Callable<ResultList<? extends ResultItem>>>();
 
             final boolean isRss = parameters.get(PARAM_OUTPUT) != null && parameters.get(PARAM_OUTPUT).equals("rss");
 
@@ -358,15 +368,16 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             // mark state that we're about to execute the sub threads
             allCancelled = commands.size() > 0;
 
-            /* Entering CS */
             try {
                 resultsLock.writeLock().lock();
                 
-                SearchCommandExecutorFactory.getController(context.getSearchMode().getExecutor())
-                        .invokeAll(commands, results, TIMEOUT);
+                results.putAll(
+                        SearchCommandExecutorFactory
+                        .getController(context.getSearchMode().getExecutor())
+                        .invokeAll(commands, TIMEOUT)
+                        );
                 
             } finally {
-                /* Leaving CS */
                 resultsLock.writeLock().unlock();
             }
 
@@ -375,7 +386,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             boolean hitsToShow = false;
 
             /* Give the commands a chance to finish its work */
-            for (Future<SearchResult> task : results.values()) {
+            for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
                 try{
                     task.get(TIMEOUT, TimeUnit.MILLISECONDS);
                     
@@ -385,7 +396,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
             }
 
             // Ensure any cancellations are properly handled
-            for(Callable<SearchResult> command : commands){
+            for(Callable<ResultList<? extends ResultItem>> command : commands){
                 allCancelled &= ((SearchCommand)command).handleCancellation();
             }
 
@@ -393,17 +404,17 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
                 final StringBuilder noHitsOutput = new StringBuilder();
 
-                for (Future<SearchResult> task : results.values()) {
+                for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
 
                     if (task.isDone() && !task.isCancelled()) {
 
                         try{
-                            final SearchResult searchResult = task.get();
+                            final ResultList<? extends ResultItem> searchResult = task.get();
                             if (searchResult != null) {
 
                                 // Information we need about and for the enrichment
-                                final SearchConfiguration config
-                                        = searchResult.getSearchCommand().getSearchConfiguration();
+                                final SearchConfiguration config 
+                                        = ((SearchCommand)results.get(task)).getSearchConfiguration();
 
                                 final String name = config.getName();
                                 final SearchTab.EnrichmentHint eHint
@@ -420,7 +431,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
                                 if( searchResult.getHitCount() <= 0 && config.isPaging() ){
                                     noHitsOutput.append("<command id=\"" + config.getName()
                                             + "\" name=\""  + config.getStatisticalName()
-                                            + "\" type=\"" + searchResult.getSearchCommand().getClass().getSimpleName()
+                                            + "\" type=\"" + config.getClass().getSimpleName()
                                             + "\"/>");
                                 }
 
@@ -460,7 +471,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     //                }
                 }  else  {
 
-                    performEnrichmentHandling(results.values());
+                    performEnrichmentHandling(results.keySet());
                 }
 
                 if( noHitsOutput.length() >0 && datamodel.getQuery().getString().length() >0 && !"NOCOUNT".equals(parameters.get("IGNORE"))){
@@ -552,7 +563,7 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return e.reportToken(token, datamodel.getQuery().getString());
     }
 
-    private void performEnrichmentHandling(final Collection<Future<SearchResult>> results)
+    private void performEnrichmentHandling(final Collection<Future<ResultList<? extends ResultItem>>> results)
             throws InterruptedException{
 
         Collections.sort(enrichments);

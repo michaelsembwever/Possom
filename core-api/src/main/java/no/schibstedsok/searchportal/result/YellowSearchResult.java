@@ -10,9 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import javax.xml.parsers.DocumentBuilder;
-
-import no.schibstedsok.searchportal.site.config.*;
-import no.schibstedsok.searchportal.query.Query;
 import no.schibstedsok.searchportal.result.handler.PhoneNumberChooser;
 import no.schibstedsok.searchportal.result.handler.PhoneNumberFormatter;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
@@ -21,15 +18,20 @@ import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
 
-import no.schibstedsok.searchportal.mode.command.SearchCommand;
+import no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.result.handler.PhoneNumberChooserResultHandlerConfig;
 import no.schibstedsok.searchportal.result.handler.PhoneNumberFormatterResultHandlerConfig;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.BytecodeLoader;
+import no.schibstedsok.searchportal.site.config.UrlResourceLoader;
 import org.apache.log4j.Logger;
 
-public final class YellowSearchResult extends FastSearchResult {
+public final class YellowSearchResult<T extends ResultItem> extends FastSearchResult<T> {
 
     private int pseudoLocalHitCount;
-    private final Collection<SearchResultItem> pseudoLocalResults = new ArrayList<SearchResultItem>();
+    private final Collection<T> pseudoLocalResults = new ArrayList<T>();
     private final FastSearchResult localResult;
     private final FastSearchResult pseudoLocalResult;
     private final boolean local;
@@ -40,7 +42,7 @@ public final class YellowSearchResult extends FastSearchResult {
     private static final Logger LOG = Logger.getLogger(YellowSearchResult.class);
 
     public YellowSearchResult(
-            final SearchCommand command, 
+            final AbstractSimpleFastSearchCommand command, 
             final FastSearchResult localResult, 
             final FastSearchResult pseudoLocalResult, 
             final FastSearchResult top3, 
@@ -59,7 +61,7 @@ public final class YellowSearchResult extends FastSearchResult {
         final List resultsToAdd = new ArrayList();
 
         for (final Iterator iter = top3.getResults().iterator(); iter.hasNext();) {
-            final SearchResultItem item = (SearchResultItem) iter.next();
+            final ResultItem item = (ResultItem) iter.next();
             
             if (Integer.parseInt(item.getField("rank")) > 100000) {
 
@@ -112,11 +114,11 @@ public final class YellowSearchResult extends FastSearchResult {
         return pseudoLocalHitCount;
     }
 
-    public Collection<SearchResultItem> getPseudoLocalResults() {
+    public Collection<T> getPseudoLocalResults() {
         return pseudoLocalResults;
     }
 
-    public void addPseudoLocalResult(final SearchResultItem item) {
+    public void addPseudoLocalResult(final T item) {
         pseudoLocalResults.add(item);
     }
 
@@ -144,8 +146,9 @@ public final class YellowSearchResult extends FastSearchResult {
         return getDelegator().getField(name);
     }
 
-    public void addField(final String name, final String value) {
+    public YellowSearchResult addField(final String name, final String value) {
         getDelegator().addField(name, value);
+        return this;
     }
     
     public FastSearchResult getLocalResult() {
@@ -172,14 +175,15 @@ public final class YellowSearchResult extends FastSearchResult {
         return hits;
     }
 
-    /** Not a unit testable method because of the UrlResourceLoader calls. **/
-    public Collection getSecondaryHits() {
+    /** Not a unit testable method because of the UrlResourceLoader calls. 
+     * @deprecated creates a malformed ResultHandler.Context. Needs to be rewritten.
+     **/
+    public List<ResultItem> getSecondaryHits() {
 
         final ResultHandler.Context resultHandlerContext = new ResultHandler.Context() {
-                public SearchResult getSearchResult() {
+                public ResultList<ResultItem> getSearchResult() {
                     return pseudoLocalResult;
                 }
-
                 public Site getSite() {
                     return Site.DEFAULT; // FIXME !!! Needs to work on a per Skin basis.
                 }
@@ -190,7 +194,6 @@ public final class YellowSearchResult extends FastSearchResult {
                     
                     return UrlResourceLoader.newPropertiesLoader(siteCxt, resource, properties);
                 }
-
                 public DocumentLoader newDocumentLoader(
                         final SiteContext siteCxt, 
                         final String resource,  
@@ -198,24 +201,17 @@ public final class YellowSearchResult extends FastSearchResult {
                     
                     return UrlResourceLoader.newDocumentLoader(siteCxt, resource, builder);
                 }
-
-            public BytecodeLoader newBytecodeLoader(SiteContext context, String className) {
-                return UrlResourceLoader.newBytecodeLoader(context, className);
-            }
-
-                public String getQueryString() {
-                    return query;
-                }
-
-                public Query getQuery() {
-                    return getSearchCommand().getRunningQuery().getQuery();
-                }
-
+                public BytecodeLoader newBytecodeLoader(final SiteContext context, final String className) {
+                    return UrlResourceLoader.newBytecodeLoader(context, className);
+                }       
                 public void addSource(final Modifier modifier) {
-                    getSearchCommand().getRunningQuery().addSource(modifier);
+                    command.getRunningQuery().addSource(modifier);
                 }
                 public SearchTab getSearchTab(){
-                    return getSearchCommand().getRunningQuery().getSearchTab();
+                    return command.getRunningQuery().getSearchTab();
+                }
+                public SearchConfiguration getSearchConfiguration(){
+                    return null; // better not be used !!
                 }
             };
 
@@ -227,10 +223,10 @@ public final class YellowSearchResult extends FastSearchResult {
 
         final Iterator pResults = pseudoLocalResult.getResults().iterator();
 
-        final Collection secondaryHits = new ArrayList();
+        final List<ResultItem> secondaryHits = new ArrayList<ResultItem>();
 
         while (pResults.hasNext() && localResult.getHitCount() + secondaryHits.size() < 10) {
-            final SearchResultItem item = (SearchResultItem) pResults.next();
+            final ResultItem item = (ResultItem) pResults.next();
 
             if (!localResult.getResults().contains(item)) {
                 secondaryHits.add(item);

@@ -10,8 +10,8 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * A search command that can be used to generate static HTML search results. No
@@ -21,17 +21,17 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  */
 public class StaticSearchCommand extends AbstractSearchCommand {
 
-    private static final SearchResultItem dummyItem
-            = new BasicSearchResultItem();
+    private static final ResultItem DUMMYITEM = new BasicSearchResultItem();
 
     public StaticSearchCommand(final Context cxt) {
 
         super(cxt);
     }
 
-    public SearchResult execute() {
-        SearchResult result = new BasicSearchResult(this);
-        result.addResult(dummyItem);
+    public ResultList<? extends ResultItem> execute() {
+        
+        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
+        result.addResult(DUMMYITEM);
         result.setHitCount(1);
         return result;
     }

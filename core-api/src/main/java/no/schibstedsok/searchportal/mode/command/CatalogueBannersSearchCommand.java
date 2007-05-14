@@ -17,7 +17,8 @@ import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OperationClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Query;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
@@ -85,7 +86,7 @@ public class CatalogueBannersSearchCommand extends AdvancedFastSearchCommand {
      * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#execute
      */
     @Override
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         return super.execute();
     }
     

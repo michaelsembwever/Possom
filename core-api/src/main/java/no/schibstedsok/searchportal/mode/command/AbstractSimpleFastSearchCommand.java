@@ -39,8 +39,6 @@ import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
 import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.util.Channels;
 import no.schibstedsok.searchportal.util.ModifierDateComparator;
@@ -62,6 +60,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.WeightedSuggestion;
 
 /**
@@ -379,7 +379,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
     /**
      * @inherit *
      */
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         try {
             if (getNavigators() != null) {
@@ -424,7 +424,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
             LOG.info(DEBUG_QUERY_DUMP + fastQuery);
 
-            final FastSearchResult searchResult = collectResults(result);
+            final FastSearchResult<? extends ResultItem> searchResult = collectResults(result);
 
             if (getSearchConfiguration().isSpellcheck()) {
                 collectSpellingSuggestions(result, searchResult);
@@ -447,8 +447,8 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 if (collapseId != null && !collapseId.equals("")) {
 
                     if (searchResult.getResults().size() > 0) {
-                        final SearchResultItem itm = searchResult.getResults().get(0);
-                        final URL url = new URL(itm.getField("url"));
+                        final ResultItem itm = searchResult.getResults().get(0);
+                        final URL url = new URL((String)itm.getField("url"));
                         searchResult.addField("collapsedDomain", url.getHost());
                     }
                 }
@@ -666,7 +666,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
             final IDocumentSummary document = result.getDocument(i + 1);
             //catch nullpointerException because of unaccurate doccount
             try {
-                final SearchResultItem item = createResultItem(document);
+                final ResultItem item = createResultItem(document);
                 searchResult.addResult(item);
             } catch (NullPointerException e) {
                 if (LOG.isDebugEnabled()) LOG.debug("Error finding document " + e);
@@ -676,15 +676,15 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         return searchResult;
     }
 
-    private SearchResultItem createResultItem(final IDocumentSummary document) {
+    private ResultItem createResultItem(final IDocumentSummary document) {
 
-        final SearchResultItem item = new BasicSearchResultItem();
+        ResultItem item = new BasicSearchResultItem();
 
         for (final Map.Entry<String, String> entry : getSearchConfiguration().getResultFields().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
             if (summary != null) {
-                item.addField(entry.getValue(), summary.getSummary());
+                item = item.addField(entry.getValue(), summary.getSummary());
             }
         }
 
@@ -696,9 +696,9 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
                 final String moreHits = document.getSummaryField("morehits").getSummary();
 
                 if (moreHits.equals("1")) {
-                    item.addField("moreHits", "true");
-                    item.addField("collapseParameter", COLLAPSE_PARAMETER);
-                    item.addField("collapseId", document.getSummaryField("collapseid").getSummary());
+                    item = item.addField("moreHits", "true")
+                            .addField("collapseParameter", COLLAPSE_PARAMETER)
+                            .addField("collapseId", document.getSummaryField("collapseid").getSummary());
                 }
             }
         }

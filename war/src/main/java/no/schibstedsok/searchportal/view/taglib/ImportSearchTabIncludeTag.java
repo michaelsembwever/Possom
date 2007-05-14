@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.util.PagingDisplayHelper;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import org.apache.log4j.Logger;
 

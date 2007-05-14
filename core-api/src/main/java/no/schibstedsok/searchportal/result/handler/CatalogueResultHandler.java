@@ -10,7 +10,8 @@ import no.schibstedsok.searchportal.result.CatalogueSearchResultItem;
 import no.schibstedsok.searchportal.result.ProductResultItem;
 import no.schibstedsok.searchportal.result.ProductSearchResult;
 import no.schibstedsok.searchportal.result.ProductSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
@@ -49,7 +50,7 @@ public final class CatalogueResultHandler implements ResultHandler {
 
         final String jndi = (String) siteConf.getProperties().get("alfa_remote_service_jndi_name");
 
-		final SearchResult searchResult = cxt.getSearchResult();
+		final ResultList<ResultItem> searchResult = cxt.getSearchResult();
 
                 
 		if (searchResult.getResults().iterator().hasNext()) {

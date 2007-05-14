@@ -13,13 +13,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.SearchCommandFactory;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.executor.SearchCommandExecutorFactory;
+import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.run.RunningQuery;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.run.RunningQueryImpl;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import org.apache.log4j.Logger;
 import org.testng.annotations.Test;
@@ -118,7 +117,8 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         final RunningTestQuery rq = new RunningTestQuery(rqCxt, query);
         rqCxt.getDataModel().getJunkYard().getValues().put("query", rq);
 
-        final Collection<Callable<SearchResult>> commands = new ArrayList<Callable<SearchResult>>();
+        final Collection<Callable<ResultList<? extends ResultItem>>> commands 
+                = new ArrayList<Callable<ResultList<? extends ResultItem>>>();
 
         for(SearchConfiguration conf : rqCxt.getSearchMode().getSearchConfigurations()){
             
@@ -134,7 +134,7 @@ public final class AllSearchCommandsTest extends AbstractSearchCommandTest {
         try{
 
             SearchCommandExecutorFactory.getController(rqCxt.getSearchMode().getExecutor())
-                    .invokeAll(commands, new HashMap<String, Future<SearchResult>>(), Integer.MAX_VALUE);
+                    .invokeAll(commands, Integer.MAX_VALUE);
             
         } catch (InterruptedException ex) {
             throw new AssertionError(ex);

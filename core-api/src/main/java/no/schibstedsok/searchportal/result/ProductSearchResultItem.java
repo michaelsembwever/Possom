@@ -25,7 +25,7 @@ public class ProductSearchResultItem implements ProductResultItem {
         return fieldValue;
     }
 
-    public Object getFieldAsObject(final String field) {
+    public Object getObjectField(final String field) {
         return fields.get(field);
     }
 

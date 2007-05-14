@@ -8,7 +8,9 @@ import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 
 /**
@@ -30,10 +32,10 @@ public final class SumFastModifiers implements ResultHandler {
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        final SearchResult result = cxt.getSearchResult();
+        final ResultList<? extends ResultItem> result = cxt.getSearchResult();
         if (result.getHitCount() >= 0) {
 
-            final FastSearchResult fastResult = (FastSearchResult) result;
+            final FastSearchResult<ResultItem> fastResult = (FastSearchResult<ResultItem>) result;
 
             final Navigator navigator = fastResult.getNavigatedTo(config.getNavigatorName());
 

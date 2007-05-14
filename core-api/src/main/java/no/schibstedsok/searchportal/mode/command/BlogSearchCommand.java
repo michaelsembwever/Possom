@@ -14,8 +14,8 @@ import java.util.List;
 import no.schibstedsok.searchportal.query.UrlClause;
 import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.result.BlogSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  *
@@ -29,6 +29,7 @@ import no.schibstedsok.searchportal.result.SearchResultItem;
  * (content:sesam or extended:sesam) and (content:bloggsøk or extended:bloggsøk)
  *
  * @author maek
+ * @version $Id$
  */
 public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
@@ -65,13 +66,16 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
 
     // Public --------------------------------------------------------
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
     	
-    	List<BlogSearchResultItem> blogSearchResultItems = new ArrayList<BlogSearchResultItem>();
-        final SearchResult result = super.execute();
+    	final List<BlogSearchResultItem> blogSearchResultItems = new ArrayList<BlogSearchResultItem>();
+        final ResultList<ResultItem> result = (ResultList<ResultItem>) super.execute();
         
-        for(SearchResultItem item : result.getResults()) {
-     	    BlogSearchResultItem blogResult = new BlogSearchResultItem();
+        for(ResultItem i : result.getResults()) {
+            
+            ResultItem item = i;
+     	    
+            BlogSearchResultItem blogResult = new BlogSearchResultItem();
             String publishedTime = item.getField("publishedtime");
 
     	    for (Object o : item.getFieldNames()) {
@@ -85,7 +89,8 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
             }
 
             // linkTitle, url, creator, comments, body, moreHits, collapseId, fcocount
-            item.addField("publishedtime", publishedTime);
+            item = item.addField("publishedtime", publishedTime);
+            
             blogResult.setParentUrl(item.getField("parenturl"));
             blogResult.setDisplayDate(publishedTime);
             blogResult.setBlogTitle(item.getField("title"));
@@ -99,11 +104,12 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
             blogSearchResultItems.add(blogResult);
             
+            result.replaceResult(i, item);
         }
 
         // Dont understand this?
         if (getParameter("collapse") != null && !getParameter("collapse").equals("")) {
-            final SearchResultItem item = result.getResults().get(0);
+            final ResultItem item = result.getResults().get(0);
             String publishedTime = item.getField("publishedtime");
             if (isEpoch(publishedTime)) {
             	publishedTime = item.getField("httpheaderdate");

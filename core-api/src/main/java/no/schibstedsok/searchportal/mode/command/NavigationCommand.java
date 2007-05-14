@@ -5,7 +5,6 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObjectSupport;
 import no.schibstedsok.searchportal.mode.config.NavigationCommandConfig;
 import no.schibstedsok.searchportal.result.FastSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
 import org.apache.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
@@ -16,13 +15,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * This is a command to help generating navigation urls in the view. I got tired of all
  * the URL handling velocity code. Some of the effects from this is virtually impossible to
  * code in velocity.
  * <p/>
- * This should be a multiResult resulthandler, but right now this just a waiting searchCommand.
+ * TODO This should be a multiResult resulthandler, but right now this just a waiting searchCommand.
  * Usually there will be no real waiting since the calls on the results occur from velocity.
  * <p/>
  * As a bonus from using this, you don't need to data-model the commands that only are
@@ -30,7 +32,8 @@ import java.util.concurrent.ExecutionException;
  *
  * @author Geir H. Pettersen(T-Rank)
  */
-public class NavigationCommand extends AbstractSearchCommand {
+public final class NavigationCommand extends AbstractSearchCommand {
+    
     private static final Logger LOG = Logger.getLogger(NavigationCommand.class);
 
     /**
@@ -40,7 +43,7 @@ public class NavigationCommand extends AbstractSearchCommand {
         super(cxt);
     }
 
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         NavigationCommandConfig config = getSearchConfiguration();
         return new ExtendedNavigationSearchResult(this, config.getExtendedNavigationConfig(), context);
     }
@@ -50,30 +53,66 @@ public class NavigationCommand extends AbstractSearchCommand {
         return (NavigationCommandConfig) super.getSearchConfiguration();
     }
 
-    public static class ExtendedNavigationSearchResult extends FastSearchResult {
-        private ExtendedNavigation extendedNavigation;
+    /**
+     * 
+     * @param T 
+     */
+    public static class ExtendedNavigationSearchResult<T extends ResultItem> extends BasicSearchResult<T> {
+        
+        private final ExtendedNavigation extendedNavigation;
 
 
-        public ExtendedNavigationSearchResult(NavigationCommand command, NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig, Context context) {
-            super(command);
+        /**
+         * 
+         * @param command 
+         * @param extendedNavigationConfig 
+         * @param context 
+         */
+        public ExtendedNavigationSearchResult(
+                final NavigationCommand command, 
+                final NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig, 
+                final Context context) {
+            
+            super();
             this.extendedNavigation = new ExtendedNavigation(extendedNavigationConfig, context);
         }
 
+        /**
+         * 
+         * @return 
+         */
         public ExtendedNavigation getExtendedNavigation() {
             return extendedNavigation;
         }
     }
 
-    public static class ExtendedNavigation {
-        private NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig;
-        private Context context;
+    /**
+     * 
+     */
+    public static final class ExtendedNavigation {
+        
+        private final NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig;
+        private final Context context;
 
 
-        public ExtendedNavigation(NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig, Context context) {
+        /**
+         * 
+         * @param extendedNavigationConfig 
+         * @param context 
+         */
+        public ExtendedNavigation(
+                final NavigationCommandConfig.ExtendedNavigationConfig extendedNavigationConfig, 
+                final Context context) {
+            
             this.extendedNavigationConfig = extendedNavigationConfig;
             this.context = context;
         }
 
+        /**
+         * 
+         * @param id 
+         * @return 
+         */
         public NavigationCommandConfig.Navigation getNavigation(String id) {
             return extendedNavigationConfig.getNavigationMap().get(id);
         }
@@ -93,7 +132,7 @@ public class NavigationCommand extends AbstractSearchCommand {
                     List<ExtendedNavigator> extendedNavigators = new ArrayList<ExtendedNavigator>();
                     FastSearchResult fsr = null;
                     if (navEntry.getCommandName() != null) {
-                        SearchResult searchResult = context.getRunningQuery().getSearchResult(navEntry.getCommandName());
+                        ResultList<? extends ResultItem> searchResult = context.getRunningQuery().getSearchResult(navEntry.getCommandName());
                         if (searchResult instanceof FastSearchResult) {
                             fsr = (FastSearchResult) searchResult;
                             List<Modifier> modifiers = fsr.getModifiers(navEntry.isRealNavigator() ? navEntry.getField() : name);
@@ -128,7 +167,12 @@ public class NavigationCommand extends AbstractSearchCommand {
         }
 
 
-        private void getOptionNavigators(NavigationCommandConfig.Nav navEntry, FastSearchResult fsr, List<ExtendedNavigator> extendedNavigators, StringDataObject selectedValue) {
+        private void getOptionNavigators(
+                final NavigationCommandConfig.Nav navEntry, 
+                final FastSearchResult fsr, 
+                final List<ExtendedNavigator> extendedNavigators, 
+                StringDataObject selectedValue) {
+            
             // Only used by getNavigators. Mainly to split code.
             if (extendedNavigators.size() > 0 && navEntry.getOptions().size() > 0) {
                 // Navigators already collected. Options is override
@@ -184,17 +228,28 @@ public class NavigationCommand extends AbstractSearchCommand {
          * @param value     the specific field you are using
          * @return a url fragemt to use
          */
-        public String getUrlFragment(String navigator, String value) {
+        public String getUrlFragment(final String navigator, final String value) {
             NavigationCommandConfig.Nav navEntry = extendedNavigationConfig.getNavMap().get(navigator);
             return getUrlFragment(navEntry, value);
         }
 
-        private String getUrlFragment(NavigationCommandConfig.Nav navEntry, String value) {
+        private String getUrlFragment(final NavigationCommandConfig.Nav navEntry, final String value) {
             return getUrlFragment(navEntry, value, null);
         }
 
-        public String getUrlFragment(NavigationCommandConfig.Nav navEntry, String value, String navigatorName) {
-            StringBuilder sb = new StringBuilder();
+        /**
+         * 
+         * @param navEntry 
+         * @param value 
+         * @param navigatorName 
+         * @return 
+         */
+        public String getUrlFragment(
+                final NavigationCommandConfig.Nav navEntry, 
+                final String value, 
+                final String navigatorName) {
+            
+            final StringBuilder sb = new StringBuilder();
             String tab = navEntry.getTab();
             if (tab == null) {
                 tab = context.getDataModel().getParameters().getValue("c").getUtf8UrlEncoded();
@@ -223,14 +278,23 @@ public class NavigationCommand extends AbstractSearchCommand {
             return sb.toString();
         }
 
-        private void addNavigationFragments(NavigationCommandConfig.Navigation navigation, StringBuilder sb, NavigationCommandConfig.Nav navEntry) {
+        private void addNavigationFragments(
+                final NavigationCommandConfig.Navigation navigation, 
+                final StringBuilder sb, 
+                final NavigationCommandConfig.Nav navEntry) {
+            
             final Set<String> fieldFilterSet = new HashSet<String>();
             for (NavigationCommandConfig.Nav nav : navigation.getNavList()) {
                 addNavigationFragment(fieldFilterSet, nav, sb, navEntry);
             }
         }
 
-        private void addNavigationFragment(Set<String> fieldFilterSet, NavigationCommandConfig.Nav nav, StringBuilder sb, NavigationCommandConfig.Nav navEntry) {
+        private void addNavigationFragment(
+                final Set<String> fieldFilterSet, 
+                final NavigationCommandConfig.Nav nav, 
+                final StringBuilder sb, 
+                final NavigationCommandConfig.Nav navEntry) {
+            
             StringDataObject fieldValue = context.getDataModel().getParameters().getValue(nav.getField());
             if (!fieldFilterSet.contains(nav.getField())) {
                 addPreviousField(fieldValue, sb, navEntry, nav.getField());
@@ -249,7 +313,12 @@ public class NavigationCommand extends AbstractSearchCommand {
             }
         }
 
-        private void addPreviousField(StringDataObject fieldValue, StringBuilder sb, NavigationCommandConfig.Nav navEntry, String fieldName) {
+        private void addPreviousField(
+                StringDataObject fieldValue, 
+                final StringBuilder sb, 
+                final NavigationCommandConfig.Nav navEntry, 
+                final String fieldName) {
+            
             if (fieldValue != null && addFragment(sb, navEntry, fieldName, fieldValue.getString())) {
                 fieldValue = context.getDataModel().getParameters().getValue("nav_" + fieldName);
                 if (fieldValue != null) {
@@ -258,7 +327,12 @@ public class NavigationCommand extends AbstractSearchCommand {
             }
         }
 
-        private boolean addFragment(StringBuilder sb, NavigationCommandConfig.Nav nav, String id, String value) {
+        private boolean addFragment(
+                final StringBuilder sb, 
+                final NavigationCommandConfig.Nav nav, 
+                final String id, 
+                final String value) {
+            
             if (!nav.getNavigation().getResetNavSet().contains(id)) {
                 sb.append('&').append(enc(id)).append('=').append(enc(value));
                 return true;
@@ -266,7 +340,7 @@ public class NavigationCommand extends AbstractSearchCommand {
             return false;
         }
 
-        private void addParentFragment(StringBuilder sb, NavigationCommandConfig.Nav navEntry) {
+        private void addParentFragment(final StringBuilder sb, final NavigationCommandConfig.Nav navEntry) {
             NavigationCommandConfig.Nav parentNav = navEntry.getParentNav();
             if (parentNav != null) {
                 StringDataObject fieldValue = context.getDataModel().getParameters().getValue(parentNav.getField());
@@ -275,7 +349,8 @@ public class NavigationCommand extends AbstractSearchCommand {
             }
         }
 
-        private String enc(String str) {
+        private String enc(final String str) {
+            
             try {
                 return URLEncoder.encode(str, "UTF-8");
             } catch (UnsupportedEncodingException e) {
@@ -288,38 +363,69 @@ public class NavigationCommand extends AbstractSearchCommand {
     /**
      * This is the interface class to velocity.
      */
-    public static class ExtendedNavigator {
+    public static final class ExtendedNavigator {
+        
         private String name;
         private String urlFragment;
         private int count;
         private boolean selected = false;
 
-        public ExtendedNavigator(String displayName, String urlFragment, int count) {
+        /**
+         * 
+         * @param displayName 
+         * @param urlFragment 
+         * @param count 
+         */
+        public ExtendedNavigator(final String displayName, final String urlFragment, final int count) {
             this.name = displayName;
             this.urlFragment = urlFragment;
             this.count = count;
         }
 
-        public void setSelected(boolean selected) {
+        /**
+         * 
+         * @param selected 
+         */
+        public void setSelected(final boolean selected) {
             this.selected = selected;
         }
 
+        /**
+         * 
+         * @return 
+         */
         public boolean isSelected() {
             return selected;
         }
 
+        /**
+         * 
+         * @return 
+         */
         public String getName() {
             return name;
         }
 
-        public void setName(String name) {
+        /**
+         * 
+         * @param name 
+         */
+        public void setName(final String name) {
             this.name = name;
         }
 
+        /**
+         * 
+         * @return 
+         */
         public String getUrlFragment() {
             return urlFragment;
         }
 
+        /**
+         * 
+         * @return 
+         */
         public int getCount() {
             return count;
         }

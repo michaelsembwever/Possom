@@ -2,7 +2,6 @@
 package no.schibstedsok.searchportal.result.handler;
 
 
-import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.BasicSuggestion;
 import org.apache.log4j.Logger;
 import java.util.Collections;
@@ -11,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.WeightedSuggestion;
 
 
@@ -50,7 +51,7 @@ public final class SpellingSuggestionChooser implements ResultHandler {
      */
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        final SearchResult result = cxt.getSearchResult();
+        final ResultList<ResultItem> result = cxt.getSearchResult();
         
         final Map<String,List<WeightedSuggestion>> weightedSuggestionsMap
                 = ((BasicSearchResult)result).getSpellingSuggestionsMap();

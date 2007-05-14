@@ -4,27 +4,37 @@
  *
  * Created on 24. august 2006, 15:23
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
  */
 
 package no.schibstedsok.searchportal.result;
 
+import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.mode.command.SearchCommand;
 
 /**
  *
+ * @param T 
  * @author SSTHKJER
+ * @version $Id$
  */
-public class PlatefoodSearchResult extends BasicSearchResult {
+public final class PlatefoodSearchResult<T extends ResultItem> extends BasicSearchResult<T> {
     
     private boolean ppcTopListQuery = false;
 
+    /**
+     * 
+     * @param cmd 
+     * @param top 
+     */
     public PlatefoodSearchResult(final SearchCommand cmd, final boolean top) {
-        super(cmd);
+        super();
         ppcTopListQuery = top;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public boolean isTopListQuery() {
         return ppcTopListQuery;
     }

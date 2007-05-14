@@ -4,7 +4,8 @@ package no.schibstedsok.searchportal.result.handler;
 import no.schibstedsok.searchportal.result.Navigator;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 
 
@@ -29,7 +30,7 @@ public final class AddDocCountModifier implements ResultHandler {
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
-        final SearchResult result = cxt.getSearchResult();
+        final ResultList<ResultItem> result = cxt.getSearchResult();
         final Navigator navigator = new Navigator();
         final SearchTab.NavigatorHint hint = cxt.getSearchTab().getNavigationHint(config.getModifierName());
         if( hint != null ){

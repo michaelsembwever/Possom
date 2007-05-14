@@ -9,22 +9,19 @@ import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.searchportal.datamodel.DataModelContext;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.mode.config.SearchConfigurationContext;
-import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.site.config.ResourceContext;
-import no.schibstedsok.searchportal.mode.command.*;
-import no.schibstedsok.searchportal.query.QueryContext;
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngineContext;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryContext;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.site.SiteContext;
 
 /** Behavour requirements for any implementation Search Command.
  * 
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
  */
-public interface SearchCommand extends Callable<SearchResult> {
+public interface SearchCommand extends Callable<ResultList<? extends ResultItem>> {
 
     /** Being a factory for all the commands - it propagates all the contextual needs of the underlying commands it
      * creates.

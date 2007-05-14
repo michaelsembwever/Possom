@@ -4,10 +4,8 @@ package no.schibstedsok.searchportal.result.handler;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 
 /**
@@ -31,8 +29,7 @@ public final class DiscardOldNewsResultHandler implements ResultHandler {
     public void handleResult(final Context cxt, final DataModel datamodel) {
 
 
-        for (final Iterator iterator = cxt.getSearchResult().getResults().iterator(); iterator.hasNext();) {
-            final SearchResultItem searchResultItem = (SearchResultItem) iterator.next();
+        for (ResultItem searchResultItem : cxt.getSearchResult().getResults()) {
 
             String docTime = searchResultItem.getField(sourceField);
 
@@ -43,7 +40,7 @@ public final class DiscardOldNewsResultHandler implements ResultHandler {
                     final long age = System.currentTimeMillis() - df.parse(docTime).getTime();
 
                     if (age > maxAgeInMilliseconds) {
-                        iterator.remove();
+                        cxt.getSearchResult().removeResult(searchResultItem);
                     }
 
                 } catch (ParseException e) {

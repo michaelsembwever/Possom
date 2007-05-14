@@ -5,14 +5,15 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.util.GeoSearchUtil;
 
 import org.apache.log4j.Logger;
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
  * Search command responsible for address search.
  * 
  * @author <a href="mailto:anders@sesam.no">Anders Johan Jamtli</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
     
@@ -39,21 +40,22 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
     /**
      * @see no.schibstedsok.searchportal.mode.command.AbstractSearchCommand#execute()
      */
-    public final SearchResult execute() {
-        SearchResult sr = super.execute();
+    public final ResultList<? extends ResultItem> execute() {
+        
+        final ResultList<ResultItem> sr = (ResultList<ResultItem>) super.execute();
 
         if (getSearchConfiguration().isCollapsing()) {
             String prevCollapseId = "";
-            for (SearchResultItem item : sr.getResults()) {
+            for (ResultItem item : sr.getResults()) {
                 if (item.getField("collapseid").equals(prevCollapseId)) {
                     sr.getResults().remove(item);
                 } else if (item.getField("streetHash") != null) {
-                    final Map<String,String> streetNumbers = new LinkedHashMap<String,String>();
+                    final HashMap<String,String> streetNumbers = new LinkedHashMap<String,String>();
                     for (String record : item.getField("streetHash").split(";")) {
                         final String[] values = record.split(":");
                         streetNumbers.put(values[0], values[1]);
                     }
-                    item.addObjectField("streetHashList", streetNumbers);
+                    sr.replaceResult(item, item.addObjectField("streetHashList", streetNumbers));
                 }
             }
         }
@@ -63,6 +65,7 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
     
     /**
      * If the search is a GEO search, add required GEO search parameters.
+     * @param params 
      * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#setAdditionalParameters(ISearchParameters)
      */
     @Override
@@ -85,6 +88,7 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
  
     /**
      * Override sortby when the search is  a geo search.
+     * @return 
      * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#getSortBy()
      */
     @Override

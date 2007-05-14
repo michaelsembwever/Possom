@@ -6,7 +6,6 @@ import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.mode.config.PictureCommandConfig;
 import no.schibstedsok.searchportal.query.NotClause;
 import org.apache.log4j.Logger;
@@ -21,6 +20,8 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  *
@@ -55,7 +56,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     }
 
     /** {@inherit} */
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         String query = getTransformedQuery();
         final PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
@@ -77,7 +78,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
         LOG.info("Using " + url);
 
-        final BasicSearchResult searchResult = new BasicSearchResult(this);
+        final BasicSearchResult<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
 
         if( port > 0 ){
 

@@ -33,7 +33,6 @@ import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerFactory;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerFactory;
@@ -47,6 +46,8 @@ import org.apache.log4j.MDC;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
@@ -141,7 +142,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @return
      */
-    public abstract SearchResult execute();
+    public abstract ResultList<? extends ResultItem> execute();
 
     /**
      * Returns the query as it is after the query transformers and command specific query builder
@@ -202,7 +203,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      *
      * @return
      */
-    public SearchResult call() {
+    public ResultList<? extends ResultItem> call() {
 
         MDC.put(Site.NAME_KEY, datamodel.getSite().getSite().getName());
         thread = Thread.currentThread();
@@ -221,7 +222,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             LOG.trace("call()");
 
             performQueryTransformation();
-            final SearchResult result = performExecution(getQuery());
+            final ResultList<? extends ResultItem> result = performExecution(getQuery());
             performResultHandling(result);
 
 
@@ -231,7 +232,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
         } catch (RuntimeException rte) {
             LOG.error(ERROR_RUNTIME, rte);
-            return new BasicSearchResult(this);
+            return new BasicSearchResult<ResultItem>();
 
         } finally {
             // restore thread name
@@ -254,7 +255,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                 thread.interrupt();
                 thread = null;
             }
-            performResultHandling(new BasicSearchResult(this));
+            performResultHandling(new BasicSearchResult());
         }
         return !completed;
     }
@@ -412,7 +413,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param queryToUse
      * @return
      */
-    protected final SearchResult performExecution(final Query queryToUse) {
+    protected final ResultList<? extends ResultItem> performExecution(final Query queryToUse) {
 
         final StopWatch watch = new StopWatch();
         watch.start();
@@ -444,7 +445,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     + "; filter:" + filter
                     + "; tabKey:" + parameters.get("c") + ';');
 
-            final SearchResult result = executeQuery ? execute() : new BasicSearchResult(this);
+            final ResultList<? extends ResultItem> result = executeQuery 
+                    ? execute() 
+                    : new BasicSearchResult<ResultItem>();
+            
             hitCount = result.getHitCount();
 
             LOG.debug("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
@@ -469,7 +473,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     /**
      * TODO comment me. *
      */
-    protected final void performResultHandling(final SearchResult result) {
+    protected final void performResultHandling(final ResultList<? extends ResultItem> result) {
 
         // add some general properties first from the command
         //  if we've somehow blanked out the query altogether then revert to the user's origianl query string
@@ -486,7 +490,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
             final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
                     ResultHandler.Context.class,
                     new BaseContext() {
-                        public SearchResult getSearchResult() {
+                        public ResultList<? extends ResultItem> getSearchResult() {
                             return result;
                         }
 

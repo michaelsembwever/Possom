@@ -14,15 +14,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.URLEncoder;
-import java.util.Map;
 import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.PlatefoodPpcCommandConfig;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.PlatefoodSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,7 +62,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
      *
      * @return the search result
      */
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
@@ -103,7 +102,7 @@ public final class PlatefoodPPCSearchCommand extends AbstractYahooSearchCommand 
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-            return new BasicSearchResult(this);
+            return new BasicSearchResult<ResultItem>();
 
         } catch (IOException e) {
             throw new InfrastructureException(e);

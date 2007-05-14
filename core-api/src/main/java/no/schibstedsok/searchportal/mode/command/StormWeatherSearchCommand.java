@@ -6,26 +6,23 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Iterator;
-import java.util.Map;
 import no.schibstedsok.searchportal.InfrastructureException;
 import no.schibstedsok.searchportal.mode.config.StormweatherCommandConfig;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
-import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * @author <a href="mailto:lars.johansson@conduct.no">Lars Johansson</a>
- * @version <tt>$Revision: 0 $</tt>
+ * @version <tt>$Id$</tt>
  */
 public final class StormWeatherSearchCommand extends FastSearchCommand {
 
@@ -39,10 +36,6 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
     private final HTTPClient client = HTTPClient.instance(STORM_WEATHER_SEARCH_HOST, 80);
 
     /**
-     * @param query         The query to act on.
-     * @param configuration The search configuration associated with this
-     *                      command.
-     * @param parameters    Command parameters.
      */
     public StormWeatherSearchCommand(final Context cxt) {
 
@@ -52,8 +45,8 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
     }
 
     /** TODO comment me. **/
-    protected FastSearchResult executeFastCommand(){
-        return (FastSearchResult) super.execute();
+    protected ResultList<ResultItem> executeFastCommand(){
+        return (ResultList<ResultItem>) super.execute();
     }
 
     /**
@@ -69,12 +62,13 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      *
      *
      */
-    public SearchResult execute() {
+    @Override
+    public ResultList<? extends ResultItem> execute() {
 
-        //Fast search
-        final FastSearchResult fastResult = executeFastCommand();
+        // Fast search
+        final ResultList<ResultItem> fastResult = executeFastCommand();
 
-        //on empty queries return only the navigators
+        // on empty queries return only the navigators
 //        if(getRunningQuery().getQuery().isBlank()){
 //            fastResult.setHitCount(0);
 //            return fastResult;
@@ -83,13 +77,11 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
         // "enrich" the Fast result with Storm weather forecasts based on lat/long.
         if(fastResult.getResults().size() > 0){
 
-            for (final Iterator results = fastResult.getResults().iterator(); results.hasNext();) {
+            for (ResultItem result : fastResult.getResults()) {
 
-                final BasicSearchResultItem result = (BasicSearchResultItem) results.next();
+                final ResultList<ResultItem> forecasts = new BasicSearchResult<ResultItem>(result);
 
-                final SearchResult forecasts = new BasicSearchResult(this);
-
-                //based on latitude, longitude, get the current forecast
+                // based on latitude, longitude, get the current forecast
                 if(result.getField("lat") != null && result.getField("long") != null){
 
                     final String lat = result.getField("lat");
@@ -104,12 +96,11 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
                     } else {
 
                         forecasts.addResult(getCurrentForecast(lat, lon, alt));
-
                     }
                 }
 
-                //add forecasts to the fast result
-                result.addNestedSearchResult("forecasts", forecasts);
+                // add forecasts to the fast result
+                fastResult.replaceResult(result, forecasts);
             }
 
         }
@@ -118,11 +109,11 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
 
     }
 
-    private SearchResultItem getCurrentForecast(final String la, final String lo){
+    private ResultItem getCurrentForecast(final String la, final String lo){
         return getCurrentForecast(la, lo, "0");
     }
 
-    private SearchResultItem getCurrentForecast(final String la, final String lo, final String altitude) {
+    private ResultItem getCurrentForecast(final String la, final String lo, final String altitude) {
 
         BasicSearchResultItem e = null;
 
@@ -190,7 +181,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
     }
 
     /** TODO comment me. **/
-    protected void getForecasts(final SearchResult result, final String la, final String lo){
+    protected void getForecasts(final ResultList<ResultItem> result, final String la, final String lo){
         getForecasts(result, la, lo, "0");
     }
 
@@ -203,7 +194,7 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      * @param height
      * @return
      */
-    private void getForecasts(final SearchResult result, final String la, final String lo, String altitude) {
+    private void getForecasts(final ResultList<ResultItem> result, final String la, final String lo, String altitude) {
 
         final Document doc = getForecastDocument(la, lo, altitude);
 

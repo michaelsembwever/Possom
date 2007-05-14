@@ -8,15 +8,13 @@ import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.run.RunningQuery;
 import no.schibstedsok.searchportal.run.RunningQueryImpl;
-import no.schibstedsok.searchportal.result.SearchResult;
-import java.util.HashMap;
 import java.util.Properties;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelTestCase;
-import no.schibstedsok.searchportal.site.SiteTestCase;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.config.*;
-import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.view.config.SearchTab;
 import no.schibstedsok.searchportal.view.config.SearchTabFactory;
@@ -24,7 +22,7 @@ import no.schibstedsok.searchportal.view.config.SearchTabFactory;
 /** Create a Mockup SearchCommand.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
- * @version <tt>$Revision$</tt>
+ * @version <tt>$Id$</tt>
  */
 public class MockupSearchCommand extends DataModelTestCase implements SearchCommand {
 
@@ -82,11 +80,11 @@ public class MockupSearchCommand extends DataModelTestCase implements SearchComm
         return query;
     }
 
-    public SearchResult execute() {
+    public ResultList<ResultItem> execute() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public SearchResult call() throws Exception {
+    public ResultList<ResultItem> call() throws Exception {
         return null;
     }
 

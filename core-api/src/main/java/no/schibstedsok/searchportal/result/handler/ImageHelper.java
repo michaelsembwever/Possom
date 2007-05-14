@@ -5,7 +5,7 @@ package no.schibstedsok.searchportal.result.handler;
 import java.util.Iterator;
 import java.util.Map;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -29,7 +29,9 @@ public final class ImageHelper implements ResultHandler {
         
         final Map<String,String> fieldMap = config.getFieldMap();
 
-        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+        for (final ResultItem it : cxt.getSearchResult().getResults()) {
+            
+            ResultItem item = it;
 
             for (final Iterator fields = fieldMap.keySet().iterator(); fields.hasNext();) {
                 final String field = (String) fields.next();
@@ -42,7 +44,7 @@ public final class ImageHelper implements ResultHandler {
 
                         for (int i = 0; i < values.length; i++) {
                             final String value = values[i];
-                            item.addToMultivaluedField((String) fieldMap.get(field), value);
+                            item = item.addToMultivaluedField((String) fieldMap.get(field), value);
                         }
 
                     }
@@ -52,11 +54,12 @@ public final class ImageHelper implements ResultHandler {
 
                         for (int i = 0; i < values.length; i++) {
                             final String value = values[i];
-                            item.addToMultivaluedField((String) fieldMap.get(field), value);
+                            item = item.addToMultivaluedField((String) fieldMap.get(field), value);
                         }
 
                     }
                 }
+                cxt.getSearchResult().replaceResult(it, item);
             }
         }
     }

@@ -9,8 +9,6 @@ import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.SearchMode;
 import no.schibstedsok.searchportal.mode.SearchModeFactory;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.run.QueryFactory;
@@ -30,6 +28,8 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.http.servlet.FactoryReloads.ReloadArg;
 import no.schibstedsok.searchportal.result.Linkpulse;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
 import no.schibstedsok.searchportal.site.config.*;
 import no.schibstedsok.searchportal.util.TradeDoubler;
@@ -373,12 +373,13 @@ public final class SearchServlet extends HttpServlet {
         if ("finn".equalsIgnoreCase(request.getParameter("finn"))) {
 
             final Map<String,Integer> hits = (Map<String,Integer>)request.getAttribute("hits");
-            final Map<String,SearchResult> res = (Map<String,SearchResult>)request.getAttribute("results");
+            final Map<String,ResultList<ResultItem>> res 
+                    = (Map<String,ResultList<ResultItem>>)request.getAttribute("results");
 
-            final SearchResult sr = res.get("yellowPages");
+            final ResultList<ResultItem> sr = res.get("yellowPages");
             if (sr.getResults().size() > 0) {
 
-                final SearchResultItem sri = sr.getResults().get(0);
+                final ResultItem sri = sr.getResults().get(0);
                 final String recordid = sri.getField("recordid").toString();
                 final Integer yHits = hits.get("yellowPages");
 

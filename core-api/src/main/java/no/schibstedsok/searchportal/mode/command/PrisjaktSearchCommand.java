@@ -3,9 +3,7 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.query.token.TokenEvaluationEngine;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
-import no.schibstedsok.searchportal.result.SearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.InfrastructureException;
 import java.text.DecimalFormat;
@@ -21,6 +19,8 @@ import nu.prisjakt.www.wsdl.PrisjaktPortType;
 import nu.prisjakt.www.wsdl.Resultat;
 import nu.prisjakt.www.wsdl.Produkt;
 import javax.xml.rpc.ServiceException;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.axis.client.Stub;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -51,7 +51,6 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
      * Creates a new instance of this class.
      *
      * @param cxt The context to execute in.
-     * @param parameters The search parameters.
      */
     public PrisjaktSearchCommand(final Context cxt) {
 
@@ -60,7 +59,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
 
     /** {@inheritDoc} */
     @Override
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         final TokenEvaluationEngine engine = getEngine();
         /*Butiker*/
@@ -74,7 +73,7 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         final boolean isHousehold = engine.evaluateQuery(TokenPredicate.PRODUCT_HOUSEHOLD, getQuery());
         final boolean isMusic = engine.evaluateQuery(TokenPredicate.PRODUCT_MUSIC, getQuery());
 
-        final SearchResult result = new BasicSearchResult(this);
+        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
 
         if (isChain || isService || isElectronics || isHousehold || isMusic) {
             final PrisjaktLocator service = new PrisjaktLocator();
@@ -154,45 +153,51 @@ public final class PrisjaktSearchCommand extends AbstractWebServiceSearchCommand
         return result;
     }
 
-    private void productConverter(final SearchResult result, final Produkt[] products) {
+    private void productConverter(final ResultList<ResultItem> result, final Produkt[] products) {
+        
         for (final Produkt product : products) {
-            final SearchResultItem item = new BasicSearchResultItem();
-            item.addField("productName", product.getProduktnamn());
+            
+            ResultItem item = new BasicSearchResultItem();
+            item = item.addField("productName", product.getProduktnamn());
             final int lPris = product.getLagstaPris();
             final String cf = nummerAvskFormat(lPris);
-            item.addField("lowestPrice", cf);
-            item.addField("numberofStores", Integer.toString(product
+            item = item.addField("lowestPrice", cf);
+            item = item.addField("numberofStores", Integer.toString(product
                     .getAntalButiker()));
             /* &st=4 tillägget gör att vi får en liten bild ifrån prisjakt*/
             if (product.getBild().equalsIgnoreCase("")) {
-                item.addField("pruductPicture", "");
+                item = item.addField("pruductPicture", "");
             } else {
-                item.addField("pruductPicture", product.getBild() + "&st=4");
+                item = item.addField("pruductPicture", product.getBild() + "&st=4");
             }
 
-            item.addField("categorieURL", product.getKategoriurl());
-            item.addField("pruductURL", product.getUrl());
-            item.addField("categorieName", product.getKategorinamn());
+            item = item.addField("categorieURL", product.getKategoriurl());
+            item = item.addField("pruductURL", product.getUrl());
+            item = item.addField("categorieName", product.getKategorinamn());
             result.addResult(item);
         }
     }
 
-    private void catagorieConverter(SearchResult result, Kategori[] kategorier) {
+    private void catagorieConverter(final ResultList<ResultItem> result, final Kategori[] kategorier) {
+        
         for (final Kategori katag : kategorier) {
-            final SearchResultItem item = new BasicSearchResultItem();
-            item.addField("numberofProducts", Integer.toString(katag.getAntalProdukter()));
-            item.addField("categorieURL", katag.getUrl());
-            item.addField("categorieName", katag.getKategorinamn());
+            
+            ResultItem item = new BasicSearchResultItem();
+            item = item.addField("numberofProducts", Integer.toString(katag.getAntalProdukter()));
+            item = item.addField("categorieURL", katag.getUrl());
+            item = item.addField("categorieName", katag.getKategorinamn());
             result.addResult(item);
         }
     }
 
-    private void storeConverter(SearchResult result, Butik[] stores) {
+    private void storeConverter(ResultList<ResultItem> result, Butik[] stores) {
+        
         for (final Butik store : stores) {
-            final SearchResultItem item = new BasicSearchResultItem();
-            item.addField("numberofProducts", Integer.toString(store.getAntalProdukter()));
-            item.addField("storeURL", store.getUrl());
-            item.addField("storeName", store.getButiksnamn());
+            
+            ResultItem item = new BasicSearchResultItem();
+            item = item.addField("numberofProducts", Integer.toString(store.getAntalProdukter()));
+            item = item.addField("storeURL", store.getUrl());
+            item = item.addField("storeName", store.getButiksnamn());
             result.addResult(item);
         }
     }

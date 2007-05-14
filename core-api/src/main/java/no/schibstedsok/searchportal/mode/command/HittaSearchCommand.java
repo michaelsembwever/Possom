@@ -24,8 +24,8 @@ import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.Application;
 import no.schibstedsok.searchportal.query.finder.WhoWhereSplitter.WhoWhereSplit;
 import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.result.Suggestion;
 import no.schibstedsok.searchportal.result.WeightedSuggestion;
 import org.apache.axis.client.Stub;
@@ -79,7 +79,7 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
     // Y overrides ---------------------------------------------------
 
     /** @inherit **/
-    public SearchResult execute(){
+    public ResultList<? extends ResultItem> execute(){
 
         final HittaCommandConfig conf = (HittaCommandConfig) context.getSearchConfiguration();
         int hits = 0;
@@ -136,11 +136,11 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
 
 
-        final SearchResult result = new WebServiceSearchResult(this);
+        final WebServiceSearchResult result = new WebServiceSearchResult();
         result.setHitCount(hits);
 
 
-        return result;
+        return (ResultList<? extends ResultItem>) result;
     }
 
     // Package protected ---------------------------------------------
@@ -151,36 +151,41 @@ public final class HittaSearchCommand extends AbstractWebServiceSearchCommand{
 
     // Inner classes -------------------------------------------------
 
-    private static final class WebServiceSearchResult extends BasicSearchResult{
+    private static final class WebServiceSearchResult extends BasicSearchResult<ResultItem>{
 
         private static final String ERR_NOT_SUPPORTED = "Not part of this implementation";
 
-        public WebServiceSearchResult(final SearchCommand command) {
-            super(command);
+        public WebServiceSearchResult() {
+            super();
         }
 
-        public void addResult(final SearchResultItem item) {
+        @Override
+        public void addResult(final ResultItem item) {
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
-        public void addSpellingSuggestion(final Suggestion suggestion) {
+        @Override
+        public void addSpellingSuggestion(final WeightedSuggestion suggestion) {
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
+        @Override
         public Map<String, List<WeightedSuggestion>> getSpellingSuggestionsMap() {
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
+        @Override
         public List<Suggestion> getQuerySuggestions() {
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
+        @Override
         public void addQuerySuggestion(final Suggestion query) {
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 
-
-        public List<SearchResultItem> getResults() {
+        @Override
+        public List<ResultItem> getResults() {
             throw new UnsupportedOperationException(ERR_NOT_SUPPORTED);
         }
 

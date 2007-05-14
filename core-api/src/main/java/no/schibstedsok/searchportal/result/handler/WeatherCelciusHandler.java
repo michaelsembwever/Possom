@@ -5,7 +5,7 @@ package no.schibstedsok.searchportal.result.handler;
 import java.text.ParseException;
 import java.text.DecimalFormat;
 import no.schibstedsok.searchportal.datamodel.DataModel;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
 
 
 /**
@@ -29,7 +29,7 @@ public final class WeatherCelciusHandler implements ResultHandler  {
     /** {@inherit} **/
     public void handleResult(final Context cxt, final DataModel datamodel) {
         
-        for (final SearchResultItem item : cxt.getSearchResult().getResults()) {
+        for (final ResultItem item : cxt.getSearchResult().getResults()) {
             
             final String celcius = item.getField(config.getSourceField());
             String newVal = null;
@@ -43,7 +43,7 @@ public final class WeatherCelciusHandler implements ResultHandler  {
             
             if ("-0".equals(newVal)) { newVal = "0"; }
             
-            item.addField(config.getTargetField(), newVal);
+            cxt.getSearchResult().replaceResult(item, item.addField(config.getTargetField(), newVal));
         }
     }
 }

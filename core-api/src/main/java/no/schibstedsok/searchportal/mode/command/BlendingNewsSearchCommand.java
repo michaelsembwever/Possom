@@ -14,13 +14,12 @@ import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Map;
 import java.util.TimeZone;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.mode.config.BlendingNewsCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * Temporary search command while we wait for neo-collapsing functionality
@@ -28,6 +27,7 @@ import no.schibstedsok.searchportal.result.SearchResult;
  * from a number of selected sources. A separate search is done for each source.
  *
  * @author maek
+ * @version $Id$
  */
 public class BlendingNewsSearchCommand extends NewsSearchCommand {
 
@@ -36,13 +36,12 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
     private final BlendingNewsCommandConfig cfg;
     private String additionalFilter;
     private boolean fakeResultsToReturn = false;
-    private SearchResult result;
+    private ResultList<ResultItem> result;
 
 
     /** Creates a new instance of NewsSearchCommand
      *
      * @param cxt Search command context.
-     * @param parameters Search command parameters.
      */
     public BlendingNewsSearchCommand(final Context cxt) {
 
@@ -51,17 +50,17 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
         cfg = (BlendingNewsCommandConfig) cxt.getSearchConfiguration();
     }
 
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
         int totalHitCount = 0;
 
-        SearchResult blended = new BasicSearchResult(this);
+        ResultList<ResultItem> blended = new BasicSearchResult<ResultItem>();
 
         fakeResultsToReturn = true;
 
         for (String filter : cfg.getFiltersToBlend()) {
             setAdditionalFilter(filter);
-            SearchResult result = super.execute();
+            ResultList<ResultItem> result = (ResultList<ResultItem>) super.execute();
             blended.getResults().addAll(result.getResults());
             totalHitCount += result.getHitCount();
         }

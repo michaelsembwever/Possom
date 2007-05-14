@@ -16,7 +16,8 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.OvertureSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -53,7 +54,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
      *
      * @return the search result
      */
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
         // Need to rerun the token evaluation stuff on the transformed query
         // The transformed query does not contain site: and nyhetskilde: which
         // could have prevented exact matching in the previous evaluation.
@@ -64,7 +65,7 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
         try {
             final Document doc = getXmlResult();
             LOG.debug(doc.toString());
-            final OvertureSearchResult searchResult = new OvertureSearchResult(this, top);
+            final OvertureSearchResult<ResultItem> searchResult = new OvertureSearchResult<ResultItem>(top);
 
             if (doc != null) {
                 final Element elem = doc.getDocumentElement();
@@ -82,12 +83,12 @@ public final class OverturePPCSearchCommand extends AbstractYahooSearchCommand {
                 }
             }
 
-            return searchResult;
+            return (ResultList<? extends ResultItem>) searchResult;
             
         } catch (SocketTimeoutException ste) {
 
             LOG.error(getSearchConfiguration().getName() +  " --> " + ste.getMessage());
-            return new BasicSearchResult(this);
+            return new BasicSearchResult<ResultItem>();
 
         } catch (IOException e) {
             throw new InfrastructureException(e);

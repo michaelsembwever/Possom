@@ -18,11 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
-import no.schibstedsok.searchportal.result.SearchResult;
-import no.schibstedsok.searchportal.result.SearchResultItem;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
@@ -72,7 +71,9 @@ public final class DailyWordCommand extends AbstractSearchCommand {
 
     // Constructors --------------------------------------------------
 
-    /** Creates a new instance of P4SearchCommand */
+    /** Creates a new instance of P4SearchCommand 
+     * @param cxt 
+     */
     public DailyWordCommand(final Context cxt) {
 
         super(cxt);
@@ -80,18 +81,18 @@ public final class DailyWordCommand extends AbstractSearchCommand {
 
     // Public --------------------------------------------------------
 
-    public SearchResult execute() {
+    public ResultList<? extends ResultItem> execute() {
 
-        final SearchResult result = new BasicSearchResult(this);
+        final ResultList<ResultItem> result = new BasicSearchResult<ResultItem>();
 
         result.setHitCount(0);
 
         if (WORDS.containsKey(datamodel.getQuery().getString().toLowerCase())) {
             final DailyWord word = WORDS.get(datamodel.getQuery().getString().toLowerCase());
             if (word.isActive(new Date())) {
-                final SearchResultItem item = new BasicSearchResultItem();
-                item.addField(FIELD_WORD, word.getWord());
-                item.addField(FIELD_CODE, word.getCode());
+                ResultItem item = new BasicSearchResultItem();
+                item = item.addField(FIELD_WORD, word.getWord());
+                item = item.addField(FIELD_CODE, word.getCode());
                 result.addResult(item);
                 result.setHitCount(1);
             }

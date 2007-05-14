@@ -6,7 +6,8 @@ package no.schibstedsok.searchportal.mode.command;
 
 import no.schibstedsok.searchportal.mode.config.TvsearchCommandConfig;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.SearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 /**
@@ -54,22 +55,26 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
         }
     }
 
-    public SearchResult execute() {
-        final String sortByString = this.getParameters().get("userSortBy") != null ? (String) this.getParameters().get("userSortBy") : "channel";
-        SearchResult sr = null;
+    public ResultList<? extends ResultItem> execute() {
+        
+        final String sortByString = this.getParameters().get("userSortBy") != null 
+                ? (String) this.getParameters().get("userSortBy") 
+                : "channel";
+        
+        ResultList<ResultItem> sr = null;
 
         if ("day".equals(sortByString)) {
-            sr = new BasicSearchResult(this);
+            sr = new BasicSearchResult<ResultItem>();
             int totalHits = 0;
             for (int i = 0; i < 7; i++) {
                 setAdditionalFilter(" +sgeneric7nav:" + i);
-                SearchResult result = super.execute();
+                ResultList<? extends ResultItem> result = super.execute();
                 sr.getResults().addAll(result.getResults());
                 totalHits += result.getHitCount();
             }
             sr.setHitCount(totalHits);
         } else {
-            sr = super.execute();
+            sr = (ResultList<ResultItem>) super.execute();
         }
 
         return sr;
