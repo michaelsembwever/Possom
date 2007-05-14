@@ -10,6 +10,7 @@
 
 package no.schibstedsok.searchportal.view.velocity;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -34,9 +35,9 @@ import java.util.TimeZone;
  * A velocity directive to format newsnavigator date.
  * <p/>
  * Newsdate comes from the fastnavigator in four forms:<br/>
- * 1. 10-2006     -> oktober 2006<br/>
+ * 1. 10-2006     -> Oktober 2006<br/>
  * 2. 24-10-2006  -> 24. oktober 2006<br/>
- * 3. 2006-10     -> oktober 2006<br/>
+ * 3. 2006-10     -> Oktober 2006<br/>
  * 4. 2006-10-24  -> 24. oktober 2006<br/>
  * <p/>
  * if 'newsdateOnly' navigator, we shuold check if the date is today or yesterday
@@ -118,14 +119,14 @@ public final class DateFormattingDirective extends Directive {
             if (input.length() == 10) {
                 return formatFormTwo(input, "newsdateOnly".equals(navName));
             } else {
-                return formatFormOne(input);
+                return StringUtils.capitalize(formatFormOne(input));
             }
         } else {
             // From three or four
             if (input.length() == 10) {
                 return formatFormFour(input, "newsdateOnly".equals(navName));
             } else {
-                return formatFormThree(input);
+                return StringUtils.capitalize(formatFormThree(input));
             }
         }
     }
