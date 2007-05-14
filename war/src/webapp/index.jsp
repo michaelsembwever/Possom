@@ -26,8 +26,7 @@
         <link href="/css/ps.css" rel="stylesheet" type="text/css" />
         <link rel="icon" href="/images/favicon.gif" type="image/x-icon" />
         <link rel="shortcut icon" href="/images/favicon.gif" type="image/x-icon" />
-        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&c=d&output=opensearch&IGNORE=NOCOUNT" />
-        </link>        
+        <link rel="search" type="application/opensearchdescription+xml" title="Sesam.no" href="/search/?q=*&amp;c=d&amp;output=opensearch&amp;IGNORE=NOCOUNT" />  
         <script type="text/javascript" language="JavaScript" src="/javascript/external/prototype.js"></script>
         <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
@@ -51,35 +50,31 @@
 	            }
             }
 
-            var link = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://www.sesam.no/\');">Sett som startside</a> &nbsp;&nbsp;|&nbsp;&nbsp;';
-            var link2 = '<a href="javascript:;" onclick="this.style.behavior=\'url(#default#homepage)\';this.setHomePage(\'http://www.sesam.no/\');">Sett Sesam som din startside</a>';
             // -->
         </script>
     </head>
 
-    <body onLoad='scrollbox()'>
+    <body>
 
 <div style="padding-left:28px; background-image: url(images/index/stripe_bg.gif); background-repeat: repeat-x; background-position: 0px 105px;" align="left">
-<table border="0" width="850" cellspacing="0" cellpadding="0">
+<table width="850" cellspacing="0" cellpadding="0">
     <tr>
-        <td valign="bottom" align="left" width="170"><img src="images/index/menu_top.png" alt="Sesams&#248;k" /></td>
+        <td valign="bottom" align="left" width="170"><img src="images/index/menu_top.png" width="151" height="23" alt="Sesams&#248;k" /></td>
         <td valign="middle" align="left"><img src="images/index/logo.png" id="logo_index" width="215" height="61" alt="logo" /></td>
     </tr>
-
     <tr>
         <td colspan="2"><img src="images/pix.gif" alt="" /></td>
     </tr>
-
     <tr>
         <td valign="top" align="left">
             <div id="menu_netsearch">
-                <div style="padding: 20px 0px 0px 8px;"><img src="images/index/nettsok_30_30.gif" border="0" align="left" alt="" /></div>
+                <div style="padding: 20px 0px 0px 8px;"><img src="images/index/nettsok_30_30.gif" align="left" alt="" /></div>
                 <div style="padding-top: 4px; font-size: 15px;">&nbsp; Netts&#248;k</div>
             </div>
         </td>
         <td valign="middle" align="left">
             <form name="sf" action="<search:linkPulse url="/search/" param="category:front_search" index="true"/>" onsubmit='return check();'>
-	    <table border="0" cellspacing="0" cellpadding="0" id="searchbox_top">
+	    <table cellspacing="0" cellpadding="0" id="searchbox_top">
 		<tr>
 		    <td valign="top">
 		    <input type="text" name="q" class="input_main" onfocus="this.form.q.select();" />
@@ -91,10 +86,10 @@
                     </script>
 		    </td>
                     <td>&nbsp;&nbsp;</td>
-		    <td><input type="image" id="index_submit" src="images/searchbar/nett.png" /></td>
-                    <td><img src="images/pix.gif" border="0" width="4" height="1" alt="" /></td>
+		    <td><input type="image" id="index_submit" src="images/searchbar/nett.png" alt="" /></td>
+                    <td><img src="images/pix.gif" width="4" height="1" alt="" /></td>
 		    <td><a href="javascript:toggleButton('front_button_layer');" onfocus="this.blur();"><img src="images/searchbar/dropdown.png" alt="" /></a></td>
-		    <td><img src="images/pix.gif" border="0" width="15" alt="" /></td>
+		    <td><img src="images/pix.gif" width="15" alt="" /></td>
 		    <td><a id="searchtip_front" href='<search:linkPulse url="/search/?q=&amp;page=/pages/82/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a></td>
 		</tr>
 		<tr>
@@ -105,7 +100,7 @@
 		    <td>&nbsp;</td>
 		    <td colspan="3">
 			<div id="front_button_layer">
-			<table border="0" cellspacing="1" cellpadding="0" id="front_button_table">
+			<table cellspacing="1" cellpadding="0" id="front_button_table">
 			    <tr>
 				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</td>
 			    </tr>
@@ -130,13 +125,8 @@
 			    <tr>
 				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</td>
 			    </tr>
-                <%--
 			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("map","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Karts&#248;k</td>
-			    </tr>
-                --%>
-			    <tr>
-				<td><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" alt="" align="left" /></a><div class="navbutend" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'>&nbsp;&nbsp;Lukk</div></td>
+				<td><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" width="21" height="20" alt="" align="left" /></a><div class="navbutend" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'>&nbsp;&nbsp;Lukk</div></td>
 			    </tr>
 			</table>
 			</div>
@@ -216,7 +206,6 @@
             <search:publish page="/pages/front"/>
         </td>
     </tr>
-
 </table>
 
 </div>
@@ -224,7 +213,6 @@
 <div id="footer_space_index">
     <search:publish page="/pages/footer"/>
 </div>
-
 
         <!-- start gallup (<%=locale  %>) -->
         <% if ( "no".equals(locale) ) { %>        
