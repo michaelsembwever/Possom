@@ -74,29 +74,7 @@ public final class QueryFactoryImpl extends QueryFactory {
 
             final String cParam = null != parametersDO.getValue("c") ? parametersDO.getValue("c").getString() : "";
 
-            if ("m".equals(cParam)) {
-
-                final String userSortByParam = null != parametersDO.getValue("userSortBy")
-                        ? parametersDO.getValue("userSortBy").getString()
-                        : null;
-
-                if (null == userSortByParam || "".equals(qParam)) {
-
-                    query.addParameter("userSortBy", "datetime");
-                }
-
-                final String contentsourceParam = null != parametersDO.getValue("contentsource")
-                        ? parametersDO.getValue("contentsource").getString()
-                        : null;
-
-                final String newscountryParam = null != parametersDO.getValue("newscountry")
-                        ? parametersDO.getValue("newscountry").getString()
-                        : "";
-
-                if ("".equals(qParam) && null == contentsourceParam && "".equals(newscountryParam)) {
-                    query.addParameter("newscountry", "Norge");
-                }
-            } else if ("nm".equals(cParam)) {
+            if ("nm".equals(cParam)) {
                 final Cookie[] cookies = request.getCookies();
                 if (cookies != null) {
                     for (Cookie cookie : cookies) {
