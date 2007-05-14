@@ -26,6 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 
@@ -41,12 +42,14 @@ import java.util.TimeZone;
  * if 'newsdateOnly' navigator, we shuold check if the date is today or yesterday
  */
 public final class DateFormattingDirective extends Directive {
-    private static DateFormatSymbols formatSymbols = new DateFormatSymbols();
+    // We could get Locale from the site in the context, but then we had to create a new
+    // dateformatter for each call. (can be up to 100 calls for one request.) Leaving it to "no" only for now.
+    private static DateFormatSymbols formatSymbols = new DateFormatSymbols(new Locale("no"));
 
-    static {
-        // Default symbols are all lowercase for "no", so we have to set new ones.
-        formatSymbols.setMonths(new String[]{"Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"});
-    }
+//    static {
+//        // Default symbols are all lowercase for "no", so we have to set new ones.
+//        formatSymbols.setMonths(new String[]{"Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"});
+//    }
 
     private static SimpleDateFormat shortFormatter = new SimpleDateFormat("MMMMM yyyy", formatSymbols);
     private static SimpleDateFormat longFormatter = new SimpleDateFormat("d. MMMMM yyyy", formatSymbols);
