@@ -199,7 +199,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
         String whoParameter 
                 = datamodel.getParameters().getValue("who")!=null ? 
-                    datamodel.getParameters().getValue("who").getUtf8UrlEncoded() : datamodel.getQuery().getString();
+                    datamodel.getParameters().getValue("who").getString() : datamodel.getQuery().getString();
 
         
         WhoWhereSplit splitQuery = new WhoWhereSplit(
@@ -330,11 +330,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         result.getResults().addAll(nyResultListe);
 
         // add the who and where fields (preferred over using them out of the junkyard)
-        LOG.info("Putting what/where values on the result, what->"+getTransformedQuerySesamSyntax());
-        LOG.info("Putting what/where values on the result, where->"+whereString);
         result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         result.addField(PARAMETER_NAME_WHERE, whereString);
-
         
         // XXX deprecated approach
         getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
