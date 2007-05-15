@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 
 /**
@@ -40,6 +41,8 @@ import java.util.Locale;
  * 4. 2006-10-24  -> 24. oktober 2006<br/>
  * <p/>
  * if 'newsdateOnly' navigator, we shuold check if the date is today or yesterday
+ * <p/>
+ * <b>Note:</b> This directive is meant to be used on navigators. that means that the timeZone for the dates are in "CET"
  */
 public final class DateFormattingDirective extends Directive {
     // We could get Locale from the site in the context, but then we had to create a new
@@ -163,7 +166,7 @@ public final class DateFormattingDirective extends Directive {
     }
 
     private boolean isToday(Date parsedDate) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("CET"));
         int todayDay = cal.get(Calendar.DAY_OF_YEAR);
         int year = cal.get(Calendar.YEAR);
         cal.setTime(parsedDate);
@@ -171,7 +174,7 @@ public final class DateFormattingDirective extends Directive {
     }
 
     private boolean isYesterday(Date parsedDate) {
-        Calendar cal = Calendar.getInstance();
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("CET"));
         cal.add(Calendar.DAY_OF_YEAR, -1);
         int yesterdayDay = cal.get(Calendar.DAY_OF_YEAR);
         int year = cal.get(Calendar.YEAR);
