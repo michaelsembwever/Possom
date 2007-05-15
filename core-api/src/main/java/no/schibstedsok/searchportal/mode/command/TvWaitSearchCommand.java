@@ -218,7 +218,6 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             
             try {
                 sr = (ResultList<ResultItem>) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
-                
             } catch (NeedsRefreshException e) {
                 
                 boolean updatedCache = false;
@@ -226,7 +225,6 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                     sr = (ResultList<ResultItem>) super.execute();
                     CACHE.putInCache(cacheKey, sr);
                     updatedCache = true;
-                    
                 }finally{
                     if(!updatedCache){ 
                         // prevents a deadlock in CACHE!
