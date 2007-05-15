@@ -31,188 +31,167 @@
         <script type="text/javascript" language="JavaScript" src="/javascript/common.js"></script>
         <script type="text/javascript" language="JavaScript"><!--
             function strep(qtag) {
-	            if (window.RegExp && window.encodeURIComponent) {
-		            var qlink=qtag.href;
-		            var qenc=encodeURIComponent(document.forms[0].q.value);
-		            if(qlink.indexOf("q=")!=-1){
-		            	qtag.href=qlink.replace(new RegExp("q=[^&$]*"),"q="+qenc);
-		            }else{
-			            qtag.href=qlink+"&q="+qenc;
-		            }
-	            }
-	            return 1;
+                if (window.RegExp && window.encodeURIComponent) {
+                    var qlink=qtag.href;
+                    var qenc=encodeURIComponent(document.forms[0].q.value);
+                    if(qlink.indexOf("q=")!=-1){
+                        qtag.href=qlink.replace(new RegExp("q=[^&$]*"),"q="+qenc);
+                    }else{
+                            qtag.href=qlink+"&q="+qenc;
+                    }
+                }
+                return 1;
             }
 
             function check() {
-	            if(document.forms[0].q.value == ""){
-		            document.forms[0].q.focus();
-		            return false;
-	            }
+                if(document.forms[0].q.value == ""){
+                        document.forms[0].q.focus();
+                        return false;
+                }
             }
-
             // -->
         </script>
     </head>
 
     <body>
-
-<div style="padding-left:28px; background-image: url(images/index/stripe_bg.gif); background-repeat: repeat-x; background-position: 0px 105px;" align="left">
-<table width="850" cellspacing="0" cellpadding="0">
-    <tr>
-        <td valign="bottom" align="left" width="170"><img src="images/index/menu_top.png" width="151" height="23" alt="Sesams&#248;k" /></td>
-        <td valign="middle" align="left"><img src="images/index/logo.png" id="logo_index" width="215" height="61" alt="logo" /></td>
-    </tr>
-    <tr>
-        <td colspan="2"><img src="images/pix.gif" alt="" /></td>
-    </tr>
-    <tr>
-        <td valign="top" align="left">
-            <div id="menu_netsearch">
-                <div style="padding: 20px 0px 0px 8px;"><img src="images/index/nettsok_30_30.gif" align="left" alt="" /></div>
-                <div style="padding-top: 4px; font-size: 15px;">&nbsp; Netts&#248;k</div>
-            </div>
-        </td>
-        <td valign="middle" align="left">
-            <form name="sf" action="<search:linkPulse url="/search/" param="category:front_search" index="true"/>" onsubmit='return check();'>
-	    <table cellspacing="0" cellpadding="0" id="searchbox_top">
-		<tr>
-		    <td valign="top">
-		    <input type="text" name="q" class="input_main" onfocus="this.form.q.select();" />
-                    <script type="text/javascript"><!--
-                        var focusControl = document.forms["sf"].elements["q"];
-                        if (focusControl.type != "hidden" && !focusControl.disabled) {
-                            focusControl.focus();
-                        } // -->
-                    </script>
-		    </td>
-                    <td>&nbsp;&nbsp;</td>
-		    <td><input type="image" id="index_submit" src="images/searchbar/nett.png" alt="" /></td>
-                    <td><img src="images/pix.gif" width="4" height="1" alt="" /></td>
-		    <td><a href="javascript:toggleButton('front_button_layer');" onfocus="this.blur();"><img src="images/searchbar/dropdown.png" alt="" /></a></td>
-		    <td><img src="images/pix.gif" width="15" alt="" /></td>
-		    <td><a id="searchtip_front" href='<search:linkPulse url="/search/?q=&amp;page=/pages/82/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a></td>
-		</tr>
-		<tr>
-		    <td valign="top" id="searchbox_tips">
-                    	<input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
-                	<input type="radio" name="c" value="g" /> Verden
-		    </td>
-		    <td>&nbsp;</td>
-		    <td colspan="3">
-			<div id="front_button_layer">
-			<table cellspacing="1" cellpadding="0" id="front_button_table">
-			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</td>
-			    </tr>
-			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("y","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bedriftss&#248;k</td>
-			    </tr>
-			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("w","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Persons&#248;k</td>
-			    </tr>
-			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("p","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bildes&#248;k</td>
-			    </tr>
-			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("b","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bloggs&#248;k</td>
-			    </tr>
-			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>TV-s&#248;k</td>
-			    </tr>
-			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("wt","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>NettTV-s&#248;k</td>
-			    </tr>
-			    <tr>
-				<td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</td>
-			    </tr>
-			    <tr>
-				<td><a href="javascript:;" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" width="21" height="20" alt="" align="left" /></a><div class="navbutend" onclick='document.getElementById("front_button_layer").style.visibility="hidden";'>&nbsp;&nbsp;Lukk</div></td>
-			    </tr>
-			</table>
-			</div>
-		    </td>
-		    <td>&nbsp;</td>
-		    <td>&nbsp;</td>
-		</tr>
-            </table>
-            </form>
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2"><img src="images/pix.gif" alt="" /></td>
-    </tr>
-    <tr>
-        <td valign="top" align="left">
-            <% String hide = ""; String open = ""; %>
-            <script type="text/javascript" language="JavaScript">
-                var menuCookie = getCookie("sesam_menu");
-                if (menuCookie == "closed") {
-                    <% hide = "style='display:none;"; %>
-                    <% open = ""; %>
-                } else {
-                    <% hide = ""; %>
-                    <% open = "style='display:none;'"; %>                
-                }
-            </script>         
-            <div id="menutable" <%=hide %>>
-                <div class="navMain">
-                    <div class="navRow">
-                        <img src="images/menu/icons/nyheter.png" width="16" height="16" alt="" />
-                        <a href='<search:linkPulse url="/search/?c=m" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a>
+        <img src="images/index/logo.png" id="logoIndex" width="215" height="61" alt="Sesamlogo" />
+        <img src="images/index/menu_top.png" id="menuTop" width="151" height="23" alt="Sesams&#248;k" />
+        <table id="searchbar" cellspacing="0" cellpadding="0">
+            <tr>
+                <td style="width: 178px;">
+                    <div id="menuMiddle">
+                        <img src="images/index/nettsok_30_30.gif" width="30" height="30" alt="Netts&#248;k logo" />
+                        Netts&#248;k
                     </div>
-                    <div class="navRow">
-                        <img src="images/menu/icons/bedrift.png" width="16" height="16" alt="" />
-                        <a href='<search:linkPulse url="/search/?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a>
-                    </div>
-                    <div class="navRow">
-                        <img src="images/menu/icons/person.png" width="16" height="16" alt="" />
-                        <a href='<search:linkPulse url="/search/?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a>
-                    </div>
-                    <div class="navRow">
-                        <img src="images/menu/icons/bilde.png" width="16" height="16" alt="" />
-                        <a href='<search:linkPulse url="/search/?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a>
-                    </div>
-                    <div class="navRow">
-                        <img src="images/menu/icons/blogg.png" width="16" height="16" alt="" />
-                        <a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a><span class="betaNavbar">beta</span>
-                    </div>
-                    <div class="navRow">
-                        <img src="images/menu/icons/tv.png" width="16" height="16" alt="" />
-                        <a href='<search:linkPulse url="/search/?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a>
-                    </div>
-                    <div class="navRow">
-                        <img src="images/menu/icons/webtv.png" width="16" height="16" alt="" />
-                        <a href='<search:linkPulse url="/search/?c=wt" param="category:front_service" index="true"/>' onclick="return strep(this);">NettTV-s&#248;k</a>
-                    </div>
-                    <div class="navRow">
-                        <img src="images/menu/icons/ver.png" width="16" height="16" alt="" />
-                        <a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>
-                    </div>
+                </td>
+            <td>
+                <form name="sf" action="<search:linkPulse url="/search/" param="category:front_search" index="true"/>" onsubmit='return check();'>
+                <table id="searchForm" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td>
+                            <input type="text" name="q" id="searchInput" onfocus="this.form.q.select();" />
+                            <script type="text/javascript"><!--
+                                var focusControl = document.forms["sf"].elements["q"];
+                                if (focusControl.type != "hidden" && !focusControl.disabled) {
+                                    focusControl.focus();
+                                } // -->
+                            </script>
+                        </td>
+                        <td><input type="image" id="formSubmit" src="images/searchbar/nett.png" alt="" /></td>
+                        <td><a href="javascript:toggleButton('front_button_layer');" onfocus="this.blur();"><img src="images/searchbar/dropdown.png" width="19" height="24" alt="Pil ned" /></a></td>
+                        <td><a id="searchtip" href='<search:linkPulse url="/search/?q=&amp;page=/pages/82/index" param="category:static;subcategory=header" index="true"/>'>S&#248;ketips</a></td>
+                    </tr>
+                    <tr>
+                        <td id="searchRadio">
+                            <input type="radio" name="c" value="d" checked="checked" /> Norge &nbsp;&nbsp;
+                            <input type="radio" name="c" value="g" /> Verden
+                        </td>
+                        <td colspan="3">
+                            <div id="front_button_layer">
+                            <table cellspacing="1" cellpadding="0" id="front_button_table">
+                                <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("m","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Nyhetss&#248;k</td>
+                                </tr>
+                                <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("y","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bedriftss&#248;k</td>
+                                </tr>
+                                <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("w","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Persons&#248;k</td>
+                                </tr>
+                                <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("p","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bildes&#248;k</td>
+                                </tr>
+                                <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("b","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bloggs&#248;k</td>
+                                </tr>
+                                <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>TV-s&#248;k</td>
+                                </tr>
+                                <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("wt","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>NettTV-s&#248;k</td>
+                                </tr>
+                                <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</td>
+                                </tr>
+                                <tr>
+                                    <td onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" width="21" height="20" alt="" align="left" /><div class="navbutend">&nbsp;&nbsp;Lukk</div></td>
+                                </tr>
+                            </table>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                </form>
+            </td>
+        </tr>
+    </table>
+    <div id="nav">
+        <% String hide = ""; String open = ""; %>
+        <script type="text/javascript" language="JavaScript">
+            var menuCookie = getCookie("sesam_menu");
+            if (menuCookie == "closed") {
+                <% hide = "style='display:none;"; %>
+                <% open = ""; %>
+            } else {
+                <% hide = ""; %>
+                <% open = "style='display:none;'"; %>                
+            }
+        </script>         
+        <div id="menutable" <%=hide %>>
+            <div class="navMain">
+                <div class="navRow">
+                    <img src="images/menu/icons/nyheter.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=m" param="category:front_service" index="true"/>' onclick="return strep(this);">Nyhetss&#248;k</a>
                 </div>
-                <div id="navToggleHide">    
-                    <img src="images/index/skjul_meny.png" width="21" height="20" alt="" />
-                    <span>Skjul meny</span>
+                <div class="navRow">
+                    <img src="images/menu/icons/bedrift.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=y" param="category:front_service" index="true"/>' onclick="return strep(this);">Bedriftss&#248;k</a>
+                </div>
+                <div class="navRow">
+                    <img src="images/menu/icons/person.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=w" param="category:front_service" index="true"/>' onclick="return strep(this);">Persons&#248;k</a>
+                </div>
+                <div class="navRow">
+                    <img src="images/menu/icons/bilde.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=p" param="category:front_service" index="true"/>' onclick="return strep(this);">Bildes&#248;k</a>
+                </div>
+                <div class="navRow">
+                    <img src="images/menu/icons/blogg.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=b" param="category:front_service" index="true"/>' onclick="return strep(this);">Bloggs&#248;k</a><span class="betaNavbar">beta</span>
+                </div>
+                <div class="navRow">
+                    <img src="images/menu/icons/tv.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a>
+                </div>
+                <div class="navRow">
+                    <img src="images/menu/icons/webtv.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=wt" param="category:front_service" index="true"/>' onclick="return strep(this);">NettTV-s&#248;k</a>
+                </div>
+                <div class="navRow">
+                    <img src="images/menu/icons/ver.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>
                 </div>
             </div>
-            <div id="menuopen" <%=open %> >
-                <div id="navToggleOpen">
-                    <img src="images/index/vis_meny.png" width="21" height="20" alt="" />
-                    <span>Vis meny</span>
-                </div>
-            </div>    
-            <div style="clear: both;"></div>
-        </td>
-        <td valign="top" align="left">
-            <search:publish page="/pages/front"/>
-        </td>
-    </tr>
-</table>
-
-</div>
-
-<div id="footer_space_index">
-    <search:publish page="/pages/footer"/>
-</div>
+            <div id="navToggleHide">    
+                <img src="images/index/skjul_meny.png" width="21" height="20" alt="" />
+                <span>Skjul meny</span>
+            </div>
+        </div>
+        <div id="menuopen" <%=open %> >
+            <div id="navToggleOpen">
+                <img src="images/index/vis_meny.png" width="21" height="20" alt="" />
+                <span>Vis meny</span>
+            </div>
+        </div>    
+    </div>
+    <div id="articles">
+        <search:publish page="/pages/front"/>
+    </div>
+    </div>
+    <div style="clear: both;"></div>
+    <div id="footer_space_index">
+        <search:publish page="/pages/footer"/>
+    </div>
 
         <!-- start gallup (<%=locale  %>) -->
         <% if ( "no".equals(locale) ) { %>        
