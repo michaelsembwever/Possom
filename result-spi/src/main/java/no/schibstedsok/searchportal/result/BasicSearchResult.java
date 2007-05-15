@@ -34,7 +34,8 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
     public BasicSearchResult(){}
     
     /** Copy constructor.
-     * **/
+     * ** @param copy 
+     */
     public BasicSearchResult(final ResultItem copy){
         super(copy);
     }
@@ -114,18 +115,21 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
     }
 
     /** {@inheritDoc} **/
-    public BasicSearchResult<T> addField(final String name, final String value) {
+    @Override
+    public BasicSearchResult<T> addField(final String field, final String value) {
         
-        super.addField(value, value);
+        super.addField(field, value);
         return this;
     }
 
+    @Override
     public BasicSearchResult<T> addObjectField(final String field, final Serializable value) {
         
         super.addObjectField(field, value);
         return this;
     }    
 
+    @Override
     public BasicSearchResult<T> addToMultivaluedField(final String field, final String value) {
         
         super.addToMultivaluedField(field, value);
