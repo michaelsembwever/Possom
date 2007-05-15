@@ -12,10 +12,14 @@ import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
  * @version $Revision:$
  */
 public class MapInfoPageQueryTransformer extends AbstractQueryTransformer {
-      
-    /** Required constructor. */
+     
+    private final MapInfoPageQueryTransformerConfig config;
+    
+    /** Required constructor. 
+     * @param config Query transformer config
+     */
     public MapInfoPageQueryTransformer(final QueryTransformerConfig config){
-       
+        this.config = (MapInfoPageQueryTransformerConfig) config;
     }
     
     /**
@@ -27,8 +31,8 @@ public class MapInfoPageQueryTransformer extends AbstractQueryTransformer {
         final String originalQuery = getContext().getTransformedQuery();
         Map<String,StringDataObject> requestParameters = getContext().getDataModel().getParameters().getValues();
        
-        if(requestParameters != null && requestParameters.containsKey("contentid")){
-            return "recordid:" + requestParameters.get("contentid").getString();
+        if(requestParameters != null && requestParameters.containsKey(config.getParameterName())){
+            return config.getPrefix() + ":" + requestParameters.get(config.getParameterName()).getString();
         }
         
         return originalQuery; 
