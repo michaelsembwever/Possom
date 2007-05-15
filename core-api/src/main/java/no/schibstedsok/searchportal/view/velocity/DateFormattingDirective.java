@@ -28,7 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 
 
 /**
@@ -164,7 +163,7 @@ public final class DateFormattingDirective extends Directive {
     }
 
     private boolean isToday(Date parsedDate) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance();
         int todayDay = cal.get(Calendar.DAY_OF_YEAR);
         int year = cal.get(Calendar.YEAR);
         cal.setTime(parsedDate);
@@ -172,7 +171,7 @@ public final class DateFormattingDirective extends Directive {
     }
 
     private boolean isYesterday(Date parsedDate) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -1);
         int yesterdayDay = cal.get(Calendar.DAY_OF_YEAR);
         int year = cal.get(Calendar.YEAR);
