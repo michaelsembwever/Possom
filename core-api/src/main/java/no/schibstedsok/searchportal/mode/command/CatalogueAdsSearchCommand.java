@@ -95,7 +95,13 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
         }        
         
         
-        originalQuery = super.getTransformedQuery().replaceAll("\\W", "").toLowerCase();
+        
+        if(getSingleParameter("who")!=null) {
+            originalQuery = getSingleParameter("who").replaceAll("\\W", "").toLowerCase();            
+        }else{
+            originalQuery = super.getTransformedQuery().replaceAll("\\W", "").toLowerCase();
+        }
+        
     }
 
     /**
