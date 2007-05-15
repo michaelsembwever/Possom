@@ -29,8 +29,10 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     private static final String DEFAULT_TYPE = "default-type";
     private static final String UNCLUSTERED_DELAY = "unclustered-delay";
     private static final String UNCLUSTERED_DELAY_IN_MINUTES = "unclustered-delay-in-minutes";
+    private static final String TIME_ZONE = "time-zone";
 
     private static final String DEFAULT_CONVERT_ELEMENT = "default-convert";
+    private String timeZone = "UTC";
     private String queryType;
     private String queryParameter;
     private String typeParameter;
@@ -72,6 +74,14 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         return unclusteredDelayInMinutes;
     }
 
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
     @Override
     public NewsCaseQueryTransformerConfig readQueryTransformer(final Element element) {
         queryType = element.getAttribute(QUERY_TYPE);
@@ -91,6 +101,11 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         if (optionalParameter != null && optionalParameter.length() > 0) {
             unclusteredDelayInMinutes = Integer.parseInt(optionalParameter);
         }
+        optionalParameter = element.getAttribute(TIME_ZONE);
+        if (optionalParameter != null && optionalParameter.length() > 0) {
+            timeZone = optionalParameter;
+        }
+
         NodeList convertNodeList = element.getElementsByTagName(DEFAULT_CONVERT_ELEMENT);
         if (convertNodeList.getLength() > 0) {
             typeConversions = new HashMap<String, String[]>();
