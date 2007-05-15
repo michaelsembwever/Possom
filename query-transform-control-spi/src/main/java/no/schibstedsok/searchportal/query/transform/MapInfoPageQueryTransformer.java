@@ -28,7 +28,7 @@ public class MapInfoPageQueryTransformer extends AbstractQueryTransformer {
         Map<String,StringDataObject> requestParameters = getContext().getDataModel().getParameters().getValues();
        
         if(requestParameters != null && requestParameters.containsKey("contentid")){
-            return "recordid:" + originalQuery;
+            return "recordid:" + requestParameters.get("contentid").getString();
         }
         
         return originalQuery; 
