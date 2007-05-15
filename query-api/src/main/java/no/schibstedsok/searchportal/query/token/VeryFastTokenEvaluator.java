@@ -95,9 +95,7 @@ public final class VeryFastTokenEvaluator implements TokenEvaluator, ReportingTo
         final int port = Integer.parseInt(props.getProperty(TOKEN_PORT_PROPERTY));
 
         httpClient = HTTPClient.instance(host, port);
-        if (httpClient == null) {
-            throw new IllegalArgumentException("Not allowed to use null HTTPClient!");
-        }
+        
         queryFast(context.getQueryString());
     }
 
