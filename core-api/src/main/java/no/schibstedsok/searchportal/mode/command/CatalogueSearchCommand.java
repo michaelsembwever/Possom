@@ -307,9 +307,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      */
     public ResultList<? extends ResultItem> execute() {
 
-        final ResultList<ResultItem> result = (ResultList<ResultItem>) super.execute();
-
-        final List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
+        ResultList<ResultItem> result = (ResultList<ResultItem>) super.execute();
+        List<CatalogueSearchResultItem> nyResultListe = new ArrayList<CatalogueSearchResultItem>();
 
         for (Iterator iter = result.getResults().listIterator(); iter.hasNext();) {
 
@@ -331,9 +330,12 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         result.getResults().addAll(nyResultListe);
 
         // add the who and where fields (preferred over using them out of the junkyard)
+        LOG.info("Putting what/where values on the result, what->"+getTransformedQuerySesamSyntax());
+        LOG.info("Putting what/where values on the result, where->"+whereString);
         result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         result.addField(PARAMETER_NAME_WHERE, whereString);
 
+        
         // XXX deprecated approach
         getParameters().put(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());
         getParameters().put(PARAMETER_NAME_WHERE, whereString);
@@ -417,6 +419,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         
         if ("name".equalsIgnoreCase(userSortBy)) {
             sortBy = SORTBY_COMPANYNAME;
+        }else if("kw".equalsIgnoreCase(userSortBy)){
+            sortBy = SORTBY_KEYWORD;
         }
         
         final ParametersDataObject pdo = datamodel.getParameters();
