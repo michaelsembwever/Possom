@@ -3,7 +3,6 @@ package no.schibstedsok.searchportal.query.transform;
 
 
 import no.schibstedsok.searchportal.query.transform.AbstractQueryTransformerConfig.Controller;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -75,7 +74,6 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
 
     @Override
     public NewsCaseQueryTransformerConfig readQueryTransformer(final Element element) {
-        Logger log = Logger.getLogger(NewsCaseQueryTransformerConfig.class);
         queryType = element.getAttribute(QUERY_TYPE);
         if (element.getAttribute(QUERY_PARAMETER) != null && element.getAttribute(QUERY_PARAMETER).length() > 0) {
             queryParameter = element.getAttribute(QUERY_PARAMETER);
@@ -102,8 +100,6 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
                 final String name = convertElement.getAttribute(TYPE_NAME);
                 final String prefix = convertElement.getAttribute(PREFIX);
                 final String postfix = convertElement.getAttribute(POSTFIX);
-
-                log.debug("qwerty Adding conversion: " + name + "=" + prefix + "$" + postfix);
                 typeConversions.put(name, new String[]{prefix, postfix});
             }
         }
