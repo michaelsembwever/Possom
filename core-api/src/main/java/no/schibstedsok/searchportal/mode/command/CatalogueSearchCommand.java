@@ -465,7 +465,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         final boolean hasNotWordCharacters = m.find();
         
         // check if this is a known keyword.
-        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD_RESERVED)){
+        if(clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD)){
             foundKeywordInQuery=true;
         }
         
