@@ -58,15 +58,15 @@
         <img src="images/index/menu_top.png" id="menuTop" width="151" height="23" alt="Sesams&#248;k" />
         <table id="searchbar" cellspacing="0" cellpadding="0">
             <tr>
-                <td style="width: 178px;">
+                <td id="menuCol">
                     <div id="menuMiddle">
                         <img src="images/index/nettsok_30_30.gif" width="30" height="30" alt="Netts&#248;k logo" />
                         Netts&#248;k
                     </div>
                 </td>
-            <td>
+                <td id="searchForm">
                 <form name="sf" action="<search:linkPulse url="/search/" param="category:front_search" index="true"/>" onsubmit='return check();'>
-                <table id="searchForm" cellspacing="0" cellpadding="0">
+                <table cellspacing="0" cellpadding="0">
                     <tr>
                         <td>
                             <input type="text" name="q" id="searchInput" onfocus="this.form.q.select();" />
