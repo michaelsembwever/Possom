@@ -1,14 +1,7 @@
 // Copyright (2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.view.velocity;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -78,23 +71,12 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
             final InputStream stream = file.exists() ? getStream(file) : super.getResourceStream(url);
 
             if(velocityDebugOn && -1 == url.indexOf("rss")){
-                
-                final StringBuilder streamBuffer = new StringBuilder();
-
-                try {
-                    
-                    for(int c = stream.read(); c != -1; c = stream.read()) {
-                        streamBuffer.append((char)c);
-                    }
-
-                } catch (IOException e) {
-                    throw new ResourceNotFoundException(e.getMessage());
-                }
+                StringBuilder  content = this.readTemplateFrom(file);
 
                 // Create html 
                 final StringBuilder template= new  StringBuilder();
                 template.append("\n");
-                template.append(streamBuffer);
+                template.append(content);
                 template.append("\n");
 
                 final StringWriter writer = new StringWriter();
@@ -139,18 +121,41 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		return super.getResourceStream(url);
 	}
 
-	/*
+    /**
+     * Read template utf8.
+     * @param file to read
+     * @return template as StringBuilder object
+     */
+    private StringBuilder readTemplateFrom(final File file) {
+        StringBuilder builder = new StringBuilder();
+
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+            Reader in = new BufferedReader(isr);
+            int ch;
+            while ((ch = in.read()) > -1) {
+                builder.append((char)ch);
+            }
+            in.close();
+        } catch (IOException e) {
+            LOG.error(e);
+        }
+        return builder;
+    }
+
+    /**
 	 * Create file object
 	 */
 	private File getFile(final String templatesDir, final String filePath) {
         
         File result = null;
-        
+
 		if(null == templatesDir) {
-			result = new File("null" + filePath);
-            
+            result = new File("null" + filePath);
+
 		}else{
-        		
+
             for(String p : templatesDir.split(",")) {
 
                 final File file = new File(p + filePath);
@@ -172,9 +177,19 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 		if (file.exists()) {
             
 			try {
-				return new FileInputStream(file);
-                
-			} catch (FileNotFoundException ignore) {
+				FileInputStream fileStream = new FileInputStream(file);
+
+                return fileStream;
+                /*
+                try {
+                    InputStreamReader reader = new InputStreamReader(fileStream, "UTF-8");
+
+                } catch (UnsupportedEncodingException ignore) {
+                    LOG.error(ignore);
+                    return null;
+                }
+                */
+            } catch (FileNotFoundException ignore) {
 				throw new IllegalStateException("File exist but filenotfoundexception thrown: " + ignore);
 			}
             
