@@ -122,8 +122,6 @@ public class NavigationCommandConfig extends CommandConfig {
         private HashMap<String, Nav> navMap;
         private Set<String> resetNavSet;
         private static final String RESET_NAV_ELEMENT = "reset-nav";
-        private Nav selectedNav;
-
 
         public Navigation() {
         }
@@ -176,14 +174,6 @@ public class NavigationCommandConfig extends CommandConfig {
                     updateNavMap(subNav, navMap);
                 }
             }
-        }
-
-        public Nav getSelectedNav() {
-            return selectedNav;
-        }
-
-        public void setSelectedNav(Nav selectedNav) {
-            this.selectedNav = selectedNav;
         }
 
         public String getId() {
