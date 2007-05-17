@@ -65,7 +65,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     private static final String LOG_NAME = "runtime.log.logsystem.log4j.logger";
 
     private static final boolean VELOCITY_DEBUG = Boolean.getBoolean("VELOCITY_DEBUG");
-    
+
     private static final String DIRECTIVES =
             "no.schibstedsok.searchportal.view.velocity.UrlEncodeDirective,"
             + "no.schibstedsok.searchportal.view.velocity.HtmlEscapeDirective,"
@@ -96,10 +96,9 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
 
     private final VelocityEngine engine;
 
-    private final Context context;
 
 
-    
+
 
     // Static --------------------------------------------------------
 
@@ -141,7 +140,7 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
         context.put("math", new MathTool());
         // date tool
         context.put("date", new DateTool());
-        
+
         return context;
     }
 
@@ -212,10 +211,9 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
     /** Creates a new instance of VelocityEngineFactory */
     private VelocityEngineFactory(final Context cxt) {
 
-    	
+
         try{
             INSTANCES_LOCK.writeLock().lock();
-            context = cxt;
             final Site site = cxt.getSite();
             final Logger logger = Logger.getLogger(VELOCITY_LOGGER);
 
@@ -239,12 +237,12 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             };
 
             try  {
-            	
+
                 engine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, LOGSYSTEM_CLASS);
                 engine.setProperty(LOG_NAME, logger.getName());
                 engine.setProperty(Velocity.RESOURCE_LOADER, "url");
                 engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
-                
+
                 if(!VELOCITY_DEBUG) {
                 	engine.setProperty("url.resource.loader.cache", "true");
                 	engine.setProperty("url.resource.loader.modificationCheckInterval", "300"); // 5 minutes
