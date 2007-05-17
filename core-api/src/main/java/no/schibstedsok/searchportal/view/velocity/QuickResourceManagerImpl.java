@@ -132,10 +132,10 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
                 stopWatch.stop();
 
                 if (oldResource != null) {
-                    LOG.info(MessageFormat.format(CHECKED_MODIFICATION, key, stopWatch.getSplitTime()));
+                    LOG.info(MessageFormat.format(CHECKED_MODIFICATION, key, stopWatch.toSplitString()));
                 }
                 if (modified) {
-                    LOG.info(MessageFormat.format(LOADED_VELOCITY_RESOURCE, key, stopWatch.getTime()));
+                    LOG.info(MessageFormat.format(LOADED_VELOCITY_RESOURCE, key, stopWatch.toString()));
                 }
             }
         }
