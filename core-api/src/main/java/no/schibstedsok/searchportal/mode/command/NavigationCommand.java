@@ -10,9 +10,11 @@ import org.apache.log4j.Logger;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
@@ -123,13 +125,13 @@ public final class NavigationCommand extends AbstractSearchCommand {
          * @param name the id of the navigator to get.
          * @return a list with extended navigators
          */
-        public List<ExtendedNavigator> getNavigators(String name) {
+        public NavigatorList getNavigators(String name) {
             NavigationCommandConfig.Nav navEntry = extendedNavigationConfig.getNavMap().get(name);
             try {
                 if (navEntry != null) {
                     boolean selectionDone = false;
                     StringDataObject selectedValue = context.getDataModel().getParameters().getValue(name);
-                    List<ExtendedNavigator> extendedNavigators = new ArrayList<ExtendedNavigator>();
+                    NavigatorList extendedNavigators = new NavigatorList(new ArrayList<ExtendedNavigator>());
                     FastSearchResult fsr = null;
                     if (navEntry.getCommandName() != null) {
                         ResultList<? extends ResultItem> searchResult = context.getRunningQuery().getSearchResult(navEntry.getCommandName());
@@ -139,12 +141,11 @@ public final class NavigationCommand extends AbstractSearchCommand {
                             if (modifiers != null && modifiers.size() > 0) {
                                 for (Modifier modifier : modifiers) {
                                     final String navigatorName = modifier.getNavigator() == null ? null : modifier.getNavigator().getName();
-                                    final String value = navEntry.isRealNavigator() && navigatorName != null ? navigatorName : modifier.getName();
                                     final String urlFragment = getUrlFragment(navEntry, modifier.getName(), navigatorName);
-                                    ExtendedNavigator navigator = new ExtendedNavigator(modifier.getName(), urlFragment, modifier.getCount());
+                                    final ExtendedNavigator navigator = new ExtendedNavigator(modifier.getName(), urlFragment, modifier.getCount());
                                     if (!selectionDone) {
                                         selectedValue = context.getDataModel().getParameters().getValue(navEntry.getField());
-                                        if (selectedValue != null && selectedValue.getString().equals(value)) {
+                                        if (selectedValue != null && selectedValue.getString().equals(modifier.getName())) {
                                             navigator.setSelected(true);
                                             selectionDone = true;
                                         }
@@ -357,6 +358,143 @@ public final class NavigationCommand extends AbstractSearchCommand {
                 LOG.fatal("UTF-8 encoding not available");
             }
             return str;
+        }
+    }
+
+    public static class NavigatorList implements List<ExtendedNavigator> {
+        private List<ExtendedNavigator> proxiedList;
+        private boolean dirty = true;
+        private ExtendedNavigator selectedItem;
+
+        public NavigatorList(List<ExtendedNavigator> proxiedList) {
+            this.proxiedList = proxiedList;
+        }
+
+        public ExtendedNavigator getSelected() {
+            findSelection();
+            return selectedItem;
+        }
+
+        private void findSelection() {
+            if (dirty) {
+                selectedItem = null;
+                for (ExtendedNavigator extendedNavigator : proxiedList) {
+                    if (extendedNavigator.isSelected()) {
+                        selectedItem = extendedNavigator;
+                        break;
+                    }
+                }
+            }
+            dirty = false;
+        }
+
+        public boolean hasSelection() {
+            findSelection();
+            return selectedItem != null;
+        }
+
+        public int size() {
+            return proxiedList.size();
+        }
+
+        public boolean isEmpty() {
+            return proxiedList.isEmpty();
+        }
+
+        public boolean contains(Object o) {
+            return proxiedList.contains(o);
+        }
+
+        public Iterator<ExtendedNavigator> iterator() {
+            dirty = true;
+            return proxiedList.iterator();
+        }
+
+        public Object[] toArray() {
+            return proxiedList.toArray();
+        }
+
+        public <T> T[] toArray(T[] a) {
+            return proxiedList.toArray(a);
+        }
+
+        public boolean add(ExtendedNavigator t) {
+            dirty = true;
+            return proxiedList.add(t);
+        }
+
+        public boolean remove(Object o) {
+            return proxiedList.remove(o);
+        }
+
+        public boolean containsAll(Collection<?> c) {
+            return proxiedList.containsAll(c);
+        }
+
+        public boolean addAll(Collection<? extends ExtendedNavigator> c) {
+            dirty = true;
+            return proxiedList.addAll(c);
+        }
+
+        public boolean addAll(int index, Collection<? extends ExtendedNavigator> c) {
+            dirty = true;
+            return proxiedList.addAll(index, c);
+        }
+
+        public boolean removeAll(Collection<?> c) {
+            dirty = true;
+            return proxiedList.removeAll(c);
+        }
+
+        public boolean retainAll(Collection<?> c) {
+            dirty = true;
+            return proxiedList.retainAll(c);
+        }
+
+        public void clear() {
+            dirty = true;
+            proxiedList.clear();
+        }
+
+        public ExtendedNavigator get(int index) {
+            return proxiedList.get(index);
+        }
+
+        public ExtendedNavigator set(int index, ExtendedNavigator element) {
+            dirty = true;
+            return proxiedList.set(index, element);
+        }
+
+        public void add(int index, ExtendedNavigator element) {
+            dirty = true;
+            proxiedList.add(index, element);
+        }
+
+        public ExtendedNavigator remove(int index) {
+            dirty = true;
+            return proxiedList.remove(index);
+        }
+
+        public int indexOf(Object o) {
+            return proxiedList.indexOf(o);
+        }
+
+        public int lastIndexOf(Object o) {
+            return proxiedList.lastIndexOf(o);
+        }
+
+        public ListIterator<ExtendedNavigator> listIterator() {
+            dirty = true;
+            return proxiedList.listIterator();
+        }
+
+        public ListIterator<ExtendedNavigator> listIterator(int index) {
+            dirty = true;
+            return proxiedList.listIterator(index);
+        }
+
+        public List<ExtendedNavigator> subList(int fromIndex, int toIndex) {
+            return proxiedList.subList(fromIndex, toIndex);
         }
     }
 

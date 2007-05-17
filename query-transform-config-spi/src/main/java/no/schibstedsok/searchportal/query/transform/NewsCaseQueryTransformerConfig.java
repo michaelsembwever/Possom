@@ -3,7 +3,6 @@ package no.schibstedsok.searchportal.query.transform;
 
 
 import no.schibstedsok.searchportal.query.transform.AbstractQueryTransformerConfig.Controller;
-import org.apache.log4j.Logger;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -30,8 +29,10 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
     private static final String DEFAULT_TYPE = "default-type";
     private static final String UNCLUSTERED_DELAY = "unclustered-delay";
     private static final String UNCLUSTERED_DELAY_IN_MINUTES = "unclustered-delay-in-minutes";
+    private static final String TIME_ZONE = "time-zone";
 
     private static final String DEFAULT_CONVERT_ELEMENT = "default-convert";
+    private String timeZone = "UTC";
     private String queryType;
     private String queryParameter;
     private String typeParameter;
@@ -73,9 +74,16 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         return unclusteredDelayInMinutes;
     }
 
+    public String getTimeZone() {
+        return timeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone;
+    }
+
     @Override
     public NewsCaseQueryTransformerConfig readQueryTransformer(final Element element) {
-        Logger log = Logger.getLogger(NewsCaseQueryTransformerConfig.class);
         queryType = element.getAttribute(QUERY_TYPE);
         if (element.getAttribute(QUERY_PARAMETER) != null && element.getAttribute(QUERY_PARAMETER).length() > 0) {
             queryParameter = element.getAttribute(QUERY_PARAMETER);
@@ -93,6 +101,11 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
         if (optionalParameter != null && optionalParameter.length() > 0) {
             unclusteredDelayInMinutes = Integer.parseInt(optionalParameter);
         }
+        optionalParameter = element.getAttribute(TIME_ZONE);
+        if (optionalParameter != null && optionalParameter.length() > 0) {
+            timeZone = optionalParameter;
+        }
+
         NodeList convertNodeList = element.getElementsByTagName(DEFAULT_CONVERT_ELEMENT);
         if (convertNodeList.getLength() > 0) {
             typeConversions = new HashMap<String, String[]>();
@@ -102,8 +115,6 @@ public final class NewsCaseQueryTransformerConfig extends AbstractQueryTransform
                 final String name = convertElement.getAttribute(TYPE_NAME);
                 final String prefix = convertElement.getAttribute(PREFIX);
                 final String postfix = convertElement.getAttribute(POSTFIX);
-
-                log.debug("qwerty Adding conversion: " + name + "=" + prefix + "$" + postfix);
                 typeConversions.put(name, new String[]{prefix, postfix});
             }
         }

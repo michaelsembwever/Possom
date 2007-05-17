@@ -218,6 +218,20 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             
             try {
                 sr = (ResultList<ResultItem>) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
+
+                final SearchResult tmpsr = (SearchResult) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
+                if (getNavigators() != null) {
+                    for (String navigatorKey : getNavigators().keySet()) {
+
+                        addNavigatedTo(navigatorKey, getParameters().containsKey("nav_" + navigatorKey)
+                                ? getParameter("nav_" + navigatorKey)
+                                : null);
+                    }
+                }
+
+                sr = new FastSearchResult(this);
+                sr.getResults().addAll(tmpsr.getResults());
+                sr.setHitCount(tmpsr.getHitCount());
             } catch (NeedsRefreshException e) {
                 
                 boolean updatedCache = false;

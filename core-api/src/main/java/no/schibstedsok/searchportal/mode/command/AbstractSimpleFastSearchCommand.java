@@ -711,6 +711,10 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
         final ISearchParameters params = new SearchParameters();
         params.setParameter(new SearchParameter(BaseParameter.LEMMATIZE, getSearchConfiguration().isLemmatise()));
 
+        params.setParameter(new SearchParameter(
+                "sesat:uniqueId",
+                context.getDataModel().getParameters().getValue("uniqueId").getString()));
+
         if (getSearchConfiguration().isSpellcheck()) {
             params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));
             params.setParameter(new SearchParameter("qtf_spellcheck:addconsidered", "1"));

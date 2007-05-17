@@ -32,6 +32,7 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
      */
     public NewsCaseQueryTransformer(final QueryTransformerConfig config) {
         this.config = (NewsCaseQueryTransformerConfig) config;
+        sdf.setTimeZone(TimeZone.getTimeZone(this.config.getTimeZone()));
     }
 
 
@@ -68,7 +69,7 @@ public final class NewsCaseQueryTransformer extends AbstractQueryTransformer {
 
     private String addUnclusteredDelayFilter(String transformedQuery) {
         if (transformedQuery != null && transformedQuery.length() > 0) {
-            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            Calendar cal = Calendar.getInstance(TimeZone.getTimeZone(config.getTimeZone()));
             cal.add(Calendar.MINUTE, -config.getUnclusteredDelayInMinutes());
             StringBuilder sb = new StringBuilder(transformedQuery);
             sb.insert(0, "and(");

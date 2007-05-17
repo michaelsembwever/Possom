@@ -10,6 +10,7 @@
 
 package no.schibstedsok.searchportal.view.velocity;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.context.InternalContextAdapter;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -26,27 +27,32 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 
 /**
- * A velocity directive to format newsnavigator date
+ * A velocity directive to format newsnavigator date.
  * <p/>
- * Newsdate comes from the fastnavigator in four forms:
- * 1. 10-2006     -> oktober 2006
- * 2. 24-10-2006  -> 24. oktober 2006
- * 3. 2006-10     -> oktober 2006
- * 4. 2006-10-24  -> 24. oktober 2006
+ * Newsdate comes from the fastnavigator in four forms:<br/>
+ * 1. 10-2006     -> Oktober 2006<br/>
+ * 2. 24-10-2006  -> 24. oktober 2006<br/>
+ * 3. 2006-10     -> Oktober 2006<br/>
+ * 4. 2006-10-24  -> 24. oktober 2006<br/>
  * <p/>
  * if 'newsdateOnly' navigator, we shuold check if the date is today or yesterday
+ * <p/>
+ * <b>Note:</b> This directive is meant to be used on navigators. that means that the timeZone for the dates are in "CET"
  */
 public final class DateFormattingDirective extends Directive {
-    private static DateFormatSymbols formatSymbols = new DateFormatSymbols();
+    // We could get Locale from the site in the context, but then we had to create a new
+    // dateformatter for each call. (can be up to 100 calls for one request.) Leaving it to "no" only for now.
+    private static DateFormatSymbols formatSymbols = new DateFormatSymbols(new Locale("no"));
 
-    static {
-        // Default symbols are all lowercase for "no", so we have to set new ones.
-        formatSymbols.setMonths(new String[]{"Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"});
-    }
+//    static {
+//        // Default symbols are all lowercase for "no", so we have to set new ones.
+//        formatSymbols.setMonths(new String[]{"Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"});
+//    }
 
     private static SimpleDateFormat shortFormatter = new SimpleDateFormat("MMMMM yyyy", formatSymbols);
     private static SimpleDateFormat longFormatter = new SimpleDateFormat("d. MMMMM yyyy", formatSymbols);
@@ -115,14 +121,14 @@ public final class DateFormattingDirective extends Directive {
             if (input.length() == 10) {
                 return formatFormTwo(input, "newsdateOnly".equals(navName));
             } else {
-                return formatFormOne(input);
+                return StringUtils.capitalize(formatFormOne(input));
             }
         } else {
             // From three or four
             if (input.length() == 10) {
                 return formatFormFour(input, "newsdateOnly".equals(navName));
             } else {
-                return formatFormThree(input);
+                return StringUtils.capitalize(formatFormThree(input));
             }
         }
     }
@@ -160,7 +166,7 @@ public final class DateFormattingDirective extends Directive {
     }
 
     private boolean isToday(Date parsedDate) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("CET"));
         int todayDay = cal.get(Calendar.DAY_OF_YEAR);
         int year = cal.get(Calendar.YEAR);
         cal.setTime(parsedDate);
@@ -168,7 +174,7 @@ public final class DateFormattingDirective extends Directive {
     }
 
     private boolean isYesterday(Date parsedDate) {
-        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("CET"));
         cal.add(Calendar.DAY_OF_YEAR, -1);
         int yesterdayDay = cal.get(Calendar.DAY_OF_YEAR);
         int year = cal.get(Calendar.YEAR);

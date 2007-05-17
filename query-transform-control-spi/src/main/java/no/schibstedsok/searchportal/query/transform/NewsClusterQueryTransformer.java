@@ -28,6 +28,7 @@ public final class NewsClusterQueryTransformer extends AbstractQueryTransformer 
      */
     public NewsClusterQueryTransformer(final QueryTransformerConfig config) {
         this.config = (NewsClusterQueryTransformerConfig) config;
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     /**

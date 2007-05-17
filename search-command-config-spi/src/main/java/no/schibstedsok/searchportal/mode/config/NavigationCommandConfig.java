@@ -122,8 +122,6 @@ public class NavigationCommandConfig extends CommandConfig {
         private HashMap<String, Nav> navMap;
         private Set<String> resetNavSet;
         private static final String RESET_NAV_ELEMENT = "reset-nav";
-        private Nav selectedNav;
-
 
         public Navigation() {
         }
@@ -148,7 +146,23 @@ public class NavigationCommandConfig extends CommandConfig {
             for (Element resetNavElement : resetNavElements) {
                 String id = resetNavElement.getAttribute("id");
                 if (id != null) {
-                    resetNavSet.add(id);
+                    Nav nav = navMap.get(id);
+                    if (nav != null) {
+                        addReset(nav);
+                    } else {
+                        LOG.error("Error in config, <reset-nav id=\"" + id + "\" />, nav with id=" + id + " not found");
+                    }
+                }
+            }
+        }
+
+        private void addReset(Nav nav) {
+            if (nav != null) {
+                resetNavSet.add(nav.getField());
+                if (nav.getChildNavs() != null) {
+                    for (Nav childNav : nav.getChildNavs()) {
+                        addReset(childNav);
+                    }
                 }
             }
         }
@@ -160,14 +174,6 @@ public class NavigationCommandConfig extends CommandConfig {
                     updateNavMap(subNav, navMap);
                 }
             }
-        }
-
-        public Nav getSelectedNav() {
-            return selectedNav;
-        }
-
-        public void setSelectedNav(Nav selectedNav) {
-            this.selectedNav = selectedNav;
         }
 
         public String getId() {

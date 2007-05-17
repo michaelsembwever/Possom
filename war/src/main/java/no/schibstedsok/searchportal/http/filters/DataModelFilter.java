@@ -21,6 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -225,6 +226,14 @@ public final class DataModelFilter implements Filter {
                 StringDataObject.class,
                 new DataObject.Property("string", getParameterSafely(request, key))));
         }
+
+        // Unique id for this request. Use the one provided by Apache if it exists otherwise generate one.
+        final String uniqId = null != request.getAttribute("UNIQUE_ID") ?
+                (String) request.getAttribute("UNIQUE_ID") :
+                UUID.randomUUID().toString();
+
+        values.put("uniqueId", factory.instantiate(StringDataObject.class, new DataObject.Property("string", uniqId)));
+
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
                 new DataObject.Property("values", values),
