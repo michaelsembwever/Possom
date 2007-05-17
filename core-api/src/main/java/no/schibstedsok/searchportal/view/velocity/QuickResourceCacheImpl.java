@@ -4,16 +4,15 @@
  */
 package no.schibstedsok.searchportal.view.velocity;
 
-import org.apache.velocity.runtime.resource.ResourceCache;
-import org.apache.velocity.runtime.resource.Resource;
-import org.apache.velocity.runtime.RuntimeServices;
-import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.app.Velocity;
-import org.apache.log4j.Logger;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.RuntimeServices;
+import org.apache.velocity.runtime.resource.Resource;
+import org.apache.velocity.runtime.resource.ResourceCache;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -29,6 +28,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public final class QuickResourceCacheImpl implements ResourceCache {
 
+    /** Property name for controlling the initial size of the cache. */
     public static final String INITIAL_SIZE_PROPERTY = "resource.manager.quickcache.size";
 
     private Map<Object, Resource> cache;
