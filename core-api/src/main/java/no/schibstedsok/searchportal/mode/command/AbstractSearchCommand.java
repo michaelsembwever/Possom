@@ -272,7 +272,22 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param clause
      */
     protected void visitImpl(final LeafClause clause) {
+        
         appendToQueryRepresentation(getTransformedTerm(clause));
+        
+//        if (null == getTransformedTerm(clause)) {
+//            if (null != clause.getField()) {
+//                if (null == getFieldFilter(clause)) {
+//
+//                    // Escape any fielded leafs for fields that are not supported by this command.
+//                    appendToQueryRepresentation(getTransformedTerm(clause));
+//
+//                }
+//            } else {
+//
+//                appendToQueryRepresentation(getTransformedTerm(clause));
+//            }
+//        }
     }
 
     /**
