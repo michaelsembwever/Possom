@@ -19,11 +19,7 @@ import com.opensymphony.oscache.base.NeedsRefreshException;
 import com.opensymphony.oscache.general.GeneralCacheAdministrator;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.mode.config.TvwaitsearchCommandConfig;
-import no.schibstedsok.searchportal.result.FastSearchResult;
-import no.schibstedsok.searchportal.result.Modifier;
-import no.schibstedsok.searchportal.result.Navigator;
-import no.schibstedsok.searchportal.result.ResultItem;
-import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.result.*;
 import no.schibstedsok.searchportal.site.Site;
 import no.schibstedsok.searchportal.site.SiteContext;
 import no.schibstedsok.searchportal.util.Channel;
@@ -219,7 +215,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
             try {
                 sr = (ResultList<ResultItem>) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
 
-                final SearchResult tmpsr = (SearchResult) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
+                final BasicSearchResult tmpsr = (BasicSearchResult) CACHE.getFromCache(cacheKey, REFRESH_PERIOD);
                 if (getNavigators() != null) {
                     for (String navigatorKey : getNavigators().keySet()) {
 
