@@ -32,7 +32,7 @@ public class UrlResourceLoader extends AbstractResourceLoader {
 
     // Constants -----------------------------------------------------
 
-    private static final GeneralCacheAdministrator PRESENCE_CACHE = new GeneralCacheAdministrator();   
+    private static final GeneralCacheAdministrator PRESENCE_CACHE = new GeneralCacheAdministrator();  
     private static final int REFRESH_PERIOD = 60; // one minute
     
     private static final Logger LOG = Logger.getLogger(UrlResourceLoader.class);

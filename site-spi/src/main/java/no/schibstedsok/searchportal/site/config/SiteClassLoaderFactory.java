@@ -17,14 +17,15 @@ import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * This provides class loaders capable of loading classes from the skins. 
+ * This provides class loaders capable of loading classes from the skins.
  *
  * @author magnuse
  */
 public final class SiteClassLoaderFactory implements SiteKeyedFactory {
 
+    /** The context needed. */
     public interface Context extends BytecodeContext, SiteContext {}
-    
+
     private static final String CREATING_CLASS_LOADER = "Creating new class loader for ";
     private static final String CLASS_LOADER_REMOVED = "Class loader removed for: ";
     private static final String CLASS_LOADER_WANTED = "Looking for an existing class loader for ";
@@ -49,7 +50,7 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
                 return context.getSite();
             }
 
-            public BytecodeLoader newBytecodeLoader(SiteContext siteCxt, String className) {
+            public BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String className) {
                 return context.newBytecodeLoader(siteCxt, className);
             }
         };
@@ -58,7 +59,7 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
     }
 
     /**
-     * Returns a class 
+     * Returns a class loader factory for a site.
      *
      * @param context The site and bytecode loader.
      * @return a class loader factory for the site.
@@ -104,11 +105,10 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
         final Site site = context.getSite();
 
         final Context parentContext = new Context() {
-            public BytecodeLoader newBytecodeLoader(SiteContext siteCxt, String className) {
+            public BytecodeLoader newBytecodeLoader(final SiteContext siteCxt, final String className) {
                 return context.newBytecodeLoader(siteCxt, className);
             }
-
-            public Site getSite() {
+           public Site getSite() {
                 return context.getSite().getParent();
             }
         };
@@ -127,9 +127,9 @@ public final class SiteClassLoaderFactory implements SiteKeyedFactory {
 
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
-    public final boolean remove(final Site site) {
+    public boolean remove(final Site site) {
         try {
             INSTANCES_LOCK.writeLock().lock();
             return null != INSTANCES.remove(site);
