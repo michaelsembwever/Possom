@@ -129,7 +129,6 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
                 throw e;
             } finally {
 
-
                 stopWatch.stop();
 
                 if (oldResource != null) {
@@ -147,7 +146,14 @@ public final class QuickResourceManagerImpl extends ResourceManagerImpl {
         public void run() {
             try {
                 load();
+            }  catch (ResourceNotFoundException rnfe) {
+                log.error(MessageFormat.format(RESOURCE_NOT_FOUND, name));
+            } catch (ParseErrorException pee) {
+                log.error(RESOURCE_PARSE_EXCEPTION, pee);
+            } catch (RuntimeException re) {
+                throw re;
             } catch (Exception e) {
+                log.error(RESOURCE_EXCEPTION, e);
             }
         }
     }
