@@ -14,7 +14,7 @@
     <search:velocity template="/fragments/head"/>
 </head>
 
-<body onload="SesamInit.onLoad('<c:out value="${tab.key}"/>', '<c:out value="${vertikal}"/>', '<c:out value="${datamodel.query.xmlEscaped}"/>', <c:out value="${null != page}"/>);">
+<body>
 <%-- This is the real thing. The new templating system all should use. --%>
 
 
