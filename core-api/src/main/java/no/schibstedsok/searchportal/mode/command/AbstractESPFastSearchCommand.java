@@ -430,7 +430,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
         final String searchViewKey = queryServer + "/" + view;
 
-        System.out.println("*** searchViewKey = " + searchViewKey);
         // XXX There is no synchronisation around this static map.
         //   Not critical as any clashing threads will just override the values,
         //    and the cost of the occasional double-up creation probably doesn't compare
@@ -452,7 +451,6 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                 final String serverName = queryServer.substring(0, queryServer.indexOf(':'));
                 final String serverPort = queryServer.substring(queryServer.indexOf(':') + 1);
                 searchView.setServerAddress(serverName, Integer.parseInt(serverPort), false);
-                System.out.println("*** ServerName =" + serverName);
             } catch (ConfigurationException e) {
                 throw new InfrastructureException(e);
             } catch (SearchEngineException e) {
