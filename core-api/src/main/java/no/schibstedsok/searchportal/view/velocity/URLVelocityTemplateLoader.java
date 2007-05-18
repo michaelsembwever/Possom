@@ -71,7 +71,7 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
             final InputStream stream = file.exists() ? getStream(file) : super.getResourceStream(url);
 
             if(velocityDebugOn && -1 == url.indexOf("rss")){
-                StringBuilder  content = this.readTemplateFrom(file);
+                StringBuilder  content = this.readTemplateFrom(stream);
 
                 // Create html 
                 final StringBuilder template= new  StringBuilder();
@@ -123,15 +123,14 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
 
     /**
      * Read template utf8.
-     * @param file to read
+     * @param is to read from
      * @return template as StringBuilder object
      */
-    private StringBuilder readTemplateFrom(final File file) {
+    private StringBuilder readTemplateFrom(final InputStream is) {
         StringBuilder builder = new StringBuilder();
 
         try {
-            FileInputStream fis = new FileInputStream(file);
-            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
+            InputStreamReader isr = new InputStreamReader(is, "UTF8");
             Reader in = new BufferedReader(isr);
             int ch;
             while ((ch = in.read()) > -1) {
@@ -155,7 +154,6 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
             result = new File("null" + filePath);
 
 		}else{
-
             for(String p : templatesDir.split(",")) {
 
                 final File file = new File(p + filePath);
@@ -178,17 +176,8 @@ public class URLVelocityTemplateLoader extends URLResourceLoader {
             
 			try {
 				FileInputStream fileStream = new FileInputStream(file);
-
                 return fileStream;
-                /*
-                try {
-                    InputStreamReader reader = new InputStreamReader(fileStream, "UTF-8");
 
-                } catch (UnsupportedEncodingException ignore) {
-                    LOG.error(ignore);
-                    return null;
-                }
-                */
             } catch (FileNotFoundException ignore) {
 				throw new IllegalStateException("File exist but filenotfoundexception thrown: " + ignore);
 			}
