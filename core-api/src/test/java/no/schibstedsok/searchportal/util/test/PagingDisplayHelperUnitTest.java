@@ -4,8 +4,9 @@
  */
 package no.schibstedsok.searchportal.util.test;
 
+import no.schibstedsok.searchportal.result.PagingDisplayHelper;
 import no.schibstedsok.searchportal.site.SiteTestCase;
-import no.schibstedsok.searchportal.util.PagingDisplayHelper;
+import no.schibstedsok.searchportal.result.PagingDisplayHelper;
 import junit.framework.TestResult;
 import org.apache.log4j.Logger;
 import static org.testng.AssertJUnit.*;

@@ -37,6 +37,10 @@ public class StringDataObjectSupport implements StringDataObject{
     
     private final String string;
     
+    /**
+     * 
+     * @param string 
+     */
     public StringDataObjectSupport(final String string){
         this.string = string;
     }
@@ -49,7 +53,7 @@ public class StringDataObjectSupport implements StringDataObject{
     public String getUtf8UrlEncoded(){
         
         try {
-            return java.net.URLEncoder.encode(getString(), "UTF-8");
+            return null != getString() ? URLEncoder.encode(getString(), "UTF-8") : null;
             
         }catch (UnsupportedEncodingException ex) {
             throw new IllegalStateException("JVM doesn't support UTF-8 encoding", ex);
@@ -59,7 +63,7 @@ public class StringDataObjectSupport implements StringDataObject{
     public String getIso88591UrlEncoded(){
         
         try {
-            return java.net.URLEncoder.encode(getString(), "ISO-8859-1");
+            return null != getString() ? URLEncoder.encode(getString(), "ISO-8859-1") : null;
             
         }catch (UnsupportedEncodingException ex) {
             throw new IllegalStateException("JVM doesn't support ISO-8859-1 encoding", ex);
@@ -68,7 +72,7 @@ public class StringDataObjectSupport implements StringDataObject{
     
     public String getXmlEscaped(){
         
-        return StringEscapeUtils.escapeHtml(getString());
+        return null != getString() ? StringEscapeUtils.escapeXml(getString()) : null;
     }
     
     

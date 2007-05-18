@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.UUID;
 import java.text.MessageFormat;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -393,11 +394,11 @@ public final class SiteLocatorFilter implements Filter {
         }
     }
 
-    private static String getRequestId(final ServletRequest servletRequest){
+    static String getRequestId(final ServletRequest servletRequest){
 
         return null != servletRequest.getAttribute("UNIQUE_ID")
                 ? (String)servletRequest.getAttribute("UNIQUE_ID")
-                : String.valueOf(System.currentTimeMillis());
+                : UUID.randomUUID().toString();
     }
 
     private void doBeforeProcessing(final ServletRequest request, final ServletResponse response)

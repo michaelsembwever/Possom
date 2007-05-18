@@ -13,5 +13,9 @@ package no.schibstedsok.searchportal.datamodel;
  * @version <tt>$Id$</tt>
  */
 public interface DataModelContext {
+    /**
+     * 
+     * @return 
+     */
     DataModel getDataModel();
 }

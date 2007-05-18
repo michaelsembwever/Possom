@@ -37,8 +37,7 @@ import org.apache.log4j.Logger;
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
-@DataObject
-final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
+class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
     // Constants -----------------------------------------------------
 
@@ -60,7 +59,7 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
     // properties: the only part of this class that be immutable and reused
 
     // properties: the only part of this class that be immutable and reused
-    private final List<Property> properties = new ArrayList<Property>();
+    protected final List<Property> properties = new ArrayList<Property>();
 
     private final BeanContextChild contextChild = new BeanContextChildSupport();
 
@@ -201,7 +200,10 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                 if(null == invocationTarget){
                     invocationTargetCache.put(method, InvocationTarget.PROPERTY);
                 }
-                return invokePropertyResult.getValue();
+                return invokePropertyResult.getValue() instanceof MapDataObject 
+                            && Map.class.isAssignableFrom(method.getReturnType())
+                        ? ((MapDataObject)invokePropertyResult.getValue()).getValues()
+                        : invokePropertyResult.getValue();
             }
         }
 
@@ -270,7 +272,7 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         return m;
     }
 
-    private Object invokeSupport(final Method m, final Object support, final Object[] args){
+    protected Object invokeSupport(final Method m, final Object support, final Object[] args){
 
         Object result = null;
         try{
@@ -294,7 +296,7 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         return result;
     }
 
-    private Property invokeProperty(final String propertyName, final boolean setter, final Object[] args){
+    protected Property invokeProperty(final String propertyName, final boolean setter, final Object[] args){
 
         // Try finding something out of our own map of bean properties.
 
@@ -308,12 +310,13 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                 }
                 // TODO if this bean is immutable then return a clone (defensive copy) this object
                 result = p;
+                break;
             }
         }
         return result;
     }
 
-    private Object invokeSelf(final Method method, final Object[] args){
+    protected Object invokeSelf(final Method method, final Object[] args){
 
         // try invoking one of our own methods. (Works for example on methods declared by the Object class).
 
@@ -324,7 +327,7 @@ final class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         }catch(IllegalAccessException iae){
             LOG.info(iae.getMessage(), iae);
         }catch(IllegalArgumentException iae){
-            LOG.info(iae.getMessage(), iae);
+            LOG.debug(iae.getMessage());
         }catch(InvocationTargetException ite){
             LOG.info(ite.getMessage(), ite);
         }

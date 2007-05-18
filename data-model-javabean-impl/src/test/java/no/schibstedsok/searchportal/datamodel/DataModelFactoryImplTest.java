@@ -87,6 +87,10 @@ public final class DataModelFactoryImplTest {
         });
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testInstantiateDataNodes() throws Exception{
 
@@ -105,6 +109,10 @@ public final class DataModelFactoryImplTest {
         });
     }
 
+    /**
+     * 
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testDataObjectGetters() throws Exception{
 
@@ -175,21 +183,20 @@ public final class DataModelFactoryImplTest {
         final PropertyDescriptor[] properties = Introspector.getBeanInfo(cls).getPropertyDescriptors();
         for(PropertyDescriptor property : properties){
 
-            LOG.info("  checking property " + property.getName()
-                    + " [" + property.getPropertyType().getSimpleName() + ']');
+            
+            final Class<?> propCls = property instanceof MappedPropertyDescriptor
+                    ? ((MappedPropertyDescriptor)property).getMappedPropertyType()
+                    : property.getPropertyType();
 
-            if(null != property.getPropertyType().getAnnotation(type)){
-                command.execute(property.getPropertyType());
+            LOG.info("  checking property " + property.getName() + " [" + propCls.getSimpleName() + ']');
+
+            if(null != propCls.getAnnotation(type)){
+                command.execute(propCls);
             }
-            if(property instanceof MappedPropertyDescriptor){
-                final MappedPropertyDescriptor mappedProperty = (MappedPropertyDescriptor)property;
-                if(null != mappedProperty.getMappedPropertyType().getAnnotation(type)){
-                    command.execute(property.getPropertyType());
-                }
-            }
-            if(null != property.getPropertyType().getAnnotation(DataNode.class)){
-                // also descend down dataNodes inthe datamodel
-                scan(type, property.getPropertyType(), command);
+            
+            if(null != propCls.getAnnotation(DataNode.class)){
+                // also descend down dataNodes in the datamodel
+                scan(type, propCls, command);
             }
         }
 

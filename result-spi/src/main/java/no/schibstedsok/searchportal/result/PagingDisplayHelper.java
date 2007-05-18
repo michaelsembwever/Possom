@@ -1,8 +1,9 @@
 /*
- * Copyright (2005-2007-2207) Schibsted Søk AS
+ * Copyright (2005-2007) Schibsted Søk AS
  * 
  */
-package no.schibstedsok.searchportal.util;
+package no.schibstedsok.searchportal.result;
+
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
@@ -16,61 +17,121 @@ public final class PagingDisplayHelper {
 
     private int currentOffset = 0;
 
+    /**
+     * 
+     * @param numberOfResults 
+     */
     public PagingDisplayHelper(final int numberOfResults) {
         this.numberOfResults = numberOfResults;
     }
 
+    /**
+     * 
+     * @param numberOfResults 
+     * @param pageSize 
+     * @param maxPages 
+     */
     public PagingDisplayHelper(final int numberOfResults, final int pageSize, final int maxPages) {
         this.numberOfResults = numberOfResults;
         this.pageSize = pageSize;
         this.maxPages = maxPages;
     }
 
+    /**
+     * 
+     * @param pageSize 
+     * @param maxPages 
+     */
     public PagingDisplayHelper(final int pageSize, final int maxPages) {
         this.pageSize = pageSize;
         this.maxPages = maxPages;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getCurrentPage() {
         return currentOffset / pageSize + 1;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getNumberOfPages() {
         return (numberOfResults + pageSize - 1) / pageSize;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getPageSize() {
         return pageSize;
     }
 
+    /**
+     * 
+     * @param pageSize 
+     */
     public final void setPageSize(final int pageSize) {
         this.pageSize = pageSize;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public boolean isFirstPage() {
         return getCurrentPage() == 1;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public boolean isLastPage() {
         return getCurrentPage() == getNumberOfPages();
     }
 
+    /**
+     * 
+     * @param offset 
+     */
     public void setCurrentOffset(final int offset) {
         currentOffset = offset;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getOffsetOfNextPage() {
         return getFirstHitOnPage() + pageSize - 1;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getOffsetOfPreviousPage() {
         return (getCurrentPage() - 2) * pageSize;
     }
 
+    /**
+     * 
+     * @param page 
+     * @return 
+     */
     public int getOffsetOfPage(final int page) {
         return (page - 1) * (pageSize);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getFirstVisiblePage() {
 
         int firstPage = 0;
@@ -88,32 +149,60 @@ public final class PagingDisplayHelper {
         return firstPage;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getLastVisiblePage() {
         int pageSet = getFirstVisiblePage() + maxPages - 1;
 
         return getNumberOfPages() < pageSet ? getNumberOfPages() : pageSet;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getMaxPages() {
         return maxPages;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getFirstHitOnPage() {
         return (getCurrentPage() - 1) * pageSize + currentOffset % pageSize + 1;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getLastHitOnPage() {
         return Math.min(numberOfResults, getFirstHitOnPage() + pageSize - 1);
     }
 
+    /**
+     * 
+     * @param numberOfResults 
+     */
     public void setNumberOfResults(final int numberOfResults) {
         this.numberOfResults = numberOfResults;
     }
 
+    /**
+     * 
+     * @return 
+     */
     public int getNumberOfResults() {
         return numberOfResults;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public int getCurrentOffset() {
         return currentOffset;
     }

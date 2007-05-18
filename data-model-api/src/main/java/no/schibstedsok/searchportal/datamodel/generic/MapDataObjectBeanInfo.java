@@ -40,11 +40,18 @@ public class MapDataObjectBeanInfo extends SimpleBeanInfo{
     
     // Public --------------------------------------------------------
     
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors(){
         
         return addSingleMappedPropertyDescriptor("value", MapDataObject.class);
     }
         
+    /**
+     * 
+     * @param name 
+     * @param cls 
+     * @return 
+     */
     public static PropertyDescriptor[] addSingleMappedPropertyDescriptor(final String name, final Class<?> cls){
         
         try{
@@ -61,7 +68,13 @@ public class MapDataObjectBeanInfo extends SimpleBeanInfo{
             }
             
             final String captialised = Character.toUpperCase(name.charAt(0)) + name.substring(1);
-            result[existing.length+1] = new PropertyDescriptor(name + 's', cls, "get" + captialised + 's', null);
+            try{
+                // try plural with "s" first, then fall back onto "es"
+                result[existing.length+1] = new PropertyDescriptor(name + 's', cls, "get" + captialised + 's', null);
+            }catch(IntrospectionException ie){
+                // who on earth designed the english language!?? :@
+                result[existing.length+1] = new PropertyDescriptor(name + "es", cls, "get" + captialised + 's', null);
+            }
             return result;
             
         }catch (IntrospectionException ex) {

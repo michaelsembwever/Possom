@@ -31,11 +31,14 @@ public final class BeanDataModelInvocationHandler extends BeanDataNodeInvocation
     
     // Constructors --------------------------------------------------
     
-    /** Creates a new instance of BeanDataModelInvocationHandler */
+    /** Creates a new instance of BeanDataModelInvocationHandler 
+     * @param allProperties 
+     * @throws java.beans.IntrospectionException 
+     */
     protected BeanDataModelInvocationHandler(
-            final Property... allProperties) throws IntrospectionException {
+            final PropertyInitialisor properties) throws IntrospectionException {
         
-        super(DataModel.class, allProperties);
+        super(DataModel.class, properties);
     }
     
     // Public --------------------------------------------------------

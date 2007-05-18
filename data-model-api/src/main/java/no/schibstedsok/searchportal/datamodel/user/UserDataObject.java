@@ -25,8 +25,16 @@ public interface UserDataObject extends Serializable {
 
     // Locations -- Delegate to Map<String,LocationDataObject> -------------------------------
     
+    /**
+     * 
+     * @return 
+     */
     User getUser();
     
+    /**
+     * 
+     * @param user 
+     */
     void setUser(User user);
 
 //    Map<String,LocationDataObject> getLocations();

@@ -13,6 +13,7 @@ import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
 import no.schibstedsok.searchportal.datamodel.access.AccessAllow;
 import no.schibstedsok.searchportal.datamodel.access.AccessDisallow;
+import no.schibstedsok.searchportal.datamodel.generic.DataNode;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
 
@@ -22,21 +23,38 @@ import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
-@DataObject
+@DataNode
 public interface ParametersDataObject extends MapDataObject<StringDataObject>{
 
     @AccessDisallow(VIEW_CONSTRUCTION)
     Map<String,StringDataObject> getValues();
 
+    /**
+     * 
+     * @param key 
+     * @return 
+     */
     @AccessDisallow(VIEW_CONSTRUCTION)
     StringDataObject getValue(final String key);
 
+    /**
+     * 
+     * @param key 
+     * @param value 
+     */
     @AccessAllow({})
     void setValue(final String key, final StringDataObject value);
     
+    /** @deprecated Pointless since sesat can only run against the root context.
+     * 
+     * @return 
+     */
     @AccessAllow({REQUEST_CONSTRUCTION, VIEW_CONSTRUCTION})
     String getContextPath();
-    
-    @AccessAllow({})
-    void setContextPath(final String contextPath);
+
+    /**
+     * 
+     * @return 
+     */
+    String getUniqueId();
 }

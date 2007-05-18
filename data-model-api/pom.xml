@@ -55,7 +55,7 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                        <!--argLine>-ea -Xmx512m -Dfile.encoding=UTF-8</argLine-->
+                        <argLine>-ea -Xmx512m -Dfile.encoding=UTF-8</argLine>
                         <!--argLine>-ea -Xmx512m -Dfile.encoding=UTF-8 -Xdebug -Xrunjdwp:transport=dt_socket,address=54321,server=y,suspend=y</argLine-->
                   </configuration>
               </plugin>
@@ -78,6 +78,11 @@
             <artifactId>search-portal-query-transform-config-spi</artifactId>
             <version>${version}</version>
         </dependency>
+        <dependency>
+            <groupId>schibstedsok</groupId>
+            <artifactId>search-portal-result-spi</artifactId>
+            <version>${version}</version>
+        </dependency> 
         <!--dependency>
             <groupId>schibstedsok</groupId>
             <artifactId>commons-ioc</artifactId>

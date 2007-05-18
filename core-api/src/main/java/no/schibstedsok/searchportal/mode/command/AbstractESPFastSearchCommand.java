@@ -187,7 +187,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             query.setParameter(new SearchParameter(
                     "sesat:uniqueId",
-                    context.getDataModel().getParameters().getValue("uniqueId").getString()));
+                    context.getDataModel().getParameters().getUniqueId()));
             
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, getCurrentOffset(0)));
             query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));

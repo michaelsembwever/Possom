@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Map;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.result.handler.DataModelResultHandler;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
@@ -56,6 +57,8 @@ import no.schibstedsok.searchportal.result.ResultList;
 public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand {
 
     // Constants -----------------------------------------------------
+    
+    private static final DataModelResultHandler DATAMODEL_HANDLER = new DataModelResultHandler();
 
     private static final String FIELD_TRANSFORMED_QUERY = "transformedQuery";
 
@@ -157,6 +160,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /**
      * Returns the query as it is after the query transformers have been applied to it.
+     * @return 
      */
     public String getTransformedQuerySesamSyntax() {
         return transformedQuerySesamSyntax;
@@ -172,6 +176,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /**
      * TODO comment me. *
+     * @return 
      */
     public String getFilter() {
         return filter;
@@ -470,53 +475,50 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
-    /**
-     * TODO comment me. *
+    /** Perform (delegating out to) all registered result handlers for this command.
+     * Also performs some hardcoded result handling, eg DataModelResultHandler.
+     * 
+     * @param result 
      */
     protected final void performResultHandling(final ResultList<? extends ResultItem> result) {
 
-        // add some general properties first from the command
-        //  if we've somehow blanked out the query altogether then revert to the user's origianl query string
+        // XXX following is deprecated. use instead datamodel.getSearch(name).getQuery().getString()
         result.addField(FIELD_TRANSFORMED_QUERY,
                 getTransformedQuerySesamSyntax().length() > 0
                         ? getTransformedQuerySesamSyntax()
                         : datamodel.getQuery().getString());
 
+        // Build the context each result handler will need.
+        final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
+                ResultHandler.Context.class,
+                new BaseContext() {
+                    public ResultList<? extends ResultItem> getSearchResult() {
+                        return result;
+                    }
+                    public SearchTab getSearchTab() {
+                        return context.getRunningQuery().getSearchTab();
+                    }
+                    public void addSource(final Modifier modifier) {
+                        context.getRunningQuery().addSource(modifier);
+                    }
+                    public Query getQuery(){
+                        return AbstractSearchCommand.this.getQuery();
+                    }
+                },
+                context
+        );
+                    
         // process listed result handlers
         for (ResultHandlerConfig resultHandlerConfig : getSearchConfiguration().getResultHandlers()) {
 
-            final ResultHandler resultHandler = ResultHandlerFactory.getController(resultHandlerConfig);
-
-            final ResultHandler.Context resultHandlerContext = ContextWrapper.wrap(
-                    ResultHandler.Context.class,
-                    new BaseContext() {
-                        public ResultList<? extends ResultItem> getSearchResult() {
-                            return result;
-                        }
-
-                        public SearchTab getSearchTab() {
-                            return context.getRunningQuery().getSearchTab();
-                        }
-
-                        /**
-                         * @deprecated implementations should be using the QueryContext instead!
-                         */
-                        public String getQueryString() {
-                            return datamodel.getQuery().getString();
-                        }
-
-                        public void addSource(final Modifier modifier) {
-                            context.getRunningQuery().addSource(modifier);
-                        }
-                    },
-                    context
-            );
-            resultHandler.handleResult(resultHandlerContext, datamodel);
+            ResultHandlerFactory.getController(resultHandlerConfig).handleResult(resultHandlerContext, datamodel);
         }
-
-
+        
+        // The DataModel result handler is a hardcoded feature of the architecture
+        DATAMODEL_HANDLER.handleResult(resultHandlerContext, datamodel);
+        // also ping everybody that might be waiting on these results: "dinner's served!"
+        synchronized(datamodel.getSearches()){ datamodel.getSearches().notifyAll(); }
     }
-
 
     /**
      * Returns the offset in the result set. If paging is enabled for the
@@ -542,6 +544,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /**
      * TODO comment me. *
+     * @return 
      */
     protected Map<String, Object> getParameters() {
 
@@ -553,6 +556,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * Returns parameter value. In case the parameter is multi-valued only the
      * first value is returned. If the parameter does not exist or is empty
      * the empty string is returned.
+     * @param paramName 
      */
     protected String getParameter(final String paramName) {
 
@@ -591,6 +595,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         sb.append(addition);
     }
 
+    /**
+     * 
+     * @param addition 
+     */
     protected final void appendToQueryRepresentation(final char addition) {
         sb.append(addition);
     }

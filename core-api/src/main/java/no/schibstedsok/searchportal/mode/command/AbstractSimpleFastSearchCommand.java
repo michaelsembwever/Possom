@@ -713,7 +713,7 @@ public abstract class AbstractSimpleFastSearchCommand extends AbstractSearchComm
 
         params.setParameter(new SearchParameter(
                 "sesat:uniqueId",
-                context.getDataModel().getParameters().getValue("uniqueId").getString()));
+                context.getDataModel().getParameters().getUniqueId()));
 
         if (getSearchConfiguration().isSpellcheck()) {
             params.setParameter(new SearchParameter(BaseParameter.SPELL, "suggest"));

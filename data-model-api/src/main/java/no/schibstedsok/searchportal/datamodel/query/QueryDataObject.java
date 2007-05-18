@@ -8,11 +8,11 @@
 
 package no.schibstedsok.searchportal.datamodel.query;
 
-import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import static no.schibstedsok.searchportal.datamodel.access.ControlLevel.*;
 import no.schibstedsok.searchportal.datamodel.access.AccessAllow;
 import no.schibstedsok.searchportal.datamodel.access.AccessDisallow;
+import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.query.Query;
 
 /** The QueryDataObject is the datamodel's container around the user inputted query string 
@@ -24,9 +24,17 @@ import no.schibstedsok.searchportal.query.Query;
 @DataObject
 public interface QueryDataObject extends StringDataObject{
 
+    /**
+     * 
+     * @return 
+     */
     @AccessDisallow(REQUEST_CONSTRUCTION)
     Query getQuery();
 
+    /**
+     * 
+     * @param query 
+     */
     @AccessAllow(RUNNING_QUERY_CONSTRUCTION)
     void setQuery(Query query);
 

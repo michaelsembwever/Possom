@@ -52,6 +52,12 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
 
     // Static --------------------------------------------------------
 
+    /**
+     * 
+     * @param cxt 
+     * @return 
+     * @throws no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException 
+     */
     public static DataModelFactory valueOf(final Context cxt) throws SiteKeyedFactoryInstantiationException {
 
         final Site site = cxt.getSite();
@@ -81,6 +87,11 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
         return instance;
     }
 
+    /**
+     * 
+     * @param site 
+     * @return 
+     */
     public boolean remove(final Site site){
 
         try{
@@ -98,7 +109,9 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
         throw new IllegalArgumentException("Must use constructor with Context argument.");
     }
 
-    /** Creates a new instance of DataModelToolkitFactory */
+    /** Creates a new instance of DataModelToolkitFactory 
+     * @param cxt 
+     */
     protected DataModelFactory(final Context cxt) {
 
         context = cxt;
@@ -106,6 +119,10 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
 
     // Public --------------------------------------------------------
 
+    /**
+     * 
+     * @return 
+     */
     public abstract DataModel instantiate();
 
     /**
@@ -117,12 +134,17 @@ public abstract class DataModelFactory implements SiteKeyedFactory{
      *       new DataObject.Property("locale", null),
      *       new DataObject.Property("supportedLocales", null));
      * </pre>
-     **/
+     ** @param cls 
+     * @param properties 
+     * @return 
+     */
     public abstract <T> T instantiate(final Class<T> cls, DataObject.Property... properties);
     
     /** Lets the datamodel instance know that it has moved on and is now being accessed by the next level in the 
      * control process stack.
-     **/
+     ** @param datamodel 
+     * @return 
+     */
     public abstract DataModel incrementControlLevel(final DataModel datamodel);
 
     // Package protected ---------------------------------------------

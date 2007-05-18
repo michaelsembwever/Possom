@@ -48,6 +48,13 @@ public final class SearchTab {
     private final int pageSize;
 
     /**
+     * Holds value of property pagingSize.
+     * The number of pages to show in the paging bar.
+     * TODO implement
+     */
+    private final int pagingSize = 10;    
+
+    /**
      * Holds value of property enrichmentLimit.
      */
     private final int enrichmentLimit;
@@ -213,6 +220,14 @@ public final class SearchTab {
         return this.pageSize;
     }
 
+    /**
+     * Getter for property pagingSize.
+     * @return Value of property pagingSize.
+     */
+    public int getPagingSize() {
+        return this.pagingSize;
+    }
+    
     /**
      * Getter for property enrichmentLimit.
      * @return Value of property enrichmentLimit.

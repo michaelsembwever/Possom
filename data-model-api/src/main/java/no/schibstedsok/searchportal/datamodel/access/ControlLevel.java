@@ -14,17 +14,48 @@ package no.schibstedsok.searchportal.datamodel.access;
  * @version <tt>$Id$</tt>
  */
 public enum ControlLevel {
+    /**
+     * 
+     */
     DATA_MODEL_CONSTRUCTION,
+    /**
+     * 
+     */
     REQUEST_CONSTRUCTION,
+    /**
+     * 
+     */
     RUNNING_QUERY_CONSTRUCTION,
+    /**
+     * 
+     */
     SEARCH_COMMAND_CONSTRUCTION,
+    /**
+     * 
+     */
     SEARCH_COMMAND_QUERY_TRANSFORMATION,
+    /**
+     * 
+     */
     SEARCH_COMMAND_EXECUTION,
+    /**
+     * 
+     */
     SEARCH_COMMAND_RESULT_HANDLING,
+    /**
+     * 
+     */
     RUNNING_QUERY_RESULT_HANDLING,
+    /**
+     * 
+     */
     VIEW_CONSTRUCTION;
     
 
+    /**
+     * 
+     * @return 
+     */
     public ControlLevel next(){
         
         switch(this){

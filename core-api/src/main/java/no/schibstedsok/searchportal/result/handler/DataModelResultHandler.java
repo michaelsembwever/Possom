@@ -8,18 +8,23 @@
 
 package no.schibstedsok.searchportal.result.handler;
 
-import java.util.Hashtable;
 import java.util.Map;
+import java.util.Properties;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.DataModelFactory;
+import no.schibstedsok.searchportal.datamodel.generic.DataObject;
+import no.schibstedsok.searchportal.datamodel.search.SearchDataObject;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
-import no.schibstedsok.searchportal.result.ResultItem;
-import no.schibstedsok.searchportal.result.ResultList;
-import no.schibstedsok.searchportal.util.PagingDisplayHelper;
+import no.schibstedsok.searchportal.result.PagingDisplayHelper;
 import no.schibstedsok.searchportal.view.config.SearchTab;
-import no.schibstedsok.searchportal.run.RunningQuery;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.SiteKeyedFactoryInstantiationException;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
 import org.apache.log4j.Logger;
 
-/**
+/** Handles the insertion of the results (& pager) into the datamodel.
+ * This class must remain safe under multi-threaded conditions.
  *
  * @author <a href="mailto:mick@wever.org">Michael Semb Wever</a>
  * @version $Id$
@@ -32,23 +37,15 @@ public final class DataModelResultHandler implements ResultHandler{
     private static final String DEBUG_CREATED_RESULTS = "Creating results Hashtable";
     private static final String DEBUG_ADD_RESULT = "Adding the result ";
 
-    /* This is the paging size when browsing resultset like <- 1 2 3 4 5 6 7 8 9 10 ->
-     * Hardcoded to max 10 and independent of the  pageSize */
-    // TODO Put this as parameter in views.xml
-    private static final int PAGING_SIZE =  10;
-
     // Attributes ----------------------------------------------------
-    
-    private final DataModelResultHandlerConfig config;
 
     // Static --------------------------------------------------------
 
     // Constructors --------------------------------------------------
 
-    /** Creates a new instance of DataModelResultHandler */
-    public DataModelResultHandler(final ResultHandlerConfig config) {
-        this.config = (DataModelResultHandlerConfig)config;
-    }
+    /** Creates a new instance of DataModelResultHandler. Used directly by AbstractSearchCommand.
+     */
+    public DataModelResultHandler() {}
 
     // Public --------------------------------------------------------
 
@@ -60,45 +57,50 @@ public final class DataModelResultHandler implements ResultHandler{
         final SearchConfiguration config = cxt.getSearchConfiguration();
         final Map<String,Object> parameters = datamodel.getJunkYard().getValues();
 
-        // simple beginnngs of the datamodel handler
-        //  currently only puts into the request what we'll need at the decorator level.
-        //   copy these over from VelocityResultHandler.populateContext() as needed.
-
         // results
-        synchronized( parameters ){
-            if( parameters.get("results") == null ){
-                parameters.put("results", new Hashtable<String,ResultList<ResultItem>>());
-                parameters.put("runningQuery", (RunningQuery) parameters.get("query"));
-                LOG.debug(DEBUG_CREATED_RESULTS);
-            }
-        }
-        
-        final Map<String,ResultList<ResultItem>> results
-                = (Hashtable<String,ResultList<ResultItem>>)parameters.get("results");
-        
         LOG.debug(DEBUG_ADD_RESULT + config.getName());
-        results.put(config.getName(), cxt.getSearchResult());
+
+        final DataModelFactory factory;
+        try{
+            factory = DataModelFactory.valueOf(new DataModelFactory.Context(){
+                public Site getSite() {
+                    return datamodel.getSite().getSite();
+                }
+                public PropertiesLoader newPropertiesLoader(final SiteContext siteCxt,
+                                                            final String resource,
+                                                            final Properties properties) {
+                    return cxt.newPropertiesLoader(siteCxt, resource, properties);
+                }
+            });
+        }catch(SiteKeyedFactoryInstantiationException skfie){
+            LOG.error(skfie.getMessage(), skfie);
+            throw new IllegalStateException(skfie.getMessage(), skfie);
+        }
 
         // Paging helper
+        PagingDisplayHelper pager = null;
         if (config.isPaging()) {
-            final PagingDisplayHelper pager
-                    = new PagingDisplayHelper(cxt.getSearchResult().getHitCount(), tab.getPageSize(), PAGING_SIZE);
+            
+            pager = new PagingDisplayHelper(
+                    cxt.getSearchResult().getHitCount(), 
+                    tab.getPageSize(), 
+                    tab.getPagingSize());
 
             final Object v = null != parameters.get("offset") ? parameters.get("offset") : "0";
             pager.setCurrentOffset(Integer.parseInt( v instanceof String[] && ((String[])v).length ==1
                     ? ((String[]) v)[0]
                     : (String) v));
 
-            synchronized( parameters ){
-                if( parameters.get("pagers") == null ){
-                    parameters.put("pagers", new Hashtable<String,PagingDisplayHelper>());
-                }
-            }
-            final Map<String,PagingDisplayHelper> pagers
-                    = (Hashtable<String,PagingDisplayHelper>)parameters.get("pagers");
-
-            pagers.put(config.getName(), pager);
         }
+
+        // Update the datamodel
+        final SearchDataObject searchDO = factory.instantiate(
+                SearchDataObject.class,
+                new DataObject.Property("query", cxt.getQuery()),
+                new DataObject.Property("results", cxt.getSearchResult()),
+                new DataObject.Property("pager", pager));
+
+        datamodel.setSearch(config.getName(), searchDO);
     }
 
     // Y overrides ---------------------------------------------------

@@ -21,7 +21,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -35,10 +35,12 @@ import javax.servlet.http.HttpSession;
 import no.schibstedsok.searchportal.datamodel.DataModel;
 import no.schibstedsok.searchportal.datamodel.DataModelFactory;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
+import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectSupport;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.datamodel.junkyard.JunkYardDataObject;
 import no.schibstedsok.searchportal.datamodel.request.BrowserDataObject;
 import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
+import no.schibstedsok.searchportal.datamodel.search.SearchDataObject;
 import no.schibstedsok.searchportal.datamodel.site.SiteDataObject;
 import no.schibstedsok.searchportal.datamodel.user.UserDataObject;
 import no.schibstedsok.searchportal.site.Site;
@@ -154,7 +156,7 @@ public final class DataModelFilter implements Filter {
         // DataModel's ControlLevel will be DATA_MODEL_CONSTRUCTION or VIEW_CONSTRUCTION (from the past request)
         //  Increment it onwards to REQUEST_CONSTRUCTION.
         return factory.incrementControlLevel(datamodel);
-}
+    }
 
     private static DataModel createDataModel(final DataModelFactory factory, final HttpServletRequest request){
 
@@ -193,12 +195,13 @@ public final class DataModelFilter implements Filter {
 
         final JunkYardDataObject junkYardDO = factory.instantiate(
                 JunkYardDataObject.class,
-                new DataObject.Property("values", new Hashtable<String,Object>()));
+                new DataObject.Property("values", new ConcurrentHashMap<String,Object>()));
 
         datamodel.setSite(siteDO);
         datamodel.setBrowser(browserDO);
         datamodel.setUser(userDO);
         datamodel.setJunkYard(junkYardDO);
+        //datamodel.setSearches(new ConcurrentHashMap<String,SearchDataObject>());
 
         return datamodel;
     }
@@ -218,7 +221,7 @@ public final class DataModelFilter implements Filter {
             final DataModelFactory factory,
             final HttpServletRequest request){
 
-        // Note that we do not support String[] parameter values!
+        // XXX Note that we do not support String[] parameter values! this is different to pre SESAT days
         final Map<String,StringDataObject> values = new HashMap<String,StringDataObject>();
         for(Enumeration<String> e = request.getParameterNames(); e.hasMoreElements(); ){
             final String key = e.nextElement();
@@ -227,17 +230,11 @@ public final class DataModelFilter implements Filter {
                 new DataObject.Property("string", getParameterSafely(request, key))));
         }
 
-        // Unique id for this request. Use the one provided by Apache if it exists otherwise generate one.
-        final String uniqId = null != request.getAttribute("UNIQUE_ID") ?
-                (String) request.getAttribute("UNIQUE_ID") :
-                UUID.randomUUID().toString();
-
-        values.put("uniqueId", factory.instantiate(StringDataObject.class, new DataObject.Property("string", uniqId)));
-
         final ParametersDataObject parametersDO = factory.instantiate(
                 ParametersDataObject.class,
                 new DataObject.Property("values", values),
-                new DataObject.Property("contextPath", request.getContextPath()));
+                new DataObject.Property("contextPath", request.getContextPath()),
+                new DataObject.Property("uniqueId", SiteLocatorFilter.getRequestId(request)));
 
 
         return parametersDO;
@@ -246,7 +243,12 @@ public final class DataModelFilter implements Filter {
     /** Clean out everything in the datamodel that is not flagged to be long-lived. **/
     private static void cleanDataModel(final DataModel datamodel){
 
-        datamodel.getJunkYard().getValues().clear();
+        for(String key : datamodel.getJunkYard().getValues().keySet()){
+            datamodel.getJunkYard().setValue(key, null);
+        }
+        for(String key : datamodel.getSearches().keySet()){
+            datamodel.setSearch(key, null);
+        }
         datamodel.setParameters(null);
         datamodel.setQuery(null);
     }

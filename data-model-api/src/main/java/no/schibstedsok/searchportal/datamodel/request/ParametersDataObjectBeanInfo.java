@@ -8,13 +8,9 @@
 
 package no.schibstedsok.searchportal.datamodel.request;
 
-import no.schibstedsok.searchportal.datamodel.generic.*;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
+
 import java.beans.PropertyDescriptor;
-import java.beans.SimpleBeanInfo;
-import java.util.Arrays;
-import org.apache.commons.beanutils.MappedPropertyDescriptor;
+import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectBeanInfo;
 import org.apache.log4j.Logger;
 
 /**
@@ -28,7 +24,7 @@ public final class ParametersDataObjectBeanInfo extends MapDataObjectBeanInfo{
     
     private static final Class BEAN_CLASS = ParametersDataObject.class;
     
-    private static final Logger LOG = Logger.getLogger(MapDataObjectBeanInfo.class);
+    private static final Logger LOG = Logger.getLogger(ParametersDataObjectBeanInfo.class);
     
     // Attributes ----------------------------------------------------
     
@@ -43,9 +39,12 @@ public final class ParametersDataObjectBeanInfo extends MapDataObjectBeanInfo{
     
     // Public --------------------------------------------------------
     
+    /**
+     * 
+     * @return 
+     */
+    @Override
     public PropertyDescriptor[] getPropertyDescriptors(){
-        
-        
         
         return MapDataObjectBeanInfo.addSingleMappedPropertyDescriptor("value", BEAN_CLASS);
     }

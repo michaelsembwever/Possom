@@ -14,9 +14,13 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 import no.schibstedsok.searchportal.datamodel.generic.DataNode;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.generic.DataObject.Property;
+import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectSupport;
+import org.apache.commons.beanutils.MappedPropertyDescriptor;
 import org.apache.log4j.Logger;
 
 /** Default implementation of the DataModelFactory.
@@ -59,10 +63,15 @@ final class DataModelFactoryImpl extends DataModelFactory{
                     = Introspector.getBeanInfo(DataModel.class).getPropertyDescriptors();
             final Property[] properties = new Property[propDescriptors.length];
             for(int i = 0; i < properties.length; ++i){
-                properties[i] = new Property(propDescriptors[i].getName(), null);
+                properties[i] = new Property(
+                        propDescriptors[i].getName(), 
+                        propDescriptors[i] instanceof MappedPropertyDescriptor
+                        ? new MapDataObjectSupport(Collections.EMPTY_MAP)
+                        : null);
             }
             
-            final InvocationHandler handler = new BeanDataModelInvocationHandler(properties);
+            final InvocationHandler handler = new BeanDataModelInvocationHandler(
+                    new BeanDataModelInvocationHandler.PropertyInitialisor(DataModel.class, properties));
             
             return (DataModel) Proxy.newProxyInstance(cls.getClassLoader(), new Class[]{cls}, handler);
             

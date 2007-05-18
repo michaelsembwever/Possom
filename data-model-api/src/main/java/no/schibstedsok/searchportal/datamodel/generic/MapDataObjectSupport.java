@@ -12,6 +12,7 @@ import no.schibstedsok.searchportal.datamodel.generic.DataObject;
 import no.schibstedsok.searchportal.datamodel.*;
 import no.schibstedsok.searchportal.datamodel.generic.MapDataObject;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -26,17 +27,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * or via ad-hoc delegation of an instance of this class from another.
  * </p>
  *
- * <b>Synchronised implementation of MapDataObject</b>.
- * Uses a ReentrantReadWriteLock in a delegated HashMap in preference to a Hashtable to maximise performance.
- * Access to the whole map is through a Collections.unmodifiable(map) defensive copy.
+ * <b>Synchronised implementation of MapDataObject</b> through underlyng usage of ConcurrentHashMap.
+ * //Uses a ReentrantReadWriteLock in a delegated HashMap in preference to a Hashtable to maximise performance.
+ * //Access to the whole map is through a Collections.unmodifiable(map) defensive copy.
  *
  * @author <a href="mailto:mick@semb.wever.org">Mck</a>
  * @version <tt>$Id$</tt>
  */
 @DataObject
-public class MapDataObjectSupport<V> implements MapDataObject<V>{
+public final class MapDataObjectSupport<V> implements MapDataObject<V>{
 
-    private final Map<String,V> map = new HashMap<String,V>(){
+    private final Map<String,V> map = new ConcurrentHashMap();
+        /*= new HashMap<String,V>(){
 
         private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -63,7 +65,7 @@ public class MapDataObjectSupport<V> implements MapDataObject<V>{
                 lock.writeLock().unlock();
             }
         }
-    };
+    };*/
 
     public MapDataObjectSupport(final Map<String,V> map){
         
@@ -79,7 +81,11 @@ public class MapDataObjectSupport<V> implements MapDataObject<V>{
 
     public void setValue(final String key, final V value){
 
-        map.put(key, value);
+        if(null == value){
+            map.remove(key);
+        }else{
+            map.put(key, value);
+        }
     }
 
     public Map<String, V> getValues() {

@@ -48,7 +48,9 @@ public final class DataModelTest {
     
     // Public --------------------------------------------------------
     
-    /** Ensure that all methods within the DataModel heirarchy are either getter or setters to properties. **/
+    /** Ensure that all methods within the DataModel heirarchy are either getter or setters to properties. *
+     * @throws java.lang.Exception 
+     */
     @Test
     public void testJavaBeanAPI() throws Exception{
      
