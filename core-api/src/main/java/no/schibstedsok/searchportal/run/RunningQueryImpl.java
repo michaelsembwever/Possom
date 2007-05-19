@@ -89,13 +89,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
     private final AnalysisRuleFactory rules;
 
-    /** Map of search command IDs to SearchResult */
-    private final Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> results 
-            = new HashMap<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>>();
-
-    /** Mutext for results variable */
-    private final ReadWriteLock resultsLock = new ReentrantReadWriteLock();
-
     /** have all search commands been cancelled.
      * implementation details allowing web subclasses to send correct error to client. **/
     protected boolean allCancelled = false;
@@ -227,23 +220,13 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
     public final ResultList<? extends ResultItem> getSearchResult(final String id) 
             throws InterruptedException, ExecutionException {
 
-        Future<ResultList<? extends ResultItem>> task = null;
-        try {
-            
-            for(Map.Entry<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> entry 
-                    : results.entrySet()){
-                
-                if(id.equals(((SearchCommand)entry.getValue()).getSearchConfiguration().getName())){
-                    task = entry.getKey();
-                    break;
-                }
+        synchronized(datamodel.getSearches()){
+            while(null == datamodel.getSearch(id)){
+                // this line releases the monitor so it is possible to call this method from different threads
+                datamodel.getSearches().wait();
             }
-            
-        } finally {
-            resultsLock.readLock().unlock();
         }
-
-        return null != task ? task.get() : null;
+        return datamodel.getSearch(id).getResults();
     }
 
     /**
@@ -367,28 +350,20 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
 
             // mark state that we're about to execute the sub threads
             allCancelled = commands.size() > 0;
-
-            try {
-                resultsLock.writeLock().lock();
-                
-                results.putAll(
-                        SearchCommandExecutorFactory
-                        .getController(context.getSearchMode().getExecutor())
-                        .invokeAll(commands, TIMEOUT)
-                        );
-                
-            } finally {
-                resultsLock.writeLock().unlock();
-            }
-
-            // TODO This loop-(task.isDone()) code should become individual listeners to each executor to minimise time
-            //  spent in task.isDone()
             boolean hitsToShow = false;
+                
+            final Map<Future<ResultList<? extends ResultItem>>,Callable<ResultList<? extends ResultItem>>> results =
+                    SearchCommandExecutorFactory
+                    .getController(context.getSearchMode().getExecutor())
+                    .invokeAll(commands, TIMEOUT);
 
-            /* Give the commands a chance to finish its work */
+            // Give the commands a chance to finish its work
+            //  Note the current time and subtract any elapsed time from the timeout value
+            //   (as the timeout value is intended overall and not for each).
+            final long invokedAt = System.currentTimeMillis();
             for (Future<ResultList<? extends ResultItem>> task : results.keySet()) {
                 try{
-                    task.get(TIMEOUT, TimeUnit.MILLISECONDS);
+                    task.get(TIMEOUT - (System.currentTimeMillis() - invokedAt), TimeUnit.MILLISECONDS);
                     
                 }catch(TimeoutException te){
                     LOG.error(ERR_COMMAND_TIMEOUT + task);
