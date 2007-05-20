@@ -77,14 +77,14 @@ public final class TvSearchSortingHandler implements ResultHandler {
             }
         }
 
-        sr.getResults().clear();
+        sr.removeResults();
 
 
         if (sortBy.equals("channel")) {
             if (datamodel.getQuery().getQuery().isBlank()) {
                 for (String channel : searchConfiguration.getDefaultChannels()) {
                     if (hm.containsKey(channel)) {
-                        sr.getResults().addAll(hm.get(channel));
+                        sr.addResults(hm.get(channel));
                     }
                 }
                 /* Check if the search gave results for the default channels */
@@ -101,7 +101,7 @@ public final class TvSearchSortingHandler implements ResultHandler {
             for (int i = 0; i < 7; i++) {
                 String weekDay = Integer.toString((startDay + i) % 7);
                 if (hm.containsKey(weekDay)) {
-                    sr.getResults().addAll(hm.get(weekDay));
+                    sr.addResults(hm.get(weekDay));
                 }
             }
         } else if (sortBy.equals("category")) {
@@ -124,7 +124,7 @@ public final class TvSearchSortingHandler implements ResultHandler {
                 break;
             }
             if (hm.containsKey(modifier.getName())) {
-                sr.getResults().addAll((List<ResultItem>)hm.get(modifier.getName()));
+                sr.addResults((List<ResultItem>)hm.get(modifier.getName()));
             }
             i++;
         }

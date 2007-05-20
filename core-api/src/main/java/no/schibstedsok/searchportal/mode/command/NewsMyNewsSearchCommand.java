@@ -61,7 +61,7 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                 if (commandName != null) {
                     try {
                         LOG.debug("Waiting for " + commandName);
-                        collectedResult = context.getRunningQuery().getSearchResult(commandName);
+                        collectedResult = getSearchResult(commandName, datamodel);
                         if (collectedResult != null 
                                 && collectedResult.getResults().size() > 0
                                 && collectedResult.getResults().get(0) instanceof ResultList<?>) {
@@ -87,8 +87,6 @@ public final class NewsMyNewsSearchCommand extends AbstractSearchCommand {
                         }
                     } catch (InterruptedException e) {
                         LOG.error("Command was interrupted", e);
-                    } catch (ExecutionException e) {
-                        LOG.error("Command could not be executed", e);
                     }
                 }
                 position++;

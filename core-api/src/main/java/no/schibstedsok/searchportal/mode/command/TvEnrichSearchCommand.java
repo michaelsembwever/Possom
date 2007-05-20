@@ -31,9 +31,9 @@ public final class TvEnrichSearchCommand extends StaticSearchCommand {
             final String[] cmds = waitOn.split(",");
             try {
                 for (String cmd : cmds) {
-                    final FastSearchResult fsr = (FastSearchResult) context.getRunningQuery().getSearchResult(cmd);
+                    final FastSearchResult fsr = (FastSearchResult)getSearchResult(cmd, datamodel);
                     hitCount += fsr.getHitCount();
-                    result.getResults().addAll(fsr.getResults());
+                    result.addResults(fsr.getResults());
                 }
             } catch (Exception e) {
                 LOG.error(e);

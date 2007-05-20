@@ -74,8 +74,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     // Attributes ----------------------------------------------------
 
-    // Attributes ----------------------------------------------------
-
     /**
      * The context to work against. *
      */
@@ -101,8 +99,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      */
     protected volatile boolean completed = false;
     private volatile Thread thread = null;
-
-    // Constructors --------------------------------------------------
 
     // Constructors --------------------------------------------------
 
@@ -134,8 +130,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         additionalFilterVisitor.visit(root);
         additionalFilter = additionalFilterVisitor.getFilter();
     }
-
-    // Public --------------------------------------------------------
 
     // Public --------------------------------------------------------
 
@@ -181,8 +175,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     public String getFilter() {
         return filter;
     }
-
-    // SearchCommand overrides ---------------------------------------------------
 
     // SearchCommand overrides ---------------------------------------------------
 
@@ -264,8 +256,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
         return !completed;
     }
-
-    // AbstractReflectionVisitor overrides ----------------------------------------------
 
     // AbstractReflectionVisitor overrides ----------------------------------------------
 
@@ -386,8 +376,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final void visitImpl(final XorClause clause) {
         visitXorClause(this, clause);
     }
-
-    // Protected -----------------------------------------------------
 
     // Protected -----------------------------------------------------
 
@@ -802,6 +790,20 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return new SesamSyntaxQueryBuilder();
     }
 
+    /** {@inheritDoc} */
+    protected static final ResultList<? extends ResultItem> getSearchResult(
+            final String id,
+            final DataModel datamodel) throws InterruptedException {
+
+        synchronized(datamodel.getSearches()){
+            while(null == datamodel.getSearch(id)){
+                // next line releases the monitor so it is possible to call this method from different threads
+                datamodel.getSearches().wait();
+            }
+        }
+        return datamodel.getSearch(id).getResults();
+    }
+
     // Private -------------------------------------------------------
 
     private void initialiseQuery() {
@@ -918,8 +920,6 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         builder.visit(query.getRootClause());
         transformedQuerySesamSyntax = builder.getQueryRepresentation();
     }
-
-    // Inner classes -------------------------------------------------
 
     // Inner classes -------------------------------------------------
 

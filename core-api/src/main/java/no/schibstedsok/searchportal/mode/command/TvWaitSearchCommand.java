@@ -129,7 +129,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
         if (waitOn != null) {
             LOG.debug("Waiting on: " + waitOn);
             try {
-                wosr = (FastSearchResult) context.getRunningQuery().getSearchResult(waitOn);
+                wosr = (FastSearchResult) getSearchResult(waitOn, datamodel);
                 if (wosr == null) {
                     throw new NullPointerException("wait-on result is null");
                 }
@@ -226,7 +226,7 @@ public final class TvWaitSearchCommand extends AbstractSimpleFastSearchCommand {
                 }
 
                 sr = new FastSearchResult(this);
-                sr.getResults().addAll(tmpsr.getResults());
+                sr.addResults(tmpsr.getResults());
                 sr.setHitCount(tmpsr.getHitCount());
             } catch (NeedsRefreshException e) {
                 

@@ -227,9 +227,11 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
                 }
             } // end for
 
-            firstQueryResult.getResults().clear();
+            firstQueryResult.removeResults();
             LOG.info("Cleared original result.");
-            for(ResultItem item:searchResults){
+
+            for(int i= searchResults.length-1; 0 <= i;  --i){
+                final ResultItem item = searchResults[i];
                 if(item!=null){
                     firstQueryResult.addResult(item);
                     LOG.info("Added item "+item.getField("iypcompanyid"));
@@ -237,8 +239,7 @@ public class CatalogueAdsSearchCommand extends AdvancedFastSearchCommand {
             }
 
             firstQueryResult.setHitCount(firstQueryResult.getResults().size());
-            Collections.reverse(firstQueryResult.getResults());
-
+            
         }
 
         return firstQueryResult;

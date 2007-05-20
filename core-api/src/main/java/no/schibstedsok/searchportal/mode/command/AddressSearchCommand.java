@@ -48,7 +48,7 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
             String prevCollapseId = "";
             for (ResultItem item : sr.getResults()) {
                 if (item.getField("collapseid").equals(prevCollapseId)) {
-                    sr.getResults().remove(item);
+                    sr.removeResult(item);
                 } else if (item.getField("streetHash") != null) {
                     final HashMap<String,String> streetNumbers = new LinkedHashMap<String,String>();
                     for (String record : item.getField("streetHash").split(";")) {

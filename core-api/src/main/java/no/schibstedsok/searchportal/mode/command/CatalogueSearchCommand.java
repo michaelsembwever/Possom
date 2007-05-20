@@ -326,8 +326,8 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         }
 
         // clear the old BasicSearchResult, and add our new CatalogueSearchResult to be used instead.
-        result.getResults().clear();
-        result.getResults().addAll(nyResultListe);
+        result.removeResults();
+        result.addResults(nyResultListe);
 
         // add the who and where fields (preferred over using them out of the junkyard)
         result.addField(PARAMETER_NAME_WHAT, getTransformedQuerySesamSyntax());

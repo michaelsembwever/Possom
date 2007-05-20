@@ -33,7 +33,7 @@ public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>
     }
 
     /**
-     * 
+     * @deprecated will be removed without replacement in future version.
      * @param navigatorName 
      * @return 
      */
@@ -42,7 +42,7 @@ public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>
     }
 
     /**
-     * 
+     * @deprecated will be removed without replacement in future version.
      * @return 
      */
     public Map<String,Navigator> getNavigatedTo() {
@@ -56,13 +56,13 @@ public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>
      */
     public void addModifier(final String navigatorName, final Modifier modifier) {
 
-        List modifiers;
+        final List<Modifier> modifiers;
 
         if (!navigators.containsKey(navigatorName)) {
-            modifiers = new ArrayList();
+            modifiers = new ArrayList<Modifier>();
             navigators.put(navigatorName, modifiers);
         } else {
-            modifiers = (List) navigators.get(navigatorName);
+            modifiers = (List<Modifier>) navigators.get(navigatorName);
         }
 
         modifiers.add(modifier);

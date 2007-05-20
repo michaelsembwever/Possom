@@ -61,7 +61,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
         for (String filter : cfg.getFiltersToBlend()) {
             setAdditionalFilter(filter);
             ResultList<ResultItem> result = (ResultList<ResultItem>) super.execute();
-            blended.getResults().addAll(result.getResults());
+            blended.addResults(result.getResults());
             totalHitCount += result.getHitCount();
         }
 
@@ -75,7 +75,7 @@ public class BlendingNewsSearchCommand extends NewsSearchCommand {
             df.setTimeZone(TimeZone.getTimeZone("UTC"));
         }
 
-        Collections.sort(blended.getResults(), new DocDateTimeComparator(df));
+        blended.sortResults(new DocDateTimeComparator(df));
 
         return blended;
     }

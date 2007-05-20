@@ -134,7 +134,7 @@ public final class NavigationCommand extends AbstractSearchCommand {
                     NavigatorList extendedNavigators = new NavigatorList(new ArrayList<ExtendedNavigator>());
                     FastSearchResult fsr = null;
                     if (navEntry.getCommandName() != null) {
-                        ResultList<? extends ResultItem> searchResult = context.getRunningQuery().getSearchResult(navEntry.getCommandName());
+                        ResultList<? extends ResultItem> searchResult = getSearchResult(navEntry.getCommandName(), context.getDataModel());
                         if (searchResult instanceof FastSearchResult) {
                             fsr = (FastSearchResult) searchResult;
                             List<Modifier> modifiers = fsr.getModifiers(navEntry.isRealNavigator() ? navEntry.getField() : name);
@@ -160,8 +160,6 @@ public final class NavigationCommand extends AbstractSearchCommand {
                 }
 
             } catch (InterruptedException e) {
-                LOG.error("Could not get searchResult for " + navEntry.getCommandName(), e);
-            } catch (ExecutionException e) {
                 LOG.error("Could not get searchResult for " + navEntry.getCommandName(), e);
             }
             return null;

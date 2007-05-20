@@ -69,14 +69,6 @@ public interface RunningQuery {
     /** TODO comment me. **/
     List<Modifier> getSources();
 
-    /** Returns the search result for the named search command.
-     * The method blocks until the search command is done.
-     *
-     * @param id Name of search command
-     * @return The search result of the search command. Returns null if command does not exist.
-     */
-    public ResultList getSearchResult(final String id) throws InterruptedException, ExecutionException;
-
     /**
      * Thread run
      *

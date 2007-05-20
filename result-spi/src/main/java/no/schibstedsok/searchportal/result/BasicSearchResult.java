@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +13,10 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 
 /**
+ * A simple implementation of a search result.
+ * Is not multi-thread safe. 
+ * All fields (of all types) handled by superclass BasicSearchResultItem.
+ *
  * @param T the type of ResultItem the ResultList contains.
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
@@ -20,20 +25,21 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
 
     private static final Logger LOG = Logger.getLogger(BasicSearchResult.class);
 
-    /** TODO comment me. **/
     private int hitCount = -1;
     private final List<T> results = new ArrayList<T>();
     private final Map<String,List<WeightedSuggestion>> spellingSuggestions = new HashMap<String,List<WeightedSuggestion>>();
     private final List<Suggestion> querySuggestions = new ArrayList<Suggestion>();
 
-    private List<WeightedSuggestion> relevantQueries = new ArrayList<WeightedSuggestion>(); 
+    private final List<WeightedSuggestion> relevantQueries = new ArrayList<WeightedSuggestion>(); 
     
-    /**
+    /** Plain constructor.
      * 
      */
     public BasicSearchResult(){}
     
-    /** Copy constructor.
+    /** Copy constructor. 
+     * Does not copy results, spellingSuggestions, querySuggestions, or relevantQueries.
+     *
      * ** @param copy 
      */
     public BasicSearchResult(final ResultItem copy){
@@ -54,6 +60,10 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
     public void addResult(final T item) {
         results.add(item);
     }
+
+    public void addResults(List<? extends T> items){
+        results.addAll(items);
+    }
     
     public void replaceResult(final T original, final T theNew){
         
@@ -65,6 +75,14 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
     
     public void removeResult(final T item){
         results.remove(item);
+    }
+
+    public void removeResults(){
+        results.clear();
+    }
+
+    public void sortResults(final Comparator comparator){
+        Collections.sort(results, comparator);
     }
 
     /** {@inheritDoc} **/
@@ -101,7 +119,7 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
 
     /** {@inheritDoc} **/
     public Collection<Suggestion> getQuerySuggestions() {
-       return querySuggestions;
+       return Collections.unmodifiableList(querySuggestions);
     }
 
     /** {@inheritDoc} **/
@@ -111,7 +129,7 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
 
     /** {@inheritDoc} **/
     public List<T> getResults() {
-        return results;
+        return Collections.unmodifiableList(results);
     }
 
     /** {@inheritDoc} **/
@@ -152,7 +170,7 @@ public class BasicSearchResult<T extends ResultItem> extends BasicSearchResultIt
     public List<WeightedSuggestion> getRelevantQueries() {
         
         Collections.sort(relevantQueries);
-        return relevantQueries;
+        return Collections.unmodifiableList(relevantQueries);
     }
 
 }

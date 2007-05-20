@@ -216,19 +216,6 @@ public class RunningQueryImpl extends AbstractRunningQuery implements RunningQue
         return Collections.unmodifiableMap(hits);
     }
 
-    /** {@inheritDoc} */
-    public final ResultList<? extends ResultItem> getSearchResult(final String id) 
-            throws InterruptedException, ExecutionException {
-
-        synchronized(datamodel.getSearches()){
-            while(null == datamodel.getSearch(id)){
-                // this line releases the monitor so it is possible to call this method from different threads
-                datamodel.getSearches().wait();
-            }
-        }
-        return datamodel.getSearch(id).getResults();
-    }
-
     /**
      * Thread run. Guts of the logic behind this class.
      * XXX Insanely long method. Divide & Conquer.

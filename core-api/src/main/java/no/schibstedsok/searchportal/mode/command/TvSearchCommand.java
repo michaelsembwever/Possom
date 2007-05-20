@@ -69,7 +69,7 @@ public class TvSearchCommand extends AbstractSimpleFastSearchCommand {
             for (int i = 0; i < 7; i++) {
                 setAdditionalFilter(" +sgeneric7nav:" + i);
                 ResultList<? extends ResultItem> result = super.execute();
-                sr.getResults().addAll(result.getResults());
+                sr.addResults(result.getResults());
                 totalHits += result.getHitCount();
             }
             sr.setHitCount(totalHits);

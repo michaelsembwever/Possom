@@ -413,13 +413,11 @@ public final class NewsAggregatorSearchCommand extends ClusteringESPFastCommand 
         private void sortResults(final ResultList<ResultItem> searchResult, final String sort) {
             
             if ("ascending".equals(sort)) {
-                Collections.sort(searchResult.getResults(), DateFieldSearchResultComparator.getInstance());
+                searchResult.sortResults(DateFieldSearchResultComparator.getInstance());
                 
             } else if ("descending".equals(sort)) {
                 
-                Collections.sort(
-                        searchResult.getResults(), 
-                        Collections.reverseOrder(DateFieldSearchResultComparator.getInstance()));
+                searchResult.sortResults(Collections.reverseOrder(DateFieldSearchResultComparator.getInstance()));
             }
         }
 

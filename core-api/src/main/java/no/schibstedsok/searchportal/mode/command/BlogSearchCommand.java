@@ -119,8 +119,8 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
             }
         }
         
-        result.getResults().clear();
-        result.getResults().addAll(blogSearchResultItems);
+        result.removeResults();
+        result.addResults(blogSearchResultItems);
         return result;
     }
 

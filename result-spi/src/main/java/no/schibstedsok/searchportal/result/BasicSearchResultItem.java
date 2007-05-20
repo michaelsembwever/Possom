@@ -4,11 +4,15 @@ package no.schibstedsok.searchportal.result;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import no.schibstedsok.searchportal.view.StringChopper;
 
 /**
  * A simple implementation of a search result item.
+ * Is not multi-thread safe. 
+ * Mutates on setter methods.
+ * Delegates all fields (of all types) to the one map.
  *
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>
  * @version <tt>$Id$</tt>
@@ -42,6 +46,7 @@ public class BasicSearchResultItem implements ResultItem {
      * @return 
      */
     public BasicSearchResultItem addField(final String field, final String value) {
+
         fields.put(field, value);
         return this;
     }
@@ -52,6 +57,7 @@ public class BasicSearchResultItem implements ResultItem {
      * @return 
      */
     public String getField(final String field) {
+
         final String fieldValue = (String) fields.get(field);
 
         if (fieldValue != null && (fieldValue.equals("  ") || fieldValue.equals(" "))) {
@@ -67,6 +73,7 @@ public class BasicSearchResultItem implements ResultItem {
      * @return 
      */
     public Serializable getObjectField(final String field) {
+
         return fields.get(field);
     }
 
@@ -88,13 +95,9 @@ public class BasicSearchResultItem implements ResultItem {
      * @return 
      */
     public Integer getInteger(final String field) {
-        final String fieldValue = (String) fields.get(field);
 
-        if (fieldValue != null) {
-            return Integer.valueOf(Integer.parseInt(fieldValue));
-        } else {
-            return null;
-        }
+        final String fieldValue = (String) fields.get(field);
+        return null != fieldValue ? Integer.parseInt(fieldValue) : null;
     }
 
     /**
@@ -117,20 +120,22 @@ public class BasicSearchResultItem implements ResultItem {
         return fieldValue;
     }
 
-    /**
+    /** Returns a defensive copy of the field names existing in this resultItem.
      * 
      * @return 
      */
     public Collection<String> getFieldNames() {
-        return fields.keySet();
+
+        return Collections.unmodifiableSet(fields.keySet());
     }
 
-    /**
+    /** Returns a live copy of the field's collection.
      * 
      * @param field 
      * @return 
      */
     public Collection<String> getMultivaluedField(final String field) {
+
         return (Collection<String>) fields.get(field);
     }
 
@@ -143,7 +148,7 @@ public class BasicSearchResultItem implements ResultItem {
     public BasicSearchResultItem addToMultivaluedField(final String field, final String value) {
         
         if (! fields.containsKey(field)) {
-            fields.put(field, new ArrayList());
+            fields.put(field, new ArrayList<String>());
         }
 
         final Collection<String> previousValues = (Collection<String>) fields.get(field);
@@ -185,10 +190,12 @@ public class BasicSearchResultItem implements ResultItem {
     }
 
     public String getUrl() {
+
         return getField(URL_KEY);
     }
 
     public ResultItem setUrl(final String url) {
+
         return addField(URL_KEY, url);
     }
 

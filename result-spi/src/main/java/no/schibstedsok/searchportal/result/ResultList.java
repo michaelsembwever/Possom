@@ -7,6 +7,7 @@
 
 package no.schibstedsok.searchportal.result;
 
+import java.util.Comparator;
 import java.util.Collection;
 import java.util.List;
 
@@ -32,35 +33,47 @@ public interface ResultList<T extends ResultItem> extends ResultItem{
 
     /** Returns a defensive copy of the results.
      * To update a ResultItem in the list use replaceResult(original, theNew).
+     *
+     * Implementations of this method are free to return a live copy and document such, 
+     *  but the default defined behaviour is of an restricted API.
      * 
      * @return 
      */
     List<T> getResults();
     
-    /**
+    /** Adds the result to the end of the current list of results.
      * 
      * @param item 
      */
     void addResult(T item);
+
+    /** Appends the results to the end of the current list of results.
+     * 
+     * @param item 
+     */
+    void addResults(List<? extends T> item);
     
-    /**
+    /** Replace the original with theNew.
      * 
      * @param original 
      * @param theNew 
      */
     void replaceResult(T original, T theNew);
     
-    /**
+    /** Remove the result from the current result list.
      * 
      * @param item 
      */
     void removeResult(T item);
-    
-    /**
+
+    /** Remove all results from the current result list.
      * 
-     * @param item 
+     **/
+    void removeResults();
+
+    /** Sorts the results according to the order induced by the specified comparator.
      */
-    //void removeResult(T item);
+    void sortResults(final Comparator comparator);
     
     /**
      * 
