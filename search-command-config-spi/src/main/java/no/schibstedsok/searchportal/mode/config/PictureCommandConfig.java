@@ -13,23 +13,24 @@ import org.w3c.dom.Element;
  */
 @Controller("PicSearchCommand")
 public final class PictureCommandConfig extends CommandConfig {
-    
+
     private static final Logger LOG = Logger.getLogger(PictureCommandConfig.class);
 
     /**
      * Holds value of property key for the queryServerHost.
      */
     private String queryServerHost;
-    
+
     /**
      * Holds value of property key for the queryServerPort.
      */
     private String queryServerPort;
-    
+
     private String country;
     private String filter;
     private String customerId;
-    
+    private String site;
+
     /**
      * Getter for property key for queryServerUrl.
      * @return Value of property queryServerUrl.
@@ -63,16 +64,16 @@ public final class PictureCommandConfig extends CommandConfig {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public String getCountry() {
         return country;
     }
 
     /**
-     * 
-     * @param country 
+     *
+     * @param country
      */
     public void setCountry(final String country) {
         this.country = country;
@@ -114,23 +115,40 @@ public final class PictureCommandConfig extends CommandConfig {
         this.customerId = customerId;
     }
 
+    /**
+     * Returns the site to which searches should be restricted.
+     *
+     * @return the site to which searches are restricted.
+     */
+    public String getSite() {
+        return site;
+    }
+
+    /**
+     * Set this to restrict the searches to <tt>site</tt>
+     *
+     * @param site to restrict searches to (e.g. dn.se).
+     */
+    public void setSite(String site) {
+        this.site = site;
+    }
+
     @Override
     public CommandConfig readSearchConfiguration(
             final Element element,
             final SearchConfiguration inherit) {
-        
+
         super.readSearchConfiguration(element, inherit);
-        
+
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServerHost", ParseType.String, element, "");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "queryServerPort", ParseType.String, element, "");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "country", ParseType.String, element, "no");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "filter", ParseType.String, element, "medium");
         AbstractDocumentFactory.fillBeanProperty(this, inherit, "customerId", ParseType.String, element, "558735");
+        AbstractDocumentFactory.fillBeanProperty(this, inherit, "site", ParseType.String, element, "");
 
         LOG.debug("customerid " + getCustomerId());
 
         return this;
     }
-    
-    
 }

@@ -20,6 +20,7 @@ import java.net.URLEncoder;
 import java.text.MessageFormat;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
 
@@ -38,6 +39,8 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     private static final String REQ_URL_FMT
             = "/query?ie=UTF-8&tldb={0}&filter={1}&custid={2}&version=2.6&thumbs={3}&q={4}&start={5}";
 
+    private String fieldFilter;
+
     /**
      * Creates a new command in given context.
      *
@@ -53,6 +56,8 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         final String host = siteConfig.getProperty(psConfig.getQueryServerHost());
         port = Integer.parseInt(siteConfig.getProperty(psConfig.getQueryServerPort()));
         client = HTTPClient.instance(host, port);
+
+        fieldFilter = psConfig.getSite();
     }
 
     /** {@inherit} */
@@ -124,7 +129,6 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     }
 
     /**
-     *
      * @param visitor
      * @param clause
      */
@@ -133,11 +137,28 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         // determine which branch in the query-tree we want to use.
         //  Both branches to a XorClause should never be used.
         switch(clause.getHint()){
-        case FULLNAME_ON_LEFT:
-            clause.getSecondClause().accept(this);
-            break;
-        default:
-            super.visitXorClause(visitor, clause);
+            case FULLNAME_ON_LEFT:
+                clause.getSecondClause().accept(this);
+                break;
+            default:
+                super.visitXorClause(visitor, clause);
+        }
+    }
+
+    /**
+     * Extract the field filter site into the <tt>siteFilter</tt> if it exists.
+     * Only done if no static site filter is specified by {@link no.schibstedsok.searchportal.mode.config.PictureCommandConfig#getSite()}
+     *
+     * @param clause The clause.
+     */
+    protected void visitImpl(final LeafClause clause) {
+        final PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
+
+        // Do not care about site in query if a static site filter was specified in the configuaration.
+        if (getFieldFilter(clause) != null && "".equals(fieldFilter) && "site".equals(clause.getField())) {
+            fieldFilter = clause.getTerm();
+        } else {
+            super.visitImpl(clause);
         }
     }
 
