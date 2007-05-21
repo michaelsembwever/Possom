@@ -101,7 +101,14 @@ public class MapDataObjectBeanInfo extends SimpleBeanInfo{
         try{
             final String name = mpd.getName();
             final String captialised = Character.toUpperCase(name.charAt(0)) + name.substring(1);
-            final Method m = cls.getMethod("get" + captialised + 's', new Class[0]);
+            Method m = null;
+            try{
+                // try plural with "s" first, then fall back onto "es"
+                m = cls.getMethod("get" + captialised + 's', new Class[0]);
+            }catch(NoSuchMethodException nsme){
+                // who on earth designed the english language!?? :@
+                m = cls.getMethod("get" + captialised + "es", new Class[0]);
+            }
             mpd.setReadMethod(m);
             
         }catch (NoSuchMethodException ex) {

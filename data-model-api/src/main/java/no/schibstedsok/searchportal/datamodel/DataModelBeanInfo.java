@@ -8,8 +8,7 @@
 
 package no.schibstedsok.searchportal.datamodel;
 
-import no.schibstedsok.searchportal.datamodel.request.*;
-import no.schibstedsok.searchportal.datamodel.generic.*;
+import no.schibstedsok.searchportal.datamodel.generic.MapDataObjectBeanInfo;
 import java.beans.PropertyDescriptor;
 import org.apache.log4j.Logger;
 
