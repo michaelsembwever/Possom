@@ -73,10 +73,6 @@ public final class ImportSearchTabIncludeTag extends AbstractImportVelocityTempl
         
         // HACK the pager until the datamodel provides methods to access "paging" commands in the current mode.
         map.put("commandName", tab.getLayout().getOrigin());
-//        map.put("pager", 
-//                ((Map<String,PagingDisplayHelper>)cxt.findAttribute("pagers")).get(tab.getLayout().getOrigin()));
-//        map.put("result", 
-//                ((Map<String,SearchResult>)cxt.findAttribute("results")).get(tab.getLayout().getOrigin()));
         // end-HACK
         
         importTemplate(template, map);

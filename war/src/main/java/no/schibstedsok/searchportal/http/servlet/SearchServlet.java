@@ -167,7 +167,9 @@ public final class SearchServlet extends HttpServlet {
                 final String searchTabKey = null != c &&  null != c.getString() && 0 < c.getString().length()
                         ? c.getString()
                         : null != page && null != page.getString() && 0 < page.getString().length() ? "i" : null != defaultSearchTabKey && !defaultSearchTabKey.equals("") ? defaultSearchTabKey: "c";
-                 LOG.info("searchTabKey:" +searchTabKey);
+                 
+                LOG.info("searchTabKey:" +searchTabKey);
+
                 final SearchTab searchTab = findSearchTab(genericCxt, searchTabKey);
 
                 if (searchTab == null) {
@@ -461,7 +463,9 @@ public final class SearchServlet extends HttpServlet {
 
                 final RunningQuery query = QueryFactory.getInstance().createQuery(rqCxt, request, response);
 
-                query.run();
+                if( !datamodel.getQuery().getQuery().isBlank() || searchTab.isExecuteOnBlank() ){
+                    query.run();
+                }
 
                 stopWatch.stop();
                 LOG.info("Search took " + stopWatch + " " + datamodel.getQuery().getString());

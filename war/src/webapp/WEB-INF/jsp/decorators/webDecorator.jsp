@@ -1,4 +1,4 @@
-<%-- Copyright (2006-2007) Schibsted Søk AS
+<%-- Copyright (2006-2007) Schibsted SÃ¸k AS
   -- 
   -- Handles the logic on which "templating system" will be apropriate for this http request.
   -- @author <a href="mailto:mick@semb.wever.org">Michael Semb Wever</a>
@@ -11,27 +11,17 @@
 <search:velocity template="/pages/main"/>
 <c:if test="${! empty Missing_pagesmain_Template}">
     <c:choose>
-
-        <%-- Option: use the tab's layout and datamodel --%>
-        <c:when test="${tab.layout != null}">
-            <c:choose>
-                <%-- Use any tab layout's custom front page if the query object does not exist --%>
-                <c:when test="${DataModel.query.query.blank && !empty tab.layout.front}">
-                    <search:velocity template="/pages/${tab.layout.front}"/>
-                </c:when>
-                <%-- Use any tab layout's custom main page --%>
-                <c:when test="${!empty tab.layout.main}">
-                    <search:velocity template="/pages/${tab.layout.main}"/>
-                </c:when>
-                <%-- Otherwise use the default templating layout --%>
-                <c:otherwise>
-                    <%@ include file="httpDecorator.jsp" %>
-                </c:otherwise>
-            </c:choose>
+        <%-- Use any tab layout's custom front page if the query object does not exist --%>
+        <c:when test="${DataModel.query.query.blank && !empty tab.layout.front}">
+            <search:velocity template="/pages/${tab.layout.front}"/>
         </c:when>
-        <%-- Last Option: fallback to the original mainDecorator.jsp --%>
+        <%-- Use any tab layout's custom main page --%>
+        <c:when test="${!empty tab.layout.main}">
+            <search:velocity template="/pages/${tab.layout.main}"/>
+        </c:when>
+        <%-- Otherwise use the default templating layout --%>
         <c:otherwise>
-            <%@ include file="legacyDecorator.jsp" %>
+            <%@ include file="httpDecorator.jsp" %>
         </c:otherwise>
     </c:choose>
 </c:if>

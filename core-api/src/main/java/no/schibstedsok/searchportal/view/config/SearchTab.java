@@ -110,6 +110,11 @@ public final class SearchTab {
     private final boolean absoluteOrdering;
     
     /**
+     * Holds the value of property executeOnBlank.
+     */
+    private final boolean executeOnBlank;
+
+    /**
      * Holds value of property enrichments.
      */
     private final Collection<EnrichmentHint> enrichments = new ArrayList<EnrichmentHint> ();
@@ -163,6 +168,7 @@ public final class SearchTab {
                 final int adOnTop,
                 final List<String> css,
                 final boolean absoluteOrdering,
+                final boolean executeOnBlank,
                 final Layout layout){
 
         this.inherit = inherit;
@@ -196,6 +202,7 @@ public final class SearchTab {
         this.rssResultName = rssResultName;
         this.css.addAll(css);
         this.absoluteOrdering = absoluteOrdering;
+        this.executeOnBlank = executeOnBlank;
         this.rssHidden = rssHidden;
         this.layout = layout;
     }
@@ -348,6 +355,14 @@ public final class SearchTab {
      */
     public boolean getAbsoluteOrdering() {
         return absoluteOrdering;
+    }
+
+    /**
+     * Getter for property executeOnFront
+     * @return 
+     */
+    public boolean isExecuteOnBlank() {
+        return executeOnBlank;
     }
     
     /**

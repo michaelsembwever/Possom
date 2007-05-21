@@ -329,8 +329,11 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
                         Arrays.asList(css),
                         parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null
-                            ? inherit.getAbsoluteOrdering()
+                            ? inherit.isAbsoluteOrdering()
                             : false),
+                        parseBoolean(tabE.getAttribute("execute-on-blank"), inherit != null
+                            ? inherit.isExecuteOnBlank()
+                            : true),
                         layout);
 
                 try{
