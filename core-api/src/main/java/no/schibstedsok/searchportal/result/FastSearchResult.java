@@ -48,6 +48,14 @@ public class FastSearchResult<T extends ResultItem> extends BasicSearchResult<T>
     public Map<String,Navigator> getNavigatedTo() {
         return command.getNavigatedTo();
     }
+
+    /**
+     * @deprecated will be removed without replacement in future version.
+     * @return 
+     */
+    public AbstractSimpleFastSearchCommand getSearchCommand() {
+        return command;
+    }
     
     /**
      * 
