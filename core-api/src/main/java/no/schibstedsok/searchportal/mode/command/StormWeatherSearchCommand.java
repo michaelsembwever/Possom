@@ -6,11 +6,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.Iterator;
+import no.fast.ds.search.ISearchParameters;
+import no.fast.ds.search.SearchParameter;
 import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.request.ParametersDataObject;
 import no.schibstedsok.searchportal.mode.config.StormweatherCommandConfig;
 import no.schibstedsok.searchportal.http.HTTPClient;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
+import no.schibstedsok.searchportal.util.GeoSearchUtil;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -271,6 +275,34 @@ public final class StormWeatherSearchCommand extends FastSearchCommand {
      public StormweatherCommandConfig getSearchConfiguration() {
          return (StormweatherCommandConfig)super.getSearchConfiguration();
      }
+     
+     public String getSortBy(){
+        final ParametersDataObject pdo = datamodel.getParameters();
+        if(GeoSearchUtil.isGeoSearch(pdo)){
+            return GeoSearchUtil.GEO_SORT_BY;
+        }
+        return super.getSortBy();
+     }
+     
+         /**
+     * If the search is a GEO search, add required GEO search parameters.
+     * @see no.schibstedsok.searchportal.mode.command.AbstractSimpleFastSearchCommand#setAdditionalParameters(ISearchParameters)
+     */
+    protected void setAdditionalParameters(ISearchParameters params) {
+        super.setAdditionalParameters(params);
+        final ParametersDataObject pdo = datamodel.getParameters();
+       
+        if(!GeoSearchUtil.isGeoSearch(pdo)){
+            return;
+        }
+     
+        final String center = GeoSearchUtil.getCenter(pdo);
+ 
+        params.setParameter(new SearchParameter("qtf_geosearch:unit", GeoSearchUtil.RADIUS_MEASURE_UNIT_TYPE));
+        params.setParameter(new SearchParameter("qtf_geosearch:radius", GeoSearchUtil.getRadiusRestriction(pdo)));
+        params.setParameter(new SearchParameter("qtf_geosearch:center", center));
+    }
+
 
 
      private String getTextValue(final Element ele, final String tagName) {
