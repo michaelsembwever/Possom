@@ -5,6 +5,7 @@ package no.schibstedsok.searchportal.mode.command;
 import no.schibstedsok.commons.ioc.BaseContext;
 import no.schibstedsok.commons.ioc.ContextWrapper;
 import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.FastCommandConfig;
 import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
 import no.schibstedsok.searchportal.query.AndClause;
@@ -33,6 +34,9 @@ import no.schibstedsok.searchportal.query.transform.QueryTransformerConfig;
 import no.schibstedsok.searchportal.query.transform.QueryTransformerFactory;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.Modifier;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.result.handler.DataModelResultHandler;
 import no.schibstedsok.searchportal.result.handler.ResultHandler;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerConfig;
 import no.schibstedsok.searchportal.result.handler.ResultHandlerFactory;
@@ -46,9 +50,6 @@ import org.apache.log4j.MDC;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import no.schibstedsok.searchportal.result.ResultItem;
-import no.schibstedsok.searchportal.result.ResultList;
-import no.schibstedsok.searchportal.result.handler.DataModelResultHandler;
 
 /**
  * @author <a href="mailto:magnus.eklund@schibsted.no">Magnus Eklund</a>.
@@ -57,7 +58,7 @@ import no.schibstedsok.searchportal.result.handler.DataModelResultHandler;
 public abstract class AbstractSearchCommand extends AbstractReflectionVisitor implements SearchCommand {
 
     // Constants -----------------------------------------------------
-    
+
     private static final DataModelResultHandler DATAMODEL_HANDLER = new DataModelResultHandler();
 
     private static final String FIELD_TRANSFORMED_QUERY = "transformedQuery";
@@ -154,7 +155,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /**
      * Returns the query as it is after the query transformers have been applied to it.
-     * @return 
+     *
+     * @return
      */
     public String getTransformedQuerySesamSyntax() {
         return transformedQuerySesamSyntax;
@@ -170,7 +172,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /**
      * TODO comment me. *
-     * @return 
+     *
+     * @return
      */
     public String getFilter() {
         return filter;
@@ -267,9 +270,9 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * @param clause
      */
     protected void visitImpl(final LeafClause clause) {
-        
+
         appendToQueryRepresentation(getTransformedTerm(clause));
-        
+
 //        if (null == getTransformedTerm(clause)) {
 //            if (null != clause.getField()) {
 //                if (null == getFieldFilter(clause)) {
@@ -440,10 +443,10 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     + "; filter:" + filter
                     + "; tabKey:" + parameters.get("c") + ';');
 
-            final ResultList<? extends ResultItem> result = executeQuery 
-                    ? execute() 
+            final ResultList<? extends ResultItem> result = executeQuery
+                    ? execute()
                     : new BasicSearchResult<ResultItem>();
-            
+
             hitCount = result.getHitCount();
 
             LOG.debug("Hits is " + getSearchConfiguration().getName() + ':' + hitCount);
@@ -465,10 +468,11 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         }
     }
 
-    /** Perform (delegating out to) all registered result handlers for this command.
+    /**
+     * Perform (delegating out to) all registered result handlers for this command.
      * Also performs some hardcoded result handling, eg DataModelResultHandler.
-     * 
-     * @param result 
+     *
+     * @param result
      */
     protected final void performResultHandling(final ResultList<? extends ResultItem> result) {
 
@@ -485,29 +489,34 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
                     public ResultList<? extends ResultItem> getSearchResult() {
                         return result;
                     }
+
                     public SearchTab getSearchTab() {
                         return context.getRunningQuery().getSearchTab();
                     }
+
                     public void addSource(final Modifier modifier) {
                         context.getRunningQuery().addSource(modifier);
                     }
-                    public Query getQuery(){
+
+                    public Query getQuery() {
                         return AbstractSearchCommand.this.getQuery();
                     }
                 },
                 context
         );
-                    
+
         // process listed result handlers
         for (ResultHandlerConfig resultHandlerConfig : getSearchConfiguration().getResultHandlers()) {
 
             ResultHandlerFactory.getController(resultHandlerConfig).handleResult(resultHandlerContext, datamodel);
         }
-        
+
         // The DataModel result handler is a hardcoded feature of the architecture
         DATAMODEL_HANDLER.handleResult(resultHandlerContext, datamodel);
         // also ping everybody that might be waiting on these results: "dinner's served!"
-        synchronized(datamodel.getSearches()){ datamodel.getSearches().notifyAll(); }
+        synchronized (datamodel.getSearches()) {
+            datamodel.getSearches().notifyAll();
+        }
     }
 
     /**
@@ -534,7 +543,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
 
     /**
      * TODO comment me. *
-     * @return 
+     *
+     * @return
      */
     protected Map<String, Object> getParameters() {
 
@@ -546,7 +556,8 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
      * Returns parameter value. In case the parameter is multi-valued only the
      * first value is returned. If the parameter does not exist or is empty
      * the empty string is returned.
-     * @param paramName 
+     *
+     * @param paramName
      */
     protected String getParameter(final String paramName) {
 
@@ -586,8 +597,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     }
 
     /**
-     * 
-     * @param addition 
+     * @param addition
      */
     protected final void appendToQueryRepresentation(final char addition) {
         sb.append(addition);
@@ -616,7 +626,7 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final String getTransformedTerm(final Clause clause) {
         final String transformedTerm = transformedTerms.get(clause);
         return escapeTerm(transformedTerm != null ? transformedTerm : clause.getTerm());
-        
+
     }
 
     /**
@@ -686,13 +696,13 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
     protected final ReconstructedQuery createQuery(final String queryString) {
 
         LOG.debug("createQuery(" + queryString + ')');
-        
-        if(datamodel.getQuery().getQuery().getQueryString().equalsIgnoreCase(queryString)){
-            
+
+        if (datamodel.getQuery().getQuery().getQueryString().equalsIgnoreCase(queryString)) {
+
             // return original query and engine
             return new ReconstructedQuery(datamodel.getQuery().getQuery(), context.getTokenEvaluationEngine());
-            
-        }else{
+
+        } else {
 
             final TokenEvaluationEngine.Context tokenEvalFactoryCxt = ContextWrapper.wrap(
                     TokenEvaluationEngine.Context.class,
@@ -792,13 +802,14 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         return new SesamSyntaxQueryBuilder();
     }
 
-    /** {@inheritDoc} */
-    protected static final ResultList<? extends ResultItem> getSearchResult(
+    /**
+     * {@inheritDoc}
+     */
+    protected static ResultList<? extends ResultItem> getSearchResult(
             final String id,
             final DataModel datamodel) throws InterruptedException {
-
-        synchronized(datamodel.getSearches()){
-            while(null == datamodel.getSearch(id)){
+        synchronized (datamodel.getSearches()) {
+            while (null == datamodel.getSearch(id)) {
                 // next line releases the monitor so it is possible to call this method from different threads
                 datamodel.getSearches().wait();
             }
@@ -814,20 +825,17 @@ public abstract class AbstractSearchCommand extends AbstractReflectionVisitor im
         final String queryParameter = getSearchConfiguration().getQueryParameter();
 
         if (queryParameter != null && queryParameter.length() > 0) {
-
             // It's not the query we are looking for but a string held in a different parameter.
-            final String queryToUse = datamodel.getParameters().getValue(queryParameter).getString();
-            final ReconstructedQuery recon = createQuery(queryToUse);
-
-            query = recon.getQuery();
-            engine = recon.getEngine();
-
-        } else {
-
-            query = datamodel.getQuery().getQuery();
-            engine = context.getTokenEvaluationEngine();
-
+            final StringDataObject queryToUse = datamodel.getParameters().getValue(queryParameter);
+            if (queryToUse != null) {
+                final ReconstructedQuery recon = createQuery(queryToUse.getString());
+                query = recon.getQuery();
+                engine = recon.getEngine();
+                return;
+            }
         }
+        query = datamodel.getQuery().getQuery();
+        engine = context.getTokenEvaluationEngine();
     }
 
     /**
