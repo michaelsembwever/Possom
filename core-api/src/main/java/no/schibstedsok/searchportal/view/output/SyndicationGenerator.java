@@ -51,22 +51,16 @@ import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResult
 /** Used by the rssDecorator.jsp to print out the results in rss format.
  *
  * @author maek
- * @todo Consider rewriting this as a bean to be used by a jsp (rssDecorator.jsp). <jsp:useBean.../>
- * This would make it possible to render the templates using the ImportVelocityTemplateTag
- * and simplify other things as well (such as date handling)
- * The only problem is to get rid of leading whitespace generated before the xml declaration
- * by the jsp. JSP 2.1 has page property to do this.
- * 
+ *
  * @todo this class should be more based off the datamodel and less the request and response.
  * Infact it should be completely request and response independent.
  *
  */
 public final class SyndicationGenerator {
 
-    
+
     // Constants -----------------------------------------------------
-    
-   
+
     // Any other way to get rid of the dc:date tags that ROME generates.
     private static final String DCDATE_PATTERN = "<dc:date>[^<]+</dc:date>";
 
@@ -79,9 +73,9 @@ public final class SyndicationGenerator {
             " Parse error in template: ";
     private static final String DEBUG_TEMPLATE_NOT_FOUND = "Could not find template ";
     private static final String DEBUG_USING_DEFAULT_DATE_FORMAT = "Using default date format";
-    
+
     // Attributes ----------------------------------------------------
-    
+
     private final ResultList<? extends ResultItem> result;
     private final Site site;
     private final TextMessages text;
@@ -95,11 +89,19 @@ public final class SyndicationGenerator {
     private String encoding = "UTF-8";
     private String nowStringUTC;
 
-    
+
     // Static --------------------------------------------------------
-    
+
     // Constructors --------------------------------------------------
 
+    /**
+     * Creates a new instance.
+     *
+     * @param result the result ro render as rss.
+     * @param site the current site.
+     * @param request the current request.
+     * @param modeId the current mode.
+     */
     public SyndicationGenerator(final ResultList<? extends ResultItem> result,
                                 final Site site,
                                 final HttpServletRequest request,
@@ -113,13 +115,13 @@ public final class SyndicationGenerator {
         this.uri = request.getRequestURL().append("?").append(request.getQueryString()).toString();
         this.request = request;
 
-        final String feedType = request.getParameter("feedtype");
-        if (feedType != null) {
-            this.feedType = feedType;
+        final String type = request.getParameter("feedtype");
+        if (type != null) {
+            this.feedType = type;
         }
 
-        final String encoding = request.getParameter("encoding");
-        if (encoding != null) {
+        final String enc = request.getParameter("encoding");
+        if (enc != null) {
             if (encoding.equalsIgnoreCase("iso-8859-1")) {
                 this.encoding = "iso-8859-1";
             }
@@ -131,8 +133,14 @@ public final class SyndicationGenerator {
     }
 
     // Public --------------------------------------------------------
-    
-    /** TODO comment me. **/
+
+    /**
+     * Returns the generated rss content.
+     *
+     * @return the rss document.
+     *
+     */
+
     public String generate() {
 
         String dfString = DEFAULT_DATE_FORMAT;
@@ -159,9 +167,9 @@ public final class SyndicationGenerator {
             m.setNumberOfHits(Integer.toString(result.getHitCount()));
 
             final List<SearchResultModule> modules = new ArrayList<SearchResultModule>();
-            
+
             modules.add(m);
-            
+
             feed.setModules(modules);
 
             feed.setEncoding(this.encoding);
@@ -269,7 +277,7 @@ public final class SyndicationGenerator {
     // Protected -----------------------------------------------------
 
     // Private -------------------------------------------------------
-    
+
     private String render(
             final String name,
             final ResultItem item,
@@ -297,21 +305,31 @@ public final class SyndicationGenerator {
             cxt.put("channels", channels);
 
 
+
+            // @todo. Specific to sesam.no. Move somewhere else. result-spi? templates?
             if (request.getParameter("c") != null && request.getParameter("c").equals("m")) {
-                if (request.getParameter("contentsource") != null && request.getParameter("contentsource").startsWith("Interna"))
+
+                if (request.getParameter("contentsource") != null
+                        && request.getParameter("contentsource").startsWith("Interna")) {
                     cxt.put("newstype", "- Internasjonale nyheter");
-                else if (request.getParameter("contentsource") != null && request.getParameter("contentsource").equals("Mediearkivet"))
+                } else if (request.getParameter("contentsource") != null
+                        && request.getParameter("contentsource").equals("Mediearkivet")) {
                     cxt.put("newstype", "- Papiraviser");
-                else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Sverige")) 
+                } else if (request.getParameter("newscountry") != null
+                        && request.getParameter("newscountry").equals("Sverige")) {
                     cxt.put("newstype", "- Svenske nyheter");
-                else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Island")) 
+                } else if (request.getParameter("newscountry") != null
+                        && request.getParameter("newscountry").equals("Island")) {
                     cxt.put("newstype", "- Islandske nyheter");
-                else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Finland")) 
+                } else if (request.getParameter("newscountry") != null
+                        && request.getParameter("newscountry").equals("Finland")) {
                     cxt.put("newstype", "- Finske nyheter");
-                else if (request.getParameter("newscountry") != null && request.getParameter("newscountry").equals("Danmark")) 
+                } else if (request.getParameter("newscountry") != null
+                        && request.getParameter("newscountry").equals("Danmark")) {
                     cxt.put("newstype", "- Danske nyheter");
-                else
+                } else {
                     cxt.put("newstype", "- Norske nyheter");
+                }
             }
 
             final Template tpl = VelocityEngineFactory.getTemplate(engine, site, templateUri);
