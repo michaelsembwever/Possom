@@ -5,9 +5,9 @@ Copyright (2006) Schibsted Søk AS
 $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
 -->
 <log4j:configuration
-    xmlns:log4j="http://jakarta.apache.org/log4j/"
-    threshold="all"
-    debug="false">
+        xmlns:log4j="http://jakarta.apache.org/log4j/"
+        threshold="all"
+        debug="false">
 
     <appender name="LOG_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.log"/>
@@ -19,7 +19,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
             <param name="ConversionPattern" value="%-5p %d{HH\:mm\:ss,SSS} [%X{site} %t] (%X{UNIQUE_ID}) %c{1}\: %m%n"/>
         </layout>
     </appender>
-    
+
     <appender name="ERROR_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.error"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -30,7 +30,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
             <param name="ConversionPattern" value="%-5p %d{HH\:mm\:ss,SSS} [%X{site} %t] (%X{UNIQUE_ID}) %c{1}\: %m%n"/>
         </layout>
     </appender>
-    
+
     <appender name="ACCESS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.access"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd-HH"/>
@@ -38,10 +38,11 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
+            <param name="ConversionPattern"
+                   value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
     </appender>
-    
+
     <appender name="DUMP_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.dump"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -52,7 +53,7 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
             <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] (%X{UNIQUE_ID}) %-5p %c{1}\: %m%n"/>
         </layout>
     </appender>
-    
+
     <appender name="SALES_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.sales"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -60,10 +61,11 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
+            <param name="ConversionPattern"
+                   value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
     </appender>
-    
+
     <appender name="MARKETING_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.marketing"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -71,10 +73,11 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
+            <param name="ConversionPattern"
+                   value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
     </appender>
-    
+
     <appender name="PRODUCT_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.product"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -82,10 +85,11 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
+            <param name="ConversionPattern"
+                   value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
     </appender>
-    
+
     <appender name="STATISTICS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.statistics"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -93,10 +97,11 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
+            <param name="ConversionPattern"
+                   value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%m&lt;/log&gt;%n"/>
         </layout>
     </appender>
-    
+
     <appender name="ANALYSIS_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.analysis"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -104,10 +109,11 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
         <param name="Threshold" value="ALL"/>
         <param name="encoding" value="UTF-8"/>
         <layout class="org.apache.log4j.PatternLayout">
-            <param name="ConversionPattern" value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%n%m%n&lt;/log&gt;%n"/>
+            <param name="ConversionPattern"
+                   value="&lt;log timestamp=&quot;%d{HH\:mm\:ss,SSS}&quot; skin=&quot;%X{site}&quot; request=&quot;%X{UNIQUE_ID}&quot;&gt;%n%m%n&lt;/log&gt;%n"/>
         </layout>
     </appender>
-    
+
     <appender name="INITIALISATION_APPEND" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="@log.directory@/@log.file@.initialisations"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
@@ -118,42 +124,42 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
             <param name="ConversionPattern" value="%d{HH\:mm\:ss,SSS} [%t %X{site}] (%X{UNIQUE_ID}) %-5p %c{1}\: %m%n"/>
         </layout>
     </appender>
-    
+
     <logger name="no.schibstedsok.Access" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="ACCESS_APPEND"/>
     </logger>
-    
+
     <logger name="no.schibstedsok.Dump" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="DUMP_APPEND"/>
     </logger>
-    
+
     <logger name="no.schibstedsok.Sales" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="SALES_APPEND"/>
     </logger>
-    
+
     <logger name="no.schibstedsok.Marketing" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="MARKETING_APPEND"/>
     </logger>
-    
+
     <logger name="no.schibstedsok.Statistics" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="STATISTICS_APPEND"/>
     </logger>
-    
+
     <logger name="no.schibstedsok.searchportal.analyzer.Analysis" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="ANALYSIS_APPEND"/>
     </logger>
-    
+
     <logger name="no.schibstedsok.Product" additivity="false">
         <level value="ALL"/>
         <appender-ref ref="PRODUCT_APPEND"/>
     </logger>
-    
+
     <!-- Loggers involved in core initialisation of the engine -->
     <logger name="no.schibstedsok.searchportal.site.Site">
         <appender-ref ref="INITIALISATION_APPEND"/>
@@ -179,10 +185,17 @@ $Id: log4j.xml 1403 2005-11-02 09:19:50Z larsar $
     <logger name="no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory">
         <appender-ref ref="INITIALISATION_APPEND"/>
     </logger>
-    
+
     <!-- These are here to avoid their DEBUG messages flooding our logfiles -->
-    <logger name="org.apache"><level value="INFO"/></logger>
-    <logger name="httpclient.wire"><level value="INFO"/></logger>
+    <logger name="org.apache">
+        <level value="INFO"/>
+    </logger>
+    <logger name="httpclient.wire">
+        <level value="INFO"/>
+    </logger>
+    <logger name="com.opensymphony.oscache">
+        <level value="INFO"/>
+    </logger>
 
     <root>
         <level value="@log.level@"/>
