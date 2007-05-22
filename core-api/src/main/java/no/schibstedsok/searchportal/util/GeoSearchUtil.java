@@ -33,6 +33,12 @@ public class GeoSearchUtil {
     private static final String MIN_Y = "minY";
 
     private static final String MAX_Y = "maxY";
+    
+    private static final String CENTER_X = "cx";
+    
+    private static final String CENTER_Y = "cy";
+    
+    private static final String RADIUS_PARAMETER_NAME = "radius";
 
     /** Measure unit to use. */
     public static final String RADIUS_MEASURE_UNIT_TYPE = "km";
@@ -57,6 +63,19 @@ public class GeoSearchUtil {
         if (!isGeoSearch(requestParameters)) {
             throw new IllegalArgumentException(
                     "Given requestParameter object must contain parameters: minX,maxX,minY,maxY");
+        }
+        
+        if(hasCenterPoint(requestParameters)){
+            int centerX = Integer.parseInt(requestParameters.getValue(CENTER_X).getString());
+            int centerY = Integer.parseInt(requestParameters.getValue(CENTER_Y).getString());
+            final UTM utm = UTM.valueOf(33, 'W', centerX, centerY, SI.METER);
+            LatLong latLong = UTM.utmToLatLong(utm, ReferenceEllipsoid.WGS84);
+            final double latLongX = latLong.getOrdinate(0);
+            final double latLongY = latLong.getOrdinate(1);
+            
+            StringBuilder centerPoint = new StringBuilder();
+            centerPoint.append("(").append(latLongX).append(",").append(latLongY).append(")");
+            return centerPoint.toString();
         }
 
         final int minX = Integer.parseInt((String) requestParameters.getValue(MIN_X).getString());
@@ -92,6 +111,10 @@ public class GeoSearchUtil {
      */
     public static boolean isGeoSearch(final ParametersDataObject requestParameters) {
 
+        if(hasCenterPoint(requestParameters)){
+            return true;
+        }
+        
         if (requestParameters.getValue(MIN_X) == null || requestParameters.getValue(MAX_X) == null
             || requestParameters.getValue(MIN_Y) == null || requestParameters.getValue(MAX_Y) == null) {
             return false;
@@ -103,21 +126,37 @@ public class GeoSearchUtil {
             || requestParameters.getValue(MAX_Y).getString().length() == 0) {
             return false;
         }
+        
+       
         return true;
     }
 
 
-    public static int getRadiusRestriction(ParametersDataObject pdo) {
+    public static boolean hasCenterPoint(ParametersDataObject requestParameters) {
+        if(requestParameters.getValue(CENTER_X) == null || requestParameters.getValue(CENTER_Y) == null ||
+                requestParameters.getValue(RADIUS_PARAMETER_NAME) == null){
+            return false;
+        }
+        
+        if(requestParameters.getValue(CENTER_X).getString().length() == 0 || requestParameters.getValue(CENTER_Y).getString().length() == 0||
+        requestParameters.getValue(RADIUS_PARAMETER_NAME).getString().length() == 0){
+            return false;
+        }
+        
+        return true;
+    }
 
+
+    public static String getRadiusRestriction(final ParametersDataObject pdo) { 
         if (isGeoSearch(pdo)) {
+            if(hasCenterPoint(pdo)){
+                return pdo.getValue(RADIUS_PARAMETER_NAME).getString();
+            }
             final int minX = Integer.parseInt((String) pdo.getValue(MIN_X).getString());
             final int maxX = Integer.parseInt((String) pdo.getValue(MAX_X).getString());
             
             double restrictedRadius =  ((maxX - minX) / 2) / 1000;
-            if(restrictedRadius < 1.0d ){
-                return 1;
-            } 
-            return (int)Math.round(restrictedRadius);
+            return Double.toString(restrictedRadius);
         }
         throw new IllegalArgumentException("Given requestParameter object must contain parameters: minX,maxX,minY,maxY");
     }
