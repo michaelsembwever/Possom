@@ -5,9 +5,10 @@
 
 package no.schibstedsok.searchportal.mode.command;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
 import no.fast.ds.search.ISearchParameters;
 import no.fast.ds.search.SearchParameter;
@@ -43,12 +44,12 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
     public final ResultList<? extends ResultItem> execute() {
         
         final ResultList<ResultItem> sr = (ResultList<ResultItem>) super.execute();
-
+        List<ResultItem> itemsToRemove = new ArrayList<ResultItem>();
         if (getSearchConfiguration().isCollapsing()) {
             String prevCollapseId = "";
             for (ResultItem item : sr.getResults()) {
                 if (item.getField("collapseid").equals(prevCollapseId)) {
-                    sr.removeResult(item);
+                    itemsToRemove.add(item);
                 } else if (item.getField("streetHash") != null) {
                     final HashMap<String,String> streetNumbers = new LinkedHashMap<String,String>();
                     for (String record : item.getField("streetHash").split(";")) {
@@ -56,7 +57,12 @@ public class AddressSearchCommand extends AbstractSimpleFastSearchCommand{
                         streetNumbers.put(values[0], values[1]);
                     }
                     sr.replaceResult(item, item.addObjectField("streetHashList", streetNumbers));
+                    prevCollapseId = item.getField("collapseid");
                 }
+            }
+            
+            for(ResultItem item : itemsToRemove){
+                sr.removeResult(item);
             }
         }
         
