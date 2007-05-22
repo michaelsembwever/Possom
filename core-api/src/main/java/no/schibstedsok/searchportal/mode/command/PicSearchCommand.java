@@ -37,9 +37,9 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     private final HTTPClient client;
     private final int port;
     private static final String REQ_URL_FMT
-            = "/query?ie=UTF-8&tldb={0}&filter={1}&custid={2}&version=2.6&thumbs={3}&q={4}&start={5}";
+            = "/query?ie=UTF-8&tldb={0}&filter={1}&custid={2}&version=2.6&thumbs={3}&q={4}&start={5}&site={6}";
 
-    private String fieldFilter;
+    private String siteFilter;
 
     /**
      * Creates a new command in given context.
@@ -57,7 +57,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         port = Integer.parseInt(siteConfig.getProperty(psConfig.getQueryServerPort()));
         client = HTTPClient.instance(host, port);
 
-        fieldFilter = psConfig.getSite();
+        siteFilter = psConfig.getSite();
     }
 
     /** {@inherit} */
@@ -79,7 +79,8 @@ public final class PicSearchCommand extends AbstractSearchCommand {
                 psConfig.getCustomerId(),
                 psConfig.getResultsToReturn(),
                 query,
-                getCurrentOffset(1));
+                getCurrentOffset(1),
+                siteFilter);
 
         LOG.info("Using " + url);
 
@@ -155,8 +156,8 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         final PictureCommandConfig psConfig = (PictureCommandConfig) context.getSearchConfiguration();
 
         // Do not care about site in query if a static site filter was specified in the configuaration.
-        if (getFieldFilter(clause) != null && "".equals(fieldFilter) && "site".equals(clause.getField())) {
-            fieldFilter = clause.getTerm();
+        if (getFieldFilter(clause) != null && "".equals(siteFilter) && "site".equals(clause.getField())) {
+            siteFilter = clause.getTerm();
         } else {
             super.visitImpl(clause);
         }
