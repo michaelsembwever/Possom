@@ -105,7 +105,7 @@
                                     <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("b","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Bloggs&#248;k</td>
                                 </tr>
                                 <tr>
-                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>TV-s&#248;k</td>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("t","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>TV-guide</td>
                                 </tr>
                                 <tr>
                                     <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("wt","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>NettTV-s&#248;k</td>
@@ -161,7 +161,7 @@
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/tv.png" width="16" height="16" alt="" />
-                    <a href='<search:linkPulse url="/search/?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-s&#248;k</a>
+                    <a href='<search:linkPulse url="/search/?c=t" param="category:front_service" index="true"/>' onclick="return strep(this);">TV-guide</a>
                 </div>
                 <div class="navRow">
                     <img src="images/menu/icons/webtv.png" width="16" height="16" alt="" />
