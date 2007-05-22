@@ -453,7 +453,6 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
      * is, wrap term in " " characters and use none-phonetic composite field
      * in index for part of query.
      *
-     * If the term is '', also ignore it.
      * @param clause the clause to process.
      */
     @Override
@@ -513,11 +512,14 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
 
                 // SEARCH-1796
                 if( ((OperationClause)longestCkr).getFirstClause() == clause ){
-
-                    appendToQueryRepresentation(
-                            "lemiypcfkeywords:\"^"
-                            + ckr.getTerm().replaceAll("\\(|\\)", "")
-                            +   "$\"");
+                    String kwTerm = ckr.getTerm().replaceAll("\\(|\\)", "");
+                    
+                     appendToQueryRepresentation(
+                             '('
+                            + "iypcfphnavn:\"^" + kwTerm + "$\" ANY "
+                            + "lemiypcfkeywords:\"^" + kwTerm + "$\" ANY "
+                            + "lemiypcfkeywordslow:\"^" + kwTerm
+                            + "$\"");                    
                 }
 
             }else{
