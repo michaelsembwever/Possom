@@ -220,7 +220,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         }
 
 
-        throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property" + method.getName());
+        throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property: " + method.getName());
 
     }
 
