@@ -118,7 +118,6 @@ public final class HTTPClient {
      */
     public Document getXmlDocument(final String path) throws IOException, SAXException {
 
-        final int priority = Thread.currentThread().getPriority();
         loadUrlConnection(path);
 
         if (!hostHeader.equals(host)) {
@@ -133,7 +132,6 @@ public final class HTTPClient {
         try {
             builder = factory.newDocumentBuilder();
 
-            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             final long start = System.nanoTime();
 
             final Document result = builder.parse(urlConn.getInputStream());
@@ -149,7 +147,6 @@ public final class HTTPClient {
             throw interceptIOException(e);
 
         } finally {
-            Thread.currentThread().setPriority(priority);
 
             if (null != urlConn && null != urlConn.getInputStream()) {
                 urlConn.getInputStream().close();
@@ -168,11 +165,9 @@ public final class HTTPClient {
      */
     public BufferedInputStream getBufferedStream(final String path) throws IOException {
 
-        final int priority = Thread.currentThread().getPriority();
         loadUrlConnection(path);
 
         try {
-            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             final long start = System.nanoTime();
 
             final BufferedInputStream result = new BufferedInputStream(urlConn.getInputStream());
@@ -184,8 +179,6 @@ public final class HTTPClient {
         } catch (IOException e) {
             throw interceptIOException(e);
 
-        } finally {
-            Thread.currentThread().setPriority(priority);
         }
     }
 
@@ -196,11 +189,9 @@ public final class HTTPClient {
      */
     public BufferedReader getBufferedReader(final String path) throws IOException {
 
-        final int priority = Thread.currentThread().getPriority();
         loadUrlConnection(path);
 
         try {
-            Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             final long start = System.nanoTime();
 
             final BufferedReader result = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
@@ -212,8 +203,6 @@ public final class HTTPClient {
         } catch (IOException e) {
             throw interceptIOException(e);
 
-        } finally {
-            Thread.currentThread().setPriority(priority);
         }
     }
 
