@@ -6,7 +6,7 @@
  *
  */
 
-package no.schibstedsok.searchportal.view;
+package no.schibstedsok.searchportal.result;
 
 import java.util.LinkedList;
 import java.util.NoSuchElementException;

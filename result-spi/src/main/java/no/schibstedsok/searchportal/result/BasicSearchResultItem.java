@@ -1,12 +1,13 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
 
+import no.schibstedsok.searchportal.result.StringChopper;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import no.schibstedsok.searchportal.view.StringChopper;
+import no.schibstedsok.searchportal.result.StringChopper;
 
 /**
  * A simple implementation of a search result item.
