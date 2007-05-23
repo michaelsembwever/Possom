@@ -114,6 +114,9 @@
                                     <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("sw","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>V&#230;rs&#248;k</td>
                                 </tr>
                                 <tr>
+                                    <td class="navbut" onclick='deleteCookie("sesam_menu", "/");document.getElementById("front_button_layer").style.visibility="hidden";menu_submit("map","");' onmouseover='this.style.backgroundColor="#DADBDD"' onmouseout='this.style.backgroundColor="#FFF"'>Karts&#248;k</td>
+                                </tr>
+                                <tr>
                                     <td onclick='document.getElementById("front_button_layer").style.visibility="hidden";'><img src="../images/index/skjul_meny.png" width="21" height="20" alt="" align="left" /><div class="navbutend">&nbsp;&nbsp;Lukk</div></td>
                                 </tr>
                             </table>
@@ -170,6 +173,10 @@
                 <div class="navRow">
                     <img src="images/menu/icons/ver.png" width="16" height="16" alt="" />
                     <a href='<search:linkPulse url="/search/?c=sw" param="category:front_service" index="true"/>' onclick="return strep(this);">V&#230;rs&#248;k</a>
+                </div>
+                <div class="navRow">
+                    <img src="images/menu/icons/kart.png" width="16" height="16" alt="" />
+                    <a href='<search:linkPulse url="/search/?c=map" param="category:front_service" index="true"/>' onclick="return strep(this);">Karts&#248;k</a>
                 </div>
             </div>
             <div id="navToggleHide">    
