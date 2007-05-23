@@ -102,7 +102,7 @@ public final class HTTPClient {
         }
         sb.append(path);
         final URL url = new URL(sb.toString());
-        LOG.debug(DEBUG_USING_URL + url);
+        LOG.trace(DEBUG_USING_URL + url);
         return url;
     }
 
