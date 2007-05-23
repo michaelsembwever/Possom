@@ -4,7 +4,6 @@ package no.schibstedsok.searchportal.result;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import no.schibstedsok.searchportal.view.StringChopper;
 
 /**
  * A simple implementation of a product result item.

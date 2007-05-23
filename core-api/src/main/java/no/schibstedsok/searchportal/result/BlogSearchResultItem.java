@@ -1,7 +1,5 @@
 package no.schibstedsok.searchportal.result;
 
-import no.schibstedsok.searchportal.view.StringChopper;
-
 public class BlogSearchResultItem extends BasicSearchResultItem { // Extend BasicSearchResultItem
 	
 	/* Path to blogtipsicon */

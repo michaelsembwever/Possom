@@ -4,7 +4,7 @@ package no.schibstedsok.searchportal.view.velocity;
 import java.io.IOException;
 
 import java.io.Writer;
-import no.schibstedsok.searchportal.view.StringChopper;
+import no.schibstedsok.searchportal.result.StringChopper;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.Logger;
