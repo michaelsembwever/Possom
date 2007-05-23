@@ -184,7 +184,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
 
             if(null != invokeSupportMethod){
                 if(null == invocationTarget){
-                    
+
                     invocationTargetCache.put(method, InvocationTarget.SUPPORT);
                     supportMethodCache.put(method, invokeSupportMethod);
                 }
@@ -200,7 +200,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
                 if(null == invocationTarget){
                     invocationTargetCache.put(method, InvocationTarget.PROPERTY);
                 }
-                return invokePropertyResult.getValue() instanceof MapDataObject 
+                return invokePropertyResult.getValue() instanceof MapDataObject
                             && Map.class.isAssignableFrom(method.getReturnType())
                         ? ((MapDataObject)invokePropertyResult.getValue()).getValues()
                         : invokePropertyResult.getValue();
@@ -220,7 +220,7 @@ class BeanDataObjectInvocationHandler<T> implements InvocationHandler {
         }
 
 
-        throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property");
+        throw new IllegalArgumentException("Method to invoke is not a getter or setter to any bean property" + method.getName());
 
     }
 
