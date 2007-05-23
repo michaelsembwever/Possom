@@ -6,33 +6,6 @@
 
 package no.schibstedsok.searchportal.view.output;
 
-import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletRequest;
-
-import no.schibstedsok.searchportal.InfrastructureException;
-import no.schibstedsok.searchportal.site.Site;
-import no.schibstedsok.searchportal.util.Channels;
-import no.schibstedsok.searchportal.view.i18n.TextMessages;
-import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModule;
-import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.log4j.Logger;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.ResourceNotFoundException;
-
 import com.sun.syndication.feed.synd.SyndContent;
 import com.sun.syndication.feed.synd.SyndContentImpl;
 import com.sun.syndication.feed.synd.SyndEnclosure;
@@ -43,52 +16,94 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.feed.synd.SyndFeedImpl;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedOutput;
-import no.schibstedsok.searchportal.datamodel.DataModel;
+import no.schibstedsok.searchportal.InfrastructureException;
+import no.schibstedsok.searchportal.datamodel.DataModelContext;
+import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.site.Site;
+import no.schibstedsok.searchportal.site.SiteContext;
+import no.schibstedsok.searchportal.site.config.DocumentLoader;
+import no.schibstedsok.searchportal.site.config.PropertiesLoader;
+import no.schibstedsok.searchportal.site.config.ResourceContext;
+import no.schibstedsok.searchportal.util.Channels;
+import no.schibstedsok.searchportal.view.config.SearchTab;
+import no.schibstedsok.searchportal.view.i18n.TextMessages;
+import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModule;
 import no.schibstedsok.searchportal.view.output.syndication.modules.SearchResultModuleImpl;
+import no.schibstedsok.searchportal.view.velocity.VelocityEngineFactory;
+import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.log4j.Logger;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 
-/** Used by the rssDecorator.jsp to print out the results in rss format.
+import javax.xml.parsers.DocumentBuilder;
+import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+import java.util.TimeZone;
+
+/**
+ * Used by the rssDecorator.jsp to print out the results in rss format.
  *
  * @author maek
- *
- * @todo this class should be more based off the datamodel and less the request and response.
- * Infact it should be completely request and response independent.
- *
  */
 public final class SyndicationGenerator {
 
+    /**
+     * The context this class needs to do its job.
+     */
+    public interface Context extends SiteContext, DataModelContext, ResourceContext {
+        /**
+         * The tab to generate rss for.
+         *
+         * @return The search tab to generate rss for.
+         */
+        SearchTab getTab();
+
+        /**
+         * The complete URL of the original page the rss represents.
+         *
+         * @return the url of the original page.
+         */
+        String getURL();
+    }
 
     // Constants -----------------------------------------------------
 
     // Any other way to get rid of the dc:date tags that ROME generates.
-    private static final String DCDATE_PATTERN = "<dc:date>[^<]+</dc:date>";
-
     private static final Logger LOG = Logger.getLogger(SyndicationGenerator.class);
 
+    private static final String DCDATE_PATTERN = "<dc:date>[^<]+</dc:date>";
+
     private static final String DEFAULT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    private static final String ERR_TEMPLATE_NOT_FOUND =
-            " Unable to find template for rss field: ";
-    private static final String ERR_TEMPLATE_ERR =
-            " Parse error in template: ";
-    private static final String DEBUG_TEMPLATE_NOT_FOUND = "Could not find template ";
+    private static final String ERR_TEMPLATE_NOT_FOUND = " Unable to find template for rss field: ";
+    private static final String ERR_TEMPLATE_ERR = " Parse error in template: ";
     private static final String DEBUG_USING_DEFAULT_DATE_FORMAT = "Using default date format";
 
     // Attributes ----------------------------------------------------
 
-    private final ResultList<? extends ResultItem> result;
+    private final Context context;
+
+    private final ResultList<ResultItem> result;
     private final Site site;
     private final TextMessages text;
     private String feedType = "rss_2.0";
     private final String templateDir;
     private final VelocityEngine engine;
-    private final String query;
     private final String uri;
     private final Channels channels;
-    private final HttpServletRequest request;
     private String encoding = "UTF-8";
     private String nowStringUTC;
-
 
     // Static --------------------------------------------------------
 
@@ -97,38 +112,35 @@ public final class SyndicationGenerator {
     /**
      * Creates a new instance.
      *
-     * @param result the result ro render as rss.
-     * @param site the current site.
-     * @param request the current request.
-     * @param modeId the current mode.
+     * @param context The context this class needs to do its work.
      */
-    public SyndicationGenerator(final ResultList<? extends ResultItem> result,
-                                final Site site,
-                                final HttpServletRequest request,
-                                final String modeId) {
+    public SyndicationGenerator(final Context context) {
 
-        this.result = result;
-        this.site = site;
-        this.text = (TextMessages) request.getAttribute("text");
-        this.channels = (Channels) request.getAttribute("channels");
-        this.query = request.getParameter("q");
-        this.uri = request.getRequestURL().append("?").append(request.getQueryString()).toString();
-        this.request = request;
+        this.context = context;
 
-        final String type = request.getParameter("feedtype");
-        if (type != null) {
+        this.result = context.getDataModel().getSearches().get(context.getTab().getRssResultName()).getResults();
+        this.site = context.getSite();
+
+        this.text = TextMessages.valueOf(getTextMessagesContext());
+        this.channels = Channels.valueOf(getChannelContext());
+
+        this.uri = context.getURL();
+
+        final String type = getParameter("feedType");
+
+        if (! "".equals(type)) {
             this.feedType = type;
         }
 
-        final String enc = request.getParameter("encoding");
-        if (enc != null) {
+        final String enc = getParameter("encoding");
+        if (! "".equals(enc)) {
             if (encoding.equalsIgnoreCase("iso-8859-1")) {
                 this.encoding = "iso-8859-1";
             }
         }
 
-        templateDir = "rss/" + modeId + "/";
-        // TODO should be using a context here. Below can be used in tests.
+        templateDir = "rss/" + context.getTab().getId() + "/";
+
         engine = VelocityEngineFactory.valueOf(site).getEngine();
     }
 
@@ -138,7 +150,6 @@ public final class SyndicationGenerator {
      * Returns the generated rss content.
      *
      * @return the rss document.
-     *
      */
 
     public String generate() {
@@ -189,7 +200,7 @@ public final class SyndicationGenerator {
 
                 final SearchResultModule entryModule = new SearchResultModuleImpl();
 
-                if (item.getField("age") != null && ! "".equals(item.getField("age"))) {
+                if (item.getField("age") != null && !"".equals(item.getField("age"))) {
                     entryModule.setArticleAge(item.getField("age"));
                 }
 
@@ -240,7 +251,8 @@ public final class SyndicationGenerator {
                     enclosures.add(enclosure);
                     entry.setEnclosures(enclosures);
 
-                    if (request.getParameter("c") == "swip") {
+                    // @todo. specific to sesam.no. put somewhere else...
+                    if ("swip".equals(context.getTab().getKey())) {
                         enclosure.setType("image/gif");
                     } else {
                         enclosure.setType("image/png");
@@ -271,7 +283,6 @@ public final class SyndicationGenerator {
         }
     }
 
-
     // Package protected ---------------------------------------------
 
     // Protected -----------------------------------------------------
@@ -296,36 +307,30 @@ public final class SyndicationGenerator {
                 cxt.put("itemIdx", itemIdx);
             }
 
-            cxt.put("query", query);
-            cxt.put("datamodel", request.getSession().getAttribute(DataModel.KEY));
+            cxt.put("datamodel", context.getDataModel());
 
             final String origUri = uri.replaceAll("&?output=[^&]+", "").replaceAll("&?feedtype=[^&]+", "");
             cxt.put("uri", origUri);
 
             cxt.put("channels", channels);
 
+            // @todo. Specific to sesam.no. Move somewhere else. result-spi? templates? The command?
+            if ("c".equals(context.getTab().getKey())) {
 
+                final String contentSource = getParameter("contentsource");
+                final String newsCountry = getParameter("newsCountry");
 
-            // @todo. Specific to sesam.no. Move somewhere else. result-spi? templates?
-            if (request.getParameter("c") != null && request.getParameter("c").equals("m")) {
-
-                if (request.getParameter("contentsource") != null
-                        && request.getParameter("contentsource").startsWith("Interna")) {
+                if (contentSource != null && contentSource.startsWith("Interna")) {
                     cxt.put("newstype", "- Internasjonale nyheter");
-                } else if (request.getParameter("contentsource") != null
-                        && request.getParameter("contentsource").equals("Mediearkivet")) {
+                } else if (contentSource != null && contentSource.equals("Mediearkivet")) {
                     cxt.put("newstype", "- Papiraviser");
-                } else if (request.getParameter("newscountry") != null
-                        && request.getParameter("newscountry").equals("Sverige")) {
+                } else if (newsCountry != null && newsCountry.equals("Sverige")) {
                     cxt.put("newstype", "- Svenske nyheter");
-                } else if (request.getParameter("newscountry") != null
-                        && request.getParameter("newscountry").equals("Island")) {
+                } else if (newsCountry != null && newsCountry.equals("Island")) {
                     cxt.put("newstype", "- Islandske nyheter");
-                } else if (request.getParameter("newscountry") != null
-                        && request.getParameter("newscountry").equals("Finland")) {
+                } else if (newsCountry != null && newsCountry.equals("Finland")) {
                     cxt.put("newstype", "- Finske nyheter");
-                } else if (request.getParameter("newscountry") != null
-                        && request.getParameter("newscountry").equals("Danmark")) {
+                } else if (newsCountry != null && newsCountry.equals("Danmark")) {
                     cxt.put("newstype", "- Danske nyheter");
                 } else {
                     cxt.put("newstype", "- Norske nyheter");
@@ -354,7 +359,45 @@ public final class SyndicationGenerator {
             throw new InfrastructureException(ex);
         }
     }
+
+    private String getParameter(final String parameterName) {
+        final StringDataObject value = context.getDataModel().getParameters().getValue(parameterName);
+
+        if (value != null) {
+            return value.toString();
+        } else {
+            return "";
+        }
+    }
+
+    private TextMessages.Context getTextMessagesContext() {
+        return new TextMessages.Context() {
+            public Site getSite() {
+                return context.getSite();
+            }
+
+            public PropertiesLoader newPropertiesLoader(
+                    final SiteContext siteCxt,
+                    final String resource,
+                    final Properties properties) {
+            return context.newPropertiesLoader(siteCxt, resource, properties);
+            }
+        };
+    }
+
+    private Channels.Context getChannelContext() {
+        return new Channels.Context() {
+            public Site getSite() {
+                return context.getSite();
+            }
+
+            public DocumentLoader newDocumentLoader(
+                    final SiteContext cxt,
+                    final String resource,
+                    final DocumentBuilder builder) {
+                return context.newDocumentLoader(cxt, resource, builder);
+            }
+        };
+    }
+// Inner classes -------------------------------------------------
 }
-
-
-    // Inner classes -------------------------------------------------
