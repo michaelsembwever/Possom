@@ -184,8 +184,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             String sortBy = getSortBy();
 
-            query.setParameter(new SearchParameter(
-                    "sesat:uniqueId",
+            query.setParameter(new SearchParameter("sesat:uniqueId",
                     context.getDataModel().getParameters().getUniqueId()));
 
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, getCurrentOffset(0)));
