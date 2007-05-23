@@ -138,6 +138,11 @@ public final class SearchTab {
      * Holds value of property css.
      */
     private final List<String> css = new ArrayList<String>();
+
+    /**
+     * Holds value of property javascript.
+     */
+    private final List<String> javascript = new ArrayList<String>();
     
     /**
      * Holds value of property layout.
@@ -167,6 +172,7 @@ public final class SearchTab {
                 final int adLimit,
                 final int adOnTop,
                 final List<String> css,
+                final List<String> javascript,
                 final boolean absoluteOrdering,
                 final boolean executeOnBlank,
                 final Layout layout){
@@ -201,6 +207,7 @@ public final class SearchTab {
         }
         this.rssResultName = rssResultName;
         this.css.addAll(css);
+        this.javascript.addAll(javascript);
         this.absoluteOrdering = absoluteOrdering;
         this.executeOnBlank = executeOnBlank;
         this.rssHidden = rssHidden;
@@ -472,6 +479,14 @@ public final class SearchTab {
      */
     public List<String> getCss() {
         return Collections.unmodifiableList(css);
+    }
+
+    /**
+     * Getter for property javascript.
+     * @return Value of property javascript.
+     */
+    public List<String> getJavascript() {
+        return Collections.unmodifiableList(javascript);
     }
     
     /**

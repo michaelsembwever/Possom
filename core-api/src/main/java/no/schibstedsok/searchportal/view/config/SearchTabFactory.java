@@ -241,7 +241,8 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         inherit != null ? inherit.getAdCommand() : "");
                 final String allCss = parseString(tabE.getAttribute("css"), null);
                 final String[] css = allCss != null ? allCss.split(",") : new String[]{};
-
+                final String allJavascript = parseString(tabE.getAttribute("javascript"), null);
+                final String[] javascript = allJavascript != null ? allJavascript.split(",") : new String[]{};
                 // enrichment hints
                 final NodeList enrichmentNodeList = tabE.getElementsByTagName("enrichment");
                 final Collection<SearchTab.EnrichmentHint> enrichments = new ArrayList<SearchTab.EnrichmentHint>();
@@ -328,6 +329,7 @@ public final class SearchTabFactory extends AbstractDocumentFactory implements S
                         parseInt(tabE.getAttribute("ad-limit"), inherit != null ? inherit.getAdLimit() : -1),
                         parseInt(tabE.getAttribute("ad-on-top"), inherit != null ? inherit.getAdOnTop() : -1),
                         Arrays.asList(css),
+                        Arrays.asList(javascript),
                         parseBoolean(tabE.getAttribute("absolute-ordering"), inherit != null
                             ? inherit.isAbsoluteOrdering()
                             : false),
