@@ -1,35 +1,37 @@
 // Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.http;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.log4j.Logger;
 
-/** Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
+/**
+ * Utility class to fetch URLs and return them as either BufferedReaders or XML documents.
  * Keeps statistics on connection times and failures.
  * TODO Provide Quality of Service through ramp up/down and throttling functionality.
  * XXX redesign into multiple classes with less static methods.
- *
+ * <p/>
  * Supports protocols http, https, ftp, and file.
  * If no protocol is specified in the host it defaults to http.
  *
@@ -52,22 +54,21 @@ public final class HTTPClient {
 
     private HTTPClient(final String host, final int port, final String hostHeader) {
 
-        this.host= host;
+        this.host = host;
         this.port = port;
         this.hostHeader = hostHeader;
 
         String id = host + ':' + port;
-        if(id.contains("://")){
+        if (id.contains("://")) {
             id = id.substring(id.indexOf("://") + 3);
         }
         this.id = id;
-        
+
     }
 
     /**
-     *
-     * @param host
-     * @param port
+     * @param host is really protocol AND host in the format: http://myhost.com. If only host is supplied http will be used.
+     * @param port if theis is < 0 default port for protocol is used.
      * @return
      */
     public static HTTPClient instance(final String host, final int port) {
@@ -76,9 +77,8 @@ public final class HTTPClient {
     }
 
     /**
-     *
-     * @param host
-     * @param port
+     * @param host       is really protocol AND host in the format: http://myhost.com. If only host is supplied http will be used.
+     * @param port       if theis is < 0 default port for protocol is used.
      * @param hostHeader
      * @return
      */
@@ -87,28 +87,26 @@ public final class HTTPClient {
         return new HTTPClient(host, port, hostHeader);
     }
 
-    private URL getURL(final String path) throws MalformedURLException{
-
-        if( port == 0 ){
-            throw new MalformedURLException("Null port");
-        }
+    private URL getURL(final String path) throws MalformedURLException {
 
         final boolean hasProtocol = host.startsWith("http://") || host.startsWith("https://")
                 || host.startsWith("ftp://") || host.startsWith("file://");
-                //host.matches("^(http|https|ftp|file)://");
 
-        final URL url = new URL(
-                (hasProtocol ? "" : "http://")
-                + host + ':' + port
-                + path);
-
-        LOG.trace(DEBUG_USING_URL + url);
-
+        final StringBuilder sb = new StringBuilder();
+        if (!hasProtocol) {
+            sb.append("http://");
+        }
+        sb.append(host);
+        if (port > 0) {
+            sb.append(':').append(port);
+        }
+        sb.append(path);
+        final URL url = new URL(sb.toString());
+        LOG.debug(DEBUG_USING_URL + url);
         return url;
     }
 
     /**
-     *
      * @param path
      * @return
      * @throws java.io.IOException
@@ -119,7 +117,7 @@ public final class HTTPClient {
         final int priority = Thread.currentThread().getPriority();
         loadUrlConnection(path);
 
-        if(!hostHeader.equals(host)){
+        if (!hostHeader.equals(host)) {
 
             LOG.debug(DEBUG_USING_HOSTHEADER + hostHeader);
             urlConn.addRequestProperty("host", hostHeader);
@@ -146,13 +144,13 @@ public final class HTTPClient {
         } catch (IOException e) {
             throw interceptIOException(e);
 
-        }finally{
+        } finally {
             Thread.currentThread().setPriority(priority);
-            
-            if(null != urlConn && null != urlConn.getInputStream()){
+
+            if (null != urlConn && null != urlConn.getInputStream()) {
                 urlConn.getInputStream().close();
             }
-            if(null != urlConn){
+            if (null != urlConn) {
                 // definitely done with connection now
                 urlConn = null;
             }
@@ -160,7 +158,6 @@ public final class HTTPClient {
     }
 
     /**
-     *
      * @param path
      * @return
      * @throws java.io.IOException
@@ -170,7 +167,7 @@ public final class HTTPClient {
         final int priority = Thread.currentThread().getPriority();
         loadUrlConnection(path);
 
-        try{
+        try {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             final long start = System.nanoTime();
 
@@ -183,13 +180,12 @@ public final class HTTPClient {
         } catch (IOException e) {
             throw interceptIOException(e);
 
-        }finally{
+        } finally {
             Thread.currentThread().setPriority(priority);
         }
     }
 
     /**
-     *
      * @param path
      * @return
      * @throws java.io.IOException
@@ -199,7 +195,7 @@ public final class HTTPClient {
         final int priority = Thread.currentThread().getPriority();
         loadUrlConnection(path);
 
-        try{
+        try {
             Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
             final long start = System.nanoTime();
 
@@ -212,32 +208,30 @@ public final class HTTPClient {
         } catch (IOException e) {
             throw interceptIOException(e);
 
-        }finally{
+        } finally {
             Thread.currentThread().setPriority(priority);
         }
     }
 
     /**
-     *
      * @param path
      * @return
      * @throws java.io.IOException
      */
     public long getLastModified(final String path) throws IOException {
 
-        try{
+        try {
             return loadUrlConnection(path).getLastModified();
-            
+
         } catch (IOException e) {
             throw interceptIOException(e);
 
-        }finally{
+        } finally {
             urlConn = null;
         }
     }
 
     /**
-     *
      * @param path
      * @return
      * @throws java.io.IOException
@@ -247,107 +241,104 @@ public final class HTTPClient {
         boolean success = false;
         loadUrlConnection(path);
 
-        if(urlConn instanceof HttpURLConnection){
-            try{
-                
-                final HttpURLConnection con = (HttpURLConnection)urlConn;
+        if (urlConn instanceof HttpURLConnection) {
+            try {
+
+                final HttpURLConnection con = (HttpURLConnection) urlConn;
                 con.setInstanceFollowRedirects(false);
                 con.setRequestMethod("HEAD");
                 con.addRequestProperty("host", hostHeader);
                 con.setConnectTimeout(1000);
                 con.setReadTimeout(1000);
                 success = HttpURLConnection.HTTP_OK == con.getResponseCode();
-                
+
             } catch (IOException e) {
                 throw interceptIOException(e);
 
-            }finally{
+            } finally {
                 urlConn = null;
             }
-            
-        }else{
-            
+
+        } else {
+
             final File file = new File(path);
             success = file.exists();
         }
         return success;
     }
-    
+
     /**
-     * 
-     * @param ioe 
-     * @return 
+     * @param ioe
+     * @return
      */
-    public IOException interceptIOException(final IOException ioe){
-        
+    public IOException interceptIOException(final IOException ioe) {
+
         final IOException e = interceptIOException(id, urlConn, ioe);
-        
+
         // definitely done with connection now
         urlConn = null;
-        
+
         return e;
     }
-    
+
     /**
-     * 
-     * @param conn 
-     * @param ioe 
-     * @return 
+     * @param conn
+     * @param ioe
+     * @return
      */
     public static IOException interceptIOException(
-            final URLConnection conn, 
-            final IOException ioe){
-        
-        final String id = conn.getURL().getHost() + ':' 
+            final URLConnection conn,
+            final IOException ioe) {
+
+        final String id = conn.getURL().getHost() + ':'
                 + (-1 != conn.getURL().getPort() ? conn.getURL().getPort() : 80);
-        
+
         return interceptIOException(id, conn, ioe);
     }
-             
+
     private static IOException interceptIOException(
-            final String id, 
-            final URLConnection urlConn, 
-            final IOException ioe){
-        
-        if( ioe instanceof SocketTimeoutException){
+            final String id,
+            final URLConnection urlConn,
+            final IOException ioe) {
+
+        if (ioe instanceof SocketTimeoutException) {
             Statistic.getStatistic(id).addReadTimeout();
-            
-        }else if( ioe instanceof ConnectException){
+
+        } else if (ioe instanceof ConnectException) {
             Statistic.getStatistic(id).addConnectTimeout();
-            
-        }else{
+
+        } else {
             Statistic.getStatistic(id).addFailure();
         }
 
         // Clean out the error stream. See
-        if(urlConn instanceof HttpURLConnection){
-            cleanErrorStream((HttpURLConnection)urlConn);
+        if (urlConn instanceof HttpURLConnection) {
+            cleanErrorStream((HttpURLConnection) urlConn);
         }
-        
-        
+
+
         return ioe;
     }
-    
-    
+
+
     /**
-     * 
-     * @param conn 
-     * @param time 
+     * @param conn
+     * @param time
      */
-    public static void addConnectionStatistic(final URLConnection conn, final long time){ 
-        
-        final String id = conn.getURL().getHost() + ':' 
+    public static void addConnectionStatistic(final URLConnection conn, final long time) {
+
+        final String id = conn.getURL().getHost() + ':'
                 + (-1 != conn.getURL().getPort() ? conn.getURL().getPort() : 80);
-        
+
         Statistic.getStatistic(id).addInvocation(time);
     }
-    
+
     private URLConnection loadUrlConnection(final String path) throws IOException {
 
-        if(null == urlConn){
+        if (null == urlConn) {
             urlConn = getURL(path).openConnection();
 
-            if( !hostHeader.equals(host) ){
+            if (!hostHeader.equals(host)) {
                 LOG.trace(DEBUG_USING_HOSTHEADER + hostHeader);
                 urlConn.addRequestProperty("host", hostHeader);
             }
@@ -355,19 +346,19 @@ public final class HTTPClient {
         return urlConn;
     }
 
-    private static void cleanErrorStream(final HttpURLConnection con){
+    private static void cleanErrorStream(final HttpURLConnection con) {
 
-        if(null != con.getErrorStream()){
-            
+        if (null != con.getErrorStream()) {
+
             final BufferedReader errReader = new BufferedReader(new InputStreamReader(con.getErrorStream()));
             final StringBuilder err = new StringBuilder();
-            try{
-                for(String line = errReader.readLine(); null != line; line = errReader.readLine()){
+            try {
+                for (String line = errReader.readLine(); null != line; line = errReader.readLine()) {
                     err.append(line);
                 }
                 con.getErrorStream().close();
-                
-            }catch(IOException ioe){
+
+            } catch (IOException ioe) {
                 LOG.warn(ioe.getMessage(), ioe);
             }
             LOG.info(err.toString());
@@ -386,8 +377,6 @@ public final class HTTPClient {
 
 //    private static final HTTPClient client = new HTTPClient();
 
-
-
 //    private HTTPClient() {
 //        final HttpConnectionManagerParams params = new HttpConnectionManagerParams();
 //        params.setStaleCheckingEnabled(true);
@@ -398,7 +387,6 @@ public final class HTTPClient {
 //        cMgr.setParams(params);
 //        commonsHttpClient = new HttpClient(cMgr);
 //    }
-
 
 //    public static HTTPClient instance(final String id, final String host, final int port) {
 //
@@ -414,7 +402,6 @@ public final class HTTPClient {
 //        commonsHttpClient.executeMethod(conf, method);
 //        return method;
 //    }
-
 
 //    private void release(final HttpMethod method) {
 //        method.releaseConnection();
@@ -433,14 +420,13 @@ public final class HTTPClient {
 //    }
 
 
+    private static class Statistic implements Comparable<Statistic> {
 
-    private static class Statistic implements Comparable<Statistic>{
-        
 
-        private static final Map<String,Statistic> STATISTICS = new ConcurrentHashMap<String,Statistic>();
-    
-        private static final Logger STATISTICS_LOG = Logger.getLogger(Statistic.class);        
-            
+        private static final Map<String, Statistic> STATISTICS = new ConcurrentHashMap<String, Statistic>();
+
+        private static final Logger STATISTICS_LOG = Logger.getLogger(Statistic.class);
+
         private final String id;
         private long totalTime = 0;
         private long longest = 0;
@@ -449,55 +435,55 @@ public final class HTTPClient {
         private volatile long readTimeouts = 0;
         private volatile long failures = 0;
         private static volatile long lastPrint = System.currentTimeMillis() / 60000;
-        
-        static Statistic getStatistic(final String id){
-            
-            if(null==STATISTICS.get(id)){
+
+        static Statistic getStatistic(final String id) {
+
+            if (null == STATISTICS.get(id)) {
                 STATISTICS.put(id, new Statistic(id));
             }
             return STATISTICS.get(id);
         }
 
-        private Statistic(final String id){
+        private Statistic(final String id) {
             this.id = id;
         }
 
-        synchronized void addInvocation(final long time){
+        synchronized void addInvocation(final long time) {
 
             final long timeMs = (time / 1000000);
             totalTime += timeMs;
-            if(timeMs > longest){
+            if (timeMs > longest) {
                 longest = timeMs;
             }
             ++invocations;
-            
-            if(STATISTICS_LOG.isDebugEnabled() && System.currentTimeMillis() / 60000 != lastPrint){ 
-                
-                printStatistics(); 
+
+            if (STATISTICS_LOG.isDebugEnabled() && System.currentTimeMillis() / 60000 != lastPrint) {
+
+                printStatistics();
                 lastPrint = System.currentTimeMillis() / 60000;
             }
         }
-        
-        void addFailure(){
+
+        void addFailure() {
             ++failures;
         }
-        
-        void addConnectTimeout(){
+
+        void addConnectTimeout() {
             ++connectTimeouts;
         }
-        
-        void addReadTimeout(){
+
+        void addReadTimeout() {
             ++readTimeouts;
         }
-        
-        private long getAverageInvocationTime(){
-            return 0 < invocations ? (totalTime * (long)1000 / invocations) : 0;
+
+        private long getAverageInvocationTime() {
+            return 0 < invocations ? (totalTime * (long) 1000 / invocations) : 0;
         }
 
         @Override
         public String toString() {
-                        
-            return ": " +  new DecimalFormat("000,000,000").format(invocations)
+
+            return ": " + new DecimalFormat("000,000,000").format(invocations)
                     + " : " + new DecimalFormat("00,000").format(longest)
                     + "ms : " + new DecimalFormat("0,000,000").format(getAverageInvocationTime())
                     + "µs :   " + new DecimalFormat("00,000").format(failures)
@@ -505,14 +491,14 @@ public final class HTTPClient {
                     + " : " + new DecimalFormat("00,000").format(readTimeouts)
                     + " <-- " + id;
         }
-        
+
         public int compareTo(Statistic o) {
             return (int) (o.getAverageInvocationTime() - getAverageInvocationTime());
         }
-       
 
-        private static void printStatistics(){
-        
+
+        private static void printStatistics() {
+
             final List<Statistic> list = new ArrayList<Statistic>(STATISTICS.values());
             Collections.sort(list);
 
@@ -520,12 +506,12 @@ public final class HTTPClient {
             msg.append("\n------ Printing HTTPClient statistics ------\n"
                     + ": invocations : longest  : average     "
                     + ": failures : connect errors : read timeouts <- client\n");
-            
-            for(Statistic stat : list){
+
+            for (Statistic stat : list) {
                 msg.append(stat.toString() + '\n');
             }
             msg.append("------ ------------------------------ ------");
             STATISTICS_LOG.debug(msg.toString());
-        }        
+        }
     }
 }
