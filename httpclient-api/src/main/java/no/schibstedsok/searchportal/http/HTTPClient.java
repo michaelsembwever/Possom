@@ -89,6 +89,10 @@ public final class HTTPClient {
 
     private URL getURL(final String path) throws MalformedURLException {
 
+        if (port == 0) {
+            throw new MalformedURLException("Null port");
+        }
+
         final boolean hasProtocol = host.startsWith("http://") || host.startsWith("https://")
                 || host.startsWith("ftp://") || host.startsWith("file://");
 
