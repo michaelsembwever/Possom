@@ -1,7 +1,4 @@
-/*
- * $Id:$
- */
-
+// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.util;
 
 import javax.measure.units.SI;
@@ -27,17 +24,17 @@ public class GeoSearchUtil {
 
     /** Constants for selected map rectangel. */
     private static final String MIN_X = "minX";
-
     private static final String MAX_X = "maxX";
-
     private static final String MIN_Y = "minY";
-
     private static final String MAX_Y = "maxY";
     
+    /** UTM center x cordinate. */
     private static final String CENTER_X = "cx";
     
+    /** UTM center y cordinate. */
     private static final String CENTER_Y = "cy";
     
+    /** Request parameter name for radius restriction in GEO search. */
     private static final String RADIUS_PARAMETER_NAME = "radius";
 
     /** Measure unit to use. */
@@ -55,6 +52,7 @@ public class GeoSearchUtil {
 
     /**
      * Calcluates a center point from minX,maxX,minY,maxY parameters.
+     * If a centerpoint is given in the request, return new LatLong converted centerpoint.
      * @param requestParameters Parameters for the request.
      * @return The center point in latlong format.
      */
@@ -110,7 +108,7 @@ public class GeoSearchUtil {
      * @return true if the given parameter object contains minX,maxX,minY,maxY values.
      */
     public static boolean isGeoSearch(final ParametersDataObject requestParameters) {
-
+        //centerpoint is also a geo search.
         if(hasCenterPoint(requestParameters)){
             return true;
         }
@@ -131,7 +129,12 @@ public class GeoSearchUtil {
         return true;
     }
 
-
+    /**
+     * Responsible for checking if a ParameterDataObject has parameters for centerpoint.
+     * 
+     * @param requestParameters The ParameterDataObject to check.
+     * @return true if the given object has x,y and restriction radius.
+     */
     public static boolean hasCenterPoint(ParametersDataObject requestParameters) {
         if(requestParameters.getValue(CENTER_X) == null || requestParameters.getValue(CENTER_Y) == null ||
                 requestParameters.getValue(RADIUS_PARAMETER_NAME) == null){
@@ -146,7 +149,11 @@ public class GeoSearchUtil {
         return true;
     }
 
-
+    /**
+     * Retruns the radius to search from a given centerpoint or map selection.
+     * @param pdo The ParameterDataObject.
+     * @return The radius from the centerpoint to search.
+     */
     public static String getRadiusRestriction(final ParametersDataObject pdo) { 
         if (isGeoSearch(pdo)) {
             if(hasCenterPoint(pdo)){
