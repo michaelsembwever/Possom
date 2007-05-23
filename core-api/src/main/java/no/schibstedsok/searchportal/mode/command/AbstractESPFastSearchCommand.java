@@ -11,7 +11,6 @@ package no.schibstedsok.searchportal.mode.command;
 import com.fastsearch.esp.search.ConfigurationException;
 import com.fastsearch.esp.search.SearchEngineException;
 import com.fastsearch.esp.search.SearchFactory;
-import com.fastsearch.esp.search.view.ISearchView;
 import com.fastsearch.esp.search.query.BaseParameter;
 import com.fastsearch.esp.search.query.IQuery;
 import com.fastsearch.esp.search.query.Query;
@@ -32,8 +31,11 @@ import no.schibstedsok.searchportal.query.NotClause;
 import no.schibstedsok.searchportal.query.OrClause;
 import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
+import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.BasicSearchResultItem;
 import no.schibstedsok.searchportal.result.FastSearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import no.schibstedsok.searchportal.site.config.SiteConfiguration;
 import org.apache.log4j.Logger;
 
@@ -42,9 +44,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
-import no.schibstedsok.searchportal.result.ResultItem;
-import no.schibstedsok.searchportal.result.ResultList;
 
 /**
  * Base class for commands querying a FAST EPS Server.
@@ -113,7 +112,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     /**
      * Creates new instance of search command.
      *
-     * @param cxt        The context to work in.
+     * @param cxt The context to work in.
      */
     public AbstractESPFastSearchCommand(final Context cxt) {
 
@@ -128,17 +127,17 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
     protected String getSortBy() {
         String sortBy = cfg.getSortBy();
 
-           if (getParameters().containsKey("userSortBy")) {
+        if (getParameters().containsKey("userSortBy")) {
 
-                final String userSortBy = getParameter("userSortBy");
-                LOG.debug("execute: SortBy " + userSortBy);
+            final String userSortBy = getParameter("userSortBy");
+            LOG.debug("execute: SortBy " + userSortBy);
 
-                if ("standard".equals(userSortBy)) {
-                    sortBy = "-frontpagename -contentprofile -docdatetime";
-                } else if ("datetime".equals(userSortBy)) {
-                    sortBy = "-frontpagename -docdatetime";
-                }
-           }
+            if ("standard".equals(userSortBy)) {
+                sortBy = "-frontpagename -contentprofile -docdatetime";
+            } else if ("datetime".equals(userSortBy)) {
+                sortBy = "-frontpagename -docdatetime";
+            }
+        }
 
         return sortBy;
     }
@@ -182,13 +181,13 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
                     filterBuilder.append("+collapseid:").append(collapseId);
                 }
             }
- 
+
             String sortBy = getSortBy();
 
-            query.setParameter(new SearchParameter(
-                    "sesat:uniqueId",
-                    context.getDataModel().getParameters().getUniqueId()));
-            
+//            query.setParameter(new SearchParameter(
+//                    "sesat:uniqueId",
+//                    context.getDataModel().getParameters().getUniqueId()));
+
             query.setParameter(new SearchParameter(BaseParameter.OFFSET, getCurrentOffset(0)));
             query.setParameter(new SearchParameter(BaseParameter.HITS, cfg.getResultsToReturn()));
             query.setParameter(new SearchParameter(BaseParameter.SORT_BY, sortBy));
@@ -213,7 +212,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         } catch (SearchEngineException ex) {
             LOG.error(ex.getMessage() + ' ' + ex.getCause());
             return new BasicSearchResult<ResultItem>();
-            
+
         } catch (IOException ex) {
             LOG.error(ex.getMessage(), ex);
             throw new InfrastructureException(ex);
@@ -260,9 +259,9 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
      * @throws IOException if something bad happens... Like, an invalid url. (Actually just to not break old code.)
      */
     protected FastSearchResult createSearchResult(final IQueryResult result) throws IOException {
-        
+
         // The following throws a ClassCastException OR a NullPointerException
-        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null); 
+        final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null);
         final int cnt = getCurrentOffset(0);
         final int maxIndex = getMaxDocIndex(result, cnt, cfg);
 
@@ -478,7 +477,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         for (final Map.Entry<String, String> entry : cfg.getResultFields().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
 
-            if (summary != null && !summary.isEmpty()){
+            if (summary != null && !summary.isEmpty()) {
                 item = item.addField(entry.getValue(), summary.getStringValue().trim());
             }
         }

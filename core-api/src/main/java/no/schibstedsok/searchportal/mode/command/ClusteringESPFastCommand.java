@@ -10,26 +10,23 @@ import com.fastsearch.esp.search.result.IQueryResult;
 import com.fastsearch.esp.search.result.IllegalType;
 import no.schibstedsok.searchportal.datamodel.generic.StringDataObject;
 import no.schibstedsok.searchportal.mode.config.ClusteringEspFastCommandConfig;
-import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.FastSearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import no.schibstedsok.searchportal.result.ResultItem;
-import no.schibstedsok.searchportal.result.ResultList;
 
 /**
- * 
- * @author 
+ * @author Geir H. Pettersen (T-Rank)
  * @version $Id$
  */
 public class ClusteringESPFastCommand extends NewsEspSearchCommand {
-    
+
     private static final Logger LOG = Logger.getLogger(ClusteringESPFastCommand.class);
 
     /**
-     * 
-     * @param cxt 
+     * @param cxt
      */
     public ClusteringESPFastCommand(Context cxt) {
         super(cxt);
@@ -85,12 +82,12 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
     }
 
     private FastSearchResult createClusteredSearchResult(
-            final ClusteringEspFastCommandConfig config, 
-            final int offset, 
+            final ClusteringEspFastCommandConfig config,
+            final int offset,
             final IQueryResult result) throws IllegalType, EmptyValueException {
-        
+
         final String clusterField = config.getClusterField();
-        final String nestedResultsField = config.getNestedResultsField();
+//        final String nestedResultsField = config.getNestedResultsField();
         // Following will throw either ClassCastException or NPE of navigators are used
         final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null);
         final int maxClusterCount = config.getResultsToReturn();
@@ -100,64 +97,55 @@ public class ClusteringESPFastCommand extends NewsEspSearchCommand {
         int collectedClusters = 0;
         int collectedHits = 0;
         ResultList<ResultItem> clusterEntry = null;
-        ResultList<ResultItem> subResult = null;
 
-        LOG.debug("HitCount=" + result.getDocCount() + ", clusterField=" + clusterField + ", nestedResultsField=" + nestedResultsField + ", offset=" + offset);
+        LOG.debug("HitCount=" + result.getDocCount() + ", clusterField=" + clusterField + ", offset=" + offset);
         final int firstHit = config.isIgnoreOffset() ? 0 : offset;
-        
+
         for (int i = firstHit; i < result.getDocCount(); i++) {
             try {
                 final IDocumentSummary document = result.getDocument(i + 1);
                 currentClusterId = document.getSummaryField(clusterField);
-                
+
                 if (currentClusterId.isEmpty()
                         || lastClusterId == null
                         || lastClusterId.isEmpty()
                         || currentClusterId.getStringValue().equals("0")
                         || (!currentClusterId.getStringValue().equals(lastClusterId.getStringValue()))) {
-                    
+
                     LOG.debug("Adding new cluster: " + currentClusterId + ", count is: " + collectedClusters);
-                    
                     if (collectedClusters < maxClusterCount) {
+                        clusterEntry = addResult(config, searchResult, document);
                         if (!currentClusterId.isEmpty()) {
                             clusterEntry = clusterEntry.addField(
-                                    config.getClusterIdParameter(), 
+                                    config.getClusterIdParameter(),
                                     currentClusterId.getStringValue());
                         }
-                        clusterEntry = addResult(config, searchResult, document);
+                        final IDocumentSummaryField clusterHitCount = document.getSummaryField("fcocount");
+                        if (!clusterHitCount.isEmpty()) {
+                            clusterEntry.setHitCount(Integer.parseInt(clusterHitCount.getStringValue()));
+                        }
                         lastClusterId = currentClusterId;
                     } else {
                         break;
                     }
                     collectedClusters++;
-                    subResult = null;
-                    
                 } else {
-                    
                     LOG.debug("Adding subResult for: " + currentClusterId.getStringValue());
-                    if (subResult == null) {
-                        subResult = new BasicSearchResult<ResultItem>();
-                        IDocumentSummaryField clusterHitCount = document.getSummaryField("fcocount");
-                        if (!clusterHitCount.isEmpty()) {
-                            subResult.setHitCount(Integer.parseInt(clusterHitCount.getStringValue()));
-                        }
-                        clusterEntry.addResult(subResult);
-                    }
-                    addResult(config, subResult, document);
+                    addResult(config, clusterEntry, document);
                 }
                 collectedHits++;
-                
+
             } catch (NullPointerException e) {
                 // The doc count is not 100% accurate.
                 LOG.debug("Error finding document " + e);
                 break;
             }
         }
-        
+
         if (offset + collectedHits < result.getDocCount()) {
             addNextOffsetField(offset + collectedHits, searchResult);
         }
-        
+
         searchResult.setHitCount(result.getDocCount());
         return searchResult;
     }

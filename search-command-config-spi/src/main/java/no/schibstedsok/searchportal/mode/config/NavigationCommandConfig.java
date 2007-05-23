@@ -69,7 +69,6 @@ public class NavigationCommandConfig extends CommandConfig {
     @Override
     public CommandConfig readSearchConfiguration(final Element element, final SearchConfiguration inherit) {
         super.readSearchConfiguration(element, inherit);
-        LOG.debug("------------- Reading search configuration ------------");
         List<Element> navigationElements = getDirectChildren(element, NAVIGATION_ELEMENT);
         HashMap<String, Nav> navMap = new HashMap<String, Nav>();
         HashMap<String, Navigation> navigationMap = new HashMap<String, Navigation>();
@@ -82,7 +81,6 @@ public class NavigationCommandConfig extends CommandConfig {
             }
         }
         extendedNavigationConfig = new ExtendedNavigationConfig(navMap, navigationMap, navigationList);
-        LOG.debug("-------------------------------------------------------");
         return this;
     }
 
@@ -284,7 +282,6 @@ public class NavigationCommandConfig extends CommandConfig {
                     staticParameters.put(name, value);
                 }
             }
-            LOG.debug("Added " + this);
         }
 
         private Nav(Navigation navigation, Element navElement) {
@@ -453,44 +450,4 @@ public class NavigationCommandConfig extends CommandConfig {
                     '}';
         }
     }
-
-//    <navigation tab="nc" out="true" command-name="newsSearch">
-//        <nav id="people" field="newsCase">
-//            <static-parameter name="type" value="person"/>
-//        </nav>
-//        <nav id="cases" field="newsCase">
-//            <static-parameter name="type" value="sak"/>
-//        </nav>
-//    </navigation>
-//    <navigation command-name="newsSearch">
-//        <nav id="year">
-//            <nav id="yearmonth">
-//                <nav id="yearmonthday"/>
-//            </nav>
-//        </nav>
-//    </navigation>
-//    <navigation command-name="newsSearch">
-//        <nav id="publisher"/>
-//    </navigation>
-//    <navigation>
-//        <nav id="clusterId"/>
-//    </navigation>
-//    <navigation>
-//        <nav id="sort">
-//            <option value="ascending" display-name="elst først"/>
-//            <option value="descending" display-name="nyest først"/>
-//            <option value="relevance" display-name="relevance"/>
-//        </nav>
-//    </navigation>
-//    <navigation command-name="newsSearch">
-//        <nav field="offset">
-//            <option display-name="neste" value-ref="offset"/>
-//        </nav>
-//    </navigation>
-//    <navigation command-name="newNewsSearchNavigator">
-//        <nav id="medium" command-name="newNewsSearchNavigator"/>
-//        <nav id="sources" command-name="newsSearchNavigator"/>
-//        <nav id="countries" command-name="newsSearchNavigator"/>
-//    </navigation>
-
 }

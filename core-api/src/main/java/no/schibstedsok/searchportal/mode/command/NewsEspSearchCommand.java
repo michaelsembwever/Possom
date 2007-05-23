@@ -22,41 +22,38 @@ import no.schibstedsok.searchportal.query.Visitor;
 import no.schibstedsok.searchportal.query.XorClause;
 import no.schibstedsok.searchportal.result.BasicSearchResult;
 import no.schibstedsok.searchportal.result.FastSearchResult;
+import no.schibstedsok.searchportal.result.ResultItem;
+import no.schibstedsok.searchportal.result.ResultList;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import no.schibstedsok.searchportal.result.ResultItem;
-import no.schibstedsok.searchportal.result.ResultList;
 
 /**
- * 
- * @author 
+ * @author
  * @version $Id$
  */
 public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     /**
-     * 
+     *
      */
     public static final String PARAM_NEXT_OFFSET = "nextOffset";
     private static final Logger LOG = Logger.getLogger(NewsEspSearchCommand.class);
 
     /**
-     * 
-     * @param cxt 
+     * @param cxt
      */
     public NewsEspSearchCommand(Context cxt) {
         super(cxt);
     }
 
     /**
-     * 
-     * @param nextOffset 
-     * @param searchResult 
+     * @param nextOffset
+     * @param searchResult
      */
     protected static void addNextOffsetField(int nextOffset, ResultList<? extends ResultItem> searchResult) {
-        
+
         searchResult.addField(NewsEspSearchCommand.PARAM_NEXT_OFFSET, Integer.toString(nextOffset));
     }
 
@@ -102,8 +99,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     /**
-     * 
-     * @return 
+     * @return
      */
     protected int getOffset() {
         int offset = 0;
@@ -135,8 +131,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     /**
-     * 
-     * @param clause 
+     * @param clause
      */
     @Override
     protected void visitImpl(final Object clause) {
@@ -148,8 +143,7 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     /**
-     * 
-     * @param clause 
+     * @param clause
      */
     protected void visitImpl(final Clause clause) {
         LOG.debug("Visiting me with: " + clause + ", isroot=" + (getQuery().getRootClause() == clause) + ", rootClause=" + getQuery().getRootClause());
@@ -221,20 +215,20 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     /**
-     * 
-     * @param config 
-     * @param offset 
-     * @param result 
-     * @return 
-     * @throws com.fastsearch.esp.search.result.IllegalType 
-     * @throws com.fastsearch.esp.search.result.EmptyValueException 
+     * @param config
+     * @param offset
+     * @param result
+     * @return
+     * @throws com.fastsearch.esp.search.result.IllegalType
+     *
+     * @throws com.fastsearch.esp.search.result.EmptyValueException
+     *
      */
     protected FastSearchResult createCollapsedResults(
-            final NewsEspCommandConfig config, 
-            final int offset, 
+            final NewsEspCommandConfig config,
+            final int offset,
             final IQueryResult result) throws IllegalType, EmptyValueException {
-        
-        final String nestedResultsField = config.getNestedResultsField();
+
         final FastSearchResult<ResultItem> searchResult = new FastSearchResult<ResultItem>(null);
         final Map<String, ResultList<ResultItem>> collapseMap = new HashMap<String, ResultList<ResultItem>>();
         searchResult.setHitCount(result.getDocCount());
@@ -249,22 +243,16 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
                 if (parentResult == null) {
                     if (collapseMap.size() < config.getResultsToReturn()) {
                         parentResult = addResult(config, searchResult, document);
+                        parentResult.setHitCount(1);
                         collapseMap.put(collapseId, parentResult);
                         collectedHits++;
                     }
                 } else {
-                    ResultList<ResultItem> nestedResult = parentResult;
-                    if (nestedResult == null) {
-                        nestedResult = new BasicSearchResult<ResultItem>();
-                        parentResult.addResult(nestedResult);
-                        nestedResult.setHitCount(1);
-                    }
-                    addResult(config, nestedResult, document);
-                    nestedResult.setHitCount(nestedResult.getHitCount() + 1);
+                    addResult(config, parentResult, document);
+                    parentResult.setHitCount(parentResult.getHitCount() + 1);
                     collectedHits++;
                 }
                 analyzedHits++;
-                
             } catch (NullPointerException e) {
                 // The doc count is not 100% accurate.
                 LOG.debug("Error finding document ", e);
@@ -278,27 +266,26 @@ public class NewsEspSearchCommand extends NavigatableESPFastCommand {
     }
 
     /**
-     * 
-     * @param config 
-     * @param searchResult 
-     * @param document 
-     * @return 
+     * @param config
+     * @param searchResult
+     * @param document
+     * @return
      */
     protected static ResultList<ResultItem> addResult(
-            final NewsEspCommandConfig config, 
-            final ResultList<ResultItem> searchResult, 
+            final NewsEspCommandConfig config,
+            final ResultList<ResultItem> searchResult,
             final IDocumentSummary document) {
-        
-        ResultList<ResultItem> searchResultItem = new BasicSearchResult<ResultItem>();
+
+        ResultList<ResultItem> newResult = new BasicSearchResult<ResultItem>();
 
         for (final Map.Entry<String, String> entry : config.getResultFields().entrySet()) {
             final IDocumentSummaryField summary = document.getSummaryField(entry.getKey());
             if (summary != null && !summary.isEmpty()) {
-                searchResultItem = searchResultItem.addField(entry.getValue(), summary.getStringValue().trim());
+                newResult = newResult.addField(entry.getValue(), summary.getStringValue().trim());
             }
         }
-        searchResult.addResult(searchResultItem);
-        return searchResultItem;
+        searchResult.addResult(newResult);
+        return newResult;
     }
 
 }
