@@ -44,7 +44,7 @@ import no.schibstedsok.searchportal.query.token.TokenPredicate;
  * 
  * <br/>
  * The usefulness of this class is heavy dependant on the fast lists:
- *  FULLNAME, COMPANYNAME, FIRSTNAME, LASTNAME, GEOGLOBAL, and GEOLOCAL;
+ *  FULLNAME, COMPANYNAME, COMPANY_KEYWORD, FIRSTNAME, LASTNAME, GEOGLOBAL, and GEOLOCAL;
  * being kept uptodate.<br/>
  * 
  *
@@ -152,8 +152,9 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
         isNameOrNumber |= clause.getKnownPredicates().contains(TokenPredicate.PHONENUMBER);
 
         // check if any possible parents of this clause match the company predicate.
-        final boolean insideCompany = context.getApplications().contains(Application.YELLOW)
-                && ParentFinder.insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
+        boolean insideCompany = context.getApplications().contains(Application.YELLOW);
+        insideCompany &= ParentFinder.insideOf(parents, TokenPredicate.COMPANYENRICHMENT)
+                || ParentFinder.insideOf(parents, TokenPredicate.COMPANY_KEYWORD);
 
         if(hasCompany || hasFullname){
 
@@ -259,8 +260,9 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
                         TokenPredicate.FULLNAME);
 
             if(!insideFullname){
-                final boolean company = context.getApplications().contains(Application.YELLOW)
-                        && predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+                boolean company = context.getApplications().contains(Application.YELLOW);
+                company &= predicates.contains(TokenPredicate.COMPANYENRICHMENT)
+                        || predicates.contains(TokenPredicate.COMPANY_KEYWORD);
                 
                 multipleCompany = hasCompany && company;
                 hasCompany |= company;
@@ -290,8 +292,9 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
             final boolean insideFullname = context.getApplications().contains(Application.WHITE)
                     && ParentFinder.insideOf(parents, TokenPredicate.FULLNAME);
             
-            final boolean insideCompany = context.getApplications().contains(Application.YELLOW)
-                    && ParentFinder.insideOf(parents, TokenPredicate.COMPANYENRICHMENT);
+            boolean insideCompany = context.getApplications().contains(Application.YELLOW);
+            insideCompany &= ParentFinder.insideOf(parents, TokenPredicate.COMPANYENRICHMENT)
+                    || ParentFinder.insideOf(parents, TokenPredicate.COMPANY_KEYWORD);
 
             if(!insideFullname && !insideCompany){
                 final Set<TokenPredicate> predicates = clause.getKnownPredicates();
@@ -303,7 +306,8 @@ public final class WhoWhereSplitter extends AbstractReflectionVisitor{
                 hasFullname |= fullname;
 
                 hasCompany |= !fullname && context.getApplications().contains(Application.YELLOW)
-                    && predicates.contains(TokenPredicate.COMPANYENRICHMENT);
+                    && (predicates.contains(TokenPredicate.COMPANYENRICHMENT)
+                        || predicates.contains(TokenPredicate.COMPANY_KEYWORD));
 
                 if(!fullname || !(hasCompany && hasFullname) && !multipleCompany && !multipleFullname){
                     clause.getFirstClause().accept(this);
