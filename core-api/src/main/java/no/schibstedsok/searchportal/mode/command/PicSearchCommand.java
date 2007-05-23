@@ -60,7 +60,8 @@ public final class PicSearchCommand extends AbstractSearchCommand {
         siteFilter = psConfig.getSite();
     }
 
-    /** {@inherit} */
+    /** {@inheritDoc}
+     */
     public ResultList<? extends ResultItem> execute() {
 
         String query = getTransformedQuery();
@@ -86,7 +87,7 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
         final BasicSearchResult<ResultItem> searchResult = new BasicSearchResult<ResultItem>();
 
-        if( port > 0 ){
+        if (port > 0){
 
             final Document doc = doSearch(url);
 
@@ -130,8 +131,10 @@ public final class PicSearchCommand extends AbstractSearchCommand {
     }
 
     /**
-     * @param visitor
-     * @param clause
+     * Visits full names as separate words rather than as an entity.
+     *
+     * @param visitor The visitor.
+     * @param clause the xor clause to examine.
      */
     protected void visitXorClause(final Visitor visitor, final XorClause clause){
 
@@ -148,7 +151,8 @@ public final class PicSearchCommand extends AbstractSearchCommand {
 
     /**
      * Extract the field filter site into the <tt>siteFilter</tt> if it exists.
-     * Only done if no static site filter is specified by {@link no.schibstedsok.searchportal.mode.config.PictureCommandConfig#getSite()}
+     * Only done if no static site filter is specified by
+     * {@link no.schibstedsok.searchportal.mode.config.PictureCommandConfig#getSite()}
      *
      * @param clause The clause.
      */
