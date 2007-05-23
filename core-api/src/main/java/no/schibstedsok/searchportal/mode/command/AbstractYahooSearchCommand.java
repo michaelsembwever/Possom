@@ -77,7 +77,7 @@ public abstract class AbstractYahooSearchCommand extends AbstractXmlSearchComman
         affilDataValue.append("ip=" + (remoteAddr != null ? remoteAddr : ""));
         affilDataValue.append("&ua=" + userAgent);
 
-        if (forwardedFor != null && forwardedFor.length() > 0) {
+        if (forwardedFor != null && forwardedFor.trim().length() > 0) {
             affilDataValue.append("&xfip=" + forwardedFor);
         }
 
