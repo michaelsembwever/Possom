@@ -163,7 +163,11 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
             INSTANCES_LOCK.readLock().unlock();
         }
 
-        if (instance == null) {
+        if(!VELOCITY_DEBUG) {
+            if (instance == null) {
+                instance = new VelocityEngineFactory(cxt);
+            }
+        } else {
             instance = new VelocityEngineFactory(cxt);
         }
 
@@ -243,7 +247,10 @@ public final class VelocityEngineFactory implements SiteKeyedFactory{
                 engine.setProperty(Velocity.RESOURCE_LOADER, "url");
                 engine.setProperty("url.resource.loader.class", URLVelocityTemplateLoader.class.getName());
 
-                if(!VELOCITY_DEBUG) {
+                if(VELOCITY_DEBUG) {
+                    engine.setProperty("url.resource.loader.cache", "false");
+                    engine.setProperty("velocimacro.library.autoreload", "true");                    
+                } else {
                 	engine.setProperty("url.resource.loader.cache", "true");
                 	engine.setProperty("url.resource.loader.modificationCheckInterval", "60");
                     engine.setProperty(Velocity.RESOURCE_MANAGER_CLASS, QuickResourceManagerImpl.class.getName());
