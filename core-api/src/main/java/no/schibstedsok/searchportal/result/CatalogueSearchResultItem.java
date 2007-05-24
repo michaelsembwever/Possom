@@ -1,16 +1,16 @@
-/*
- * $Id:$
+/* Copyright (2006-2007) Schibsted Søk AS
  */
-// Copyright (2006-2007) Schibsted Søk AS
 package no.schibstedsok.searchportal.result;
+
+import no.schibstedsok.searchportal.result.ProductResult;
 
 /**
  * A simple implementation of a search result item that may contain products.
  *
  * @author <a href="mailto:lars.johansson@conduct.no">Lars Johansson</a>
- * @version <tt>$Revision: 1 $</tt>
+ * @version <tt>$Id$</tt>
  */
-public class CatalogueSearchResultItem extends BasicSearchResultItem {
+public final class CatalogueSearchResultItem extends BasicSearchResultItem {
 
 	/**
 	 * TODO: javadoc.

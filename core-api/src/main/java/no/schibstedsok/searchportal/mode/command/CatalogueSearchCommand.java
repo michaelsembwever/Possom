@@ -458,6 +458,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     @Override
     protected void visitImpl(final LeafClause clause) {
 
+        final String transformedTerm = getTransformedTerms().get(clause);
         final Pattern p = Pattern.compile("\\.|\\-");
         final Matcher m = p.matcher(getTransformedTerms().get(clause));
 
@@ -470,15 +471,16 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
         
         // check if this is a known company name.
         if(clause.getKnownPredicates().contains(TokenPredicate.COMPANYRANK)
-        || clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)){
+                || clause.getKnownPredicates().contains(TokenPredicate.COMPANYENRICHMENT)){
+            
             foundCompanyNameInQuery=true;
         }
 
         if(hasNotWordCharacters){
 
-            appendToQueryRepresentation(createPhraseQuerySyntax('\"' + getTransformedTerms().get(clause) + '\"'));
+            appendToQueryRepresentation(createPhraseQuerySyntax('\"' + transformedTerm + '\"'));
 
-        }else if(!BLANK.equals(getTransformedTerms().get(clause))) {
+        }else if(!BLANK.equals(transformedTerm)) {
 
             final Query query = context.getDataModel().getQuery().getQuery();
 
@@ -498,7 +500,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             }
 
             boolean insideCKR = false;
-            final Clause ckr = ancestors.size()>0? ancestors.get(0) : null;
+            final Clause ckr = ancestors.size() > 0 ? ancestors.get(0) : null;
 
             if(null != ckr){
                  insideCKR =
@@ -507,24 +509,22 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                     && ParentFinder.insideOf(ancestors, TokenPredicate.COMPANY_KEYWORD_RESERVED);
             }
 
-
             if(insideCKR){
 
                 // SEARCH-1796
                 if( ((OperationClause)longestCkr).getFirstClause() == clause ){
-                    String kwTerm = ckr.getTerm().replaceAll("\\(|\\)", "");
+                    final String kwTerm = ckr.getTerm().replaceAll("\\(|\\)", "");
                     
-                     appendToQueryRepresentation(
-                             '('
-                            + "iypcfnavn:\"" + kwTerm + "\" ANY "
-                            + "lemiypcfkeywords:\"^" + kwTerm + "$\" ANY "
-                            + "lemiypcfkeywordslow:\"" + kwTerm
-                            + "\"");                    
+                    insertToQueryRepresentation(0, "(lemiypcfkeywords:\"^" + kwTerm + "$\") ANY ");
                 }
+                
+                appendToQueryRepresentation(
+                            "(iypcfnavn:" + transformedTerm + " ANY "
+                            + "lemiypcfkeywordslow:" + transformedTerm
+                            + ')');  
 
             }else{
 
-                final String transformedTerm = getTransformedTerms().get(clause);
                 final String kwTerm = clause.getKnownPredicates().contains(TokenPredicate.COMPANY_KEYWORD_RESERVED)
                         ? "\"^" + transformedTerm + "$\""
                         : transformedTerm;
@@ -564,7 +564,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
     @Override
     protected void visitImpl(final DefaultOperatorClause clause) {
 
-
+        appendToQueryRepresentation('(');
         clause.getFirstClause().accept(this);
         final int queryRepLength = getQueryRepresentationLength();
 
@@ -577,6 +577,7 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
             // we know the query representation got longer which means we need to insert the operator
             insertToQueryRepresentation(queryRepLength, QL_AND);
         }
+        appendToQueryRepresentation(')');
     }
 
     /**

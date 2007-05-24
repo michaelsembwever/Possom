@@ -15,8 +15,7 @@ public final class Modifier implements Comparable<Modifier> {
     private final String name;
     private final Navigator navigator;
 
-    private static final Comparator<Modifier> HINT_PRIO_COMPARATOR =
-            new Comparator<Modifier>() {
+    private static final Comparator<Modifier> HINT_PRIO_COMPARATOR = new Comparator<Modifier>() {
 
         public int compare(final Modifier m1, final Modifier m2) {
             if (m1.getNavigationHint() == null || m2.getNavigationHint() == null) {

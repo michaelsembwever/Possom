@@ -4,17 +4,18 @@ package no.schibstedsok.searchportal.result;
 import java.util.Collection;
 import java.util.HashMap;
 
+/** @deprecated use ResultItem instead **/
 public interface ProductResultItem {
 
 	void addField(String field, String value);
 
 	String getField(String field);
 
-	HashMap getFields();
+	HashMap<String,Object> getFields();
 
-	void setFields(HashMap map);
+	void setFields(HashMap<String,Object> map);
 
-	public Collection getMultivaluedField(final String field);
+	Collection<String> getMultivaluedField(String field);
 
-	public void addToMultivaluedField(final String field, final String value);
+	void addToMultivaluedField(String field, String value);
 }
