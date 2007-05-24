@@ -16,6 +16,8 @@ import no.schibstedsok.searchportal.query.LeafClause;
 import no.schibstedsok.searchportal.result.BlogSearchResultItem;
 import no.schibstedsok.searchportal.result.ResultItem;
 import no.schibstedsok.searchportal.result.ResultList;
+import no.schibstedsok.searchportal.mode.config.SearchConfiguration;
+import no.schibstedsok.searchportal.mode.config.EspFastCommandConfig;
 
 /**
  *
@@ -44,7 +46,21 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
 
 
     /**
-     * Switches sorting by based on the request parameter "userSortBy"
+     * Override collapsing if output is rss, otherwise return false.
+     * @return false if output is rss, otherwise the default configuration.
+     */
+    protected boolean isCollapsingEnabled()
+    {
+        boolean collapsed = super.isCollapsingEnabled();
+        if("rss".equals(getParameter("output"))) {
+            System.out.println("RSS OUTPUT COLLAPSING = FALSE");
+            collapsed = false;
+        }
+        return collapsed;
+    }
+
+    /**
+     * Switches sorting  based on the request parameter "userSortBy"
      * Sortoptions are "+blogsearchprofile" "and publishedtime", default is publishedtime.
      * @return sort field.
      */
