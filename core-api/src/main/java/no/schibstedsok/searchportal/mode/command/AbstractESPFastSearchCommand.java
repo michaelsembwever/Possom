@@ -124,6 +124,18 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
         searchView = initialiseSearchView();
     }
 
+    /**
+     * Default collapsing from the configuration, can be overridden in subcommands..
+     * @return true if collapsing is enabled
+     */
+    protected boolean isCollapsingEnabled() {
+        return cfg.isCollapsingEnabled();
+    }
+
+    /**
+     * Default sortby, can be overridden by subcommands.
+     * @return sortby field
+     */
     protected String getSortBy() {
         String sortBy = cfg.getSortBy();
 
@@ -172,7 +184,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
 
             final IQuery query = new Query(transformedQuery);
 
-            if (cfg.isCollapsingEnabled()) {
+            if (isCollapsingEnabled()) {
                 if (collapseId == null || "".equals(collapseId) || !cfg.isExpansionEnabled()) {
                     if (cfg.isCollapsingRemoves()) {
                         query.setParameter(new SearchParameter("collapseon", "batvcollapseid"));
@@ -277,7 +289,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             }
         }
 
-        if (cfg.isCollapsingEnabled() && cfg.isExpansionEnabled()) {
+        if (isCollapsingEnabled() && cfg.isExpansionEnabled()) {
             final String collapseId = getParameter(COLLAPSE_PARAMETER);
             if (collapseId != null && !collapseId.equals("")) {
                 if (searchResult.getResults().size() > 0) {
@@ -481,7 +493,7 @@ public abstract class AbstractESPFastSearchCommand extends AbstractSearchCommand
             }
         }
 
-        if (cfg.isCollapsingEnabled()) {
+        if (isCollapsingEnabled()) {
             final String currCollapseId = getParameter(COLLAPSE_PARAMETER);
 
             if (currCollapseId == null || currCollapseId.equals("")) {
