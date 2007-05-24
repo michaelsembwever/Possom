@@ -516,10 +516,10 @@ public final class CatalogueSearchCommand extends AdvancedFastSearchCommand {
                     
                      appendToQueryRepresentation(
                              '('
-                            + "iypcfphnavn:\"^" + kwTerm + "$\" ANY "
+                            + "iypcfnavn:\"" + kwTerm + "\" ANY "
                             + "lemiypcfkeywords:\"^" + kwTerm + "$\" ANY "
-                            + "lemiypcfkeywordslow:\"^" + kwTerm
-                            + "$\"");                    
+                            + "lemiypcfkeywordslow:\"" + kwTerm
+                            + "\"");                    
                 }
 
             }else{
