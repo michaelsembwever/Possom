@@ -53,7 +53,6 @@ public final class BlogSearchCommand extends AbstractESPFastSearchCommand {
     {
         boolean collapsed = super.isCollapsingEnabled();
         if("rss".equals(getParameter("output"))) {
-            System.out.println("RSS OUTPUT COLLAPSING = FALSE");
             collapsed = false;
         }
         return collapsed;
